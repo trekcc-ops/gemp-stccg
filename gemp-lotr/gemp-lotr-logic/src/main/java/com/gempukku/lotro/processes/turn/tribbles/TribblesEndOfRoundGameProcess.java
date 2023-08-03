@@ -23,7 +23,7 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
                 gameState.playerWentOut(playerId); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 _pointsScored.put(playerId, score);
-                gameState.playerScored(playerId, score);
+                gameState.addToPlayerScore(playerId, score);
                 gameState.sendMessage(playerId + " went out with " + score + " points");
             }
 

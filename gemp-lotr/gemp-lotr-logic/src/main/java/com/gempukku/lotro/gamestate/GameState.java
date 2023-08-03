@@ -22,7 +22,7 @@ public class GameState {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     private PlayerOrder _playerOrder;
     private LotroFormat _format;
-
+    protected final Map<String, Player> _players = new HashMap<>();
     private final Map<String, List<LotroPhysicalCardImpl>> _adventureDecks = new HashMap<>();
     private final Map<String, List<LotroPhysicalCardImpl>> _decks = new HashMap<>();
     private final Map<String, List<LotroPhysicalCardImpl>> _hands = new HashMap<>();
@@ -76,6 +76,10 @@ public class GameState {
         _playerOrder = playerOrder;
         _currentPlayerId = firstPlayer;
         _format = format;
+
+        for (String player : playerOrder.getAllPlayers()) {
+            _players.put(player, new Player(player));
+        }
 
         for (Map.Entry<String, List<String>> stringListEntry : cards.entrySet()) {
             String playerId = stringListEntry.getKey();
@@ -1098,6 +1102,12 @@ public class GameState {
     }
 
     public void playerPassEffect() {}
+
+    public void addToPlayerScore(String player, int points) {
+        _players.get(player).scorePoints(points);
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.setPlayerScore(player, getPlayerScore(player));
+    }
 
     public int getPlayerScore(String playerId) { return 0; }
 }

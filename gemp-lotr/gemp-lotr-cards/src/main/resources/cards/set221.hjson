@@ -29,4 +29,37 @@
             ]
  		}
     }
+    221_006: {
+         title: 10 Tribbles - Generosity
+         type: tribble
+         tribble-value: 10
+         tribble-power: generosity
+         image-url: https://www.trekcc.org/tribbles/cardimages/toadc/141V.jpg
+         effects: {
+ 			type: trigger
+ 			optional: true
+ 			trigger: {
+ 			    type: played
+ 			    filter: self
+ 			}
+ 			effect: [
+ 			    {
+                    type: ChooseOpponent
+                    memorize: opp
+                }
+                {
+                    type: ScorePoints
+                    amount: 25000
+                }
+                {
+                    type: ScorePoints
+                    amount: 25000
+                    player: FromMemory(opp)
+                }
+                {
+                    type: drawCards
+                }
+            ]
+ 		}
+    }
 }

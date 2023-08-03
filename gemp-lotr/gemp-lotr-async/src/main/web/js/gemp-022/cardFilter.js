@@ -113,7 +113,18 @@ var CardFilter = Class.extend({
         
         this.fullFilterDiv = $("<div id='filter-inputs' style='display:flex;flex-wrap:wrap;'></div>");
         this.setSelect = $("<select id='setSelect' style='width: 130px; font-size: 80%;'>"
-            + "<option value='0-34,50-200'>All Sets</option>"
+            + "<option value='144,145,150,157,164,190,221'>All Tribbles Sets</option>"
+            + "<option disabled>----------</option>"
+            + "<option value='144'>More Tribbles, More Troubles</option>"
+            + "<option value='145'>No Tribble at All</option>"
+            + "<option value='150'>Trials and Tribble-ations</option>"
+            + "<option value='157'>Nothing But Tribble</option>"
+            + "<option value='164'>Big Tribble in Little Qo'noS</option>"
+            + "<option value='190'>Star Trek 50</option>"
+            + "<option value='221'>A Tribble of a Different Color</option>"
+             + "</select>");
+                   // Below is LotR stuff to use as a template if needed
+/*            + "<option value='0-999'>All Sets</option>"
             + "<option value='0-19'>Official Decipher Sets</option>"
             + "<option value='30-33'>The Hobbit Sets</option>"
             + "<option value='50-69,100'>Player's Council Errata</option>"
@@ -179,25 +190,23 @@ var CardFilter = Class.extend({
             //+ "<option value='151'>PLAYTEST - Shadow of the Past (PC)</option>"
             + "<option value='test_pc_fotr_block'>PLAYTEST - Fellowship Block (PC)</option>"
             + "<option value='test_pc_movie'>PLAYTEST - Movie Block (PC)</option>"
-            + "<option value='test_pc_expanded'>PLAYTEST - Expanded (PC)</option>"
-            
-            
-            + "</select>");
+            + "<option value='test_pc_expanded'>PLAYTEST - Expanded (PC)</option>" */
+
         this.nameInput = $("<input type='text' placeholder='Card name' value='' style='width: 110px; font-size: 70%;'>");
         this.sortSelect = $("<select style='width: 80px; font-size: 80%;'>"
             + "<option value=''>Sort by:</option>"
             + "<option value='name'>Name</option>"
-            + "<option value='twilight,name'>Twilight</option>"
+/*            + "<option value='twilight,name'>Twilight</option>"
             + "<option value='siteNumber,name'>Site number</option>"
             + "<option value='strength,name'>Strength</option>"
             + "<option value='vitality,name'>Vitality</option>"
             + "<option value='cardType,name'>Card type</option>"
             + "<option value='culture,name'>Culture</option>"
-            + "<option value='tribbleValue,name'>Tribble Value</option>"
+            + "<option value='tribbleValue,name'>Tribble Value</option>"*/
             + "</select>");
-        this.raritySelect = $("<select style='width: 40px; font-size: 80%;'>"
-            + "<option value=''>Rarity:</option>"
-            + "<option value='R'>Rare</option>"
+        this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
+            + "<option value=''>All Rarities</option>"
+/*            + "<option value='R'>Rare</option>"
             + "<option value='U'>Uncommon</option>"
             + "<option value='C'>Common</option>"
             + "<option value='A'>Alternate Image</option>"
@@ -205,6 +214,7 @@ var CardFilter = Class.extend({
             + "<option value='X'>Rare+</option>"
             + "<option value='S'>Fixed</option>"
             + "<option value='C,U,P,S'>Poorman's</option>"
+            + "<option value='V'>Virtual</option>" */
             + "</select>");
 
         this.fullFilterDiv.append(this.setSelect);
@@ -218,7 +228,7 @@ var CardFilter = Class.extend({
 
         this.filterDiv = $("<div id='culture-buttons' style='display:flex;flex-wrap:wrap;'></div>");
 
-        this.filterDiv.append("<div id='culture1'>"
+/*        this.filterDiv.append("<div id='culture1'>"
             + "<input type='checkbox' id='DWARVEN'/><label for='DWARVEN' id='labelDWARVEN'><img src='images/cultures/dwarven.png'/></label>"
             + "<input type='checkbox' id='ELVEN'/><label for='ELVEN' id='labelELVEN'><img src='images/cultures/elven.png'/></label>"
             + "<input type='checkbox' id='GANDALF'/><label for='GANDALF' id='labelGANDALF'><img src='images/cultures/gandalf.png'/></label>"
@@ -235,7 +245,7 @@ var CardFilter = Class.extend({
             + "<input type='checkbox' id='SAURON'/><label for='SAURON' id='labelSAURON'><img src='images/cultures/sauron.png'/></label>"
             + "<input type='checkbox' id='URUK_HAI'/><label for='URUK_HAI' id='labelURUK_HAI'><img src='images/cultures/uruk_hai.png'/></label>"
             + "<input type='checkbox' id='WRAITH'/><label for='WRAITH' id='labelWRAITH'><img src='images/cultures/wraith.png'/></label>"
-        );
+        );*/
         //Additional Hobbit Draft cultures
         //var hobbitFilterDiv = $("<div id='culture2' style='display:flex;flex-wrap:wrap;'></div>");
         this.filterDiv.append("<div id='culture2'>"
@@ -251,7 +261,7 @@ var CardFilter = Class.extend({
 
         combos.append(" <select id='cardType' style='font-size: 80%;'>"
             + "<option value=''>All Card Types</option>"
-            + "<option value='COMPANION,ALLY,MINION'>Characters</option>"
+/*            + "<option value='COMPANION,ALLY,MINION'>Characters</option>"
             + "<option value='POSSESSION,ARTIFACT'>Items</option>"
             + "<option value='SITE'>Sites</option>"
             + "<option value='ALLY'>Allies</option>"
@@ -261,11 +271,12 @@ var CardFilter = Class.extend({
             + "<option value='EVENT'>Events</option>"
             + "<option value='FOLLOWER'>Followers</option>"
             + "<option value='MINION'>Minions</option>"
-            + "<option value='POSSESSION'>Possessions</option>"
+            + "<option value='POSSESSION'>Possessions</option>" */
+            + "<option value='TRIBBLE'>Tribbles</option>"
             + "</select>");
         combos.append(" <select id='keyword' style='font-size: 80%;'>"
             + "<option value=''>No keyword filtering</option>"
-            + "<option value='ARCHER'>Archer</option>"
+/*            + "<option value='ARCHER'>Archer</option>"
             + "<option value='BATTLEGROUND'>Battleground</option>"
             + "<option value='BESIEGER'>Besieger</option>"
             + "<option value='CORSAIR'>Corsair</option>"
@@ -303,15 +314,15 @@ var CardFilter = Class.extend({
             + "<option value='WARG_RIDER'>Warg-rider</option>"
             + "<option value='WEATHER'>Weather</option>"
             //Additional Hobbit Draft keyword
-            + "<option value='WISE'>Wise</option>"
+            + "<option value='WISE'>Wise</option>"*/
             + "</select>");
         combos.append(" <select id='type' style='font-size: 80%'>"
             + "<option value=''>All types</option>"
-            + "<option value='pack'>Packs</option>"
+/*            + "<option value='pack'>Packs</option>"
             + "<option value='card'>Cards</option>"
             + "<option value='foil'>Foils</option>"
             + "<option value='nonFoil'>Non-foils</option>"
-            + "<option value='tengwar'>Tengwar</option>"
+            + "<option value='tengwar'>Tengwar</option>"*/
             + "</select>");
 
         combos.append(" <select id ='race' style='font-size: 80%'>"

@@ -24,7 +24,6 @@ public class TribblesGameState extends GameState {
     private static final int LAST_MESSAGE_STORED_COUNT = 30;
     private PlayerOrder _playerOrder;
     private LotroFormat _format;
-    private final Map<String, Player> _players = new HashMap<>();
     private final Map<String, List<LotroPhysicalCardImpl>> _playPiles = new HashMap<>();
     private final Map<String, List<LotroPhysicalCardImpl>> _adventureDecks = new HashMap<>();
     private final Map<String, List<LotroPhysicalCardImpl>> _decks = new HashMap<>();
@@ -753,12 +752,6 @@ public class TribblesGameState extends GameState {
 
     public void playerWentOut(String player) {
         // TODO
-    }
-
-    public void playerScored(String player, int points) {
-        _players.get(player).scorePoints(points);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(player, getPlayerScore(player));
     }
 
     public void advanceRoundNum() {
