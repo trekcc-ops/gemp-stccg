@@ -19,7 +19,7 @@ public class ShuffleCardsFromPlayIntoDrawDeck implements EffectAppenderProducer 
         FieldUtils.validateAllowedFields(effectObject, "player", "filter", "count", "memorize");
 
         String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");

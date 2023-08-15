@@ -32,7 +32,7 @@ public class AssignFpCharacterToSkirmish implements EffectAppenderProducer {
         final String fpCharacter = FieldUtils.getString(effectObject.get("fpCharacter"), "fpCharacter");
         final String against = FieldUtils.getString(effectObject.get("against"), "against");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
         final FilterableSource minionFilter = getSource(against, environment);
 

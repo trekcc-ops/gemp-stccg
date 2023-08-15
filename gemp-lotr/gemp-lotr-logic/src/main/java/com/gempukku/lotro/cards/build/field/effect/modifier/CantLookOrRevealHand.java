@@ -16,8 +16,8 @@ public class CantLookOrRevealHand implements ModifierSourceProducer {
         final String player = FieldUtils.getString(object.get("player"), "player");
         final String hand = FieldUtils.getString(object.get("hand"), "hand");
 
-        PlayerSource playerSource = PlayerResolver.resolvePlayer(player, environment);
-        PlayerSource handSource = PlayerResolver.resolvePlayer(hand, environment);
+        PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
+        PlayerSource handSource = PlayerResolver.resolvePlayer(hand);
 
         return actionContext -> new AbstractModifier(actionContext.getSource(), "Player may not look at or reveal cards in another player hand",
                 null, ModifierEffect.LOOK_OR_REVEAL_MODIFIER) {

@@ -275,7 +275,7 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "filter", "hand");
                 final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
                 final String hand = FieldUtils.getString(object.get("hand"), "hand", "you");
-                final PlayerSource player = PlayerResolver.resolvePlayer(hand, environment);
+                final PlayerSource player = PlayerResolver.resolvePlayer(hand);
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
                 return actionContext ->
                         (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayer(actionContext)),

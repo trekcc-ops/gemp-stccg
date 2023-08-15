@@ -24,7 +24,7 @@ public class LookAtTopCardsOfDrawDeck implements EffectAppenderProducer {
         final int count = FieldUtils.getInteger(effectObject.get("count"), "count", 1);
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 
         return new DelayedAppender<>() {
             @Override

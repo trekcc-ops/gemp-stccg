@@ -19,7 +19,7 @@ public class Discarded implements TriggerCheckerProducer {
         final String memorize = FieldUtils.getString(value.get("memorize"), "memorize");
         final String player = FieldUtils.getString(value.get("player"), "player");
 
-        PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player, environment) : null;
+        PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player) : null;
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 

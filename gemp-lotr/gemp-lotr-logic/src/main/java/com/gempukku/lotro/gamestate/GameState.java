@@ -394,7 +394,7 @@ public class GameState {
         return _rings.get(playerId);
     }
 
-    private List<LotroPhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
+    public List<LotroPhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
         if (zone == Zone.DECK)
             return _decks.get(playerId);
         else if (zone == Zone.ADVENTURE_DECK)
@@ -1072,6 +1072,19 @@ public class GameState {
             return null;
         }
     }
+
+    public LotroPhysicalCard removeTopCardFromZone(String player, Zone zone) {
+        // Assumes pulling from final element of deck. Logic works for Tribbles play pile deck as of 8/15/23
+        List<LotroPhysicalCardImpl> deck = getZoneCards(player, zone);
+        if (deck.size() > 0) {
+            final LotroPhysicalCard topDeckCard = deck.get(deck.size() - 1);
+            removeCardsFromZone(null, Collections.singleton(topDeckCard));
+            return topDeckCard;
+        } else {
+            return null;
+        }
+    }
+
 
     public void playerDrawsCard(String player) {
         List<LotroPhysicalCardImpl> deck = _decks.get(player);

@@ -29,7 +29,7 @@ public class ChooseAndHeal implements EffectAppenderProducer {
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
         //Might implement this later
         final String memory = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");

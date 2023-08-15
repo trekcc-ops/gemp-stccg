@@ -22,7 +22,7 @@ public class DiscardFromPlay implements EffectAppenderProducer {
         FieldUtils.validateAllowedFields(effectObject, "player", "count", "filter", "memorize", "memorizeStackedCards");
 
         final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
-        final PlayerSource discardingPlayer = PlayerResolver.resolvePlayer(player, environment);
+        final PlayerSource discardingPlayer = PlayerResolver.resolvePlayer(player);
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
         final String memory = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");

@@ -18,7 +18,7 @@ public class DiscardFromHandBy implements TriggerCheckerProducer {
         final String player = FieldUtils.getString(value.get("player"), "player", "you");
         final String byFilter = FieldUtils.getString(value.get("by"), "by");
 
-        PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player, environment) : null;
+        PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player) : null;
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final FilterableSource byFilterableSource = environment.getFilterFactory().generateFilter(byFilter, environment);
 

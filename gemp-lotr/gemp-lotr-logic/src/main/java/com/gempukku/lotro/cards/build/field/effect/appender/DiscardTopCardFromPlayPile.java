@@ -1,47 +1,45 @@
 package com.gempukku.lotro.cards.build.field.effect.appender;
 
+import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
 import com.gempukku.lotro.cards.build.*;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.cards.build.field.effect.appender.resolver.PlayerResolver;
 import com.gempukku.lotro.cards.build.field.effect.appender.resolver.ValueResolver;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
-import com.gempukku.lotro.effects.DiscardBottomCardFromDeckEffect;
+import com.gempukku.lotro.effects.DiscardTopCardFromPlayPileEffect;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.game.TribblesGame;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
-public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
+public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "deck", "count", "forced", "memorize");
+    public EffectAppender<TribblesGame> createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        FieldUtils.validateAllowedFields(effectObject, "deck", "count", "memorize");
 
         final String deck = FieldUtils.getString(effectObject.get("deck"), "deck", "you");
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean forced = FieldUtils.getBoolean(effectObject.get("forced"), "forced");
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 
         return new DelayedAppender<>() {
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(DefaultActionContext<TribblesGame> actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                final DefaultGame game = actionContext.getGame();
-                return game.getGameState().getDeck(deckId).size() >= count
-                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(game, actionContext.getPerformingPlayer(), actionContext.getSource()));
+                final TribblesGame game = actionContext.getGame();
+                return game.getGameState().getPlayPile(deckId).size() >= count;
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext<TribblesGame> actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                return new DiscardBottomCardFromDeckEffect(actionContext.getSource(), deckId, count, forced) {
+                return new DiscardTopCardFromPlayPileEffect(actionContext.getSource(), deckId, count) {
                     @Override
                     protected void cardsDiscardedCallback(Collection<LotroPhysicalCard> cards) {
                         if (memorize != null)
@@ -53,3 +51,5 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
     }
 
 }
+
+

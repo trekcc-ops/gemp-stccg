@@ -24,7 +24,7 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
         final String deck = FieldUtils.getString(effectObject.get("deck"), "deck", "you");
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 
         MultiEffectAppender result = new MultiEffectAppender();
 

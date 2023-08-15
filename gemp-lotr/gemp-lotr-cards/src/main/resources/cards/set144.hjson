@@ -178,6 +178,31 @@
             ]
  		}
     }
+    144_014: {
+         title: "10,000 Tribbles - Kill"
+         type: tribble
+         tribble-value: 10000
+         tribble-power: kill
+         image-url: https://www.trekcc.org/tribbles/cardimages/mtmt/14V.jpg
+         effects: {
+ 			type: trigger
+ 			optional: true
+ 			trigger: {
+ 			    type: played
+ 			    filter: self
+ 			}
+ 			effect: [
+ 			    {
+                    type: ChoosePlayer
+                    memorize: playerChosen
+                }
+                {
+                    type: discardtopcardfromplaypile
+                    deck: fromMemory(playerChosen)
+                }
+            ]
+ 		}
+    }
     144_015: {
          title: "10,000 Tribbles - Recycle"
          type: tribble
@@ -202,6 +227,31 @@
                         type: forEachInDiscard
                     }
                     player: fromMemory(playerChosen)
+                }
+            ]
+ 		}
+    }
+    144_017: {
+         title: "100,000 Tribbles - Kill"
+         type: tribble
+         tribble-value: 100000
+         tribble-power: kill
+         image-url: https://www.trekcc.org/tribbles/cardimages/mtmt/17V.jpg
+         effects: {
+ 			type: trigger
+ 			optional: true
+ 			trigger: {
+ 			    type: played
+ 			    filter: self
+ 			}
+ 			effect: [
+ 			    {
+                    type: ChoosePlayer
+                    memorize: playerChosen
+                }
+                {
+                    type: discardtopcardfromplaypile
+                    deck: fromMemory(playerChosen)
                 }
             ]
  		}

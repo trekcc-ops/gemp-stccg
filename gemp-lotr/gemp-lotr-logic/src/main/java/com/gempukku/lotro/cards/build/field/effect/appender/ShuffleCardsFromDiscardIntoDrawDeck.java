@@ -22,7 +22,7 @@ public class ShuffleCardsFromDiscardIntoDrawDeck implements EffectAppenderProduc
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
             // Added the next 2 lines
         final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 

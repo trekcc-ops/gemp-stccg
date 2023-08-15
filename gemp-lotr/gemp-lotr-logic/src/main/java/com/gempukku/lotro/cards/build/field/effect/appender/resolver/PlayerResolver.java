@@ -10,7 +10,7 @@ import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import java.util.Locale;
 
 public class PlayerResolver {
-    public static PlayerSource resolvePlayer(String type, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public static PlayerSource resolvePlayer(String type) throws InvalidCardDefinitionException {
 
         if (type.equalsIgnoreCase("you"))
             return ActionContext::getPerformingPlayer;

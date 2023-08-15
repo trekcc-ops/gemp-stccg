@@ -69,6 +69,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new ShuffleCardsFromHandIntoDrawDeck());
         effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleHandIntoDrawDeck());
             // Tribbles-specific
+        effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
         effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
             // LotR-specific

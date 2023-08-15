@@ -313,7 +313,7 @@ public class TribblesGameState extends GameState {
             listener.cardActivated(playerPerforming, card);
     }
 
-    private List<LotroPhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
+    public List<LotroPhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
         if (zone == Zone.DECK)
             return _decks.get(playerId);
         else if (zone == Zone.PLAY_PILE)
@@ -680,6 +680,16 @@ public class TribblesGameState extends GameState {
         }
     }
 
+    public LotroPhysicalCard removeTopCardFromZone(String player, Zone zone) {
+        List<LotroPhysicalCardImpl> deck = getZoneCards(player, zone);
+        if (deck.size() > 0) {
+            final LotroPhysicalCard topDeckCard = deck.get(deck.size() - 1);
+            removeCardsFromZone(null, Collections.singleton(topDeckCard));
+            return topDeckCard;
+        } else {
+            return null;
+        }
+    }
     public void playerDrawsCard(String player) {
         List<LotroPhysicalCardImpl> deck = _decks.get(player);
         if (deck.size() > 0) {

@@ -47,7 +47,7 @@ public class CardResolver {
             return resolveMemoryCards(type, choiceFilter, playabilityFilter, countSource, memory, cardSource);
         }
         else if (type.startsWith("choose(") && type.endsWith(")")) {
-            final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer, environment);
+            final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
                 String choicePlayerId = playerSource.getPlayer(actionContext);
                 return new ChooseStackedCardsEffect(action, choicePlayerId, min, max, stackedOn.getFilterable(actionContext), Filters.in(possibleCards)) {
@@ -77,7 +77,7 @@ public class CardResolver {
     }
 
     public static EffectAppender resolveCardsInHand(String type, FilterableSource additionalFilter, ValueSource countSource, String memory, String choicePlayer, String handPlayer, String choiceText, boolean showMatchingOnly, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final PlayerSource handSource = PlayerResolver.resolvePlayer(handPlayer, environment);
+        final PlayerSource handSource = PlayerResolver.resolvePlayer(handPlayer);
         Function<DefaultActionContext, Iterable<? extends LotroPhysicalCard>> cardSource = actionContext -> {
             String handPlayer1 = handSource.getPlayer(actionContext);
             return actionContext.getGame().getGameState().getHand(handPlayer1);
@@ -112,7 +112,7 @@ public class CardResolver {
         } else if (type.startsWith("all(") && type.endsWith(")")) {
             return resolveAllCards(type, additionalFilter, memory, environment, cardSource);
         } else if (type.startsWith("choose(") && type.endsWith(")")) {
-            final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer, environment);
+            final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
                 String handId = handSource.getPlayer(actionContext);
                 String choicePlayerId = playerSource.getPlayer(actionContext);
@@ -166,8 +166,8 @@ public class CardResolver {
     }
 
     public static EffectAppender resolveCardsInDiscard(String type, FilterableSource choiceFilter, FilterableSource playabilityFilter, ValueSource countSource, String memory, String choicePlayer, String targetPlayerDiscard, String choiceText, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer, environment);
-        final PlayerSource targetPlayerDiscardSource = PlayerResolver.resolvePlayer(targetPlayerDiscard, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
+        final PlayerSource targetPlayerDiscardSource = PlayerResolver.resolvePlayer(targetPlayerDiscard);
 
         Function<DefaultActionContext, Iterable<? extends LotroPhysicalCard>> cardSource = actionContext -> {
             String targetPlayerId = targetPlayerDiscardSource.getPlayer(actionContext);
@@ -207,8 +207,8 @@ public class CardResolver {
     }
 
     public static EffectAppender resolveCardsInDeck(String type, FilterableSource choiceFilter, ValueSource countSource, String memory, String choicePlayer, String targetDeck, String choiceText, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer, environment);
-        final PlayerSource deckSource = PlayerResolver.resolvePlayer(targetDeck, environment);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
+        final PlayerSource deckSource = PlayerResolver.resolvePlayer(targetDeck);
 
         Function<DefaultActionContext, Iterable<? extends LotroPhysicalCard>> cardSource = actionContext -> {
             String deckId = deckSource.getPlayer(actionContext);
@@ -311,7 +311,7 @@ public class CardResolver {
         } else if (type.startsWith("all(") && type.endsWith(")")) {
             return resolveAllCards(type, additionalFilter, memory, environment, cardSource);
         } else if (type.startsWith("choose(") && type.endsWith(")")) {
-            final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer, environment);
+            final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
                 String choicePlayerId = playerSource.getPlayer(actionContext);
                 return new ChooseActiveCardsEffect(actionContext.getSource(), choicePlayerId, GameUtils.SubstituteText(choiceText, actionContext), min, max, Filters.in(possibleCards)) {
