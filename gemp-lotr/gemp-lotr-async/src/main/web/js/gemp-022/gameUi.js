@@ -201,59 +201,9 @@ var TribblesGameUI = Class.extend({
 
     layoutGroupWithCard: function (cardId) {
         var cardData = $(".card:cardId(" + cardId + ")").data("card");
-        if (this.advPathGroup.cardBelongs(cardData)) {
-            this.advPathGroup.layoutCards();
-            return;
-        }
-        if (this.charactersPlayer.cardBelongs(cardData)) {
-            this.charactersPlayer.layoutCards();
-            return;
-        }
-        if (this.charactersOpponent.cardBelongs(cardData)) {
-            this.charactersOpponent.layoutCards();
-            return;
-        }
-        if (this.playPilePlayer.cardBelongs(cardData)) {
-            this.playPilePlayer.layoutCards();
-            return;
-        }
-        if (this.playPileOpponent.cardBelongs(cardData)) {
-            this.playPileOpponent.layoutCards();
-            return;
-        }
-        if (this.hand != null)
-            if (this.hand.cardBelongs(cardData)) {
-                this.hand.layoutCards();
-                return;
-            }
-        if (this.shadow.cardBelongs(cardData)) {
-            this.shadow.layoutCards();
-            return;
-        }
-
-        if (this.skirmishFellowshipGroup.cardBelongs(cardData)) {
-            this.skirmishFellowshipGroup.layoutCards();
-            return;
-        }
-        if (this.skirmishShadowGroup.cardBelongs(cardData)) {
-            this.skirmishShadowGroup.layoutCards();
-            return;
-        }
-
-        for (var characterId in this.shadowAssignGroups) {
-            if (this.shadowAssignGroups.hasOwnProperty(characterId)) {
-                if (this.shadowAssignGroups[characterId].cardBelongs(cardData)) {
-                    this.shadowAssignGroups[characterId].layoutCards();
-                    return;
-                }
-                if (this.freePeopleAssignGroups[characterId].cardBelongs(cardData)) {
-                    this.freePeopleAssignGroups[characterId].layoutCards();
-                    return;
-                }
-            }
-        }
-
-        this.layoutUI(false);
+        var tempGroup = this.getReorganizableCardGroupForCardData(cardData);
+        tempGroup.layoutCards();
+        return;
     },
 
     initializeGameUI: function (discardPublic) {
@@ -262,19 +212,31 @@ var TribblesGameUI = Class.extend({
         var that = this;
 
         this.playPileOpponent = new StackedCardGroup($("#main"), function (card) {
-            return (card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId && that.shadowAssignGroups[card.cardId] == null && card.skirmish == null);
+            return (
+                card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId &&
+                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
+            );
         });
         this.charactersOpponent = new NormalCardGroup($("#main"), function (card) {
-            return (card.zone == "FREE_CHARACTERS" && card.owner != that.bottomPlayerId && that.shadowAssignGroups[card.cardId] == null && card.skirmish == null);
+            return (
+                card.zone == "FREE_CHARACTERS" && card.owner != that.bottomPlayerId &&
+                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
+            );
         });
         this.shadow = new NormalCardGroup($("#main"), function (card) {
             return (card.zone == "SHADOW_CHARACTERS" && card.assign == null && card.skirmish == null);
         });
         this.charactersPlayer = new NormalCardGroup($("#main"), function (card) {
-            return (card.zone == "FREE_CHARACTERS" && card.owner == that.bottomPlayerId && that.shadowAssignGroups[card.cardId] == null && card.skirmish == null);
+            return (
+                card.zone == "FREE_CHARACTERS" && card.owner == that.bottomPlayerId &&
+                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
+            );
         });
         this.playPilePlayer = new StackedCardGroup($("#main"), function (card) {
-            return (card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId && that.shadowAssignGroups[card.cardId] == null && card.skirmish == null);
+            return (
+                card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId &&
+                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
+            );
         });
         if (!this.spectatorMode) {
             this.hand = new NormalCardGroup($("#main"), function (card) {
@@ -297,18 +259,12 @@ var TribblesGameUI = Class.extend({
                 "<div class='playerStats'>" +
                     "<div id='deck" + i + "' class='deckSize'></div>" +
                     "<div id='hand" + i + "' class='handSize'></div>" +
-//                    "<div id='threats" + i + "' class='threatsSize'></div>" +
                     "<div id='discard" + i + "' class='discardSize'></div>" +
                     "<div id='score" + i + "' class='playerScore'></div>" +
-//                    "<div id='showStats" + i + "' class='showStats'></div>" +
-//                    "<div id='adventureDeck" + i + "' class='adventureDeckSize'></div>" +
-//                    "<div id='removedPile" + i + "' class='removedPileSize'>" +
                 "</div></div></div>");
         }
 
-//        this.gameStateElem.append("<div class='twilightPool'>0</div>");
         this.gameStateElem.append("<div class='tribbleSequence'>1</div>");
-//        this.gameStateElem.append("<div class='phase'></div>");
 
         $("#main").append(this.gameStateElem);
 
@@ -321,12 +277,10 @@ var TribblesGameUI = Class.extend({
                                 if (index == playerIndex) {
                                     if ($(this).hasClass("opened")) {
                                         $(this).removeClass("opened").css({width: 150 - that.padding});
-//                                        $("#discard" + playerIndex).css({display: "none"});
                                         $("#adventureDeck" + playerIndex).css({display: "none"});
                                         $("#removedPile" + playerIndex).css({display: "none"});
                                     } else {
                                         $(this).addClass("opened").css({width: 150 - that.padding + 168});
-//                                        $("#discard" + playerIndex).css({display: "table-cell"});
                                         $("#adventureDeck" + playerIndex).css({display: "table-cell"});
                                         $("#removedPile" + playerIndex).css({display: "table-cell"});
                                     }
@@ -712,13 +666,10 @@ var TribblesGameUI = Class.extend({
 
                         var cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
                         if (cardIdAtIndex != this.dragCardId) {
-                            //                            var sizeListeners = $(cardElem).data("sizeListeners");
                             if (currentIndex < this.draggedCardIndex)
                                 $(".card:cardId(" + cardIdAtIndex + ")").before($(".card:cardId(" + this.dragCardId + ")"));
                             else
                                 $(".card:cardId(" + cardIdAtIndex + ")").after($(".card:cardId(" + this.dragCardId + ")"));
-                            //                            $(cardElem).data("card", cardData);
-                            //                            $(cardElem).data("sizeListeners", sizeListeners);
                             cardGroup.layoutCards();
                             this.draggedCardIndex = currentIndex;
                         }
@@ -1124,19 +1075,36 @@ var TribblesGameUI = Class.extend({
         var that = this;
         return {
             "0": function () {
-                that.showErrorDialog("Server connection error", "Unable to connect to server. Either server is down or there is a problem with your internet connection.", true, false, false);
+                that.showErrorDialog(
+                    "Server connection error",
+                    "Unable to connect to server. " +
+                        "Either server is down or there is a problem with your internet connection.",
+                    true, false, false
+                );
             },
             "401": function () {
                 that.showErrorDialog("Authentication error", "You are not logged in", false, true, false);
             },
             "403": function () {
-                that.showErrorDialog("Game access forbidden", "This game is private and does not allow spectators.", false, false, true);
+                that.showErrorDialog(
+                    "Game access forbidden", "This game is private and does not allow spectators.", false, false, true
+                );
             },
             "409": function () {
-                that.showErrorDialog("Concurrent access error", "You are observing this Game Hall from another browser or window. Close this window or if you wish to observe it here, click \"Refresh page\".", true, false, false);
+                that.showErrorDialog(
+                    "Concurrent access error",
+                    "You are observing this Game Hall from another browser or window. " +
+                        "Close this window or if you wish to observe it here, click \"Refresh page\".",
+                    true, false, false
+                );
             },
             "410": function () {
-                that.showErrorDialog("Inactivity error", "You were inactive for too long and have been removed from observing this game. If you wish to start again, click \"Refresh page\".", true, false, false);
+                that.showErrorDialog(
+                    "Inactivity error",
+                    "You were inactive for too long and have been removed from observing this game. " +
+                        "If you wish to start again, click \"Refresh page\".",
+                    true, false, false
+                );
             }
         };
     },
@@ -1346,7 +1314,11 @@ var TribblesGameUI = Class.extend({
                 this.startAnimatingTitle();
             }
         } catch (e) {
-            this.showErrorDialog("Game error", "There was an error while processing game events in your browser. Reload the game to continue", true, false, false);
+            this.showErrorDialog(
+                "Game error",
+                "There was an error while processing game events in your browser. Reload the game to continue",
+                true, false, false
+            );
         }
     },
 
@@ -1356,33 +1328,27 @@ var TribblesGameUI = Class.extend({
         var that = this;
         this.keepAnimating = true;
         setTimeout(function () {
-            that.setDecisionTitle();
+            that.setAlternatingTitle();
         }, 500);
+    },
+
+    setAlternatingTitle: function () {
+        if (this.keepAnimating) {
+            if (window.document.title == "Game of Gemp-LotR") {
+                window.document.title = "Waiting for your decision";
+            } else {
+                window.document.title = "Game of Gemp-LotR";
+            }
+            var that = this;
+            setTimeout(function () {
+                that.setAlternatingTitle();
+            }, 500);
+        }
     },
 
     stopAnimatingTitle: function () {
         this.keepAnimating = false;
         window.document.title = "Game of Gemp-LotR";
-    },
-
-    setDecisionTitle: function () {
-        if (this.keepAnimating) {
-            window.document.title = "Waiting for your decision";
-            var that = this;
-            setTimeout(function () {
-                that.setNormalTitle();
-            }, 500);
-        }
-    },
-
-    setNormalTitle: function () {
-        if (this.keepAnimating) {
-            window.document.title = "Game of Gemp-LotR";
-            var that = this;
-            setTimeout(function () {
-                that.setDecisionTitle();
-            }, 500);
-        }
     },
 
     getPlayerIndex: function (playerId) {
@@ -1625,19 +1591,25 @@ var TribblesGameUI = Class.extend({
         if ($(".cardStrength", cardDiv).length == 0) {
             var tokenOverlay = $(".tokenOverlay", cardDiv);
 
-            var cardStrengthBgDiv = $("<div class='cardStrengthBg'><img src='images/o_icon_strength.png' width='100%' height='100%'></div>");
+            var cardStrengthBgDiv = $(
+                "<div class='cardStrengthBg'><img src='images/o_icon_strength.png' width='100%' height='100%'></div>"
+            );
             tokenOverlay.append(cardStrengthBgDiv);
 
             var cardStrengthDiv = $("<div class='cardStrength'></div>");
             tokenOverlay.append(cardStrengthDiv);
 
-            var cardVitalityBgDiv = $("<div class='cardVitalityBg'><img src='images/o_icon_vitality.png' width='100%' height='100%'></div>");
+            var cardVitalityBgDiv = $(
+                "<div class='cardVitalityBg'><img src='images/o_icon_vitality.png' width='100%' height='100%'></div>"
+            );
             tokenOverlay.append(cardVitalityBgDiv);
 
             var cardVitalityDiv = $("<div class='cardVitality'></div>");
             tokenOverlay.append(cardVitalityDiv);
 
-            var cardSiteNumberBgDiv = $("<div class='cardSiteNumberBg'><img src='images/o_icon_compass.png' width='100%' height='100%'></div>");
+            var cardSiteNumberBgDiv = $(
+                "<div class='cardSiteNumberBg'><img src='images/o_icon_compass.png' width='100%' height='100%'></div>"
+            );
             cardSiteNumberBgDiv.css({display: "none"});
             tokenOverlay.append(cardSiteNumberBgDiv);
 
@@ -1645,7 +1617,9 @@ var TribblesGameUI = Class.extend({
             cardSiteNumberDiv.css({display: "none"});
             tokenOverlay.append(cardSiteNumberDiv);
 
-            var cardResistanceBgDiv = $("<div class='cardResistanceBg'><img src='images/o_icon_resistance.png' width='100%' height='100%'></div>");
+            var cardResistanceBgDiv = $(
+                "<div class='cardResistanceBg'><img src='images/o_icon_resistance.png' width='100%' height='100%'></div>"
+            );
             cardResistanceBgDiv.css({display: "none"});
             tokenOverlay.append(cardResistanceBgDiv);
 
@@ -2282,7 +2256,10 @@ var TribblesGameUI = Class.extend({
                             atLeastOnMinionUnassigned = true;
                     });
 
-                if (atLeastOnMinionUnassigned && !confirm("At least one minion has not been assigned, do you want to proceed?"))
+                if (
+                    atLeastOnMinionUnassigned &&
+                    !confirm("At least one minion has not been assigned, do you want to proceed?")
+                )
                     return;
 
                 var assignmentArray = new Array();
