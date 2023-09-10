@@ -514,10 +514,10 @@ var GameAnimations = Class.extend({
                 var cardId = element.getAttribute("cardId");
                 var opposingCardIds = element.getAttribute("otherCardIds").split(",");
 
-                for (var i = 0; i < opposingCardIds.length; i++) {
+/*                for (var i = 0; i < opposingCardIds.length; i++) {
                     if ($(".card:cardId(" + opposingCardIds[i] + ")").data("card").assign != cardId)
                         that.game.assignMinion(opposingCardIds[i], cardId);
-                }
+                } */
 
                 next();
             });
@@ -538,8 +538,8 @@ var GameAnimations = Class.extend({
 
                 $(".card").each(function () {
                     var cardData = $(this).data("card");
-                    if (cardData.assign == cardId)
-                        that.game.unassignMinion(cardData.cardId);
+//                    if (cardData.assign == cardId)
+//                        that.game.unassignMinion(cardData.cardId);
                 });
 
                 next();
@@ -570,18 +570,18 @@ var GameAnimations = Class.extend({
                         $(this).data("card").skirmish = true;
                     });
 
-                that.game.fpStrengthDiv = $("<div class='fpStrength'></div>");
+/*                that.game.fpStrengthDiv = $("<div class='fpStrength'></div>");
                 that.game.fpDamageBonusDiv = $("<div class='fpDamageBonus'></div>");
                 that.game.shadowStrengthDiv = $("<div class='shadowStrength'></div>");
-                that.game.shadowDamageBonusDiv = $("<div class='shadowDamageBonus'></div>");
+                that.game.shadowDamageBonusDiv = $("<div class='shadowDamageBonus'></div>"); */
 
-                that.game.skirmishGroupDiv = $("<div class='ui-widget-content skirmish'></div>");
+/*                that.game.skirmishGroupDiv = $("<div class='ui-widget-content skirmish'></div>");
                 that.game.skirmishGroupDiv.css({"border-radius":"7px", "border-color":"#ff0000"});
                 that.game.skirmishGroupDiv.append(that.game.fpStrengthDiv);
                 that.game.skirmishGroupDiv.append(that.game.fpDamageBonusDiv);
                 that.game.skirmishGroupDiv.append(that.game.shadowStrengthDiv);
                 that.game.skirmishGroupDiv.append(that.game.shadowDamageBonusDiv);
-                $("#main").append(that.game.skirmishGroupDiv);
+                $("#main").append(that.game.skirmishGroupDiv);*/
 
                 next();
             });
@@ -641,10 +641,10 @@ var GameAnimations = Class.extend({
         var that = this;
         $("#main").queue(
             function (next) {
-                that.game.skirmishGroupDiv.remove();
+/*                that.game.skirmishGroupDiv.remove();
                 that.game.skirmishGroupDiv = null;
                 that.game.fpStrengthDiv = null;
-                that.game.shadowStrengthDiv = null;
+                that.game.shadowStrengthDiv = null; */
 
                 $(".card").each(function () {
                     var cardData = $(this).data("card");
@@ -733,28 +733,10 @@ var GameAnimations = Class.extend({
 
                 // TODO - Deprecated. This has been added elsewhere.
 
-//                that.game.advPathGroup.setPositions(that.game.playerPositions);
+                that.game.advPathGroup.setPositions(that.game.playerPositions);
 
                 next();
             });
-                // TODO - This should always animate
-/*        if (animate) {
-            $("#main").queue(
-                function (next) {
-                    that.game.advPathGroup.layoutCards();
-                    next();
-                });
-        } */
-
-                // TODO - Sample code from tribblesequence inserted here for an example
-/*        $("#main").queue(
-            function (next) {
-                var message = element.getAttribute("message");
-                $(".tribbleSequence").html(message);
-                next();
-            }); */
-
-
     },
 
     playerPosition:function (element, animate) {
@@ -877,7 +859,7 @@ var GameAnimations = Class.extend({
                     var value = playerThreat.getAttribute("value");
                     $("#threats" + that.game.getPlayerIndex(playerId)).text(value);
                 }
-
+/*
                 if (that.game.fpStrengthDiv != null) {
                     that.game.fpStrengthDiv.text(element.getAttribute("fellowshipStrength"));
                     var fpOverwhelmed = element.getAttribute("fpOverwhelmed");
@@ -909,7 +891,7 @@ var GameAnimations = Class.extend({
                         else
                             that.game.shadowDamageBonusDiv.css({visibility:"visible"});
                     }
-                }
+                } */
 
                 next();
             });
@@ -956,8 +938,6 @@ var GameAnimations = Class.extend({
                     that.game.cardActionChoiceDecision(decision);
                 } else if (decisionType == "CARD_SELECTION") {
                     that.game.cardSelectionDecision(decision);
-                } else if (decisionType == "ASSIGN_MINIONS") {
-                    that.game.assignMinionsDecision(decision);
                 }
 
                 if (!animate)

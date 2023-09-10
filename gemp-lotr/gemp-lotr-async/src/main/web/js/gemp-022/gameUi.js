@@ -18,11 +18,7 @@ var TribblesGameUI = Class.extend({
     infoDialog: null,
 
     advPathGroup: null,
-    playPileOpponent: null,
-    charactersOpponent: null,
-    shadow: null,
-    charactersPlayer: null,
-    playPilePlayer: null,
+    playPiles: null,
     hand: null,
     specialGroup: null,
 
@@ -36,18 +32,6 @@ var TribblesGameUI = Class.extend({
     miscPileGroups: null,
 
     statsDiv: null,
-
-    skirmishGroupDiv: null,
-    fpStrengthDiv: null,
-    fpDamageBonusDiv: null,
-    shadowStrengthDiv: null,
-    shadowDamageBonusDiv: null,
-    skirmishShadowGroup: null,
-    skirmishFellowshipGroup: null,
-
-    assignGroupDivs: null,
-    shadowAssignGroups: null,
-    freePeopleAssignGroups: null,
 
     selectionFunction: null,
 
@@ -80,21 +64,32 @@ var TribblesGameUI = Class.extend({
         this.communication = new GempLotrCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
                 if (thrownError != "abort") {
+                    var xhr_status = "";
                     if (xhr != null) {
                         if (xhr.status == 401) {
-                            that.chatBox.appendMessage("Game problem - You're not logged in, go to the <a href='index.html'>main page</a> to log in", "warningMessage");
+                            that.chatBox.appendMessage(
+                                "Game problem - You're not logged in. " +
+                                "Go to the <a href='index.html'>main page</a> to log in", "warningMessage"
+                            );
                             return;
                         } else {
-                            that.chatBox.appendMessage("There was a problem communicating with the server (" + xhr.status + "), if the game is finished, it has been removed, otherwise you have lost connection to the server.", "warningMessage");
-                            that.chatBox.appendMessage("Refresh the page (press F5) to resume the game, or press back on your browser to get back to the Game Hall.", "warningMessage");
-                            return;
+                            xhr_status = " (" + xhr.status + ")";
                         }
                     }
-                    that.chatBox.appendMessage("There was a problem communicating with the server, if the game is finished, it has been removed, otherwise you have lost connection to the server.", "warningMessage");
-                    that.chatBox.appendMessage("Refresh the page (press F5) to resume the game, or press back on your browser to get back to the Game Hall.", "warningMessage");
+                    that.chatBox.appendMessage(
+                        "There was a problem communicating with the server" + xhr_status + "." +
+                        "If the game is finished, it has been removed. " +
+                        "Otherwise, you have lost connection to the server.",
+                        "warningMessage"
+                    );
+                    that.chatBox.appendMessage(
+                        "Refresh the page (press F5) to resume the game, " +
+                        "or press back on your browser to get back to the Game Hall.",
+                        "warningMessage"
+                    );
                 }
             });
-        
+
         $.expr[':'].cardId = function (obj, index, meta, stack) {
             var cardIds = meta[3].split(",");
             var cardData = $(obj).data("card");
@@ -130,10 +125,6 @@ var TribblesGameUI = Class.extend({
             replayDiv.css({"z-index": 1000});
         }
 
-        this.shadowAssignGroups = {};
-        this.freePeopleAssignGroups = {};
-        this.assignGroupDivs = new Array();
-
         this.discardPileDialogs = {};
         this.discardPileGroups = {};
         this.adventureDeckDialogs = {};
@@ -142,13 +133,7 @@ var TribblesGameUI = Class.extend({
         this.removedPileGroups = {};
         this.miscPileDialogs = {};
         this.miscPileGroups = {};
-
-        this.skirmishShadowGroup = new NormalCardGroup($("#main"), function (card) {
-            return card.zone == "SHADOW_CHARACTERS" && card.skirmish == true;
-        }, false);
-        this.skirmishFellowshipGroup = new NormalCardGroup($("#main"), function (card) {
-            return (card.zone == "SUPPORT" || card.zone == "FREE_CHARACTERS") && card.skirmish == true;
-        }, false);
+        this.playPiles = {};
 
         this.initializeDialogs();
 
@@ -156,45 +141,16 @@ var TribblesGameUI = Class.extend({
     },
 
     getReorganizableCardGroupForCardData: function (cardData) {
-        if (this.charactersPlayer.cardBelongs(cardData)) {
-            return this.charactersPlayer;
+        if (this.playPiles["player"].cardBelongs(cardData)) {
+            return this.playPiles["player"];
         }
-        if (this.charactersOpponent.cardBelongs(cardData)) {
-            return this.charactersOpponent;
-        }
-        if (this.playPilePlayer.cardBelongs(cardData)) {
-            return this.playPilePlayer;
-        }
-        if (this.playPileOpponent.cardBelongs(cardData)) {
-            return this.playPileOpponent;
+        if (this.playPiles["opponent"].cardBelongs(cardData)) {
+            return this.playPiles["opponent"];
         }
         if (this.hand != null)
             if (this.hand.cardBelongs(cardData)) {
                 return this.hand;
             }
-        if (this.shadow.cardBelongs(cardData)) {
-            return this.shadow;
-        }
-
-        // REMOVE THIS
-        if (this.skirmishFellowshipGroup.cardBelongs(cardData)) {
-            return this.skirmishFellowshipGroup;
-        }
-        if (this.skirmishShadowGroup.cardBelongs(cardData)) {
-            return this.skirmishShadowGroup;
-        }
-
-        for (var characterId in this.shadowAssignGroups) {
-            if (this.shadowAssignGroups.hasOwnProperty(characterId)) {
-                if (this.shadowAssignGroups[characterId].cardBelongs(cardData)) {
-                    return this.shadowAssignGroups[characterId];
-                }
-                if (this.freePeopleAssignGroups[characterId].cardBelongs(cardData)) {
-                    return this.freePeopleAssignGroups[characterId];
-                }
-            }
-        }
-        // REMOVE ABOVE
 
         return null;
     },
@@ -202,8 +158,11 @@ var TribblesGameUI = Class.extend({
     layoutGroupWithCard: function (cardId) {
         var cardData = $(".card:cardId(" + cardId + ")").data("card");
         var tempGroup = this.getReorganizableCardGroupForCardData(cardData);
-        tempGroup.layoutCards();
-        return;
+        if (tempGroup != null) {
+            tempGroup.layoutCards();
+            return;
+        }
+        this.layoutUI(false);
     },
 
     initializeGameUI: function (discardPublic) {
@@ -211,31 +170,14 @@ var TribblesGameUI = Class.extend({
 
         var that = this;
 
-        this.playPileOpponent = new StackedCardGroup($("#main"), function (card) {
+        this.playPiles["opponent"] = new StackedCardGroup($("#main"), function (card) {
             return (
-                card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId &&
-                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
+                card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId && card.skirmish == null
             );
         });
-        this.charactersOpponent = new NormalCardGroup($("#main"), function (card) {
+        this.playPiles["player"] = new StackedCardGroup($("#main"), function (card) {
             return (
-                card.zone == "FREE_CHARACTERS" && card.owner != that.bottomPlayerId &&
-                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
-            );
-        });
-        this.shadow = new NormalCardGroup($("#main"), function (card) {
-            return (card.zone == "SHADOW_CHARACTERS" && card.assign == null && card.skirmish == null);
-        });
-        this.charactersPlayer = new NormalCardGroup($("#main"), function (card) {
-            return (
-                card.zone == "FREE_CHARACTERS" && card.owner == that.bottomPlayerId &&
-                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
-            );
-        });
-        this.playPilePlayer = new StackedCardGroup($("#main"), function (card) {
-            return (
-                card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId &&
-                that.shadowAssignGroups[card.cardId] == null && card.skirmish == null
+                card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId && card.skirmish == null
             );
         });
         if (!this.spectatorMode) {
@@ -328,7 +270,7 @@ var TribblesGameUI = Class.extend({
                         group.layoutCards();
                     };
                 })(i));
-            
+
             if(discardPublic) {
                 $("#discard" + i).addClass("clickable").click(
                     (function (index) {
@@ -405,12 +347,12 @@ var TribblesGameUI = Class.extend({
                 return that.dragStopCardFunction(event);
             });
     },
-    
+
     processGameEnd: function() {
         var that = this;
         if(this.allPlayerIds == null)
             return;
-        
+
         $("#deck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
             (function (index) {
                 return function () {
@@ -428,8 +370,12 @@ var TribblesGameUI = Class.extend({
         var tabsLabels = "<li><a href='#chatBox' class='slimTab'>Chat</a></li>";
         var tabsBodies = "<div id='chatBox' class='slimPanel'></div>";
         if (!this.replayMode) {
-            tabsLabels += "<li><a href='#settingsBox' class='slimTab'>Settings</a></li><li><a href='#gameOptionsBox' class='slimTab'>Options</a></li><li><a href='#playersInRoomBox' class='slimTab'>Players</a></li>";
-            tabsBodies += "<div id='settingsBox' class='slimPanel'></div><div id='gameOptionsBox' class='slimPanel'></div><div id='playersInRoomBox' class='slimPanel'></div>";
+            tabsLabels += "<li><a href='#settingsBox' class='slimTab'>Settings</a></li><li>" +
+                "<a href='#gameOptionsBox' class='slimTab'>Options</a></li><li>" +
+                "<a href='#playersInRoomBox' class='slimTab'>Players</a></li>";
+            tabsBodies += "<div id='settingsBox' class='slimPanel'></div>" +
+                "<div id='gameOptionsBox' class='slimPanel'></div>" +
+                "<div id='playersInRoomBox' class='slimPanel'></div>";
         }
         var tabsStr = "<div id='bottomLeftTabs'><ul>" + tabsLabels + "</ul>" + tabsBodies + "</div>";
 
@@ -536,7 +482,7 @@ var TribblesGameUI = Class.extend({
             $("a[href='#playersInRoomBox']").html("Players(" + players.length + ")");
             $("#playersInRoomBox").html(val);
         };
-        
+
         var displayChatListener = function(title, message) {
 
             var dialog = $("<div></div>").dialog({
@@ -830,12 +776,9 @@ var TribblesGameUI = Class.extend({
 
         var advPathWidth = Math.min(150, width * 0.1);
         var specialUiWidth = 150;
-
         var alertHeight = 80;
-
         var chatHeight = 200;
-
-        var assignmentsCount = this.assignGroupDivs.length + ((this.skirmishGroupDiv != null) ? 1 : 0);
+        var assignmentsCount = 0;
 
         var charsWidth = width - (advPathWidth + specialUiWidth + padding * 3);
         var charsWidthWithAssignments = 2 * charsWidth / (2 + assignmentsCount);
@@ -851,13 +794,13 @@ var TribblesGameUI = Class.extend({
                 height: 30
             });
 
-            this.playPileOpponent.setBounds(
+            this.playPiles["opponent"].setBounds(
                 advPathWidth + specialUiWidth + (padding * 2),
                 padding + yScales[0] * heightPerScale,
                 (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5,
                 heightScales[0] * heightPerScale * 2.5
             );
-            this.playPilePlayer.setBounds(
+            this.playPiles["player"].setBounds(
                 advPathWidth + specialUiWidth + (padding * 2),
                 padding * 5 + yScales[3] * heightPerScale,
                 (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5,
@@ -865,120 +808,6 @@ var TribblesGameUI = Class.extend({
             );
 
             var i = 0;
-
-            if (this.skirmishGroupDiv != null) {
-                var groupWidth = (charsWidth - charsWidthWithAssignments) / assignmentsCount - padding;
-                var groupHeight = currentPlayerTurn ? (heightScales[2] * heightPerScale + heightScales[3] * heightPerScale + padding) : (heightScales[1] * heightPerScale + heightScales[2] * heightPerScale + padding);
-                var x = advPathWidth + specialUiWidth + (padding * 2) + charsWidthWithAssignments + padding + i * (groupWidth + padding);
-                var y = currentPlayerTurn ? (padding * 3 + yScales[2] * heightPerScale) : (padding * 2 + yScales[1] * heightPerScale);
-                this.skirmishGroupDiv.css({
-                    left: x + "px",
-                    top: y + "px",
-                    width: groupWidth,
-                    height: groupHeight,
-                    position: "absolute"
-                });
-                var strengthBoxSize = 40;
-                var dmgBoxSize = 30;
-                if (currentPlayerTurn) {
-                    this.skirmishShadowGroup.setBounds(x + 3, y + 3, groupWidth - 6, heightScales[2] * heightPerScale - 6);
-                    this.skirmishFellowshipGroup.setBounds(x + 3, y + heightScales[2] * heightPerScale + padding + 3, groupWidth - 6, heightScales[3] * heightPerScale - 6);
-                    this.fpStrengthDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - 2 + "px",
-                        top: groupHeight - strengthBoxSize - 2 + "px",
-                        width: strengthBoxSize,
-                        height: strengthBoxSize,
-                        "z-index": 50
-                    });
-                    this.fpDamageBonusDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - dmgBoxSize - 2 + "px",
-                        top: groupHeight - dmgBoxSize - 2 + "px",
-                        width: dmgBoxSize,
-                        height: dmgBoxSize,
-                        "z-index": 50
-                    });
-                    this.shadowStrengthDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - 2 + "px",
-                        top: 2 + "px",
-                        width: strengthBoxSize,
-                        height: strengthBoxSize,
-                        "z-index": 50
-                    });
-                    this.shadowDamageBonusDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - dmgBoxSize - 2 + "px",
-                        top: 2 + "px",
-                        width: dmgBoxSize,
-                        height: dmgBoxSize,
-                        "z-index": 50
-                    });
-                } else {
-                    this.skirmishFellowshipGroup.setBounds(x + 3, y + 3, groupWidth - 6, heightScales[1] * heightPerScale - 6);
-                    this.skirmishShadowGroup.setBounds(x + 3, y + heightScales[1] * heightPerScale + padding + 3, groupWidth - 6, heightScales[2] * heightPerScale - 6);
-                    this.shadowStrengthDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - 2 + "px",
-                        top: groupHeight - strengthBoxSize - 2 + "px",
-                        width: strengthBoxSize,
-                        height: strengthBoxSize,
-                        "z-index": 50
-                    });
-                    this.shadowDamageBonusDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - dmgBoxSize - 2 + "px",
-                        top: groupHeight - dmgBoxSize - 2 + "px",
-                        width: dmgBoxSize,
-                        height: dmgBoxSize,
-                        "z-index": 50
-                    });
-                    this.fpStrengthDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - 2 + "px",
-                        top: 2 + "px",
-                        width: strengthBoxSize,
-                        height: strengthBoxSize,
-                        "z-index": 50
-                    });
-                    this.fpDamageBonusDiv.css({
-                        position: "absolute",
-                        left: groupWidth - strengthBoxSize - dmgBoxSize - 2 + "px",
-                        top: 2 + "px",
-                        width: dmgBoxSize,
-                        height: dmgBoxSize,
-                        "z-index": 50
-                    });
-                }
-                i++;
-            }
-
-            var assignIndex = 0;
-            for (var characterId in this.shadowAssignGroups) {
-                if (this.shadowAssignGroups.hasOwnProperty(characterId)) {
-                    var groupWidth = (charsWidth - charsWidthWithAssignments) / assignmentsCount - padding;
-                    var groupHeight = currentPlayerTurn ? (heightScales[2] * heightPerScale + heightScales[3] * heightPerScale + padding) : (heightScales[1] * heightPerScale + heightScales[2] * heightPerScale + padding);
-                    var x = advPathWidth + specialUiWidth + (padding * 2) + charsWidthWithAssignments + padding + i * (groupWidth + padding);
-                    var y = currentPlayerTurn ? (padding * 3 + yScales[2] * heightPerScale) : (padding * 2 + yScales[1] * heightPerScale);
-                    this.assignGroupDivs[assignIndex].css({
-                        left: x + "px",
-                        top: y + "px",
-                        width: groupWidth,
-                        height: groupHeight,
-                        position: "absolute"
-                    });
-                    if (currentPlayerTurn) {
-                        this.shadowAssignGroups[characterId].setBounds(x + 3, y + 3, groupWidth - 6, heightScales[2] * heightPerScale - 6);
-                        this.freePeopleAssignGroups[characterId].setBounds(x + 3, y + heightScales[2] * heightPerScale + padding + 3, groupWidth - 6, heightScales[3] * heightPerScale - 6);
-                    } else {
-                        this.freePeopleAssignGroups[characterId].setBounds(x + 3, y + 3, groupWidth - 6, heightScales[1] * heightPerScale - 6);
-                        this.shadowAssignGroups[characterId].setBounds(x + 3, y + heightScales[1] * heightPerScale + padding + 3, groupWidth - 6, heightScales[2] * heightPerScale - 6);
-                    }
-                    i++;
-                    assignIndex++;
-                }
-            }
 
             if (!this.spectatorMode)
                 this.hand.setBounds(advPathWidth + specialUiWidth + (padding * 2), padding * 6 + yScales[5] * heightPerScale, width - (advPathWidth + specialUiWidth + padding * 3), heightScales[5] * heightPerScale);
@@ -1010,7 +839,7 @@ var TribblesGameUI = Class.extend({
             for (var playerId in this.removedPileGroups)
                 if (this.removedPileGroups.hasOwnProperty(playerId))
                     this.removedPileGroups[playerId].layoutCards();
-                
+
             for (var playerId in this.miscPileGroups)
                 if (this.miscPileGroups.hasOwnProperty(playerId))
                     this.miscPileGroups[playerId].layoutCards();
@@ -1360,23 +1189,10 @@ var TribblesGameUI = Class.extend({
 
     layoutZones: function () {
         this.advPathGroup.layoutCards();
-        this.charactersPlayer.layoutCards();
-        this.charactersOpponent.layoutCards();
-        this.playPilePlayer.layoutCards();
-        this.playPileOpponent.layoutCards();
+        this.playPiles["player"].layoutCards();
+        this.playPiles["opponent"].layoutCards();
         if (!this.spectatorMode)
             this.hand.layoutCards();
-        this.shadow.layoutCards();
-
-        this.skirmishFellowshipGroup.layoutCards();
-        this.skirmishShadowGroup.layoutCards();
-
-        for (var characterId in this.shadowAssignGroups) {
-            if (this.shadowAssignGroups.hasOwnProperty(characterId)) {
-                this.shadowAssignGroups[characterId].layoutCards();
-                this.freePeopleAssignGroups[characterId].layoutCards();
-            }
-        }
     },
 
     participant: function (element) {
@@ -1404,11 +1220,11 @@ var TribblesGameUI = Class.extend({
         }
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
-            
+
             participantId = this.allPlayerIds[i];
-            
+
             this.createPile(participantId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
-            
+
             if(discardPublic) {
                 this.createPile(participantId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
             }
@@ -1417,7 +1233,7 @@ var TribblesGameUI = Class.extend({
         this.initializeGameUI(discardPublic);
         this.layoutUI(true);
     },
-    
+
     createPile: function(playerId, name, dialogsName, groupsName) {
         var dialog = $("<div></div>").dialog({
             autoOpen: false,
@@ -2002,12 +1818,12 @@ var TribblesGameUI = Class.extend({
 
         $(':button').blur();
     },
-    
+
     PlaySound: function(soundObj) {
         var myAudio = document.getElementById(soundObj);
         if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)
         {
-            myAudio.play();    
+            myAudio.play();
         }
     },
 
@@ -2224,126 +2040,6 @@ var TribblesGameUI = Class.extend({
             processButtons();
             this.PlaySound("awaitAction");
         }
-    },
-
-    assignMinionsDecision: function (decision) {
-        var id = decision.getAttribute("id");
-        var text = decision.getAttribute("text");
-
-        var freeCharacters = this.getDecisionParameters(decision, "freeCharacters");
-        var minions = this.getDecisionParameters(decision, "minions");
-
-        var that = this;
-
-        this.alertText.html(text);
-        // ****CCG League****: Border around alert box
-        this.alertBox.css({"border-radius": "7px", "border-color": "#7faf7f", "border-width": "2px"});
-        if (!this.replayMode) {
-            this.alertButtons.html("<button id='Done'>Done</button>");
-            $("#Done").button().click(function () {
-                var atLeastOnMinionUnassigned = false;
-
-                var assignmentMap = {};
-                for (var i = 0; i < freeCharacters.length; i++) {
-                    assignmentMap[freeCharacters[i]] = freeCharacters[i];
-                }
-                if (minions.length > 0)
-                    $(".card:cardId(" + minions + ")").each(function () {
-                        var card = $(this).data("card");
-                        if (card.assign != null)
-                            assignmentMap[card.assign] += " " + card.cardId;
-                        else
-                            atLeastOnMinionUnassigned = true;
-                    });
-
-                if (
-                    atLeastOnMinionUnassigned &&
-                    !confirm("At least one minion has not been assigned, do you want to proceed?")
-                )
-                    return;
-
-                var assignmentArray = new Array();
-                for (var i = 0; i < freeCharacters.length; i++) {
-                    assignmentArray.push(assignmentMap[freeCharacters[i]]);
-                }
-
-                that.alertText.html("");
-                // ****CCG League****: Border around alert box
-                that.alertBox.css({"border-radius": "7px", "border-color": "", "border-width": "1px"});
-                that.alertButtons.html("");
-                that.clearSelection();
-
-                that.decisionFunction(id, "" + assignmentArray);
-                
-                that.PlaySound("awaitAction");
-            });
-        }
-
-        this.doAssignments(freeCharacters, minions);
-    },
-
-    unassignMinion: function (minionId) {
-        var previousCharacterId = $(".card:cardId(" + minionId + ")").data("card").assign;
-        delete $(".card:cardId(" + minionId + ")").data("card").assign;
-
-        var characterHasMinion = false;
-        $(".card").each(function () {
-            if ($(this).data("card").assign == previousCharacterId) characterHasMinion = true;
-        });
-
-        if (!characterHasMinion) {
-            delete this.shadowAssignGroups[previousCharacterId];
-            delete this.freePeopleAssignGroups[previousCharacterId];
-
-            this.assignGroupDivs[0].remove();
-            this.assignGroupDivs.splice(0, 1);
-        }
-    },
-
-    assignMinion: function (minionId, characterId) {
-        if ($(".card:cardId(" + minionId + ")").data("card").assign != null)
-            this.unassignMinion(minionId);
-
-        var that = this;
-
-        if (this.shadowAssignGroups[characterId] == null) {
-            this.shadowAssignGroups[characterId] = new NormalCardGroup($("#main"), function (card) {
-                return (card.zone == "SHADOW_CHARACTERS" && card.assign == characterId);
-            }, false);
-            this.freePeopleAssignGroups[characterId] = new NormalCardGroup($("#main"), function (card) {
-                return (card.cardId == characterId);
-            }, false);
-
-            var newDiv = $("<div class='ui-widget-content'></div>");
-            newDiv.css({"border-radius": "7px"});
-            $("#main").append(newDiv);
-            this.assignGroupDivs.push(newDiv);
-        }
-
-        $(".card:cardId(" + minionId + ")").data("card").assign = characterId;
-    },
-
-    doAssignments: function (freeCharacters, minions) {
-        var that = this;
-        this.selectionFunction = function (cardId) {
-            that.clearSelection();
-
-            that.selectionFunction = function (secondCardId) {
-                that.clearSelection();
-                if (cardId != secondCardId) {
-                    that.assignMinion(cardId, secondCardId);
-                } else {
-                    that.unassignMinion(cardId);
-                }
-                that.layoutUI(false);
-                that.doAssignments(freeCharacters, minions);
-            };
-
-            that.attachSelectionFunctions(freeCharacters, true);
-            that.attachSelectionFunctions([cardId], true);
-        };
-
-        this.attachSelectionFunctions(minions, true);
     },
 
     clearSelection: function () {
