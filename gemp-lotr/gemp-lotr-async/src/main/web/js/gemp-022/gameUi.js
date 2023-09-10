@@ -140,11 +140,10 @@ var TribblesGameUI = Class.extend({
     },
 
     getReorganizableCardGroupForCardData: function (cardData) {
-        if (this.playPiles["player"].cardBelongs(cardData)) {
-            return this.playPiles["player"];
-        }
-        if (this.playPiles["opponent"].cardBelongs(cardData)) {
-            return this.playPiles["opponent"];
+        for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+            if (cardGroup.cardBelongs(cardData)) {
+                return cardGroup;
+            }
         }
         if (this.hand != null)
             if (this.hand.cardBelongs(cardData)) {
@@ -169,16 +168,18 @@ var TribblesGameUI = Class.extend({
 
         var that = this;
 
-        this.playPiles["opponent"] = new StackedCardGroup($("#main"), function (card) {
-            return (
-                card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId // && card.skirmish == null
-            );
+        for (var i = 0; i < this.allPlayerIds.length; i++) {
+            this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup($("#main"), function (card) {
+                return (card.zone == "PLAY_PILE" && card.owner == this.allPlayerIds[i]);
+            });
+        }
+
+/*        this.playPiles["opponent"] = new StackedCardGroup($("#main"), function (card) {
+            return (card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId);
         });
         this.playPiles["player"] = new StackedCardGroup($("#main"), function (card) {
-            return (
-                card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId // && card.skirmish == null
-            );
-        });
+            return (card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId);
+        });*/
         if (!this.spectatorMode) {
             this.hand = new NormalCardGroup($("#main"), function (card) {
                 return (card.zone == "HAND") || (card.zone == "EXTRA");
@@ -811,20 +812,58 @@ var TribblesGameUI = Class.extend({
                 height: 30
             });
 
-            this.playPiles["opponent"].setBounds(
-                advPathWidth + specialUiWidth + (padding * 2),
-                padding + yScales[0] * heightPerScale,
-                (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5,
-                heightScales[0] * heightPerScale * 2.5
-            );
-            this.playPiles["player"].setBounds(
-                advPathWidth + specialUiWidth + (padding * 2),
-                padding * 5 + yScales[3] * heightPerScale,
-                (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5,
-                heightScales[0] * heightPerScale * 2.5
-            );
+            var playPilesLeft = advPathWidth + specialUiWidth + (padding * 2);
+            var playPilesRight = width - padding;
+            var playPilesTop = padding + yScales[0] * heightPerScale;
+            var playPilesBottom = padding * 5 + yScales[5] * heightPerScale;
 
-            var i = 0;
+            var playerCount = this.allPlayerIds.length;
+            var playerSeatOffset = this.getPlayerIndex(this.bottomPlayerId);
+
+            var playPileXs = new Array();
+            var playPileYs = new Array();
+            var playPileWidth = null;
+            var playPileHeight = null;
+
+            if (playerCount == 2) {
+                playPileXs = [playPilesLeft, playPilesLeft];
+                playPileYs = [(playPilesBottom - playPilesTop) / 2, playPilesTop];
+                playPileWidth = playPilesRight - playPilesLeft;
+                playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
+            }
+
+                // if self player = index 3 of 5
+                // playerSeatOffset = 3
+                // playerIndex[0] = (0 + 3) % 5 = 3
+                // playerIndex[1] = (1 + 3) % 5 = 4
+                // playerIndex[2] = (2 + 3) % 5 = 0
+
+                // if self player = index 1 of 6
+                // playerSeatOffset = 1
+                // playerIndex[0] = (0 + 1) % 6 = 1
+                // playerIndex[3] = (3 + 1) % 6 = 4
+
+            for (var i = 0; i < playerCount; i++) {
+                var playerIndex = (i + playerSeatOffset) % playerCount;
+                this.playPiles[this.allPlayerIds[playerIndex]].setBounds(
+                    playPileXs[i], playPileYs[i], playPileWidth, playPileHeight
+                );
+            }
+
+/*            this.playPiles["player"].setBounds(
+                advPathWidth + specialUiWidth + (padding * 2), // x
+                padding * 5 + yScales[3] * heightPerScale, // y
+                (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5, // width
+                heightScales[0] * heightPerScale * 2.5 // height
+            );
+            this.playPiles["opponent"].setBounds(
+                advPathWidth + specialUiWidth + (padding * 2), // x
+                padding + yScales[0] * heightPerScale, // y
+                (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5, // width
+                heightScales[0] * heightPerScale * 2.5 // height
+            );*/
+
+            var i = 0; // Can probably delete this but leaving it in for now
 
             if (!this.spectatorMode)
                 this.hand.setBounds(
@@ -1071,26 +1110,8 @@ var TribblesGameUI = Class.extend({
             this.animations.removeCardFromPlay(gameEvent, animate);
         } else if (eventType == "GPC") {
             this.animations.gamePhaseChange(gameEvent, animate);
-/*        } else if (eventType == "TP") {
-            this.animations.twilightPool(gameEvent, animate); */
         } else if (eventType == "TC") {
             this.animations.turnChange(gameEvent, animate);
-/*        } else if (eventType == "AA") {
-            this.animations.addAssignment(gameEvent, animate);
-        } else if (eventType == "RA") {
-            this.animations.removeAssignment(gameEvent, animate);
-        } else if (eventType == "SS") {
-            this.animations.startSkirmish(gameEvent, animate);
-        } else if (eventType == "ATS") {
-            this.animations.addToSkirmish(gameEvent, animate);
-        } else if (eventType == "RFS") {
-            this.animations.removeFromSkirmish(gameEvent, animate);
-        } else if (eventType == "ES") {
-            this.animations.endSkirmish(animate);
-        } else if (eventType == "AT") {
-            this.animations.addTokens(gameEvent, animate);
-        } else if (eventType == "RT") {
-            this.animations.removeTokens(gameEvent, animate); */
         } else if (eventType == "GS") {
             this.animations.gameStats(gameEvent, animate);
         } else if (eventType == "M") {
@@ -1216,8 +1237,11 @@ var TribblesGameUI = Class.extend({
 
     layoutZones: function () {
         this.advPathGroup.layoutCards();
-        this.playPiles["player"].layoutCards();
-        this.playPiles["opponent"].layoutCards();
+        for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+            cardGroup.layoutCards();
+        }
+/*        this.playPiles["player"].layoutCards();
+        this.playPiles["opponent"].layoutCards();*/
         if (!this.spectatorMode)
             this.hand.layoutCards();
     },
