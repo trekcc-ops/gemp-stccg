@@ -407,7 +407,10 @@ var TribblesGameUI = Class.extend({
             $.cookie("foilPresentation", value, {expires: 365});
         });
 
-        $("#settingsBox").append("<input id='autoAccept' type='checkbox' value='selected' /><label for='autoAccept'>Auto-accept after selecting action or card</label><br />");
+        $("#settingsBox").append(
+            "<input id='autoAccept' type='checkbox' value='selected' />" +
+            "<label for='autoAccept'>Auto-accept after selecting action or card</label><br />"
+        );
 
         var autoAccept = $.cookie("autoAccept");
         if (autoAccept == "true" || autoAccept == null) {
@@ -421,7 +424,10 @@ var TribblesGameUI = Class.extend({
             $.cookie("autoAccept", "" + selected, {expires: 365});
         });
 
-        $("#settingsBox").append("<input id='alwaysDropDown' type='checkbox' value='selected' /><label for='alwaysDropDown'>Always display drop-down in answer selection</label><br />");
+        $("#settingsBox").append(
+            "<input id='alwaysDropDown' type='checkbox' value='selected' />" +
+            "<label for='alwaysDropDown'>Always display drop-down in answer selection</label><br />"
+        );
 
         var alwaysDropDown = $.cookie("alwaysDropDown");
         if (alwaysDropDown == "true") {
@@ -435,41 +441,47 @@ var TribblesGameUI = Class.extend({
             $.cookie("alwaysDropDown", "" + selected, {expires: 365});
         });
 
-        $("#settingsBox").append("Phases when game auto-passes for you, if you have no phase actions to play<br />");
-        $("#settingsBox").append("<input id='autoPassFELLOWSHIP' type='checkbox' value='selected' /><label for='autoPassFELLOWSHIP'>Fellowship</label> ");
-        $("#settingsBox").append("<input id='autoPassSHADOW' type='checkbox' value='selected' /><label for='autoPassSHADOW'>Shadow</label> ");
-        $("#settingsBox").append("<input id='autoPassMANEUVER' type='checkbox' value='selected' /><label for='autoPassMANEUVER'>Maneuver</label> ");
-        $("#settingsBox").append("<input id='autoPassARCHERY' type='checkbox' value='selected' /><label for='autoPassARCHERY'>Archery</label> ");
-        $("#settingsBox").append("<input id='autoPassASSIGNMENT' type='checkbox' value='selected' /><label for='autoPassASSIGNMENT'>Assignment</label> ");
-        $("#settingsBox").append("<input id='autoPassSKIRMISH' type='checkbox' value='selected' /><label for='autoPassSKIRMISH'>Skirmish</label> ");
-        $("#settingsBox").append("<input id='autoPassREGROUP' type='checkbox' value='selected' /><label for='autoPassREGROUP'>Regroup</label>");
-
-        var autoPassPhases = $.cookie("autoPassPhases");
-        if (autoPassPhases == null)
-            autoPassPhases = "FELLOWSHIP0MANEUVER0ARCHERY0ASSIGNMENT0REGROUP";
-
-        var passPhasesArr = autoPassPhases.split("0");
-        for (var i = 0; i < passPhasesArr.length; i++) {
-            $("#autoPass" + passPhasesArr[i]).prop("checked", true);
+        // Create arrays for phase-specific functions
+        var allPhaseNames = new Array(
+            "Fellowship", "Shadow", "Maneuver", "Archery", "Assignment", "Skirmish", "Regroup"
+        );
+        var autoPassArr = new Array();
+        var autoPassArrHashtag = new Array();
+        for (var i = 0; i < allPhaseNames.length; i++) {
+            autoPassArr.push("autoPass" + allPhaseNames[i]);
+            autoPassArrHashtag.push("#autoPass" + allPhaseNames[i]);
         }
 
-        $("#autoPassFELLOWSHIP,#autoPassSHADOW,#autoPassMANEUVER,#autoPassARCHERY,#autoPassASSIGNMENT,#autoPassSKIRMISH,#autoPassREGROUP").bind("change", function () {
-            var newAutoPassPhases = "";
-            if ($("#autoPassFELLOWSHIP").prop("checked"))
-                newAutoPassPhases += "0FELLOWSHIP";
-            if ($("#autoPassSHADOW").prop("checked"))
-                newAutoPassPhases += "0SHADOW";
-            if ($("#autoPassMANEUVER").prop("checked"))
-                newAutoPassPhases += "0MANEUVER";
-            if ($("#autoPassARCHERY").prop("checked"))
-                newAutoPassPhases += "0ARCHERY";
-            if ($("#autoPassASSIGNMENT").prop("checked"))
-                newAutoPassPhases += "0ASSIGNMENT";
-            if ($("#autoPassSKIRMISH").prop("checked"))
-                newAutoPassPhases += "0SKIRMISH";
-            if ($("#autoPassREGROUP").prop("checked"))
-                newAutoPassPhases += "0REGROUP";
+        // Load auto-pass settings from cookie, or set to default (current default is all phases auto-pass)
+        var currPassedPhases = new Array();
+        var currAutoPassCookie = $.cookie("autoPassPhases");
+        if (currAutoPassCookie == null) {
+            currPassedPhases = allPhaseNames;
+        } else {
+            currPassedPhases = currAutoPassCookie.split("0");
+        }
 
+        // Create settings panel for user selection of auto-pass settings
+        $("#settingsBox").append("Phases when game auto-passes for you, if you have no phase actions to play<br />");
+        for (var i = 0; i < allPhaseNames.length; i++) {
+            $("#settingsBox").append(
+                "<input id='" + autoPassArr[i] + "' type='checkbox' value='selected' />" +
+                "<label for='" + autoPassArr[i] + "'>" + allPhaseNames[i] + "</label> "
+            );
+        }
+
+        // Populate settings panel with current user options
+        for (var i = 0; i < currPassedPhases.length; i++) {
+            $(autoPassArrHashtag[i]).prop("checked", true);
+        }
+
+        // Save user selections to cookie
+        $(autoPassArrHashtag.join(",")).bind("change", function () {
+            var newAutoPassPhases = "";
+            for (var i = 0; i < allPhaseNames.length; i++) {
+                if ($("#autoPass" + allPhaseNames[i]).prop("checked"))
+                    newAutoPassPhases += "0" + allPhaseNames[i];
+            }
             if (newAutoPassPhases.length > 0)
                 newAutoPassPhases = newAutoPassPhases.substr(1);
             $.cookie("autoPassPhases", newAutoPassPhases, {expires: 365});
@@ -495,7 +507,9 @@ var TribblesGameUI = Class.extend({
         }
 
         var chatRoomName = (this.replayMode ? null : ("Game" + getUrlParam("gameId")));
-        this.chatBox = new ChatBoxUI(chatRoomName, $("#chatBox"), this.communication.url, false, playerListener, false, displayChatListener);
+        this.chatBox = new ChatBoxUI(
+            chatRoomName, $("#chatBox"), this.communication.url, false, playerListener, false, displayChatListener
+        );
         this.chatBox.chatUpdateInterval = 3000;
 
         if (!this.spectatorMode && !this.replayMode) {
@@ -534,7 +548,10 @@ var TribblesGameUI = Class.extend({
             if (!this.successfulDrag) {
                 if (event.shiftKey || event.which > 1) {
                     this.displayCardInfo(selectedCardElem.data("card"));
-                } else if ((selectedCardElem.hasClass("selectableCard") || selectedCardElem.hasClass("actionableCard")) && !this.replayMode)
+                } else if (
+                        (selectedCardElem.hasClass("selectableCard") || selectedCardElem.hasClass("actionableCard")) &&
+                        !this.replayMode
+                    )
                     this.selectionFunction(selectedCardElem.data("card").cardId, event);
                 event.stopPropagation();
             }
@@ -810,7 +827,12 @@ var TribblesGameUI = Class.extend({
             var i = 0;
 
             if (!this.spectatorMode)
-                this.hand.setBounds(advPathWidth + specialUiWidth + (padding * 2), padding * 6 + yScales[5] * heightPerScale, width - (advPathWidth + specialUiWidth + padding * 3), heightScales[5] * heightPerScale);
+                this.hand.setBounds(
+                    advPathWidth + specialUiWidth + (padding * 2),
+                    padding * 6 + yScales[5] * heightPerScale,
+                    width - (advPathWidth + specialUiWidth + padding * 3),
+                    heightScales[5] * heightPerScale
+                );
 
             this.gameStateElem.css({
                 position: "absolute",
@@ -1130,9 +1152,16 @@ var TribblesGameUI = Class.extend({
                         var seconds = value % 60;
 
                         if (hours > 0)
-                            $("#clock" + index).text(sign + hours + ":" + ((minutes < 10) ? ("0" + minutes) : minutes) + ":" + ((seconds < 10) ? ("0" + seconds) : seconds));
+                            $("#clock" + index).text(
+                                sign + hours + ":" +
+                                ((minutes < 10) ? ("0" + minutes) : minutes) + ":" +
+                                ((seconds < 10) ? ("0" + seconds) : seconds)
+                            );
                         else
-                            $("#clock" + index).text(sign + minutes + ":" + ((seconds < 10) ? ("0" + seconds) : seconds));
+                            $("#clock" + index).text(
+                                sign + minutes + ":" +
+                                ((seconds < 10) ? ("0" + seconds) : seconds)
+                            );
                     }
                 }
             }
@@ -1251,7 +1280,9 @@ var TribblesGameUI = Class.extend({
             return true;
         }, false);
 
-        this[groupsName][playerId].setBounds(this.padding, this.padding, 580 - 2 * (this.padding), 250 - 2 * (this.padding));
+        this[groupsName][playerId].setBounds(
+            this.padding, this.padding, 580 - 2 * (this.padding), 250 - 2 * (this.padding)
+        );
 
         var that = this;
 
@@ -2059,7 +2090,9 @@ var TribblesGameUI = Class.extend({
         if (texts) {
             var width = this.cardActionDialog.width() + 10;
             var height = this.cardActionDialog.height() - 10;
-            this.specialGroup.setBounds(this.padding, this.padding, width - 2 * this.padding, height - 2 * this.padding);
+            this.specialGroup.setBounds(
+                this.padding, this.padding, width - 2 * this.padding, height - 2 * this.padding
+            );
         } else
             this.dialogResize(this.cardActionDialog, this.specialGroup);
     }
