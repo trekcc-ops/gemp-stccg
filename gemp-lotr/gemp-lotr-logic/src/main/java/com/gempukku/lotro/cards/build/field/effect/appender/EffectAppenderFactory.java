@@ -43,6 +43,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("memorize", new MemorizeActive());
         effectAppenderProducers.put("memorizenumber", new MemorizeNumber());
         effectAppenderProducers.put("optional", new Optional());
+        effectAppenderProducers.put("placeplayedcardbeneathdrawdeck", new PlacePlayedCardBeneathDrawDeck());
         effectAppenderProducers.put("play", new PlayCardFromHand());
         effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard());
         effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck());
@@ -70,6 +71,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleHandIntoDrawDeck());
             // Tribbles-specific
         effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
+        effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new PlaceTopCardOfDrawDeckOnTopOfPlayPile());
         effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
             // LotR-specific
@@ -143,7 +145,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("preventdiscard", new PreventCardEffectAppender());
         effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new PutCardsFromPlayOnBottomOfDeck());
         effectAppenderProducers.put("putplayedeventintohand", new PutPlayedEventIntoHand());
-        effectAppenderProducers.put("putplayedeventonbottomofdrawdeck", new PutPlayedEventOnBottomOfDrawDeck());
         effectAppenderProducers.put("putstackedcardsintohand", new PutStackedCardsIntoHand());
         effectAppenderProducers.put("reconcilehand", new ReconcileHand());
         effectAppenderProducers.put("removekeyword", new RemoveKeyword());

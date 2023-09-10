@@ -813,6 +813,7 @@ var TribblesGameUI = Class.extend({
 
             var playPilesLeft = advPathWidth + specialUiWidth + (padding * 2);
             var playPilesRight = width - padding;
+            var playPilesHorizCenter = playPilesLeft + (playPilesRight - playPilesLeft) / 2;
             var playPilesTop = padding + yScales[0] * heightPerScale;
             var playPilesBottom = padding * 5 + yScales[5] * heightPerScale;
 
@@ -824,18 +825,24 @@ var TribblesGameUI = Class.extend({
             var playPileWidth = null;
             var playPileHeight = null;
 
+            // Array is built with 0 at the bottom player position, and all others proceeding clockwise
             if (playerCount == 2) {
                 playPileXs = [playPilesLeft, playPilesLeft];
                 playPileYs = [playPilesTop + (playPilesBottom - playPilesTop) / 2, playPilesTop];
                 playPileWidth = playPilesRight - playPilesLeft;
                 playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
             } else if (playerCount == 3) {
-                playPileXs = [playPilesLeft, playPilesLeft, playPilesLeft];
-                playPileWidth = playPilesRight - playPilesLeft;
-                playPileHeight = (playPilesBottom - playPilesTop) / 3 - padding * 2;
-                playPileYs = [playPilesTop + (playPileHeight + padding) * 2,
+                playPileWidth = (playPilesRight - playPilesLeft) / 2 - padding;
+                playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
+                playPileXs = [
+                    playPilesHorizCenter - playPileWidth / 2,
+                    playPilesLeft,
+                    playPilesRight - playPileWidth
+                ];
+                playPileYs = [
+                    playPilesTop + playPileHeight + padding,
                     playPilesTop,
-                    playPilesTop + playPileHeight + padding
+                    playPilesTop
                 ];
             }
 

@@ -48,6 +48,7 @@ var PCCards = {
 '150_018': 'https://www.trekcc.org/tribbles/cardimages/tat/54V.jpg',
 
 // Set 157 - Nothing But Tribble
+'157_001': 'https://www.trekcc.org/tribbles/cardimages/nbt/55V.jpg',
 '157_011': 'https://www.trekcc.org/tribbles/cardimages/nbt/65V.jpg',
 '157_015': 'https://www.trekcc.org/tribbles/cardimages/nbt/69V.jpg',
 
@@ -60,6 +61,7 @@ var PCCards = {
 '164_018': 'https://www.trekcc.org/tribbles/cardimages/btilq/90V.jpg',
 
 // Set 190 - Star Trek 50 [Tribbles]
+'190_004': 'https://www.trekcc.org/tribbles/cardimages/50th/121V.jpg',
 '190_005': 'https://www.trekcc.org/tribbles/cardimages/50th/122V.jpg',
 '190_012': 'https://www.trekcc.org/tribbles/cardimages/50th/129V.jpg',
 

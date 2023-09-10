@@ -27,7 +27,6 @@ var CardGroup = Class.extend({
         var that = this;
         $(".card", this.container).each(function (index) {
             var card = $(this).data("card");
-//            if (that.belongTestFunc(card)) {
             if (that.cardBelongs(card)) {
                 cardsToLayout.push($(this));
             }

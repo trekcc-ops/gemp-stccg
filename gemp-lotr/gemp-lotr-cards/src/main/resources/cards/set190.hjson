@@ -1,6 +1,29 @@
 // Set 190: Star Trek 50 [Tribbles]
 
 {
+    190_004: {
+        title: 10 Tribbles - Convert
+        type: tribble
+        tribble-value: 10
+        tribble-power: convert
+        image-url: https://www.trekcc.org/tribbles/cardimages/50th/121V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: [
+                {
+                    type: placePlayedCardBeneathDrawDeck
+                }
+                {
+                    type: placeTopCardOfDrawDeckOnTopOfPlayPile
+                }
+            ]
+		}
+    }
     190_005: {
         title: 100 Tribbles - Cycle
         type: tribble
