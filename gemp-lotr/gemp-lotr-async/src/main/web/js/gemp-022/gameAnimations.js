@@ -457,7 +457,7 @@ var GameAnimations = Class.extend({
             });
     },
 
-    twilightPool:function (element, animate) {
+/*    twilightPool:function (element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -467,7 +467,7 @@ var GameAnimations = Class.extend({
 
                 next();
             });
-    },
+    }, */
 
     tribbleSequence:function (element, animate) {
         var that = this;
@@ -507,7 +507,7 @@ var GameAnimations = Class.extend({
         }
     },
 
-    addAssignment:function (element, animate) {
+ /*   addAssignment:function (element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -545,9 +545,9 @@ var GameAnimations = Class.extend({
                     next();
                 });
         }
-    },
+    },*/
 
-    startSkirmish:function (element, animate) {
+/*    startSkirmish:function (element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -639,9 +639,9 @@ var GameAnimations = Class.extend({
                     next();
                 });
         }
-    },
+    },*/
 
-    addTokens:function (element, animate) {
+/*    addTokens:function (element, animate) {
         var cardId = element.getAttribute("cardId");
         var that = this;
         $("#main").queue(
@@ -693,7 +693,7 @@ var GameAnimations = Class.extend({
                     next();
                 });
         }
-    },
+    }, */
 
     playerScore:function (element, animate) {
         var that = this;
@@ -707,8 +707,6 @@ var GameAnimations = Class.extend({
 
                 var index = that.game.getPlayerIndex(participantId);
                 that.game.playerScores[index] = score;
-
-                // TODO - Deprecated. This has been added elsewhere.
 
                 next();
             });

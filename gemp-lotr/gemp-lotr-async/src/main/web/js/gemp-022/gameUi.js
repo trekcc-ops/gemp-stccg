@@ -171,12 +171,12 @@ var TribblesGameUI = Class.extend({
 
         this.playPiles["opponent"] = new StackedCardGroup($("#main"), function (card) {
             return (
-                card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId && card.skirmish == null
+                card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId // && card.skirmish == null
             );
         });
         this.playPiles["player"] = new StackedCardGroup($("#main"), function (card) {
             return (
-                card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId && card.skirmish == null
+                card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId // && card.skirmish == null
             );
         });
         if (!this.spectatorMode) {
@@ -1071,11 +1071,11 @@ var TribblesGameUI = Class.extend({
             this.animations.removeCardFromPlay(gameEvent, animate);
         } else if (eventType == "GPC") {
             this.animations.gamePhaseChange(gameEvent, animate);
-        } else if (eventType == "TP") {
-            this.animations.twilightPool(gameEvent, animate);
+/*        } else if (eventType == "TP") {
+            this.animations.twilightPool(gameEvent, animate); */
         } else if (eventType == "TC") {
             this.animations.turnChange(gameEvent, animate);
-        } else if (eventType == "AA") {
+/*        } else if (eventType == "AA") {
             this.animations.addAssignment(gameEvent, animate);
         } else if (eventType == "RA") {
             this.animations.removeAssignment(gameEvent, animate);
@@ -1090,7 +1090,7 @@ var TribblesGameUI = Class.extend({
         } else if (eventType == "AT") {
             this.animations.addTokens(gameEvent, animate);
         } else if (eventType == "RT") {
-            this.animations.removeTokens(gameEvent, animate);
+            this.animations.removeTokens(gameEvent, animate); */
         } else if (eventType == "GS") {
             this.animations.gameStats(gameEvent, animate);
         } else if (eventType == "M") {
