@@ -8,7 +8,6 @@ var TribblesGameUI = Class.extend({
     currentPlayerId: null,
     allPlayerIds: null,
 
-    playerPositions: null,
     cardActionDialog: null,
     smallDialog: null,
     gameStateElem: null,
@@ -346,6 +345,7 @@ var TribblesGameUI = Class.extend({
                 $("body").unbind("mousemove", dragFunc);
                 return that.dragStopCardFunction(event);
             });
+
     },
 
     processGameEnd: function() {
@@ -1091,8 +1091,6 @@ var TribblesGameUI = Class.extend({
             this.animations.addTokens(gameEvent, animate);
         } else if (eventType == "RT") {
             this.animations.removeTokens(gameEvent, animate);
-        } else if (eventType == "PP") {
-            this.animations.playerPosition(gameEvent, animate);
         } else if (eventType == "GS") {
             this.animations.gameStats(gameEvent, animate);
         } else if (eventType == "M") {

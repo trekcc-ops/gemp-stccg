@@ -513,12 +513,6 @@ var GameAnimations = Class.extend({
             function (next) {
                 var cardId = element.getAttribute("cardId");
                 var opposingCardIds = element.getAttribute("otherCardIds").split(",");
-
-/*                for (var i = 0; i < opposingCardIds.length; i++) {
-                    if ($(".card:cardId(" + opposingCardIds[i] + ")").data("card").assign != cardId)
-                        that.game.assignMinion(opposingCardIds[i], cardId);
-                } */
-
                 next();
             });
         if (animate) {
@@ -569,19 +563,6 @@ var GameAnimations = Class.extend({
                     $(".card:cardId(" + cardId + ")").each(function () {
                         $(this).data("card").skirmish = true;
                     });
-
-/*                that.game.fpStrengthDiv = $("<div class='fpStrength'></div>");
-                that.game.fpDamageBonusDiv = $("<div class='fpDamageBonus'></div>");
-                that.game.shadowStrengthDiv = $("<div class='shadowStrength'></div>");
-                that.game.shadowDamageBonusDiv = $("<div class='shadowDamageBonus'></div>"); */
-
-/*                that.game.skirmishGroupDiv = $("<div class='ui-widget-content skirmish'></div>");
-                that.game.skirmishGroupDiv.css({"border-radius":"7px", "border-color":"#ff0000"});
-                that.game.skirmishGroupDiv.append(that.game.fpStrengthDiv);
-                that.game.skirmishGroupDiv.append(that.game.fpDamageBonusDiv);
-                that.game.skirmishGroupDiv.append(that.game.shadowStrengthDiv);
-                that.game.skirmishGroupDiv.append(that.game.shadowDamageBonusDiv);
-                $("#main").append(that.game.skirmishGroupDiv);*/
 
                 next();
             });
@@ -641,10 +622,6 @@ var GameAnimations = Class.extend({
         var that = this;
         $("#main").queue(
             function (next) {
-/*                that.game.skirmishGroupDiv.remove();
-                that.game.skirmishGroupDiv = null;
-                that.game.fpStrengthDiv = null;
-                that.game.shadowStrengthDiv = null; */
 
                 $(".card").each(function () {
                     var cardData = $(this).data("card");
@@ -733,36 +710,8 @@ var GameAnimations = Class.extend({
 
                 // TODO - Deprecated. This has been added elsewhere.
 
-                that.game.advPathGroup.setPositions(that.game.playerPositions);
-
                 next();
             });
-    },
-
-    playerPosition:function (element, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                var participantId = element.getAttribute("participantId");
-                var position = element.getAttribute("index");
-
-                if (that.game.playerPositions == null)
-                    that.game.playerPositions = new Array();
-
-                var index = that.game.getPlayerIndex(participantId);
-                that.game.playerPositions[index] = position;
-
-                that.game.advPathGroup.setPositions(that.game.playerPositions);
-
-                next();
-            });
-        if (animate) {
-            $("#main").queue(
-                function (next) {
-                    that.game.advPathGroup.layoutCards();
-                    next();
-                });
-        }
     },
 
     gameStats:function (element, animate) {
@@ -859,40 +808,6 @@ var GameAnimations = Class.extend({
                     var value = playerThreat.getAttribute("value");
                     $("#threats" + that.game.getPlayerIndex(playerId)).text(value);
                 }
-/*
-                if (that.game.fpStrengthDiv != null) {
-                    that.game.fpStrengthDiv.text(element.getAttribute("fellowshipStrength"));
-                    var fpOverwhelmed = element.getAttribute("fpOverwhelmed");
-                    if (fpOverwhelmed != null) {
-                        if (fpOverwhelmed == "true") {
-                            that.game.fpStrengthDiv.addClass("overwhelmed");
-                        } else {
-                            that.game.fpStrengthDiv.removeClass("overwhelmed");
-                        }
-                    }
-
-                    var damageBonus = element.getAttribute("fellowshipDamageBonus");
-                    if (damageBonus != null) {
-                        that.game.fpDamageBonusDiv.text("+" + damageBonus);
-                        if (damageBonus == 0)
-                            that.game.fpDamageBonusDiv.css({visibility:"hidden"});
-                        else
-                            that.game.fpDamageBonusDiv.css({visibility:"visible"});
-                    }
-                }
-                if (that.game.shadowStrengthDiv != null) {
-                    that.game.shadowStrengthDiv.text(element.getAttribute("shadowStrength"));
-
-                    var damageBonus = element.getAttribute("shadowDamageBonus");
-                    if (damageBonus != null) {
-                        that.game.shadowDamageBonusDiv.text("+" + damageBonus);
-                        if (damageBonus == 0)
-                            that.game.shadowDamageBonusDiv.css({visibility:"hidden"});
-                        else
-                            that.game.shadowDamageBonusDiv.css({visibility:"visible"});
-                    }
-                } */
-
                 next();
             });
     },
