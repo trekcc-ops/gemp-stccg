@@ -145,6 +145,7 @@ var TribblesGameUI = Class.extend({
                 return cardGroup;
             }
         }
+
         if (this.hand != null)
             if (this.hand.cardBelongs(cardData)) {
                 return this.hand;
@@ -169,17 +170,15 @@ var TribblesGameUI = Class.extend({
         var that = this;
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
-            this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup($("#main"), function (card) {
-                return (card.zone == "PLAY_PILE" && card.owner == this.allPlayerIds[i]);
-            });
+            this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup(
+                $("#main"),
+                this.allPlayerIds[i],
+                function (card) {
+                    return (card.zone == "PLAY_PILE");
+                }
+            );
         }
 
-/*        this.playPiles["opponent"] = new StackedCardGroup($("#main"), function (card) {
-            return (card.zone == "PLAY_PILE" && card.owner != that.bottomPlayerId);
-        });
-        this.playPiles["player"] = new StackedCardGroup($("#main"), function (card) {
-            return (card.zone == "PLAY_PILE" && card.owner == that.bottomPlayerId);
-        });*/
         if (!this.spectatorMode) {
             this.hand = new NormalCardGroup($("#main"), function (card) {
                 return (card.zone == "HAND") || (card.zone == "EXTRA");
@@ -827,21 +826,18 @@ var TribblesGameUI = Class.extend({
 
             if (playerCount == 2) {
                 playPileXs = [playPilesLeft, playPilesLeft];
-                playPileYs = [(playPilesBottom - playPilesTop) / 2, playPilesTop];
+                playPileYs = [playPilesTop + (playPilesBottom - playPilesTop) / 2, playPilesTop];
                 playPileWidth = playPilesRight - playPilesLeft;
                 playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
+            } else if (playerCount == 3) {
+                playPileXs = [playPilesLeft, playPilesLeft, playPilesLeft];
+                playPileWidth = playPilesRight - playPilesLeft;
+                playPileHeight = (playPilesBottom - playPilesTop) / 3 - padding * 2;
+                playPileYs = [playPilesTop + (playPileHeight + padding) * 2,
+                    playPilesTop,
+                    playPilesTop + playPileHeight + padding
+                ];
             }
-
-                // if self player = index 3 of 5
-                // playerSeatOffset = 3
-                // playerIndex[0] = (0 + 3) % 5 = 3
-                // playerIndex[1] = (1 + 3) % 5 = 4
-                // playerIndex[2] = (2 + 3) % 5 = 0
-
-                // if self player = index 1 of 6
-                // playerSeatOffset = 1
-                // playerIndex[0] = (0 + 1) % 6 = 1
-                // playerIndex[3] = (3 + 1) % 6 = 4
 
             for (var i = 0; i < playerCount; i++) {
                 var playerIndex = (i + playerSeatOffset) % playerCount;
@@ -849,19 +845,6 @@ var TribblesGameUI = Class.extend({
                     playPileXs[i], playPileYs[i], playPileWidth, playPileHeight
                 );
             }
-
-/*            this.playPiles["player"].setBounds(
-                advPathWidth + specialUiWidth + (padding * 2), // x
-                padding * 5 + yScales[3] * heightPerScale, // y
-                (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5, // width
-                heightScales[0] * heightPerScale * 2.5 // height
-            );
-            this.playPiles["opponent"].setBounds(
-                advPathWidth + specialUiWidth + (padding * 2), // x
-                padding + yScales[0] * heightPerScale, // y
-                (width - (advPathWidth + specialUiWidth + padding * 3)) / 1.5, // width
-                heightScales[0] * heightPerScale * 2.5 // height
-            );*/
 
             var i = 0; // Can probably delete this but leaving it in for now
 
@@ -1240,8 +1223,6 @@ var TribblesGameUI = Class.extend({
         for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
-/*        this.playPiles["player"].layoutCards();
-        this.playPiles["opponent"].layoutCards();*/
         if (!this.spectatorMode)
             this.hand.layoutCards();
     },

@@ -27,7 +27,8 @@ var CardGroup = Class.extend({
         var that = this;
         $(".card", this.container).each(function (index) {
             var card = $(this).data("card");
-            if (that.belongTestFunc(card)) {
+//            if (that.belongTestFunc(card)) {
+            if (that.cardBelongs(card)) {
                 cardsToLayout.push($(this));
             }
         });
@@ -351,12 +352,22 @@ var StackedCardGroup = CardGroup.extend({
     // StackedCardGroup assumes all cards are vertical
 
     overlap:null,
+    player:null,
 
         // Stacked implementation
-    init:function (container, belongTest, createDiv) {
+    init:function (container, player, belongTest, createDiv) {
         this._super(container, belongTest, createDiv);
         this.overlap = 6;
         this.maxCardHeight = 150;
+        this.player = player;
+    },
+
+    cardBelongs:function (cardData) {
+        if (cardData.owner != this.player) {
+            return false;
+        } else {
+            return this.belongTestFunc(cardData);
+        }
     },
 
         // Stacked implementation
