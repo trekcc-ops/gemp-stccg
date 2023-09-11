@@ -22,6 +22,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("choosecardsfromdrawdeck", new ChooseCardsFromDrawDeck());
         effectAppenderProducers.put("chooseopponent", new ChooseOpponent());
         effectAppenderProducers.put("chooseplayer", new ChoosePlayer());
+        effectAppenderProducers.put("chooseplayerexcept", new ChoosePlayerExcept());
         effectAppenderProducers.put("chooseyesorno", new ChooseYesOrNo());
         effectAppenderProducers.put("discardbottomcardsfromdeck", new DiscardBottomCardFromDeck());
         effectAppenderProducers.put("discardcardatrandomfromhand", new DiscardCardAtRandomFromHand());
@@ -72,6 +73,7 @@ public class EffectAppenderFactory {
             // Tribbles-specific
         effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
         effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new PlaceTopCardOfDrawDeckOnTopOfPlayPile());
+        effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new PutCardsFromHandOnBottomOfPlayPile());
         effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
             // LotR-specific

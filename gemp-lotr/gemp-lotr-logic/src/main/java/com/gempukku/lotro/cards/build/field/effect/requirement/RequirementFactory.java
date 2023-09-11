@@ -52,6 +52,7 @@ public class RequirementFactory {
         requirementProducers.put("perturnlimit", new PerTurnLimit());
         requirementProducers.put("phase", new PhaseRequirement());
         requirementProducers.put("playedcardthisphase", new PlayedCardThisPhase());
+        requirementProducers.put("playerisnotself", new PlayerIsNotSelf());
         requirementProducers.put("ringisactive", new RingIsActive());
         requirementProducers.put("ringison", new RingIsOn());
         requirementProducers.put("sarumanfirstsentenceactive", new SarumanFirstSentenceActive());
