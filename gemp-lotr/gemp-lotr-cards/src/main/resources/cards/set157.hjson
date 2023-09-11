@@ -24,6 +24,36 @@
             ]
 		}
     }
+    157_010: {
+        title: "1,000 Tribbles - Masaka"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: masaka
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/64V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: {
+                type: forEachPlayer
+                effect: [
+                    {
+                        type: putCardsFromHandOnBottomOfDeck
+                        count: {
+                            type: forEachInHand
+                        }
+                    }
+                    {
+                        type: drawCards
+                        count: 3
+                    }
+                ]
+            }
+		}
+    }
     157_011: {
         title: "1,000 Tribbles - Reverse"
         type: tribble
@@ -39,6 +69,36 @@
 			}
             effect: {
                 type: reversePlayerOrder
+            }
+		}
+    }
+    157_014: {
+        title: "10,000 Tribbles - Masaka"
+        type: tribble
+        tribble-value: 10000
+        tribble-power: masaka
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/68V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: {
+                type: forEachPlayer
+                effect: [
+                    {
+                        type: putCardsFromHandOnBottomOfDeck
+                        count: {
+                            type: forEachInHand
+                        }
+                    }
+                    {
+                        type: drawCards
+                        count: 3
+                    }
+                ]
             }
 		}
     }

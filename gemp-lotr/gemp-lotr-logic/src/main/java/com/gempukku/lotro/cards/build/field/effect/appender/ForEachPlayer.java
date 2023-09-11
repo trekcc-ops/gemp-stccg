@@ -19,7 +19,6 @@ public class ForEachPlayer implements EffectAppenderProducer {
         FieldUtils.validateAllowedFields(effectObject, "effect");
 
         final JSONObject[] effectArray = FieldUtils.getObjectArray(effectObject.get("effect"), "effect");
-
         final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
 
         return new DelayedAppender<>() {

@@ -53,7 +53,9 @@ var PCCards = {
 
 // Set 157 - Nothing But Tribble
 '157_001': 'https://www.trekcc.org/tribbles/cardimages/nbt/55V.jpg',
+'157_010': 'https://www.trekcc.org/tribbles/cardimages/nbt/64V.jpg',
 '157_011': 'https://www.trekcc.org/tribbles/cardimages/nbt/65V.jpg',
+'157_014': 'https://www.trekcc.org/tribbles/cardimages/nbt/68V.jpg',
 '157_015': 'https://www.trekcc.org/tribbles/cardimages/nbt/69V.jpg',
 
 // Set 164 - Big Tribble in Little Qo'noS

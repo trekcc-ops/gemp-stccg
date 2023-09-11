@@ -20,6 +20,39 @@
             }
 		}
     }
+    150_004: {
+        title: 10 Tribbles - Avalanche
+        type: tribble
+        tribble-value: 10
+        tribble-power: avalanche
+        image-url: https://www.trekcc.org/tribbles/cardimages/tat/40V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            requires: {
+                type: cardsInHandMoreThan
+                player: you
+                count: 3
+            }
+            effect: [
+                {
+                    type: forEachPlayer
+                    effect: {
+                        type: discardFromHand
+                        forced: true
+                    }
+                }
+                {
+                    type: discardFromHand
+                    forced: false
+                }
+            ]
+		}
+    }
     150_013: {
         title: "1,000 Tribbles - Discard"
         type: tribble
