@@ -76,6 +76,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new PutCardsFromHandOnBottomOfPlayPile());
         effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
+        effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShufflePlayPileIntoDrawDeck());
             // LotR-specific
         effectAppenderProducers.put("addburdens", new AddBurdens());
         effectAppenderProducers.put("addthreats", new AddThreats());

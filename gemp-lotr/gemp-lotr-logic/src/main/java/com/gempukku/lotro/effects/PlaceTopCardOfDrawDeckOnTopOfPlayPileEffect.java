@@ -4,26 +4,36 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.Preventable;
+import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
+import com.gempukku.lotro.modifiers.evaluator.Evaluator;
 import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collections;
 
 public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends AbstractEffect implements Preventable {
     private final String _playerId;
+    private final Evaluator _count;
     private boolean _prevented;
 
-    public PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(String playerId) {
+    public PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(String playerId, Evaluator count) {
         _playerId = playerId;
+        _count = count;
+    }
+
+    public PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(String playerId, int count) {
+        _playerId = playerId;
+        _count = new ConstantEvaluator(count);
     }
 
     @Override
     public String getText(DefaultGame game) {
-        return "Place top card of draw deck on top of play pile";
+        final int cardCount = _count.evaluateExpression(game, null);
+        return "Place " + cardCount + " card" + ((cardCount > 1) ? "s" : "") +
+                " from top of draw deck on top of play pile";
     }
-
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return game.getGameState().getDeck(_playerId).size() >= 1;
+        return game.getGameState().getDeck(_playerId).size() >= _count.evaluateExpression(game, null);
     }
 
     @Override
@@ -34,7 +44,9 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends AbstractEffect 
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         int drawn = 0;
-        if (!_prevented && game.getGameState().getDeck(_playerId).size() > 0) {
+        int totalDraw = _count.evaluateExpression(game, null);
+
+        while ((drawn < totalDraw) && (!_prevented) && (game.getGameState().getDeck(_playerId).size() > 0)) {
             LotroPhysicalCard card = game.getGameState().getDeck(_playerId).get(0);
             game.getGameState().removeCardsFromZone(null, Collections.singleton(card));
             game.getGameState().addCardToZone(game, card, Zone.PLAY_PILE);
@@ -42,7 +54,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends AbstractEffect 
             drawn++;
         }
 
-        if (drawn == 1) {
+        if (drawn == totalDraw) {
             return new FullEffectResult(true);
         } else
             return new FullEffectResult(false);

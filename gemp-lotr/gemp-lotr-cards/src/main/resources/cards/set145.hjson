@@ -111,4 +111,38 @@
 	        ]
 		}
     }
+    145_016: {
+        title: "100,000 Tribbles - Mutate"
+        type: tribble
+        tribble-value: 100000
+        tribble-power: mutate
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/34V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+			effect:[
+                {
+                    type: memorizenumber
+                    amount:{
+                        type: countCardsInPlayPile
+                    }
+                    memory: cardsInPlayPile
+                }
+                {
+                    type: shuffleplaypileintodrawdeck
+                }
+			    {
+                    type: placetopcardofdrawdeckontopofplaypile
+                    count: {
+                        type: FromMemory
+                        memory: cardsInPlayPile
+                    }
+				}
+	        ]
+		}
+    }
 }

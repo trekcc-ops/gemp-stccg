@@ -6,6 +6,7 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.modifiers.evaluator.*;
 import com.gempukku.lotro.modifiers.evaluator.lotronly.CountSpottableEvaluator;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
@@ -215,19 +216,23 @@ public class ValueResolver {
                                 new CountSpottableEvaluator(overSource.getEvaluator(actionContext), limitSource.getEvaluator(actionContext),
                                         filterableSource.getFilterable(actionContext))));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
-                FieldUtils.validateAllowedFields(object, "filter", "multiplier", "limit");
+                FieldUtils.validateAllowedFields(object, "filter", "multiplier", "limit", "player");
                 final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
                 final int multiplier = FieldUtils.getInteger(object.get("multiplier"), "multiplier", 1);
                 final int limit = FieldUtils.getInteger(object.get("limit"), "limit", Integer.MAX_VALUE);
+                final String playerInput = FieldUtils.getString(object.get("player"), "player", "you");
+                final PlayerSource playerSrc = PlayerResolver.resolvePlayer(playerInput);
+
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
                 return actionContext -> new MultiplyEvaluator(multiplier, new Evaluator() {
+                    final String player = playerSrc.getPlayer(actionContext);
                     @Override
                     public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        int count = 0;
-                        for (String player : game.getGameState().getPlayerOrder().getAllPlayers())
-                            count += Filters.filter(game.getGameState().getDiscard(player), game, filterable).size();
-
+                                // Lines below commented out since this code originally counted ALL discard piles
+//                        int count = 0;
+//                        for (String player : game.getGameState().getPlayerOrder().getAllPlayers())
+                        int count = Filters.filter(game.getGameState().getDiscard(player), game, filterable).size();
                         return Math.min(limit, count);
                     }
                 });
@@ -280,6 +285,12 @@ public class ValueResolver {
                 return actionContext ->
                         (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayer(actionContext)),
                                 game, filterableSource.getFilterable(actionContext)).size();
+            } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
+                FieldUtils.validateAllowedFields(object, "owner");
+                final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
+                final PlayerSource player = PlayerResolver.resolvePlayer(owner);
+                return actionContext -> (Evaluator<TribblesGame>) (game, cardAffected)
+                        -> game.getGameState().getPlayPile(player.getPlayer(actionContext)).size();
             } else if (type.equalsIgnoreCase("forEachInDeadPile")) {
                 FieldUtils.validateAllowedFields(object, "filter", "multiplier");
                 final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");

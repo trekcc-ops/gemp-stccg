@@ -25,11 +25,15 @@ var PCCards = {
 '144_018': 'https://www.trekcc.org/tribbles/cardimages/mtmt/18V.jpg',
 
 // Set 145 - No Tribble at All
+'145_001': 'https://www.trekcc.org/tribbles/cardimages/ntaa/19V.jpg',
 '145_002': 'https://www.trekcc.org/tribbles/cardimages/ntaa/20V.jpg',
 '145_003': 'https://www.trekcc.org/tribbles/cardimages/ntaa/21V.jpg',
 '145_004': 'https://www.trekcc.org/tribbles/cardimages/ntaa/22V.jpg',
 '145_005': 'https://www.trekcc.org/tribbles/cardimages/ntaa/23V.jpg',
+'145_006': 'https://www.trekcc.org/tribbles/cardimages/ntaa/24V.jpg',
+'145_007': 'https://www.trekcc.org/tribbles/cardimages/ntaa/25V.jpg',
 '145_011': 'https://www.trekcc.org/tribbles/cardimages/ntaa/29V.jpg',
+'145_016': 'https://www.trekcc.org/tribbles/cardimages/ntaa/34V.jpg',
 
 // Set 150 - Trials and Tribble-ations
 '150_002': 'https://www.trekcc.org/tribbles/cardimages/tat/38V.jpg',
