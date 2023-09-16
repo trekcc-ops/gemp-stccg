@@ -1,23 +1,21 @@
 package com.gempukku.lotro.library;
 
+import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.at.AbstractAtTest;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueProduct;
 import com.gempukku.lotro.league.SealedLeagueType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.ArrayList;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-
 public class FormatLibraryTests extends AbstractAtTest {
 
-    protected static LotroFormatLibrary _formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
-    protected static SealedLeagueProduct _sealedLeagueProduct = new SealedLeagueProduct();
+    protected static final LotroFormatLibrary _formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+    protected static final SealedLeagueProduct _sealedLeagueProduct = new SealedLeagueProduct();
 
     @ParameterizedTest(name = "{0} in LotroFormatLibrary matches SealedLeagueProduct.")
     @CsvSource(value = {
@@ -35,23 +33,23 @@ public class FormatLibraryTests extends AbstractAtTest {
 
         var format = SealedLeagueType.getLeagueType(formatCode);
 
-        assertNotNull(oldDef);
-        assertNotNull(newDef);
+        Assertions.assertNotNull(oldDef);
+        Assertions.assertNotNull(newDef);
 
-        assertNotNull(format);
-        assertEquals(format.getFormat(), newDef.GetFormat().getCode());
+        Assertions.assertNotNull(format);
+        Assertions.assertEquals(format.getFormat(), newDef.GetFormat().getCode());
 
         var oldList = oldDef.stream().map(CardCollection::getAll).toList();
         var newList = newDef.GetAllSeriesProducts();
 
-        assertEquals(oldList.size(), newList.size());
+        Assertions.assertEquals(oldList.size(), newList.size());
 
         for (int i = 0; i < oldList.size(); ++i) {
             var oldItem = new ArrayList<>();
             oldList.get(i).forEach(oldItem::add);
             var newItem = newList.get(i);
 
-            assertEquals(oldItem, newItem);
+            Assertions.assertEquals(oldItem, newItem);
         }
     }
 

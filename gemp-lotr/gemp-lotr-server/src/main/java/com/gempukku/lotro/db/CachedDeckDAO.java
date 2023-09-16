@@ -47,7 +47,7 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     @Override
     public LotroDeck getDeckForPlayer(User player, String name) {
         String key = constructDeckKey(player, name);
-        LotroDeck deck = (LotroDeck) _decks.get(key);
+        LotroDeck deck = _decks.get(key);
         if (deck == null) {
             deck = _delegate.getDeckForPlayer(player, name);
             _decks.put(key, deck);

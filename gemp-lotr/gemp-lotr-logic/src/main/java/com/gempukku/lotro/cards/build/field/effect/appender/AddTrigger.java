@@ -41,7 +41,7 @@ public class AddTrigger implements EffectAppenderProducer {
         return new DelayedAppender<>() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                ActionProxy actionProxy = createActionProxy(action, actionContext, optional, trigger, requirements, costs, effects);
+                ActionProxy actionProxy = createActionProxy(actionContext, optional, trigger, requirements, costs, effects);
 
                 if (until.isEndOfTurn()) {
                     return new AddUntilEndOfTurnActionProxyEffect(actionProxy);
@@ -54,7 +54,8 @@ public class AddTrigger implements EffectAppenderProducer {
         };
     }
 
-    private ActionProxy createActionProxy(CostToEffectAction action, DefaultActionContext actionContext, boolean optional, TriggerChecker trigger, Requirement[] requirements, EffectAppender[] costs, EffectAppender[] effects) {
+    private ActionProxy createActionProxy(DefaultActionContext actionContext, boolean optional, TriggerChecker trigger,
+                                          Requirement[] requirements, EffectAppender[] costs, EffectAppender[] effects) {
         return new AbstractActionProxy() {
             private boolean checkRequirements(DefaultActionContext<DefaultGame> actionContext) {
                 for (Requirement requirement : requirements) {
@@ -78,9 +79,9 @@ public class AddTrigger implements EffectAppenderProducer {
             }
 
             @Override
-            public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame lotroGame, Effect effect) {
+            public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect) {
                 DelegateActionContext delegate = new DelegateActionContext(actionContext, actionContext.getPerformingPlayer(),
-                        lotroGame, actionContext.getSource(), null, effect);
+                        game, actionContext.getSource(), null, effect);
                 if (trigger.isBefore() && !optional && trigger.accepts(delegate)) {
                     if (checkRequirements(delegate))
                         return null;

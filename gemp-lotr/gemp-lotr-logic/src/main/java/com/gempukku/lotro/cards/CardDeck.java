@@ -6,7 +6,7 @@ import java.util.List;
 
 public class CardDeck {
     protected final List<String> _drawDeckCards = new ArrayList<>();
-    protected String _deckName;
+    protected final String _deckName;
     protected String _notes;
     protected String _targetFormat;
     public CardDeck(String deckName) {

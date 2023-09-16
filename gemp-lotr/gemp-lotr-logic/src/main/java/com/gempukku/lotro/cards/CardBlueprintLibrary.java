@@ -68,13 +68,12 @@ public class CardBlueprintLibrary {
         collectionReady.release();
     }
 
-    public boolean SubscribeToRefreshes(ICallback callback) {
+    public void SubscribeToRefreshes(ICallback callback) {
         if(_refreshCallbacks.contains(callback))
-            return false;
+            return;
 
         _refreshCallbacks.add(callback);
 
-        return true;
     }
 
     public boolean UnsubscribeFromRefreshes(ICallback callback) {
@@ -151,7 +150,7 @@ public class CardBlueprintLibrary {
                     determineMerchantableFlag(setDefinition, flags);
                     determineNeedsLoadingFlag(setDefinition, flags);
 
-                    DefaultSetDefinition rarity = new DefaultSetDefinition(setId, setName, flags);
+                    DefaultSetDefinition rarity = new DefaultSetDefinition(setId, flags);
 
                     readSetRarityFile(rarity, setId, rarityFile);
 
@@ -194,14 +193,14 @@ public class CardBlueprintLibrary {
             loadCardsFromFile(path, initial);
         }
         else if (path.isDirectory()) {
-            for (File file : path.listFiles()) {
+            for (File file : Objects.requireNonNull(path.listFiles())) {
                 loadCards(file, initial);
             }
         }
     }
 
     private void loadCardsFromFile(File file, boolean validateNew) {
-        if (!JsonUtils.IsValidHjsonFile(file))
+        if (JsonUtils.IsInvalidHjsonFile(file))
             return;
 
         JSONParser parser = new JSONParser();
@@ -280,11 +279,7 @@ public class CardBlueprintLibrary {
     }
 
     private void addAlternative(String from, String to) {
-        Set<String> list = _fullBlueprintMapping.get(from);
-        if (list == null) {
-            list = new HashSet<>();
-            _fullBlueprintMapping.put(from, list);
-        }
+        Set<String> list = _fullBlueprintMapping.computeIfAbsent(from, k -> new HashSet<>());
         list.add(to);
     }
 
@@ -320,16 +315,16 @@ public class CardBlueprintLibrary {
                     var parts = id.split("_");
                     int setID = Integer.parseInt(parts[0]);
                     String cardID = parts[1];
-                    JSONDefs.ErrataInfo card = null;
-                    String base = id;
+                    JSONDefs.ErrataInfo card;
+                    String base;
                     if(setID >= 50 && setID <= 69) {
-                        base = "" + (setID - 50) + "_" + cardID;
+                        base = (setID - 50) + "_" + cardID;
                     }
                     else if(setID >= 70 && setID <= 89) {
-                        base = "" + (setID - 70) + "_" + cardID;
+                        base = (setID - 70) + "_" + cardID;
                     }
                     else if(setID >= 150 && setID <= 199) {
-                        base = "" + (setID - 50) + "_" + cardID;
+                        base = (setID - 50) + "_" + cardID;
                     }
                     else
                         continue;

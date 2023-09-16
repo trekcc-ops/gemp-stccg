@@ -26,11 +26,6 @@ public class PutRandomCardFromHandOnBottomOfDeckEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
             GameState gameState = game.getGameState();

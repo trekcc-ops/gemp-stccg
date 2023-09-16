@@ -17,17 +17,14 @@ public class HasInZoneData implements RequirementProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new Requirement() {
-            @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
-                final Filterable filterable = filterableSource.getFilterable(actionContext);
-                for (LotroPhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
-                    if (physicalCard.getWhileInZoneData() != null)
-                        return true;
-                }
-
-                return false;
+        return (Requirement<DefaultGame>) actionContext -> {
+            final Filterable filterable = filterableSource.getFilterable(actionContext);
+            for (LotroPhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
+                if (physicalCard.getWhileInZoneData() != null)
+                    return true;
             }
+
+            return false;
         };
     }
 }

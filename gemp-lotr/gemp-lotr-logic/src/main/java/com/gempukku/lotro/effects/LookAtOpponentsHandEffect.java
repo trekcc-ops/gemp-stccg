@@ -18,16 +18,6 @@ public class LookAtOpponentsHandEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, _opponentId, _playerId);
     }

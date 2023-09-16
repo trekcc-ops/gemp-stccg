@@ -1,7 +1,6 @@
 package com.gempukku.lotro.cards.build.field.effect.requirement;
 
 import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
-import com.gempukku.lotro.cards.build.DefaultActionContext;
 import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.build.Requirement;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
@@ -17,11 +16,6 @@ public class IsSideRequirementProducer implements RequirementProducer{
 
         final Side side = FieldUtils.getEnum(Side.class, object.get("side"), "side");
 
-        return new Requirement() {
-            @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
-                return LotroGameUtils.isSide(actionContext.getGame(), side, actionContext.getPerformingPlayer());
-            }
-        };
+        return (Requirement<DefaultGame>) actionContext -> LotroGameUtils.isSide(actionContext.getGame(), side, actionContext.getPerformingPlayer());
     }
 }

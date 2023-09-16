@@ -17,8 +17,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultTournament implements Tournament {
-    // 10 minutes
-    private final int _deckBuildTime = 10 * 60 * 1000;
     private long _waitForPairingsTime = 1000 * 60 * 2;
 
     private final PairingMechanism _pairingMechanism;
@@ -208,21 +206,20 @@ public class DefaultTournament implements Tournament {
     }
 
     @Override
-    public boolean dropPlayer(String player) {
+    public void dropPlayer(String player) {
         _lock.writeLock().lock();
         try {
             if (_currentlyPlayingPlayers.contains(player))
-                return false;
+                return;
             if (_tournamentStage == Stage.FINISHED)
-                return false;
+                return;
             if (_droppedPlayers.contains(player))
-                return false;
+                return;
             if (!_players.contains(player))
-                return false;
+                return;
 
             _tournamentService.dropPlayer(_tournamentId, player);
             _droppedPlayers.add(player);
-            return true;
         } finally {
             _lock.writeLock().unlock();
         }
@@ -246,6 +243,8 @@ public class DefaultTournament implements Tournament {
                     }
                 }
                 if (_tournamentStage == Stage.DECK_BUILDING) {
+                    // 10 minutes
+                    int _deckBuildTime = 10 * 60 * 1000;
                     if (_deckBuildStartTime + _deckBuildTime < System.currentTimeMillis()
                             || _playerDecks.size() == _players.size()) {
                         _tournamentStage = Stage.PLAYING_GAMES;

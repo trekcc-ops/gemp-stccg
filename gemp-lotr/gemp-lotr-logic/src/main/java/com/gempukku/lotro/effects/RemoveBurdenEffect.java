@@ -25,11 +25,6 @@ public class RemoveBurdenEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public String getText(DefaultGame game) {
         return "Remove " + _count + " burden" + ((_count > 1) ? "s" : "");
     }

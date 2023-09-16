@@ -19,8 +19,6 @@ public class FreePeoplePlayerMayNotAssignCharacterModifier extends AbstractModif
 
     @Override
     public boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
-        if (sidePlayer == Side.FREE_PEOPLE)
-            return true;
-        return false;
+        return sidePlayer == Side.FREE_PEOPLE;
     }
 }

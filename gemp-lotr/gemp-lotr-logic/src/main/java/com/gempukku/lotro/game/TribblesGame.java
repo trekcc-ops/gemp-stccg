@@ -26,11 +26,9 @@ public class TribblesGame implements DefaultGame {
     private final DefaultActionsEnvironment _actionsEnvironment;
     private final UserFeedback _userFeedback;
     private final TribblesTurnProcedure _turnProcedure;
-    private final ActionStack _actionStack;
     private boolean _cancelled;
     private boolean _finished;
 
-    private final Adventure _adventure;
     private final LotroFormat _format;
 
     private final Set<String> _allPlayers;
@@ -47,9 +45,9 @@ public class TribblesGame implements DefaultGame {
     public TribblesGame(LotroFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
         _library = library;
-        _adventure = format.getAdventure();
+        Adventure _adventure = format.getAdventure();
         _format = format;
-        _actionStack = new ActionStack();
+        ActionStack _actionStack = new ActionStack();
 
         _allPlayers = decks.keySet();
 
@@ -76,7 +74,7 @@ public class TribblesGame implements DefaultGame {
                 });
         _userFeedback = userFeedback;
 
-        TribblesRuleSet ruleSet = new TribblesRuleSet(this, _actionsEnvironment, _modifiersLogic);
+        TribblesRuleSet ruleSet = new TribblesRuleSet(_actionsEnvironment, _modifiersLogic);
         ruleSet.applyRuleSet();
 
         _adventure.applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
@@ -85,10 +83,6 @@ public class TribblesGame implements DefaultGame {
 
     @Override
     public boolean shouldAutoPass(String playerId, Phase phase) {
-/*        final Set<Phase> passablePhases = _autoPassConfiguration.get(playerId);
-        if (passablePhases == null)
-            return false;
-        return passablePhases.contains(phase); */
         return false;
     }
 
@@ -183,6 +177,7 @@ public class TribblesGame implements DefaultGame {
         if (_gameState != null)
             _gameState.sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
 
+        assert _gameState != null;
         _gameState.finish();
 
         for (GameResultListener gameResultListener : _gameResultListeners)
@@ -260,7 +255,7 @@ public class TribblesGame implements DefaultGame {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met
-        if (!card.getBlueprint().checkPlayRequirements(this, card)) {
+        if (card.getBlueprint().playRequirementsNotMet(this, card)) {
 //            _gameState.sendMessage("card.checkPlayRequirements failed");
             return false;
         }
@@ -280,8 +275,6 @@ public class TribblesGame implements DefaultGame {
         if (_gameState.getChainBroken() && (cardValue == 1)) {
             return true;
         }
-/*        _gameState.sendMessage(card.getBlueprint().getTitle() + " tribble value = " + cardValue +
-                "; nextTribble value = " + _gameState.getNextTribble()); */
         return (cardValue == _gameState.getNextTribble());
     }
     public Set<String> getPlayers() { return _allPlayers; }

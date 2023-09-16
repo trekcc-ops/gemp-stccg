@@ -1,5 +1,7 @@
 package com.gempukku.lotro.game;
 
+import java.util.Objects;
+
 public class BasicCardItem implements CardItem {
     private final String _blueprintId;
 
@@ -24,10 +26,7 @@ public class BasicCardItem implements CardItem {
 
         BasicCardItem that = (BasicCardItem) o;
 
-        if (_blueprintId != null ? !_blueprintId.equals(that._blueprintId) : that._blueprintId != null)
-            return false;
-
-        return true;
+        return Objects.equals(_blueprintId, that._blueprintId);
     }
 
     @Override

@@ -3,66 +3,65 @@ package com.gempukku.lotro.gamestate;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.decisions.AwaitingDecision;
-import com.gempukku.lotro.gamestate.GameStats;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 public interface GameStateListener {
-    public void cardCreated(LotroPhysicalCard card);
-    public void cardCreated(LotroPhysicalCard card, boolean overridePlayerVisibility);
+    void cardCreated(LotroPhysicalCard card);
+    void cardCreated(LotroPhysicalCard card, boolean overridePlayerVisibility);
 
-    public void cardMoved(LotroPhysicalCard card);
+    void cardMoved(LotroPhysicalCard card);
 
-    public void cardsRemoved(String playerPerforming, Collection<LotroPhysicalCard> cards);
+    void cardsRemoved(String playerPerforming, Collection<LotroPhysicalCard> cards);
 
-    public void initializeBoard(List<String> playerIds, boolean discardIsPublic);
+    void initializeBoard(List<String> playerIds, boolean discardIsPublic);
 
-    public void setPlayerPosition(String playerId, int i);
+    void setPlayerPosition(String playerId, int i);
 
-    public void setPlayerDecked(String playerId, boolean bool);
-    public void setPlayerScore(String playerId, int points);
+    void setPlayerDecked(String playerId, boolean bool);
+    void setPlayerScore(String playerId, int points);
 
-    public void setTwilight(int twilightPool);
+    void setTwilight(int twilightPool);
 
-    public void setTribbleSequence(String tribbleSequence);
+    void setTribbleSequence(String tribbleSequence);
 
-    public void setCurrentPlayerId(String playerId);
+    void setCurrentPlayerId(String playerId);
 
-    public void setCurrentPhase(String currentPhase);
+    void setCurrentPhase(String currentPhase);
 
-    public void addAssignment(LotroPhysicalCard fp, Set<LotroPhysicalCard> minions);
+    void addAssignment(LotroPhysicalCard fp, Set<LotroPhysicalCard> minions);
 
-    public void removeAssignment(LotroPhysicalCard fp);
+    void removeAssignment(LotroPhysicalCard fp);
 
-    public void startSkirmish(LotroPhysicalCard fp, Set<LotroPhysicalCard> minions);
+    void startSkirmish(LotroPhysicalCard fp, Set<LotroPhysicalCard> minions);
 
-    public void addToSkirmish(LotroPhysicalCard card);
+    void addToSkirmish(LotroPhysicalCard card);
 
-    public void removeFromSkirmish(LotroPhysicalCard card);
+    void removeFromSkirmish(LotroPhysicalCard card);
 
-    public void finishSkirmish();
+    void finishSkirmish();
 
-    public void addTokens(LotroPhysicalCard card, Token token, int count);
+    void addTokens(LotroPhysicalCard card, Token token, int count);
 
-    public void removeTokens(LotroPhysicalCard card, Token token, int count);
+    void removeTokens(LotroPhysicalCard card, Token token, int count);
 
-    public void sendMessage(String message);
+    void sendMessage(String message);
 
-    public void setSite(LotroPhysicalCard card);
+    void setSite(LotroPhysicalCard card);
 
-    public void sendGameStats(GameStats gameStats);
+    void sendGameStats(GameStats gameStats);
 
-    public void cardAffectedByCard(String playerPerforming, LotroPhysicalCard card, Collection<LotroPhysicalCard> affectedCard);
+    void cardAffectedByCard(String playerPerforming, LotroPhysicalCard card, Collection<LotroPhysicalCard> affectedCard);
 
-    public void eventPlayed(LotroPhysicalCard card);
+    void eventPlayed(LotroPhysicalCard card);
 
-    public void cardActivated(String playerPerforming, LotroPhysicalCard card);
+    void cardActivated(String playerPerforming, LotroPhysicalCard card);
 
-    public void decisionRequired(String playerId, AwaitingDecision awaitingDecision);
+    void decisionRequired(String playerId, AwaitingDecision awaitingDecision);
 
-    public void sendWarning(String playerId, String warning);
+    void sendWarning(String playerId, String warning);
 
-    public void endGame();
+    void endGame();
 }

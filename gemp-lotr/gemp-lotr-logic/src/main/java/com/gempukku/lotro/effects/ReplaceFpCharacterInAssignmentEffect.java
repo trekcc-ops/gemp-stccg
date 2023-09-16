@@ -16,16 +16,6 @@ public class ReplaceFpCharacterInAssignmentEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return PlayConditions.isActive(game, _replacedBy) && PlayConditions.isActive(game, _replacing, Filters.assignedToSkirmish, Filters.not(Filters.inSkirmish));
     }

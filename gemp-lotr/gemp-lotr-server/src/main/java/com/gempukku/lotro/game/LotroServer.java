@@ -3,13 +3,12 @@ package com.gempukku.lotro.game;
 import com.gempukku.lotro.AbstractServer;
 import com.gempukku.lotro.PrivateInformationException;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.chat.ChatCommandErrorException;
 import com.gempukku.lotro.chat.ChatServer;
 import com.gempukku.lotro.db.DeckDAO;
 import com.gempukku.lotro.hall.GameSettings;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
-import com.gempukku.lotro.cards.CardDeck;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +16,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LotroServer extends AbstractServer {
-    private static final Logger log = Logger.getLogger(LotroServer.class);
 
     private final CardBlueprintLibrary _CardBlueprintLibrary;
 
@@ -25,8 +23,6 @@ public class LotroServer extends AbstractServer {
     private final Set<String> _gameDeathWarningsSent = new HashSet<>();
 
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
-    private final long _timeToGameDeath = 1000 * 60 * 5; // 5 minutes
-    private final long _timeToGameDeathWarning = 1000 * 60 * 4; // 4 minutes
 
     private int _nextGameId = 1;
 
@@ -52,6 +48,8 @@ public class LotroServer extends AbstractServer {
             LinkedHashMap<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
             for (Map.Entry<String, Date> finishedGame : copy.entrySet()) {
                 String gameId = finishedGame.getKey();
+                // 4 minutes
+                long _timeToGameDeathWarning = 1000 * 60 * 4;
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeathWarning
                         && !_gameDeathWarningsSent.contains(gameId)) {
                     try {
@@ -63,6 +61,8 @@ public class LotroServer extends AbstractServer {
                     }
                     _gameDeathWarningsSent.add(gameId);
                 }
+                // 5 minutes
+                long _timeToGameDeath = 1000 * 60 * 5;
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeath) {
                     _runningGames.get(gameId).destroy();
                     _gameDeathWarningsSent.remove(gameId);
@@ -101,19 +101,12 @@ public class LotroServer extends AbstractServer {
                 _chatServer.createChatRoom(getChatRoomName(gameId), false, 30, false, null);
 
             // Allow spectators for leagues, but not tournaments
-            // Also: yes, yes, we're very proud that you found a way to assign this boolean in one line.
-            // The point of the code setting it like this is to make each case painfully explicit.
-            boolean spectate = true;
-            if(gameSettings.getLeague() != null) {
-                spectate = true;
-            }
-            else if(gameSettings.isCompetitive() || gameSettings.isPrivateGame() || gameSettings.isHiddenGame()) {
-                spectate = false;
-            }
+            boolean spectate = (gameSettings.getLeague() != null) ||
+                    (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
             CardGameMediator cardGameMediator = new CardGameMediator(gameId, gameSettings.getLotroFormat(), participants, _CardBlueprintLibrary,
                     gameSettings.getTimeSettings(),
-                    spectate, !gameSettings.isCompetitive(), gameSettings.isHiddenGame());
+                    spectate, gameSettings.isHiddenGame());
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
@@ -192,15 +185,14 @@ public class LotroServer extends AbstractServer {
             if (cnt != 3)
                 return null;
 
-            return _deckDao.buildLotroDeckFromContents(deckName, contents, targetFormat, notes);
         } else {
             // Old format
             List<String> cards = Arrays.asList(contents.split(","));
             if (cards.size() < 2)
                 return null;
 
-            return _deckDao.buildLotroDeckFromContents(deckName, contents, targetFormat, notes);
         }
+        return _deckDao.buildLotroDeckFromContents(deckName, contents, targetFormat, notes);
     }
 
     public CardGameMediator getGameById(String gameId) {

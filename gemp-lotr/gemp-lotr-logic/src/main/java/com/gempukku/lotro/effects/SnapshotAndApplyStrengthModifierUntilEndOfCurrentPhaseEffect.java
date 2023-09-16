@@ -41,11 +41,6 @@ public class SnapshotAndApplyStrengthModifierUntilEndOfCurrentPhaseEffect extend
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return true;
     }

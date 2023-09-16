@@ -2,7 +2,7 @@ package com.gempukku.lotro.at;
 
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -20,8 +20,8 @@ public class AmbushAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl gimli = new LotroPhysicalCardImpl(100, "5_7", P1, _cardLibrary.getLotroCardBlueprint("5_7"));
-        LotroPhysicalCardImpl desertLegion = new LotroPhysicalCardImpl(101, "4_218", P2, _cardLibrary.getLotroCardBlueprint("4_218"));
+        PhysicalCardImpl gimli = new PhysicalCardImpl(100, "5_7", P1, _cardLibrary.getLotroCardBlueprint("5_7"));
+        PhysicalCardImpl desertLegion = new PhysicalCardImpl(101, "4_218", P2, _cardLibrary.getLotroCardBlueprint("4_218"));
 
         skipMulligans();
 
@@ -54,7 +54,7 @@ public class AmbushAtTest extends AbstractAtTest {
         // Shadow player gets an Ambush trigger
         AwaitingDecision ambushTriggerDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, ambushTriggerDecision.getDecisionType());
-        validateContents(new String[]{"" + desertLegion.getCardId()}, (String[]) ambushTriggerDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(desertLegion.getCardId())}, ambushTriggerDecision.getDecisionParameters().get("cardId"));
         assertTrue(((String[]) ambushTriggerDecision.getDecisionParameters().get("actionText"))[0].startsWith("Ambush "));
 
         assertEquals(3, _game.getGameState().getTwilightPool());

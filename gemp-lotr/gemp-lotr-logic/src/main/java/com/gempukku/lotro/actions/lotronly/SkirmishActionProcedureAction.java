@@ -22,17 +22,15 @@ public class SkirmishActionProcedureAction extends SystemQueueAction {
         protected void doPlayEffect(DefaultGame game) {
             PlayOrder playOrder = game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(game.getGameState().getCurrentPlayerId(), true);
             appendEffect(
-                    new CheckIfSkirmishFinishedEffect(playOrder, 0));
+                    new CheckIfSkirmishFinishedEffect(playOrder));
         }
     }
 
     private class CheckIfSkirmishFinishedEffect extends UnrespondableEffect {
         private final PlayOrder _playOrder;
-        private final int _consecutivePasses;
 
-        private CheckIfSkirmishFinishedEffect(PlayOrder playOrder, int consecutivePasses) {
+        private CheckIfSkirmishFinishedEffect(PlayOrder playOrder) {
             _playOrder = playOrder;
-            _consecutivePasses = consecutivePasses;
         }
 
         @Override
@@ -40,6 +38,7 @@ public class SkirmishActionProcedureAction extends SystemQueueAction {
             Skirmish skirmish = game.getGameState().getSkirmish();
             if (!game.getGameState().getSkirmish().isCancelled()
                     && skirmish.getFellowshipCharacter() != null && skirmish.getShadowCharacters().size() > 0) {
+                int _consecutivePasses = 0;
                 appendEffect(
                         new PlayerPlaysNextActionEffect(_playOrder, _consecutivePasses));
             }
@@ -77,7 +76,7 @@ public class SkirmishActionProcedureAction extends SystemQueueAction {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
                                     appendEffect(
-                                            new CheckIfSkirmishFinishedEffect(_playOrder, 0));
+                                            new CheckIfSkirmishFinishedEffect(_playOrder));
                                     game.getActionsEnvironment().addActionToStack(action);
                                 } else {
                                     playerPassed();

@@ -49,13 +49,8 @@ public class ChooseAndExertCharactersEffect extends ChooseActiveCardsEffect {
         int times = _times;
         do {
             final int exertTimes = times;
-            Filter filter = new Filter() {
-                @Override
-                public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                    return game.getModifiersQuerying().canBeExerted(game, _action.getActionSource(), physicalCard)
-                            && game.getModifiersQuerying().getVitality(game, physicalCard) > exertTimes;
-                }
-            };
+            Filter filter = (game1, physicalCard) -> game1.getModifiersQuerying().canBeExerted(game1, _action.getActionSource(), physicalCard)
+                    && game1.getModifiersQuerying().getVitality(game1, physicalCard) > exertTimes;
             if (Filters.countActive(game, Filters.and(_filters, filter))>0)
                 return filter;
             times--;
@@ -65,13 +60,8 @@ public class ChooseAndExertCharactersEffect extends ChooseActiveCardsEffect {
 
     @Override
     protected Filter getExtraFilterForPlayabilityCheck(DefaultGame game) {
-        return new Filter() {
-            @Override
-            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                return game.getModifiersQuerying().canBeExerted(game, _action.getActionSource(), physicalCard)
-                        && game.getModifiersQuerying().getVitality(game, physicalCard) > _times;
-            }
-        };
+        return (game1, physicalCard) -> game1.getModifiersQuerying().canBeExerted(game1, _action.getActionSource(), physicalCard)
+                && game1.getModifiersQuerying().getVitality(game1, physicalCard) > _times;
     }
 
     @Override
@@ -79,7 +69,7 @@ public class ChooseAndExertCharactersEffect extends ChooseActiveCardsEffect {
         _resultSubAction = new SubAction(_action);
         for (int i = 0; i < _times; i++) {
             final boolean first = (i==0);
-            final ExertCharactersEffect effect = new ExertCharactersEffect(_action, _action.getActionSource(), characters.toArray(new LotroPhysicalCard[characters.size()])) {
+            final ExertCharactersEffect effect = new ExertCharactersEffect(_action, _action.getActionSource(), characters.toArray(new LotroPhysicalCard[0])) {
                 @Override
                 protected void forEachExertedByEffect(LotroPhysicalCard physicalCard) {
                     if (first)

@@ -33,12 +33,7 @@ public class CollectionsManager {
 
         _defaultCollection = new CompleteCardCollection(_cardLibrary);
 
-        _cardLibrary.SubscribeToRefreshes(new ICallback() {
-            @Override
-            public void Invoke() {
-                _defaultCollection = new CompleteCardCollection(_cardLibrary);
-            }
-        });
+        _cardLibrary.SubscribeToRefreshes(() -> _defaultCollection = new CompleteCardCollection(_cardLibrary));
     }
 
     public CardCollection getCompleteCardCollection() {

@@ -8,10 +8,6 @@ import com.gempukku.lotro.modifiers.condition.Condition;
 
 public abstract class AbstractExtraPlayCostModifier extends AbstractModifier implements ExtraPlayCost {
 
-    public AbstractExtraPlayCostModifier(LotroPhysicalCard source, String text, Filterable affectFilter) {
-        super(source, text, affectFilter, ModifierEffect.EXTRA_COST_MODIFIER);
-    }
-
     public AbstractExtraPlayCostModifier(LotroPhysicalCard source, String text, Filterable affectFilter, Condition condition) {
         super(source, text, affectFilter, condition, ModifierEffect.EXTRA_COST_MODIFIER);
     }

@@ -40,12 +40,7 @@ public class PlayNextSite implements EffectAppenderProducer {
                     return false;
 
                 if (game.getFormat().isOrderedSites()) {
-                    Filter printedSiteNumber = new Filter() {
-                        @Override
-                        public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                            return physicalCard.getBlueprint().getSiteNumber() == nextSiteNumber;
-                        }
-                    };
+                    Filter printedSiteNumber = (game1, physicalCard) -> physicalCard.getBlueprint().getSiteNumber() == nextSiteNumber;
                     return Filters.filter(game.getGameState().getAdventureDeck(playerId), game, Filters.and(filterable, printedSiteNumber)).size() > 0;
                 } else {
                     return Filters.filter(game.getGameState().getAdventureDeck(playerId), game, filterable).size() > 0;

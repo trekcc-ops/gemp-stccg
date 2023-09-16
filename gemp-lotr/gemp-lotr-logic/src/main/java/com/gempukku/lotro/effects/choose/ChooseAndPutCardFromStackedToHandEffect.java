@@ -14,7 +14,7 @@ public class ChooseAndPutCardFromStackedToHandEffect extends ChooseStackedCardsE
     private final Action _action;
 
     public ChooseAndPutCardFromStackedToHandEffect(Action action, String playerId, int minimum, int maximum, Filterable stackedOn, Filterable... stackedCardsFilter) {
-        super(action, playerId, minimum, maximum, stackedOn, Filters.and(stackedCardsFilter));
+        super(playerId, minimum, maximum, stackedOn, Filters.and(stackedCardsFilter));
         _action = action;
     }
 

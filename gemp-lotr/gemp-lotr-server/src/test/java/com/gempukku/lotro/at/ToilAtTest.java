@@ -4,7 +4,7 @@ import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -22,7 +22,7 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
 
         skipMulligans();
 
@@ -35,7 +35,7 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[0], (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[0], shadowPhaseDecision.getDecisionParameters().get("cardId"));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
 
         skipMulligans();
 
@@ -56,7 +56,7 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "0");
 
@@ -69,8 +69,8 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -86,7 +86,7 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
     }
 
     @Test
@@ -94,8 +94,8 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -111,7 +111,7 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId(), "" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId()), String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -125,8 +125,8 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -142,7 +142,7 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId(), "" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId()), String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -150,9 +150,9 @@ public class ToilAtTest extends AbstractAtTest {
         assertEquals(AwaitingDecisionType.CARD_SELECTION, toilExertion.getDecisionType());
         assertEquals("0", toilExertion.getDecisionParameters().get("min")[0]);
         assertEquals("1", toilExertion.getDecisionParameters().get("max")[0]);
-        validateContents(new String[]{"" + corpsOfHarad.getCardId()}, (String[]) toilExertion.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(corpsOfHarad.getCardId())}, toilExertion.getDecisionParameters().get("cardId"));
 
-        playerDecided(P2, "" + corpsOfHarad.getCardId());
+        playerDecided(P2, String.valueOf(corpsOfHarad.getCardId()));
 
         assertEquals(Zone.SHADOW_CHARACTERS, legionOfHarad.getZone());
         assertEquals(1, _game.getGameState().getWounds(corpsOfHarad));
@@ -164,8 +164,8 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -181,15 +181,15 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId(), "" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId()), String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
         AwaitingDecision toilExertion = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, toilExertion.getDecisionType());
         assertEquals("0", toilExertion.getDecisionParameters().get("min")[0]);
-        assertEquals("1", (String) toilExertion.getDecisionParameters().get("max")[0]);
-        validateContents(new String[]{"" + corpsOfHarad.getCardId()}, (String[]) toilExertion.getDecisionParameters().get("cardId"));
+        assertEquals("1", toilExertion.getDecisionParameters().get("max")[0]);
+        validateContents(new String[]{String.valueOf(corpsOfHarad.getCardId())}, toilExertion.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "");
 
@@ -203,9 +203,9 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad1 = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
-        LotroPhysicalCardImpl corpsOfHarad2 = new LotroPhysicalCardImpl(102, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad1 = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl corpsOfHarad2 = new PhysicalCardImpl(102, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -222,15 +222,15 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId(), "" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId()), String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
         AwaitingDecision toilExertion = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, toilExertion.getDecisionType());
-        assertEquals("0", (String) toilExertion.getDecisionParameters().get("min")[0]);
-        assertEquals("2", (String) toilExertion.getDecisionParameters().get("max")[0]);
-        validateContents(new String[]{"" + corpsOfHarad1.getCardId(), "" + corpsOfHarad2.getCardId()}, (String[]) toilExertion.getDecisionParameters().get("cardId"));
+        assertEquals("0", toilExertion.getDecisionParameters().get("min")[0]);
+        assertEquals("2", toilExertion.getDecisionParameters().get("max")[0]);
+        validateContents(new String[]{String.valueOf(corpsOfHarad1.getCardId()), String.valueOf(corpsOfHarad2.getCardId())}, toilExertion.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, corpsOfHarad1.getCardId() + "," + corpsOfHarad2.getCardId());
 
@@ -245,9 +245,9 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad1 = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
-        LotroPhysicalCardImpl corpsOfHarad2 = new LotroPhysicalCardImpl(102, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad1 = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl corpsOfHarad2 = new PhysicalCardImpl(102, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -264,17 +264,17 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId(), "" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId()), String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
         AwaitingDecision toilExertion = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, toilExertion.getDecisionType());
-        assertEquals("0", (String) toilExertion.getDecisionParameters().get("min")[0]);
-        assertEquals("2", (String) toilExertion.getDecisionParameters().get("max")[0]);
-        validateContents(new String[]{"" + corpsOfHarad1.getCardId(), "" + corpsOfHarad2.getCardId()}, (String[]) toilExertion.getDecisionParameters().get("cardId"));
+        assertEquals("0", toilExertion.getDecisionParameters().get("min")[0]);
+        assertEquals("2", toilExertion.getDecisionParameters().get("max")[0]);
+        validateContents(new String[]{String.valueOf(corpsOfHarad1.getCardId()), String.valueOf(corpsOfHarad2.getCardId())}, toilExertion.getDecisionParameters().get("cardId"));
 
-        playerDecided(P2, "" + corpsOfHarad1.getCardId());
+        playerDecided(P2, String.valueOf(corpsOfHarad1.getCardId()));
 
         assertEquals(Zone.SHADOW_CHARACTERS, legionOfHarad.getZone());
         assertEquals(1, _game.getGameState().getWounds(corpsOfHarad1));
@@ -287,12 +287,12 @@ public class ToilAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legionOfHarad = new LotroPhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
-        LotroPhysicalCardImpl corpsOfHarad1 = new LotroPhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
-        LotroPhysicalCardImpl corpsOfHarad2 = new LotroPhysicalCardImpl(102, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
-        LotroPhysicalCardImpl corpsOfHarad3 = new LotroPhysicalCardImpl(103, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
-        LotroPhysicalCardImpl corpsOfHarad4 = new LotroPhysicalCardImpl(104, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
-        LotroPhysicalCardImpl corpsOfHarad5 = new LotroPhysicalCardImpl(105, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl legionOfHarad = new PhysicalCardImpl(100, "11_88", P2, _cardLibrary.getLotroCardBlueprint("11_88"));
+        PhysicalCardImpl corpsOfHarad1 = new PhysicalCardImpl(101, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl corpsOfHarad2 = new PhysicalCardImpl(102, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl corpsOfHarad3 = new PhysicalCardImpl(103, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl corpsOfHarad4 = new PhysicalCardImpl(104, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
+        PhysicalCardImpl corpsOfHarad5 = new PhysicalCardImpl(105, "11_73", P2, _cardLibrary.getLotroCardBlueprint("11_73"));
 
         skipMulligans();
 
@@ -312,15 +312,15 @@ public class ToilAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + kingsTent.getCardId(), "" + legionOfHarad.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(kingsTent.getCardId()), String.valueOf(legionOfHarad.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
         AwaitingDecision toilExertion = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, toilExertion.getDecisionType());
-        assertEquals("0", (String) toilExertion.getDecisionParameters().get("min")[0]);
-        assertEquals("5", (String) toilExertion.getDecisionParameters().get("max")[0]);
-        validateContents(new String[]{"" + corpsOfHarad1.getCardId(), "" + corpsOfHarad2.getCardId(), "" + corpsOfHarad3.getCardId(), "" + corpsOfHarad4.getCardId(), "" + corpsOfHarad5.getCardId()}, (String[]) toilExertion.getDecisionParameters().get("cardId"));
+        assertEquals("0", toilExertion.getDecisionParameters().get("min")[0]);
+        assertEquals("5", toilExertion.getDecisionParameters().get("max")[0]);
+        validateContents(new String[]{String.valueOf(corpsOfHarad1.getCardId()), String.valueOf(corpsOfHarad2.getCardId()), String.valueOf(corpsOfHarad3.getCardId()), String.valueOf(corpsOfHarad4.getCardId()), String.valueOf(corpsOfHarad5.getCardId())}, toilExertion.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, corpsOfHarad1.getCardId() + "," + corpsOfHarad2.getCardId() + "," + corpsOfHarad3.getCardId() + "," + corpsOfHarad4.getCardId() + "," + corpsOfHarad5.getCardId());
 
@@ -338,8 +338,8 @@ public class ToilAtTest extends AbstractAtTest {
     public void berserkerTorchPlaysCorrectly() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl urukDominator = createCard(P2, "12_152");
-        LotroPhysicalCardImpl berserkerTorch = createCard(P2, "12_136");
+        PhysicalCardImpl urukDominator = createCard(P2, "12_152");
+        PhysicalCardImpl berserkerTorch = createCard(P2, "12_136");
 
         skipMulligans();
 

@@ -11,7 +11,6 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.LookAtTopCardOfADeckEffect;
 import com.gempukku.lotro.effects.ShuffleDeckEffect;
-import com.gempukku.lotro.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.List;
@@ -29,10 +28,6 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
         MultiEffectAppender result = new MultiEffectAppender();
 
         result.addEffectAppender(new DelayedAppender<>() {
-            @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
-                return true;
-            }
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {

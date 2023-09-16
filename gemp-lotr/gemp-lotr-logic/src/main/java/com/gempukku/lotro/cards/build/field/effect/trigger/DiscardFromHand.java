@@ -20,7 +20,7 @@ public class DiscardFromHand implements TriggerCheckerProducer {
         PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player) : null;
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean isBefore() {
                 return false;

@@ -13,17 +13,17 @@ import java.util.Map;
 import java.util.Queue;
 
 public abstract class AbstractTournamentQueue implements TournamentQueue {
-    protected int _cost;
-    protected Queue<String> _players = new LinkedList<>();
-    protected Map<String, LotroDeck> _playerDecks = new HashMap<>();
-    protected boolean _requiresDeck;
+    protected final int _cost;
+    protected final Queue<String> _players = new LinkedList<>();
+    protected final Map<String, LotroDeck> _playerDecks = new HashMap<>();
+    protected final boolean _requiresDeck;
 
     private final CollectionType _currencyCollection = CollectionType.MY_CARDS;
 
     protected final PairingMechanism _pairingMechanism;
     protected final CollectionType _collectionType;
     protected final TournamentPrizes _tournamentPrizes;
-    protected String _format;
+    protected final String _format;
 
     public AbstractTournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType, TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism, String format) {
         _cost = cost;

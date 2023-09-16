@@ -8,7 +8,6 @@ import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.AbstractEffect;
-import com.gempukku.lotro.effects.Effect;
 
 import java.util.Collection;
 import java.util.Set;
@@ -29,11 +28,6 @@ public abstract class ChooseCardsFromHandEffect extends AbstractEffect {
     @Override
     public String getText(DefaultGame game) {
         return "Choose cards from hand";
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
     }
 
     @Override

@@ -23,24 +23,13 @@ public class PayTwilightCostEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         int twilightCost = game.getModifiersQuerying().getTwilightCost(game, _physicalCard, null, _twilightModifier, _ignoreRoamingPenalty);
 
         String currentPlayerId = game.getGameState().getCurrentPlayerId();
         if (!currentPlayerId.equals(_physicalCard.getOwner())) {
             int twilightPool = game.getGameState().getTwilightPool();
-            if (twilightPool < twilightCost)
-                return false;
+            return twilightPool >= twilightCost;
         }
         return true;
     }

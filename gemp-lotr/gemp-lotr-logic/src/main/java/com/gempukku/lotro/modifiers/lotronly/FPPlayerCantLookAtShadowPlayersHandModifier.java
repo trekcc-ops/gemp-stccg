@@ -12,9 +12,7 @@ public class FPPlayerCantLookAtShadowPlayersHandModifier extends AbstractModifie
 
     @Override
     public boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String actingPlayerId) {
-        if (actingPlayerId.equals(game.getGameState().getCurrentPlayerId())
-                && !revealingPlayerId.equals(game.getGameState().getCurrentPlayerId()))
-            return false;
-        return true;
+        return !actingPlayerId.equals(game.getGameState().getCurrentPlayerId())
+                || revealingPlayerId.equals(game.getGameState().getCurrentPlayerId());
     }
 }

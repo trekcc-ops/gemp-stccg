@@ -30,7 +30,7 @@ public class RandomFoilPack implements PackBox {
 
     @Override
     public List<CardCollection.Item> openPack(int selection) {
-        final String bpID = _availableCards.stream().skip(selection).findFirst().get() + "*";
+        final String bpID = _availableCards.stream().skip(selection).findFirst().orElse(null) + "*";
         return Collections.singletonList(CardCollection.Item.createItem(bpID, 1, true));
     }
 

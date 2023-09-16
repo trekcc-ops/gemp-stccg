@@ -3,9 +3,9 @@ package com.gempukku.lotro.merchant;
 import java.util.Date;
 
 public interface Merchant {
-    public Integer getCardSellPrice(String blueprintId, Date currentTime);
+    Integer getCardSellPrice(String blueprintId, Date currentTime);
 
-    public Integer getCardBuyPrice(String blueprintId, Date currentTime);
+    Integer getCardBuyPrice(String blueprintId, Date currentTime);
 
     /**
      * Called when card was sold by merchant.
@@ -14,7 +14,7 @@ public interface Merchant {
      * @param currentTime
      * @param price
      */
-    public void cardSold(String blueprintId, Date currentTime, int price);
+    void cardSold(String blueprintId, Date currentTime, int price);
 
     /**
      * Called when card was bought by merchant.
@@ -23,5 +23,5 @@ public interface Merchant {
      * @param currentTime
      * @param price
      */
-    public void cardBought(String blueprintId, Date currentTime, int price);
+    void cardBought(String blueprintId, Date currentTime, int price);
 }

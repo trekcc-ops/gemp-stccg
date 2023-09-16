@@ -37,8 +37,4 @@ public class PutCardFromDiscardOnBottomOfDeckEffect extends AbstractEffect {
         return "Put " + GameUtils.getFullName(_physicalCard) + " from discard on bottom of deck";
     }
 
-    @Override
-    public Effect.Type getType() {
-        return null;
-    }
 }

@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.effects.EffectResult;
 
 public class SkirmishCancelledResult extends EffectResult {
-    public LotroPhysicalCard fpCharacter;
+    public final LotroPhysicalCard fpCharacter;
 
     public SkirmishCancelledResult(LotroPhysicalCard fpCharacter) {
         super(Type.SKIRMISH_CANCELLED);

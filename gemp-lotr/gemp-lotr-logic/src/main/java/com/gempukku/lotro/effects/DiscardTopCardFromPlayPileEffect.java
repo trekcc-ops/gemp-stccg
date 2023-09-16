@@ -26,16 +26,6 @@ public class DiscardTopCardFromPlayPileEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getGameState().getZoneCards(_playerId, Zone.PLAY_PILE).size() >= _count;
     }

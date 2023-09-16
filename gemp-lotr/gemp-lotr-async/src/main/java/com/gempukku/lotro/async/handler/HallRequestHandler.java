@@ -5,16 +5,17 @@ import com.gempukku.lotro.SubscriptionConflictException;
 import com.gempukku.lotro.SubscriptionExpiredException;
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
-import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
-import com.gempukku.lotro.draft.DraftChannelVisitor;
-import com.gempukku.lotro.game.*;
+import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.LotroServer;
+import com.gempukku.lotro.game.User;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 import com.gempukku.lotro.hall.*;
-import com.gempukku.lotro.league.LeagueSerieData;
+import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.polling.LongPollingResource;
@@ -41,7 +42,6 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
     private final HallServer _hallServer;
     private final LeagueService _leagueService;
     private final CardBlueprintLibrary _library;
-    private final LotroServer _lotroServer;
     private final LongPollingSystem longPollingSystem;
 
     private static final Logger _log = Logger.getLogger(HallRequestHandler.class);
@@ -53,12 +53,13 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         _hallServer = extractObject(context, HallServer.class);
         _leagueService = extractObject(context, LeagueService.class);
         _library = extractObject(context, CardBlueprintLibrary.class);
-        _lotroServer = extractObject(context, LotroServer.class);
+        extractObject(context, LotroServer.class);
         this.longPollingSystem = longPollingSystem;
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+                              ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("") && request.method() == HttpMethod.GET) {
             getHall(request, responseWriter);
         } else if (uri.equals("") && request.method() == HttpMethod.POST) {
@@ -66,11 +67,11 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         } else if (uri.equals("/update") && request.method() == HttpMethod.POST) {
             updateHall(request, responseWriter);
         } else if (uri.equals("/formats/html") && request.method() == HttpMethod.GET) {
-            getFormats(request, responseWriter);
+            getFormats(responseWriter);
         } else if (uri.equals("/errata/json") && request.method() == HttpMethod.GET) {
-            getErrataInfo(request, responseWriter);
+            getErrataInfo(responseWriter);
         } else if (uri.startsWith("/format/") && request.method() == HttpMethod.GET) {
-            getFormat(request, uri.substring(8), responseWriter);
+            getFormat(uri.substring(8), responseWriter);
         } else if (uri.startsWith("/queue/") && request.method() == HttpMethod.POST) {
             if (uri.endsWith("/leave")) {
                 leaveQueue(request, uri.substring(7, uri.length() - 6), responseWriter);
@@ -145,9 +146,9 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
             String timer = getFormParameterSafely(postDecoder, "timer");
             String desc = getFormParameterSafely(postDecoder, "desc").trim();
             String isPrivateVal = getFormParameterSafely(postDecoder, "isPrivate");
-            boolean isPrivate = (isPrivateVal != null ? Boolean.valueOf(isPrivateVal) : false);
+            boolean isPrivate = (Boolean.parseBoolean(isPrivateVal));
             String isInviteOnlyVal = getFormParameterSafely(postDecoder, "isInviteOnly");
-            boolean isInviteOnly = (isInviteOnlyVal != null ? Boolean.valueOf(isInviteOnlyVal) : false);
+            boolean isInviteOnly = (Boolean.parseBoolean(isInviteOnlyVal));
             //To prevent annoyance, super long glacial games are hidden from everyone except
             // the participants and admins.
             boolean isHidden = timer.toLowerCase().equals(GameTimer.GLACIAL_TIMER.name());
@@ -217,11 +218,8 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
     private boolean IgnoreError(Exception ex) {
         String msg = ex.getMessage();
 
-        if(msg != null && msg.contains("You don't have a deck registered yet") ||
-                msg.contains("Your selected deck is not valid for this format"))
-            return true;
-
-        return false;
+        return msg != null && msg.contains("You don't have a deck registered yet") ||
+                msg.contains("Your selected deck is not valid for this format");
     }
 
     private void dropFromTournament(HttpRequest request, String tournamentId, ResponseWriter responseWriter) throws Exception {
@@ -287,7 +285,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         return doc;
     }
 
-    private void getFormat(HttpRequest request, String format, ResponseWriter responseWriter) throws CardNotFoundException {
+    private void getFormat(String format, ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
         LotroFormat lotroFormat = _formatLibrary.getFormat(format);
         appendFormat(result, lotroFormat);
@@ -295,7 +293,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         responseWriter.writeHtmlResponse(result.toString());
     }
 
-    private void getFormats(HttpRequest request, ResponseWriter responseWriter) throws CardNotFoundException {
+    private void getFormats(ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
         for (LotroFormat lotroFormat : _formatLibrary.getHallFormats().values()) {
             appendFormat(result, lotroFormat);
@@ -305,14 +303,15 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
     }
 
     private void appendFormat(StringBuilder result, LotroFormat lotroFormat) throws CardNotFoundException {
-        result.append("<b>" + lotroFormat.getName() + "</b>");
+        result.append("<b>").append(lotroFormat.getName()).append("</b>");
         result.append("<ul>");
         result.append("<li>valid sets: ");
         for (Integer integer : lotroFormat.getValidSets())
-            result.append(integer + ", ");
+            result.append(integer).append(", ");
         result.append("</li>");
-        result.append("<li>sites from block: " + lotroFormat.getSiteBlock().getHumanReadable() + "</li>");
-        result.append("<li>Ring-bearer skirmish can be cancelled: " + (lotroFormat.canCancelRingBearerSkirmish() ? "yes" : "no") + "</li>");
+        result.append("<li>sites from block: ").append(lotroFormat.getSiteBlock().getHumanReadable()).append("</li>");
+        result.append("<li>Ring-bearer skirmish can be cancelled: ");
+        result.append(lotroFormat.canCancelRingBearerSkirmish() ? "yes" : "no").append("</li>");
         if (lotroFormat.getBannedCards().size() > 0) {
             result.append("<li>X-listed (can't be played): ");
             appendCards(result, lotroFormat.getBannedCards());
@@ -363,13 +362,13 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
     private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
         if (additionalValidCards.size() > 0) {
             for (String blueprintId : additionalValidCards)
-                result.append(GameUtils.getCardLink(blueprintId, _library.getLotroCardBlueprint(blueprintId)) + ", ");
+                result.append(GameUtils.getCardLink(blueprintId, _library.getLotroCardBlueprint(blueprintId))).append(", ");
             if (additionalValidCards.size() == 0)
                 result.append("none,");
         }
     }
 
-    private void getErrataInfo(HttpRequest request, ResponseWriter responseWriter) throws CardNotFoundException {
+    private void getErrataInfo(ResponseWriter responseWriter) {
 
         var errata = _library.getErrata();
         String json = JSON.toJSONString(errata);
@@ -407,7 +406,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
                 hall.appendChild(formatElem);
             }
             for (League league : _leagueService.getActiveLeagues()) {
-                final LeagueSerieData currentLeagueSerie = _leagueService.getCurrentLeagueSerie(league);
+                final LeagueSeriesData currentLeagueSerie = _leagueService.getCurrentLeagueSerie(league);
                 if (currentLeagueSerie != null && _leagueService.isPlayerInLeague(league, resourceOwner)) {
                     Element formatElem = doc.createElement("format");
                     formatElem.setAttribute("type", league.getType());
@@ -498,46 +497,6 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
                     _responseWriter.writeError(500);
                 }
                 _processed = true;
-            }
-        }
-    }
-
-    private static class SerializeDraftVisitor implements DraftChannelVisitor {
-        private final Document _doc;
-        private final Element _draft;
-
-        private SerializeDraftVisitor(Document doc, Element draft) {
-            _doc = doc;
-            _draft = draft;
-        }
-
-        public void channelNumber(int channelNumber) {
-            _draft.setAttribute("channelNumber", String.valueOf(channelNumber));
-        }
-
-        public void timeLeft(long timeLeft) {
-            _draft.setAttribute("timeLeft", String.valueOf(timeLeft));
-        }
-
-        public void noCardChoice() {
-        }
-
-        public void cardChoice(CardCollection cardCollection) {
-            for (CardCollection.Item possiblePick : cardCollection.getAll()) {
-                for (int i = 0; i < possiblePick.getCount(); i++) {
-                    Element pick = _doc.createElement("pick");
-                    pick.setAttribute("blueprintId", possiblePick.getBlueprintId());
-                    _draft.appendChild(pick);
-                }
-            }
-        }
-
-        public void chosenCards(CardCollection cardCollection) {
-            for (CardCollection.Item cardInCollection : cardCollection.getAll()) {
-                Element card = _doc.createElement("card");
-                card.setAttribute("blueprintId", cardInCollection.getBlueprintId());
-                card.setAttribute("count", String.valueOf(cardInCollection.getCount()));
-                _draft.appendChild(card);
             }
         }
     }

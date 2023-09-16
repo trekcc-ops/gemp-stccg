@@ -20,10 +20,6 @@ public class KillEffect extends AbstractSuccessfulEffect {
         WOUNDS, OVERWHELM, CARD_EFFECT
     }
 
-    public KillEffect(LotroPhysicalCard card, Cause cause) {
-        this(Collections.singleton(card), cause);
-    }
-
     public KillEffect(Collection<? extends LotroPhysicalCard> cards, Cause cause) {
         _cards = cards;
         _cause = cause;

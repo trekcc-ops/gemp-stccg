@@ -24,7 +24,7 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
         boolean exertsRanger = FieldUtils.getBoolean(value.get("exertsRanger"), "exertsRanger", false);
         final FilterableSource filter = environment.getFilterFactory().generateFilter(filterString, environment);
         final FilterableSource onFilter = (onString != null) ? environment.getFilterFactory().generateFilter(onString, environment) : null;
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
                 final Filterable filterable = filter.getFilterable(actionContext);

@@ -37,12 +37,7 @@ public class PlaySite implements EffectAppenderProducer {
                     return false;
 
                 if (game.getFormat().isOrderedSites()) {
-                    Filter printedSiteNumber = new Filter() {
-                        @Override
-                        public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                            return physicalCard.getBlueprint().getSiteNumber() == siteNumber;
-                        }
-                    };
+                    Filter printedSiteNumber = (game1, physicalCard) -> physicalCard.getBlueprint().getSiteNumber() == siteNumber;
                     if (block != null)
                         return Filters.filter(game.getGameState().getAdventureDeck(playerId), game, Filters.and(filterable, printedSiteNumber, Filters.siteBlock(block))).size() > 0;
                     else

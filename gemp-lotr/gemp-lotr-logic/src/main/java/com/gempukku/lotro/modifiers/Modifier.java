@@ -1,16 +1,15 @@
 package com.gempukku.lotro.modifiers;
 
+import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.condition.Condition;
 import com.gempukku.lotro.modifiers.evaluator.Evaluator;
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
-import com.gempukku.lotro.actions.Action;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface Modifier {
@@ -23,8 +22,6 @@ public interface Modifier {
     boolean isNonCardTextModifier();
 
     Condition getCondition();
-
-    boolean isExtraPossessionClass(DefaultGame game, LotroPhysicalCard physicalCard, LotroPhysicalCard attachedTo);
 
     boolean affectsCard(DefaultGame game, LotroPhysicalCard physicalCard);
 
@@ -42,7 +39,7 @@ public interface Modifier {
 
     int getStrengthModifier(DefaultGame game, LotroPhysicalCard physicalCard);
 
-    boolean appliesStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTaget);
+    boolean cancelsStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTaget);
 
     int getVitalityModifier(DefaultGame game, LotroPhysicalCard physicalCard);
 
@@ -106,10 +103,6 @@ public interface Modifier {
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
 
-    boolean isValidAssignments(DefaultGame game, Side Side, LotroPhysicalCard companion, Set<LotroPhysicalCard> minions);
-
-    boolean isValidAssignments(DefaultGame game, Side Side, Map<LotroPhysicalCard, Set<LotroPhysicalCard>> assignments);
-
     boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, LotroPhysicalCard card);
 
     boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, LotroPhysicalCard card, LotroPhysicalCard source);
@@ -146,12 +139,10 @@ public interface Modifier {
 
     int getInitiativeHandSizeModifier(DefaultGame game);
 
-    boolean lostAllKeywords(DefaultGame game, LotroPhysicalCard card);
+    boolean lostAllKeywords(LotroPhysicalCard card);
 
     Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard fpCharacter);
     Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard fpCharacter);
-
-    boolean canSpotCulture(DefaultGame game, Culture culture, String playerId);
 
     int getFPCulturesSpotCountModifier(DefaultGame game, String playerId);
 

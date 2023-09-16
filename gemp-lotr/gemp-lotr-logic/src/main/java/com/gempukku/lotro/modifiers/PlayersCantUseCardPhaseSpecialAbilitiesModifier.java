@@ -25,10 +25,8 @@ public class PlayersCantUseCardPhaseSpecialAbilitiesModifier extends AbstractMod
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        if (action.getType() == Action.Type.SPECIAL_ABILITY
-                && action.getActionTimeword() == _phase
-                && _sourceFilters.accepts(game, action.getActionSource()))
-            return false;
-        return true;
+        return action.getType() != Action.Type.SPECIAL_ABILITY
+                || action.getActionTimeword() != _phase
+                || !_sourceFilters.accepts(game, action.getActionSource());
     }
 }

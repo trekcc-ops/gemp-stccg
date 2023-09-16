@@ -3,9 +3,7 @@ package com.gempukku.lotro.async.handler;
 import com.alibaba.fastjson.JSON;
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
-import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.db.DeckDAO;
@@ -13,7 +11,6 @@ import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueDefinition;
-import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -37,7 +34,6 @@ import java.util.stream.Collectors;
 public class DeckRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private final DeckDAO _deckDao;
     private final SortAndFilterCards _sortAndFilterCards;
-    private final CardBlueprintLibrary _library;
     private final LotroFormatLibrary _formatLibrary;
     private final SoloDraftDefinitions _draftLibrary;
     private final LotroServer _lotroServer;
@@ -48,7 +44,6 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         super(context);
         _deckDao = extractObject(context, DeckDAO.class);
         _sortAndFilterCards = new SortAndFilterCards();
-        _library = extractObject(context, CardBlueprintLibrary.class);
         _formatLibrary = extractObject(context, LotroFormatLibrary.class);
         _lotroServer = extractObject(context, LotroServer.class);
         _draftLibrary = extractObject(context, SoloDraftDefinitions.class);
@@ -59,7 +54,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         if (uri.equals("/list") && request.method() == HttpMethod.GET) {
             listDecks(request, responseWriter);
         } else if (uri.equals("/libraryList") && request.method() == HttpMethod.GET) {
-            listLibraryDecks(request, responseWriter);
+            listLibraryDecks(responseWriter);
         } else if (uri.equals("") && request.method() == HttpMethod.GET) {
             getDeck(request, responseWriter);
         } else if (uri.equals("") && request.method() == HttpMethod.POST) {
@@ -93,7 +88,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             String includeEventsStr = getFormParameterSafely(postDecoder, "includeEvents");
             boolean includeEvents = includeEventsStr != null && includeEventsStr.equalsIgnoreCase("true");
 
-            String json = "{}";
+            String json;
 
             if(includeEvents)
             {
@@ -151,7 +146,8 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.append("<b>Free People</b>: " + fpCount + ", <b>Shadow</b>: " + shadowCount + "<br/>");
+            sb.append("<b>Free People</b>: ").append(fpCount);
+            sb.append(", <b>Shadow</b>: ").append(shadowCount).append("<br/>");
 
             StringBuilder valid = new StringBuilder();
             StringBuilder invalid = new StringBuilder();
@@ -162,6 +158,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                 responseWriter.writeHtmlResponse("Invalid format: " + targetFormat);
             }
 
+            assert format != null;
             List<String> validation = format.validateDeck(deck);
             List<String> errataValidation = null;
             if (!format.getErrataCardMap().isEmpty()) {
@@ -169,16 +166,19 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                 errataValidation = format.validateDeck(deckWithErrata);
             }
             if(validation.size() == 0) {
-                valid.append("<b>" + format.getName() + "</b>: <font color='green'>Valid</font><br/>");
+                valid.append("<b>").append(format.getName()).append("</b>: <font color='green'>Valid</font><br/>");
             }
             else if(errataValidation != null && errataValidation.size() == 0) {
-                valid.append("<b>" + format.getName() + "</b>: <font color='green'>Valid</font> <font color='yellow'>(with errata automatically applied)</font><br/>");
+                valid.append("<b>").append(format.getName()).append("</b>: ");
+                valid.append("<font color='green'>Valid</font> ");
+                valid.append("<font color='yellow'>(with errata automatically applied)</font><br/>");
                 String output = String.join("<br>", validation).replace("\n", "<br>");
-                invalid.append("<font color='yellow'>" + output + "</font><br/>");
+                invalid.append("<font color='yellow'>").append(output).append("</font><br/>");
             }
             else {
                 String output = String.join("<br>", validation).replace("\n", "<br>");
-                invalid.append("<b>" + format.getName() + "</b>: <font color='red'>" + output + "</font><br/>");
+                invalid.append("<b>").append(format.getName()).append("</b>: ");
+                invalid.append("<font color='red'>").append(output).append("</font><br/>");
             }
 
             sb.append(valid);
@@ -256,7 +256,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         }
     }
 
-    private void shareDeck(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, CardNotFoundException {
+    private void shareDeck(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         String deckName = getQueryParameterSafely(queryDecoder, "deckName");
@@ -358,82 +358,21 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                         
     </style>
     <body>""");
-        result.append("<h1>" + StringEscapeUtils.escapeHtml(deck.getDeckName()) + "</h1>");
-        result.append("<h2>Format: " + StringEscapeUtils.escapeHtml(deck.getTargetFormat()) + "</h2>");
+        result.append("<h1>").append(StringEscapeUtils.escapeHtml(deck.getDeckName())).append("</h1>");
+        result.append("<h2>Format: ").append(StringEscapeUtils.escapeHtml(deck.getTargetFormat())).append("</h2>");
         if(author != null) {
-            result.append("<h2>Author: " + StringEscapeUtils.escapeHtml(author) + "</h2>");
+            result.append("<h2>Author: ").append(StringEscapeUtils.escapeHtml(author)).append("</h2>");
         }
-        String ringBearer = deck.getRingBearer();
-        if (ringBearer != null)
-            result.append("<b>Ring-bearer:</b> " + generateCardTooltip(_library.getLotroCardBlueprint(ringBearer), ringBearer) + "<br/>");
-        String ring = deck.getRing();
-        if (ring != null)
-            result.append("<b>Ring:</b> " + generateCardTooltip(_library.getLotroCardBlueprint(ring), ring) + "<br/>");
 
-        DefaultCardCollection deckCards = new DefaultCardCollection();
-        for (String card : deck.getDrawDeckCards())
-            deckCards.addItem(_library.getBaseBlueprintId(card), 1);
-        for (String site : deck.getSites())
-            deckCards.addItem(_library.getBaseBlueprintId(site), 1);
-
-        result.append("<br/>");
-        result.append("<b>Adventure deck:</b><br/>");
-        for (CardCollection.Item item : _sortAndFilterCards.process("cardType:SITE sort:siteNumber,twilight", deckCards.getAll(), _library, _formatLibrary))
-            result.append(generateCardTooltip(item) + "<br/>");
-
-        result.append("<br/>");
-        result.append("<b>Free Peoples Draw Deck:</b><br/>");
-        for (CardCollection.Item item : _sortAndFilterCards.process("side:FREE_PEOPLE sort:cardType,culture,name", deckCards.getAll(), _library, _formatLibrary))
-            result.append(item.getCount() + "x " + generateCardTooltip(item) + "<br/>");
-
-        result.append("<br/>");
-        result.append("<b>Shadow Draw Deck:</b><br/>");
-        for (CardCollection.Item item : _sortAndFilterCards.process("side:SHADOW sort:cardType,culture,name", deckCards.getAll(), _library, _formatLibrary))
-            result.append(item.getCount() + "x " + generateCardTooltip(item) + "<br/>");
-
-        result.append("<h3>Notes</h3><br>" + deck.getNotes().replace("\n", "<br/>"));
-
+        result.append(getHTMLDeck(deck, true, _sortAndFilterCards, _formatLibrary));
+        result.append("<h3>Notes</h3><br>").append(deck.getNotes().replace("\n", "<br/>"));
         result.append("</body></html>");
 
         return result.toString();
     }
 
-    private String generateCardTooltip(CardCollection.Item item) throws CardNotFoundException {
-        return generateCardTooltip(_library.getLotroCardBlueprint(item.getBlueprintId()), item.getBlueprintId());
-    }
-
-    private String generateCardTooltip(LotroCardBlueprint bp, String bpid) throws CardNotFoundException {
-        String[] parts = bpid.split("_");
-        int setnum = Integer.parseInt(parts[0]);
-        String set = String.format("%02d", setnum);
-        String subset = "S";
-        int version = 0;
-        if(setnum >= 50 && setnum <= 69) {
-            setnum -= 50;
-            set = String.format("%02d", setnum);
-            subset = "E";
-            version = 1;
-        }
-        else if(setnum >= 70 && setnum <= 89) {
-            setnum -= 70;
-            set = String.format("%02d", setnum);
-            subset = "E";
-            version = 1;
-        }
-        else if(setnum >= 100 && setnum <= 149) {
-            setnum -= 100;
-            set = "V" + setnum;
-        }
-        int cardnum = Integer.parseInt(parts[1].replace("*", "").replace("T", ""));
-
-        String id = "LOTR-EN" + set + subset + String.format("%03d", cardnum) + "." + String.format("%01d", version);
-        String result = "<span class=\"tooltip\">" + GameUtils.getFullName(bp)
-                + "<span><img class=\"ttimage\" src=\"https://wiki.lotrtcgpc.net/images/" + id + "_card.jpg\" ></span></span>";
-
-        return result;
-    }
-
-    private void getDeck(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, ParserConfigurationException {
+    private void getDeck(HttpRequest request, ResponseWriter responseWriter)
+            throws HttpProcessingException, ParserConfigurationException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         String deckName = getQueryParameterSafely(queryDecoder, "deckName");
@@ -443,14 +382,16 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         responseWriter.writeXmlResponse(serializeDeck(resourceOwner, deckName));
     }
 
-    private void getLibraryDeck(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, ParserConfigurationException {
+    private void getLibraryDeck(HttpRequest request, ResponseWriter responseWriter)
+            throws HttpProcessingException, ParserConfigurationException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String deckName = getQueryParameterSafely(queryDecoder, "deckName");
 
         responseWriter.writeXmlResponse(serializeDeck(getLibrarian(), deckName));
     }
 
-    private void listDecks(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, ParserConfigurationException {
+    private void listDecks(HttpRequest request, ResponseWriter responseWriter)
+            throws HttpProcessingException, ParserConfigurationException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
 
@@ -463,7 +404,8 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         responseWriter.writeXmlResponse(doc);
     }
 
-    private Document ConvertDeckNamesToXML(List<Map.Entry<LotroFormat, String>> deckNames) throws ParserConfigurationException {
+    private Document ConvertDeckNamesToXML(List<Map.Entry<LotroFormat, String>> deckNames)
+            throws ParserConfigurationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document doc = documentBuilder.newDocument();
@@ -496,7 +438,8 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         }));
     }
 
-    private void listLibraryDecks(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, ParserConfigurationException {
+    private void listLibraryDecks(ResponseWriter responseWriter)
+            throws HttpProcessingException, ParserConfigurationException {
         List<Map.Entry<LotroFormat, String>> starterDecks = new ArrayList<>();
         List<Map.Entry<LotroFormat, String>> championshipDecks = new ArrayList<>();
 

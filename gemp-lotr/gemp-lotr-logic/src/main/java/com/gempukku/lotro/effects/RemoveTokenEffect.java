@@ -35,11 +35,6 @@ public class RemoveTokenEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (!game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_TOUCH_CULTURE_TOKENS)) {
             int tokenCount = game.getGameState().getTokenCount(_target, _token);

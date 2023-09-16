@@ -1,14 +1,13 @@
 package com.gempukku.lotro.game;
 
+import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
-import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import com.gempukku.lotro.modifiers.ModifierFlag;
+import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -97,6 +96,10 @@ public class PlayConditions {
 
     public static boolean hasCardInDiscard(DefaultGame game, String playerId, int count, Filterable... cardFilters) {
         return Filters.filter(game.getGameState().getDiscard(playerId), game, cardFilters).size() >= count;
+    }
+
+    public static boolean hasCardInPlayPile(TribblesGame game, String playerId, int count, Filterable... cardFilters) {
+        return Filters.filter(game.getGameState().getPlayPile(playerId), game, cardFilters).size() >= count;
     }
 
     public static boolean canRemoveFromDiscardToPlay(LotroPhysicalCard source, DefaultGame game, String playerId, int count, Filterable... cardFilter) {
@@ -203,13 +206,8 @@ public class PlayConditions {
     public static boolean canExert(final LotroPhysicalCard source, final DefaultGame game, final int times, final int count, Filterable... filters) {
         final Filter filter = Filters.and(filters, Filters.character);
         return Filters.countActive(game, filter,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return (game.getModifiersQuerying().getVitality(game, physicalCard) > times)
-                                && game.getModifiersQuerying().canBeExerted(game, source, physicalCard);
-                    }
-                }) >= count;
+                (Filter) (game1, physicalCard) -> (game1.getModifiersQuerying().getVitality(game1, physicalCard) > times)
+                        && game1.getModifiersQuerying().canBeExerted(game1, source, physicalCard)) >= count;
     }
 
     public static boolean canStackCardFromHand(LotroPhysicalCard source, DefaultGame game, String playerId, int cardCount, Filterable onto, Filterable... card) {
@@ -302,23 +300,13 @@ public class PlayConditions {
     public static boolean canWound(final LotroPhysicalCard source, final DefaultGame game, final int times, final int count, Filterable... filters) {
         final Filter filter = Filters.and(filters, Filters.character);
         return Filters.countActive(game, filter,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().getVitality(game, physicalCard) >= times
-                                && game.getModifiersQuerying().canTakeWounds(game, (source != null) ? Collections.singleton(source) : Collections.emptySet(), physicalCard, times);
-                    }
-                }) >= count;
+                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().getVitality(game1, physicalCard) >= times
+                        && game1.getModifiersQuerying().canTakeWounds(game1, (source != null) ? Collections.singleton(source) : Collections.emptySet(), physicalCard, times)) >= count;
     }
 
     public static boolean canHeal(LotroPhysicalCard source, DefaultGame game, final int count, Filterable... filters) {
         return Filters.countActive(game, Filters.wounded, Filters.and(filters),
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getGameState().getWounds(physicalCard) >= count && game.getModifiersQuerying().canBeHealed(game, physicalCard);
-                    }
-                }) >= 1;
+                (Filter) (game1, physicalCard) -> game1.getGameState().getWounds(physicalCard) >= count && game1.getModifiersQuerying().canBeHealed(game1, physicalCard)) >= 1;
     }
 
     public static boolean canHeal(LotroPhysicalCard source, DefaultGame game, Filterable... filters) {
@@ -326,9 +314,7 @@ public class PlayConditions {
     }
 
     public static boolean canPlayFromDeck(String playerId, DefaultGame game, Filterable... filters) {
-        if (game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
-            return false;
-        return true;
+        return !game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
     }
 
     public static boolean canPlayFromHand(String playerId, DefaultGame game, Filterable... filters) {
@@ -413,12 +399,7 @@ public class PlayConditions {
 
     public static boolean canDiscardFromPlay(final LotroPhysicalCard source, DefaultGame game, int count, final Filterable... filters) {
         return Filters.countActive(game, Filters.and(filters,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().canBeDiscardedFromPlay(game, source.getOwner(), physicalCard, source);
-                    }
-                })) >= count;
+                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canBeDiscardedFromPlay(game1, source.getOwner(), physicalCard, source))) >= count;
     }
 
     public static boolean canDiscardFromPlay(final LotroPhysicalCard source, DefaultGame game, final Filterable... filters) {

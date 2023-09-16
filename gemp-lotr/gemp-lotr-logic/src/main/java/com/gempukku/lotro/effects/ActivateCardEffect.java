@@ -28,11 +28,6 @@ public class ActivateCardEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public String getText(DefaultGame game) {
         return "Activated " + GameUtils.getCardLink(_source);
     }

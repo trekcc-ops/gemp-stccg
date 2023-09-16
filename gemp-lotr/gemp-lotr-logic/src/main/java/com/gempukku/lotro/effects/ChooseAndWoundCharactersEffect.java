@@ -45,7 +45,7 @@ public class ChooseAndWoundCharactersEffect extends ChooseActiveCardsEffect {
         SubAction subAction = new SubAction(_action);
         for (int i = 0; i < _count; i++) {
             LotroPhysicalCard source = (_action.getActionSource() != null) ? _action.getActionSource() : null;
-            WoundCharactersEffect woundEffect = new WoundCharactersEffect(source, cards.toArray(new LotroPhysicalCard[cards.size()]));
+            WoundCharactersEffect woundEffect = new WoundCharactersEffect(source, cards.toArray(new LotroPhysicalCard[0]));
             if (_sourceText != null)
                 woundEffect.setSourceText(_sourceText);
             subAction.appendEffect(woundEffect);

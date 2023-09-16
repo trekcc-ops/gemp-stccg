@@ -1,11 +1,11 @@
 package com.gempukku.lotro.tournament;
 
-import static org.junit.Assert.*;
-
 import com.gempukku.lotro.at.AbstractAtTest;
 import org.junit.Test;
 
 import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class SingleEliminationPairingTest extends AbstractAtTest {
     private final SingleEliminationPairing _pairing = new SingleEliminationPairing("singleElimination");
@@ -62,8 +62,7 @@ public class SingleEliminationPairingTest extends AbstractAtTest {
         assertEquals(1, byeResults.size());
         assertEquals(1, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>();
-        pairedPlayers.addAll(byeResults);
+        Set<String> pairedPlayers = new HashSet<>(byeResults);
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
             pairedPlayers.add(pairing.getValue());
@@ -90,8 +89,7 @@ public class SingleEliminationPairingTest extends AbstractAtTest {
         assertTrue(byeResults.contains("p1"));
         assertEquals(1, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>();
-        pairedPlayers.addAll(byeResults);
+        Set<String> pairedPlayers = new HashSet<>(byeResults);
 
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
@@ -114,8 +112,7 @@ public class SingleEliminationPairingTest extends AbstractAtTest {
         assertEquals(1, byeResults.size());
         assertEquals(1, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>();
-        pairedPlayers.addAll(byeResults);
+        Set<String> pairedPlayers = new HashSet<>(byeResults);
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
             pairedPlayers.add(pairing.getValue());

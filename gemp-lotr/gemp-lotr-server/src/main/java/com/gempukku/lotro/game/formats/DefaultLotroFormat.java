@@ -23,15 +23,15 @@ public class DefaultLotroFormat implements LotroFormat {
     private final int _order;
     private final boolean _hallVisible;
     private final SitesBlock _siteBlock;
-    private boolean _validateShadowFPCount = true;
-    private int _maximumSameName = 4;
+    private final boolean _validateShadowFPCount;
+    private final int _maximumSameName;
     private final boolean _mulliganRule;
     private final boolean _canCancelRingBearerSkirmish;
     private final boolean _hasRuleOfFour;
     private final boolean _winAtEndOfRegroup;
     private final boolean _discardPileIsPublic;
     private final boolean _winOnControlling5Sites;
-    private int _minimumDeckSize = 60;
+    private final int _minimumDeckSize;
     private final List<String> _bannedCards = new ArrayList<>();
     private final List<String> _restrictedCards = new ArrayList<>();
     private final List<String> _validCards = new ArrayList<>();
@@ -121,7 +121,6 @@ public class DefaultLotroFormat implements LotroFormat {
     public int getOrder() {
         return _order;
     }
-    @Override
     public boolean hallVisible() {
         return _hallVisible;
     }
@@ -206,11 +205,6 @@ public class DefaultLotroFormat implements LotroFormat {
     }
 
     @Override
-    public String getSurveyUrl() {
-        return _surveyUrl;
-    }
-
-    @Override
     public int getHandSize() {
         return 7;
     }
@@ -282,11 +276,11 @@ public class DefaultLotroFormat implements LotroFormat {
         if(setID >= 70 && setID <=89)
             ogSet = setID - 70;
 
-        var cards = _library.getBaseCards().keySet().stream().filter(x -> x.startsWith("" + setID)).toList();
+        var cards = _library.getBaseCards().keySet().stream().filter(x -> x.startsWith(String.valueOf(setID))).toList();
         for(String errataBP : cards) {
             String cardID = errataBP.split("_")[1];
 
-            addCardErrata("" + ogSet + "_" + cardID, errataBP);
+            addCardErrata(ogSet + "_" + cardID, errataBP);
         }
     }
     public void addCardErrata(String baseBlueprintId, String errataBaseBlueprint) {
@@ -338,7 +332,7 @@ public class DefaultLotroFormat implements LotroFormat {
         if(validations.size() == 0)
             return "";
 
-        String firstValidation = validations.stream().findFirst().get();
+        String firstValidation = validations.stream().findFirst().orElse(null);
         long count = firstValidation.chars().filter(x -> x == '\n').count();
         if(firstValidation.contains("\n"))
         {
@@ -353,7 +347,7 @@ public class DefaultLotroFormat implements LotroFormat {
     public List<String> validateDeck(LotroDeck deck) {
         ArrayList<String> result = new ArrayList<>();
         ArrayList<String> errataResult = new ArrayList<>();
-        String valid = null;
+        String valid;
 
         // Deck
         valid = validateDeckStructure(deck);
@@ -362,7 +356,7 @@ public class DefaultLotroFormat implements LotroFormat {
         }
 
         String prevLine = "";
-        String newLine = "";
+        String newLine;
         for (String card : deck.getDrawDeckCards()){
             newLine = validateCard(card);
             if(newLine == null || newLine.isEmpty())
@@ -492,14 +486,14 @@ public class DefaultLotroFormat implements LotroFormat {
         return _errataCardMap
                 .entrySet().stream()
                 .filter(x-> x.getValue().equals(bpID))
-                .map(x -> x.getKey())
+                .map(Map.Entry::getKey)
                 .toList();
     }
 
     private String validateDeckStructure(LotroDeck deck) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (deck.getDrawDeckCards().size() < _minimumDeckSize) {
-            result += "Deck contains below minimum number of cards: " + deck.getDrawDeckCards().size() + "<" + _minimumDeckSize + ".\n";
+            result.append("Deck contains below minimum number of cards: ").append(deck.getDrawDeckCards().size()).append("<").append(_minimumDeckSize).append(".\n");
         }
         if (_validateShadowFPCount) {
             int shadow = 0;
@@ -512,23 +506,23 @@ public class DefaultLotroFormat implements LotroFormat {
                     else if (card.getSide() == Side.FREE_PEOPLE)
                         fp++;
                     else
-                        result += "Deck contains non-Shadow, non-Free-Peoples card: " + GameUtils.getFullName(card) + ".\n";
+                        result.append("Deck contains non-Shadow, non-Free-Peoples card: ").append(GameUtils.getFullName(card)).append(".\n");
                 }
                 catch(CardNotFoundException exception)
                 {
-                    result += CardRemovedError + ": " + blueprintId + ".\n";
+                    result.append(CardRemovedError + ": ").append(blueprintId).append(".\n");
                 }
             }
             if (fp != shadow) {
-                result += "Deck contains different number of Shadow and Free peoples cards.\n";
+                result.append("Deck contains different number of Shadow and Free peoples cards.\n");
             }
         }
 
-        return result;
+        return result.toString();
     }
 
     private String validateSitesStructure(LotroDeck deck)  {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (isOrderedSites()) {
             boolean[] sites = new boolean[9];
             for (String site : deck.getSites()) {
@@ -537,13 +531,13 @@ public class DefaultLotroFormat implements LotroFormat {
                     if(blueprint.getSiteNumber() == 0)
                         continue; // a shadows site which will already have tripped a validation
                     if (sites[blueprint.getSiteNumber() - 1]) {
-                        result += "Deck has multiple of the same site number: " + blueprint.getSiteNumber() + "\n";
+                        result.append("Deck has multiple of the same site number: ").append(blueprint.getSiteNumber()).append("\n");
                     }
                     sites[blueprint.getSiteNumber() - 1] = true;
                 }
                 catch(CardNotFoundException exception)
                 {
-                    result += CardRemovedError + ": " + site + "\n";
+                    result.append(CardRemovedError + ": ").append(site).append("\n");
                 }
             }
         } else {
@@ -557,12 +551,12 @@ public class DefaultLotroFormat implements LotroFormat {
                 }
                 catch(CardNotFoundException ex)
                 {
-                    result += CardRemovedError + ": " + site + "\n";
+                    result.append(CardRemovedError + ": ").append(site).append("\n");
                 }
             }
 
             if (siteBlueprints.size() < size) {
-                result += "Deck contains multiple of the same site.\n";
+                result.append("Deck contains multiple of the same site.\n");
             }
 
             Map<Integer, Integer> twilightCount = new HashMap<>();
@@ -576,12 +570,12 @@ public class DefaultLotroFormat implements LotroFormat {
 
             for (Map.Entry<Integer, Integer> twilightCountEntry : twilightCount.entrySet()) {
                 if (twilightCountEntry.getValue() > 3) {
-                    result += "Deck contains " + twilightCountEntry.getValue() + " sites with twilight number of " + twilightCountEntry.getKey() + ".\n";
+                    result.append("Deck contains ").append(twilightCountEntry.getValue()).append(" sites with twilight number of ").append(twilightCountEntry.getKey()).append(".\n");
                 }
             }
         }
 
-        return result;
+        return result.toString();
     }
 
     private void processCardCounts(String blueprintId, Map<String, Integer> cardCountByName, Map<String, Integer> cardCountByBaseBlueprintId)  {
@@ -597,12 +591,7 @@ public class DefaultLotroFormat implements LotroFormat {
     }
 
     private void increaseCount(Map<String, Integer> counts, String name) {
-        Integer count = counts.get(name);
-        if (count == null) {
-            counts.put(name, 1);
-        } else {
-            counts.put(name, count + 1);
-        }
+        counts.merge(name, 1, Integer::sum);
     }
 
     @Override

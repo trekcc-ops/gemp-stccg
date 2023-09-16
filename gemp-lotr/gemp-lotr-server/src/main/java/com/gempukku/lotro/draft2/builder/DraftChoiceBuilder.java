@@ -265,10 +265,9 @@ public class DraftChoiceBuilder {
             private List<CardCollection.Item> getCards(long seed, int stage, List<CardCollection.Item> possibleCards) {
                 Random rnd = getRandom(seed, stage);
                 // Fixing some weird issue with Random
-                float thisFixesRandomnessForSomeReason = rnd.nextInt();
-                final List<CardCollection.Item> cards = possibleCards;
-                Collections.shuffle(cards, rnd);
-                return cards;
+                rnd.nextInt();
+                Collections.shuffle(possibleCards, rnd);
+                return possibleCards;
             }
         };
     }
@@ -324,10 +323,9 @@ public class DraftChoiceBuilder {
             private List<CardCollection.Item> getCards(long seed, int stage, List<CardCollection.Item> possibleCards) {
                 Random rnd = getRandom(seed, stage);
                 // Fixing some weird issue with Random
-                float thisFixesRandomnessForSomeReason = rnd.nextInt();
-                final List<CardCollection.Item> cards = possibleCards;
-                Collections.shuffle(cards, rnd);
-                return cards;
+                rnd.nextInt();
+                Collections.shuffle(possibleCards, rnd);
+                return possibleCards;
             }
         };
     }
@@ -397,6 +395,6 @@ public class DraftChoiceBuilder {
     }
 
     private Random getRandom(long seed, int stage) {
-        return new Random(seed + stage * HIGH_ENOUGH_PRIME_NUMBER);
+        return new Random(seed + (long) stage * HIGH_ENOUGH_PRIME_NUMBER);
     }
 }

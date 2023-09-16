@@ -73,7 +73,10 @@ var PCCards = {
 
 // Set 221 - A Tribble of a Different Color
 '221_001': 'https://www.trekcc.org/tribbles/cardimages/toadc/136V.jpg',
+'221_002': 'https://www.trekcc.org/tribbles/cardimages/toadc/137V.jpg',
+'221_003': 'https://www.trekcc.org/tribbles/cardimages/toadc/138V.jpg',
 '221_004': 'https://www.trekcc.org/tribbles/cardimages/toadc/139V.jpg',
+'221_005': 'https://www.trekcc.org/tribbles/cardimages/toadc/140V.jpg',
 '221_006': 'https://www.trekcc.org/tribbles/cardimages/toadc/141V.jpg',
 '221_010': 'https://www.trekcc.org/tribbles/cardimages/toadc/145V.jpg',
 

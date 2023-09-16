@@ -4,6 +4,7 @@ import com.gempukku.lotro.common.DBDefs;
 import com.gempukku.lotro.game.User;
 import org.sql2o.Sql2o;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +13,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class DbPlayerDAO implements PlayerDAO {
-    private final String validLoginChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private final String _selectPlayer = """
         SELECT 
             id, 
@@ -75,7 +75,6 @@ public class DbPlayerDAO implements PlayerDAO {
                 if (player.getLastIp() != null) {
                     statement.setString(nextParamIndex, player.getLastIp());
                     statement.setString(nextParamIndex + 1, player.getLastIp());
-                    nextParamIndex += 2;
                 }
                 try (ResultSet rs = statement.executeQuery()) {
                     List<User> players = new LinkedList<>();
@@ -349,16 +348,13 @@ public class DbPlayerDAO implements PlayerDAO {
         if (login.length() < 2 || login.length() > 30)
             throw new LoginInvalidException();
         for (int i = 0; i < login.length(); i++) {
-            char c = login.charAt(i);
-            if (!validLoginChars.contains("" + c))
+            String validLoginChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+            if (!validLoginChars.contains(String.valueOf(login.charAt(i))))
                 throw new LoginInvalidException();
         }
 
         String lowerCase = login.toLowerCase();
-        if (lowerCase.startsWith("admin") || lowerCase.startsWith("guest") || lowerCase.startsWith("system") || lowerCase.startsWith("bye"))
-            return false;
-
-        return true;
+        return !lowerCase.startsWith("admin") && !lowerCase.startsWith("guest") && !lowerCase.startsWith("system") && !lowerCase.startsWith("bye");
     }
 
     private boolean loginExists(String login) throws SQLException {
@@ -409,7 +405,7 @@ public class DbPlayerDAO implements PlayerDAO {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.reset();
-            return convertToHexString(digest.digest(password.getBytes("UTF-8")));
+            return convertToHexString(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -476,10 +472,9 @@ public class DbPlayerDAO implements PlayerDAO {
 
             try (org.sql2o.Connection conn = db.open()) {
                 String sql = "SELECT id, name FROM player";
-                List<DBDefs.Player> result = conn.createQuery(sql)
-                        .executeAndFetch(DBDefs.Player.class);
 
-                return result;
+                return conn.createQuery(sql)
+                        .executeAndFetch(DBDefs.Player.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve players", ex);

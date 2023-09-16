@@ -48,15 +48,14 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
                 game.getGameState().sendMessage(_message);
         }
 
-        if (!isCostFailed()) {
+        if (isCostFailed()) {
+            return null;
+        } else {
             Effect cost = getNextCost();
             if (cost != null)
                 return cost;
 
-            Effect effect = getNextEffect();
-            if (effect != null)
-                return effect;
+            return getNextEffect();
         }
-        return null;
     }
 }

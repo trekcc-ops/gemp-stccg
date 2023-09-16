@@ -1,29 +1,30 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
 import com.gempukku.lotro.common.Zone;
-import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
-import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.game.LotroGame;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.game.DefaultUserFeedback;
+import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.LotroGame;
+import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 
 import java.util.*;
 
 import static org.junit.Assert.fail;
 
 public abstract class AbstractAtTest {
-    protected static CardBlueprintLibrary _cardLibrary;
-    protected static LotroFormatLibrary _formatLibrary;
+    protected static final CardBlueprintLibrary _cardLibrary;
+    protected static final LotroFormatLibrary _formatLibrary;
     private final int cardId = 100;
 
     static {
@@ -36,8 +37,8 @@ public abstract class AbstractAtTest {
     public static final String P1 = "player1";
     public static final String P2 = "player2";
 
-    protected LotroPhysicalCardImpl createCard(String owner, String blueprintId) throws CardNotFoundException {
-        return (LotroPhysicalCardImpl) _game.getGameState().createPhysicalCard(owner, _cardLibrary, blueprintId);
+    protected PhysicalCardImpl createCard(String owner, String blueprintId) throws CardNotFoundException {
+        return (PhysicalCardImpl) _game.getGameState().createPhysicalCard(owner, _cardLibrary, blueprintId);
     }
 
     protected void initializeSimplestGame() throws DecisionResultInvalidException {
@@ -98,7 +99,7 @@ public abstract class AbstractAtTest {
     }
 
     protected String getArbitraryCardId(AwaitingDecision awaitingDecision, String blueprintId) {
-        String[] blueprints = (String[]) awaitingDecision.getDecisionParameters().get("blueprintId");
+        String[] blueprints = awaitingDecision.getDecisionParameters().get("blueprintId");
         for (int i = 0; i < blueprints.length; i++)
             if (blueprints[i].equals(blueprintId))
                 return ((String[]) awaitingDecision.getDecisionParameters().get("cardId"))[i];
@@ -106,7 +107,7 @@ public abstract class AbstractAtTest {
     }
 
     protected String getCardActionId(AwaitingDecision awaitingDecision, String actionTextStart) {
-        String[] actionTexts = (String[]) awaitingDecision.getDecisionParameters().get("actionText");
+        String[] actionTexts = awaitingDecision.getDecisionParameters().get("actionText");
         for (int i = 0; i < actionTexts.length; i++)
             if (actionTexts[i].startsWith(actionTextStart))
                 return ((String[]) awaitingDecision.getDecisionParameters().get("actionId"))[i];
@@ -118,7 +119,7 @@ public abstract class AbstractAtTest {
     }
 
     protected String getCardActionIdContains(AwaitingDecision awaitingDecision, String actionTextContains) {
-        String[] actionTexts = (String[]) awaitingDecision.getDecisionParameters().get("actionText");
+        String[] actionTexts = awaitingDecision.getDecisionParameters().get("actionText");
         for (int i = 0; i < actionTexts.length; i++)
             if (actionTexts[i].contains(actionTextContains))
                 return ((String[]) awaitingDecision.getDecisionParameters().get("actionId"))[i];
@@ -126,7 +127,7 @@ public abstract class AbstractAtTest {
     }
 
     protected String getMultipleDecisionIndex(AwaitingDecision awaitingDecision, String result) {
-        String[] actionTexts = (String[]) awaitingDecision.getDecisionParameters().get("results");
+        String[] actionTexts = awaitingDecision.getDecisionParameters().get("results");
         for (int i = 0; i < actionTexts.length; i++)
             if (actionTexts[i].equals(result))
                 return String.valueOf(i);
@@ -144,7 +145,7 @@ public abstract class AbstractAtTest {
         decks.put(player, deck);
     }
 
-    protected void moveCardToZone(LotroPhysicalCardImpl card, Zone zone) {
+    protected void moveCardToZone(PhysicalCardImpl card, Zone zone) {
         _game.getGameState().addCardToZone(_game, card, zone);
     }
 

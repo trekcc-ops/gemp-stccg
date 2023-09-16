@@ -27,16 +27,6 @@ public abstract class RevealBottomCardsOfDrawDeckEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         List<? extends LotroPhysicalCard> deck = game.getGameState().getDeck(_playerId);
         int count = Math.min(deck.size(), _count);

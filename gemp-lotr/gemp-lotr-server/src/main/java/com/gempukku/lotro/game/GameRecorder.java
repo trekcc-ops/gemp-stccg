@@ -159,7 +159,7 @@ public class GameRecorder {
 
         for (Map.Entry<String, GameCommunicationChannel> playerRecordings : gameProgress.entrySet()) {
             String playerId = playerRecordings.getKey();
-            String recordingId = "";
+            String recordingId;
             if(playerId.equals(gameInfo.winner)) {
                 recordingId = gameInfo.win_recording_id;
             }
@@ -196,9 +196,6 @@ public class GameRecorder {
                     var deckElement = doc.createElement("deckReadout");
                     deckElement.setAttribute("playerId", player);
                     deckElement.setAttribute("name", deck.getDeckName());
-/*                    deckElement.setAttribute("rb", deck.getRingBearer());
-                    deckElement.setAttribute("ring", deck.getRing());
-                    deckElement.setAttribute("sites", String.join(",", deck.getSites())); */
                     deckElement.setAttribute("deck", String.join(",", deck.getDrawDeckCards()));
 
                     info.appendChild(deckElement);

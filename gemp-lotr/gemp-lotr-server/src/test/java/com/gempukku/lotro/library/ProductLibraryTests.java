@@ -150,7 +150,7 @@
 //            var newItem = newList.get(i);
 //
 //            if(newItem.getBlueprintId().toLowerCase().contains("random")) {
-//                newItem = _productLib.GetProduct(newItem.getBlueprintId()).openPack(0).stream().findFirst().get();
+//                newItem = _productLib.GetProduct(newItem.getBlueprintId()).openPack(0).stream().findFirst().orElse(null);
 //            }
 //
 //            assertEquals(oldItem, newItem);

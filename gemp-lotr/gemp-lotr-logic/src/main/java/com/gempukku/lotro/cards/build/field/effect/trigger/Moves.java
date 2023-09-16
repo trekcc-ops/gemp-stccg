@@ -13,10 +13,10 @@ public class Moves implements TriggerCheckerProducer {
     public TriggerChecker getTriggerChecker(JSONObject value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
-                return TriggerConditions.moves(actionContext.getGame(), actionContext.getEffectResult());
+                return TriggerConditions.moves(actionContext.getEffectResult());
             }
 
             @Override

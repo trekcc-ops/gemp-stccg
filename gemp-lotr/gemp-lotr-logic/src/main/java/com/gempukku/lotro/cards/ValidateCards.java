@@ -8,6 +8,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class ValidateCards {
@@ -22,7 +23,7 @@ public class ValidateCards {
     }
 
     private static void processPath(LotroCardBlueprintBuilder cardBlueprintBuilder, File path) {
-        for (File file : path.listFiles()) {
+        for (File file : Objects.requireNonNull(path.listFiles())) {
             if (file.isFile()) {
                 loadCardsFromFile(cardBlueprintBuilder, file);
                 System.out.println("Finished loading file: " + file.getName());
@@ -41,7 +42,7 @@ public class ValidateCards {
                 String blueprint = cardEntry.getKey();
                 final JSONObject cardDefinition = cardEntry.getValue();
                 try {
-                    final LotroCardBlueprint lotroCardBlueprint = cardBlueprintBuilder.buildFromJson(cardDefinition);
+                    cardBlueprintBuilder.buildFromJson(cardDefinition);
                 } catch (InvalidCardDefinitionException exp) {
                     System.out.println("Unable to load card " + blueprint);
                     exp.printStackTrace();

@@ -1,55 +1,48 @@
 package com.gempukku.lotro.processes.turn;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.gamestate.UserFeedback;
-import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.Effect;
-import com.gempukku.lotro.effects.EffectResult;
-import com.gempukku.lotro.effects.UnrespondableEffect;
-import com.gempukku.lotro.gamestate.GameStats;
 import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.actions.ActionStack;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
-import com.gempukku.lotro.game.PlayerOrderFeedback;
-import com.gempukku.lotro.effects.results.DiscardCardsFromPlayResult;
-import com.gempukku.lotro.effects.results.KilledResult;
-import com.gempukku.lotro.effects.results.ReturnCardsToHandResult;
-import com.gempukku.lotro.rules.lotronly.CharacterDeathRule;
-import com.gempukku.lotro.rules.lotronly.InitiativeChangeRule;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
+import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.decisions.ActionSelectionDecision;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
-import com.gempukku.lotro.processes.GameProcess;
+import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.effects.EffectResult;
+import com.gempukku.lotro.effects.UnrespondableEffect;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
+import com.gempukku.lotro.game.PlayerOrderFeedback;
+import com.gempukku.lotro.gamestate.GameState;
+import com.gempukku.lotro.gamestate.GameStats;
+import com.gempukku.lotro.gamestate.UserFeedback;
+import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.*;
 
 // Action generates multiple Effects, both costs and result of an action are Effects.
 
 // Decision is also an Effect.
-public class TurnProcedure {
+public class TurnProcedure<AbstractGame extends DefaultGame> {
     private final UserFeedback _userFeedback;
-    private final DefaultGame _game;
+    private final AbstractGame _game;
     private final ActionStack _actionStack;
-    private final CharacterDeathRule _characterDeathRule;
     private GameProcess _gameProcess;
     private boolean _playedGameProcess;
     private final GameStats _gameStats;
-    private final InitiativeChangeRule _initiativeChangeRule = new InitiativeChangeRule();
 
-    public TurnProcedure(DefaultGame lotroGame, Set<String> players, final UserFeedback userFeedback, ActionStack actionStack, final PlayerOrderFeedback playerOrderFeedback, CharacterDeathRule characterDeathRule) {
+    public TurnProcedure(AbstractGame game, Set<String> players, final UserFeedback userFeedback,
+                         ActionStack actionStack, final PlayerOrderFeedback playerOrderFeedback) {
         _userFeedback = userFeedback;
-        _game = lotroGame;
+        _game = game;
         _actionStack = actionStack;
-        _characterDeathRule = characterDeathRule;
 
         _gameStats = new GameStats();
 
-        _gameProcess = lotroGame.getFormat().getAdventure().getStartingGameProcess(players, playerOrderFeedback);
+        _gameProcess = game.getFormat().getAdventure().getStartingGameProcess(players, playerOrderFeedback);
     }
 
     public GameStats getGameStats() {
@@ -57,11 +50,8 @@ public class TurnProcedure {
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
-        while (!_userFeedback.hasPendingDecisions() && _game.getWinnerPlayerId() == null) {
+        while (_userFeedback.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null) {
             // First check for any "state-based" effects
-            _initiativeChangeRule.checkInitiativeChange(_game);
-            _characterDeathRule.checkCharactersZeroVitality(_game);
-
             Set<EffectResult> effectResults = ((DefaultActionsEnvironment) _game.getActionsEnvironment()).consumeEffectResults();
             if (effectResults.size() > 0) {
                 _actionStack.stackAction(new PlayOutEffectResults(effectResults));
@@ -155,40 +145,18 @@ public class TurnProcedure {
                 if (requiredResponses.size() > 0)
                     appendEffect(new PlayoutAllActionsIfEffectNotCancelledEffect(this, requiredResponses));
 
+                GameState gameState = _game.getGameState();
                 appendEffect(
-                        new PlayoutOptionalAfterResponsesEffect(this, _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_game.getGameState().getCurrentPlayerId(), true), 0, _effectResults));
-/*                appendEffect(
-                        new UnrespondableEffect() {
-                            @Override
-                            protected void doPlayEffect(LotroGame game) {
-                                if (hasKilledRingBearer())
-                                    _game.checkRingBearerAlive();
-                            }
-                        }); */
+                        new PlayoutOptionalAfterResponsesEffect(this,
+                                gameState.getPlayerOrder().getCounterClockwisePlayOrder(
+                                        gameState.getCurrentPlayerId(), true
+                                ), 0, _effectResults
+                        )
+                );
             }
             return getNextEffect();
         }
 
-        private boolean hasKilledRingBearer() {
-            for (EffectResult effectResult : _effectResults) {
-                if (effectResult.getType() == EffectResult.Type.ANY_NUMBER_KILLED) {
-                    KilledResult killResult = (KilledResult) effectResult;
-                    if (Filters.filter(killResult.getKilledCards(), _game, Filters.ringBearer).size() > 0)
-                        return true;
-                }
-                if (effectResult.getType() == EffectResult.Type.FOR_EACH_RETURNED_TO_HAND) {
-                    ReturnCardsToHandResult returnResult = (ReturnCardsToHandResult) effectResult;
-                    if (returnResult.getReturnedCard() == _game.getGameState().getRingBearer(_game.getGameState().getCurrentPlayerId()))
-                        return true;
-                }
-                if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
-                    DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
-                    if (discardResult.getDiscardedCard() == _game.getGameState().getRingBearer(_game.getGameState().getCurrentPlayerId()))
-                        return true;
-                }
-            }
-            return false;
-        }
     }
 
     private class PlayoutRequiredBeforeResponsesEffect extends UnrespondableEffect {
@@ -347,7 +315,7 @@ public class TurnProcedure {
         public void doPlayEffect(DefaultGame game) {
             if (_actions.size() == 1) {
                 _game.getActionsEnvironment().addActionToStack(_actions.get(0));
-            } else if (areAllActionsTheSame(game)) {
+            } else if (areAllActionsTheSame()) {
                 Action anyAction = _actions.get(0);
                 _actions.remove(anyAction);
                 _game.getActionsEnvironment().addActionToStack(anyAction);
@@ -366,7 +334,7 @@ public class TurnProcedure {
             }
         }
 
-        private boolean areAllActionsTheSame(DefaultGame game) {
+        private boolean areAllActionsTheSame() {
             Iterator<Action> actionIterator = _actions.iterator();
 
             Action firstAction = actionIterator.next();

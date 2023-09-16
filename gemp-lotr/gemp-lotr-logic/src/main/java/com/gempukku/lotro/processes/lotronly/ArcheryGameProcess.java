@@ -4,11 +4,10 @@ import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.processes.GameProcess;
 import com.gempukku.lotro.processes.turn.EndOfPhaseGameProcess;
 import com.gempukku.lotro.processes.turn.PlayersPlayPhaseActionsInOrderGameProcess;
 import com.gempukku.lotro.processes.turn.StartOfPhaseGameProcess;
-import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.processes.lotronly.archery.ArcheryFireGameProcess;
 
 public class ArcheryGameProcess implements GameProcess {
     private GameProcess _followingGameProcess;
@@ -21,9 +20,10 @@ public class ArcheryGameProcess implements GameProcess {
         else
             _followingGameProcess = new StartOfPhaseGameProcess(Phase.ARCHERY,
                     new PlayersPlayPhaseActionsInOrderGameProcess(game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(game.getGameState().getCurrentPlayerId(), true), 0,
-                            new ArcheryFireGameProcess(
+                // done messed this up just so we could delete some stuff
+//                            new ArcheryFireGameProcess(
                                     new EndOfPhaseGameProcess(Phase.ARCHERY,
-                                            new AssignmentGameProcess()))));
+                                            new AssignmentGameProcess())));
     }
 
     @Override

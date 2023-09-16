@@ -1,10 +1,11 @@
 package com.gempukku.lotro.cards.build.field.effect.modifier;
 
-import com.gempukku.lotro.cards.build.*;
+import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.build.ModifierSource;
+import com.gempukku.lotro.cards.build.Requirement;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.modifiers.PlayersCantPlayPhaseEventsOrPhaseSpecialAbilitiesModifier;
 import org.json.simple.JSONObject;
 
@@ -21,12 +22,7 @@ public class CantPlayPhaseEventsOrPhaseSpecialAbilities implements ModifierSourc
 
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new PlayersCantPlayPhaseEventsOrPhaseSpecialAbilitiesModifier(actionContext.getSource(),
-                        new RequirementCondition(requirements, actionContext), phase);
-            }
-        };
+        return actionContext -> new PlayersCantPlayPhaseEventsOrPhaseSpecialAbilitiesModifier(actionContext.getSource(),
+                new RequirementCondition(requirements, actionContext), phase);
     }
 }

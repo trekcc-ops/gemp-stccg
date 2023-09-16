@@ -19,7 +19,7 @@ public class AboutToBeKilled implements TriggerCheckerProducer {
 
         final FilterableSource affectedFilter = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
                 final Filterable affected = affectedFilter.getFilterable(actionContext);

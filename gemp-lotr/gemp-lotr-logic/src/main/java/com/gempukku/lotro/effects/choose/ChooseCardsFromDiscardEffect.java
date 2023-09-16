@@ -8,7 +8,6 @@ import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.AbstractEffect;
-import com.gempukku.lotro.effects.Effect;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,11 +35,6 @@ public abstract class ChooseCardsFromDiscardEffect extends AbstractEffect {
     @Override
     public String getText(DefaultGame game) {
         return "Choose card from discard";
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
     }
 
     @Override

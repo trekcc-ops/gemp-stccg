@@ -10,7 +10,7 @@ public enum SitesBlock {
 
     private final String _humanReadable;
 
-    private SitesBlock(String humanReadable) {
+    SitesBlock(String humanReadable) {
         _humanReadable = humanReadable;
     }
 

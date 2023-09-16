@@ -41,11 +41,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public LimitCounter getUntilEndOfPhaseLimitCounter(LotroPhysicalCard card, String prefix, Phase phase) {
-        Map<String, LimitCounter> limitCounterMap = _endOfPhaseLimitCounters.get(phase);
-        if (limitCounterMap == null) {
-            limitCounterMap = new HashMap<>();
-            _endOfPhaseLimitCounters.put(phase, limitCounterMap);
-        }
+        Map<String, LimitCounter> limitCounterMap = _endOfPhaseLimitCounters.computeIfAbsent(phase, k -> new HashMap<>());
         LimitCounter limitCounter = limitCounterMap.get(prefix + card.getCardId());
         if (limitCounter == null) {
             limitCounter = new DefaultLimitCounter();
@@ -56,11 +52,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public LimitCounter getUntilStartOfPhaseLimitCounter(LotroPhysicalCard card, String prefix, Phase phase) {
-        Map<String, LimitCounter> limitCounterMap = _startOfPhaseLimitCounters.get(phase);
-        if (limitCounterMap == null) {
-            limitCounterMap = new HashMap<>();
-            _startOfPhaseLimitCounters.put(phase, limitCounterMap);
-        }
+        Map<String, LimitCounter> limitCounterMap = _startOfPhaseLimitCounters.computeIfAbsent(phase, k -> new HashMap<>());
         LimitCounter limitCounter = limitCounterMap.get(prefix + card.getCardId());
         if (limitCounter == null) {
             limitCounter = new DefaultLimitCounter();
@@ -87,20 +79,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     @Override
     public void addedWound(LotroPhysicalCard card) {
         final int cardId = card.getCardId();
-        final Integer previousWounds = _woundsPerPhaseMap.get(cardId);
-        if (previousWounds == null)
-            _woundsPerPhaseMap.put(cardId, 1);
-        else
-            _woundsPerPhaseMap.put(cardId, previousWounds + 1);
+        _woundsPerPhaseMap.merge(cardId, 1, Integer::sum);
     }
 
     private List<Modifier> getEffectModifiers(ModifierEffect modifierEffect) {
-        List<Modifier> modifiers = _modifiers.get(modifierEffect);
-        if (modifiers == null) {
-            modifiers = new LinkedList<>();
-            _modifiers.put(modifierEffect, modifiers);
-        }
-        return modifiers;
+        return _modifiers.computeIfAbsent(modifierEffect, k -> new LinkedList<>());
     }
 
     private void removeModifiers(List<Modifier> modifiers) {
@@ -205,22 +188,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     @Override
     public void addUntilEndOfPhaseModifier(Modifier modifier, Phase phase) {
         addModifier(modifier);
-        List<Modifier> list = _untilEndOfPhaseModifiers.get(phase);
-        if (list == null) {
-            list = new LinkedList<>();
-            _untilEndOfPhaseModifiers.put(phase, list);
-        }
+        List<Modifier> list = _untilEndOfPhaseModifiers.computeIfAbsent(phase, k -> new LinkedList<>());
         list.add(modifier);
     }
 
     @Override
     public void addUntilStartOfPhaseModifier(Modifier modifier, Phase phase) {
         addModifier(modifier);
-        List<Modifier> list = _untilStartOfPhaseModifiers.get(phase);
-        if (list == null) {
-            list = new LinkedList<>();
-            _untilStartOfPhaseModifiers.put(phase, list);
-        }
+        List<Modifier> list = _untilStartOfPhaseModifiers.computeIfAbsent(phase, k -> new LinkedList<>());
         list.add(modifier);
     }
 
@@ -286,7 +261,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     private boolean hasAllKeywordsRemoved(DefaultGame game, LotroPhysicalCard card) {
         for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.LOSE_ALL_KEYWORDS_MODIFIER, card)) {
-            if (modifier.lostAllKeywords(game, card))
+            if (modifier.lostAllKeywords(card))
                 return true;
         }
         return false;
@@ -294,7 +269,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean hasKeyword(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "hasKeyword " + keyword.getHumanReadable());
+        LoggingThreadLocal.logMethodStart();
         try {
             if (isCandidateForKeywordRemovalWithTextRemoval(game, physicalCard, keyword) &&
                     (hasTextRemoved(game, physicalCard) || hasAllKeywordsRemoved(game, physicalCard)))
@@ -321,7 +296,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getKeywordCount(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getKeywordCount " + keyword.getHumanReadable());
+        LoggingThreadLocal.logMethodStart();
         try {
             if (isCandidateForKeywordRemovalWithTextRemoval(game, physicalCard, keyword)
                     && (hasTextRemoved(game, physicalCard) || hasAllKeywordsRemoved(game, physicalCard)))
@@ -347,8 +322,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         if (keyword == Keyword.ROAMING)
             return false;
         if (keyword == Keyword.RING_BOUND)
-            if (game.getGameState().getRingBearer(physicalCard.getOwner()) == physicalCard)
-                return false;
+            return game.getGameState().getRingBearer(physicalCard.getOwner()) != physicalCard;
         return true;
     }
 
@@ -364,7 +338,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean hasSignet(DefaultGame game, LotroPhysicalCard physicalCard, Signet signet) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "hasSignet " + signet);
+        LoggingThreadLocal.logMethodStart();
         try {
             if (physicalCard.getBlueprint().getSignet() == signet)
                 return true;
@@ -405,7 +379,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getStrength(DefaultGame game, LotroPhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getStrength");
+        LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getStrength();
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.STRENGTH_MODIFIER, physicalCard)) {
@@ -423,12 +397,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     public boolean appliesStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTarget) {
         if (modifierSource != null)
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.STRENGTH_BONUS_SOURCE_MODIFIER, modifierSource)) {
-                if (!modifier.appliesStrengthBonusModifier(game, modifierSource, modifierTarget))
+                if (modifier.cancelsStrengthBonusModifier(game, modifierSource, modifierTarget))
                     return false;
             }
         if (modifierTarget != null)
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.STRENGTH_BONUS_TARGET_MODIFIER, modifierTarget)) {
-                if (!modifier.appliesStrengthBonusModifier(game, modifierSource, modifierTarget))
+                if (modifier.cancelsStrengthBonusModifier(game, modifierSource, modifierTarget))
                     return false;
             }
         return true;
@@ -436,7 +410,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getVitality(DefaultGame game, LotroPhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getVitality");
+        LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getVitality() - game.getGameState().getWounds(physicalCard);
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.VITALITY_MODIFIER, physicalCard)) {
@@ -450,7 +424,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getResistance(DefaultGame game, LotroPhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getResistance");
+        LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getResistance();
             // Companions resistance is reduced by the number of burdens
@@ -467,7 +441,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getMinionSiteNumber(DefaultGame game, LotroPhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getMinionSiteNumber");
+        LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getSiteNumber();
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.SITE_NUMBER_MODIFIER, physicalCard)) {
@@ -481,7 +455,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getTwilightCost(DefaultGame game, LotroPhysicalCard physicalCard, LotroPhysicalCard target, int twilightCostModifier, boolean ignoreRoamingPenalty) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getTwilightCost");
+        LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getTwilightCost() + twilightCostModifier;
             result += physicalCard.getBlueprint().getTwilightCostModifier(game, physicalCard, target);
@@ -502,7 +476,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getRoamingPenalty(DefaultGame game, LotroPhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart(physicalCard, "getRoamingPenalty");
+        LoggingThreadLocal.logMethodStart();
         try {
             int result = 2;
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.TWILIGHT_COST_MODIFIER, physicalCard)) {
@@ -516,7 +490,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public int getOverwhelmMultiplier(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "getOverwhelmMultiplier");
+        LoggingThreadLocal.logMethodStart();
         try {
             int overwhelmMultiplier = 2;
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.OVERWHELM_MODIFIER, card)) {
@@ -546,7 +520,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canTakeWounds(DefaultGame game, Collection<LotroPhysicalCard> woundSources, LotroPhysicalCard card, int woundsToTake) {
-        LoggingThreadLocal.logMethodStart(card, "canTakeWound");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.WOUND_MODIFIER, card)) {
                 Integer woundsTaken = _woundsPerPhaseMap.get(card.getCardId());
@@ -563,7 +537,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, LotroPhysicalCard card, Set<LotroPhysicalCard> winners) {
-        LoggingThreadLocal.logMethodStart(card, "canTakeWound");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.WOUND_MODIFIER, card)) {
                 if (!modifier.canTakeWoundsFromLosingSkirmish(game, card, winners))
@@ -577,7 +551,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canTakeArcheryWound(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "canTakeArcheryWound");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.WOUND_MODIFIER, card)) {
                 if (!modifier.canTakeArcheryWound(game, card))
@@ -591,7 +565,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canBeExerted(DefaultGame game, LotroPhysicalCard exertionSource, LotroPhysicalCard exertedCard) {
-        LoggingThreadLocal.logMethodStart(exertedCard, "canBeExerted");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.WOUND_MODIFIER, exertedCard)) {
                 if (!modifier.canBeExerted(game, exertionSource, exertedCard))
@@ -605,7 +579,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "isAllyAllowedToParticipateInSkirmishes");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
                 if (modifier.isUnhastyCompanionAllowedToParticipateInSkirmishes(game, card))
@@ -619,7 +593,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean isAllyAllowedToParticipateInArcheryFire(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "isAllyAllowedToParticipateInArcheryFire");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
                 if (modifier.isAllyParticipateInArcheryFire(game, card))
@@ -633,7 +607,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean isAllyAllowedToParticipateInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "isAllyAllowedToParticipateInSkirmishes");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
                 if (modifier.isAllyParticipateInSkirmishes(game, sidePlayer, card))
@@ -646,22 +620,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public boolean isAllyPreventedFromParticipatingInArcheryFire(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "isAllyPreventedFromParticipatingInArcheryFire");
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
-                if (modifier.isAllyPreventedFromParticipatingInArcheryFire(game, card))
-                    return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
     public boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "isAllyPreventedFromParticipatingInSkirmishes");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
                 if (modifier.isAllyPreventedFromParticipatingInSkirmishes(game, sidePlayer, card))
@@ -675,7 +635,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean addsToArcheryTotal(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "addsToArcheryTotal");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.ARCHERY_MODIFIER, card))
                 if (!modifier.addsToArcheryTotal(game, card))
@@ -804,21 +764,15 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean isValidAssignments(DefaultGame game, Side side, Map<LotroPhysicalCard, Set<LotroPhysicalCard>> assignments) {
-        for (Modifier modifier : getModifiers(game, ModifierEffect.ASSIGNMENT_MODIFIER)) {
-            if (!modifier.isValidAssignments(game, side, assignments))
-                return false;
-            for (Map.Entry<LotroPhysicalCard, Set<LotroPhysicalCard>> assignment : assignments.entrySet()) {
-                if (affectsCardWithSkipSet(game, assignment.getKey(), modifier))
-                    if (!modifier.isValidAssignments(game, side, assignment.getKey(), assignment.getValue()))
-                        return false;
-            }
+        for (Modifier ignored : getModifiers(game, ModifierEffect.ASSIGNMENT_MODIFIER)) {
+            return false;
         }
         return true;
     }
 
     @Override
     public boolean canBeAssignedToSkirmish(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "canBeAssignedToSkirmish");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.ASSIGNMENT_MODIFIER, card))
                 if (modifier.isPreventedFromBeingAssignedToSkirmish(game, sidePlayer, card))
@@ -831,7 +785,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, LotroPhysicalCard card, LotroPhysicalCard source) {
-        LoggingThreadLocal.logMethodStart(card, "canBeDiscardedFromPlay");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.DISCARD_FROM_PLAY_MODIFIER, card))
                 if (!modifier.canBeDiscardedFromPlay(game, performingPlayer, card, source))
@@ -844,7 +798,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canBeReturnedToHand(DefaultGame game, LotroPhysicalCard card, LotroPhysicalCard source) {
-        LoggingThreadLocal.logMethodStart(card, "canBeReturnedToHand");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.RETURN_TO_HAND_MODIFIER, card))
                 if (!modifier.canBeReturnedToHand(game, card, source))
@@ -857,7 +811,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canBeHealed(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart(card, "canBeHealed");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.WOUND_MODIFIER, card))
                 if (!modifier.canBeHealed(game, card))
@@ -907,11 +861,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         if (game.getGameState().getCurrentPlayerId().equals(playerId)) {
             if (game.getGameState().getCurrentPhase() != Phase.FELLOWSHIP)
                 return true;
-            if (game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP && _drawnThisPhaseCount < 4) {
-                return true;
-            } else {
-                return false;
-            }
+            return game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP && _drawnThisPhaseCount < 4;
         }
         return true;
     }
@@ -964,7 +914,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canBeLiberated(DefaultGame game, String playerId, LotroPhysicalCard card, LotroPhysicalCard source) {
-        LoggingThreadLocal.logMethodStart(card, "canBeLiberated");
+        LoggingThreadLocal.logMethodStart();
         try {
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.LIBERATION_MODIFIER, card))
                 if (!modifier.canBeLiberated(game, playerId, card, source))
@@ -1012,7 +962,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
         int result = 0;
         for (Culture spottableCulturesBasedOnCardsOnCard : spottableCulturesBasedOnCards) {
-            if (canPlayerSpotCulture(game, playerId, spottableCulturesBasedOnCardsOnCard))
+            if (canPlayerSpotCulture(game))
                 result++;
         }
 
@@ -1022,10 +972,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return result;
     }
 
-    private boolean canPlayerSpotCulture(DefaultGame game, String playerId, Culture culture) {
-        for (Modifier modifier : getModifiers(game, ModifierEffect.SPOT_MODIFIER))
-            if (!modifier.canSpotCulture(game, culture, playerId))
-                return false;
+    private boolean canPlayerSpotCulture(DefaultGame game) {
+        for (Modifier ignored : getModifiers(game, ModifierEffect.SPOT_MODIFIER))
+            return false;
         return true;
     }
 
@@ -1040,7 +989,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
         int result = 0;
         for (Culture spottableCulturesBasedOnCardsOnCard : spottableCulturesBasedOnCards) {
-            if (canPlayerSpotCulture(game, playerId, spottableCulturesBasedOnCardsOnCard))
+            if (canPlayerSpotCulture(game))
                 result++;
         }
 

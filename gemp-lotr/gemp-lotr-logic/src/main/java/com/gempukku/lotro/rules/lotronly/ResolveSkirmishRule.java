@@ -17,11 +17,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ResolveSkirmishRule {
-    private final DefaultGame _lotroGame;
     private final DefaultActionsEnvironment _actionsEnvironment;
 
-    public ResolveSkirmishRule(DefaultGame lotroGame, DefaultActionsEnvironment actionsEnvironment) {
-        _lotroGame = lotroGame;
+    public ResolveSkirmishRule(DefaultActionsEnvironment actionsEnvironment) {
         _actionsEnvironment = actionsEnvironment;
     }
 

@@ -27,9 +27,9 @@ public class OptionalTriggersRule {
                     @Override
                     public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (LotroPhysicalCard activableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activableCard)) {
-                                final List<? extends OptionalTriggerAction> actions = activableCard.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, activableCard);
+                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                                final List<? extends OptionalTriggerAction> actions = activatableCard.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
@@ -41,11 +41,11 @@ public class OptionalTriggersRule {
                     @Override
                     public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (LotroPhysicalCard activableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activableCard)) {
+                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends OptionalTriggerAction> actions =
-                                        activableCard.getOptionalAfterTriggerActions(playerId, game, effectResult,
-                                                activableCard);
+                                        activatableCard.getOptionalAfterTriggerActions(playerId, game, effectResult,
+                                                activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
                             }

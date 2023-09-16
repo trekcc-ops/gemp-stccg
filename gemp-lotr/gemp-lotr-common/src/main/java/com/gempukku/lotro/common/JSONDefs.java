@@ -10,7 +10,7 @@ public class JSONDefs {
 
         public String Name;
         public PackType Type;
-        public boolean Recursive = false;
+        public final boolean Recursive = false;
         public List<String> Items;
         public Map<String, String> Data;
     }
@@ -23,8 +23,8 @@ public class JSONDefs {
     }
 
     public static class ItemStub {
-        public String code;
-        public String name;
+        public final String code;
+        public final String name;
         public ItemStub(String c, String n) {
             code = c;
             name = n;
@@ -68,7 +68,7 @@ public class JSONDefs {
     }
 
     public static class ErrataInfo {
-        public static String PC_Errata = "PC";
+        public static final String PC_Errata = "PC";
         public String BaseID;
         public String Name;
         public String LinkText;

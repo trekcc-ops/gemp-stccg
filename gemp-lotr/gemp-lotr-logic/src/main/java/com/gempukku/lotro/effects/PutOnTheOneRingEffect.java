@@ -6,11 +6,6 @@ import com.gempukku.lotro.effects.results.PutOnTheOneRingResult;
 public class PutOnTheOneRingEffect extends AbstractEffect {
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public String getText(DefaultGame game) {
         return "Put on The One Ring";
     }

@@ -28,11 +28,6 @@ public class DiscardCardAtRandomFromHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getGameState().getHand(_playerId).size() > 0
                 && (!_forced || game.getModifiersQuerying().canDiscardCardsFromHand(game, _playerId, _source));

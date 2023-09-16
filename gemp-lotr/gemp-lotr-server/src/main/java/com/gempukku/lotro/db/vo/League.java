@@ -5,6 +5,8 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 import com.gempukku.lotro.league.*;
 
+import java.util.Objects;
+
 public class League {
     private final int _cost;
     private final String _name;
@@ -75,9 +77,7 @@ public class League {
 
         League league = (League) o;
 
-        if (_type != null ? !_type.equals(league._type) : league._type != null) return false;
-
-        return true;
+        return Objects.equals(_type, league._type);
     }
 
     @Override

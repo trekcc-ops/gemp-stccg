@@ -33,11 +33,7 @@ public class RarityBasedMerchant implements Merchant {
         if (foil || tengwar)
             return null;
 
-        final Integer cardBasePrice = getCardBasePrice(blueprintId);
-        if (cardBasePrice == null)
-            return null;
-
-        return cardBasePrice;
+        return getCardBasePrice(blueprintId);
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;
@@ -30,8 +30,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        final LotroPhysicalCardImpl hobbitSword = new LotroPhysicalCardImpl(101, "1_299", P1, _cardLibrary.getLotroCardBlueprint("1_299"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(101, "1_299", P1, _cardLibrary.getLotroCardBlueprint("1_299"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, hobbitSword, merry);
@@ -71,9 +71,9 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        final LotroPhysicalCardImpl alatar = new LotroPhysicalCardImpl(101, "13_28", P1, _cardLibrary.getLotroCardBlueprint("13_28"));
-        final LotroPhysicalCardImpl whisperInTheDark = new LotroPhysicalCardImpl(101, "18_77", P1, _cardLibrary.getLotroCardBlueprint("18_77"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl alatar = new PhysicalCardImpl(101, "13_28", P1, _cardLibrary.getLotroCardBlueprint("13_28"));
+        final PhysicalCardImpl whisperInTheDark = new PhysicalCardImpl(101, "18_77", P1, _cardLibrary.getLotroCardBlueprint("18_77"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, alatar, merry);
@@ -116,8 +116,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        final LotroPhysicalCardImpl hobbitSword = new LotroPhysicalCardImpl(101, "1_299", P1, _cardLibrary.getLotroCardBlueprint("1_299"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(101, "1_299", P1, _cardLibrary.getLotroCardBlueprint("1_299"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().stackCard(_game, hobbitSword, merry);

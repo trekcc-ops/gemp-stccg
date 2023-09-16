@@ -188,7 +188,7 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "limit", "amount");
                 ValueSource limitSource = resolveEvaluator(object.get("limit"), 0, environment);
                 ValueSource valueSource = resolveEvaluator(object.get("amount"), 0, environment);
-                return (actionContext) -> new CardPhaseLimitEvaluator(actionContext.getGame(), actionContext.getSource(),
+                return (actionContext) -> new CardPhaseLimitEvaluator(actionContext.getSource(),
                         actionContext.getGame().getGameState().getCurrentPhase(), limitSource.getEvaluator(actionContext),
                         valueSource.getEvaluator(actionContext));
             } else if (type.equalsIgnoreCase("countStacked")) {
@@ -284,6 +284,15 @@ public class ValueResolver {
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
                 return actionContext ->
                         (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayer(actionContext)),
+                                game, filterableSource.getFilterable(actionContext)).size();
+            } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
+                FieldUtils.validateAllowedFields(object, "filter", "owner");
+                final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
+                final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
+                final PlayerSource player = PlayerResolver.resolvePlayer(owner);
+                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+                return actionContext -> (Evaluator<TribblesGame>) (game, cardAffected) ->
+                        Filters.filter(game.getGameState().getPlayPile(player.getPlayer(actionContext)),
                                 game, filterableSource.getFilterable(actionContext)).size();
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
                 FieldUtils.validateAllowedFields(object, "owner");

@@ -11,20 +11,13 @@ import java.util.Set;
 
 public class ExchangeCardsInHandWithStackedOnEffect extends AbstractEffect {
     private final String _performingPlayer;
-    private final LotroPhysicalCard _source;
     private final String _playerHand;
     private final LotroPhysicalCard _stackedOn;
 
-    public ExchangeCardsInHandWithStackedOnEffect(String performingPlayer, LotroPhysicalCard source, String playerHand, LotroPhysicalCard stackedOn) {
+    public ExchangeCardsInHandWithStackedOnEffect(String performingPlayer, String playerHand, LotroPhysicalCard stackedOn) {
         _performingPlayer = performingPlayer;
-        _source = source;
         _playerHand = playerHand;
         _stackedOn = stackedOn;
-    }
-
-    @Override
-    public String getText(DefaultGame game) {
-        return null;
     }
 
     @Override
@@ -48,11 +41,6 @@ public class ExchangeCardsInHandWithStackedOnEffect extends AbstractEffect {
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);
-    }
-
-    @Override
-    public Type getType() {
-        return null;
     }
 
     @Override

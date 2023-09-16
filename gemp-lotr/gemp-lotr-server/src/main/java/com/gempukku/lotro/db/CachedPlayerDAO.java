@@ -92,7 +92,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
 
     @Override
     public User getPlayer(int id) {
-        User player = (User) _playerById.get(id);
+        User player = _playerById.get(id);
         if (player == null) {
             player = _delegate.getPlayer(id);
             if (player != null) {
@@ -105,7 +105,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
 
     @Override
     public User getPlayer(String playerName) {
-        User player = (User) _playerByName.get(playerName);
+        User player = _playerByName.get(playerName);
         if (player == null) {
             player = _delegate.getPlayer(playerName);
             if (player != null) {

@@ -19,12 +19,7 @@ public class CantPreventWounds implements ModifierSourceProducer {
         final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new SpecialFlagModifier(actionContext.getSource(),
-                        new RequirementCondition(requirements, actionContext), ModifierFlag.CANT_PREVENT_WOUNDS);
-            }
-        };
+        return actionContext -> new SpecialFlagModifier(actionContext.getSource(),
+                new RequirementCondition(requirements, actionContext), ModifierFlag.CANT_PREVENT_WOUNDS);
     }
 }

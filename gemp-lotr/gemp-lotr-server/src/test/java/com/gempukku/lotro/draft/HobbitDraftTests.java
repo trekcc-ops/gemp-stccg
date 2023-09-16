@@ -16,12 +16,6 @@ import java.util.TreeMap;
 public class HobbitDraftTests extends AbstractAtTest {
     @Test
     public void HobbitDraftTest() {
-//        final String property = System.getProperty("user.dir");
-//        String projectRoot = new File(property).getAbsolutePath();
-//
-//        //library.init(new File(projectRoot + "/gemp-lotr-async/src/main/web/cards"), new CardSets());
-//        library.init(AppConfig.getCardsPath(), AppConfig.getMappingsPath(), new CardSets());
-
         CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
         DefaultAdventureLibrary defaultAdventureLibrary = new DefaultAdventureLibrary();
         LotroFormatLibrary lotroFormatLibrary = new LotroFormatLibrary(defaultAdventureLibrary, _cardLibrary);
@@ -46,7 +40,7 @@ public class HobbitDraftTests extends AbstractAtTest {
 
         for (int i = 0; i < 10000; i++) {
             // Take an example seed
-            long seed = getSeed(String.valueOf(collectionType + i), playerId);
+            long seed = getSeed(String.valueOf(collectionType + i));
 
             int stage = 0;
 
@@ -116,7 +110,7 @@ public class HobbitDraftTests extends AbstractAtTest {
         }
     }
 
-    private static long getSeed(String collectionType, int playerId) {
-        return collectionType.hashCode() + playerId * 8963;
+    private static long getSeed(String collectionType) {
+        return collectionType.hashCode() + 1000 * 8963L;
     }
 }

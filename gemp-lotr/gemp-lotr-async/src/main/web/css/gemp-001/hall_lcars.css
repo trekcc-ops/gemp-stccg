@@ -8,7 +8,7 @@ html, body {
 	color: #c7f;
 }
 
-.flex-horiz {
+.flex-horizontal {
 	display: flex;
 	flex-direction: row;
 	gap: 2px;

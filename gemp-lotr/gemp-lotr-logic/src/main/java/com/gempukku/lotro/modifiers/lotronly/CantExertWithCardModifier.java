@@ -23,8 +23,6 @@ public class CantExertWithCardModifier extends AbstractModifier {
 
     @Override
     public boolean canBeExerted(DefaultGame game, LotroPhysicalCard exertionSource, LotroPhysicalCard exertedCard) {
-        if (_preventExertWithFilter.accepts(game, exertionSource))
-            return false;
-        return true;
+        return !_preventExertWithFilter.accepts(game, exertionSource);
     }
 }

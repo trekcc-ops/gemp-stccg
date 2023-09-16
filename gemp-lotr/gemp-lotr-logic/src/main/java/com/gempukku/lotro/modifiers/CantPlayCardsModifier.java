@@ -30,8 +30,7 @@ public class CantPlayCardsModifier extends AbstractModifier {
         final LotroPhysicalCard actionSource = action.getActionSource();
         if (actionSource != null)
             if (action.getType() == Action.Type.PLAY_CARD)
-                if (_filters.accepts(game, actionSource))
-                    return false;
+                return !_filters.accepts(game, actionSource);
         return true;
     }
 }

@@ -60,8 +60,8 @@ public class ExhaustCharacterEffect extends AbstractSubActionEffect {
         }
 
         @Override
-        protected void playoutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
-            super.playoutEffectOn(game, cards);
+        protected void playOutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+            super.playOutEffectOn(game, cards);
             if (getAffectedCards(game).size() > 0)
                 _subAction.appendEffect(new InfiniteExertionEffect(_source, _subAction, _filters));
         }

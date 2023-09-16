@@ -20,9 +20,7 @@ public class PlayersCantPlayPhaseEventsOrPhaseSpecialAbilitiesModifier extends A
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        if ((action.getType() == Action.Type.PLAY_CARD || action.getType() == Action.Type.SPECIAL_ABILITY)
-                && action.getActionTimeword() == _phase)
-            return false;
-        return true;
+        return (action.getType() != Action.Type.PLAY_CARD && action.getType() != Action.Type.SPECIAL_ABILITY)
+                || action.getActionTimeword() != _phase;
     }
 }

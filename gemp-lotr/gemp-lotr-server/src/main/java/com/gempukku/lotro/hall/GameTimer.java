@@ -13,12 +13,15 @@ public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, 
     public static GameTimer ResolveTimer(String timer) {
         if (timer != null) {
             switch (timer.toLowerCase()) {
-                case "blitz":
+                case "blitz" -> {
                     return GameTimer.BLITZ_TIMER;
-                case "slow":
+                }
+                case "slow" -> {
                     return GameTimer.SLOW_TIMER;
-                case "glacial":
+                }
+                case "glacial" -> {
                     return GameTimer.GLACIAL_TIMER;
+                }
             }
         }
         return GameTimer.DEFAULT_TIMER;

@@ -16,11 +16,6 @@ public class ReconcileHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return true;
     }

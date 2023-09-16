@@ -5,7 +5,7 @@ import com.gempukku.lotro.game.User;
 import java.util.Collection;
 
 public interface LeagueParticipationDAO {
-    public void userJoinsLeague(String leagueId, User player, String remoteAddr);
+    void userJoinsLeague(String leagueId, User player, String remoteAddr);
 
-    public Collection<String> getUsersParticipating(String leagueId);
+    Collection<String> getUsersParticipating(String leagueId);
 }

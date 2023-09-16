@@ -21,8 +21,6 @@ public class PlacePlayedCardBeneathDrawDeckEFfect extends AbstractEffect {
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return true;
-/*        Zone zone = card.getZone();
-        return zone == Zone.VOID || zone == Zone.VOID_FROM_HAND;*/
     }
 
     @Override

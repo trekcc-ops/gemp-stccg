@@ -58,7 +58,7 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
                 .extensions(adminExt)
                 .build();
         _markdownRenderer = HtmlRenderer.builder()
-                .nodeRendererFactory(htmlContext -> new LinkShredder(htmlContext))
+                .nodeRendererFactory(LinkShredder::new)
                 .extensions(adminExt)
                 .escapeHtml(true)
                 .sanitizeUrls(true)
@@ -77,7 +77,7 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
         }
     }
 
-    private Pattern QuoteExtender = Pattern.compile("^([ \t]*>[ \t]*.+)(?=\n[ \t]*[^>])", Pattern.MULTILINE);
+    private final Pattern QuoteExtender = Pattern.compile("^([ \t]*>[ \t]*.+)(?=\n[ \t]*[^>])", Pattern.MULTILINE);
 
     private void postMessages(HttpRequest request, String room, ResponseWriter responseWriter) throws Exception {
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
@@ -140,7 +140,7 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
     // + remove image processing
     // - re-enable bare url linking
 
-    private class LinkShredder implements NodeRenderer {
+    private static class LinkShredder implements NodeRenderer {
 
         private final HtmlWriter html;
 

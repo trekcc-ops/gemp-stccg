@@ -33,11 +33,6 @@ public class AssignmentEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public String getText(DefaultGame game) {
         return "Assign " + GameUtils.getCardLink(_minion) + " to skirmish " + GameUtils.getCardLink(_fpChar);
     }

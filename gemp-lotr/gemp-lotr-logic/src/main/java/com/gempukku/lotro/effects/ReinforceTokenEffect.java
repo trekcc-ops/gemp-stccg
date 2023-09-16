@@ -17,12 +17,7 @@ public class ReinforceTokenEffect extends ChooseActiveCardEffect {
 
     public ReinforceTokenEffect(LotroPhysicalCard source, String playerId, Token token, int count) {
         super(source, playerId, "Choose card to reinforce", Filters.owner(playerId), (token != null) ? Filters.hasToken(token) : Filters.hasAnyCultureTokens(1),
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return !game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_TOUCH_CULTURE_TOKENS);
-                    }
-                });
+                (Filter) (game, physicalCard) -> !game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_TOUCH_CULTURE_TOKENS));
         _token = token;
         _count = count;
     }

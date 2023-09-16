@@ -73,7 +73,7 @@ public interface LotroCardBlueprint {
 
     List<? extends Modifier> getControlledSiteModifiers(DefaultGame game, LotroPhysicalCard self);
 
-    boolean checkPlayRequirements(DefaultGame game, LotroPhysicalCard self);
+    boolean playRequirementsNotMet(DefaultGame game, LotroPhysicalCard self);
 
     List<? extends Action> getPhaseActionsInHand(String playerId, DefaultGame game, LotroPhysicalCard self);
 
@@ -138,8 +138,6 @@ public interface LotroCardBlueprint {
     boolean canPayAidCost(DefaultGame game, LotroPhysicalCard self);
 
     void appendAidCosts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard self);
-
-    boolean skipUniquenessCheck();
 
     List<FilterableSource> getCopiedFilters();
 }

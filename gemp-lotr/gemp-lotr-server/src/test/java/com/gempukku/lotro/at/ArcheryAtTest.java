@@ -1,6 +1,6 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.cards.CardNotFoundException;
@@ -21,8 +21,8 @@ public class ArcheryAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legolas = new LotroPhysicalCardImpl(100, "1_51", P1, _cardLibrary.getLotroCardBlueprint("1_51"));
-        LotroPhysicalCardImpl archerMinion = new LotroPhysicalCardImpl(101, "4_138", P2, _cardLibrary.getLotroCardBlueprint("4_138"));
+        PhysicalCardImpl legolas = new PhysicalCardImpl(100, "1_51", P1, _cardLibrary.getLotroCardBlueprint("1_51"));
+        PhysicalCardImpl archerMinion = new PhysicalCardImpl(101, "4_138", P2, _cardLibrary.getLotroCardBlueprint("4_138"));
 
         skipMulligans();
 
@@ -48,7 +48,7 @@ public class ArcheryAtTest extends AbstractAtTest {
 
         AwaitingDecision archeryWoundDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, archeryWoundDecision.getDecisionType());
-        assertEquals(2, ((String[]) archeryWoundDecision.getDecisionParameters().get("cardId")).length);
+        assertEquals(2, archeryWoundDecision.getDecisionParameters().get("cardId").length);
 
         playerDecided(P1, String.valueOf(legolas.getCardId()));
 
@@ -62,9 +62,9 @@ public class ArcheryAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl legolas = new LotroPhysicalCardImpl(100, "1_51", P1, _cardLibrary.getLotroCardBlueprint("1_51"));
-        LotroPhysicalCardImpl archerMinion = new LotroPhysicalCardImpl(101, "4_138", P2, _cardLibrary.getLotroCardBlueprint("4_138"));
-        LotroPhysicalCardImpl doubleShot = new LotroPhysicalCardImpl(102, "1_38", P1, _cardLibrary.getLotroCardBlueprint("1_38"));
+        PhysicalCardImpl legolas = new PhysicalCardImpl(100, "1_51", P1, _cardLibrary.getLotroCardBlueprint("1_51"));
+        PhysicalCardImpl archerMinion = new PhysicalCardImpl(101, "4_138", P2, _cardLibrary.getLotroCardBlueprint("4_138"));
+        PhysicalCardImpl doubleShot = new PhysicalCardImpl(102, "1_38", P1, _cardLibrary.getLotroCardBlueprint("1_38"));
 
         skipMulligans();
 
@@ -93,7 +93,7 @@ public class ArcheryAtTest extends AbstractAtTest {
 
         AwaitingDecision archeryWoundDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, archeryWoundDecision.getDecisionType());
-        assertEquals(2, ((String[]) archeryWoundDecision.getDecisionParameters().get("cardId")).length);
+        assertEquals(2, archeryWoundDecision.getDecisionParameters().get("cardId").length);
 
         playerDecided(P1, String.valueOf(legolas.getCardId()));
 

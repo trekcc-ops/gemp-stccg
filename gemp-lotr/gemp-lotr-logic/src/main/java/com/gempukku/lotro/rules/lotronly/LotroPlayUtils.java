@@ -28,7 +28,7 @@ public class LotroPlayUtils extends PlayUtils {
         };
     }
 
-    public static Map<Phase, Keyword> PhaseKeywordMap = ImmutableMap.copyOf(new HashMap<>() {{
+    public static final Map<Phase, Keyword> PhaseKeywordMap = ImmutableMap.copyOf(new HashMap<>() {{
         put(Phase.FELLOWSHIP, Keyword.FELLOWSHIP);
         put(Phase.SHADOW, Keyword.SHADOW);
         put(Phase.MANEUVER, Keyword.MANEUVER);
@@ -40,22 +40,14 @@ public class LotroPlayUtils extends PlayUtils {
 
     private static Filter getFullAttachValidTargetFilter(final DefaultGame game, final LotroPhysicalCard card, int twilightModifier, int withTwilightRemoved) {
         return Filters.and(RuleUtils.getFullValidTargetFilter(card.getOwner(), game, card),
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().canHavePlayedOn(game, card, physicalCard);
-                    }
-                },
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        if (card.getBlueprint().getSide() == Side.SHADOW) {
-                            final int twilightCostOnTarget = game.getModifiersQuerying().getTwilightCost(game, card, physicalCard, twilightModifier, false);
-                            int potentialDiscount = game.getModifiersQuerying().getPotentialDiscount(game, card);
-                            return twilightCostOnTarget - potentialDiscount <= game.getGameState().getTwilightPool() - withTwilightRemoved;
-                        } else {
-                            return true;
-                        }
+                (Filter) (game12, physicalCard) -> game12.getModifiersQuerying().canHavePlayedOn(game12, card, physicalCard),
+                (Filter) (game1, physicalCard) -> {
+                    if (card.getBlueprint().getSide() == Side.SHADOW) {
+                        final int twilightCostOnTarget = game1.getModifiersQuerying().getTwilightCost(game1, card, physicalCard, twilightModifier, false);
+                        int potentialDiscount = game1.getModifiersQuerying().getPotentialDiscount(game1, card);
+                        return twilightCostOnTarget - potentialDiscount <= game1.getGameState().getTwilightPool() - withTwilightRemoved;
+                    } else {
+                        return true;
                     }
                 });
     }
@@ -99,7 +91,7 @@ public class LotroPlayUtils extends PlayUtils {
         final LotroCardBlueprint blueprint = card.getBlueprint();
 
         // Check if card's own play requirements are met
-        if (!card.getBlueprint().checkPlayRequirements(game, card))
+        if (card.getBlueprint().playRequirementsNotMet(game, card))
             return false;
 
         twilightModifier -= game.getModifiersQuerying().getPotentialDiscount(game, card);
@@ -121,7 +113,7 @@ public class LotroPlayUtils extends PlayUtils {
             return false;
 
         // Check uniqueness
-        if (!blueprint.skipUniquenessCheck() && !PlayConditions.checkUniqueness(game, card, ignoreCheckingDeadPile))
+        if (!PlayConditions.checkUniqueness(game, card, ignoreCheckingDeadPile))
             return false;
 
         if (blueprint.getCardType() == CardType.COMPANION

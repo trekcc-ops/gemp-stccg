@@ -14,6 +14,7 @@ import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.PlayoutDecisionEffect;
 import org.json.simple.JSONObject;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -38,7 +39,9 @@ public class ChooseARace implements EffectAppenderProducer {
                                 possibleRaces.toArray(new String[0])) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
-                                actionContext.setValueToMemory(memorize, Race.findRaceByHumanReadable(result).toString());
+                                actionContext.setValueToMemory(
+                                        memorize, Objects.requireNonNull(Race.findRaceByHumanReadable(result)).toString()
+                                );
                                 actionContext.getGame().getGameState().sendMessage(actionContext.getPerformingPlayer() + " has chosen " + result);
                             }
                         });

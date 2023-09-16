@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ConstructedLeagueData implements LeagueData {
     private final LeaguePrizes _leaguePrizes;
-    private final List<LeagueSerieData> _series = new ArrayList<>();
+    private final List<LeagueSeriesData> _series = new ArrayList<>();
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final CollectionType _collectionType;
 
@@ -37,7 +37,7 @@ public class ConstructedLeagueData implements LeagueData {
         for (int i = 0; i < series; i++) {
             LotroFormat format = formatLibrary.getFormat(params[8 + i * 2]);
 
-            DefaultLeagueSerieData data = new DefaultLeagueSerieData(_leaguePrizes, false, "Week " + (i + 1),
+            DefaultLeagueSeriesData data = new DefaultLeagueSeriesData(_leaguePrizes, false, "Week " + (i + 1),
                     DateUtils.offsetDate(start, i * days), DateUtils.offsetDate(start, ((i + 1) * days) - 1),
                     matchCount, format, _collectionType);
             _series.add(data);
@@ -55,13 +55,12 @@ public class ConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public List<LeagueSerieData> getSeries() {
+    public List<LeagueSeriesData> getSeries() {
         return _series;
     }
 
     @Override
-    public CardCollection joinLeague(CollectionsManager collecionsManager, User player, int currentTime) {
-        return null;
+    public void joinLeague(CollectionsManager collecionsManager, User player, int currentTime) {
     }
 
     @Override
@@ -69,11 +68,11 @@ public class ConstructedLeagueData implements LeagueData {
         int status = oldStatus;
         if (status == 0) {
             int maxGamesCount = 0;
-            for (LeagueSerieData sery : _series) {
+            for (LeagueSeriesData sery : _series) {
                 maxGamesCount+=sery.getMaxMatches();
             }
 
-            LeagueSerieData lastSerie = _series.get(_series.size() - 1);
+            LeagueSeriesData lastSerie = _series.get(_series.size() - 1);
             if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesCount, _collectionType);

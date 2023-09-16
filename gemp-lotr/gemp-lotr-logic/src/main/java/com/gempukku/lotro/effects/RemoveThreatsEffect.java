@@ -19,11 +19,6 @@ public class RemoveThreatsEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getGameState().getThreats() >= _count && game.getModifiersQuerying().canRemoveThreat(game, _source);
     }

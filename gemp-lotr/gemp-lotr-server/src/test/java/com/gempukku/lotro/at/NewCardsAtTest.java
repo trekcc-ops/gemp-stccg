@@ -1,25 +1,25 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
+import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
-import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class NewCardsAtTest extends AbstractAtTest {
     @Test
     public void exertAsCost() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl gimli = new LotroPhysicalCardImpl(100, "1_13", P1, _cardLibrary.getLotroCardBlueprint("1_13"));
-        LotroPhysicalCardImpl inquisitor = new LotroPhysicalCardImpl(100, "1_268", P2, _cardLibrary.getLotroCardBlueprint("1_268"));
+        PhysicalCardImpl gimli = new PhysicalCardImpl(100, "1_13", P1, _cardLibrary.getLotroCardBlueprint("1_13"));
+        PhysicalCardImpl inquisitor = new PhysicalCardImpl(100, "1_268", P2, _cardLibrary.getLotroCardBlueprint("1_268"));
 
         _game.getGameState().addCardToZone(_game, gimli, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, inquisitor, Zone.SHADOW_CHARACTERS);
@@ -60,9 +60,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void reduceArcheryTotal() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl legolas = new LotroPhysicalCardImpl(100, "40_52", P1, _cardLibrary.getLotroCardBlueprint("40_52"));
-        LotroPhysicalCardImpl arrowsOfLight = new LotroPhysicalCardImpl(100, "40_33", P1, _cardLibrary.getLotroCardBlueprint("40_33"));
-        LotroPhysicalCardImpl inquisitor = new LotroPhysicalCardImpl(100, "1_268", P2, _cardLibrary.getLotroCardBlueprint("1_268"));
+        PhysicalCardImpl legolas = new PhysicalCardImpl(100, "40_52", P1, _cardLibrary.getLotroCardBlueprint("40_52"));
+        PhysicalCardImpl arrowsOfLight = new PhysicalCardImpl(100, "40_33", P1, _cardLibrary.getLotroCardBlueprint("40_33"));
+        PhysicalCardImpl inquisitor = new PhysicalCardImpl(100, "1_268", P2, _cardLibrary.getLotroCardBlueprint("1_268"));
 
         _game.getGameState().addCardToZone(_game, inquisitor, Zone.SHADOW_CHARACTERS);
 
@@ -90,9 +90,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void playedTrigger() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl bruinenUnleashed = new LotroPhysicalCardImpl(100, "40_37", P1, _cardLibrary.getLotroCardBlueprint("40_37"));
-        LotroPhysicalCardImpl legolas = new LotroPhysicalCardImpl(100, "40_52", P1, _cardLibrary.getLotroCardBlueprint("40_52"));
-        LotroPhysicalCardImpl nazgul = new LotroPhysicalCardImpl(100, "40_211", P2, _cardLibrary.getLotroCardBlueprint("40_211"));
+        PhysicalCardImpl bruinenUnleashed = new PhysicalCardImpl(100, "40_37", P1, _cardLibrary.getLotroCardBlueprint("40_37"));
+        PhysicalCardImpl legolas = new PhysicalCardImpl(100, "40_52", P1, _cardLibrary.getLotroCardBlueprint("40_52"));
+        PhysicalCardImpl nazgul = new PhysicalCardImpl(100, "40_211", P2, _cardLibrary.getLotroCardBlueprint("40_211"));
 
         _game.getGameState().addCardToZone(_game, legolas, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, bruinenUnleashed, Zone.SUPPORT);
@@ -115,9 +115,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void choiceEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl getOutOfTheShire = createCard(P1, "40_320");
-        LotroPhysicalCardImpl merry = createCard(P1, "40_256");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardImpl getOutOfTheShire = createCard(P1, "40_320");
+        PhysicalCardImpl merry = createCard(P1, "40_256");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, getOutOfTheShire, Zone.HAND);
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
@@ -145,7 +145,7 @@ public class NewCardsAtTest extends AbstractAtTest {
 
         playerDecided(P1, merry.getCardId() + " " + nazgul.getCardId());
 
-        playerDecided(P1, "" + merry.getCardId());
+        playerDecided(P1, String.valueOf(merry.getCardId()));
 
         // Play Get Out of the Shire
         playerDecided(P1, "0");
@@ -163,8 +163,8 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void conditionalEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl getOutOfTheShire = createCard(P1, "40_320");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardImpl getOutOfTheShire = createCard(P1, "40_320");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, getOutOfTheShire, Zone.HAND);
         _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
@@ -193,7 +193,7 @@ public class NewCardsAtTest extends AbstractAtTest {
 
         playerDecided(P1, frodo.getCardId() + " " + nazgul.getCardId());
 
-        playerDecided(P1, "" + frodo.getCardId());
+        playerDecided(P1, String.valueOf(frodo.getCardId()));
 
         // Play Get Out of the Shire
         playerDecided(P1, "0");
@@ -206,9 +206,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void preventableEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl boromir = createCard(P1, "40_101");
-        LotroPhysicalCardImpl gauntlets = createCard(P1, "40_103");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardImpl boromir = createCard(P1, "40_101");
+        PhysicalCardImpl gauntlets = createCard(P1, "40_103");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, boromir, Zone.SUPPORT);
         _game.getGameState().attachCard(_game, gauntlets, boromir);
@@ -236,7 +236,7 @@ public class NewCardsAtTest extends AbstractAtTest {
 
         playerDecided(P1, boromir.getCardId() + " " + nazgul.getCardId());
 
-        playerDecided(P1, "" + boromir.getCardId());
+        playerDecided(P1, String.valueOf(boromir.getCardId()));
 
         final int twilightPool = _game.getGameState().getTwilightPool();
 
@@ -252,9 +252,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void costToEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl celeborn = createCard(P1, "40_38");
-        LotroPhysicalCardImpl celebornInDeck = createCard(P1, "40_38");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardImpl celeborn = createCard(P1, "40_38");
+        PhysicalCardImpl celebornInDeck = createCard(P1, "40_38");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, celeborn, Zone.SUPPORT);
         _game.getGameState().putCardOnTopOfDeck(celebornInDeck);
@@ -285,9 +285,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void costToEffectPass() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl celeborn = createCard(P1, "40_38");
-        LotroPhysicalCardImpl celebornInDeck = createCard(P1, "40_38");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardImpl celeborn = createCard(P1, "40_38");
+        PhysicalCardImpl celebornInDeck = createCard(P1, "40_38");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, celeborn, Zone.SUPPORT);
         _game.getGameState().putCardOnTopOfDeck(celebornInDeck);
@@ -318,9 +318,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void checkingEventCostsAsRequirements() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl battleFever = createCard(P1, "40_5");
-        final LotroPhysicalCardImpl gimli = createCard(P1, "40_18");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardImpl battleFever = createCard(P1, "40_5");
+        final PhysicalCardImpl gimli = createCard(P1, "40_18");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
 
         _game.getGameState().addCardToZone(_game, gimli, Zone.FREE_CHARACTERS);
@@ -348,7 +348,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         playerDecided(P1, gimli.getCardId() + " " + nazgul.getCardId());
-        playerDecided(P1, "" + gimli.getCardId());
+        playerDecided(P1, String.valueOf(gimli.getCardId()));
 
         assertNull(getCardActionId(P1, "Play Battle Fever"));
     }
@@ -357,10 +357,10 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void discardCardEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl blackBreath = createCard(P2, "40_183");
-        final LotroPhysicalCardImpl athelas = createCard(P1, "40_313");
-        final LotroPhysicalCardImpl athelasInHand = createCard(P1, "40_313");
-        LotroPhysicalCardImpl aragorn = createCard(P1, "40_94");
+        final PhysicalCardImpl blackBreath = createCard(P2, "40_183");
+        final PhysicalCardImpl athelas = createCard(P1, "40_313");
+        final PhysicalCardImpl athelasInHand = createCard(P1, "40_313");
+        PhysicalCardImpl aragorn = createCard(P1, "40_94");
 
         _game.getGameState().addCardToZone(_game, aragorn, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, blackBreath, aragorn);
@@ -372,7 +372,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         // Play athelas
         playerDecided(P1, "0");
         // Attach to Aragorn
-        playerDecided(P1, "" + aragorn.getCardId());
+        playerDecided(P1, String.valueOf(aragorn.getCardId()));
 
         playerDecided(P1, "0");
 
@@ -385,9 +385,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void strengthBonusDependingOnCharacterPlayedOn() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final LotroPhysicalCardImpl bolsteredSpirits = createCard(P1, "40_67");
-        LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
+        final PhysicalCardImpl bolsteredSpirits = createCard(P1, "40_67");
+        PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, bolsteredSpirits, Zone.HAND);
@@ -414,7 +414,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         playerDecided(P1, gandalf.getCardId() + " " + nazgul.getCardId());
-        playerDecided(P1, "" + gandalf.getCardId());
+        playerDecided(P1, String.valueOf(gandalf.getCardId()));
 
         playerDecided(P1, "0");
         playerDecided(P1, "");
@@ -426,10 +426,10 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void strengthBonusDependingOnCharacterPlayedOn2() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final LotroPhysicalCardImpl boromir = createCard(P1, "40_101");
-        final LotroPhysicalCardImpl goBackToTheShadows = createCard(P1, "40_312");
-        final LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
+        final PhysicalCardImpl boromir = createCard(P1, "40_101");
+        final PhysicalCardImpl goBackToTheShadows = createCard(P1, "40_312");
+        final PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
@@ -458,7 +458,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         playerDecided(P1, boromir.getCardId() + " " + nazgul.getCardId());
-        playerDecided(P1, "" + boromir.getCardId());
+        playerDecided(P1, String.valueOf(boromir.getCardId()));
 
         playerDecided(P1, "0");
 
@@ -469,10 +469,10 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void mathProgrammingDiscardBoth() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final LotroPhysicalCardImpl discerment = createCard(P1, "40_68");
-        final LotroPhysicalCardImpl blackBreath = createCard(P2, "40_183");
-        final LotroPhysicalCardImpl blackBreath2 = createCard(P2, "40_183");
+        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
+        final PhysicalCardImpl discerment = createCard(P1, "40_68");
+        final PhysicalCardImpl blackBreath = createCard(P2, "40_183");
+        final PhysicalCardImpl blackBreath2 = createCard(P2, "40_183");
 
         _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, discerment, Zone.HAND);
@@ -485,8 +485,8 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P1, "2");
         playerDecided(P1, "");
 
-        playerDecided(P1, "" + blackBreath.getCardId());
-        playerDecided(P1, "" + blackBreath2.getCardId());
+        playerDecided(P1, String.valueOf(blackBreath.getCardId()));
+        playerDecided(P1, String.valueOf(blackBreath2.getCardId()));
 
         assertEquals(Zone.DISCARD, blackBreath.getZone());
         assertEquals(Zone.DISCARD, blackBreath2.getZone());
@@ -496,10 +496,10 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void mathProgrammingDiscardOne() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final LotroPhysicalCardImpl discerment = createCard(P1, "40_68");
-        final LotroPhysicalCardImpl blackBreath = createCard(P2, "40_183");
-        final LotroPhysicalCardImpl blackBreath2 = createCard(P2, "40_183");
+        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
+        final PhysicalCardImpl discerment = createCard(P1, "40_68");
+        final PhysicalCardImpl blackBreath = createCard(P2, "40_183");
+        final PhysicalCardImpl blackBreath2 = createCard(P2, "40_183");
 
         _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, discerment, Zone.HAND);
@@ -512,7 +512,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P1, "1");
         playerDecided(P1, "");
 
-        playerDecided(P1, "" + blackBreath.getCardId());
+        playerDecided(P1, String.valueOf(blackBreath.getCardId()));
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, _userFeedback.getAwaitingDecision(P1).getDecisionType());
 
         assertEquals(Zone.DISCARD, blackBreath.getZone());
@@ -523,9 +523,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void strengthBonus() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl grimbeorn = createCard(P1, "14_6");
-        final LotroPhysicalCardImpl nazgulInHand = createCard(P1, "40_211");
-        final LotroPhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardImpl grimbeorn = createCard(P1, "14_6");
+        final PhysicalCardImpl nazgulInHand = createCard(P1, "40_211");
+        final PhysicalCardImpl nazgul = createCard(P2, "40_211");
 
         _game.getGameState().addCardToZone(_game, grimbeorn, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
@@ -544,8 +544,8 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void roamingDiscount() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl orcAssassin1 = createCard(P2, "1_262");
-        final LotroPhysicalCardImpl orcAssassin2 = createCard(P2, "1_262");
+        final PhysicalCardImpl orcAssassin1 = createCard(P2, "1_262");
+        final PhysicalCardImpl orcAssassin2 = createCard(P2, "1_262");
 
         _game.getGameState().addCardToZone(_game, orcAssassin1, Zone.HAND);
         _game.getGameState().addCardToZone(_game, orcAssassin2, Zone.HAND);
@@ -571,9 +571,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void spotCountChange() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl merry = createCard(P1, "40_257");
-        final LotroPhysicalCardImpl bilbosPipe = createCard(P1, "40_244");
-        final LotroPhysicalCardImpl pipeweed = createCard(P1, "40_255");
+        final PhysicalCardImpl merry = createCard(P1, "40_257");
+        final PhysicalCardImpl bilbosPipe = createCard(P1, "40_244");
+        final PhysicalCardImpl pipeweed = createCard(P1, "40_255");
 
         _game.getGameState().addCardToZone(_game, merry, Zone.HAND);
         _game.getGameState().addCardToZone(_game, pipeweed, Zone.SUPPORT);
@@ -584,7 +584,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P1, getCardActionId(P1, "Play Merry"));
         playerDecided(P1, getCardActionId(P1, "Play Bilbo's Pipe"));
 
-        playerDecided(P1, "" + merry.getCardId());
+        playerDecided(P1, String.valueOf(merry.getCardId()));
         playerDecided(P1, getCardActionId(P1, "Use Bilbo's Pipe"));
         assertEquals("2", _userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("max")[0]);
     }
@@ -593,8 +593,8 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void removeBurdens() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl samsPipe = createCard(P1, "40_269");
-        final LotroPhysicalCardImpl pipeweed = createCard(P1, "40_255");
+        final PhysicalCardImpl samsPipe = createCard(P1, "40_269");
+        final PhysicalCardImpl pipeweed = createCard(P1, "40_255");
 
         _game.getGameState().addCardToZone(_game, pipeweed, Zone.SUPPORT);
         _game.getGameState().attachCard(_game, samsPipe, _game.getGameState().getRingBearer(P1));

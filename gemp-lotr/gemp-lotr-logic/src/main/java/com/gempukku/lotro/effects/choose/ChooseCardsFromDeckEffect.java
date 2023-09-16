@@ -42,11 +42,6 @@ public abstract class ChooseCardsFromDeckEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         Collection<LotroPhysicalCard> cards = Filters.filter(game.getGameState().getDeck(_deckId), game, _filter);
         return cards.size() >= _minimum;

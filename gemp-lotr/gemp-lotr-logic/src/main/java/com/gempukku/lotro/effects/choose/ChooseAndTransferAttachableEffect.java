@@ -37,38 +37,18 @@ public class ChooseAndTransferAttachableEffect extends AbstractEffect {
         _transferTo = transferTo;
     }
 
-    @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return null;
-    }
-
     private Filterable getValidTargetFilter(DefaultGame game, final LotroPhysicalCard attachment) {
         if (_skipOriginalTargetCheck) {
             return Filters.and(
                     _transferTo,
                     Filters.not(attachment.getAttachedTo()),
-                    new Filter() {
-                        @Override
-                        public boolean accepts(DefaultGame game, LotroPhysicalCard target) {
-                            return game.getModifiersQuerying().canHaveTransferredOn(game, attachment, target);
-                        }
-                    });
+                    (Filter) (game12, target) -> game12.getModifiersQuerying().canHaveTransferredOn(game12, attachment, target));
         } else {
             return Filters.and(
                     _transferTo,
                     RuleUtils.getFullValidTargetFilter(attachment.getOwner(), game, attachment),
                     Filters.not(attachment.getAttachedTo()),
-                    new Filter() {
-                        @Override
-                        public boolean accepts(DefaultGame game, LotroPhysicalCard target) {
-                            return game.getModifiersQuerying().canHaveTransferredOn(game, attachment, target);
-                        }
-                    });
+                    (Filter) (game1, target) -> game1.getModifiersQuerying().canHaveTransferredOn(game1, attachment, target));
         }
     }
 
@@ -76,17 +56,14 @@ public class ChooseAndTransferAttachableEffect extends AbstractEffect {
         return Filters.filterActive(game,
                 _attachedCard,
                 Filters.attachedTo(_attachedTo),
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, final LotroPhysicalCard transferredCard) {
-                        if (transferredCard.getBlueprint().getValidTargetFilter(transferredCard.getOwner(), game, transferredCard) == null)
-                            return false;
+                (Filter) (game1, transferredCard) -> {
+                    if (transferredCard.getBlueprint().getValidTargetFilter(transferredCard.getOwner(), game1, transferredCard) == null)
+                        return false;
 
-                        if (!game.getModifiersQuerying().canBeTransferred(game, transferredCard))
-                            return false;
+                    if (!game1.getModifiersQuerying().canBeTransferred(game1, transferredCard))
+                        return false;
 
-                        return Filters.countActive(game, getValidTargetFilter(game, transferredCard))>0;
-                    }
+                    return Filters.countActive(game1, getValidTargetFilter(game1, transferredCard))>0;
                 });
     }
 

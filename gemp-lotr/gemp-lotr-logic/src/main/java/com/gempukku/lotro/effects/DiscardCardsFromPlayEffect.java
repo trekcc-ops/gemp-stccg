@@ -56,7 +56,7 @@ public class DiscardCardsFromPlayEffect extends AbstractPreventableCardEffect {
     }
 
     @Override
-    protected void playoutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void playOutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
         Set<LotroPhysicalCard> discardedCards = new HashSet<>();
 
         Set<LotroPhysicalCard> toMoveFromZoneToDiscard = new HashSet<>();

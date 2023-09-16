@@ -15,7 +15,6 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 
 public class DefaultTournamentTest extends AbstractAtTest {
-    private final int _waitForPairingsTime = 100;
 
     @Test
     public void testTournament() throws InterruptedException {
@@ -46,6 +45,7 @@ public class DefaultTournamentTest extends AbstractAtTest {
 
         DefaultTournament tournament = new DefaultTournament(null, tournamentService, null, null, tournamentId, "Name", "format",
                 CollectionType.ALL_CARDS, 0, Tournament.Stage.PLAYING_GAMES, pairingMechanism, new SingleEliminationOnDemandPrizes(_cardLibrary, "onDemand"));
+        int _waitForPairingsTime = 100;
         tournament.setWaitForPairingsTime(_waitForPairingsTime);
 
         Mockito.when(pairingMechanism.isFinished(Mockito.eq(3), Mockito.eq(allPlayers), Mockito.eq(droppedAfterRoundThree)))
@@ -55,54 +55,42 @@ public class DefaultTournamentTest extends AbstractAtTest {
                 Mockito.eq(Collections.emptyMap()), Mockito.any(),
                 Mockito.any(Map.class),
                 Mockito.eq(Collections.emptyMap()), Mockito.eq(Collections.emptySet()))).then(
-                new Answer<Boolean>() {
-                    @Override
-                    public Boolean answer(InvocationOnMock invocationOnMock) {
-                        Map<String, String> pairings = (Map<String, String>) invocationOnMock.getArguments()[6];
-                        pairings.put("p1", "p2");
-                        pairings.put("p3", "p4");
-                        pairings.put("p5", "p6");
-                        pairings.put("p7", "p8");
+                (Answer<Boolean>) invocationOnMock -> {
+                    Map<String, String> pairings = (Map<String, String>) invocationOnMock.getArguments()[6];
+                    pairings.put("p1", "p2");
+                    pairings.put("p3", "p4");
+                    pairings.put("p5", "p6");
+                    pairings.put("p7", "p8");
 
-                        return false;
-                    }
+                    return false;
                 });
         Mockito.when(pairingMechanism.pairPlayers(Mockito.eq(2), Mockito.eq(allPlayers), Mockito.eq(droppedAfterRoundOne),
                 Mockito.eq(Collections.emptyMap()), Mockito.any(),
                 Mockito.any(Map.class),
                 Mockito.eq(Collections.emptyMap()), Mockito.eq(Collections.emptySet()))).then(
-                new Answer<Boolean>() {
-                    @Override
-                    public Boolean answer(InvocationOnMock invocationOnMock) {
-                        Map<String, String> pairings = (Map<String, String>) invocationOnMock.getArguments()[6];
-                        pairings.put("p1", "p3");
-                        pairings.put("p5", "p7");
+                (Answer<Boolean>) invocationOnMock -> {
+                    Map<String, String> pairings = (Map<String, String>) invocationOnMock.getArguments()[6];
+                    pairings.put("p1", "p3");
+                    pairings.put("p5", "p7");
 
-                        return false;
-                    }
+                    return false;
                 });
         Mockito.when(pairingMechanism.pairPlayers(Mockito.eq(3), Mockito.eq(allPlayers), Mockito.eq(droppedAfterRoundTwo),
                 Mockito.eq(Collections.emptyMap()), Mockito.any(),
                 Mockito.any(Map.class),
                 Mockito.eq(Collections.emptyMap()), Mockito.eq(Collections.emptySet()))).then(
-                new Answer<Boolean>() {
-                    @Override
-                    public Boolean answer(InvocationOnMock invocationOnMock) {
-                        Map<String, String> pairings = (Map<String, String>) invocationOnMock.getArguments()[6];
-                        pairings.put("p1", "p5");
+                (Answer<Boolean>) invocationOnMock -> {
+                    Map<String, String> pairings = (Map<String, String>) invocationOnMock.getArguments()[6];
+                    pairings.put("p1", "p5");
 
-                        return false;
-                    }
+                    return false;
                 });
 
         TournamentCallback tournamentCallback = Mockito.mock(TournamentCallback.class);
         Mockito.doAnswer(
-                new Answer<Void>() {
-                    @Override
-                    public Void answer(InvocationOnMock invocationOnMock) {
-                        System.out.println("Broadcasted: "+invocationOnMock.getArguments()[0]);
-                        return null;
-                    }
+                (Answer<Void>) invocationOnMock -> {
+                    System.out.println("Broadcasted: "+invocationOnMock.getArguments()[0]);
+                    return null;
                 }
         ).when(tournamentCallback).broadcastMessage(Mockito.anyString());
 

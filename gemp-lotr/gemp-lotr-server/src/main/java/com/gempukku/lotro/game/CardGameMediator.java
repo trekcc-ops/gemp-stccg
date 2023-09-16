@@ -30,13 +30,11 @@ public class CardGameMediator {
     private final Map<String, Integer> _playerClocks = new HashMap<>();
     private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
     private final Set<String> _playersPlaying = new HashSet<>();
-    private final Map<String, CardDeck> _playerDecks = new HashMap<>();
 
     private final String _gameId;
 
-    private GameTimer _timeSettings;
+    private final GameTimer _timeSettings;
     private final boolean _allowSpectators;
-    private final boolean _cancellable;
     private final boolean _showInGameHall;
 
     private final ReentrantReadWriteLock _lock = new ReentrantReadWriteLock(true);
@@ -46,15 +44,15 @@ public class CardGameMediator {
     private volatile boolean _destroyed;
 
     public CardGameMediator(String gameId, LotroFormat lotroFormat, GameParticipant[] participants, CardBlueprintLibrary library,
-                            GameTimer gameTimer, boolean allowSpectators, boolean cancellable, boolean showInGameHall) {
+                            GameTimer gameTimer, boolean allowSpectators, boolean showInGameHall) {
         _gameId = gameId;
         _timeSettings = gameTimer;
         _allowSpectators = allowSpectators;
-        _cancellable = cancellable;
         this._showInGameHall = showInGameHall;
         if (participants.length < 1)
             throw new IllegalArgumentException("Game can't have less than one participant");
 
+        Map<String, CardDeck> _playerDecks = new HashMap<>();
         for (GameParticipant participant : participants) {
             String participantId = participant.getPlayerId();
             _playerDecks.put(participantId, participant.getDeck());
@@ -154,80 +152,60 @@ public class CardGameMediator {
                     sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");
 
                 sb.append("<b>Affecting card:</b>");
-                Collection<Modifier> modifiers = _tribblesgame.getModifiersQuerying().getModifiersAffecting(_tribblesgame, card);
+                Collection<Modifier> modifiers =
+                        _tribblesgame.getModifiersQuerying().getModifiersAffecting(_tribblesgame, card);
                 for (Modifier modifier : modifiers) {
+                    String sourceText;
                     LotroPhysicalCard source = modifier.getSource();
-                    if (source != null)
-                        sb.append("<br><b>" + GameUtils.getCardLink(source) + ":</b> " + modifier.getText(_tribblesgame, card));
-                    else
-                        sb.append("<br><b><i>System</i>:</b> " + modifier.getText(_tribblesgame, card));
+                    if (source != null) {
+                        sourceText = GameUtils.getCardLink(source);
+                    } else {
+                        sourceText = "<i>System</i>";
+                    }
+                    sb.append("<br><b>").append(sourceText).append(":</b> ");
+                    sb.append(modifier.getText(_tribblesgame, card));
                 }
                 if (modifiers.size() == 0)
                     sb.append("<br><i>nothing</i>");
 
                 if (card.getZone().isInPlay() && card.getBlueprint().getCardType() == CardType.SITE)
-                    sb.append("<br><b>Owner:</b> " + card.getOwner());
+                    sb.append("<br><b>Owner:</b> ").append(card.getOwner());
 
                 Map<Token, Integer> map = _tribblesgame.getGameState().getTokens(card);
                 if (map != null && map.size() > 0) {
                     sb.append("<br><b>Tokens:</b>");
-                    for (Map.Entry<Token, Integer> tokenIntegerEntry : map.entrySet())
-                        sb.append("<br>" + tokenIntegerEntry.getKey().toString() + ": " + tokenIntegerEntry.getValue());
+                    for (Map.Entry<Token, Integer> tokenIntegerEntry : map.entrySet()) {
+                        sb.append("<br>").append(tokenIntegerEntry.getKey().toString()).append(": ");
+                        sb.append(tokenIntegerEntry.getValue());
+                    }
                 }
 
                 List<LotroPhysicalCard> stackedCards = _tribblesgame.getGameState().getStackedCards(card);
                 if (stackedCards != null && stackedCards.size() > 0) {
                     sb.append("<br><b>Stacked cards:</b>");
-                    sb.append("<br>" + GameUtils.getAppendedNames(stackedCards));
+                    sb.append("<br>").append(GameUtils.getAppendedNames(stackedCards));
                 }
 
                 final String extraDisplayableInformation = card.getBlueprint().getDisplayableInformation(card);
                 if (extraDisplayableInformation != null) {
                     sb.append("<br><b>Extra information:</b>");
-                    sb.append("<br>" + extraDisplayableInformation);
+                    sb.append("<br>").append(extraDisplayableInformation);
                 }
 
                 sb.append("<br><br><b>Effective stats:</b>");
-                        // Commmented out stats displays below specific to LotR
-/*                try {
-                    PhysicalCard target = card.getAttachedTo();
-                    int twilightCost = _tribblesgame.getModifiersQuerying().getTwilightCost(_tribblesgame, card, target, 0, false);
-                    sb.append("<br><b>Twilight cost:</b> " + twilightCost);
-                } catch (UnsupportedOperationException ignored) {
-                }
-                try {
-                    int strength = _tribblesgame.getModifiersQuerying().getStrength(_tribblesgame, card);
-                    sb.append("<br><b>Strength:</b> " + strength);
-                } catch (UnsupportedOperationException ignored) {
-                }
-                try {
-                    int vitality = _tribblesgame.getModifiersQuerying().getVitality(_tribblesgame, card);
-                    sb.append("<br><b>Vitality:</b> " + vitality);
-                } catch (UnsupportedOperationException ignored) {
-                }
-                try {
-                    int resistance = _tribblesgame.getModifiersQuerying().getResistance(_tribblesgame, card);
-                    sb.append("<br><b>Resistance:</b> " + resistance);
-                } catch (UnsupportedOperationException ignored) {
-                }
-                try {
-                    int siteNumber = _tribblesgame.getModifiersQuerying().getMinionSiteNumber(_tribblesgame, card);
-                    sb.append("<br><b>Site number:</b> " + siteNumber);
-                } catch (UnsupportedOperationException ignored) {
-                }*/
                 try {
                     int tribbleValue = card.getBlueprint().getTribbleValue();
-                    sb.append("<br><b>Tribble value:</b> " + tribbleValue);
+                    sb.append("<br><b>Tribble value:</b> ").append(tribbleValue);
                 } catch (UnsupportedOperationException ignored) {
                 }
                 try {
                     String tribblePower = card.getBlueprint().getTribblePower();
-                    sb.append("<br><b>Tribble power:</b> " + tribblePower);
+                    sb.append("<br><b>Tribble power:</b> ").append(tribblePower);
                 } catch (UnsupportedOperationException ignored) {
                 }
                 try {
                     String imageUrl = card.getBlueprint().getImageUrl();
-                    sb.append("<br><b>Image URL:</b> " + imageUrl);
+                    sb.append("<br><b>Image URL:</b> ").append(imageUrl);
                 } catch (UnsupportedOperationException ignored) {
                 }
 
@@ -235,17 +213,19 @@ public class CardGameMediator {
                 for (Keyword keyword : Keyword.values()) {
                     if (keyword.isInfoDisplayable()) {
                         if (keyword.isMultiples()) {
-                            int count = _tribblesgame.getModifiersQuerying().getKeywordCount(_tribblesgame, card, keyword);
+                            int count = _tribblesgame.getModifiersQuerying().getKeywordCount(
+                                    _tribblesgame, card, keyword
+                            );
                             if (count > 0)
-                                keywords.append(keyword.getHumanReadable() + " +" + count + ", ");
+                                keywords.append(keyword.getHumanReadable()).append(" +").append(count).append(", ");
                         } else {
                             if (_tribblesgame.getModifiersQuerying().hasKeyword(_tribblesgame, card, keyword))
-                                keywords.append(keyword.getHumanReadable() + ", ");
+                                keywords.append(keyword.getHumanReadable()).append(", ");
                         }
                     }
                 }
                 if (keywords.length() > 0)
-                    sb.append("<br><b>Keywords:</b> " + keywords.substring(0, keywords.length() - 2));
+                    sb.append("<br><b>Keywords:</b> ").append(keywords.substring(0, keywords.length() - 2));
                 return sb.toString();
             } else {
                 return null;
@@ -475,7 +455,7 @@ public class CardGameMediator {
     public String getPlayerPositions() {
         StringBuilder stringBuilder = new StringBuilder();
         for (String player : _playersPlaying) {
-            stringBuilder.append(_tribblesgame.getGameState().getPlayerPosition(player) + ", ");
+            stringBuilder.append(_tribblesgame.getGameState().getPlayerPosition(player)).append(", ");
         }
         if (stringBuilder.length() > 0)
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());

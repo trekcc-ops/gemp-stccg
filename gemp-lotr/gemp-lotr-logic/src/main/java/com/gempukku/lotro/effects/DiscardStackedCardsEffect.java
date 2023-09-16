@@ -30,11 +30,6 @@ public class DiscardStackedCardsEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         for (LotroPhysicalCard card : _cards) {
             if (card.getZone() != Zone.STACKED)

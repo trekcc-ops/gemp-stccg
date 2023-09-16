@@ -13,7 +13,9 @@ public class CultureFieldProcessor implements FieldProcessor {
         final Culture culture = Culture.findCulture(FieldUtils.getString(value, key));
         blueprint.setCulture(culture);
 
-        if (culture != Culture.GOLLUM)
+        if (culture != Culture.GOLLUM) {
+            assert culture != null;
             blueprint.setSide(culture.isFP() ? Side.FREE_PEOPLE : Side.SHADOW);
+        }
     }
 }

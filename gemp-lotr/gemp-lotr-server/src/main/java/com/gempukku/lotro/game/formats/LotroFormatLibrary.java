@@ -13,10 +13,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class LotroFormatLibrary {
@@ -63,14 +60,14 @@ public class LotroFormatLibrary {
             loadTemplateFromFile(path);
         }
         else if (path.isDirectory()) {
-            for (File file : path.listFiles()) {
+            for (File file : Objects.requireNonNull(path.listFiles())) {
                 loadSealedTemplates(file);
             }
         }
     }
 
     private void loadTemplateFromFile(File file) {
-        if (!JsonUtils.IsValidHjsonFile(file))
+        if (JsonUtils.IsInvalidHjsonFile(file))
             return;
         JSONParser parser = new JSONParser();
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
@@ -84,7 +81,7 @@ public class LotroFormatLibrary {
                     defs = Collections.singletonList(def);
                 }
                 else {
-                    System.out.println(file.toString() + " is not a SealedTemplate nor an array of SealedTemplate.  Could not load from file.");
+                    System.out.println(file + " is not a SealedTemplate nor an array of SealedTemplate.  Could not load from file.");
                     return;
                 }
             }
@@ -184,7 +181,7 @@ public class LotroFormatLibrary {
         }
     }
 
-    private Map<String, String> legacyCodeMapping = new HashMap<>() {{
+    private final Map<String, String> legacyCodeMapping = new HashMap<>() {{
         put("fotr_block", "fotr_block_sealed");
         put("ttt_block", "ttt_block_sealed");
         put("movie", "rotk_block_sealed");

@@ -3,29 +3,12 @@ package com.gempukku.lotro.game;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.*;
 import com.gempukku.lotro.effects.results.*;
 import com.gempukku.lotro.filters.Filters;
 
 public class TriggerConditions {
-    public static boolean losesInitiative(EffectResult effectResult, Side side) {
-        if (effectResult.getType() == EffectResult.Type.INITIATIVE_CHANGE) {
-            InitiativeChangeResult initiativeChangeResult = (InitiativeChangeResult) effectResult;
-            if (initiativeChangeResult.getSide() != side)
-                return true;
-        }
-        return false;
-    }
-
-    public static boolean takenControlOfASite(EffectResult effectResult, String playerId) {
-        if (effectResult.getType() == EffectResult.Type.TAKE_CONTROL_OF_SITE) {
-            TakeControlOfSiteResult takeResult = (TakeControlOfSiteResult) effectResult;
-            return takeResult.getPlayerId().equals(playerId);
-        }
-        return false;
-    }
 
     public static boolean startOfPhase(DefaultGame game, EffectResult effectResult, Phase phase) {
         return (effectResult.getType() == EffectResult.Type.START_OF_PHASE
@@ -37,143 +20,19 @@ public class TriggerConditions {
                 && (game.getGameState().getCurrentPhase() == phase || phase == null));
     }
 
-    public static boolean startOfTurn(DefaultGame game, EffectResult effectResult) {
+    public static boolean startOfTurn(EffectResult effectResult) {
         return effectResult.getType() == EffectResult.Type.START_OF_TURN;
     }
 
-    public static boolean endOfTurn(DefaultGame game, EffectResult effectResult) {
+    public static boolean endOfTurn(EffectResult effectResult) {
         return effectResult.getType() == EffectResult.Type.END_OF_TURN;
     }
 
-    public static boolean reconciles(DefaultGame game, EffectResult effectResult, String playerId) {
+    public static boolean reconciles(EffectResult effectResult, String playerId) {
         return effectResult.getType() == EffectResult.Type.RECONCILE && (playerId == null || ((ReconcileResult) effectResult).getPlayerId().equals(playerId));
     }
 
-    public static boolean winsSkirmish(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.CHARACTER_WON_SKIRMISH) {
-            CharacterWonSkirmishResult wonResult = (CharacterWonSkirmishResult) effectResult;
-            return Filters.and(filters).accepts(game, wonResult.getWinner());
-        }
-        return false;
-    }
-
-    public static boolean winsSkirmishInvolving(DefaultGame game, EffectResult effectResult, Filterable winnerFilter, Filterable involvingFilter) {
-        if (effectResult.getType() == EffectResult.Type.CHARACTER_WON_SKIRMISH) {
-            CharacterWonSkirmishResult wonResult = (CharacterWonSkirmishResult) effectResult;
-            return Filters.and(winnerFilter).accepts(game, wonResult.getWinner())
-                    && Filters.filter(wonResult.getInvolving(), game, involvingFilter).size() > 0;
-        }
-        return false;
-    }
-
-    public static boolean losesSkirmish(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.CHARACTER_LOST_SKIRMISH) {
-            CharacterLostSkirmishResult wonResult = (CharacterLostSkirmishResult) effectResult;
-            return Filters.and(filters).accepts(game, wonResult.getLoser());
-        }
-        return false;
-    }
-
-    public static boolean losesSkirmishInvolving(DefaultGame game, EffectResult effectResult, Filterable loserFilter, Filterable involvingFilter) {
-        if (effectResult.getType() == EffectResult.Type.CHARACTER_LOST_SKIRMISH) {
-            CharacterLostSkirmishResult wonResult = (CharacterLostSkirmishResult) effectResult;
-            return Filters.and(loserFilter).accepts(game, wonResult.getLoser())
-                    && Filters.filter(wonResult.getInvolving(), game, involvingFilter).size() > 0;
-        }
-        return false;
-    }
-
-    public static boolean sidePlayerAddedBurden(DefaultGame game, EffectResult effectResult, Side side) {
-        if (effectResult.getType() == EffectResult.Type.ADD_BURDEN) {
-            AddBurdenResult burdenResult = (AddBurdenResult) effectResult;
-            String fpPlayer = game.getGameState().getCurrentPlayerId();
-            if ((side == Side.FREE_PEOPLE && fpPlayer.equals(burdenResult.getPerformingPlayer()))
-                    || (side == Side.SHADOW && !fpPlayer.equals(burdenResult.getPerformingPlayer())))
-                return true;
-            else
-                return false;
-        }
-        return false;
-    }
-
-    public static boolean addedBurden(DefaultGame game, EffectResult effectResult, Filterable... sourceFilters) {
-        if (effectResult.getType() == EffectResult.Type.ADD_BURDEN) {
-            AddBurdenResult burdenResult = (AddBurdenResult) effectResult;
-            return (Filters.and(sourceFilters).accepts(game, burdenResult.getSource()));
-        }
-        return false;
-    }
-
-    public static boolean removedBurden(DefaultGame game, EffectResult effectResult, Filterable... sourceFilters) {
-        if (effectResult.getType() == EffectResult.Type.REMOVE_BURDEN) {
-            RemoveBurdenResult burdenResult = (RemoveBurdenResult) effectResult;
-            return (Filters.and(sourceFilters).accepts(game, burdenResult.getSource()));
-        }
-        return false;
-    }
-
-    public static boolean addedThreat(DefaultGame game, EffectResult effectResult, Filterable... sourceFilters) {
-        if (effectResult.getType() == EffectResult.Type.ADD_THREAT) {
-            AddThreatResult threatResult = (AddThreatResult) effectResult;
-            return (Filters.and(sourceFilters).accepts(game, threatResult.getSource()));
-        }
-        return false;
-    }
-
-    public static boolean assignedAgainst(DefaultGame game, EffectResult effectResult, Side side, Filterable againstFilter, Filterable... assignedFilters) {
-        if (effectResult.getType() == EffectResult.Type.ASSIGNED_AGAINST) {
-            AssignAgainstResult assignmentResult = (AssignAgainstResult) effectResult;
-            if (side != null) {
-                if (assignmentResult.getPlayerId().equals(game.getGameState().getCurrentPlayerId())) {
-                    if (side == Side.SHADOW)
-                        return false;
-                } else {
-                    if (side == Side.FREE_PEOPLE)
-                        return false;
-                }
-            }
-
-            return Filters.and(assignedFilters).accepts(game, assignmentResult.getAssignedCard())
-                    && Filters.filter(assignmentResult.getAgainst(), game, againstFilter).size() > 0;
-        }
-        return false;
-    }
-
-    public static boolean assignedToSkirmish(DefaultGame game, EffectResult effectResult, Side side, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.ASSIGNED_TO_SKIRMISH) {
-            AssignedToSkirmishResult assignResult = (AssignedToSkirmishResult) effectResult;
-            if (side != null) {
-                if (assignResult.getPlayerId().equals(game.getGameState().getCurrentPlayerId())) {
-                    if (side == Side.SHADOW)
-                        return false;
-                } else {
-                    if (side == Side.FREE_PEOPLE)
-                        return false;
-                }
-            }
-
-            return Filters.and(filters).accepts(game, ((AssignedToSkirmishResult) effectResult).getAssignedCard());
-        }
-        return false;
-    }
-
-    public static boolean forEachCardDrawnOrPutIntoHandByOpponent(DefaultGame game, EffectResult effectResult, String playerId) {
-        if (effectResult.getType() == EffectResult.Type.DRAW_CARD_OR_PUT_INTO_HAND) {
-            DrawCardOrPutIntoHandResult drawResult = (DrawCardOrPutIntoHandResult) effectResult;
-            return !drawResult.getPlayerId().equals(playerId);
-        }
-        return false;
-    }
-
-    public static boolean forEachCardDrawnOrPutIntoHand(DefaultGame game, EffectResult effectResult, String playerId) {
-        if (effectResult.getType() == EffectResult.Type.DRAW_CARD_OR_PUT_INTO_HAND) {
-            DrawCardOrPutIntoHandResult drawResult = (DrawCardOrPutIntoHandResult) effectResult;
-            return drawResult.getPlayerId().equals(playerId);
-        }
-        return false;
-    }
-
-    public static boolean forEachCardDrawn(DefaultGame game, EffectResult effectResult, String playerId) {
+    public static boolean forEachCardDrawn(EffectResult effectResult, String playerId) {
         if (effectResult.getType() == EffectResult.Type.DRAW_CARD_OR_PUT_INTO_HAND) {
             DrawCardOrPutIntoHandResult drawResult = (DrawCardOrPutIntoHandResult) effectResult;
             return drawResult.isDraw() && drawResult.getPlayerId().equals(playerId);
@@ -215,70 +74,10 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean forEachHealed(DefaultGame game, EffectResult effectResult, String player, Filterable... filters) {
-        if (effectResult.getType() != EffectResult.Type.FOR_EACH_HEALED)
-            return false;
-
-        HealResult healResult = (HealResult)effectResult;
-        if (player == null || player.equals(healResult.getPerformingPlayer()))
-            return Filters.and(filters).accepts(game, ((HealResult) effectResult).getHealedCard());
-        else
-            return false;
-
-    }
-
-    public static boolean forEachExerted(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_EXERTED)
-            return Filters.and(filters).accepts(game, ((ExertResult) effectResult).getExertedCard());
-        return false;
-    }
-
-    public static boolean forEachExertedBy(DefaultGame game, EffectResult effectResult, Filterable exertedBy, Filterable... exerted) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_EXERTED) {
-            ExertResult exertResult = (ExertResult) effectResult;
-            if (exertResult.getAction().getActionSource() != null
-                    && Filters.and(exertedBy).accepts(game, exertResult.getAction().getActionSource()))
-                return Filters.and(exerted).accepts(game, exertResult.getExertedCard());
-        }
-        return false;
-    }
-
-    public static boolean isTakingControlOfSite(Effect effect, DefaultGame game, Filterable... sourceFilters) {
-        if (effect.getType() == Effect.Type.BEFORE_TAKE_CONTROL_OF_A_SITE) {
-            Preventable takeControlOfASiteEffect = (Preventable) effect;
-            return !takeControlOfASiteEffect.isPrevented(game) && Filters.and(sourceFilters).accepts(game, effect.getSource());
-        }
-        return false;
-    }
-
     public static boolean revealedCardsFromTopOfDeck(EffectResult effectResult, String playerId) {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK) {
             RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) effectResult;
             return revealCardFromTopOfDeckResult.getPlayerId().equals(playerId);
-        }
-        return false;
-    }
-
-    public static boolean isAddingBurden(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_ADD_BURDENS) {
-            Preventable addBurdenEffect = (Preventable) effect;
-            return !addBurdenEffect.isPrevented(game) && Filters.and(filters).accepts(game, effect.getSource());
-        }
-        return false;
-    }
-
-    public static boolean isAddingTwilight(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_ADD_TWILIGHT) {
-            Preventable addTwilightEffect = (Preventable) effect;
-            return !addTwilightEffect.isPrevented(game) && effect.getSource() != null && Filters.and(filters).accepts(game, effect.getSource());
-        }
-        return false;
-    }
-
-    public static boolean isGettingHealed(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_HEALED) {
-            PreventableCardEffect healEffect = (PreventableCardEffect) effect;
-            return Filters.filter(healEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
         }
         return false;
     }
@@ -294,8 +93,7 @@ public class TriggerConditions {
     public static boolean isDrawingACard(Effect effect, DefaultGame game, String playerId) {
         if (effect.getType() == Effect.Type.BEFORE_DRAW_CARD) {
             DrawOneCardEffect drawEffect = (DrawOneCardEffect) effect;
-            if (effect.getPerformingPlayer().equals(playerId) && drawEffect.canDrawCard(game))
-                return true;
+            return effect.getPerformingPlayer().equals(playerId) && drawEffect.canDrawCard(game);
         }
         return false;
     }
@@ -312,38 +110,6 @@ public class TriggerConditions {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_KILLED) {
             ForEachKilledResult killResult = (ForEachKilledResult) effectResult;
             return Filters.and(filters).accepts(game, killResult.getKilledCard());
-        }
-        return false;
-    }
-
-    public static boolean forEachKilledBy(DefaultGame game, EffectResult effectResult, Filterable killedBy, Filterable... killed) {
-        return forEachKilledInASkirmish(game, effectResult, killedBy, killed);
-    }
-
-    public static boolean forEachKilledInASkirmish(DefaultGame game, EffectResult effectResult, Filterable killedBy, Filterable... killed) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_KILLED
-                && game.getGameState().getCurrentPhase() == Phase.SKIRMISH
-                && Filters.countActive(game, Filters.inSkirmish, killedBy)>0) {
-            ForEachKilledResult killResult = (ForEachKilledResult) effectResult;
-
-            return Filters.and(killed).accepts(game, killResult.getKilledCard());
-        }
-        return false;
-    }
-
-    public static boolean isGettingWoundedBy(Effect effect, DefaultGame game, Filterable sourceFilter, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_WOUND) {
-            WoundCharactersEffect woundEffect = (WoundCharactersEffect) effect;
-            if (woundEffect.getSources() != null && Filters.filter(woundEffect.getSources(), game, sourceFilter).size() > 0)
-                return Filters.filter(woundEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
-        }
-        return false;
-    }
-
-    public static boolean isGettingExerted(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_EXERT) {
-            PreventableCardEffect woundEffect = (PreventableCardEffect) effect;
-            return Filters.filter(woundEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
         }
         return false;
     }
@@ -432,30 +198,21 @@ public class TriggerConditions {
     }
 
     public static boolean movesTo(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.WHEN_MOVE_TO
-                && Filters.and(filters).accepts(game, game.getGameState().getCurrentSite())) {
-            return true;
-        }
-        return false;
+        return effectResult.getType() == EffectResult.Type.WHEN_MOVE_TO
+                && Filters.and(filters).accepts(game, game.getGameState().getCurrentSite());
     }
 
     public static boolean isMovingTo(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_MOVE_TO
-                && Filters.and(filters).accepts(game, game.getGameState().getCurrentSite()))
-            return true;
-
-        return false;
+        return effect.getType() == Effect.Type.BEFORE_MOVE_TO
+                && Filters.and(filters).accepts(game, game.getGameState().getCurrentSite());
     }
 
     public static boolean movesFrom(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.WHEN_MOVE_FROM
-                && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getSite())) {
-            return true;
-        }
-        return false;
+        return effectResult.getType() == EffectResult.Type.WHEN_MOVE_FROM
+                && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getSite());
     }
 
-    public static boolean moves(DefaultGame game, EffectResult effectResult) {
+    public static boolean moves(EffectResult effectResult) {
         return effectResult.getType() == EffectResult.Type.WHEN_FELLOWSHIP_MOVES;
     }
 
@@ -466,40 +223,6 @@ public class TriggerConditions {
                     && (transferredFrom == null || (transferResult.getTransferredFrom() != null && Filters.and(transferredFrom).accepts(game, transferResult.getTransferredFrom())))
                     && (transferredTo == null || (transferResult.getTransferredTo() != null && Filters.and(transferredTo).accepts(game, transferResult.getTransferredTo()))));
         }
-        return false;
-    }
-
-    public static boolean skirmishCancelled(DefaultGame game, EffectResult effectResult, Filterable ... fpCharacterFilter) {
-        if (effectResult.getType() == EffectResult.Type.SKIRMISH_CANCELLED) {
-            SkirmishCancelledResult cancelledResult = (SkirmishCancelledResult) effectResult;
-            return Filters.and(fpCharacterFilter).accepts(game, cancelledResult.getFpCharacter());
-        }
-        return false;
-    }
-
-    public static boolean freePlayerStartedAssigning(DefaultGame game, EffectResult effectResult) {
-        return effectResult.getType() == EffectResult.Type.FREE_PEOPLE_PLAYER_STARTS_ASSIGNING;
-    }
-
-    public static boolean freePlayerDecidedIfMoving(DefaultGame game, EffectResult effectResult) {
-        return effectResult.getType() == EffectResult.Type.FREE_PEOPLE_PLAYER_DECIDED_IF_MOVING;
-    }
-
-    public static boolean freePlayerDecidedToMove(DefaultGame game, EffectResult effectResult) {
-        if(effectResult.getType() == EffectResult.Type.FREE_PEOPLE_PLAYER_DECIDED_IF_MOVING) {
-            var result = (FreePlayerMoveDecisionResult)effectResult;
-            return result.IsMoving();
-        }
-
-        return false;
-    }
-
-    public static boolean freePlayerDecidedToStay(DefaultGame game, EffectResult effectResult) {
-        if(effectResult.getType() == EffectResult.Type.FREE_PEOPLE_PLAYER_DECIDED_IF_MOVING) {
-            var result = (FreePlayerMoveDecisionResult)effectResult;
-            return result.IsStaying();
-        }
-
         return false;
     }
 

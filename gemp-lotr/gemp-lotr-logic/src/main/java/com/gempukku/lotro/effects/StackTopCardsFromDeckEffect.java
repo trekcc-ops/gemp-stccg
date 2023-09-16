@@ -4,26 +4,14 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 public class StackTopCardsFromDeckEffect extends AbstractEffect {
-    private final LotroPhysicalCard _source;
     private final String _playerId;
     private final int _count;
     private final LotroPhysicalCard _target;
 
-    public StackTopCardsFromDeckEffect(LotroPhysicalCard source, String playerId, int count, LotroPhysicalCard target) {
-        _source = source;
+    public StackTopCardsFromDeckEffect(String playerId, int count, LotroPhysicalCard target) {
         _playerId = playerId;
         _count = count;
         _target = target;
-    }
-
-    @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
     }
 
     @Override

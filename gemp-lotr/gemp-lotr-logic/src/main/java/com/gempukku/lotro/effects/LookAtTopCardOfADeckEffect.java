@@ -27,11 +27,6 @@ public class LookAtTopCardOfADeckEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getGameState().getDeck(_playerDeckId).size() >= _count;
     }

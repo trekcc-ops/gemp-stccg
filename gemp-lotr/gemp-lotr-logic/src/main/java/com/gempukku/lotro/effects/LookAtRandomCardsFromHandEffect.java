@@ -27,11 +27,6 @@ public abstract class LookAtRandomCardsFromHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         if (game.getGameState().getHand(_playerHand).size() < _count)
             return false;

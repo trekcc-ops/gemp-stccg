@@ -54,10 +54,6 @@ public class PlaceNoWoundForExert implements EffectAppenderProducer {
                         };
                     }
 
-                    @Override
-                    public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
-                        return true;
-                    }
                 });
 
         return result;

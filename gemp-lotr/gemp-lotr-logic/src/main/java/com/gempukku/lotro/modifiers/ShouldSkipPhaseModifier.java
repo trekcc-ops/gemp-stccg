@@ -25,8 +25,6 @@ public class ShouldSkipPhaseModifier extends AbstractModifier {
 
     @Override
     public boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId) {
-        if (phase == _phase && (_playerId == null || _playerId.equals(playerId)))
-            return true;
-        return false;
+        return phase == _phase && (_playerId == null || _playerId.equals(playerId));
     }
 }

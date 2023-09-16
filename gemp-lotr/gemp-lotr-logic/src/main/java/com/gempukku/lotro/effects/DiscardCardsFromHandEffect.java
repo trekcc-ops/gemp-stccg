@@ -30,19 +30,12 @@ public class DiscardCardsFromHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         for (LotroPhysicalCard card : _cards) {
             if (card.getZone() != Zone.HAND)
                 return false;
         }
-        if (_forced && !game.getModifiersQuerying().canDiscardCardsFromHand(game, _playerId, _source))
-            return false;
-        return true;
+        return !_forced || game.getModifiersQuerying().canDiscardCardsFromHand(game, _playerId, _source);
     }
 
     @Override

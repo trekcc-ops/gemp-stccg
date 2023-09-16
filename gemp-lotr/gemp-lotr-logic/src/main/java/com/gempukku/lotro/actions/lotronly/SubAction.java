@@ -55,15 +55,14 @@ public class SubAction extends AbstractCostToEffectAction {
 
     @Override
     public Effect nextEffect(DefaultGame game) {
-        if (!isCostFailed()) {
+        if (isCostFailed()) {
+            return null;
+        } else {
             Effect cost = getNextCost();
             if (cost != null)
                 return cost;
 
-            Effect effect = getNextEffect();
-            if (effect != null)
-                return effect;
+            return getNextEffect();
         }
-        return null;
     }
 }

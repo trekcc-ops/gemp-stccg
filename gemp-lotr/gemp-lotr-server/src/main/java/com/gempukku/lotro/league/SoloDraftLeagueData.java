@@ -22,7 +22,7 @@ public class SoloDraftLeagueData implements LeagueData {
     private final long _code;
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final LeaguePrizes _leaguePrizes;
-    private final LeagueSerieData _serie;
+    private final LeagueSeriesData _serie;
 
     public SoloDraftLeagueData(CardBlueprintLibrary library, LotroFormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
@@ -30,14 +30,14 @@ public class SoloDraftLeagueData implements LeagueData {
         String[] params = parameters.split(",");
         _draft = soloDraftDefinitions.getSoloDraft(params[0]);
         int start = Integer.parseInt(params[1]);
-        int serieDuration = Integer.parseInt(params[2]);
+        int seriesDuration = Integer.parseInt(params[2]);
         int maxMatches = Integer.parseInt(params[3]);
         _code = Long.parseLong(params[4]);
 
         _collectionType = new CollectionType(params[4], params[5]);
 
-        _serie = new DefaultLeagueSerieData(_leaguePrizes, true, "Serie 1",
-                DateUtils.offsetDate(start, 0), DateUtils.offsetDate(start, serieDuration - 1), maxMatches,
+        _serie = new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie 1",
+                DateUtils.offsetDate(start, 0), DateUtils.offsetDate(start, seriesDuration - 1), maxMatches,
                 formatLibrary.getFormat(_draft.getFormat()), _collectionType);
     }
 
@@ -56,16 +56,16 @@ public class SoloDraftLeagueData implements LeagueData {
     }
 
     @Override
-    public List<LeagueSerieData> getSeries() {
+    public List<LeagueSeriesData> getSeries() {
         return Collections.singletonList(_serie);
     }
 
     private long getSeed(User player) {
-        return _collectionType.getCode().hashCode() + player.getId() * HIGH_ENOUGH_PRIME_NUMBER;
+        return _collectionType.getCode().hashCode() + (long) player.getId() * HIGH_ENOUGH_PRIME_NUMBER;
     }
 
     @Override
-    public CardCollection joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
+    public void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
         MutableCardCollection startingCollection = new DefaultCardCollection();
         long seed = getSeed(player);
 
@@ -76,7 +76,6 @@ public class SoloDraftLeagueData implements LeagueData {
 
         startingCollection.setExtraInformation(createExtraInformation(seed));
         collectionsManager.addPlayerCollection(false, "Sealed league product", player, _collectionType, startingCollection);
-        return startingCollection;
     }
 
     private Map<String, Object> createExtraInformation(long seed) {

@@ -1,12 +1,13 @@
 package com.gempukku.lotro.cards.build.field.effect.modifier.lotronly;
 
-import com.gempukku.lotro.cards.build.*;
+import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.build.ModifierSource;
+import com.gempukku.lotro.cards.build.Requirement;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.cards.build.field.effect.modifier.ModifierSourceProducer;
 import com.gempukku.lotro.cards.build.field.effect.modifier.RequirementCondition;
 import com.gempukku.lotro.common.Side;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.modifiers.lotronly.ArcheryTotalModifier;
 import org.json.simple.JSONObject;
 
@@ -21,13 +22,8 @@ public class ArcheryTotal implements ModifierSourceProducer {
 
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-                    @Override
-                    public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                        return new ArcheryTotalModifier(actionContext.getSource(), side,
-                                new RequirementCondition(requirements, actionContext),
-                                amount);
-                    }
-        };
+        return actionContext -> new ArcheryTotalModifier(actionContext.getSource(), side,
+                new RequirementCondition(requirements, actionContext),
+                amount);
     }
 }

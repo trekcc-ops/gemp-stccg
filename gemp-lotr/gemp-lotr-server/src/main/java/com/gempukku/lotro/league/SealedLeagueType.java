@@ -20,7 +20,7 @@ public enum SealedLeagueType {
     private final String _sealedCode;
     private final String _format;
 
-    private SealedLeagueType(String sealedCode, String format) {
+    SealedLeagueType(String sealedCode, String format) {
         _sealedCode = sealedCode;
         _format = format;
     }

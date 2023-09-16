@@ -13,11 +13,11 @@ public enum Culture implements Filterable {
     private final boolean _fp;
     private final boolean _official;
 
-    private Culture(String humanReadable, boolean fp) {
+    Culture(String humanReadable, boolean fp) {
         this(humanReadable, fp, true);
     }
 
-    private Culture(String humanReadable, boolean fp, boolean official) {
+    Culture(String humanReadable, boolean fp, boolean official) {
         _humanReadable = humanReadable;
         _fp = fp;
         _official = official;

@@ -7,7 +7,7 @@ import com.gempukku.lotro.game.User;
 import java.sql.SQLException;
 
 public class AdminService {
-    public static final int DAY_IN_MILIS = 1000 * 60 * 60 * 24;
+    public static final int DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private final PlayerDAO _playerDAO;
     private final LoggedUserHolder _loggedUserHolder;
     private final IpBanDAO _ipBanDAO;
@@ -44,7 +44,9 @@ public class AdminService {
 
     public boolean banUserTemp(String login, int days) {
         try {
-            final boolean success = _playerDAO.banPlayerTemporarily(login, System.currentTimeMillis() + days * DAY_IN_MILIS);
+            final boolean success = _playerDAO.banPlayerTemporarily(
+                    login, System.currentTimeMillis() + (long) days * DAY_IN_MILLIS
+            );
             if (!success)
                 return false;
             _loggedUserHolder.forceLogoutUser(login);
@@ -62,26 +64,26 @@ public class AdminService {
         }
     }
 
-    public boolean banIp(String login) {
+    public void banIp(String login) {
         final User player = _playerDAO.getPlayer(login);
         if (player == null)
-            return false;
+            return;
         final String lastIp = player.getLastIp();
         
         _ipBanDAO.addIpBan(lastIp);
-        
-        return banUser(login);
+
+        banUser(login);
     }
 
-    public boolean banIpPrefix(String login) {
+    public void banIpPrefix(String login) {
         final User player = _playerDAO.getPlayer(login);
         if (player == null)
-            return false;
+            return;
         final String lastIp = player.getLastIp();
         String lastIpPrefix = lastIp.substring(0, lastIp.lastIndexOf(".")+1);
 
         _ipBanDAO.addIpPrefixBan(lastIpPrefix);
 
-        return banUser(login);
+        banUser(login);
     }
 }

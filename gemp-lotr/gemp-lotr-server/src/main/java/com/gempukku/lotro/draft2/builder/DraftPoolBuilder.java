@@ -1,9 +1,5 @@
 package com.gempukku.lotro.draft2.builder;
 
-import com.gempukku.lotro.draft2.builder.DefaultDraftPoolElement;
-import com.gempukku.lotro.draft2.builder.DraftPoolElement;
-import com.gempukku.lotro.draft2.builder.DraftPoolProducer;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -25,9 +21,9 @@ public class DraftPoolBuilder {
             for (DraftPoolElement element : fullDraftPool) {
                 List<ArrayList<String>> draftPacks;
                 draftPacks = element.getDraftPackList();
-                if (element.getDraftPoolType() == "singleDraft")
+                if (Objects.equals(element.getDraftPoolType(), "singleDraft"))
                     randomSource = new Random(seed+mod);
-                else if (element.getDraftPoolType() == "sharedDraft")
+                else if (Objects.equals(element.getDraftPoolType(), "sharedDraft"))
                     randomSource = new Random(code);
                 mod++;
 

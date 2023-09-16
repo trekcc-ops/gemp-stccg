@@ -5,9 +5,9 @@ import com.gempukku.lotro.gamestate.GameEvent;
 import java.util.Map;
 
 public interface ParticipantCommunicationVisitor {
-    public void visitChannelNumber(int channelNumber);
+    void visitChannelNumber(int channelNumber);
 
-    public void visitClock(Map<String, Integer> secondsLeft);
+    void visitClock(Map<String, Integer> secondsLeft);
 
-    public void visitGameEvent(GameEvent gameEvent);
+    void visitGameEvent(GameEvent gameEvent);
 }

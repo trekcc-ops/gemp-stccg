@@ -11,7 +11,7 @@ import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.User;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 import com.gempukku.lotro.league.LeagueData;
-import com.gempukku.lotro.league.LeagueSerieData;
+import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -96,7 +96,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
             throw new HttpProcessingException(404);
 
         final LeagueData leagueData = league.getLeagueData(_library, _formatLibrary, _soloDraftDefinitions);
-        final List<LeagueSerieData> series = leagueData.getSeries();
+        final List<LeagueSeriesData> series = leagueData.getSeries();
 
         int end = series.get(series.size() - 1).getEnd();
         int start = series.get(0).getStart();
@@ -114,16 +114,16 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
         leagueElem.setAttribute("start", String.valueOf(series.get(0).getStart()));
         leagueElem.setAttribute("end", String.valueOf(end));
 
-        for (LeagueSerieData serie : series) {
-            Element serieElem = doc.createElement("serie");
-            serieElem.setAttribute("type", serie.getName());
-            serieElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
-            serieElem.setAttribute("start", String.valueOf(serie.getStart()));
-            serieElem.setAttribute("end", String.valueOf(serie.getEnd()));
-            serieElem.setAttribute("formatType", serie.getFormat().getCode());
-            serieElem.setAttribute("format", serie.getFormat().getName());
-            serieElem.setAttribute("collection", serie.getCollectionType().getFullName());
-            serieElem.setAttribute("limited", String.valueOf(serie.isLimited()));
+        for (LeagueSeriesData serie : series) {
+            Element seriesElem = doc.createElement("serie");
+            seriesElem.setAttribute("type", serie.getName());
+            seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
+            seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
+            seriesElem.setAttribute("end", String.valueOf(serie.getEnd()));
+            seriesElem.setAttribute("formatType", serie.getFormat().getCode());
+            seriesElem.setAttribute("format", serie.getFormat().getName());
+            seriesElem.setAttribute("collection", serie.getCollectionType().getFullName());
+            seriesElem.setAttribute("limited", String.valueOf(serie.isLimited()));
 
             Element matchesElem = doc.createElement("matches");
             Collection<LeagueMatchResult> playerMatches = _leagueService.getPlayerMatchesInSerie(league, serie, resourceOwner.getName());
@@ -133,16 +133,16 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
                 matchElem.setAttribute("loser", playerMatch.getLoser());
                 matchesElem.appendChild(matchElem);
             }
-            serieElem.appendChild(matchesElem);
+            seriesElem.appendChild(matchesElem);
 
             final List<PlayerStanding> standings = _leagueService.getLeagueSerieStandings(league, serie);
             for (PlayerStanding standing : standings) {
                 Element standingElem = doc.createElement("standing");
                 setStandingAttributes(standing, standingElem);
-                serieElem.appendChild(standingElem);
+                seriesElem.appendChild(standingElem);
             }
 
-            leagueElem.appendChild(serieElem);
+            leagueElem.appendChild(seriesElem);
         }
 
         List<PlayerStanding> leagueStandings = _leagueService.getLeagueStandings(league);
@@ -166,7 +166,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
 
         for (League league : _leagueService.getActiveLeagues()) {
             final LeagueData leagueData = league.getLeagueData(_library, _formatLibrary, _soloDraftDefinitions);
-            final List<LeagueSerieData> series = leagueData.getSeries();
+            final List<LeagueSeriesData> series = leagueData.getSeries();
 
             int end = series.get(series.size() - 1).getEnd();
 

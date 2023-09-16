@@ -42,9 +42,10 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     public Effect nextEffect(DefaultGame game) {
         if (!_sentMessage) {
             _sentMessage = true;
-            if (_physicalCard != null && _physicalCard.getZone().isInPlay())
+            if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
                 game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
-            game.getGameState().sendMessage(GameUtils.getCardLink(_physicalCard) + " is used");
+                game.getGameState().sendMessage(GameUtils.getCardLink(_physicalCard) + " is used");
+            }
         }
 
         if (!isCostFailed()) {
@@ -58,7 +59,9 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
                 return _activateCardEffect;
             }
 
-            if (!_activateCardEffect.getActivateCardResult().isEffectCancelled() && !_prevented)
+            if (_activateCardEffect.getActivateCardResult().isEffectCancelled())
+                return null;
+            if (!_prevented)
                 return getNextEffect();
         }
         return null;

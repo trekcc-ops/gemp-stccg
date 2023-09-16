@@ -4,6 +4,7 @@ import com.gempukku.lotro.DateUtils;
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
 import com.gempukku.lotro.cache.CacheManager;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.chat.ChatServer;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.LeagueDAO;
@@ -11,7 +12,6 @@ import com.gempukku.lotro.db.PlayerDAO;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.game.User;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
 import com.gempukku.lotro.hall.HallServer;
@@ -31,10 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AdminRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private final CardBlueprintLibrary _cardLibrary;
@@ -206,7 +203,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            List<String> logins = getFormParametersSafely(postDecoder, "login[]");
+            List<String> logins = getFormParametersSafely(postDecoder);
             if (logins == null)
                 throw new HttpProcessingException(400);
 
@@ -342,7 +339,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             String collectionType = getFormParameterSafely(postDecoder, "collectionType");
             String prizeMultiplier = getFormParameterSafely(postDecoder, "prizeMultiplier");
             List<String> formats = getFormMultipleParametersSafely(postDecoder, "format[]");
-            List<String> serieDurations = getFormMultipleParametersSafely(postDecoder, "serieDuration[]");
+            List<String> seriesDurations = getFormMultipleParametersSafely(postDecoder, "seriesDuration[]");
             List<String> maxMatches = getFormMultipleParametersSafely(postDecoder, "maxMatches[]");
             String name = getFormParameterSafely(postDecoder, "name");
             String costStr = getFormParameterSafely(postDecoder, "cost");
@@ -355,23 +352,23 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
                 throw new HttpProcessingException(400);
             }
 
-            if(formats.size() != serieDurations.size() || formats.size() != maxMatches.size())
+            if(formats.size() != seriesDurations.size() || formats.size() != maxMatches.size())
                 throw new HttpProcessingException(400);
 
             int cost = Integer.parseInt(costStr);
 
             String code = String.valueOf(System.currentTimeMillis());
 
-            StringBuilder sb = new StringBuilder();
             //The 1 is a hard-coded maximum number of player matches per league.
             //TODO: Get this put into the UI properly.
-            sb.append(start + "," + collectionType + "," + prizeMultiplier + "," + "1" + "," + formats.size());
+            StringJoiner sj = new StringJoiner(",");
+            sj.add(start).add(collectionType).add(prizeMultiplier).add("1").add(Integer.toString(formats.size()));
             for (int i = 0; i < formats.size(); i++)
-                sb.append("," + formats.get(i) + "," + serieDurations.get(i) + "," + maxMatches.get(i));
+                sj.add(formats.get(i)).add(seriesDurations.get(i)).add(maxMatches.get(i));
+            String parameters = sj.toString();
 
-            String parameters = sb.toString();
             LeagueData leagueData = new NewConstructedLeagueData(_cardLibrary, _formatLibrary, parameters);
-            List<LeagueSerieData> series = leagueData.getSeries();
+            List<LeagueSeriesData> series = leagueData.getSeries();
             int leagueStart = series.get(0).getStart();
             int displayEnd = DateUtils.offsetDate(series.get(series.size() - 1).getEnd(), 2);
 
@@ -394,7 +391,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             String collectionType = getFormParameterSafely(postDecoder, "collectionType");
             String prizeMultiplier = getFormParameterSafely(postDecoder, "prizeMultiplier");
             List<String> formats = getFormMultipleParametersSafely(postDecoder, "format[]");
-            List<String> serieDurations = getFormMultipleParametersSafely(postDecoder, "serieDuration[]");
+            List<String> seriesDurations = getFormMultipleParametersSafely(postDecoder, "seriesDuration[]");
             List<String> maxMatches = getFormMultipleParametersSafely(postDecoder, "maxMatches[]");
             String name = getFormParameterSafely(postDecoder, "name");
             String costStr = getFormParameterSafely(postDecoder, "cost");
@@ -407,17 +404,17 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
                 throw new HttpProcessingException(400);
             }
 
-            if(formats.size() != serieDurations.size() || formats.size() != maxMatches.size())
+            if(formats.size() != seriesDurations.size() || formats.size() != maxMatches.size())
                 throw new HttpProcessingException(400);
 
             int cost = Integer.parseInt(costStr);
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(start + "," + collectionType + "," + prizeMultiplier + "," + "1" + "," + formats.size());
+            StringJoiner sj = new StringJoiner(",");
+            sj.add(start).add(collectionType).add(prizeMultiplier).add("1").add(Integer.toString(formats.size()));
             for (int i = 0; i < formats.size(); i++)
-                sb.append("," + formats.get(i) + "," + serieDurations.get(i) + "," + maxMatches.get(i));
+                sj.add(formats.get(i)).add(seriesDurations.get(i)).add(maxMatches.get(i));
+            String parameters = sj.toString();
 
-            String parameters = sb.toString();
             LeagueData leagueData = new NewConstructedLeagueData(_cardLibrary, _formatLibrary, parameters);
 
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -425,7 +422,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             Document doc = documentBuilder.newDocument();
 
-            final List<LeagueSerieData> series = leagueData.getSeries();
+            final List<LeagueSeriesData> series = leagueData.getSeries();
 
             int end = series.get(series.size() - 1).getEnd();
 
@@ -436,17 +433,17 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             leagueElem.setAttribute("start", String.valueOf(series.get(0).getStart()));
             leagueElem.setAttribute("end", String.valueOf(end));
 
-            for (LeagueSerieData serie : series) {
-                Element serieElem = doc.createElement("serie");
-                serieElem.setAttribute("type", serie.getName());
-                serieElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
-                serieElem.setAttribute("start", String.valueOf(serie.getStart()));
-                serieElem.setAttribute("end", String.valueOf(serie.getEnd()));
-                serieElem.setAttribute("format", serie.getFormat().getName());
-                serieElem.setAttribute("collection", serie.getCollectionType().getFullName());
-                serieElem.setAttribute("limited", String.valueOf(serie.isLimited()));
+            for (LeagueSeriesData serie : series) {
+                Element seriesElem = doc.createElement("serie");
+                seriesElem.setAttribute("type", serie.getName());
+                seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
+                seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
+                seriesElem.setAttribute("end", String.valueOf(serie.getEnd()));
+                seriesElem.setAttribute("format", serie.getFormat().getName());
+                seriesElem.setAttribute("collection", serie.getCollectionType().getFullName());
+                seriesElem.setAttribute("limited", String.valueOf(serie.isLimited()));
 
-                leagueElem.appendChild(serieElem);
+                leagueElem.appendChild(seriesElem);
             }
 
             doc.appendChild(leagueElem);
@@ -464,14 +461,14 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
         try {
             String format = getFormParameterSafely(postDecoder, "format");
             String start = getFormParameterSafely(postDecoder, "start");
-            String serieDuration = getFormParameterSafely(postDecoder, "serieDuration");
+            String seriesDuration = getFormParameterSafely(postDecoder, "seriesDuration");
             String maxMatches = getFormParameterSafely(postDecoder, "maxMatches");
             String name = getFormParameterSafely(postDecoder, "name");
             String costStr = getFormParameterSafely(postDecoder, "cost");
 
             if(format == null || format.trim().isEmpty()
                     ||start == null || start.trim().isEmpty()
-                    ||serieDuration == null || serieDuration.trim().isEmpty()
+                    ||seriesDuration == null || seriesDuration.trim().isEmpty()
                     ||maxMatches == null || maxMatches.trim().isEmpty()
                     ||name == null || name.trim().isEmpty()
                     ||costStr == null || costStr.trim().isEmpty()) {
@@ -482,9 +479,9 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             String code = String.valueOf(System.currentTimeMillis());
 
-            String parameters = format + "," + start + "," + serieDuration + "," + maxMatches + "," + code + "," + name;
+            String parameters = format + "," + start + "," + seriesDuration + "," + maxMatches + "," + code + "," + name;
             LeagueData leagueData = new SoloDraftLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions, parameters);
-            List<LeagueSerieData> series = leagueData.getSeries();
+            List<LeagueSeriesData> series = leagueData.getSeries();
             int leagueStart = series.get(0).getStart();
             int displayEnd = DateUtils.offsetDate(series.get(series.size() - 1).getEnd(), 2);
 
@@ -505,14 +502,14 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
         try {
             String format = getFormParameterSafely(postDecoder, "format");
             String start = getFormParameterSafely(postDecoder, "start");
-            String serieDuration = getFormParameterSafely(postDecoder, "serieDuration");
+            String seriesDuration = getFormParameterSafely(postDecoder, "seriesDuration");
             String maxMatches = getFormParameterSafely(postDecoder, "maxMatches");
             String name = getFormParameterSafely(postDecoder, "name");
             String costStr = getFormParameterSafely(postDecoder, "cost");
 
             if(format == null || format.trim().isEmpty()
                     ||start == null || start.trim().isEmpty()
-                    ||serieDuration == null || serieDuration.trim().isEmpty()
+                    ||seriesDuration == null || seriesDuration.trim().isEmpty()
                     ||maxMatches == null || maxMatches.trim().isEmpty()
                     ||name == null || name.trim().isEmpty()
                     ||costStr == null || costStr.trim().isEmpty()) {
@@ -523,7 +520,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             String code = String.valueOf(System.currentTimeMillis());
 
-            String parameters = format + "," + start + "," + serieDuration + "," + maxMatches + "," + code + "," + name;
+            String parameters = format + "," + start + "," + seriesDuration + "," + maxMatches + "," + code + "," + name;
             LeagueData leagueData = new SoloDraftLeagueData(_cardLibrary,  _formatLibrary, _soloDraftDefinitions, parameters);
 
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -531,7 +528,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             Document doc = documentBuilder.newDocument();
 
-            final List<LeagueSerieData> series = leagueData.getSeries();
+            final List<LeagueSeriesData> series = leagueData.getSeries();
 
             int end = series.get(series.size() - 1).getEnd();
 
@@ -542,17 +539,17 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             leagueElem.setAttribute("start", String.valueOf(series.get(0).getStart()));
             leagueElem.setAttribute("end", String.valueOf(end));
 
-            for (LeagueSerieData serie : series) {
-                Element serieElem = doc.createElement("serie");
-                serieElem.setAttribute("type", serie.getName());
-                serieElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
-                serieElem.setAttribute("start", String.valueOf(serie.getStart()));
-                serieElem.setAttribute("end", String.valueOf(serie.getEnd()));
-                serieElem.setAttribute("format", serie.getFormat().getName());
-                serieElem.setAttribute("collection", serie.getCollectionType().getFullName());
-                serieElem.setAttribute("limited", String.valueOf(serie.isLimited()));
+            for (LeagueSeriesData serie : series) {
+                Element seriesElem = doc.createElement("serie");
+                seriesElem.setAttribute("type", serie.getName());
+                seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
+                seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
+                seriesElem.setAttribute("end", String.valueOf(serie.getEnd()));
+                seriesElem.setAttribute("format", serie.getFormat().getName());
+                seriesElem.setAttribute("collection", serie.getCollectionType().getFullName());
+                seriesElem.setAttribute("limited", String.valueOf(serie.isLimited()));
 
-                leagueElem.appendChild(serieElem);
+                leagueElem.appendChild(seriesElem);
             }
 
             doc.appendChild(leagueElem);
@@ -570,14 +567,14 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
         try {
             String format = getFormParameterSafely(postDecoder, "format");
             String start = getFormParameterSafely(postDecoder, "start");
-            String serieDuration = getFormParameterSafely(postDecoder, "serieDuration");
+            String seriesDuration = getFormParameterSafely(postDecoder, "seriesDuration");
             String maxMatches = getFormParameterSafely(postDecoder, "maxMatches");
             String name = getFormParameterSafely(postDecoder, "name");
             String costStr = getFormParameterSafely(postDecoder, "cost");
 
             if(format == null || format.trim().isEmpty()
                     ||start == null || start.trim().isEmpty()
-                    ||serieDuration == null || serieDuration.trim().isEmpty()
+                    ||seriesDuration == null || seriesDuration.trim().isEmpty()
                     ||maxMatches == null || maxMatches.trim().isEmpty()
                     ||name == null || name.trim().isEmpty()
                     ||costStr == null || costStr.trim().isEmpty()) {
@@ -588,9 +585,9 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             String code = String.valueOf(System.currentTimeMillis());
 
-            String parameters = _formatLibrary.GetSealedTemplate(format).GetID() + "," + start + "," + serieDuration + "," + maxMatches + "," + code + "," + name;
+            String parameters = _formatLibrary.GetSealedTemplate(format).GetID() + "," + start + "," + seriesDuration + "," + maxMatches + "," + code + "," + name;
             LeagueData leagueData = new NewSealedLeagueData(_cardLibrary, _formatLibrary, parameters);
-            List<LeagueSerieData> series = leagueData.getSeries();
+            List<LeagueSeriesData> series = leagueData.getSeries();
             int leagueStart = series.get(0).getStart();
             int displayEnd = DateUtils.offsetDate(series.get(series.size() - 1).getEnd(), 2);
 
@@ -616,14 +613,14 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
         try {
             String format = getFormParameterSafely(postDecoder, "format");
             String start = getFormParameterSafely(postDecoder, "start");
-            String serieDuration = getFormParameterSafely(postDecoder, "serieDuration");
+            String seriesDuration = getFormParameterSafely(postDecoder, "seriesDuration");
             String maxMatches = getFormParameterSafely(postDecoder, "maxMatches");
             String name = getFormParameterSafely(postDecoder, "name");
             String costStr = getFormParameterSafely(postDecoder, "cost");
 
             if(format == null || format.trim().isEmpty()
                 ||start == null || start.trim().isEmpty()
-                ||serieDuration == null || serieDuration.trim().isEmpty()
+                ||seriesDuration == null || seriesDuration.trim().isEmpty()
                 ||maxMatches == null || maxMatches.trim().isEmpty()
                 ||name == null || name.trim().isEmpty()
                 ||costStr == null || costStr.trim().isEmpty()) {
@@ -634,7 +631,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             String code = String.valueOf(System.currentTimeMillis());
 
-            String parameters = format + "," + start + "," + serieDuration + "," + maxMatches + "," + code + "," + name;
+            String parameters = format + "," + start + "," + seriesDuration + "," + maxMatches + "," + code + "," + name;
             LeagueData leagueData = new NewSealedLeagueData(_cardLibrary, _formatLibrary, parameters);
 
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -642,7 +639,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             Document doc = documentBuilder.newDocument();
 
-            final List<LeagueSerieData> series = leagueData.getSeries();
+            final List<LeagueSeriesData> series = leagueData.getSeries();
 
             int end = series.get(series.size() - 1).getEnd();
 
@@ -653,17 +650,17 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             leagueElem.setAttribute("start", String.valueOf(series.get(0).getStart()));
             leagueElem.setAttribute("end", String.valueOf(end));
 
-            for (LeagueSerieData serie : series) {
-                Element serieElem = doc.createElement("serie");
-                serieElem.setAttribute("type", serie.getName());
-                serieElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
-                serieElem.setAttribute("start", String.valueOf(serie.getStart()));
-                serieElem.setAttribute("end", String.valueOf(serie.getEnd()));
-                serieElem.setAttribute("format", serie.getFormat().getName());
-                serieElem.setAttribute("collection", serie.getCollectionType().getFullName());
-                serieElem.setAttribute("limited", String.valueOf(serie.isLimited()));
+            for (LeagueSeriesData serie : series) {
+                Element seriesElem = doc.createElement("serie");
+                seriesElem.setAttribute("type", serie.getName());
+                seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
+                seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
+                seriesElem.setAttribute("end", String.valueOf(serie.getEnd()));
+                seriesElem.setAttribute("format", serie.getFormat().getName());
+                seriesElem.setAttribute("collection", serie.getCollectionType().getFullName());
+                seriesElem.setAttribute("limited", String.valueOf(serie.isLimited()));
 
-                leagueElem.appendChild(serieElem);
+                leagueElem.appendChild(seriesElem);
             }
 
             doc.appendChild(leagueElem);
@@ -674,7 +671,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
         }
     }
 
-    private void getMotd(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, IOException {
+    private void getMotd(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
         validateAdmin(request);
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);

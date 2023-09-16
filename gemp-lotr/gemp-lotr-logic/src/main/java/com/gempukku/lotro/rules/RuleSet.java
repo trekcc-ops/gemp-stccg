@@ -1,17 +1,14 @@
 package com.gempukku.lotro.rules;
 
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.rules.lotronly.*;
 
 public class RuleSet {
-    private final DefaultGame _game;
     private final DefaultActionsEnvironment _actionsEnvironment;
     private final ModifiersLogic _modifiersLogic;
 
-    public RuleSet(DefaultGame game, DefaultActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic) {
-        _game = game;
+    public RuleSet(DefaultActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic) {
         _actionsEnvironment = actionsEnvironment;
         _modifiersLogic = modifiersLogic;
     }
@@ -25,9 +22,7 @@ public class RuleSet {
 
         new AmbushRule(_actionsEnvironment).applyRule();
 
-        new ResolveSkirmishRule(_game, _actionsEnvironment).applyRule();
-
-//        new SanctuaryRule(_actionsEnvironment, _modifiersLogic).applyRule();
+        new ResolveSkirmishRule(_actionsEnvironment).applyRule();
 
         new DiscardedCardRule(_actionsEnvironment).applyRule();
 

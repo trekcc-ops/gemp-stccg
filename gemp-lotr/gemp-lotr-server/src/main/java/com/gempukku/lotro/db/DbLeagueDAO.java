@@ -2,7 +2,6 @@ package com.gempukku.lotro.db;
 
 import com.gempukku.lotro.db.vo.League;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

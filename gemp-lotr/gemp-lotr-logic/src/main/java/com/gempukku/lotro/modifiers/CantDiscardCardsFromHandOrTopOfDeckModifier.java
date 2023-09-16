@@ -16,15 +16,11 @@ public class CantDiscardCardsFromHandOrTopOfDeckModifier extends AbstractModifie
 
     @Override
     public boolean canDiscardCardsFromHand(DefaultGame game, String playerId, LotroPhysicalCard source) {
-        if (playerId.equals(_playerId))
-            return false;
-        return true;
+        return !playerId.equals(_playerId);
     }
 
     @Override
     public boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, LotroPhysicalCard source) {
-        if (playerId.equals(_playerId))
-            return false;
-        return true;
+        return !playerId.equals(_playerId);
     }
 }

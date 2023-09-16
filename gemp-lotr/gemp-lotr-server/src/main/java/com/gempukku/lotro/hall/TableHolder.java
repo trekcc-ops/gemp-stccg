@@ -1,16 +1,16 @@
 package com.gempukku.lotro.hall;
 
+import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.db.IgnoreDAO;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.CardGameMediator;
 import com.gempukku.lotro.game.GameParticipant;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.league.LeagueSerieData;
+import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
+import org.apache.log4j.Logger;
 
 import java.util.*;
-import org.apache.log4j.Logger;
 
 public class TableHolder {
     private static final Logger logger = Logger.getLogger(TableHolder.class);
@@ -78,7 +78,7 @@ public class TableHolder {
             if (!leagueService.isPlayerInLeague(league, player))
                 throw new HallException("You're not in that league");
 
-            LeagueSerieData leagueSerie = awaitingTable.getGameSettings().getLeagueSerie();
+            LeagueSeriesData leagueSerie = awaitingTable.getGameSettings().getLeagueSerie();
             if (!leagueService.canPlayRankedGame(league, leagueSerie, player.getName()))
                 throw new HallException("You have already played max games in league");
             if (awaitingTable.getPlayerNames().size() != 0 && !leagueService.canPlayRankedGameAgainst(league, leagueSerie, awaitingTable.getPlayerNames().iterator().next(), player.getName()))
@@ -214,19 +214,15 @@ public class TableHolder {
         }
     }
 
-    public boolean removeFinishedGames() {
-        boolean changed = false;
+    public void removeFinishedGames() {
         final Iterator<Map.Entry<String, GameTable>> iterator = runningTables.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, GameTable> runningTable = iterator.next();
             CardGameMediator cardGameMediator = runningTable.getValue().getLotroGameMediator();
             if (cardGameMediator.isDestroyed()) {
                 iterator.remove();
-                changed = true;
-                ;
             }
         }
-        return changed;
     }
 
     private boolean isNoIgnores(Collection<String> participants, String playerLooking) {

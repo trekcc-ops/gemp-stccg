@@ -1,15 +1,15 @@
 package com.gempukku.lotro.gamestate;
 
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.processes.lotronly.assign.Assignment;
-import com.gempukku.lotro.game.PlayerOrder;
 import com.gempukku.lotro.decisions.AwaitingDecision;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.Player;
+import com.gempukku.lotro.game.PlayerOrder;
 import com.gempukku.lotro.modifiers.ModifierFlag;
+import com.gempukku.lotro.processes.lotronly.assign.Assignment;
 import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
 import org.apache.log4j.Logger;
 
@@ -23,20 +23,20 @@ public class GameState {
     private PlayerOrder _playerOrder;
     private LotroFormat _format;
     protected final Map<String, Player> _players = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _adventureDecks = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _decks = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _hands = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _discards = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _deadPiles = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _stacked = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _adventureDecks = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _decks = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _hands = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _discards = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _deadPiles = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _stacked = new HashMap<>();
 
-    private final Map<String, List<LotroPhysicalCardImpl>> _voids = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _voidsFromHand = new HashMap<>();
-    private final Map<String, List<LotroPhysicalCardImpl>> _removed = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _voids = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _voidsFromHand = new HashMap<>();
+    private final Map<String, List<PhysicalCardImpl>> _removed = new HashMap<>();
 
-    private final List<LotroPhysicalCardImpl> _inPlay = new LinkedList<>();
+    private final List<PhysicalCardImpl> _inPlay = new LinkedList<>();
 
-    private final Map<Integer, LotroPhysicalCardImpl> _allCards = new HashMap<>();
+    private final Map<Integer, PhysicalCardImpl> _allCards = new HashMap<>();
 
     private String _currentPlayerId;
     private Phase _currentPhase = Phase.PUT_RING_BEARER;
@@ -153,7 +153,7 @@ public class GameState {
     private void addPlayerCards(String playerId, List<String> cards, CardBlueprintLibrary library) {
         for (String blueprintId : cards) {
             try {
-                LotroPhysicalCardImpl physicalCard = createPhysicalCardImpl(playerId, library, blueprintId);
+                PhysicalCardImpl physicalCard = createPhysicalCardImpl(playerId, library, blueprintId);
                 if (physicalCard.getBlueprint().getCardType() == CardType.SITE) {
                     physicalCard.setZone(Zone.ADVENTURE_DECK);
                     _adventureDecks.get(playerId).add(physicalCard);
@@ -171,11 +171,11 @@ public class GameState {
         return createPhysicalCardImpl(ownerPlayerId, library, blueprintId);
     }
 
-    private LotroPhysicalCardImpl createPhysicalCardImpl(String playerId, CardBlueprintLibrary library, String blueprintId) throws CardNotFoundException {
+    private PhysicalCardImpl createPhysicalCardImpl(String playerId, CardBlueprintLibrary library, String blueprintId) throws CardNotFoundException {
         LotroCardBlueprint card = library.getLotroCardBlueprint(blueprintId);
 
         int cardId = nextCardId();
-        LotroPhysicalCardImpl result = new LotroPhysicalCardImpl(cardId, blueprintId, playerId, card);
+        PhysicalCardImpl result = new PhysicalCardImpl(cardId, blueprintId, playerId, card);
 
         _allCards.put(cardId, result);
 
@@ -254,29 +254,29 @@ public class GameState {
             } while (cardsToSendAtLoopStart != cardsLeftToSent.size() && cardsLeftToSent.size() > 0);
 
             // Finally the stacked ones
-            for (List<LotroPhysicalCardImpl> physicalCards : _stacked.values())
-                for (LotroPhysicalCardImpl physicalCard : physicalCards)
+            for (List<PhysicalCardImpl> physicalCards : _stacked.values())
+                for (PhysicalCardImpl physicalCard : physicalCards)
                     listener.cardCreated(physicalCard);
 
-            List<LotroPhysicalCardImpl> hand = _hands.get(playerId);
+            List<PhysicalCardImpl> hand = _hands.get(playerId);
             if (hand != null) {
-                for (LotroPhysicalCardImpl physicalCard : hand)
+                for (PhysicalCardImpl physicalCard : hand)
                     listener.cardCreated(physicalCard);
             }
 
-            for (List<LotroPhysicalCardImpl> physicalCards : _deadPiles.values())
-                for (LotroPhysicalCardImpl physicalCard : physicalCards)
+            for (List<PhysicalCardImpl> physicalCards : _deadPiles.values())
+                for (PhysicalCardImpl physicalCard : physicalCards)
                     listener.cardCreated(physicalCard);
 
-            List<LotroPhysicalCardImpl> discard = _discards.get(playerId);
+            List<PhysicalCardImpl> discard = _discards.get(playerId);
             if (discard != null) {
-                for (LotroPhysicalCardImpl physicalCard : discard)
+                for (PhysicalCardImpl physicalCard : discard)
                     listener.cardCreated(physicalCard);
             }
 
-            List<LotroPhysicalCardImpl> adventureDeck = _adventureDecks.get(playerId);
+            List<PhysicalCardImpl> adventureDeck = _adventureDecks.get(playerId);
             if (adventureDeck != null) {
-                for (LotroPhysicalCardImpl physicalCard : adventureDeck)
+                for (PhysicalCardImpl physicalCard : adventureDeck)
                     listener.cardCreated(physicalCard);
             }
 
@@ -326,16 +326,16 @@ public class GameState {
 
     public void transferCard(LotroPhysicalCard card, LotroPhysicalCard transferTo) {
         if (card.getZone() != Zone.ATTACHED)
-            ((LotroPhysicalCardImpl) card).setZone(Zone.ATTACHED);
+            ((PhysicalCardImpl) card).setZone(Zone.ATTACHED);
 
-        ((LotroPhysicalCardImpl) card).attachTo((LotroPhysicalCardImpl) transferTo);
+        ((PhysicalCardImpl) card).attachTo((PhysicalCardImpl) transferTo);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.cardMoved(card);
     }
 
     public void takeControlOfCard(String playerId, DefaultGame game, LotroPhysicalCard card, Zone zone) {
-        ((LotroPhysicalCardImpl) card).setCardController(playerId);
-        ((LotroPhysicalCardImpl) card).setZone(zone);
+        ((PhysicalCardImpl) card).setCardController(playerId);
+        ((PhysicalCardImpl) card).setZone(zone);
         if (card.getBlueprint().getCardType() == CardType.SITE)
             startAffectingControlledSite(game, card);
         for (GameStateListener listener : getAllGameStateListeners())
@@ -345,8 +345,8 @@ public class GameState {
     public void loseControlOfCard(LotroPhysicalCard card, Zone zone) {
         if (card.getBlueprint().getCardType() == CardType.SITE)
             stopAffectingControlledSite(card);
-        ((LotroPhysicalCardImpl) card).setCardController(null);
-        ((LotroPhysicalCardImpl) card).setZone(zone);
+        ((PhysicalCardImpl) card).setCardController(null);
+        ((PhysicalCardImpl) card).setZone(zone);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.cardMoved(card);
     }
@@ -355,7 +355,7 @@ public class GameState {
         if(card == attachTo)
             throw new InvalidParameterException("Cannot attach card to itself!");
 
-        ((LotroPhysicalCardImpl) card).attachTo((LotroPhysicalCardImpl) attachTo);
+        ((PhysicalCardImpl) card).attachTo((PhysicalCardImpl) attachTo);
         addCardToZone(game, card, Zone.ATTACHED);
     }
 
@@ -363,7 +363,7 @@ public class GameState {
         if(card == stackOn)
             throw new InvalidParameterException("Cannot stack card on itself!");
 
-        ((LotroPhysicalCardImpl) card).stackOn((LotroPhysicalCardImpl) stackOn);
+        ((PhysicalCardImpl) card).stackOn((PhysicalCardImpl) stackOn);
         addCardToZone(game, card, Zone.STACKED);
     }
 
@@ -394,7 +394,7 @@ public class GameState {
         return _rings.get(playerId);
     }
 
-    public List<LotroPhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
+    public List<PhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
         if (zone == Zone.DECK)
             return _decks.get(playerId);
         else if (zone == Zone.ADVENTURE_DECK)
@@ -456,7 +456,7 @@ public class GameState {
 
     public void removeCardsFromZone(String playerPerforming, Collection<LotroPhysicalCard> cards) {
         for (LotroPhysicalCard card : cards) {
-            List<LotroPhysicalCardImpl> zoneCards = getZoneCards(card.getOwner(), card.getZone());
+            List<PhysicalCardImpl> zoneCards = getZoneCards(card.getOwner(), card.getZone());
             if (!zoneCards.contains(card))
                 _log.error("Card was not found in the expected zone");
         }
@@ -474,14 +474,14 @@ public class GameState {
             else if (zone == Zone.DISCARD)
                 stopAffectingInDiscard(card);
 
-            List<LotroPhysicalCardImpl> zoneCards = getZoneCards(card.getOwner(), zone);
+            List<PhysicalCardImpl> zoneCards = getZoneCards(card.getOwner(), zone);
             zoneCards.remove(card);
 
             if (zone == Zone.ATTACHED)
-                ((LotroPhysicalCardImpl) card).attachTo(null);
+                ((PhysicalCardImpl) card).attachTo(null);
 
             if (zone == Zone.STACKED)
-                ((LotroPhysicalCardImpl) card).stackOn(null);
+                ((PhysicalCardImpl) card).stackOn(null);
 
             for (Assignment assignment : new LinkedList<>(_assignments)) {
                 if (assignment.getFellowshipCharacter() == card)
@@ -505,7 +505,7 @@ public class GameState {
             listener.cardsRemoved(playerPerforming, cards);
 
         for (LotroPhysicalCard card : cards) {
-            ((LotroPhysicalCardImpl) card).setZone(null);
+            ((PhysicalCardImpl) card).setZone(null);
         }
     }
 
@@ -513,23 +513,23 @@ public class GameState {
         addCardToZone(game, card, zone, true);
     }
 
-    private void addCardToZone(DefaultGame game, LotroPhysicalCard card, Zone zone, boolean end) {
+    public void addCardToZone(DefaultGame game, LotroPhysicalCard card, Zone zone, boolean end) {
         if (zone == Zone.DISCARD && game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
 
         if (zone.isInPlay())
             assignNewCardId(card);
 
-        List<LotroPhysicalCardImpl> zoneCards = getZoneCards(card.getOwner(), zone);
+        List<PhysicalCardImpl> zoneCards = getZoneCards(card.getOwner(), zone);
         if (end)
-            zoneCards.add((LotroPhysicalCardImpl) card);
+            zoneCards.add((PhysicalCardImpl) card);
         else
-            zoneCards.add(0, (LotroPhysicalCardImpl) card);
+            zoneCards.add(0, (PhysicalCardImpl) card);
 
         if (card.getZone() != null)
             _log.error("Card was in " + card.getZone() + " when tried to add to zone: " + zone);
 
-        ((LotroPhysicalCardImpl) card).setZone(zone);
+        ((PhysicalCardImpl) card).setZone(zone);
 
         if (zone == Zone.ADVENTURE_PATH) {
             for (GameStateListener listener : getAllGameStateListeners())
@@ -554,8 +554,8 @@ public class GameState {
     private void assignNewCardId(LotroPhysicalCard card) {
         _allCards.remove(card.getCardId());
         int newCardId = nextCardId();
-        ((LotroPhysicalCardImpl) card).setCardId(newCardId);
-        _allCards.put(newCardId, ((LotroPhysicalCardImpl) card));
+        ((PhysicalCardImpl) card).setCardId(newCardId);
+        _allCards.put(newCardId, ((PhysicalCardImpl) card));
     }
 
     private void removeAllTokens(LotroPhysicalCard card) {
@@ -571,12 +571,12 @@ public class GameState {
     }
 
     public void shuffleCardsIntoDeck(Collection<? extends LotroPhysicalCard> cards, String playerId) {
-        List<LotroPhysicalCardImpl> zoneCards = _decks.get(playerId);
+        List<PhysicalCardImpl> zoneCards = _decks.get(playerId);
 
         for (LotroPhysicalCard card : cards) {
-            zoneCards.add((LotroPhysicalCardImpl) card);
+            zoneCards.add((PhysicalCardImpl) card);
 
-            ((LotroPhysicalCardImpl) card).setZone(Zone.DECK);
+            ((PhysicalCardImpl) card).setZone(Zone.DECK);
         }
 
         shuffleDeck(playerId);
@@ -590,14 +590,13 @@ public class GameState {
         addCardToZone(null, card, Zone.DECK, false);
     }
 
-    public boolean iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {
-        for (LotroPhysicalCardImpl physicalCard : _inPlay) {
+    public void iterateActiveCards(PhysicalCardVisitor physicalCardVisitor) {
+        for (PhysicalCardImpl physicalCard : _inPlay) {
             if (isCardInPlayActive(physicalCard))
                 if (physicalCardVisitor.visitPhysicalCard(physicalCard))
-                    return true;
+                    return;
         }
 
-        return false;
     }
 
     public LotroPhysicalCard findCardById(int cardId) {
@@ -700,7 +699,7 @@ public class GameState {
 
     public List<LotroPhysicalCard> getAttachedCards(LotroPhysicalCard card) {
         List<LotroPhysicalCard> result = new LinkedList<>();
-        for (LotroPhysicalCardImpl physicalCard : _inPlay) {
+        for (PhysicalCardImpl physicalCard : _inPlay) {
             if (physicalCard.getAttachedTo() != null && physicalCard.getAttachedTo() == card)
                 result.add(physicalCard);
         }
@@ -709,8 +708,8 @@ public class GameState {
 
     public List<LotroPhysicalCard> getStackedCards(LotroPhysicalCard card) {
         List<LotroPhysicalCard> result = new LinkedList<>();
-        for (List<LotroPhysicalCardImpl> physicalCardList : _stacked.values()) {
-            for (LotroPhysicalCardImpl physicalCard : physicalCardList) {
+        for (List<PhysicalCardImpl> physicalCardList : _stacked.values()) {
+            for (PhysicalCardImpl physicalCard : physicalCardList) {
                 if (physicalCard.getStackedOn() == card)
                     result.add(physicalCard);
             }
@@ -751,27 +750,15 @@ public class GameState {
     }
 
     public void addTokens(LotroPhysicalCard card, Token token, int count) {
-        Map<Token, Integer> tokens = _cardTokens.get(card);
-        if (tokens == null) {
-            tokens = new HashMap<>();
-            _cardTokens.put(card, tokens);
-        }
-        Integer currentCount = tokens.get(token);
-        if (currentCount == null)
-            tokens.put(token, count);
-        else
-            tokens.put(token, currentCount + count);
+        Map<Token, Integer> tokens = _cardTokens.computeIfAbsent(card, k -> new HashMap<>());
+        tokens.merge(token, count, Integer::sum);
 
         for (GameStateListener listener : getAllGameStateListeners())
             listener.addTokens(card, token, count);
     }
 
     public void removeTokens(LotroPhysicalCard card, Token token, int count) {
-        Map<Token, Integer> tokens = _cardTokens.get(card);
-        if (tokens == null) {
-            tokens = new HashMap<>();
-            _cardTokens.put(card, tokens);
-        }
+        Map<Token, Integer> tokens = _cardTokens.computeIfAbsent(card, k -> new HashMap<>());
         Integer currentCount = tokens.get(token);
         if (currentCount != null) {
             if (currentCount < count)
@@ -848,7 +835,7 @@ public class GameState {
 
     public void startAffectingCardsForCurrentPlayer(DefaultGame game) {
         // Active non-sites are affecting
-        for (LotroPhysicalCardImpl physicalCard : _inPlay) {
+        for (PhysicalCardImpl physicalCard : _inPlay) {
             if (isCardInPlayActive(physicalCard) && physicalCard.getBlueprint().getCardType() != CardType.SITE)
                 startAffecting(game, physicalCard);
             else if (physicalCard.getBlueprint().getCardType() == CardType.SITE &&
@@ -862,27 +849,27 @@ public class GameState {
             startAffecting(game, getCurrentSite());
 
         // Stacked cards on active cards are stack-affecting
-        for (List<LotroPhysicalCardImpl> stackedCards : _stacked.values())
-            for (LotroPhysicalCardImpl stackedCard : stackedCards)
+        for (List<PhysicalCardImpl> stackedCards : _stacked.values())
+            for (PhysicalCardImpl stackedCard : stackedCards)
                 if (isCardInPlayActive(stackedCard.getStackedOn()))
                     startAffectingStacked(game, stackedCard);
 
-        for (List<LotroPhysicalCardImpl> discardedCards : _discards.values())
-            for (LotroPhysicalCardImpl discardedCard : discardedCards)
+        for (List<PhysicalCardImpl> discardedCards : _discards.values())
+            for (PhysicalCardImpl discardedCard : discardedCards)
                 startAffectingInDiscard(game, discardedCard);
     }
 
     private void startAffectingControlledSite(DefaultGame game, LotroPhysicalCard physicalCard) {
-        ((LotroPhysicalCardImpl) physicalCard).startAffectingGameControlledSite(game);
+        ((PhysicalCardImpl) physicalCard).startAffectingGameControlledSite(game);
     }
 
     public void reapplyAffectingForCard(DefaultGame game, LotroPhysicalCard card) {
-        ((LotroPhysicalCardImpl) card).stopAffectingGame();
-        ((LotroPhysicalCardImpl) card).startAffectingGame(game);
+        ((PhysicalCardImpl) card).stopAffectingGame();
+        ((PhysicalCardImpl) card).startAffectingGame(game);
     }
 
     public void stopAffectingCardsForCurrentPlayer() {
-        for (LotroPhysicalCardImpl physicalCard : _inPlay) {
+        for (PhysicalCardImpl physicalCard : _inPlay) {
             if (isCardInPlayActive(physicalCard) && physicalCard.getBlueprint().getCardType() != CardType.SITE)
                 stopAffecting(physicalCard);
             else if (physicalCard.getBlueprint().getCardType() == CardType.SITE &&
@@ -893,46 +880,46 @@ public class GameState {
 
         stopAffecting(getCurrentSite());
 
-        for (List<LotroPhysicalCardImpl> stackedCards : _stacked.values())
-            for (LotroPhysicalCardImpl stackedCard : stackedCards)
+        for (List<PhysicalCardImpl> stackedCards : _stacked.values())
+            for (PhysicalCardImpl stackedCard : stackedCards)
                 if (isCardInPlayActive(stackedCard.getStackedOn()))
                     stopAffectingStacked(stackedCard);
 
-        for (List<LotroPhysicalCardImpl> discardedCards : _discards.values())
-            for (LotroPhysicalCardImpl discardedCard : discardedCards)
+        for (List<PhysicalCardImpl> discardedCards : _discards.values())
+            for (PhysicalCardImpl discardedCard : discardedCards)
                 stopAffectingInDiscard(discardedCard);
     }
 
     private void stopAffectingControlledSite(LotroPhysicalCard physicalCard) {
-        ((LotroPhysicalCardImpl) physicalCard).stopAffectingGameControlledSite();
+        ((PhysicalCardImpl) physicalCard).stopAffectingGameControlledSite();
     }
 
     private void startAffecting(DefaultGame game, LotroPhysicalCard card) {
-        ((LotroPhysicalCardImpl) card).startAffectingGame(game);
+        ((PhysicalCardImpl) card).startAffectingGame(game);
     }
 
     private void stopAffecting(LotroPhysicalCard card) {
-        ((LotroPhysicalCardImpl) card).stopAffectingGame();
+        ((PhysicalCardImpl) card).stopAffectingGame();
     }
 
     private void startAffectingStacked(DefaultGame game, LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
-            ((LotroPhysicalCardImpl) card).startAffectingGameStacked(game);
+            ((PhysicalCardImpl) card).startAffectingGameStacked(game);
     }
 
     private void stopAffectingStacked(LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
-            ((LotroPhysicalCardImpl) card).stopAffectingGameStacked();
+            ((PhysicalCardImpl) card).stopAffectingGameStacked();
     }
 
     private void startAffectingInDiscard(DefaultGame game, LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
-            ((LotroPhysicalCardImpl) card).startAffectingGameInDiscard(game);
+            ((PhysicalCardImpl) card).startAffectingGameInDiscard(game);
     }
 
     private void stopAffectingInDiscard(LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
-            ((LotroPhysicalCardImpl) card).stopAffectingGameInDiscard();
+            ((PhysicalCardImpl) card).stopAffectingGameInDiscard();
     }
 
     private boolean isCardAffectingGame(LotroPhysicalCard card) {
@@ -956,7 +943,7 @@ public class GameState {
     }
 
     public LotroPhysicalCard getSite(int siteNumber) {
-        for (LotroPhysicalCardImpl physicalCard : _inPlay) {
+        for (PhysicalCardImpl physicalCard : _inPlay) {
             LotroCardBlueprint blueprint = physicalCard.getBlueprint();
             if (blueprint.getCardType() == CardType.SITE && physicalCard.getSiteNumber() == siteNumber)
                 return physicalCard;
@@ -1052,7 +1039,7 @@ public class GameState {
     }
 
     public LotroPhysicalCard removeTopDeckCard(String player) {
-        List<LotroPhysicalCardImpl> deck = _decks.get(player);
+        List<PhysicalCardImpl> deck = _decks.get(player);
         if (deck.size() > 0) {
             final LotroPhysicalCard topDeckCard = deck.get(0);
             removeCardsFromZone(null, Collections.singleton(topDeckCard));
@@ -1063,7 +1050,7 @@ public class GameState {
     }
 
     public LotroPhysicalCard removeBottomDeckCard(String player) {
-        List<LotroPhysicalCardImpl> deck = _decks.get(player);
+        List<PhysicalCardImpl> deck = _decks.get(player);
         if (deck.size() > 0) {
             final LotroPhysicalCard topDeckCard = deck.get(deck.size() - 1);
             removeCardsFromZone(null, Collections.singleton(topDeckCard));
@@ -1075,7 +1062,7 @@ public class GameState {
 
     public LotroPhysicalCard removeTopCardFromZone(String player, Zone zone) {
         // Assumes pulling from final element of deck. Logic works for Tribbles play pile deck as of 8/15/23
-        List<LotroPhysicalCardImpl> deck = getZoneCards(player, zone);
+        List<PhysicalCardImpl> deck = getZoneCards(player, zone);
         if (deck.size() > 0) {
             final LotroPhysicalCard topDeckCard = deck.get(deck.size() - 1);
             removeCardsFromZone(null, Collections.singleton(topDeckCard));
@@ -1087,7 +1074,7 @@ public class GameState {
 
 
     public void playerDrawsCard(String player) {
-        List<LotroPhysicalCardImpl> deck = _decks.get(player);
+        List<PhysicalCardImpl> deck = _decks.get(player);
         if (deck.size() > 0) {
             LotroPhysicalCard card = deck.get(0);
             removeCardsFromZone(null, Collections.singleton(card));
@@ -1096,7 +1083,7 @@ public class GameState {
     }
 
     public void shuffleDeck(String player) {
-        List<LotroPhysicalCardImpl> deck = _decks.get(player);
+        List<PhysicalCardImpl> deck = _decks.get(player);
         Collections.shuffle(deck, ThreadLocalRandom.current());
     }
 

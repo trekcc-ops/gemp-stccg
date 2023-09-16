@@ -5,8 +5,8 @@ import com.gempukku.lotro.game.CardCollection;
 import java.util.List;
 
 public class DraftPack {
-    public CardCollection _fixedCollection;
-    public List<String> _packs;
+    public final CardCollection _fixedCollection;
+    public final List<String> _packs;
 
     public DraftPack(CardCollection fixedCollection, List<String> packs) {
         _fixedCollection = fixedCollection;

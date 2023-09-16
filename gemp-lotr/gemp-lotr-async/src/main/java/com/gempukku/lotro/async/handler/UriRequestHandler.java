@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 public interface UriRequestHandler {
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception;
+    void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception;
 
     default void logHttpError(Logger log, int code, String uri, Exception exp) {
         //401, 403, 404, and other 400 errors should just do minimal logging,

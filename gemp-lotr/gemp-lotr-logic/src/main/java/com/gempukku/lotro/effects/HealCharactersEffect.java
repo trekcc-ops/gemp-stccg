@@ -30,12 +30,7 @@ public class HealCharactersEffect extends AbstractPreventableCardEffect {
     protected Filter getExtraAffectableFilter() {
         return Filters.and(
                 Filters.wounded,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().canBeHealed(game, physicalCard);
-                    }
-                });
+                (Filter) (game, physicalCard) -> game.getModifiersQuerying().canBeHealed(game, physicalCard));
     }
 
     @Override
@@ -50,7 +45,7 @@ public class HealCharactersEffect extends AbstractPreventableCardEffect {
     }
 
     @Override
-    protected void playoutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void playOutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
         Collection<LotroPhysicalCard> cardsToHeal = getAffectedCardsMinusPrevented(game);
 
         if (cardsToHeal.size() > 0) {

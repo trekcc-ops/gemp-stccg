@@ -25,7 +25,7 @@ public class PlayUtils {
         };
     }
 
-    public static Map<Phase, Keyword> PhaseKeywordMap = ImmutableMap.copyOf(new HashMap<>() {{
+    public static final Map<Phase, Keyword> PhaseKeywordMap = ImmutableMap.copyOf(new HashMap<>() {{
         put(Phase.FELLOWSHIP, Keyword.FELLOWSHIP);
         put(Phase.SHADOW, Keyword.SHADOW);
         put(Phase.MANEUVER, Keyword.MANEUVER);
@@ -35,24 +35,18 @@ public class PlayUtils {
         put(Phase.REGROUP, Keyword.REGROUP);
     }});
 
-    private static Filter getFullAttachValidTargetFilter(final DefaultGame game, final LotroPhysicalCard card, int twilightModifier, int withTwilightRemoved) {
+    private static Filter getFullAttachValidTargetFilter(final DefaultGame game, final LotroPhysicalCard card,
+                                                         int twilightModifier) {
         return Filters.and(RuleUtils.getFullValidTargetFilter(card.getOwner(), game, card),
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().canHavePlayedOn(game, card, physicalCard);
-                    }
-                },
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        if (card.getBlueprint().getSide() == Side.SHADOW) {
-                            final int twilightCostOnTarget = game.getModifiersQuerying().getTwilightCost(game, card, physicalCard, twilightModifier, false);
-                            int potentialDiscount = game.getModifiersQuerying().getPotentialDiscount(game, card);
-                            return twilightCostOnTarget - potentialDiscount <= game.getGameState().getTwilightPool() - withTwilightRemoved;
-                        } else {
-                            return true;
-                        }
+                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canHavePlayedOn(game1, card, physicalCard),
+                (Filter) (game12, physicalCard) -> {
+                    if (card.getBlueprint().getSide() == Side.SHADOW) {
+                        final int twilightCostOnTarget = game12.getModifiersQuerying().getTwilightCost(game12, card,
+                                physicalCard, twilightModifier, false);
+                        int potentialDiscount = game12.getModifiersQuerying().getPotentialDiscount(game12, card);
+                        return twilightCostOnTarget - potentialDiscount <= game12.getGameState().getTwilightPool();
+                    } else {
+                        return true;
                     }
                 });
     }
@@ -71,7 +65,7 @@ public class PlayUtils {
 
                 return action;
             } else {
-                final AttachPermanentAction action = new AttachPermanentAction(game, card, Filters.and(getFullAttachValidTargetFilter(game, card, twilightModifier, 0), additionalAttachmentFilter), twilightModifier);
+                final AttachPermanentAction action = new AttachPermanentAction(game, card, Filters.and(getFullAttachValidTargetFilter(game, card, twilightModifier), additionalAttachmentFilter), twilightModifier);
 
                 game.getModifiersQuerying().appendPotentialDiscounts(game, action, card);
                 game.getModifiersQuerying().appendExtraCosts(game, action, card);

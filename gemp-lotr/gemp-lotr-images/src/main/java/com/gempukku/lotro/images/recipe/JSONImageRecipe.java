@@ -18,9 +18,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class JSONImageRecipe implements ImageRecipe {
     private final int width;
@@ -83,7 +80,7 @@ public class JSONImageRecipe implements ImageRecipe {
                 map.put(fontEntry.getKey(), createFontProvider(fontEntry.getValue()));
             }
             Map<String, String> glyphMap = (JSONObject) jsonLayer.get("glyphs");
-            Function<RenderContext, Paint> paint = createPaintProvider(jsonLayer.get("paint"), "black");
+            Function<RenderContext, Paint> paint = createPaintProvider(jsonLayer.get("paint"));
 
             Function<String, Function<RenderContext, Font>> fontStyleProvider = map::get;
             Function<RenderContext, TextBox> textBox = createTextBoxProvider(jsonLayer.get("box"));
@@ -174,8 +171,8 @@ public class JSONImageRecipe implements ImageRecipe {
         throw new RecipeGenerationException("Unable to resolve objects: " + values);
     }
 
-    private Function<RenderContext, Paint> createPaintProvider(Object paint, Object defaultValue) {
-        Object paintVal = (paint != null) ? paint : defaultValue;
+    private Function<RenderContext, Paint> createPaintProvider(Object paint) {
+        Object paintVal = (paint != null) ? paint : "black";
 
         if (paintVal instanceof String)
             return renderContext -> {
@@ -285,12 +282,8 @@ public class JSONImageRecipe implements ImageRecipe {
     }
 
     private Function<RenderContext, String> createStringProvider(Object string) {
-        return createStringProvider(string, null);
-    }
-
-    private Function<RenderContext, String> createStringProvider(Object string, String defaultValue) {
         if (string == null)
-            return renderContext -> defaultValue;
+            return renderContext -> null;
         if (string instanceof String) {
             return renderContext -> (String) string;
         } else if (string instanceof JSONObject stringObj) {
@@ -302,7 +295,8 @@ public class JSONImageRecipe implements ImageRecipe {
                                 propertyName.apply(renderContext));
             } else if (type.equalsIgnoreCase("appendText")) {
                 final JSONArray values = (JSONArray) stringObj.get("values");
-                final List<Function<RenderContext, String>> list = (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
+                final List<Function<RenderContext, String>> list =
+                        (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
 
                 return renderContext -> {
                     StringBuilder sb = new StringBuilder();
@@ -328,7 +322,9 @@ public class JSONImageRecipe implements ImageRecipe {
                 final Function<RenderContext, String> match = createStringProvider(stringObj.get("match"));
                 final Function<RenderContext, String> with = createStringProvider(stringObj.get("with"));
 
-                return renderContext -> source.apply(renderContext).replace(match.apply(renderContext), with.apply(renderContext));
+                return renderContext -> source.apply(renderContext).replace(
+                        match.apply(renderContext), with.apply(renderContext)
+                );
             } else if (type.equalsIgnoreCase("capitalize")) {
                 final Function<RenderContext, String> source = createStringProvider(stringObj.get("value"));
 
@@ -352,12 +348,14 @@ public class JSONImageRecipe implements ImageRecipe {
                         return (String) value;
                     else if (value instanceof Number)
                         return String.valueOf(((Number) value).intValue());
-                    throw new ImageGenerationException("Unable to get card property: " + propertyName + ", unknown type: " + value);
+                    throw new ImageGenerationException("Unable to get card property: " + propertyName +
+                            ", unknown type: " + value);
                 };
             } else if (type.equalsIgnoreCase("cardPropertyValueIn")) {
                 final Function<RenderContext, String> name = createStringProvider(stringObj.get("name"));
                 final JSONArray values = (JSONArray) stringObj.get("values");
-                final List<Function<RenderContext, String>> list = (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
+                final List<Function<RenderContext, String>> list =
+                        (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
 
                 return renderContext -> {
                     final String propertyName = name.apply(renderContext);
@@ -373,7 +371,8 @@ public class JSONImageRecipe implements ImageRecipe {
                 };
             } else if (type.equalsIgnoreCase("append")) {
                 final JSONArray values = (JSONArray) stringObj.get("values");
-                final List<Function<RenderContext, String>> list = (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
+                final List<Function<RenderContext, String>> list =
+                        (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
 
                 return renderContext -> {
                     StringBuilder sb = new StringBuilder();
@@ -399,13 +398,7 @@ public class JSONImageRecipe implements ImageRecipe {
     }
 
     private Function<RenderContext, Boolean> createBooleanProvider(Object condition) {
-        return createBooleanProvider(condition, null);
-    }
-
-    private Function<RenderContext, Boolean> createBooleanProvider(Object condition, Boolean defaultValue) {
-        if (condition == null && defaultValue != null)
-            return renderContext -> defaultValue;
-        else if (condition instanceof Boolean)
+        if (condition instanceof Boolean)
             return renderContext -> (Boolean) condition;
         else if (condition instanceof JSONObject conditionObj) {
             final String type = (String) conditionObj.get("type");
@@ -416,7 +409,8 @@ public class JSONImageRecipe implements ImageRecipe {
             } else if (type.equalsIgnoreCase("cardHasPropertyValueIn")) {
                 final Function<RenderContext, String> name = createStringProvider(conditionObj.get("name"));
                 final JSONArray values = (JSONArray) conditionObj.get("values");
-                final List<Function<RenderContext, String>> list = (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
+                final List<Function<RenderContext, String>> list =
+                        (List<Function<RenderContext, String>>) values.stream().map(this::createStringProvider).toList();
 
                 return renderContext -> {
                     String[] propertyValues = getStringArray(renderContext.getCardInfo().get(name.apply(renderContext)));
@@ -439,7 +433,8 @@ public class JSONImageRecipe implements ImageRecipe {
                 return renderContext -> !opposite.apply(renderContext);
             } else if (type.equalsIgnoreCase("or")) {
                 final JSONArray values = (JSONArray) conditionObj.get("conditions");
-                final List<Function<RenderContext, Boolean>> list = (List<Function<RenderContext, Boolean>>) values.stream().map(this::createBooleanProvider).toList();
+                final List<Function<RenderContext, Boolean>> list =
+                        (List<Function<RenderContext, Boolean>>) values.stream().map(this::createBooleanProvider).toList();
 
                 return renderContext -> {
                     for (Function<RenderContext, Boolean> oneCondition : list) {
@@ -497,7 +492,8 @@ public class JSONImageRecipe implements ImageRecipe {
                 final Function<RenderContext, Integer> aTrue = createIntProvider(valueObj.get("true"));
                 final Function<RenderContext, Integer> aFalse = createIntProvider(valueObj.get("false"));
 
-                return renderContext -> condition.apply(renderContext) ? aTrue.apply(renderContext) : aFalse.apply(renderContext);
+                return renderContext ->
+                        condition.apply(renderContext) ? aTrue.apply(renderContext) : aFalse.apply(renderContext);
             }
         }
 

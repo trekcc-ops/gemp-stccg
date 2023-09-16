@@ -29,11 +29,6 @@ public class AssignmentPhaseEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public String getText(DefaultGame game) {
         return _text;
     }

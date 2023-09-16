@@ -57,8 +57,4 @@ public class PutCardFromPlayOnBottomOfDeckEffect extends AbstractEffect {
         return "Put " + GameUtils.getFullName(_physicalCard) + " from play on bottom of deck";
     }
 
-    @Override
-    public Type getType() {
-        return null;
-    }
 }

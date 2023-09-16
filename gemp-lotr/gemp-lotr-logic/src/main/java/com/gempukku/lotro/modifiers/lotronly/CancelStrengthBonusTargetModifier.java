@@ -22,9 +22,7 @@ public class CancelStrengthBonusTargetModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean appliesStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTaget) {
-        if (_sourceFilter == null || (modifierSource != null && _sourceFilter.accepts(game, modifierSource)))
-            return false;
-        return true;
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTarget) {
+        return _sourceFilter == null || (modifierSource != null && _sourceFilter.accepts(game, modifierSource));
     }
 }

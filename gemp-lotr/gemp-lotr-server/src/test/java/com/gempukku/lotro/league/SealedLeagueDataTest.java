@@ -20,7 +20,9 @@ import static org.junit.Assert.assertEquals;
 
 public class SealedLeagueDataTest extends AbstractAtTest {
 
-    private static LotroFormatLibrary _formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+    private static final LotroFormatLibrary _formatLibrary = new LotroFormatLibrary(
+            new DefaultAdventureLibrary(), _cardLibrary
+    );
 
     @Test
     public void testJoinLeagueFirstWeek() {
@@ -30,28 +32,22 @@ public class SealedLeagueDataTest extends AbstractAtTest {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             User player = new User(1, "Test", "pass", "u", null, null, null, null);
             data.joinLeague(collectionsManager, player, i);
-            Mockito.verify(collectionsManager, new Times(1))
-                .addPlayerCollection(Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType), Mockito.argThat(
-                        new ArgumentMatcher<>() {
-//                        @Override
+            //                        @Override
 //                        public void describeTo(Description description) {
 //                            description.appendText("Expected collection");
 //                        }
-
-                            @Override
-                            public boolean matches(CardCollection cards) {
-                                if (Iterables.size(cards.getAll()) != 3)
-                                    return false;
-                                if (cards.getItemCount("(S)FotR - Starter") != 1)
-                                    return false;
-                                if (cards.getItemCount("FotR - Booster") != 6)
-                                    return false;
-                                if (cards.getItemCount("1_231") != 2)
-                                    return false;
-                                return true;
-                            }
+            Mockito.verify(collectionsManager, new Times(1))
+                .addPlayerCollection(Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType), Mockito.argThat(
+                        cards -> {
+                            if (Iterables.size(cards.getAll()) != 3)
+                                return false;
+                            if (cards.getItemCount("(S)FotR - Starter") != 1)
+                                return false;
+                            if (cards.getItemCount("FotR - Booster") != 6)
+                                return false;
+                            return cards.getItemCount("1_231") == 2;
                         }
-            ));
+                ));
             Mockito.verifyNoMoreInteractions(collectionsManager);
         }
     }
@@ -64,31 +60,25 @@ public class SealedLeagueDataTest extends AbstractAtTest {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             User player = new User(1, "Test", "pass", "u", null, null, null, null);
             data.joinLeague(collectionsManager, player, i);
-            Mockito.verify(collectionsManager, new Times(1)).addPlayerCollection(Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType), Mockito.argThat(
-                    new ArgumentMatcher<>() {
-//                        @Override
+            //                        @Override
 //                        public void describeTo(Description description) {
 //                            description.appendText("Expected collection");
 //                        }
-
-                        @Override
-                        public boolean matches(CardCollection cards) {
-                            if (Iterables.size(cards.getAll()) != 6)
-                                return false;
-                            if (cards.getItemCount("(S)FotR - Starter") != 1)
-                                return false;
-                            if (cards.getItemCount("FotR - Booster") != 6)
-                                return false;
-                            if (cards.getItemCount("1_231") != 2)
-                                return false;
-                            if (cards.getItemCount("(S)MoM - Starter") != 1)
-                                return false;
-                            if (cards.getItemCount("MoM - Booster") != 3)
-                                return false;
-                            if (cards.getItemCount("2_51") != 1)
-                                return false;
-                            return true;
-                        }
+            Mockito.verify(collectionsManager, new Times(1)).addPlayerCollection(Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType), Mockito.argThat(
+                    cards -> {
+                        if (Iterables.size(cards.getAll()) != 6)
+                            return false;
+                        if (cards.getItemCount("(S)FotR - Starter") != 1)
+                            return false;
+                        if (cards.getItemCount("FotR - Booster") != 6)
+                            return false;
+                        if (cards.getItemCount("1_231") != 2)
+                            return false;
+                        if (cards.getItemCount("(S)MoM - Starter") != 1)
+                            return false;
+                        if (cards.getItemCount("MoM - Booster") != 3)
+                            return false;
+                        return cards.getItemCount("2_51") == 1;
                     }
             ));
             Mockito.verifyNoMoreInteractions(collectionsManager);
@@ -139,17 +129,14 @@ public class SealedLeagueDataTest extends AbstractAtTest {
             Mockito.verify(collectionsManager, new Times(1)).getPlayersCollection("test");
             Mockito.verify(collectionsManager, new Times(1)).addItemsToPlayerCollection(Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType),
                     Mockito.argThat(
-                            new ArgumentMatcher<Collection<CardCollection.Item>>() {
-                                @Override
-                                public boolean matches(Collection<CardCollection.Item> argument) {
-                                    if (argument.size() != expectedToAdd.size())
+                            (ArgumentMatcher<Collection<CardCollection.Item>>) argument -> {
+                                if (argument.size() != expectedToAdd.size())
+                                    return false;
+                                for (CardCollection.Item item : expectedToAdd) {
+                                    if (!argument.contains(item))
                                         return false;
-                                    for (CardCollection.Item item : expectedToAdd) {
-                                        if (!argument.contains(item))
-                                            return false;
-                                    }
-                                    return true;
                                 }
+                                return true;
                             }));
             Mockito.verifyNoMoreInteractions(collectionsManager);
         }

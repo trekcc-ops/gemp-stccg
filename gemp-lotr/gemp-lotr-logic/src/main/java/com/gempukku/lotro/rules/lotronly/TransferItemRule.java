@@ -57,12 +57,7 @@ public class TransferItemRule {
 
                                         validTransferFilter = Filters.and(validTransferFilter,
                                                 Filters.not(card.getAttachedTo()),
-                                                new Filter() {
-                                                    @Override
-                                                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                                                        return game.getModifiersQuerying().canHaveTransferredOn(game, card, physicalCard);
-                                                    }
-                                                });
+                                                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canHaveTransferredOn(game1, card, physicalCard));
 
                                         if (Filters.countActive(game, validTransferFilter) > 0)
                                             result.add(new TransferPermanentAction(card, validTransferFilter));

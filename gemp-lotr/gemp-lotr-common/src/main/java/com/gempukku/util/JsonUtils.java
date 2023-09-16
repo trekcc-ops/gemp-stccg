@@ -12,9 +12,9 @@ import java.util.List;
 
 public final class JsonUtils {
 
-    public static boolean IsValidHjsonFile(File file) {
+    public static boolean IsInvalidHjsonFile(File file) {
         String ext = FilenameUtils.getExtension(file.getName());
-        return ext.equalsIgnoreCase("json") || ext.equalsIgnoreCase("hjson");
+        return !ext.equalsIgnoreCase("json") && !ext.equalsIgnoreCase("hjson");
     }
 
     //Reads both json and hjson files, converting both to json (for compatilibity with other libraries)

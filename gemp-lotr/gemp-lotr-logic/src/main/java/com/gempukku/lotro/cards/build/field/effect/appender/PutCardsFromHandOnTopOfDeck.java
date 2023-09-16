@@ -37,7 +37,7 @@ public class PutCardsFromHandOnTopOfDeck implements EffectAppenderProducer {
         ValueSource valueSource;
         if (optional) {
             String countStr = "1";
-            if(countObj != null && !Objects.equals(countObj.toJSONString().replaceAll("\s+", ""), "{}")) {
+            if(countObj != null && !Objects.equals(countObj.toJSONString().replaceAll(" +", ""), "{}")) {
                 countStr = countObj.toJSONString();
             }
             try {

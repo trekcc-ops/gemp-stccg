@@ -26,13 +26,13 @@ public class ActivatePhaseActionsFromStackedRule {
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
                         List<Action> result = new LinkedList<>();
                         final Side side = LotroGameUtils.getSide(game, playerId);
-                        for (LotroPhysicalCard activableCard : Filters.filter(game.getGameState().getStacked(playerId), game, side,
+                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getStacked(playerId), game, side,
                                 Filters.stackedOn(Filters.active))) {
-                            List<? extends Action> list = activableCard.getBlueprint().getPhaseActionsFromStacked(playerId, game, activableCard);
+                            List<? extends Action> list = activatableCard.getBlueprint().getPhaseActionsFromStacked(playerId, game, activatableCard);
                             if (list != null)
                                 result.addAll(list);
 
-                            final List<? extends Action> extraActions = game.getModifiersQuerying().getExtraPhaseActionsFromStacked(game, activableCard);
+                            final List<? extends Action> extraActions = game.getModifiersQuerying().getExtraPhaseActionsFromStacked(game, activatableCard);
                             if (extraActions != null) {
                                 for (Action action : extraActions) {
                                     if (action != null)

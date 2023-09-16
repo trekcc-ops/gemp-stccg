@@ -9,33 +9,33 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public interface TournamentQueue {
-    public int getCost();
+    int getCost();
 
-    public String getFormat();
+    String getFormat();
 
-    public CollectionType getCollectionType();
+    CollectionType getCollectionType();
 
-    public String getTournamentQueueName();
+    String getTournamentQueueName();
 
-    public String getPrizesDescription();
+    String getPrizesDescription();
 
-    public String getPairingDescription();
+    String getPairingDescription();
 
-    public String getStartCondition();
+    String getStartCondition();
 
-    public boolean isRequiresDeck();
+    boolean isRequiresDeck();
 
-    public boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException;
+    boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException;
 
-    public void joinPlayer(CollectionsManager collectionsManager, User player, LotroDeck deck) throws SQLException, IOException;
+    void joinPlayer(CollectionsManager collectionsManager, User player, LotroDeck deck) throws SQLException, IOException;
 
-    public void leavePlayer(CollectionsManager collectionsManager, User player) throws SQLException, IOException;
+    void leavePlayer(CollectionsManager collectionsManager, User player) throws SQLException, IOException;
 
-    public void leaveAllPlayers(CollectionsManager collectionsManager) throws SQLException, IOException;
+    void leaveAllPlayers(CollectionsManager collectionsManager) throws SQLException, IOException;
 
-    public int getPlayerCount();
+    int getPlayerCount();
 
-    public boolean isPlayerSignedUp(String player);
+    boolean isPlayerSignedUp(String player);
 
-    public boolean isJoinable();
+    boolean isJoinable();
 }

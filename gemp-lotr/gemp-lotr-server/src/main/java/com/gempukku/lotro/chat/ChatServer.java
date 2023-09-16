@@ -32,7 +32,7 @@ public class ChatServer extends AbstractServer {
         return chatRoom;
     }
 
-    public ChatRoomMediator createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers, int secondsTimeoutPeriod) {
+    public void createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers, int secondsTimeoutPeriod) {
         ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, name, muteJoinPartMessages, secondsTimeoutPeriod, allowedUsers, false);
         try {
             chatRoom.sendMessage("System", "Welcome to private room: " + name, true);
@@ -42,7 +42,6 @@ public class ChatServer extends AbstractServer {
             // Ignore, no command
         }
         _chatRooms.put(name, chatRoom);
-        return chatRoom;
     }
 
     public void sendSystemMessageToAllChatRooms(String message) {

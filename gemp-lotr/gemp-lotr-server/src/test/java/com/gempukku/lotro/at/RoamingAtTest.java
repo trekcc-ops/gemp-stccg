@@ -1,6 +1,6 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.modifiers.lotronly.MinionSiteNumberModifier;
 import com.gempukku.lotro.modifiers.lotronly.RoamingPenaltyModifier;
 import com.gempukku.lotro.common.Culture;
@@ -27,7 +27,7 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
 
         skipMulligans();
 
@@ -40,7 +40,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[0], (String[]) shadowPhaseDecision.getDecisionParameters().get("actionId"));
+        validateContents(new String[0], shadowPhaseDecision.getDecisionParameters().get("actionId"));
 
         // Orc Chieftain still in hand
         assertEquals(Zone.HAND, orcChieftain.getZone());
@@ -51,7 +51,7 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
 
         skipMulligans();
 
@@ -65,7 +65,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + orcChieftain.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(orcChieftain.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -80,7 +80,7 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
 
         skipMulligans();
 
@@ -96,7 +96,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + orcChieftain.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(orcChieftain.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -111,7 +111,7 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
 
         skipMulligans();
 
@@ -127,7 +127,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + orcChieftain.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(orcChieftain.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -142,7 +142,7 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
 
         skipMulligans();
 
@@ -158,7 +158,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + orcChieftain.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(orcChieftain.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -173,7 +173,7 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
 
         skipMulligans();
 
@@ -189,7 +189,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + orcChieftain.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(orcChieftain.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, getCardActionId(shadowPhaseDecision, "Play "));
 
@@ -204,8 +204,8 @@ public class RoamingAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl orcChieftain = new LotroPhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
-        LotroPhysicalCardImpl sauronsHatred = new LotroPhysicalCardImpl(100, "7_310", P2, _cardLibrary.getLotroCardBlueprint("7_310"));
+        PhysicalCardImpl orcChieftain = new PhysicalCardImpl(100, "1_266", P2, _cardLibrary.getLotroCardBlueprint("1_266"));
+        PhysicalCardImpl sauronsHatred = new PhysicalCardImpl(100, "7_310", P2, _cardLibrary.getLotroCardBlueprint("7_310"));
 
         skipMulligans();
 
@@ -219,7 +219,7 @@ public class RoamingAtTest extends AbstractAtTest {
         // Can't play the Orc Chieftain but can use the Sauron's Hatred
         AwaitingDecision shadowPhaseDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowPhaseDecision.getDecisionType());
-        validateContents(new String[]{"" + sauronsHatred.getCardId()}, (String[]) shadowPhaseDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(sauronsHatred.getCardId())}, shadowPhaseDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "0");
 

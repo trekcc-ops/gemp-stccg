@@ -26,8 +26,8 @@ public class ActivatePhaseActionsFromHandRule {
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
                         List<Action> result = new LinkedList<>();
                         final Side side = LotroGameUtils.getSide(game, playerId);
-                        for (LotroPhysicalCard activableCard : Filters.filter(game.getGameState().getHand(playerId), game, side)) {
-                            List<? extends Action> list = activableCard.getBlueprint().getPhaseActionsInHand(playerId, game, activableCard);
+                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getHand(playerId), game, side)) {
+                            List<? extends Action> list = activatableCard.getBlueprint().getPhaseActionsInHand(playerId, game, activatableCard);
                             if (list != null) {
                                 for (Action action : list) {
                                     action.setVirtualCardAction(true);

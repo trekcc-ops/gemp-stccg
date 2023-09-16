@@ -10,7 +10,6 @@ import com.gempukku.lotro.effects.StackCardFromHandEffect;
 import com.gempukku.lotro.actions.lotronly.SubAction;
 import com.gempukku.lotro.effects.AbstractEffect;
 import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.effects.Effect;
 
 import java.util.Collection;
 import java.util.Set;
@@ -30,11 +29,6 @@ public class ChooseAndStackCardsFromHandEffect extends AbstractEffect {
         _maximum = maximum;
         _stackOn = stackOn;
         _filters = filters;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
     }
 
     @Override

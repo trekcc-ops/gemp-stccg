@@ -10,12 +10,7 @@ import com.gempukku.lotro.modifiers.evaluator.Evaluator;
 
 public class FPSkirmishResistanceStrengthOverrideModifier extends AbstractModifier {
     private static final Evaluator _resistanceEvaluator =
-            new Evaluator() {
-                @Override
-                public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
-                    return game.getModifiersQuerying().getResistance(game, cardAffected);
-                }
-            };
+            (game, cardAffected) -> game.getModifiersQuerying().getResistance(game, cardAffected);
 
     public FPSkirmishResistanceStrengthOverrideModifier(LotroPhysicalCard source, Filterable affectFilter, Condition condition) {
         super(source, null, affectFilter, condition, ModifierEffect.SKIRMISH_STRENGTH_EVALUATOR_MODIFIER);

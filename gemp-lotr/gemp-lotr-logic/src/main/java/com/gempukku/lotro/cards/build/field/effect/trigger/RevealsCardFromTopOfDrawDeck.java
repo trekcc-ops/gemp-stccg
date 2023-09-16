@@ -22,7 +22,7 @@ public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean isBefore() {
                 return false;

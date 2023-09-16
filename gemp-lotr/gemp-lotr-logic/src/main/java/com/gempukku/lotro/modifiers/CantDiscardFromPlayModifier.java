@@ -21,8 +21,6 @@ public class CantDiscardFromPlayModifier extends AbstractModifier {
 
     @Override
     public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, LotroPhysicalCard card, LotroPhysicalCard source) {
-        if (_sourceFilter.accepts(game, source))
-            return false;
-        return true;
+        return !_sourceFilter.accepts(game, source);
     }
 }

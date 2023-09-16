@@ -28,11 +28,6 @@ public class RevealHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, _handPlayerId, _actingPlayer);
     }

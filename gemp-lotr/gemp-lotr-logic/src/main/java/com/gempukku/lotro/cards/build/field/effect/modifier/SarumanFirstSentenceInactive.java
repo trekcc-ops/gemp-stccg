@@ -1,9 +1,10 @@
 package com.gempukku.lotro.cards.build.field.effect.modifier;
 
-import com.gempukku.lotro.cards.build.*;
+import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.build.ModifierSource;
+import com.gempukku.lotro.cards.build.Requirement;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.modifiers.ModifierFlag;
 import com.gempukku.lotro.modifiers.SpecialFlagModifier;
 import org.json.simple.JSONObject;
@@ -16,12 +17,7 @@ public class SarumanFirstSentenceInactive implements ModifierSourceProducer {
         final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new SpecialFlagModifier(actionContext.getSource(),
-                        new RequirementCondition(requirements, actionContext), ModifierFlag.SARUMAN_FIRST_SENTENCE_INACTIVE);
-            }
-        };
+        return actionContext -> new SpecialFlagModifier(actionContext.getSource(),
+                new RequirementCondition(requirements, actionContext), ModifierFlag.SARUMAN_FIRST_SENTENCE_INACTIVE);
     }
 }

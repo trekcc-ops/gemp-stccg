@@ -14,7 +14,7 @@ public class ChooseAndPutCardFromStackedOnTopOfDeckEffect extends ChooseStackedC
     private final Action _action;
 
     public ChooseAndPutCardFromStackedOnTopOfDeckEffect(Action action, String playerId, int minimum, int maximum, Filterable stackedOn, Filterable... stackedCardsFilter) {
-        super(action, playerId, minimum, maximum, stackedOn, Filters.and(stackedCardsFilter));
+        super(playerId, minimum, maximum, stackedOn, Filters.and(stackedCardsFilter));
         _action = action;
     }
 

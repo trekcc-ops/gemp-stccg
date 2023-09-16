@@ -21,16 +21,6 @@ public class ShuffleCardsFromDiscardIntoDeckEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         for (LotroPhysicalCard card : _cards) {
             if (card.getZone() != Zone.DISCARD)

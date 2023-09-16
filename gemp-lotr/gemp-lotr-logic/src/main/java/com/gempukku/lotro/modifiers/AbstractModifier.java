@@ -12,7 +12,6 @@ import com.gempukku.lotro.actions.Action;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public abstract class AbstractModifier implements Modifier {
@@ -47,11 +46,6 @@ public abstract class AbstractModifier implements Modifier {
     @Override
     public LotroPhysicalCard getSource() {
         return _physicalCard;
-    }
-
-    @Override
-    public boolean isExtraPossessionClass(DefaultGame game, LotroPhysicalCard physicalCard, LotroPhysicalCard attachedTo) {
-        return false;
     }
 
     @Override
@@ -105,8 +99,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean appliesStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTaget) {
-        return true;
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTarget) {
+        return false;
     }
 
     @Override
@@ -258,16 +252,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean isValidAssignments(DefaultGame game, Side side, LotroPhysicalCard companion, Set<LotroPhysicalCard> minions) {
-        return true;
-    }
-
-    @Override
-    public boolean isValidAssignments(DefaultGame game, Side side, Map<LotroPhysicalCard, Set<LotroPhysicalCard>> assignments) {
-        return true;
-    }
-
-    @Override
     public boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
         return false;
     }
@@ -363,7 +347,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean lostAllKeywords(DefaultGame game, LotroPhysicalCard card) {
+    public boolean lostAllKeywords(LotroPhysicalCard card) {
         return false;
     }
 
@@ -374,11 +358,6 @@ public abstract class AbstractModifier implements Modifier {
 
     @Override
     public Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard shadowCharacter) { return null; }
-
-    @Override
-    public boolean canSpotCulture(DefaultGame game, Culture culture, String playerId) {
-        return true;
-    }
 
     @Override
     public int getFPCulturesSpotCountModifier(DefaultGame game, String playerId) {

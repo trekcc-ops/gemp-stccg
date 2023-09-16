@@ -403,7 +403,7 @@ public class CollectionSerializer {
             }
         }
 
-        Reader reader = new InputStreamReader(inputStream, "UTF-8");
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 
         JSONParser parser = new JSONParser();
         try {

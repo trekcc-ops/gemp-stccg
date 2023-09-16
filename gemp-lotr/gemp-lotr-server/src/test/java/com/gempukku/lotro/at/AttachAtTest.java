@@ -1,6 +1,6 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -13,9 +13,9 @@ public class AttachAtTest extends AbstractAtTest {
     public void extraPossessionClassAttachedTo() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl aragorn = createCard(P1, "1_89");
-        LotroPhysicalCardImpl rangersSword = createCard(P1, "1_112");
-        LotroPhysicalCardImpl knifeOfTheGaladhrim = createCard(P1, "9_17");
+        PhysicalCardImpl aragorn = createCard(P1, "1_89");
+        PhysicalCardImpl rangersSword = createCard(P1, "1_112");
+        PhysicalCardImpl knifeOfTheGaladhrim = createCard(P1, "9_17");
 
         _game.getGameState().addCardToZone(_game, aragorn, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, rangersSword, aragorn);

@@ -20,11 +20,6 @@ public class PutPlayedEventIntoHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         Zone zone = card.getZone();
         return zone == Zone.VOID || zone == Zone.VOID_FROM_HAND;

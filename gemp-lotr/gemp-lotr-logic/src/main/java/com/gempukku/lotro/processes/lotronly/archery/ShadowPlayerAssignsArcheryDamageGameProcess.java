@@ -1,12 +1,11 @@
 package com.gempukku.lotro.processes.lotronly.archery;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
 import com.gempukku.lotro.common.CardType;
+import com.gempukku.lotro.effects.ChooseAndWoundCharactersEffect;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
-import com.gempukku.lotro.effects.ChooseAndWoundCharactersEffect;
 import com.gempukku.lotro.processes.GameProcess;
 
 public class ShadowPlayerAssignsArcheryDamageGameProcess implements GameProcess {
@@ -27,12 +26,7 @@ public class ShadowPlayerAssignsArcheryDamageGameProcess implements GameProcess 
                     Filters.and(
                             CardType.MINION,
                             Filters.owner(_playerId),
-                            new Filter() {
-                                @Override
-                                public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                                    return game.getModifiersQuerying().canTakeArcheryWound(game, physicalCard);
-                                }
-                            });
+                            (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canTakeArcheryWound(game1, physicalCard));
 
             SystemQueueAction action = new SystemQueueAction();
             for (int i = 0; i < _woundsToAssign; i++) {

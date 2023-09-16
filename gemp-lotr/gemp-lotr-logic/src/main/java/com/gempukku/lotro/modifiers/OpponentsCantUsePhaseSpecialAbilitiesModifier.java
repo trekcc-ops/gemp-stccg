@@ -22,9 +22,7 @@ public class OpponentsCantUsePhaseSpecialAbilitiesModifier extends AbstractModif
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        if (action.getType() == Action.Type.SPECIAL_ABILITY
-                && !performingPlayer.equals(_playerId) && action.getActionTimeword() == _phase)
-            return false;
-        return true;
+        return action.getType() != Action.Type.SPECIAL_ABILITY
+                || performingPlayer.equals(_playerId) || action.getActionTimeword() != _phase;
     }
 }

@@ -9,18 +9,15 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LoggedUserHolder {
-    private final long _loggedUserExpireLength = 1000 * 60 * 10; // 10 minutes session length
-    private final long _expireCheckInterval = 1000 * 60; // check every minute
 
     private final Map<String, String> _sessionIdsToUsers = new HashMap<>();
     private final Multimap<String, String> _usersToSessionIds = HashMultimap.create();
 
     private final Map<String, Long> _lastAccess = Collections.synchronizedMap(new HashMap<>());
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
-    private ClearExpiredRunnable _clearExpiredRunnable;
 
     public void start() {
-        _clearExpiredRunnable = new ClearExpiredRunnable();
+        ClearExpiredRunnable _clearExpiredRunnable = new ClearExpiredRunnable();
         Thread thr = new Thread(_clearExpiredRunnable);
         thr.start();
     }
@@ -89,6 +86,8 @@ public class LoggedUserHolder {
                     Iterator<Map.Entry<String, Long>> iterator = _lastAccess.entrySet().iterator();
                     if (iterator.hasNext()) {
                         Map.Entry<String, Long> lastAccess = iterator.next();
+                        // 10 minutes session length
+                        long _loggedUserExpireLength = 1000 * 60 * 10;
                         long expireAt = lastAccess.getValue() + _loggedUserExpireLength;
                         if (expireAt < currentTime) {
                             String sessionId = lastAccess.getKey();
@@ -102,6 +101,8 @@ public class LoggedUserHolder {
                     _readWriteLock.writeLock().unlock();
                 }
                 try {
+                    // check every minute
+                    long _expireCheckInterval = 1000 * 60;
                     Thread.sleep(_expireCheckInterval);
                 } catch (InterruptedException exp) {
 

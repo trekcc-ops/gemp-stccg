@@ -15,28 +15,27 @@ public class PlayerResolver {
             return ActionContext::getPerformingPlayer;
         if (type.equalsIgnoreCase("owner"))
             return (actionContext) -> actionContext.getSource().getOwner();
-/*        if (type.equalsIgnoreCase("all"))
-            return (actionContext) -> "all"; */
         else if (type.equalsIgnoreCase("shadowPlayer") || type.equalsIgnoreCase("shadow")
                 || type.equalsIgnoreCase("s"))
             return (actionContext) -> LotroGameUtils.getFirstShadowPlayer(actionContext.getGame());
         else if (type.equalsIgnoreCase("fp") || type.equalsIgnoreCase("freeps")
                 || type.equalsIgnoreCase("free peoples") || type.equalsIgnoreCase("free people"))
             return ((actionContext) -> actionContext.getGame().getGameState().getCurrentPlayerId());
-        else if (type.toLowerCase(Locale.ROOT).startsWith("ownerfrommemory(") && type.endsWith(")")) {
+        else {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
-            return (actionContext) -> {
-                final LotroPhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
-                if (cardFromMemory != null)
-                    return cardFromMemory.getOwner();
-                else
-                    // Sensible default
-                    return actionContext.getPerformingPlayer();
-            };
-        }
-        else if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
-            String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
-            return (actionContext) -> actionContext.getValueFromMemory(memory);
+            if (type.toLowerCase(Locale.ROOT).startsWith("ownerfrommemory(") && type.endsWith(")")) {
+                return (actionContext) -> {
+                    final LotroPhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
+                    if (cardFromMemory != null)
+                        return cardFromMemory.getOwner();
+                    else
+                        // Sensible default
+                        return actionContext.getPerformingPlayer();
+                };
+            }
+            else if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
+                return (actionContext) -> actionContext.getValueFromMemory(memory);
+            }
         }
         throw new InvalidCardDefinitionException("Unable to resolve player resolver of type: " + type);
     }

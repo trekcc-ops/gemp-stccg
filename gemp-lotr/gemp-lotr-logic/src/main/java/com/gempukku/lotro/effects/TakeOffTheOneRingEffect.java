@@ -10,11 +10,6 @@ public class TakeOffTheOneRingEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getGameState().isWearingRing();
     }

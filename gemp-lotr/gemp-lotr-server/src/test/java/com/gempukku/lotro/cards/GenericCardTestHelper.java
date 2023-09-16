@@ -1,26 +1,26 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.at.AbstractAtTest;
-import com.gempukku.lotro.cards.build.*;
-import com.gempukku.lotro.cards.build.field.effect.filter.FilterFactory;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.processes.lotronly.assign.Assignment;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.ActionProxy;
-import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.at.AbstractAtTest;
+import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.build.DefaultActionContext;
+import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.build.LotroCardBlueprintBuilder;
+import com.gempukku.lotro.cards.build.field.effect.filter.FilterFactory;
+import com.gempukku.lotro.cards.lotronly.LotroDeck;
+import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.effects.EffectResult;
-import com.gempukku.lotro.game.PlayConditions;
-import com.gempukku.lotro.rules.RuleUtils;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.modifiers.Modifier;
+import com.gempukku.lotro.processes.lotronly.assign.Assignment;
+import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
+import com.gempukku.lotro.rules.GameUtils;
 import org.junit.Assert;
 
 import java.util.*;
@@ -69,7 +69,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
 
     // Player key, then name/card
-    public Map<String, Map<String, LotroPhysicalCardImpl>> Cards = new HashMap<>();
+    public final Map<String, Map<String, PhysicalCardImpl>> Cards = new HashMap<>();
 
     public GenericCardTestHelper(HashMap<String, String> cardIDs) throws CardNotFoundException, DecisionResultInvalidException {
         this(cardIDs, null, null, null, "multipath");
@@ -111,7 +111,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         if(cardIDs != null) {
             for(String name : cardIDs.keySet()) {
                 String id = cardIDs.get(name);
-                LotroPhysicalCardImpl card = createCard(P1, id);
+                PhysicalCardImpl card = createCard(P1, id);
                 Cards.get(P1).put(name, card);
                 FreepsMoveCardsToBottomOfDeck(card);
 
@@ -127,9 +127,9 @@ public class GenericCardTestHelper extends AbstractAtTest {
                         .stream()
                         .filter(x -> x.getValue().equals(card.getBlueprintId()))
                         .map(Map.Entry::getKey)
-                        .findFirst().get();
+                        .findFirst().orElse(null);
 
-                Cards.get(P1).put(name, (LotroPhysicalCardImpl) card);
+                Cards.get(P1).put(name, (PhysicalCardImpl) card);
             }
 
             for (var card : _game.getGameState().getAdventureDeck(P2)) {
@@ -137,9 +137,9 @@ public class GenericCardTestHelper extends AbstractAtTest {
                         .stream()
                         .filter(x -> x.getValue().equals(card.getBlueprintId()))
                         .map(Map.Entry::getKey)
-                        .findFirst().get();
+                        .findFirst().orElse(null);
 
-                Cards.get(P2).put(name, (LotroPhysicalCardImpl) card);
+                Cards.get(P2).put(name, (PhysicalCardImpl) card);
             }
         }
     }
@@ -158,46 +158,48 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
     }
 
-    public LotroPhysicalCardImpl GetFreepsCard(String cardName) { return Cards.get(P1).get(cardName); }
-    public LotroPhysicalCardImpl GetShadowCard(String cardName) { return Cards.get(P2).get(cardName); }
-    public LotroPhysicalCardImpl GetCard(String player, String cardName) { return Cards.get(player).get(cardName); }
-    public LotroPhysicalCardImpl GetFreepsCardByID(String id) { return GetCardByID(P1, Integer.parseInt(id)); }
-    public LotroPhysicalCardImpl GetFreepsCardByID(int id) { return GetCardByID(P1, id); }
-    public LotroPhysicalCardImpl GetShadowCardByID(String id) { return GetCardByID(P2, Integer.parseInt(id)); }
-    public LotroPhysicalCardImpl GetShadowCardByID(int id) { return GetCardByID(P2, id); }
-    public LotroPhysicalCardImpl GetCardByID(String player, int id) {
+    public PhysicalCardImpl GetFreepsCard(String cardName) { return Cards.get(P1).get(cardName); }
+    public PhysicalCardImpl GetShadowCard(String cardName) { return Cards.get(P2).get(cardName); }
+    public PhysicalCardImpl GetCard(String player, String cardName) { return Cards.get(player).get(cardName); }
+    public PhysicalCardImpl GetFreepsCardByID(String id) { return GetCardByID(P1, Integer.parseInt(id)); }
+    public PhysicalCardImpl GetFreepsCardByID(int id) { return GetCardByID(P1, id); }
+    public PhysicalCardImpl GetShadowCardByID(String id) { return GetCardByID(P2, Integer.parseInt(id)); }
+    public PhysicalCardImpl GetShadowCardByID(int id) { return GetCardByID(P2, id); }
+    public PhysicalCardImpl GetCardByID(String player, int id) {
         return Cards.get(player).values().stream()
                 .filter(x -> x.getCardId() == id)
                 .findFirst().orElse(null);
     }
 
-    public LotroPhysicalCardImpl GetFreepsSite(int siteNum) { return GetSite(P1, siteNum); }
-    public LotroPhysicalCardImpl GetShadowSite(int siteNum) { return GetSite(P2, siteNum); }
-    public LotroPhysicalCardImpl GetSite(String playerID, int siteNum)
+    public PhysicalCardImpl GetFreepsSite(int siteNum) { return GetSite(P1, siteNum); }
+    public PhysicalCardImpl GetShadowSite(int siteNum) { return GetSite(P2, siteNum); }
+    public PhysicalCardImpl GetSite(String playerID, int siteNum)
     {
-        LotroPhysicalCardImpl site = (LotroPhysicalCardImpl)_game.getGameState().getSite(siteNum);
-        if(site != null && site.getOwner() == playerID)
+        PhysicalCardImpl site = (PhysicalCardImpl)_game.getGameState().getSite(siteNum);
+        if(site != null && Objects.equals(site.getOwner(), playerID))
             return site;
 
-        List<LotroPhysicalCardImpl> advDeck = (List<LotroPhysicalCardImpl>)_game.getGameState().getAdventureDeck(playerID);
-        return advDeck.stream().filter(x -> x.getBlueprint().getSiteNumber() == siteNum).findFirst().get();
+        List<PhysicalCardImpl> advDeck = (List<PhysicalCardImpl>)_game.getGameState().getAdventureDeck(playerID);
+        return advDeck.stream().filter(x -> x.getBlueprint().getSiteNumber() == siteNum).findFirst().orElse(null);
     }
 
-    public LotroPhysicalCardImpl GetSite(int siteNum)
+    public PhysicalCardImpl GetSite(int siteNum)
     {
-        return (LotroPhysicalCardImpl) _game.getGameState().getSite(siteNum);
+        return (PhysicalCardImpl) _game.getGameState().getSite(siteNum);
     }
-    public LotroPhysicalCardImpl GetFreepsSite(String name) { return GetSiteByName(P1, name); }
-    public LotroPhysicalCardImpl GetShadowSite(String name) { return GetSiteByName(P2, name); }
-    public LotroPhysicalCardImpl GetSiteByName(String player, String name)
+    public PhysicalCardImpl GetFreepsSite(String name) { return GetSiteByName(P1, name); }
+    public PhysicalCardImpl GetShadowSite(String name) { return GetSiteByName(P2, name); }
+    public PhysicalCardImpl GetSiteByName(String player, String name)
     {
         var attempt = GetCard(player, name);
         if(attempt != null)
             return attempt;
 
         final String lowername = name.toLowerCase();
-        List<LotroPhysicalCardImpl> advDeck = (List<LotroPhysicalCardImpl>)_game.getGameState().getAdventureDeck(player);
-        return advDeck.stream().filter(x -> x.getBlueprint().getTitle().toLowerCase().contains(lowername)).findFirst().get();
+        List<PhysicalCardImpl> advDeck = (List<PhysicalCardImpl>)_game.getGameState().getAdventureDeck(player);
+        return advDeck.stream().filter(
+                x -> x.getBlueprint().getTitle().toLowerCase().contains(lowername)).findFirst().orElse(null
+        );
     }
 
     public List<String> FreepsGetAvailableActions() { return GetAvailableActions(P1); }
@@ -207,7 +209,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         if(decision == null) {
             return new ArrayList<>();
         }
-        return Arrays.asList((String[])decision.getDecisionParameters().get("actionText"));
+        return Arrays.asList(decision.getDecisionParameters().get("actionText"));
     }
 
     public AwaitingDecision FreepsGetAwaitingDecision() { return GetAwaitingDecision(P1); }
@@ -226,13 +228,13 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
     public Boolean FreepsActionAvailable(String action) { return ActionAvailable(P1, action); }
-    public Boolean FreepsActionAvailable(LotroPhysicalCardImpl card) { return ActionAvailable(P1, "Use " + GameUtils.getFullName(card)); }
-    public Boolean FreepsPlayAvailable(LotroPhysicalCardImpl card) { return ActionAvailable(P1, "Play " + GameUtils.getFullName(card)); }
-    public Boolean FreepsTransferAvailable(LotroPhysicalCardImpl card) { return ActionAvailable(P1, "Transfer " + GameUtils.getFullName(card)); }
+    public Boolean FreepsActionAvailable(PhysicalCardImpl card) { return ActionAvailable(P1, "Use " + GameUtils.getFullName(card)); }
+    public Boolean FreepsPlayAvailable(PhysicalCardImpl card) { return ActionAvailable(P1, "Play " + GameUtils.getFullName(card)); }
+    public Boolean FreepsTransferAvailable(PhysicalCardImpl card) { return ActionAvailable(P1, "Transfer " + GameUtils.getFullName(card)); }
     public Boolean ShadowActionAvailable(String action) { return ActionAvailable(P2, action); }
-    public Boolean ShadowActionAvailable(LotroPhysicalCardImpl card) { return ActionAvailable(P2, "Use " + GameUtils.getFullName(card)); }
-    public Boolean ShadowPlayAvailable(LotroPhysicalCardImpl card) { return ActionAvailable(P2, "Play " + GameUtils.getFullName(card)); }
-    public Boolean ShadowTransferAvailable(LotroPhysicalCardImpl card) { return ActionAvailable(P2, "Transfer " + GameUtils.getFullName(card)); }
+    public Boolean ShadowActionAvailable(PhysicalCardImpl card) { return ActionAvailable(P2, "Use " + GameUtils.getFullName(card)); }
+    public Boolean ShadowPlayAvailable(PhysicalCardImpl card) { return ActionAvailable(P2, "Play " + GameUtils.getFullName(card)); }
+    public Boolean ShadowTransferAvailable(PhysicalCardImpl card) { return ActionAvailable(P2, "Transfer " + GameUtils.getFullName(card)); }
     public Boolean ActionAvailable(String player, String action) {
         List<String> actions = GetAvailableActions(player);
         if(actions == null)
@@ -291,38 +293,28 @@ public class GenericCardTestHelper extends AbstractAtTest {
     //public boolean HasItemIn
 
     public void FreepsUseCardAction(String name) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, name)); }
-    public void FreepsUseCardAction(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Use " + GameUtils.getFullName(card))); }
+    public void FreepsUseCardAction(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Use " + GameUtils.getFullName(card))); }
     public void FreepsTransferCard(String name) throws DecisionResultInvalidException { FreepsTransferCard(GetFreepsCard(name)); }
-    public void FreepsTransferCard(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Transfer " + GameUtils.getFullName(card))); }
+    public void FreepsTransferCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Transfer " + GameUtils.getFullName(card))); }
     public void ShadowUseCardAction(String name) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, name)); }
-    public void ShadowUseCardAction(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Use " + GameUtils.getFullName(card))); }
+    public void ShadowUseCardAction(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Use " + GameUtils.getFullName(card))); }
     public void ShadowTransferCard(String name) throws DecisionResultInvalidException { ShadowTransferCard(GetShadowCard(name)); }
-    public void ShadowTransferCard(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Transfer " + GameUtils.getFullName(card))); }
+    public void ShadowTransferCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Transfer " + GameUtils.getFullName(card))); }
 
     public void FreepsPlayCard(String name) throws DecisionResultInvalidException { FreepsPlayCard(GetFreepsCard(name)); }
-    public void FreepsPlayCard(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Play " + GameUtils.getFullName(card))); }
+    public void FreepsPlayCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Play " + GameUtils.getFullName(card))); }
     public void ShadowPlayCard(String name) throws DecisionResultInvalidException { ShadowPlayCard(GetShadowCard(name)); }
-    public void ShadowPlayCard(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Play " + GameUtils.getFullName(card))); }
+    public void ShadowPlayCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Play " + GameUtils.getFullName(card))); }
 
     public int FreepsGetWoundsOn(String cardName) { return GetWoundsOn(GetFreepsCard(cardName)); }
     public int ShadowGetWoundsOn(String cardName) { return GetWoundsOn(GetShadowCard(cardName)); }
-    public int GetWoundsOn(LotroPhysicalCardImpl card) { return _game.getGameState().getWounds(card); }
+    public int GetWoundsOn(PhysicalCardImpl card) { return _game.getGameState().getWounds(card); }
 
     public int FreepsGetCultureTokensOn(String cardName) { return GetCultureTokensOn(GetFreepsCard(cardName)); }
     public int ShadowGetCultureTokensOn(String cardName) { return GetCultureTokensOn(GetShadowCard(cardName)); }
-    public int GetCultureTokensOn(LotroPhysicalCardImpl card) { return _game.getGameState().getTokenCount(card, Token.findTokenForCulture(card.getBlueprint().getCulture())); }
+    public int GetCultureTokensOn(PhysicalCardImpl card) { return _game.getGameState().getTokenCount(card, Token.findTokenForCulture(card.getBlueprint().getCulture())); }
 
     public int GetBurdens() { return _game.getGameState().getBurdens(); }
-
-    public boolean FreepsHasInitiative() { return PlayConditions.hasInitiative(_game, Side.FREE_PEOPLE); }
-
-    public boolean ShadowHasInitiative() { return PlayConditions.hasInitiative(_game, Side.SHADOW); }
-
-    public int GetFreepsArcheryTotal() { return RuleUtils.calculateFellowshipArcheryTotal(_game); }
-    public int GetShadowArcheryTotal() { return RuleUtils.calculateShadowArcheryTotal(_game); }
-
-    public int GetFreepsHandCount() { return GetFreepsHand().size(); }
-    public int GetShadowHandCount() { return GetShadowHand().size(); }
 
     public List<? extends LotroPhysicalCard> GetFreepsHand() { return GetPlayerHand(P1); }
     public List<? extends LotroPhysicalCard> GetShadowHand() { return GetPlayerHand(P2); }
@@ -338,30 +330,30 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return _game.getGameState().getDeck(player).size();
     }
 
-    public LotroPhysicalCardImpl GetFreepsBottomOfDeck() { return GetPlayerBottomOfDeck(P1); }
-    public LotroPhysicalCardImpl GetShadowBottomOfDeck() { return GetPlayerBottomOfDeck(P2); }
-    public LotroPhysicalCardImpl GetFromBottomOfFreepsDeck(int index) { return GetFromBottomOfPlayerDeck(P1, index); }
-    public LotroPhysicalCardImpl GetFromBottomOfShadowDeck(int index) { return GetFromBottomOfPlayerDeck(P2, index); }
-    public LotroPhysicalCardImpl GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
-    public LotroPhysicalCardImpl GetFromBottomOfPlayerDeck(String player, int index)
+    public PhysicalCardImpl GetFreepsBottomOfDeck() { return GetPlayerBottomOfDeck(P1); }
+    public PhysicalCardImpl GetShadowBottomOfDeck() { return GetPlayerBottomOfDeck(P2); }
+    public PhysicalCardImpl GetFromBottomOfFreepsDeck(int index) { return GetFromBottomOfPlayerDeck(P1, index); }
+    public PhysicalCardImpl GetFromBottomOfShadowDeck(int index) { return GetFromBottomOfPlayerDeck(P2, index); }
+    public PhysicalCardImpl GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
+    public PhysicalCardImpl GetFromBottomOfPlayerDeck(String player, int index)
     {
         var deck = _game.getGameState().getDeck(player);
-        return (LotroPhysicalCardImpl) deck.get(deck.size() - index);
+        return (PhysicalCardImpl) deck.get(deck.size() - index);
     }
 
-    public LotroPhysicalCardImpl GetFreepsTopOfDeck() { return GetPlayerTopOfDeck(P1); }
-    public LotroPhysicalCardImpl GetShadowTopOfDeck() { return GetPlayerTopOfDeck(P2); }
-    public LotroPhysicalCardImpl GetFromTopOfFreepsDeck(int index) { return GetFromTopOfPlayerDeck(P1, index); }
-    public LotroPhysicalCardImpl GetFromTopOfShadowDeck(int index) { return GetFromTopOfPlayerDeck(P2, index); }
-    public LotroPhysicalCardImpl GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
+    public PhysicalCardImpl GetFreepsTopOfDeck() { return GetPlayerTopOfDeck(P1); }
+    public PhysicalCardImpl GetShadowTopOfDeck() { return GetPlayerTopOfDeck(P2); }
+    public PhysicalCardImpl GetFromTopOfFreepsDeck(int index) { return GetFromTopOfPlayerDeck(P1, index); }
+    public PhysicalCardImpl GetFromTopOfShadowDeck(int index) { return GetFromTopOfPlayerDeck(P2, index); }
+    public PhysicalCardImpl GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
 
     /**
      * Index is 1-based (1 is first, 2 is second, etc)
      */
-    public LotroPhysicalCardImpl GetFromTopOfPlayerDeck(String player, int index)
+    public PhysicalCardImpl GetFromTopOfPlayerDeck(String player, int index)
     {
         var deck = _game.getGameState().getDeck(player);
-        return (LotroPhysicalCardImpl) deck.get(index - 1);
+        return (PhysicalCardImpl) deck.get(index - 1);
     }
     public int GetFreepsDiscardCount() { return GetPlayerDiscardCount(P1); }
     public int GetShadowDiscardCount() { return GetPlayerDiscardCount(P2); }
@@ -378,8 +370,8 @@ public class GenericCardTestHelper extends AbstractAtTest {
             FreepsMoveCardToHand(GetFreepsCard(name));
         }
     }
-    public void FreepsMoveCardToHand(LotroPhysicalCardImpl...cards) {
-        for(LotroPhysicalCardImpl card : cards) {
+    public void FreepsMoveCardToHand(PhysicalCardImpl...cards) {
+        for(PhysicalCardImpl card : cards) {
             RemoveCardZone(P1, card);
             MoveCardToZone(P1, card, Zone.HAND);
         }
@@ -389,35 +381,35 @@ public class GenericCardTestHelper extends AbstractAtTest {
             ShadowMoveCardToHand(GetShadowCard(name));
         }
     }
-    public void ShadowMoveCardToHand(LotroPhysicalCardImpl...cards) {
-        for(LotroPhysicalCardImpl card : cards) {
+    public void ShadowMoveCardToHand(PhysicalCardImpl...cards) {
+        for(PhysicalCardImpl card : cards) {
             RemoveCardZone(P2, card);
             MoveCardToZone(P2, card, Zone.HAND);
         }
     }
 
-    public void FreepsAttachCardsTo(LotroPhysicalCardImpl bearer, LotroPhysicalCardImpl...cards) { AttachCardsTo(bearer, cards); }
-    public void FreepsAttachCardsTo(LotroPhysicalCardImpl bearer, String...names) {
+    public void FreepsAttachCardsTo(PhysicalCardImpl bearer, PhysicalCardImpl...cards) { AttachCardsTo(bearer, cards); }
+    public void FreepsAttachCardsTo(PhysicalCardImpl bearer, String...names) {
         Arrays.stream(names).forEach(name -> AttachCardsTo(bearer, GetFreepsCard(name)));
     }
-    public void ShadowAttachCardsTo(LotroPhysicalCardImpl bearer, LotroPhysicalCardImpl...cards) { AttachCardsTo(bearer, cards); }
-    public void ShadowAttachCardsTo(LotroPhysicalCardImpl bearer, String...names) {
+    public void ShadowAttachCardsTo(PhysicalCardImpl bearer, PhysicalCardImpl...cards) { AttachCardsTo(bearer, cards); }
+    public void ShadowAttachCardsTo(PhysicalCardImpl bearer, String...names) {
         Arrays.stream(names).forEach(name -> AttachCardsTo(bearer, GetShadowCard(name)));
     }
-    public void AttachCardsTo(LotroPhysicalCardImpl bearer, LotroPhysicalCardImpl...cards) {
+    public void AttachCardsTo(PhysicalCardImpl bearer, PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().attachCard(_game, card, bearer);
         });
     }
 
-    public void FreepsStackCardsOn(LotroPhysicalCardImpl on, String...cardNames) {
+    public void FreepsStackCardsOn(PhysicalCardImpl on, String...cardNames) {
         Arrays.stream(cardNames).forEach(name -> StackCardsOn(on, GetFreepsCard(name)));
     }
-    public void ShadowStackCardsOn(LotroPhysicalCardImpl on, String...cardNames) {
+    public void ShadowStackCardsOn(PhysicalCardImpl on, String...cardNames) {
         Arrays.stream(cardNames).forEach(name -> StackCardsOn(on, GetShadowCard(name)));
     }
-    public void StackCardsOn(LotroPhysicalCardImpl on, LotroPhysicalCardImpl...cards) {
+    public void StackCardsOn(PhysicalCardImpl on, PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().stackCard(_game, card, on);
@@ -427,7 +419,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsMoveCardsToTopOfDeck(String...cardNames) {
         Arrays.stream(cardNames).forEach(cardName -> FreepsMoveCardsToTopOfDeck(GetFreepsCard(cardName)));
     }
-    public void FreepsMoveCardsToTopOfDeck(LotroPhysicalCardImpl...cards) {
+    public void FreepsMoveCardsToTopOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
@@ -436,7 +428,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void ShadowMoveCardsToTopOfDeck(String...cardNames) {
         Arrays.stream(cardNames).forEach(cardName -> ShadowMoveCardsToTopOfDeck(GetShadowCard(cardName)));
     }
-    public void ShadowMoveCardsToTopOfDeck(LotroPhysicalCardImpl...cards) {
+    public void ShadowMoveCardsToTopOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
@@ -446,7 +438,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsMoveCardsToBottomOfDeck(String...cardNames) {
         Arrays.stream(cardNames).forEach(cardName -> FreepsMoveCardsToBottomOfDeck(GetFreepsCard(cardName)));
     }
-    public void FreepsMoveCardsToBottomOfDeck(LotroPhysicalCardImpl...cards) {
+    public void FreepsMoveCardsToBottomOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().putCardOnBottomOfDeck(card);
@@ -455,7 +447,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void ShadowMoveCardsToBottomOfDeck(String...cardNames) {
         Arrays.stream(cardNames).forEach(cardName -> ShadowMoveCardsToBottomOfDeck(GetShadowCard(cardName)));
     }
-    public void ShadowMoveCardsToBottomOfDeck(LotroPhysicalCardImpl...cards) {
+    public void ShadowMoveCardsToBottomOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().putCardOnBottomOfDeck(card);
@@ -483,7 +475,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsShuffleCardsInDeck(String...cardNames) {
         Arrays.stream(cardNames).forEach(cardName -> FreepsShuffleCardsInDeck(GetFreepsCard(cardName)));
     }
-    public void FreepsShuffleCardsInDeck(LotroPhysicalCardImpl...cards) {
+    public void FreepsShuffleCardsInDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
@@ -494,7 +486,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void ShadowShuffleCardsInDeck(String...cardNames) {
         Arrays.stream(cardNames).forEach(cardName -> ShadowShuffleCardsInDeck(GetShadowCard(cardName)));
     }
-    public void ShadowShuffleCardsInDeck(LotroPhysicalCardImpl...cards) {
+    public void ShadowShuffleCardsInDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
             RemoveCardZone(card.getOwner(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
@@ -512,13 +504,13 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsMoveCharToTable(String...names) {
         Arrays.stream(names).forEach(name -> FreepsMoveCharToTable(GetFreepsCard(name)));
     }
-    public void FreepsMoveCharToTable(LotroPhysicalCardImpl...cards) {
+    public void FreepsMoveCharToTable(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P1, card, Zone.FREE_CHARACTERS));
     }
     public void ShadowMoveCharToTable(String...names) {
         Arrays.stream(names).forEach(name -> ShadowMoveCharToTable(GetShadowCard(name)));
     }
-    public void ShadowMoveCharToTable(LotroPhysicalCardImpl...cards) {
+    public void ShadowMoveCharToTable(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P2, card, Zone.SHADOW_CHARACTERS));
     }
 
@@ -526,25 +518,25 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsMoveCardToSupportArea(String...names) {
         Arrays.stream(names).forEach(name -> FreepsMoveCardToSupportArea(GetFreepsCard(name)));
     }
-    public void FreepsMoveCardToSupportArea(LotroPhysicalCardImpl...cards) {
+    public void FreepsMoveCardToSupportArea(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P1, card, Zone.SUPPORT));
     }
     public void ShadowMoveCardToSupportArea(String...names) {
         Arrays.stream(names).forEach(name -> ShadowMoveCardToSupportArea(GetShadowCard(name)));
     }
-    public void ShadowMoveCardToSupportArea(LotroPhysicalCardImpl...cards) {
+    public void ShadowMoveCardToSupportArea(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P2, card, Zone.SUPPORT));
     }
     public void FreepsMoveCardToDiscard(String...names) {
         Arrays.stream(names).forEach(name -> FreepsMoveCardToDiscard(GetFreepsCard(name)));
     }
-    public void FreepsMoveCardToDiscard(LotroPhysicalCardImpl...cards) {
+    public void FreepsMoveCardToDiscard(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P1, card, Zone.DISCARD));
     }
     public void ShadowMoveCardToDiscard(String...names) {
         Arrays.stream(names).forEach(name -> ShadowMoveCardToDiscard(GetShadowCard(name)));
     }
-    public void ShadowMoveCardToDiscard(LotroPhysicalCardImpl...cards) {
+    public void ShadowMoveCardToDiscard(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P2, card, Zone.DISCARD));
     }
 
@@ -552,18 +544,18 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsMoveCardToDeadPile(String...names) {
         Arrays.stream(names).forEach(name -> FreepsMoveCardToDeadPile(GetFreepsCard(name)));
     }
-    public void FreepsMoveCardToDeadPile(LotroPhysicalCardImpl...cards) {
+    public void FreepsMoveCardToDeadPile(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P1, card, Zone.DEAD));
     }
     public void ShadowMoveCardToDeadPile(String...names) {
         Arrays.stream(names).forEach(name -> ShadowMoveCardToDeadPile(GetFreepsCard(name)));
     }
-    public void ShadowMoveCardToDeadPile(LotroPhysicalCardImpl...cards) {
+    public void ShadowMoveCardToDeadPile(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> MoveCardToZone(P2, card, Zone.DEAD));
     }
 
 
-    public void RemoveCardZone(String player, LotroPhysicalCardImpl card) {
+    public void RemoveCardZone(String player, PhysicalCardImpl card) {
         if(card.getZone() != null)
         {
             _game.getGameState().removeCardsFromZone(player, new ArrayList<>() {{
@@ -572,25 +564,25 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
     }
 
-    public void MoveCardToZone(String player, LotroPhysicalCardImpl card, Zone zone) {
+    public void MoveCardToZone(String player, PhysicalCardImpl card, Zone zone) {
         RemoveCardZone(player, card);
         _game.getGameState().addCardToZone(_game, card, zone);
     }
 
     public void FreepsAddWoundsToChar(String cardName, int count) { AddWoundsToChar(GetFreepsCard(cardName), count); }
     public void ShadowAddWoundsToChar(String cardName, int count) { AddWoundsToChar(GetShadowCard(cardName), count); }
-    public void AddWoundsToChar(LotroPhysicalCardImpl card, int count) {
+    public void AddWoundsToChar(PhysicalCardImpl card, int count) {
         for(int i = 0; i < count; i++)
         {
             _game.getGameState().addWound(card);
         }
     }
 
-    public void AddTokensToCard(LotroPhysicalCardImpl card, int count) {
+    public void AddTokensToCard(PhysicalCardImpl card, int count) {
         _game.getGameState().addTokens(card, Token.findTokenForCulture(card.getBlueprint().getCulture()), count);
     }
 
-    public void RemoveTokensFromCard(LotroPhysicalCardImpl card, int count) {
+    public void RemoveTokensFromCard(PhysicalCardImpl card, int count) {
         _game.getGameState().removeTokens(card, Token.findTokenForCulture(card.getBlueprint().getCulture()), count);
     }
 
@@ -609,7 +601,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public void FreepsRemoveWoundsFromChar(String cardName, int count) { RemoveWoundsFromChar(GetFreepsCard(cardName), count); }
     public void ShadowRemoveWoundsFromChar(String cardName, int count) { RemoveWoundsFromChar(GetShadowCard(cardName), count); }
-    public void RemoveWoundsFromChar(LotroPhysicalCardImpl card, int count) {
+    public void RemoveWoundsFromChar(PhysicalCardImpl card, int count) {
         for(int i = 0; i < count; i++)
         {
             _game.getGameState().removeWound(card);
@@ -631,10 +623,10 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public int GetMoveCount() { return _game.getGameState().getMoveCount(); }
 
-    public LotroPhysicalCardImpl GetRingBearer() { return (LotroPhysicalCardImpl)_game.getGameState().getRingBearer(P1); }
+    public PhysicalCardImpl GetRingBearer() { return (PhysicalCardImpl)_game.getGameState().getRingBearer(P1); }
 
     public boolean RBWearingOneRing() { return _game.getGameState().isWearingRing(); }
-    public LotroPhysicalCardImpl GetCurrentSite() { return (LotroPhysicalCardImpl)_game.getGameState().getCurrentSite(); }
+    public PhysicalCardImpl GetCurrentSite() { return (PhysicalCardImpl)_game.getGameState().getCurrentSite(); }
 
     public void SkipToAssignments() throws DecisionResultInvalidException {
         SkipToPhase(Phase.ASSIGNMENT);
@@ -715,62 +707,62 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsDeclineAssignments() throws DecisionResultInvalidException { FreepsPassCurrentPhaseAction(); }
     public void ShadowDeclineAssignments() throws DecisionResultInvalidException { ShadowPassCurrentPhaseAction(); }
 
-    public void FreepsAssignToMinions(LotroPhysicalCardImpl comp, LotroPhysicalCardImpl...minions) throws DecisionResultInvalidException { AssignToMinions(P1, comp, minions); }
-    public void ShadowAssignToMinions(LotroPhysicalCardImpl comp, LotroPhysicalCardImpl...minions) throws DecisionResultInvalidException { AssignToMinions(P2, comp, minions); }
-    public void AssignToMinions(String player, LotroPhysicalCardImpl comp, LotroPhysicalCardImpl...minions) throws DecisionResultInvalidException {
-        String result = comp.getCardId() + "";
+    public void FreepsAssignToMinions(PhysicalCardImpl comp, PhysicalCardImpl...minions) throws DecisionResultInvalidException { AssignToMinions(P1, comp, minions); }
+    public void ShadowAssignToMinions(PhysicalCardImpl comp, PhysicalCardImpl...minions) throws DecisionResultInvalidException { AssignToMinions(P2, comp, minions); }
+    public void AssignToMinions(String player, PhysicalCardImpl comp, PhysicalCardImpl...minions) throws DecisionResultInvalidException {
+        StringBuilder result = new StringBuilder(String.valueOf(comp.getCardId()));
 
-        for (LotroPhysicalCardImpl minion : minions) {
-            result += " " + minion.getCardId();
+        for (PhysicalCardImpl minion : minions) {
+            result.append(" ").append(minion.getCardId());
         }
 
-        playerDecided(player, result);
+        playerDecided(player, result.toString());
     }
 
-    public void FreepsAssignToMinions(LotroPhysicalCardImpl[]...groups) throws DecisionResultInvalidException { AssignToMinions(P1, groups); }
-    public void ShadowAssignToMinions(LotroPhysicalCardImpl[]...groups) throws DecisionResultInvalidException { AssignToMinions(P2, groups); }
-    public void AssignToMinions(String player, LotroPhysicalCardImpl[]...groups) throws DecisionResultInvalidException {
-        String result = "";
+    public void FreepsAssignToMinions(PhysicalCardImpl[]...groups) throws DecisionResultInvalidException { AssignToMinions(P1, groups); }
+    public void ShadowAssignToMinions(PhysicalCardImpl[]...groups) throws DecisionResultInvalidException { AssignToMinions(P2, groups); }
+    public void AssignToMinions(String player, PhysicalCardImpl[]...groups) throws DecisionResultInvalidException {
+        StringBuilder result = new StringBuilder();
 
-        for (LotroPhysicalCardImpl[] group : groups) {
-            result += group[0].getCardId();
+        for (PhysicalCardImpl[] group : groups) {
+            result.append(group[0].getCardId());
             for(int i = 1; i < group.length; i++)
             {
-                result += " " + group[i].getCardId();
+                result.append(" ").append(group[i].getCardId());
             }
-            result += ",";
+            result.append(",");
         }
 
-        playerDecided(player, result);
+        playerDecided(player, result.toString());
     }
 
 
-    public List<LotroPhysicalCardImpl> FreepsGetAttachedCards(String name) { return GetAttachedCards(GetFreepsCard(name)); }
-    public List<LotroPhysicalCardImpl> ShadowGetAttachedCards(String name) { return GetAttachedCards(GetShadowCard(name)); }
-    public List<LotroPhysicalCardImpl> GetAttachedCards(LotroPhysicalCardImpl card) {
-        return (List<LotroPhysicalCardImpl>)(List<?>)_game.getGameState().getAttachedCards(card);
+    public List<PhysicalCardImpl> FreepsGetAttachedCards(String name) { return GetAttachedCards(GetFreepsCard(name)); }
+    public List<PhysicalCardImpl> ShadowGetAttachedCards(String name) { return GetAttachedCards(GetShadowCard(name)); }
+    public List<PhysicalCardImpl> GetAttachedCards(PhysicalCardImpl card) {
+        return (List<PhysicalCardImpl>)(List<?>)_game.getGameState().getAttachedCards(card);
     }
 
-    public List<LotroPhysicalCardImpl> FreepsGetStackedCards(String name) { return GetStackedCards(GetFreepsCard(name)); }
-    public List<LotroPhysicalCardImpl> ShadowGetStackedCards(String name) { return GetStackedCards(GetShadowCard(name)); }
-    public List<LotroPhysicalCardImpl> GetStackedCards(LotroPhysicalCardImpl card) {
-        return (List<LotroPhysicalCardImpl>)(List<?>)_game.getGameState().getStackedCards(card);
+    public List<PhysicalCardImpl> FreepsGetStackedCards(String name) { return GetStackedCards(GetFreepsCard(name)); }
+    public List<PhysicalCardImpl> ShadowGetStackedCards(String name) { return GetStackedCards(GetShadowCard(name)); }
+    public List<PhysicalCardImpl> GetStackedCards(PhysicalCardImpl card) {
+        return (List<PhysicalCardImpl>)(List<?>)_game.getGameState().getStackedCards(card);
     }
 
     public void FreepsResolveSkirmish(String name) throws DecisionResultInvalidException { FreepsResolveSkirmish(GetFreepsCard(name)); }
-    public void FreepsResolveSkirmish(LotroPhysicalCardImpl comp) throws DecisionResultInvalidException { FreepsChooseCard(comp); }
+    public void FreepsResolveSkirmish(PhysicalCardImpl comp) throws DecisionResultInvalidException { FreepsChooseCard(comp); }
 
     public void FreepsChooseCard(String name) throws DecisionResultInvalidException { FreepsChooseCard(GetFreepsCard(name)); }
-    public void FreepsChooseCard(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, String.valueOf(card.getCardId())); }
+    public void FreepsChooseCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, String.valueOf(card.getCardId())); }
     public void ShadowChooseCard(String name) throws DecisionResultInvalidException { ShadowChooseCard(GetShadowCard(name)); }
-    public void ShadowChooseCard(LotroPhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, String.valueOf(card.getCardId())); }
+    public void ShadowChooseCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, String.valueOf(card.getCardId())); }
 
     public void FreepsChooseAnyCard() throws DecisionResultInvalidException { FreepsChoose(FreepsGetCardChoices().get(0)); }
     public void ShadowChooseAnyCard() throws DecisionResultInvalidException { ShadowChoose(ShadowGetCardChoices().get(0)); }
 
-    public void FreepsChooseCards(LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCards(P1, cards); }
-    public void ShadowChooseCards(LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCards(P2, cards); }
-    public void ChooseCards(String player, LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException {
+    public void FreepsChooseCards(PhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCards(P1, cards); }
+    public void ShadowChooseCards(PhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCards(P2, cards); }
+    public void ChooseCards(String player, PhysicalCardImpl...cards) throws DecisionResultInvalidException {
         String[] ids = new String[cards.length];
 
         for(int i = 0; i < cards.length; i++)
@@ -783,28 +775,28 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
 
 
-    public boolean FreepsCanChooseCharacter(LotroPhysicalCardImpl card) { return FreepsGetCardChoices().contains(String.valueOf(card.getCardId())); }
-    public boolean ShadowCanChooseCharacter(LotroPhysicalCardImpl card) { return ShadowGetCardChoices().contains(String.valueOf(card.getCardId())); }
+    public boolean FreepsCanChooseCharacter(PhysicalCardImpl card) { return FreepsGetCardChoices().contains(String.valueOf(card.getCardId())); }
+    public boolean ShadowCanChooseCharacter(PhysicalCardImpl card) { return ShadowGetCardChoices().contains(String.valueOf(card.getCardId())); }
 
     public int GetFreepsCardChoiceCount() { return FreepsGetCardChoices().size(); }
     public int GetShadowCardChoiceCount() { return ShadowGetCardChoices().size(); }
 
-    public void FreepsChooseCardBPFromSelection(LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardBPFromSelection(P1, cards);}
-    public void ShadowChooseCardBPFromSelection(LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardBPFromSelection(P2, cards);}
+    public void FreepsChooseCardBPFromSelection(PhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardBPFromSelection(P1, cards);}
+    public void ShadowChooseCardBPFromSelection(PhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardBPFromSelection(P2, cards);}
 
-    public void ChooseCardBPFromSelection(String player, LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException {
+    public void ChooseCardBPFromSelection(String player, PhysicalCardImpl...cards) throws DecisionResultInvalidException {
         String[] choices = GetAwaitingDecisionParam(player,"blueprintId");
         ArrayList<String> bps = new ArrayList<>();
-        ArrayList<LotroPhysicalCardImpl> found = new ArrayList<>();
+        ArrayList<PhysicalCardImpl> found = new ArrayList<>();
 
         for(int i = 0; i < choices.length; i++)
         {
-            for(LotroPhysicalCardImpl card : cards)
+            for(PhysicalCardImpl card : cards)
             {
                 if(found.contains(card))
                     continue;
 
-                if(card.getBlueprintId() == choices[i])
+                if(Objects.equals(card.getBlueprintId(), choices[i]))
                 {
                     // I have no idea why the spacing is required, but the BP parser skips to the fourth position
                     bps.add("    " + i);
@@ -817,23 +809,23 @@ public class GenericCardTestHelper extends AbstractAtTest {
         playerDecided(player, String.join(",", bps));
     }
 
-    public void FreepsChooseCardIDFromSelection(LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardIDFromSelection(P1, cards);}
-    public void ShadowChooseCardIDFromSelection(LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardIDFromSelection(P2, cards);}
+    public void FreepsChooseCardIDFromSelection(PhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardIDFromSelection(P1, cards);}
+    public void ShadowChooseCardIDFromSelection(PhysicalCardImpl...cards) throws DecisionResultInvalidException { ChooseCardIDFromSelection(P2, cards);}
 
-    public void ChooseCardIDFromSelection(String player, LotroPhysicalCardImpl...cards) throws DecisionResultInvalidException {
+    public void ChooseCardIDFromSelection(String player, PhysicalCardImpl...cards) throws DecisionResultInvalidException {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(player);
         //playerDecided(player, "" + card.getCardId());
 
         String[] choices = GetAwaitingDecisionParam(player,"cardId");
         ArrayList<String> ids = new ArrayList<>();
-        ArrayList<LotroPhysicalCardImpl> found = new ArrayList<>();
+        ArrayList<PhysicalCardImpl> found = new ArrayList<>();
 
         for (String choice : choices) {
-            for (LotroPhysicalCardImpl card : cards) {
+            for (PhysicalCardImpl card : cards) {
                 if (found.contains(card))
                     continue;
 
-                if (("" + card.getCardId()).equals(choice)) {
+                if ((String.valueOf(card.getCardId())).equals(choice)) {
                     ids.add(choice);
                     found.add(card);
                     break;
@@ -844,12 +836,12 @@ public class GenericCardTestHelper extends AbstractAtTest {
         playerDecided(player, String.join(",", ids));
     }
 
-    public boolean IsCharAssigned(LotroPhysicalCardImpl card) {
+    public boolean IsCharAssigned(PhysicalCardImpl card) {
         List<Assignment> assigns = _game.getGameState().getAssignments();
         return assigns.stream().anyMatch(x -> x.getFellowshipCharacter() == card || x.getShadowCharacters().contains(card));
     }
 
-    public boolean IsCharSkirmishing(LotroPhysicalCardImpl card) {
+    public boolean IsCharSkirmishing(PhysicalCardImpl card) {
         var skirmish = _game.getGameState().getSkirmish();
         return skirmish.getFellowshipCharacter() == card ||
                 skirmish.getShadowCharacters().stream().anyMatch(x -> x == card);
@@ -857,7 +849,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public Skirmish GetActiveSkirmish() { return _game.getGameState().getSkirmish(); }
 
-    public boolean IsAttachedTo(LotroPhysicalCardImpl card, LotroPhysicalCardImpl bearer) {
+    public boolean IsAttachedTo(PhysicalCardImpl card, PhysicalCardImpl bearer) {
         if(card.getZone() != Zone.ATTACHED) {
             return false;
         }
@@ -868,14 +860,14 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public int FreepsGetStrength(String name) { return GetStrength(GetFreepsCard(name)); }
     public int ShadowGetStrength(String name) { return GetStrength(GetShadowCard(name)); }
-    public int GetStrength(LotroPhysicalCardImpl card)
+    public int GetStrength(PhysicalCardImpl card)
     {
         return _game.getModifiersQuerying().getStrength(_game, card);
     }
-    public int GetVitality(LotroPhysicalCardImpl card) { return _game.getModifiersQuerying().getVitality(_game, card); }
-    public int GetResistance(LotroPhysicalCardImpl card) { return _game.getModifiersQuerying().getResistance(_game, card); }
-    public int GetMinionSiteNumber(LotroPhysicalCardImpl card) { return _game.getModifiersQuerying().getMinionSiteNumber(_game, card); }
-    public int GetGeneralSiteNumber(LotroPhysicalCardImpl card)
+    public int GetVitality(PhysicalCardImpl card) { return _game.getModifiersQuerying().getVitality(_game, card); }
+    public int GetResistance(PhysicalCardImpl card) { return _game.getModifiersQuerying().getResistance(_game, card); }
+    public int GetMinionSiteNumber(PhysicalCardImpl card) { return _game.getModifiersQuerying().getMinionSiteNumber(_game, card); }
+    public int GetGeneralSiteNumber(PhysicalCardImpl card)
     {
         int bpNumber = card.getBlueprint().getSiteNumber();
         Integer siteNumber = card.getSiteNumber();
@@ -885,28 +877,28 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return siteNumber;
     }
 
-    public boolean HasKeyword(LotroPhysicalCardImpl card, Keyword keyword)
+    public boolean HasKeyword(PhysicalCardImpl card, Keyword keyword)
     {
         return _game.getModifiersQuerying().hasKeyword(_game, card, keyword);
     }
 
-    public int GetKeywordCount(LotroPhysicalCardImpl card, Keyword keyword)
+    public int GetKeywordCount(PhysicalCardImpl card, Keyword keyword)
     {
         return _game.getModifiersQuerying().getKeywordCount(_game, card, keyword);
     }
 
-    public boolean IsType(LotroPhysicalCardImpl card, CardType type)
+    public boolean IsType(PhysicalCardImpl card, CardType type)
     {
         return card.getBlueprint().getCardType() == type
             || _game.getModifiersQuerying().isAdditionalCardType(_game, card, type);
     }
 
-    public Boolean CanBeAssigned(LotroPhysicalCardImpl card)
+    public Boolean CanBeAssigned(PhysicalCardImpl card)
     {
         return CanBeAssigned(card, Side.SHADOW) || CanBeAssigned(card, Side.FREE_PEOPLE);
     }
 
-    public Boolean CanBeAssigned(LotroPhysicalCardImpl card, Side side)
+    public Boolean CanBeAssigned(PhysicalCardImpl card, Side side)
     {
         return _game.getModifiersQuerying().canBeAssignedToSkirmish(_game, side, card);
     }
@@ -1011,7 +1003,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         playerDecided(P2, "");
     }
 
-    public int GetOverwhelmMultiplier(LotroPhysicalCardImpl card)
+    public int GetOverwhelmMultiplier(PhysicalCardImpl card)
     {
         return _game.getModifiersQuerying().getOverwhelmMultiplier(_game, card);
     }
@@ -1034,7 +1026,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public void SkipCurrentSite() throws DecisionResultInvalidException {
         SkipToPhase(Phase.REGROUP);
-        LotroPhysicalCardImpl site = GetCurrentSite();
+        PhysicalCardImpl site = GetCurrentSite();
         if(site.getSiteNumber() == 9)
             return; // Game finished
         PassCurrentPhaseActions();
@@ -1044,7 +1036,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
         if(ShadowDecisionAvailable("discard down"))
         {
-            ShadowChooseCard((LotroPhysicalCardImpl) GetShadowHand().get(0));
+            ShadowChooseCard((PhysicalCardImpl) GetShadowHand().get(0));
         }
         if(FreepsDecisionAvailable("another move"))
         {
@@ -1056,7 +1048,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
         if(FreepsDecisionAvailable("discard down"))
         {
-            FreepsChooseCard((LotroPhysicalCardImpl) GetFreepsHand().get(0));
+            FreepsChooseCard((PhysicalCardImpl) GetFreepsHand().get(0));
         }
 
         //Shadow player
@@ -1069,7 +1061,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
         if(FreepsDecisionAvailable("discard down"))
         {
-            FreepsChooseCard((LotroPhysicalCardImpl) GetFreepsHand().get(0));
+            FreepsChooseCard((PhysicalCardImpl) GetFreepsHand().get(0));
         }
         if(ShadowDecisionAvailable("another move"))
         {
@@ -1081,7 +1073,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
         if(ShadowDecisionAvailable("discard down"))
         {
-            ShadowChooseCard((LotroPhysicalCardImpl) GetShadowHand().get(0));
+            ShadowChooseCard((PhysicalCardImpl) GetShadowHand().get(0));
         }
 
         Assert.assertTrue(GetCurrentPhase() == Phase.BETWEEN_TURNS

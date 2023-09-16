@@ -4,7 +4,7 @@ html, body {
 	height: calc(100% - 8px);
 }
 
-.flex-horiz {
+.flex-horizontal {
 	display: flex;
 	flex-direction: row;
 	gap: 2px;

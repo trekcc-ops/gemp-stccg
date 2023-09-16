@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 
 public class ReversePlayerOrder implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) {
         return new DelayedAppender<>() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {

@@ -55,12 +55,9 @@ public class SwissPairingMechanism implements PairingMechanism {
 
         boolean success = tryPairBracketAndFurther(0, new HashSet<>(), new HashSet<>(), playersGroupedByBracket, playersWithByes, previouslyPaired, pairingResults, byeResults);
         // Managed to pair with this carry over count - proceed with the pairings
-        if (success) {
-            return false;
-        }
+        return !success;
 
         // We can't pair, just finish the tournament
-        return true;
     }
 
     private boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers, Set<String> carryOverFromThisBracket, List<List<String>> playersGroupedByBracket, Set<String> playersWithByes,
@@ -129,9 +126,10 @@ public class SwissPairingMechanism implements PairingMechanism {
             // We only accept one bye
             int playersLeftWithoutPair = leftoverPlayers.size();
             switch (playersLeftWithoutPair) {
-                case 0:
+                case 0 -> {
                     return true;
-                case 1: {
+                }
+                case 1 -> {
                     String lastPlayer = leftoverPlayers.iterator().next();
                     if (playersWithByes.contains(lastPlayer)) {
                         // The last remaining player already has a bye
@@ -141,8 +139,9 @@ public class SwissPairingMechanism implements PairingMechanism {
                         return true;
                     }
                 }
-                default:
+                default -> {
                     return false;
+                }
             }
         }
     }

@@ -43,7 +43,7 @@ public class CreateCardStubs {
         CardBlueprintLibrary library = new CardBlueprintLibrary();
         Map<String, Map<String, LotroCardBlueprint>> cardsByFileName = new HashMap<>();
 
-        SetDefinition setDefinition = library.getSetDefinitions().get("" + set);
+        SetDefinition setDefinition = library.getSetDefinitions().get(String.valueOf(set));
         if (setDefinition.hasFlag("needsLoading")) {
             final Set<String> allCards = setDefinition.getAllCards();
             for (String blueprintId : allCards) {
@@ -104,12 +104,12 @@ public class CreateCardStubs {
                         cardJson.put("resistance", card.getResistance());
                     if (card.getCardType() == CardType.ALLY) {
                         if (card.getAllyHomeSiteBlock() != null) {
-                            String home = card.getAllyHomeSiteBlock().getHumanReadable();
+                            StringBuilder home = new StringBuilder(card.getAllyHomeSiteBlock().getHumanReadable());
                             for (int allyHomeSiteNumber : card.getAllyHomeSiteNumbers()) {
-                                home += "," + allyHomeSiteNumber;
+                                home.append(",").append(allyHomeSiteNumber);
                             }
 
-                            cardJson.put("allyHome", home);
+                            cardJson.put("allyHome", home.toString());
                         }
                     }
                     if (card.getCardType() == CardType.SITE)
@@ -176,7 +176,7 @@ public class CreateCardStubs {
         String cardNumber = blueprintParts[1];
 
         for (String packageName : _packageNames) {
-            LotroCardBlueprint blueprint = null;
+            LotroCardBlueprint blueprint;
             try {
                 blueprint = tryLoadingFromPackage(packageName, setNumber, cardNumber);
             } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {

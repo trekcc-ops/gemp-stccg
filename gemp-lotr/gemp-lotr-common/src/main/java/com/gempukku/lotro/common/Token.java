@@ -14,11 +14,11 @@ public enum Token {
 
     private final Culture _culture;
 
-    private Token() {
+    Token() {
         this(null);
     }
 
-    private Token(Culture culture) {
+    Token(Culture culture) {
         _culture = culture;
     }
 

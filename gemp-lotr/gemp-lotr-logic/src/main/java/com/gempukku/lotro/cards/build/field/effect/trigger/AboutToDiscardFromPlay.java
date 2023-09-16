@@ -20,7 +20,7 @@ public class AboutToDiscardFromPlay implements TriggerCheckerProducer {
         final FilterableSource sourceFilter = environment.getFilterFactory().generateFilter(source, environment);
         final FilterableSource affectedFilter = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
                 return TriggerConditions.isGettingDiscardedBy(actionContext.getEffect(), actionContext.getGame(),

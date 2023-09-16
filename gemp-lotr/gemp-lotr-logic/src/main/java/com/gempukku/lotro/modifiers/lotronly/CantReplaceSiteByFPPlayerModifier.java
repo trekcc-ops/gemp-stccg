@@ -14,8 +14,6 @@ public class CantReplaceSiteByFPPlayerModifier extends AbstractModifier {
 
     @Override
     public boolean isSiteReplaceable(DefaultGame game, String playerId) {
-        if (playerId.equals(game.getGameState().getCurrentPlayerId()))
-            return false;
-        return true;
+        return !playerId.equals(game.getGameState().getCurrentPlayerId());
     }
 }

@@ -61,7 +61,7 @@ public class PreventableEffect extends AbstractSubActionEffect {
         processSubAction(game, subAction);
     }
 
-    public static interface PreventionCost {
-        public Effect createPreventionCostForPlayer(CostToEffectAction subAction, String playerId);
+    public interface PreventionCost {
+        Effect createPreventionCostForPlayer(CostToEffectAction subAction, String playerId);
     }
 }

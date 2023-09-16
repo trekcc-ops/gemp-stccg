@@ -39,12 +39,7 @@ public class ResolveSkirmishDamageAction extends RequiredTriggerAction {
         if (_remainingDamage > 0) {
             _remainingDamage--;
             return new WoundCharactersEffect(_skirmishResult.getWinners(), Filters.in(_skirmishResult.getInSkirmishLosers()),
-                    new Filter() {
-                        @Override
-                        public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                            return game.getModifiersQuerying().canTakeWoundsFromLosingSkirmish(game, physicalCard, _skirmishResult.getWinners());
-                        }
-                    });
+                    (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canTakeWoundsFromLosingSkirmish(game1, physicalCard, _skirmishResult.getWinners()));
         }
 
         return null;

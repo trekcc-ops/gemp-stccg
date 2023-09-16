@@ -17,12 +17,7 @@ public class CantReplaceSite implements ModifierSourceProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new CantReplaceSiteModifier(actionContext.getSource(), null,
-                        filterableSource.getFilterable(actionContext));
-            }
-        };
+        return actionContext -> new CantReplaceSiteModifier(actionContext.getSource(), null,
+                filterableSource.getFilterable(actionContext));
     }
 }

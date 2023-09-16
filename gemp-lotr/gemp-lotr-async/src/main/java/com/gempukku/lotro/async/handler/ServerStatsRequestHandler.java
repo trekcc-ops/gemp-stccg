@@ -48,7 +48,7 @@ public class ServerStatsRequestHandler extends LotroServerRequestHandler impleme
                 //human-level dates such as 2023-2-13 (note the lack of zero padding)
                 var from = ZonedDateTime.ofInstant(format.parse(startDay).toInstant(), ZoneOffset.UTC);
 
-                ZonedDateTime to = from;
+                ZonedDateTime to;
 
                 switch (length) {
                     case "month" -> to = from.plusMonths(1);

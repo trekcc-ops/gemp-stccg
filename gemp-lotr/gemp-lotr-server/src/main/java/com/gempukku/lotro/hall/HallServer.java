@@ -4,7 +4,7 @@ import com.gempukku.lotro.*;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.DeckInvalidException;
-import com.gempukku.lotro.chat.ChatCommandCallback;
+import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.chat.ChatCommandErrorException;
 import com.gempukku.lotro.chat.ChatRoomMediator;
 import com.gempukku.lotro.chat.ChatServer;
@@ -14,11 +14,9 @@ import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
-import com.gempukku.lotro.league.LeagueSerieData;
+import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.game.GameResultListener;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.service.AdminService;
 import com.gempukku.lotro.tournament.*;
 import org.apache.log4j.Logger;
@@ -41,7 +39,6 @@ public class HallServer extends AbstractServer {
     private static final int _playerChatInactivityPeriod = 1000 * 60 * 5; // 5 minutes
     private static final long _scheduledTournamentLoadTime = 1000 * 60 * 60 * 24 * 7; // Week
     // Repeat tournaments every 2 days
-    private static final long _repeatTournaments = 1000 * 60 * 60 * 24 * 2;
 
     private final ChatServer _chatServer;
     private final LeagueService _leagueService;
@@ -55,7 +52,6 @@ public class HallServer extends AbstractServer {
     private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
 
     private final CollectionType _defaultCollectionType = CollectionType.ALL_CARDS;
-    private final CollectionType _tournamentCollectionType = CollectionType.OWNED_TOURNAMENT_CARDS;
 
     private String _motd;
 
@@ -97,147 +93,115 @@ public class HallServer extends AbstractServer {
         _hallChat = _chatServer.createChatRoom("Game Hall", true, 300, true,
                 "You're now in the Game Hall, use /help to get a list of available commands.<br>Don't forget to check out the new Discord chat integration! Click the 'Switch to Discord' button in the lower right ---->");
         _hallChat.addChatCommandCallback("ban",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) throws ChatCommandErrorException {
-                        if (admin) {
-                            _adminService.banUser(parameters.trim());
-                        } else {
-                            throw new ChatCommandErrorException("Only administrator can ban users");
-                        }
+                (from, parameters, admin) -> {
+                    if (admin) {
+                        _adminService.banUser(parameters.trim());
+                    } else {
+                        throw new ChatCommandErrorException("Only administrator can ban users");
                     }
                 });
         _hallChat.addChatCommandCallback("banIp",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) throws ChatCommandErrorException {
-                        if (admin) {
-                            _adminService.banIp(parameters.trim());
-                        } else {
-                            throw new ChatCommandErrorException("Only administrator can ban users");
-                        }
+                (from, parameters, admin) -> {
+                    if (admin) {
+                        _adminService.banIp(parameters.trim());
+                    } else {
+                        throw new ChatCommandErrorException("Only administrator can ban users");
                     }
                 });
         _hallChat.addChatCommandCallback("banIpRange",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) throws ChatCommandErrorException {
-                        if (admin) {
-                            _adminService.banIpPrefix(parameters.trim());
-                        } else {
-                            throw new ChatCommandErrorException("Only administrator can ban users");
-                        }
+                (from, parameters, admin) -> {
+                    if (admin) {
+                        _adminService.banIpPrefix(parameters.trim());
+                    } else {
+                        throw new ChatCommandErrorException("Only administrator can ban users");
                     }
                 });
         _hallChat.addChatCommandCallback("ignore",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        final String playerName = parameters.trim();
-                        if (playerName.length() >= 2 && playerName.length() <= 30) {
-                            if (!from.equals(playerName) && ignoreDAO.addIgnoredUser(from, playerName)) {
-                                _hallChat.sendToUser("System", from, "User " + playerName + " added to ignore list");
-                            } else if (from.equals(playerName)) {
-                                _hallChat.sendToUser(from, from, "You don't have any friends. Nobody likes you.");
-                                _hallChat.sendToUser(from, from, "Not listening. Not listening!");
-                                _hallChat.sendToUser(from, from, "You're a liar and a thief.");
-                                _hallChat.sendToUser(from, from, "Nope.");
-                                _hallChat.sendToUser(from, from, "Murderer!");
-                                _hallChat.sendToUser(from, from, "Go away. Go away!");
-                                _hallChat.sendToUser(from, from, "Hahahaha!");
-                                _hallChat.sendToUser(from, from, "I hate you, I hate you.");
-                                _hallChat.sendToUser(from, from, "Where would you be without me? Gollum, Gollum. I saved us. It was me. We survived because of me!");
-                                _hallChat.sendToUser(from, from, "Not anymore.");
-                                _hallChat.sendToUser(from, from, "What did you say?");
-                                _hallChat.sendToUser(from, from, "Master looks after us now. We don't need you.");
-                                _hallChat.sendToUser(from, from, "What?");
-                                _hallChat.sendToUser(from, from, "Leave now and never come back.");
-                                _hallChat.sendToUser(from, from, "No!");
-                                _hallChat.sendToUser(from, from, "Leave now and never come back!");
-                                _hallChat.sendToUser(from, from, "Argh!");
-                                _hallChat.sendToUser(from, from, "Leave NOW and NEVER COME BACK!");
-                                _hallChat.sendToUser(from, from, "...");
-                                _hallChat.sendToUser(from, from, "We... We told him to go away! And away he goes, preciouss! Gone, gone, gone! Smeagol is free!");
-                            } else {
-                                _hallChat.sendToUser("System", from, "User " + playerName + " is already on your ignore list");
-                            }
+                (from, parameters, admin) -> {
+                    final String playerName = parameters.trim();
+                    if (playerName.length() >= 2 && playerName.length() <= 30) {
+                        if (!from.equals(playerName) && ignoreDAO.addIgnoredUser(from, playerName)) {
+                            _hallChat.sendToUser("System", from, "User " + playerName + " added to ignore list");
+                        } else if (from.equals(playerName)) {
+                            _hallChat.sendToUser(from, from, "You don't have any friends. Nobody likes you.");
+                            _hallChat.sendToUser(from, from, "Not listening. Not listening!");
+                            _hallChat.sendToUser(from, from, "You're a liar and a thief.");
+                            _hallChat.sendToUser(from, from, "Nope.");
+                            _hallChat.sendToUser(from, from, "Murderer!");
+                            _hallChat.sendToUser(from, from, "Go away. Go away!");
+                            _hallChat.sendToUser(from, from, "Hahahaha!");
+                            _hallChat.sendToUser(from, from, "I hate you, I hate you.");
+                            _hallChat.sendToUser(from, from, "Where would you be without me? Gollum, Gollum. I saved us. It was me. We survived because of me!");
+                            _hallChat.sendToUser(from, from, "Not anymore.");
+                            _hallChat.sendToUser(from, from, "What did you say?");
+                            _hallChat.sendToUser(from, from, "Master looks after us now. We don't need you.");
+                            _hallChat.sendToUser(from, from, "What?");
+                            _hallChat.sendToUser(from, from, "Leave now and never come back.");
+                            _hallChat.sendToUser(from, from, "No!");
+                            _hallChat.sendToUser(from, from, "Leave now and never come back!");
+                            _hallChat.sendToUser(from, from, "Argh!");
+                            _hallChat.sendToUser(from, from, "Leave NOW and NEVER COME BACK!");
+                            _hallChat.sendToUser(from, from, "...");
+                            _hallChat.sendToUser(from, from, "We... We told him to go away! And away he goes, preciouss! Gone, gone, gone! Smeagol is free!");
                         } else {
-                            _hallChat.sendToUser("System", from, playerName + " is not a valid username");
+                            _hallChat.sendToUser("System", from, "User " + playerName + " is already on your ignore list");
                         }
+                    } else {
+                        _hallChat.sendToUser("System", from, playerName + " is not a valid username");
                     }
                 });
         _hallChat.addChatCommandCallback("unignore",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        final String playerName = parameters.trim();
-                        if (playerName.length() >= 2 && playerName.length() <= 10) {
-                            if (ignoreDAO.removeIgnoredUser(from, playerName)) {
-                                _hallChat.sendToUser("System", from, "User " + playerName + " removed from ignore list");
-                            } else {
-                                _hallChat.sendToUser("System", from, "User " + playerName + " wasn't on your ignore list. Try ignoring them first.");
-                            }
+                (from, parameters, admin) -> {
+                    final String playerName = parameters.trim();
+                    if (playerName.length() >= 2 && playerName.length() <= 10) {
+                        if (ignoreDAO.removeIgnoredUser(from, playerName)) {
+                            _hallChat.sendToUser("System", from, "User " + playerName + " removed from ignore list");
                         } else {
-                            _hallChat.sendToUser("System", from, playerName + " is not a valid username");
+                            _hallChat.sendToUser("System", from, "User " + playerName + " wasn't on your ignore list. Try ignoring them first.");
                         }
+                    } else {
+                        _hallChat.sendToUser("System", from, playerName + " is not a valid username");
                     }
                 });
         _hallChat.addChatCommandCallback("listIgnores",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        final Set<String> ignoredUsers = ignoreDAO.getIgnoredUsers(from);
-                        _hallChat.sendToUser("System", from, "Your ignores: " + Arrays.toString(ignoredUsers.toArray(new String[0])));
-                    }
+                (from, parameters, admin) -> {
+                    final Set<String> ignoredUsers = ignoreDAO.getIgnoredUsers(from);
+                    _hallChat.sendToUser("System", from, "Your ignores: " + Arrays.toString(ignoredUsers.toArray(new String[0])));
                 });
         _hallChat.addChatCommandCallback("incognito",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        _hallChat.setIncognito(from, true);
-                        _hallChat.sendToUser("System", from, "You are now incognito (do not appear in user list)");
-                    }
+                (from, parameters, admin) -> {
+                    _hallChat.setIncognito(from, true);
+                    _hallChat.sendToUser("System", from, "You are now incognito (do not appear in user list)");
                 });
         _hallChat.addChatCommandCallback("endIncognito",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        _hallChat.setIncognito(from, false);
-                        _hallChat.sendToUser("System", from, "You are no longer incognito");
-                    }
+                (from, parameters, admin) -> {
+                    _hallChat.setIncognito(from, false);
+                    _hallChat.sendToUser("System", from, "You are no longer incognito");
                 });
         _hallChat.addChatCommandCallback("help",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        //_hallChat.sendToUser("System", from,
-                        String message = """
-                        List of available commands:
-                        /ignore username - Adds user 'username' to list of your ignores
-                        /unignore username - Removes user 'username' from list of your ignores
-                        /listIgnores - Lists all your ignored users
-                        /incognito - Makes you incognito (not visible in user list)
-                        /endIncognito - Turns your visibility 'on' again""";
-                        if (admin) {
-                            message += """
-                            
-                            
-                            Admin only commands:
-                            /ban username - Bans user 'username' permanently
-                            /banIp ip - Bans specified ip permanently
-                            /banIpRange ip - Bans ips with the specified prefix, ie. 10.10.10.""";
-                        }
+                (from, parameters, admin) -> {
+                    //_hallChat.sendToUser("System", from,
+                    String message = """
+                    List of available commands:
+                    /ignore username - Adds user 'username' to list of your ignores
+                    /unignore username - Removes user 'username' from list of your ignores
+                    /listIgnores - Lists all your ignored users
+                    /incognito - Makes you incognito (not visible in user list)
+                    /endIncognito - Turns your visibility 'on' again""";
+                    if (admin) {
+                        message += """
+                        
+                        
+                        Admin only commands:
+                        /ban username - Bans user 'username' permanently
+                        /banIp ip - Bans specified ip permanently
+                        /banIpRange ip - Bans ips with the specified prefix, ie. 10.10.10.""";
+                    }
 
-                        _hallChat.sendToUser("System", from, message.replace("\n", "<br />"));
-                    }
+                    _hallChat.sendToUser("System", from, message.replace("\n", "<br />"));
                 });
-        _hallChat.addChatCommandCallback("nocommand",
-                new ChatCommandCallback() {
-                    @Override
-                    public void commandReceived(String from, String parameters, boolean admin) {
-                        _hallChat.sendToUser("System", from, "\"" + parameters + "\" is not a recognized command.");
-                    }
-                });
+        _hallChat.addChatCommandCallback("noCommand",
+                (from, parameters, admin) -> _hallChat.sendToUser("System", from, "\"" + parameters + "\" is not a recognized command."));
 
 /*        _tournamentQueues.put("fotr_queue", new ImmediateRecurringQueue(1500, "fotr_block",
                 CollectionType.ALL_CARDS, "fotrQueue-", "Fellowship Block", 4,
@@ -343,11 +307,11 @@ public class HallServer extends AbstractServer {
     /**
      * @return If table created, otherwise <code>false</code> (if the user already is sitting at a table or playing).
      */
-    public void createNewTable(String type, User player, String deckName, String timer, String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden) throws HallException {
+    public void createNewTable(String format, User player, String deckName, String timer, String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden) throws HallException {
         if (_shutdown)
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
-        GameSettings gameSettings = createGameSettings(type, timer, description, isInviteOnly, isPrivate, isHidden);
+        GameSettings gameSettings = createGameSettings(format, timer, description, isInviteOnly, isPrivate, isHidden);
 
         LotroDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), player, deckName, gameSettings.getCollectionType());
 
@@ -383,16 +347,18 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private GameSettings createGameSettings(String type, String timer, String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden) throws HallException {
+    private GameSettings createGameSettings(String formatSelection, String timer, String description,
+                                            boolean isInviteOnly, boolean isPrivate, boolean isHidden)
+            throws HallException {
         League league = null;
-        LeagueSerieData leagueSerie = null;
+        LeagueSeriesData leagueSerie = null;
         CollectionType collectionType = _defaultCollectionType;
-        LotroFormat format = _formatLibrary.getHallFormats().get(type);
+        LotroFormat format = _formatLibrary.getHallFormats().get(formatSelection);
         GameTimer gameTimer = GameTimer.ResolveTimer(timer);
 
         if (format == null) {
             // Maybe it's a league format?
-            league = _leagueService.getLeagueByType(type);
+            league = _leagueService.getLeagueByType(formatSelection);
             if (league != null) {
                 leagueSerie = _leagueService.getCurrentLeagueSerie(league);
                 if (leagueSerie == null)
@@ -418,13 +384,13 @@ public class HallServer extends AbstractServer {
         }
         // It's not a normal format and also not a league one
         if (format == null)
-            throw new HallException("This format is not supported: " + type);
+            throw new HallException("This format is not supported: " + formatSelection);
 
         return new GameSettings(collectionType, format, league, leagueSerie,
                 league != null, isPrivate, isInviteOnly, isHidden, gameTimer, description);
     }
 
-    public boolean joinQueue(String queueId, User player, String deckName) throws HallException, SQLException, IOException {
+    public void joinQueue(String queueId, User player, String deckName) throws HallException, SQLException, IOException {
         if (_shutdown)
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
@@ -444,16 +410,15 @@ public class HallServer extends AbstractServer {
 
             hallChanged();
 
-            return true;
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
     }
 
     /**
-     * @return If table joined, otherwise <code>false</code> (if the user already is sitting at a table or playing).
+     *
      */
-    public boolean joinTableAsPlayer(String tableId, User player, String deckName) throws HallException {
+    public void joinTableAsPlayer(String tableId, User player, String deckName) throws HallException {
         logger.debug("HallServer - joinTableAsPlayer function called");
         if (_shutdown)
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
@@ -469,13 +434,12 @@ public class HallServer extends AbstractServer {
 
             hallChanged();
 
-            return true;
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
     }
 
-    public boolean joinTableAsPlayerWithSpoofedDeck(String tableId, User player, User librarian, String deckName) throws HallException {
+    public void joinTableAsPlayerWithSpoofedDeck(String tableId, User player, User librarian, String deckName) throws HallException {
         if (_shutdown)
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
@@ -490,7 +454,6 @@ public class HallServer extends AbstractServer {
 
             hallChanged();
 
-            return true;
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
@@ -714,7 +677,7 @@ public class HallServer extends AbstractServer {
 //                }
 
                 if (collectionCount < cardCount.getValue()) {
-                    String cardName = null;
+                    String cardName;
                     try {
                         cardName = GameUtils.getFullName(_library.getLotroCardBlueprint(cardCount.getKey()));
                         throw new HallException("You don't have the required cards in collection: " + cardName + " required " + cardCount.getValue() + ", owned " + collectionCount);
@@ -745,7 +708,7 @@ public class HallServer extends AbstractServer {
         Set<GameParticipant> players = gameTable.getPlayers();
         GameParticipant[] participants = players.toArray(new GameParticipant[0]);
         final League league = gameTable.getGameSettings().getLeague();
-        final LeagueSerieData leagueSerie = gameTable.getGameSettings().getLeagueSerie();
+        final LeagueSeriesData leagueSerie = gameTable.getGameSettings().getLeagueSerie();
 
         GameResultListener listener = null;
         if (league != null) {

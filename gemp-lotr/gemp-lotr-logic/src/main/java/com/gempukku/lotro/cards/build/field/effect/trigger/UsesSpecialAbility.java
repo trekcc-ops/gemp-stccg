@@ -20,7 +20,7 @@ public class UsesSpecialAbility implements TriggerCheckerProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
         final String memorize = FieldUtils.getString(value.get("memorize"), "memorize");
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean isBefore() {
                 return false;

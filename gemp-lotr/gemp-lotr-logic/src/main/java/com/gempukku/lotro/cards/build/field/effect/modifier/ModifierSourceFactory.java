@@ -18,9 +18,7 @@ public class ModifierSourceFactory {
         modifierProducers.put("addkeyword", new AddKeyword());
         modifierProducers.put("addnotwilightforcompanionmove", new AddNoTwilightForCompanionMove());
         modifierProducers.put("addsignet", new AddSignet());
-        modifierProducers.put("allycanparticipateinarcheryfireandskirmishes", new AllyCanParticipateInArcheryFireAndSkirmishes());
         modifierProducers.put("allycanparticipateinarcheryfire", new AllyCanParticipateInArcheryFire());
-        modifierProducers.put("allycanparticipateinskirmishes", new AllyCanParticipateInSkirmishes());
         modifierProducers.put("archerytotal", new ArcheryTotal());
         modifierProducers.put("cancelkeywordbonusfrom", new CancelKeywordBonusFrom());
         modifierProducers.put("cancelstrengthbonusfrom", new CancelStrengthBonusFrom());

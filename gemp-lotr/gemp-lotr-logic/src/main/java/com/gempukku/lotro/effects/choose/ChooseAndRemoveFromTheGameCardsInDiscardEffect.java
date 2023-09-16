@@ -22,7 +22,6 @@ public class ChooseAndRemoveFromTheGameCardsInDiscardEffect extends AbstractSubA
     private final int _minimum;
     private final int _maximum;
     private final Filterable[] _filters;
-    private CostToEffectAction _resultSubAction;
     private boolean _success;
 
     public ChooseAndRemoveFromTheGameCardsInDiscardEffect(Action action, LotroPhysicalCard source, String playerId, int minimum, int maximum, Filterable... filters) {
@@ -70,7 +69,7 @@ public class ChooseAndRemoveFromTheGameCardsInDiscardEffect extends AbstractSubA
     }
 
     private void processForCards(DefaultGame game, Collection<LotroPhysicalCard> cards) {
-        _resultSubAction = new SubAction(_action);
+        CostToEffectAction _resultSubAction = new SubAction(_action);
         _resultSubAction.appendEffect(
                 new RemoveCardsFromDiscardEffect(_playerId, _source, cards));
         processSubAction(game, _resultSubAction);

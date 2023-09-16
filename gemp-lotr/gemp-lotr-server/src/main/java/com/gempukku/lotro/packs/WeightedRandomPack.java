@@ -53,7 +53,7 @@ public class WeightedRandomPack implements PackBox {
             }
         }
 
-        return generateItems(_contents.keySet().stream().findFirst().get());
+        return generateItems(_contents.keySet().stream().findFirst().orElse(null));
     }
 
     public List<CardCollection.Item> generateItems(String name) {

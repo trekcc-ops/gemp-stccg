@@ -11,7 +11,6 @@ import java.util.Properties;
 public class AppConfig {
     private static final Logger LOGGER = Logger.getLogger(AppConfig.class);
     private static Properties _properties;
-    private static File _root;
 
     private synchronized static Properties getProperties() {
         if (_properties == null) {

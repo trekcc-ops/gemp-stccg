@@ -1,6 +1,43 @@
 // Set 221: A Tribble of a Different Color
 
 {
+    221_002: {
+         title: 1 Tribble - Kindness
+         type: tribble
+         tribble-value: 1
+         tribble-power: kindness
+         image-url: https://www.trekcc.org/tribbles/cardimages/toadc/137V.jpg
+         effects: {
+ 			type: trigger
+ 			optional: true
+ 			trigger: {
+ 			    type: played
+ 			    filter: self
+ 			}
+ 			effect: [
+ 			    {
+ 			        type: drawCards
+ 			    }
+ 			    {
+ 			        type: forEachPlayer
+ 			        effect: {
+ 			            type: conditional
+ 			            requires: {
+ 			                type: cardsInHandMoreThan
+ 			                player: you
+ 			                count: 3
+ 			            }
+ 			            effect: {
+ 			                type: putCardsFromHandOnBottomOfPlayPile
+ 			            }
+ 			        }
+ 			    }
+ 			    {
+ 			        type: putCardsFromHandOnBottomOfDeck
+ 			    }
+            ]
+ 		}
+    }
     221_004: {
          title: 1 Tribble - Recycle
          type: tribble

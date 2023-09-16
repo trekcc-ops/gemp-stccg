@@ -15,9 +15,6 @@ public class ChoosePlayer implements EffectAppenderProducer {
         FieldUtils.validateAllowedFields(effectObject, "memorize");
 
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
-/*        final String excludePlayer = FieldUtils.getString(effectObject.get("excluding"), "excluding", "you");
-        final PlayerSource exclueplayerSource = PlayerResolver.resolvePlayer(excludePlayer);
-        final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);*/
 
         return new DelayedAppender<>() {
             @Override

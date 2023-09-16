@@ -32,11 +32,6 @@ public abstract class ChooseCardsFromDeadPileEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         Collection<LotroPhysicalCard> cards = Filters.filter(game.getGameState().getDeadPile(game.getGameState().getCurrentPlayerId()), game, _filter);
         return cards.size() >= _minimum;

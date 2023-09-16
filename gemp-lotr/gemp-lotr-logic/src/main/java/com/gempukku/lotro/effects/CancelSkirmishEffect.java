@@ -7,10 +7,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.results.SkirmishCancelledResult;
 
 public class CancelSkirmishEffect extends AbstractEffect {
-    private Filterable[] _involvementFilter;
-
-    public CancelSkirmishEffect() {
-    }
+    private final Filterable[] _involvementFilter;
 
     public CancelSkirmishEffect(Filterable... involvementFilter) {
         _involvementFilter = involvementFilter;
@@ -19,11 +16,6 @@ public class CancelSkirmishEffect extends AbstractEffect {
     @Override
     public String getText(DefaultGame game) {
         return "Cancel skirmish";
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
     }
 
     @Override

@@ -78,10 +78,7 @@ public interface CardCollection {
                 return false;
             if (!Objects.equals(_blueprintId, item._blueprintId))
                 return false;
-            if (_type != item._type)
-                return false;
-
-            return true;
+            return _type == item._type;
         }
 
         @Override
@@ -94,7 +91,7 @@ public interface CardCollection {
 
         @Override
         public String toString() {
-            return "" + _count + "x" + _blueprintId;
+            return _count + "x" + _blueprintId;
         }
     }
 }

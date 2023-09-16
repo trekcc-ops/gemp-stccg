@@ -3,25 +3,26 @@ package com.gempukku.lotro.processes.turn.tribbles;
 import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.actions.ActionStack;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.gamestate.UserFeedback;
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
 import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.decisions.ActionSelectionDecision;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.effects.UnrespondableEffect;
-import com.gempukku.lotro.gamestate.GameStats;
-import com.gempukku.lotro.game.PlayerOrderFeedback;
-import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.game.TribblesGame;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
+import com.gempukku.lotro.game.PlayerOrderFeedback;
+import com.gempukku.lotro.game.TribblesGame;
+import com.gempukku.lotro.gamestate.GameStats;
+import com.gempukku.lotro.gamestate.TribblesGameState;
+import com.gempukku.lotro.gamestate.UserFeedback;
+import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.*;
 
@@ -52,7 +53,7 @@ public class TribblesTurnProcedure {
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
-        while (!_userFeedback.hasPendingDecisions() && _game.getWinnerPlayerId() == null) {
+        while (_userFeedback.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null) {
             // First check for any "state-based" effects
             Set<EffectResult> effectResults = ((DefaultActionsEnvironment) _game.getActionsEnvironment()).consumeEffectResults();
             if (effectResults.size() > 0) {
@@ -147,16 +148,14 @@ public class TribblesTurnProcedure {
                 if (requiredResponses.size() > 0)
                     appendEffect(new PlayoutAllActionsIfEffectNotCancelledEffect(this, requiredResponses));
 
+                TribblesGameState gameState = _game.getGameState();
                 appendEffect(
-                        new PlayoutOptionalAfterResponsesEffect(this, _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_game.getGameState().getCurrentPlayerId(), true), 0, _effectResults));
-/*                appendEffect(
-                        new UnrespondableEffect() {
-                            @Override
-                            protected void doPlayEffect(LotroGame game) {
-                                if (hasKilledRingBearer())
-                                    _game.checkRingBearerAlive();
-                            }
-                        }); */
+                        new PlayoutOptionalAfterResponsesEffect(this,
+                                gameState.getPlayerOrder().getCounterClockwisePlayOrder(
+                                        gameState.getCurrentPlayerId(), true
+                                ), 0, _effectResults
+                        )
+                );
             }
             return getNextEffect();
         }

@@ -40,12 +40,7 @@ public class MusterRule {
                                 action.setVirtualCardAction(true);
                                 action.setText("Use Muster");
                                 ChooseAndDiscardCardsFromHandEffect effect = new ChooseAndDiscardCardsFromHandEffect(action, playerId, false,
-                                        new ConstantEvaluator(0), new Evaluator() {
-                                    @Override
-                                    public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
-                                        return Filters.filterActive(game, Filters.owner(playerId), Keyword.MUSTER).size();
-                                    }
-                                }) {
+                                        new ConstantEvaluator(0), (game1, cardAffected) -> Filters.filterActive(game1, Filters.owner(playerId), Keyword.MUSTER).size()) {
                                     @Override
                                     protected void cardsBeingDiscardedCallback(Collection<LotroPhysicalCard> cardsBeingDiscarded) {
                                         if (cardsBeingDiscarded.size() > 0)

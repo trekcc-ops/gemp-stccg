@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class PackTests extends AbstractAtTest {
 
-    protected static ProductLibrary _productLib = new ProductLibrary(_cardLibrary);
+    protected static final ProductLibrary _productLib = new ProductLibrary(_cardLibrary);
 
     @Test
     public void Test1()  {

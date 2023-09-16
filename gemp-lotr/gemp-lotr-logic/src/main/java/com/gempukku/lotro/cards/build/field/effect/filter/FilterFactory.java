@@ -1,6 +1,5 @@
 package com.gempukku.lotro.cards.build.field.effect.filter;
 
-import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.build.*;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.cards.build.field.effect.appender.resolver.ValueResolver;
@@ -10,15 +9,14 @@ import com.gempukku.lotro.effects.results.CharacterLostSkirmishResult;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
 import com.gempukku.lotro.modifiers.evaluator.SingleMemoryEvaluator;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 
 import java.util.*;
 
 public class FilterFactory {
-    private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
-    private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
+    private final Map<String, FilterableSource<DefaultGame>> simpleFilters = new HashMap<>();
+    private final Map<String, FilterableSourceProducer<DefaultGame>> parameterFilters = new HashMap<>();
 
     public FilterFactory() {
         for (CardType value : CardType.values())
@@ -30,7 +28,6 @@ public class FilterFactory {
         for (Race value : Race.values())
             appendFilter(value);
 
-        simpleFilters.put("allyincurrentregion", (actionContext) -> Filters.isAllyInCurrentRegion());
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
         simpleFilters.put("attachedtoinsameregion",
@@ -99,13 +96,6 @@ public class FilterFactory {
                     final SitesBlock sitesBlock = SitesBlock.findBlock(parameterSplit[0]);
                     int number = Integer.parseInt(parameterSplit[1]);
                     return (actionContext) -> Filters.isAllyHome(number, sitesBlock);
-                });
-        parameterFilters.put("allyinregion",
-                (parameter, environment) -> {
-                    final String[] parameterSplit = parameter.split(",");
-                    final SitesBlock sitesBlock = Enum.valueOf(SitesBlock.class, parameterSplit[0].toUpperCase().replace('_', ' '));
-                    int number = Integer.parseInt(parameterSplit[1]);
-                    return (actionContext) -> Filters.isAllyInRegion(number, sitesBlock);
                 });
         parameterFilters.put("and",
                 (parameter, environment) -> {
@@ -216,14 +206,11 @@ public class FilterFactory {
                         return Filters.and(
                                 sourceFilterable, Filters.strengthEqual(
                                         new SingleMemoryEvaluator(
-                                                new Evaluator() {
-                                                    @Override
-                                                    public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
-                                                        int minStrength = Integer.MAX_VALUE;
-                                                        for (LotroPhysicalCard card : Filters.filterActive(game, sourceFilterable))
-                                                            minStrength = Math.min(minStrength, game.getModifiersQuerying().getStrength(game, card));
-                                                        return minStrength;
-                                                    }
+                                                (game, cardAffected) -> {
+                                                    int minStrength = Integer.MAX_VALUE;
+                                                    for (LotroPhysicalCard card : Filters.filterActive(game, sourceFilterable))
+                                                        minStrength = Math.min(minStrength, game.getModifiersQuerying().getStrength(game, card));
+                                                    return minStrength;
                                                 }
                                         )
                                 )

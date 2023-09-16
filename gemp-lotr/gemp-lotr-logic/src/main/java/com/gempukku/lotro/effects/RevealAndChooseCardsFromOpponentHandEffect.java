@@ -6,9 +6,8 @@ import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.game.PlayOrder;
-import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class RevealAndChooseCardsFromOpponentHandEffect extends AbstractSubActionEffect {
-    private final Action _action;
     private final String _playerId;
     private final String _opponentId;
     private final LotroPhysicalCard _source;
@@ -25,8 +23,7 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
     private final int _minChosen;
     private final int _maxChosen;
 
-    protected RevealAndChooseCardsFromOpponentHandEffect(Action action, String playerId, String opponentId, LotroPhysicalCard source, String text, Filterable selectionFilter, int minChosen, int maxChosen) {
-        _action = action;
+    protected RevealAndChooseCardsFromOpponentHandEffect(String playerId, String opponentId, LotroPhysicalCard source, String text, Filterable selectionFilter, int minChosen, int maxChosen) {
         _playerId = playerId;
         _opponentId = opponentId;
         _source = source;

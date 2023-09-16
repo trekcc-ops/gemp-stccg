@@ -19,8 +19,6 @@ public class CantRemoveBurdensModifier extends AbstractModifier {
 
     @Override
     public boolean canRemoveBurden(DefaultGame game, LotroPhysicalCard source) {
-        if (_sourceFilters.accepts(game, source))
-            return false;
-        return true;
+        return !_sourceFilters.accepts(game, source);
     }
 }

@@ -31,7 +31,7 @@ public class GameEvent {
 
         private final String code;
 
-        private Type(String code) {
+        Type(String code) {
             this.code = code;
         }
 
@@ -60,7 +60,7 @@ public class GameEvent {
     private Map<String, LotroDeck> _decks;
     private GameStats _gameStats;
     private AwaitingDecision _awaitingDecision;
-    private ZonedDateTime _timestamp;
+    private final ZonedDateTime _timestamp;
     private Integer _version;
     private boolean _discardIsPublic;
     private Integer _score;

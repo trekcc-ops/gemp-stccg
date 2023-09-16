@@ -48,12 +48,7 @@ public class WoundCharactersEffect extends AbstractPreventableCardEffect {
 
     @Override
     protected Filter getExtraAffectableFilter() {
-        return new Filter() {
-            @Override
-            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                return game.getModifiersQuerying().canTakeWounds(game, _sources, physicalCard, 1);
-            }
-        };
+        return (game, physicalCard) -> game.getModifiersQuerying().canTakeWounds(game, _sources, physicalCard, 1);
     }
 
     @Override
@@ -68,14 +63,14 @@ public class WoundCharactersEffect extends AbstractPreventableCardEffect {
     }
 
     @Override
-    protected void playoutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void playOutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
         if (cards.size() > 0)
             game.getGameState().sendMessage(getAppendedNames(cards) + " " + GameUtils.be(cards) + " wounded by " + _sourceText);
 
         for (LotroPhysicalCard woundedCard : cards) {
             game.getGameState().addWound(woundedCard);
             game.getModifiersEnvironment().addedWound(woundedCard);
-            game.getActionsEnvironment().emitEffectResult(new WoundResult(_sources, woundedCard));
+            game.getActionsEnvironment().emitEffectResult(new WoundResult(woundedCard));
         }
     }
 

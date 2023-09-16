@@ -83,7 +83,7 @@
 	<div id="gameHall" > 
 		<div id="gameHallMain" class="hall-tab flex-vert">
 			<div id="serverInfo" class="flex-vert">
-				<div id="infoButtons" class="flex-horiz">
+				<div id="infoButtons" class="flex-horizontal">
 					<a href="deckBuild.html" target="_blank">
 						<button id="deckbuilder-button" class="toolbar-button">
 							<span class="custom-icon icon-deckbuilder"></span><span>Deck Builder</span>
@@ -116,7 +116,7 @@
 					
 					<!-- If you find any problems with specific card or rules in general, please report it on <a target='_blank' href='http://lotrtcgwiki.com/forums/index.php/topic,7592.0.html'>TLHH forum thread here</a> or on the <a href='https://lotrtcgpc.net/discord'>PC Discord here</a>, in the #gemp-dev channel. Please include a game replay link. -->
 				</div>
-				<div class="flex-horiz" id="messageArea">
+				<div class="flex-horizontal" id="messageArea">
 					<div id="motd"></div>
 					<div class="serverTime"></div>
 				</div>
@@ -200,7 +200,7 @@
 		</div>
 		<!-- <div id="culture-icon"><img src="images/cultures/sauron.svg"/></div> -->
 	</div>
-	<div id="buttonsDiv" class="flex-horiz">
+	<div id="buttonsDiv" class="flex-horizontal">
 			<select id="supportedFormatsSelect" ></select>
 			<select id="decksSelect" ></select>
 			<select id="timerSelect">
@@ -216,11 +216,11 @@
 			</div>
 			<button id="createTableBut">Create table</button>
 	</div>
-	<div id="chat" class="flex-horiz" >
+	<div id="chat" class="flex-horizontal" >
 		<div id="chatarea" class="flex-vert">
 			<div id="legacyChat" class="flex-vert">
 				<div id="chatMessages" class="flex-vert"></div>
-				<div id="legacyChatInput" class="flex-horiz">
+				<div id="legacyChatInput" class="flex-horizontal">
 					<textarea type="text" id="chatTalk" class="" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeHolder="Message the game hall..."></textarea>
 					<button id="showSystemButton" class="ui-icon-zoomin"></button>					   
 				</div>

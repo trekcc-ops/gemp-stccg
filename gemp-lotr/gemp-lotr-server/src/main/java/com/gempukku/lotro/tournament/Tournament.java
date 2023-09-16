@@ -9,7 +9,7 @@ import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import java.util.List;
 
 public interface Tournament {
-    public enum Stage {
+    enum Stage {
         DRAFT("Drafting"), DECK_BUILDING("Deck building"), PLAYING_GAMES("Playing games"), FINISHED("Finished");
 
         private final String _humanReadable;
@@ -23,28 +23,28 @@ public interface Tournament {
         }
     }
 
-    public String getTournamentId();
-    public String getFormat();
-    public CollectionType getCollectionType();
-    public String getTournamentName();
-    public String getPlayOffSystem();
+    String getTournamentId();
+    String getFormat();
+    CollectionType getCollectionType();
+    String getTournamentName();
+    String getPlayOffSystem();
 
-    public Stage getTournamentStage();
-    public int getCurrentRound();
-    public int getPlayersInCompetitionCount();
+    Stage getTournamentStage();
+    int getCurrentRound();
+    int getPlayersInCompetitionCount();
 
-    public boolean advanceTournament(TournamentCallback tournamentCallback, CollectionsManager collectionsManager);
+    boolean advanceTournament(TournamentCallback tournamentCallback, CollectionsManager collectionsManager);
 
-    public void reportGameFinished(String winner, String loser);
+    void reportGameFinished(String winner, String loser);
 
-    public void playerChosenCard(String playerName, String cardId);
-    public void playerSummittedDeck(String player, LotroDeck deck);
-    public LotroDeck getPlayerDeck(String player);
-    public boolean dropPlayer(String player);
+    void playerChosenCard(String playerName, String cardId);
+    void playerSummittedDeck(String player, LotroDeck deck);
+    LotroDeck getPlayerDeck(String player);
+    void dropPlayer(String player);
 
-    public Draft getDraft();
+    Draft getDraft();
 
-    public List<PlayerStanding> getCurrentStandings();
+    List<PlayerStanding> getCurrentStandings();
 
-    public boolean isPlayerInCompetition(String player);
+    boolean isPlayerInCompetition(String player);
 }

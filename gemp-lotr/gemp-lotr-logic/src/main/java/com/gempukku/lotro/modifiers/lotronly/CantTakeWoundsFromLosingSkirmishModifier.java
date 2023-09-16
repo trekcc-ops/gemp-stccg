@@ -20,9 +20,7 @@ public class CantTakeWoundsFromLosingSkirmishModifier extends AbstractModifier {
 
     @Override
     public boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, LotroPhysicalCard physicalCard, Set<LotroPhysicalCard> winners) {
-        if (_winnersFilter == null
-                || Filters.filter(winners, game, _winnersFilter).size() > 0)
-            return false;
-        return true;
+        return _winnersFilter != null
+                && Filters.filter(winners, game, _winnersFilter).size() == 0;
     }
 }

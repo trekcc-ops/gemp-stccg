@@ -51,12 +51,7 @@ public class PlaySiteEffect extends AbstractEffect {
             return Collections.emptySet();
 
         if (game.getFormat().isOrderedSites()) {
-            Filter printedSiteNumber = new Filter() {
-                @Override
-                public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                    return physicalCard.getBlueprint().getSiteNumber() == siteNumber;
-                }
-            };
+            Filter printedSiteNumber = (game1, physicalCard) -> physicalCard.getBlueprint().getSiteNumber() == siteNumber;
             if (_siteBlock != null)
                 return Filters.filter(game.getGameState().getAdventureDeck(_playerId), game, Filters.and(_extraSiteFilters, printedSiteNumber, Filters.siteBlock(_siteBlock)));
             else

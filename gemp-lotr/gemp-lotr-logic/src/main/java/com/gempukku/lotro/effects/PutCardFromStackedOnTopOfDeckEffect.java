@@ -37,8 +37,4 @@ public class PutCardFromStackedOnTopOfDeckEffect extends AbstractEffect {
         return "Put " + GameUtils.getFullName(_physicalCard) + " from being stacked on top of deck";
     }
 
-    @Override
-    public Type getType() {
-        return null;
-    }
 }

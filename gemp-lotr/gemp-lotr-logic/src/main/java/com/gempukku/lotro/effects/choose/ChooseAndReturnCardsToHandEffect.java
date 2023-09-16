@@ -22,12 +22,7 @@ public class ChooseAndReturnCardsToHandEffect extends ChooseActiveCardsEffect {
 
     @Override
     protected Filter getExtraFilterForPlaying(DefaultGame game) {
-        return new Filter() {
-            @Override
-            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                return (_action.getActionSource() == null || game.getModifiersQuerying().canBeReturnedToHand(game, physicalCard, _action.getActionSource()));
-            }
-        };
+        return (game1, physicalCard) -> (_action.getActionSource() == null || game1.getModifiersQuerying().canBeReturnedToHand(game1, physicalCard, _action.getActionSource()));
     }
 
     @Override

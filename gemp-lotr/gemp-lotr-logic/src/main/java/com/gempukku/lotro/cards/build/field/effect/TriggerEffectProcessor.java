@@ -8,6 +8,8 @@ import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.cards.build.field.effect.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
 
+import java.util.Objects;
+
 public class TriggerEffectProcessor implements EffectProcessor {
     @Override
     public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
@@ -24,7 +26,7 @@ public class TriggerEffectProcessor implements EffectProcessor {
             final boolean before = triggerChecker.isBefore();
 
             DefaultActionSource triggerActionSource = new DefaultActionSource();
-            if(text != "") {
+            if(!Objects.equals(text, "")) {
                 triggerActionSource.setText(text);
             }
             triggerActionSource.addPlayRequirement(triggerChecker);

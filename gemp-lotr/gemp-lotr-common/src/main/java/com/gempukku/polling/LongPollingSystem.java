@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -16,16 +15,12 @@ public class LongPollingSystem {
 
     private final Set<ResourceWaitingRequest> _waitingActions = Collections.synchronizedSet(new HashSet<>());
 
-    private final long _pollingInterval = 100;
-    private final long _pollingLength = 5000;
-
-    private ProcessingRunnable _timeoutRunnable;
     private final ExecutorService _executorService = new ThreadPoolExecutor(10, Integer.MAX_VALUE,
             60L, TimeUnit.SECONDS,
             new SynchronousQueue<>());
 
     public void start() {
-        _timeoutRunnable = new ProcessingRunnable();
+        ProcessingRunnable _timeoutRunnable = new ProcessingRunnable();
         Thread thr = new Thread(_timeoutRunnable);
         thr.start();
     }
@@ -41,6 +36,7 @@ public class LongPollingSystem {
 
     private void pause() {
         try {
+            long _pollingInterval = 100;
             Thread.sleep(_pollingInterval);
         } catch (InterruptedException exp) {
             // Ignore
@@ -53,13 +49,7 @@ public class LongPollingSystem {
     }
 
     private void execute(final LongPollingResource resource) {
-        _executorService.submit(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        resource.processIfNotProcessed();
-                    }
-                });
+        _executorService.submit(resource::processIfNotProcessed);
     }
 
     private class ProcessingRunnable implements Runnable {
@@ -76,6 +66,7 @@ public class LongPollingSystem {
                     if (waitingRequest.getLongPollingResource().wasProcessed())
                         _waitingActions.remove(waitingRequest);
                     else {
+                        long _pollingLength = 5000;
                         if (waitingRequest.getStart() + _pollingLength < now) {
                             waitingRequest.getLongPollableResource().deregisterRequest(waitingRequest);
                             _waitingActions.remove(waitingRequest);

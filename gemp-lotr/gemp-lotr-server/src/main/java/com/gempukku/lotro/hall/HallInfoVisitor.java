@@ -3,20 +3,20 @@ package com.gempukku.lotro.hall;
 import java.util.List;
 
 public interface HallInfoVisitor {
-    public enum TableStatus {
+    enum TableStatus {
         WAITING, PLAYING, FINISHED
     }
 
-    public void serverTime(String time);
+    void serverTime(String time);
 
-    public void motd(String motd);
+    void motd(String motd);
 
-    public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status, String statusDescription, String formatName, String tournamentName, String userDesc, List<String> playerIds, boolean playing, boolean isPrivate, boolean isInviteOnly, String winner);
+    void visitTable(String tableId, String gameId, boolean watchable, TableStatus status, String statusDescription, String formatName, String tournamentName, String userDesc, List<String> playerIds, boolean playing, boolean isPrivate, boolean isInviteOnly, String winner);
 
-    public void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName, String tournamentQueueName, String tournamentPrizes,
+    void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName, String tournamentQueueName, String tournamentPrizes,
                                      String pairingDescription, String startCondition, int playerCount, boolean playerSignedUp, boolean joinable);
 
-    public void visitTournament(String tournamentKey, String collectionName, String formatName, String tournamentName, String pairingDescription, String tournamentStage, int round, int playerCount, boolean playerInCompetition);
+    void visitTournament(String tournamentKey, String collectionName, String formatName, String tournamentName, String pairingDescription, String tournamentStage, int round, int playerCount, boolean playerInCompetition);
 
-    public void runningPlayerGame(String gameId);
+    void runningPlayerGame(String gameId);
 }

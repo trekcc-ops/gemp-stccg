@@ -22,11 +22,6 @@ public class PutCardFromDeckIntoHandOrDiscardEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public String getText(DefaultGame game) {
         return "Put card from deck into hand";
     }

@@ -85,8 +85,7 @@ public class SortAndFilterCards {
             CardBlueprintLibrary library, Map<String, LotroCardBlueprint> cardBlueprint, LotroFormatLibrary formatLibrary, String blueprintId, Side side, String type, String[] rarity, String[] sets,
             Set<CardType> cardTypes, Set<Culture> cultures, Set<Keyword> keywords, List<String> words, Integer siteNumber, Set<Race> races, Set<PossessionClass> itemClasses, Set<Keyword> phases) {
         if (isPack(blueprintId)) {
-            if (type == null || type.equals("pack"))
-                return true;
+            return type == null || type.equals("pack");
         } else {
             if (type == null
                     || type.equals("card")
@@ -104,8 +103,7 @@ public class SortAndFilterCards {
                                             if (siteNumber == null || blueprint.getSiteNumber() == siteNumber)
                                                 if (races == null || races.contains(blueprint.getRace()))
                                                     if (containsAllClasses(blueprint, itemClasses))
-                                                        if (containsAllKeywords(blueprint, phases))
-                                                            return true;
+                                                        return containsAllKeywords(blueprint, phases);
             }
         }
         return false;
@@ -175,22 +173,13 @@ public class SortAndFilterCards {
                 final LotroCardBlueprint blueprint = cardBlueprint.get(blueprintId);
                 if (blueprint.getCardType() == CardType.SITE) {
                     if (blueprint.getSiteBlock() == SitesBlock.FELLOWSHIP) {
-                        if ("fotr_block,pc_fotr_block,test_pc_fotr_block".contains(set)) {
-                            return true;
-                        }
-                        return false;
+                        return "fotr_block,pc_fotr_block,test_pc_fotr_block".contains(set);
                     }
                     if (blueprint.getSiteBlock() == SitesBlock.TWO_TOWERS) {
-                        if ("towers_standard,ttt_block".contains(set)) {
-                            return true;
-                        }
-                        return false;
+                        return "towers_standard,ttt_block".contains(set);
                     }
                     if (blueprint.getSiteBlock() == SitesBlock.KING) {
-                        if ("king_block,rotk_sta,movie,pc_movie_block,test_pc_movie_block".contains(set)) {
-                            return true;
-                        }
-                        return false;
+                        return "king_block,rotk_sta,movie,pc_movie_block,test_pc_movie_block".contains(set);
                     }
                     return true;
                 } else {
@@ -258,20 +247,16 @@ public class SortAndFilterCards {
 
     private boolean containsAllClasses(LotroCardBlueprint blueprint, Set<PossessionClass> possessionClasses) {
         for (PossessionClass filterPossessionClass : possessionClasses) {
-            if (blueprint == null)
-                return false;
-            else {
+            if (!(blueprint == null)) {
                 if (blueprint.getPossessionClasses() == null) {
-                    if (filterPossessionClass == PossessionClass.CLASSLESS)
-                        return true;
-                    return false;
+                    return filterPossessionClass == PossessionClass.CLASSLESS;
                 }            
                 for (PossessionClass blueprintPossessionClass : blueprint.getPossessionClasses()) {
                     if (filterPossessionClass == blueprintPossessionClass)
                         return true;
                 }
-                return false;
             }
+            return false;
         }
         return true;
     }
@@ -303,7 +288,7 @@ public class SortAndFilterCards {
                     for (String v : values.split(",")) {
                         T t = (T) Enum.valueOf(enumType, v);
                         if (t != null)
-                            cardTypes.remove((T) t);
+                            cardTypes.remove(t);
                     }
                     return cardTypes;
                 } else {

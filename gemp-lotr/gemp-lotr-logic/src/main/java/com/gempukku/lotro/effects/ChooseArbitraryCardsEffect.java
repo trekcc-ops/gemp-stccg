@@ -44,16 +44,6 @@ public abstract class ChooseArbitraryCardsEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
         Collection<LotroPhysicalCard> possibleCards = Filters.filter(_cards, game, _filter);
 

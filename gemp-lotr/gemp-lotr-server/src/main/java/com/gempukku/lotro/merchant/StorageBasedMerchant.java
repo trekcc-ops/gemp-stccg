@@ -81,9 +81,7 @@ public class StorageBasedMerchant implements Merchant {
 
     @Override
     public Integer getCardBuyPrice(String blueprintId, Date currentTime) {
-        boolean foil = false;
-        if (blueprintId.endsWith("*"))
-            foil = true;
+        boolean foil = blueprintId.endsWith("*");
 
         blueprintId = _library.getBaseBlueprintId(blueprintId);
 

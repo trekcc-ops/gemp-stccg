@@ -33,8 +33,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     @Override
     public void initializeBoard(List<String> participants, boolean discardIsPublic) {
-        List<String> participantIds = new LinkedList<>();
-        participantIds.addAll(participants);
+        List<String> participantIds = new LinkedList<>(participants);
         appendEvent(new GameEvent(PARTICIPANTS)
                 .participantId(_self)
                 .allParticipantIds(participantIds)

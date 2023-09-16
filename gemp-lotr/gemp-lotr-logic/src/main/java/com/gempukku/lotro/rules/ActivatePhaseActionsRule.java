@@ -26,13 +26,13 @@ public class ActivatePhaseActionsRule {
                     @Override
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
                         List<Action> result = new LinkedList<>();
-                        for (LotroPhysicalCard activableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activableCard)) {
-                                final List<? extends ActivateCardAction> actions = activableCard.getBlueprint().getPhaseActionsInPlay(playerId, game, activableCard);
+                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                                final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getPhaseActionsInPlay(playerId, game, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
 
-                                final List<? extends Action> extraActions = game.getModifiersQuerying().getExtraPhaseActions(game, activableCard);
+                                final List<? extends Action> extraActions = game.getModifiersQuerying().getExtraPhaseActions(game, activatableCard);
                                 if (extraActions != null) {
                                     for (Action action : extraActions) {
                                         if (action != null)
@@ -50,13 +50,10 @@ public class ActivatePhaseActionsRule {
     private Filter getActivatableCardsFilter(String playerId) {
         return Filters.or(
                 Filters.and(CardType.SITE,
-                        new Filter() {
-                            @Override
-                            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                                if (game.getGameState().getCurrentPhase().isRealPhase())
-                                    return Filters.currentSite.accepts(game, physicalCard);
-                                return false;
-                            }
+                        (Filter) (game, physicalCard) -> {
+                            if (game.getGameState().getCurrentPhase().isRealPhase())
+                                return Filters.currentSite.accepts(game, physicalCard);
+                            return false;
                         }),
                 Filters.and(Filters.not(CardType.SITE), Filters.owner(playerId), Filters.active));
     }

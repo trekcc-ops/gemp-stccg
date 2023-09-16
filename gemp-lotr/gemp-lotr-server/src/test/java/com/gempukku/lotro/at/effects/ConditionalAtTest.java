@@ -1,7 +1,7 @@
 package com.gempukku.lotro.at.effects;
 
 import com.gempukku.lotro.at.AbstractAtTest;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
 import org.junit.Test;
@@ -16,14 +16,14 @@ public class ConditionalAtTest extends AbstractAtTest {
         skipMulligans();
 
         for (int i = 0; i < 4; i++) {
-            final LotroPhysicalCardImpl pippin = createCard(P1, "1_306");
+            final PhysicalCardImpl pippin = createCard(P1, "1_306");
             _game.getGameState().addCardToZone(_game, pippin, Zone.FREE_CHARACTERS);
         }
 
-        LotroPhysicalCardImpl troopOfUrukHai = createCard(P2, "1_143");
+        PhysicalCardImpl troopOfUrukHai = createCard(P2, "1_143");
         _game.getGameState().addCardToZone(_game, troopOfUrukHai, Zone.SHADOW_CHARACTERS);
 
-        LotroPhysicalCardImpl savageryToMatchTheirNumbers = createCard(P2, "1_139");
+        PhysicalCardImpl savageryToMatchTheirNumbers = createCard(P2, "1_139");
         _game.getGameState().addCardToZone(_game, savageryToMatchTheirNumbers, Zone.HAND);
 
         // End Fellowship
@@ -46,7 +46,7 @@ public class ConditionalAtTest extends AbstractAtTest {
 
         playerDecided(P1, _game.getGameState().getRingBearer(P1).getCardId() + " " + troopOfUrukHai.getCardId());
 
-        playerDecided(P1, ""+_game.getGameState().getRingBearer(P1).getCardId());
+        playerDecided(P1, String.valueOf(_game.getGameState().getRingBearer(P1).getCardId()));
 
         playerDecided(P1, "");
         playerDecided(P2, getCardActionId(P2, "Play Savagery"));

@@ -81,13 +81,12 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                     ORDER BY end_date DESC
                     LIMIT :start, :count;
                 """;
-                List<DBDefs.GameHistory> result = conn.createQuery(sql)
+
+                return conn.createQuery(sql)
                         .addParameter("playerName", player.getName())
                         .addParameter("start", start)
                         .addParameter("count", count)
                         .executeAndFetch(DBDefs.GameHistory.class);
-
-                return result;
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve game history for player", ex);
@@ -261,12 +260,11 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                         WHERE end_date BETWEEN :from AND :to
                         GROUP BY format_name, CASE WHEN tournament IS NULL OR tournament LIKE 'Casual %' THEN 1 ELSE 0 END
                         """;
-                List<DBDefs.FormatStats> result = conn.createQuery(sql)
+
+                return conn.createQuery(sql)
                         .addParameter("from", from.format(_dateFormat))
                         .addParameter("to", to.format(_dateFormat))
                         .executeAndFetch(DBDefs.FormatStats.class);
-
-                return result;
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve format stats", ex);
@@ -313,12 +311,11 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                         ORDER BY end_date DESC
                         LIMIT :count
                     """;
-                List<DBDefs.GameHistory> result = conn.createQuery(sql)
+
+                return conn.createQuery(sql)
                         .addParameter("formatName", requestedFormatName)
                         .addParameter("count", count)
                         .executeAndFetch(DBDefs.GameHistory.class);
-
-                return result;
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve last games", ex);

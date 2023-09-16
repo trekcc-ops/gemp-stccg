@@ -26,14 +26,11 @@ public class CantBeAssignedToSkirmishAgainst implements ModifierSourceProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final FilterableSource againstSource = environment.getFilterFactory().generateFilter(against, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                final Filterable filterable = filterableSource.getFilterable(actionContext);
-                final Filterable againstFilterable = againstSource.getFilterable(actionContext);
-                return new CantBeAssignedAgainstModifier(actionContext.getSource(), side,
-                        filterable, new RequirementCondition(requirements, actionContext), againstFilterable);
-            }
+        return actionContext -> {
+            final Filterable filterable = filterableSource.getFilterable(actionContext);
+            final Filterable againstFilterable = againstSource.getFilterable(actionContext);
+            return new CantBeAssignedAgainstModifier(actionContext.getSource(), side,
+                    filterable, new RequirementCondition(requirements, actionContext), againstFilterable);
         };
     }
 

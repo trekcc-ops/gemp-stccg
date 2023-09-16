@@ -7,6 +7,8 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
 import com.gempukku.lotro.modifiers.evaluator.Evaluator;
 
+import java.util.Objects;
+
 public class CountSpottableEvaluator implements Evaluator {
     private final Evaluator _over;
     private final Filterable[] _filters;
@@ -23,10 +25,7 @@ public class CountSpottableEvaluator implements Evaluator {
     public CountSpottableEvaluator(int over, Integer limit, Filterable... filters) {
         _over = new ConstantEvaluator(over);
         _filters = filters;
-        if(limit == null)
-            _limit = new ConstantEvaluator(Integer.MAX_VALUE);
-        else
-            _limit = new ConstantEvaluator(limit);
+        _limit = new ConstantEvaluator(Objects.requireNonNullElse(limit, Integer.MAX_VALUE));
     }
 
     public CountSpottableEvaluator(Evaluator over, Evaluator limit, Filterable... filters) {

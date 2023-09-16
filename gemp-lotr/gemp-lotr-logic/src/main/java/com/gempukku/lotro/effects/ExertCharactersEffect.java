@@ -36,13 +36,8 @@ public class ExertCharactersEffect extends AbstractPreventableCardEffect {
 
     @Override
     protected Filter getExtraAffectableFilter() {
-        return new Filter() {
-            @Override
-            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                return game.getModifiersQuerying().canBeExerted(game, _source, physicalCard)
-                        && game.getModifiersQuerying().getVitality(game, physicalCard) > 1;
-            }
-        };
+        return (game, physicalCard) -> game.getModifiersQuerying().canBeExerted(game, _source, physicalCard)
+                && game.getModifiersQuerying().getVitality(game, physicalCard) > 1;
     }
 
     @Override
@@ -57,7 +52,7 @@ public class ExertCharactersEffect extends AbstractPreventableCardEffect {
     }
 
     @Override
-    protected void playoutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void playOutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
         if (cards.size() > 0)
             game.getGameState().sendMessage(getAppendedNames(cards) + " exert" + GameUtils.s(cards) + " due to " + GameUtils.getCardLink(_source));
 

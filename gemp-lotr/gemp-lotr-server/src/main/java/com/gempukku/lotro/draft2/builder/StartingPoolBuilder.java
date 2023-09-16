@@ -7,7 +7,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +35,7 @@ public class StartingPoolBuilder {
 
         return seed -> {
             Random rnd = new Random(seed);
-            float thisFixesARandomnessBug = rnd.nextFloat();
+            rnd.nextFloat();
             return cardCollections.get(rnd.nextInt(cardCollections.size()));
         };
     }

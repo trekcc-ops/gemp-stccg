@@ -24,13 +24,8 @@ public class CantBeAssignedToSkirmish implements ModifierSourceProducer {
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new CantBeAssignedToSkirmishModifier(actionContext.getSource(),
-                        new RequirementCondition(requirements, actionContext),
-                        filterableSource.getFilterable(actionContext));
-            }
-        };
+        return actionContext -> new CantBeAssignedToSkirmishModifier(actionContext.getSource(),
+                new RequirementCondition(requirements, actionContext),
+                filterableSource.getFilterable(actionContext));
     }
 }

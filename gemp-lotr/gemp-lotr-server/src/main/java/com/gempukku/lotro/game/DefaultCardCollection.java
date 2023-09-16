@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class DefaultCardCollection implements MutableCardCollection {
-    public static String CurrencyKey = "currency";
+    public static final String CurrencyKey = "currency";
     private final Map<String, Item> _counts = new LinkedHashMap<>();
-    private Map<String, Object> _extraInformation = new HashMap<>();
+    private final Map<String, Object> _extraInformation = new HashMap<>();
 
-    public  DefaultCardCollection() {
+    public DefaultCardCollection() {
         _extraInformation.put(CurrencyKey,  0);
     }
 

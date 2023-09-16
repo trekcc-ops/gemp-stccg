@@ -19,9 +19,7 @@ public class PlayerCantPlayCardsModifier extends AbstractModifier {
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        if (action.getType() == Action.Type.PLAY_CARD
-                && performingPlayer.equals(_playerId))
-            return false;
-        return true;
+        return action.getType() != Action.Type.PLAY_CARD
+                || !performingPlayer.equals(_playerId);
     }
 }

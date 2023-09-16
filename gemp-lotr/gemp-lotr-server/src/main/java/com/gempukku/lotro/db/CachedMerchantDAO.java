@@ -6,6 +6,7 @@ import org.apache.commons.collections.map.LRUMap;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 public class CachedMerchantDAO implements MerchantDAO, Cached {
     private final MerchantDAO _delegate;
@@ -37,10 +38,7 @@ public class CachedMerchantDAO implements MerchantDAO, Cached {
         Transaction transaction = _blueprintIdLastTransaction.get(blueprintId);
         if (transaction == null) {
             transaction = _delegate.getLastTransaction(blueprintId);
-            if (transaction == null)
-                _blueprintIdLastTransaction.put(blueprintId, _nullTransaction);
-            else
-                _blueprintIdLastTransaction.put(blueprintId, transaction);
+            _blueprintIdLastTransaction.put(blueprintId, Objects.requireNonNullElse(transaction, _nullTransaction));
         } else if (transaction == _nullTransaction) {
             transaction = null;
         }

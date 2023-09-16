@@ -34,7 +34,7 @@ public class GameUtils {
             throw new InvalidSoloAdventureException("Opponent requested");
         List<String> shadowPlayers = new LinkedList<>(game.getGameState().getPlayerOrder().getAllPlayers());
         shadowPlayers.remove(playerId);
-        return shadowPlayers.toArray(new String[shadowPlayers.size()]);
+        return shadowPlayers.toArray(new String[0]);
     }
 
     public static String[] getAllPlayers(DefaultGame game) {
@@ -81,14 +81,14 @@ public class GameUtils {
     }
 
     public static String getAppendedTextNames(Collection<? extends LotroPhysicalCard> cards) {
-        StringBuilder sb = new StringBuilder();
+        StringJoiner sj = new StringJoiner(", ");
         for (LotroPhysicalCard card : cards)
-            sb.append(GameUtils.getFullName(card) + ", ");
+            sj.add(GameUtils.getFullName(card));
 
-        if (sb.length() == 0)
+        if (sj.length() == 0)
             return "none";
         else
-            return sb.substring(0, sb.length() - 2);
+            return sj.toString();
     }
 
     public static String getAppendedNames(Collection<? extends LotroPhysicalCard> cards) {
@@ -121,10 +121,6 @@ public class GameUtils {
             int startIndex = result.indexOf("{");
             int endIndex = result.indexOf("}");
             String memory = result.substring(startIndex + 1, endIndex);
-//            String culture = getCultureImage(memory);
-//            if(culture != null) {
-//                result = result.replace("{" + memory + "}", culture);
-//            }
             if(context != null){
                 String cardNames = LotroGameUtils.getAppendedNames(context.getCardsFromMemory(memory));
                 if(cardNames.equalsIgnoreCase("none")) {

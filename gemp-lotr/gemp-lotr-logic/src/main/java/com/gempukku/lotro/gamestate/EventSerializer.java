@@ -152,7 +152,7 @@ public class EventSerializer {
             sb.append(cardId);
             first = false;
         }
-        System.out.println(sb.toString());
+        System.out.println(sb);
         System.out.println(arrayToCommaSeparated(array));
     }
 }

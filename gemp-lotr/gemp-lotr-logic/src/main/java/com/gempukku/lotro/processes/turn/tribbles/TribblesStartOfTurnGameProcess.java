@@ -10,7 +10,6 @@ import com.gempukku.lotro.effects.results.StartOfTurnResult;
 public class TribblesStartOfTurnGameProcess implements GameProcess {
     @Override
     public void process(DefaultGame game) {
-//        game.getGameState().sendMessage("DEBUG: Beginning TribblesStartOfTurnGameProcess");
         game.getGameState().startAffectingCardsForCurrentPlayer(game);
 
         SystemQueueAction action = new SystemQueueAction();

@@ -32,16 +32,6 @@ public class ChooseAndStackCardsFromDiscardEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return Filters.filter(game.getGameState().getDiscard(_playerId), game, _filter).size() >= _minimum;
     }

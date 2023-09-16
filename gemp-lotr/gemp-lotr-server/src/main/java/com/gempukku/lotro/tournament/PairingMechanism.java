@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.Set;
 
 public interface PairingMechanism {
-    public boolean shouldDropLoser();
+    boolean shouldDropLoser();
 
-    public boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers);
+    boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers);
 
-    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes,
+    boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes,
                                List<PlayerStanding> currentStandings, Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults, Set<String> byeResults);
 
-    public String getPlayOffSystem();
+    String getPlayOffSystem();
 
-    public String getRegistryRepresentation();
+    String getRegistryRepresentation();
 }

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class NewSealedLeagueData implements LeagueData {
     private final String _leagueTemplateName;
-    private final List<LeagueSerieData> _series;
+    private final List<LeagueSeriesData> _series;
     private final CollectionType _collectionType;
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final LeaguePrizes _leaguePrizes;
@@ -30,7 +30,7 @@ public class NewSealedLeagueData implements LeagueData {
         String[] params = parameters.split(",");
         _leagueTemplateName = params[0];
         int start = Integer.parseInt(params[1]);
-        int serieDuration = Integer.parseInt(params[2]);
+        int seriesDuration = Integer.parseInt(params[2]);
         int maxMatches = Integer.parseInt(params[3]);
 
         _collectionType = new CollectionType(params[4], params[5]);
@@ -40,8 +40,8 @@ public class NewSealedLeagueData implements LeagueData {
         _series = new LinkedList<>();
         for (int i = 0; i < def.GetSerieCount(); i++) {
             _series.add(
-                    new DefaultLeagueSerieData(_leaguePrizes, true, "Serie " + (i + 1),
-                            DateUtils.offsetDate(start, i * serieDuration), DateUtils.offsetDate(start, (i + 1) * serieDuration - 1), maxMatches,
+                    new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie " + (i + 1),
+                            DateUtils.offsetDate(start, i * seriesDuration), DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
                             def.GetFormat(), _collectionType));
         }
     }
@@ -57,15 +57,15 @@ public class NewSealedLeagueData implements LeagueData {
     }
 
     @Override
-    public List<LeagueSerieData> getSeries() {
+    public List<LeagueSeriesData> getSeries() {
         return Collections.unmodifiableList(_series);
     }
 
     @Override
-    public CardCollection joinLeague(CollectionsManager collectionManager, User player, int currentTime) {
+    public void joinLeague(CollectionsManager collectionManager, User player, int currentTime) {
         MutableCardCollection startingCollection = new DefaultCardCollection();
         for (int i = 0; i < _series.size(); i++) {
-            LeagueSerieData serie = _series.get(i);
+            LeagueSeriesData serie = _series.get(i);
             if (currentTime >= serie.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
                 var leagueProduct = sealedLeague.GetProductForSerie(i);
@@ -75,7 +75,6 @@ public class NewSealedLeagueData implements LeagueData {
             }
         }
         collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
-        return startingCollection;
     }
 
     @Override
@@ -83,7 +82,7 @@ public class NewSealedLeagueData implements LeagueData {
         int status = oldStatus;
 
         for (int i = status; i < _series.size(); i++) {
-            LeagueSerieData serie = _series.get(i);
+            LeagueSeriesData serie = _series.get(i);
             if (currentTime >= serie.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
                 var leagueProduct = sealedLeague.GetProductForSerie(i);
@@ -96,11 +95,11 @@ public class NewSealedLeagueData implements LeagueData {
         }
 
         int maxGamesTotal = 0;
-        for (LeagueSerieData sery : _series)
+        for (LeagueSeriesData sery : _series)
             maxGamesTotal+=sery.getMaxMatches();
 
         if (status == _series.size()) {
-            LeagueSerieData lastSerie = _series.get(_series.size() - 1);
+            LeagueSeriesData lastSerie = _series.get(_series.size() - 1);
             if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesTotal, _collectionType);

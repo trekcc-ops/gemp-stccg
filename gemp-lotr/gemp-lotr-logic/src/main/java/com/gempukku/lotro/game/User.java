@@ -127,9 +127,7 @@ public class User {
 
         User player = (User) o;
 
-        if (!Objects.equals(_name, player._name)) return false;
-
-        return true;
+        return Objects.equals(_name, player._name);
     }
 
     @Override
@@ -141,9 +139,9 @@ public class User {
         return new PlayerInfo(_name, _type);
     }
 
-    public class PlayerInfo {
-        public String name;
-        public String type;
+    public static class PlayerInfo {
+        public final String name;
+        public final String type;
 
         public PlayerInfo(String name, String info) {
             this.name = name;

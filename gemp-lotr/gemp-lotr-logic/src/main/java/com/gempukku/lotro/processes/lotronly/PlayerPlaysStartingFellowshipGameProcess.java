@@ -41,13 +41,10 @@ public class PlayerPlaysStartingFellowshipGameProcess implements GameProcess {
     private Collection<LotroPhysicalCard> getPossibleCharacters(final DefaultGame game, final String playerId) {
         return Filters.filter(game.getGameState().getDeck(playerId), game,
                 CardType.COMPANION,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        int twilightCost = game.getModifiersQuerying().getTwilightCost(game, physicalCard, null, 0, false);
-                        return game.getGameState().getTwilightPool() + twilightCost <= 4
-                                && LotroPlayUtils.checkPlayRequirements(game, physicalCard, Filters.any, 0, 0, false, false, true);
-                    }
+                (Filter) (game1, physicalCard) -> {
+                    int twilightCost = game1.getModifiersQuerying().getTwilightCost(game1, physicalCard, null, 0, false);
+                    return game1.getGameState().getTwilightPool() + twilightCost <= 4
+                            && LotroPlayUtils.checkPlayRequirements(game1, physicalCard, Filters.any, 0, 0, false, false, true);
                 });
     }
 

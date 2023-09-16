@@ -39,14 +39,13 @@ public class PutCardsFromHandOnBottomOfPlayPileEffect extends AbstractEffect {
             gameState.removeCardsFromZone(physicalCards[0].getOwner(), Arrays.asList(physicalCards));
             for (LotroPhysicalCard physicalCard : physicalCards) {
                 if(_reveal) {
-                    gameState.sendMessage(physicalCard.getOwner() + " puts " + GameUtils.getCardLink(physicalCard) + " from from hand on bottom of their deck");
+                    gameState.sendMessage(physicalCard.getOwner() + " puts " + GameUtils.getCardLink(physicalCard) + " from hand on bottom of their play pile");
                 }
                 else {
-                    gameState.sendMessage(physicalCard.getOwner() + " puts a card from hand on bottom of their deck");
+                    gameState.sendMessage(physicalCard.getOwner() + " puts a card from hand on bottom of their play pile");
                 }
-                gameState.putCardOnBottomOfDeck(physicalCard);
+                gameState.addCardToZone(null, physicalCard, Zone.PLAY_PILE, false);
             }
-
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);

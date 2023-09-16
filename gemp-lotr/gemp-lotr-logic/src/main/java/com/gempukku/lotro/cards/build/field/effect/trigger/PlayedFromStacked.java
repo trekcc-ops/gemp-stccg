@@ -22,7 +22,7 @@ public class PlayedFromStacked implements TriggerCheckerProducer {
         final String memorize = FieldUtils.getString(value.get("memorize"), "memorize");
         final FilterableSource filter = environment.getFilterFactory().generateFilter(filterString, environment);
         final FilterableSource fromFilter = environment.getFilterFactory().generateFilter(fromString, environment);
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
                 final Filterable filterable = filter.getFilterable(actionContext);

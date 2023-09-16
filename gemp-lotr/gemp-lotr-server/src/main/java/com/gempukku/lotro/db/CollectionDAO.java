@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface CollectionDAO {
-    public Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws SQLException, IOException;
+    Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws SQLException, IOException;
 
-    public CardCollection getPlayerCollection(int playerId, String type) throws SQLException, IOException;
+    CardCollection getPlayerCollection(int playerId, String type) throws SQLException, IOException;
 
-    public void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) throws SQLException, IOException;
+    void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) throws SQLException, IOException;
 
     void convertCollection(int playerId, String type) throws SQLException, IOException;
 

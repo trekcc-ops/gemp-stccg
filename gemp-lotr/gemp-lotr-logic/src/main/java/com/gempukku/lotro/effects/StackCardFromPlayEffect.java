@@ -26,11 +26,6 @@ public class StackCardFromPlayEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return _card.getZone().isInPlay() && _stackOn.getZone().isInPlay();
     }

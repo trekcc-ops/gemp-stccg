@@ -21,7 +21,7 @@ import java.util.concurrent.Semaphore;
 
 public class SoloDraftDefinitions {
     private static final Logger _logger = Logger.getLogger(SoloDraftDefinitions.class);
-    private Map<String, SoloDraft> _draftTypes = new HashMap<>();
+    private final Map<String, SoloDraft> _draftTypes = new HashMap<>();
     private final DraftChoiceBuilder _draftChoiceBuilder;
     private final File _draftDefinitionPath;
     private final Semaphore collectionReady = new Semaphore(1);
@@ -53,7 +53,7 @@ public class SoloDraftDefinitions {
             loadDraft(path);
         }
         else if (path.isDirectory()) {
-            for (File file : path.listFiles()) {
+            for (File file : Objects.requireNonNull(path.listFiles())) {
                 loadDrafts(file);
             }
         }

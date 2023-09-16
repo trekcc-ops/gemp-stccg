@@ -38,7 +38,7 @@ public class StackTopCardsOfDrawDeck implements EffectAppenderProducer {
                         if (card != null) {
                             final String deckId = playerSource.getPlayer(actionContext);
 
-                            return new StackTopCardsFromDeckEffect(actionContext.getSource(), deckId, count, card);
+                            return new StackTopCardsFromDeckEffect(deckId, count, card);
                         } else
                             return new DoNothingEffect();
                     }

@@ -2,9 +2,10 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.common.*;
+import com.gempukku.lotro.common.CardType;
+import com.gempukku.lotro.common.SitesBlock;
 import com.gempukku.lotro.rules.GameUtils;
-import com.google.common.base.Strings;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -29,8 +30,8 @@ public class ImportCards {
                 if (isFromSupportedSet(id)) {
                     LotroCardBlueprint blueprint = cardBlueprint.getValue();
                     if (isNotSiteOrSiteFromBlock(blueprint, sitesBlock)) {
-                        if (exactNameMatch(blueprint, cardCount.getName())) {
-                            result.add(CardCollection.Item.createItem(id, cardCount.getCount()));
+                        if (exactNameMatch(blueprint, cardCount.name())) {
+                            result.add(CardCollection.Item.createItem(id, cardCount.count()));
                             break;
                         }
                     }
@@ -47,7 +48,7 @@ public class ImportCards {
 
     private SitesBlock determineBlock(List<CardCount> decklist) {
         for (CardCount card : decklist) {
-            String name = card.getName();
+            String name = card.name();
             if (fellowshipSiteCheck.contains(name))
                 return SitesBlock.FELLOWSHIP;
             if (towersSiteCheck.contains(name))
@@ -73,7 +74,7 @@ public class ImportCards {
         }
     }
 
-    private Pattern cardLinePattern = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$");
+    private final Pattern cardLinePattern = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$");
 
     private List<CardCount> getDecklist(String rawDecklist) {
         int quantity;
@@ -89,10 +90,10 @@ public class ImportCards {
                 var matches = cardLinePattern.matcher(line);
 
                 if(matches.matches()) {
-                    if(!Strings.isNullOrEmpty(matches.group(1))) {
+                    if(!StringUtils.isEmpty(matches.group(1))) {
                         quantity = Integer.parseInt(matches.group(1).replaceAll("\\D+", ""));
                     }
-                    else if(!Strings.isNullOrEmpty(matches.group(3))) {
+                    else if(!StringUtils.isEmpty(matches.group(3))) {
                         quantity = Integer.parseInt(matches.group(3).replaceAll("\\D+", ""));
                     }
                     else {
@@ -109,21 +110,6 @@ public class ImportCards {
         return result;
     }
 
-    private static class CardCount {
-        private final String name;
-        private final int count;
-
-        public CardCount(String name, int count) {
-            this.name = name;
-            this.count = count;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getCount() {
-            return count;
-        }
+    private record CardCount(String name, int count) {
     }
 }

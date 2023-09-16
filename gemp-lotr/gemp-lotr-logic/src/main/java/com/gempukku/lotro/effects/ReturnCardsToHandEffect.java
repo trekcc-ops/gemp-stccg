@@ -31,19 +31,9 @@ public class ReturnCardsToHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return Filters.filterActive(game, _filter,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return (_source == null || game.getModifiersQuerying().canBeReturnedToHand(game, physicalCard, _source));
-                    }
-                }).size() > 0;
+                (Filter) (game1, physicalCard) -> (_source == null || game1.getModifiersQuerying().canBeReturnedToHand(game1, physicalCard, _source))).size() > 0;
     }
 
     @Override

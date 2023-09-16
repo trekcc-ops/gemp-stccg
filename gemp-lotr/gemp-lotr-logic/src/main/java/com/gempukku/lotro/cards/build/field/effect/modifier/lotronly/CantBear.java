@@ -19,13 +19,8 @@ public class CantBear implements ModifierSourceProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final FilterableSource cardFilterSource = environment.getFilterFactory().generateFilter(cardFilter, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new MayNotBearModifier(actionContext.getSource(),
-                        filterableSource.getFilterable(actionContext),
-                        cardFilterSource.getFilterable(actionContext));
-            }
-        };
+        return actionContext -> new MayNotBearModifier(actionContext.getSource(),
+                filterableSource.getFilterable(actionContext),
+                cardFilterSource.getFilterable(actionContext));
     }
 }

@@ -17,7 +17,7 @@ public class ConditionTrigger implements TriggerCheckerProducer {
 
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean isBefore() {
                 return false;

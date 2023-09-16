@@ -1,7 +1,5 @@
 package com.gempukku.lotro.draft2.builder;
 
-import com.gempukku.lotro.draft2.builder.DraftPoolElement;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +22,7 @@ public class DefaultDraftPoolElement implements DraftPoolElement {
 
     @Override
     public List<ArrayList<String>> getDraftPackList() {
-        List draftPacksCopy = new ArrayList();
-        draftPacksCopy.addAll(_draftPackList);
-        return draftPacksCopy;
+        return (List) new ArrayList(_draftPackList);
     }
 
     @Override

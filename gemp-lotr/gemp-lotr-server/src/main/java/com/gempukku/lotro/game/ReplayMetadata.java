@@ -12,36 +12,34 @@ import java.util.regex.Pattern;
 
 public class ReplayMetadata {
 
-    public class DeckMetadata {
+    public static class DeckMetadata {
         public String Owner;
         public String TargetFormat;
         public String DeckName;
-        public List<String> AdventureDeck;
         public List<String> DrawDeck;
-        public String RingBearer;
         public String Ring;
-        public List<String> StartingFellowship = new ArrayList<>();
+        public final List<String> StartingFellowship = new ArrayList<>();
     }
 
     //Version 1: First tracked version; original version was completely different
     //Version 2: Adding the highest achieved sites by player, game IDs, and game timer length information
     public Integer MetadataVersion = 2;
 
-    public DBDefs.GameHistory GameReplayInfo;
+    public final DBDefs.GameHistory GameReplayInfo;
 
-    public Map<String, DeckMetadata> Decks = new HashMap<>();
-    public Map<String, Integer> PlayerIDs = new HashMap<>();
-    public Map<String, Integer> Bids = new HashMap<>();
+    public final Map<String, DeckMetadata> Decks = new HashMap<>();
+    public final Map<String, Integer> PlayerIDs = new HashMap<>();
+    public final Map<String, Integer> Bids = new HashMap<>();
     public String WentFirst;
     public boolean GameStarted = false;
     public boolean Conceded = false;
     public boolean Canceled = false;
 
-    public Map<String, String> AllCards = new HashMap<>();
+    public final Map<String, String> AllCards = new HashMap<>();
 
-    public Set<Integer> SeenCards = new HashSet<>();
+    public final Set<Integer> SeenCards = new HashSet<>();
 
-    public HashSet<Integer> PlayedCards = new HashSet<>();
+    public final HashSet<Integer> PlayedCards = new HashSet<>();
 
     public ReplayMetadata(DBDefs.GameHistory game, Map<String, CardDeck> decks) {
         GameReplayInfo = game;
@@ -53,10 +51,7 @@ public class ReplayMetadata {
                 Owner = player;
                 TargetFormat = deck.getTargetFormat();
                 DeckName = deck.getDeckName();
-//                AdventureDeck = deck.getSites();
                 DrawDeck = deck.getDrawDeckCards();
-//                RingBearer = deck.getRingBearer();
-//                Ring = deck.getRing();
             }};
 
             Decks.put(player, metadata);
@@ -72,7 +67,7 @@ public class ReplayMetadata {
     }
 
     public String GetOpponent(String player) {
-        return PlayerIDs.keySet().stream().filter(x -> !x.equals(player)).findFirst().get();
+        return PlayerIDs.keySet().stream().filter(x -> !x.equals(player)).findFirst().orElse(null);
     }
 
     private final Pattern gameStartPattern = Pattern.compile("Players in the game are: ([\\w-]+), ([\\w-]+)");
@@ -112,7 +107,6 @@ public class ReplayMetadata {
                     String bidder = regex.group(1);
                     String bid = regex.group(2);
                     Bids.put(bidder, Integer.valueOf(bid));
-                    continue;
                 }
             }
             else if(!GameStarted && event.getType() == GameEvent.Type.GAME_PHASE_CHANGE) {

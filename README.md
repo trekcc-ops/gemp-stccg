@@ -77,48 +77,48 @@ GEMP includes tools for hosting within [Docker](https://docker-curriculum.com/),
 2. Install your container manager of choice.  [portainer.io](https://www.portainer.io/) is highly recommended.
 
 3. Pull the git repository down to your host machine
-	* Open a command line window and navigate to the folder that you want to put GEMP in
-	* Run the following command: `git clone https://github.com/PlayersCouncil/gemp-lotr.git`
+    * Open a command line window and navigate to the folder that you want to put GEMP in
+    * Run the following command: `git clone https://github.com/PlayersCouncil/gemp-lotr.git`
 
 4. Open a command line and navigate to gemp-lotr/gemp-lotr/docker.  
-	* Run the command `docker-compose up -d`
-	* You should see `Starting gemp_app....done` and `Starting gemp_db....done` at the end.  
-	* This process will take a while the first time you do it, and will be near instantaneous every time after.
+    * Run the command `docker-compose up -d`
+    * You should see `Starting gemp_app....done` and `Starting gemp_db....done` at the end.  
+    * This process will take a while the first time you do it, and will be near instantaneous every time after.
 
 5. The database should have automatically created the gemp databases that are needed.  
-	* You can verify this by connecting to the database on your host machine with your DB manager of choice ([DBeaver](https://dbeaver.io/) is highly recommended).  
-	* It is exposed on localhost:35001 (unless you changed this) and uses the user/pass of `gempuser`/`gemppassword` (unless you changed this).  
-	* If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.  
+    * You can verify this by connecting to the database on your host machine with your DB manager of choice ([DBeaver](https://dbeaver.io/) is highly recommended).  
+    * It is exposed on localhost:35001 (unless you changed this) and uses the user/pass of `gempuser`/`gemppassword` (unless you changed this).  
+    * If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.  
 
 6. Now we need to compile the gemp code.  
-	1. Open a terminal inside the `gemp_app` container
-		* If using portainer.io, 
-			* log in
-			* select your 'Local' endpoint
-			* click the Containers tab on the left
-			* click the `>_` icon next to gemp_app and click the Connect button
-		* If using Docker Desktop
-			* Open Docker Desktop
-			* Select the "Container" option in the left navbar
-			* expand the `gemp_1` container
-			* click the actiosn button and select `Open in Terminal`
+    1. Open a terminal inside the `gemp_app` container
+        * If using portainer.io, 
+            * log in
+            * select your 'Local' endpoint
+            * click the Containers tab on the left
+            * click the `>_` icon next to gemp_app and click the Connect button
+        * If using Docker Desktop
+            * Open Docker Desktop
+            * Select the "Container" option in the left navbar
+            * expand the `gemp_1` container
+            * click the actiosn button and select `Open in Terminal`
 
-	2. Navigate to the gemp codebase: `cd etc/gemp-lotr`
+    2. Navigate to the gemp codebase: `cd etc/gemp-lotr`
 
-	3. Now tell Maven to compile the project: `mvn install`
-		* This process will take upwards of 5-10 minutes.  You should see a green "BUILD SUCCESS" when it is successfully done.  In portainer.io or another rich command line context, you should see lots of red text if it failed.
+    3. Now tell Maven to compile the project: `mvn install`
+        * This process will take upwards of 5-10 minutes.  You should see a green "BUILD SUCCESS" when it is successfully done.  In portainer.io or another rich command line context, you should see lots of red text if it failed.
 
 7. Open [gemp-lotr/gemp-lotr/docker/docker-compose.yml](gemp-lotr/docker/docker-compose.yml) in your editor of choice, and uncomment [this line](https://github.com/PlayersCouncil/gemp-lotr/blob/master/gemp-lotr/docker/docker-compose.yml#L52).  This will ensure that the container runs the GEMP server every time it is started automatically.
 
 8. On your host machine cycle your docker container
-	* In a terminal navigate to `gemp-lotr/docker`
-	* Run `docker-compose down`
-	* After that completes run `docker-compose up -d`	
-	* This is how you restart GEMP any time that you need to incorporate changes to the Docker container.  If you just need to reload freshly-compiled code, then restart the container directly via Docker or portainer.io.
+    * In a terminal navigate to `gemp-lotr/docker`
+    * Run `docker-compose down`
+    * After that completes run `docker-compose up -d`	
+    * This is how you restart GEMP any time that you need to incorporate changes to the Docker container.  If you just need to reload freshly-compiled code, then restart the container directly via Docker or portainer.io.
 	
 9. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  Open your browser of choice and navigate to http://localhost:17001/gemp-lotr/ . 
 
-13. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
+10. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
   
   
 By default, the above instructions will create 3 admin accounts: `asdf`, `qwer`, and `Librarian`, all with a password of `asdf`.  Decks on the Librarian user will be automatically included in the Deck Library for all users, and the other accounts can be used for personal testing.  Be sure to delete and/or change the credentials of these accounts if deploying to a production environment.

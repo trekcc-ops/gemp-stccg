@@ -5,7 +5,7 @@ import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.processes.lotronly.assign.Assignment;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
@@ -27,9 +27,9 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl hobbitPartyGuest = new LotroPhysicalCardImpl(101, "1_297", P1, _cardLibrary.getLotroCardBlueprint("1_297"));
-        LotroPhysicalCardImpl orcAssassin = new LotroPhysicalCardImpl(102, "1_262", P2, _cardLibrary.getLotroCardBlueprint("1_262"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl hobbitPartyGuest = new PhysicalCardImpl(101, "1_297", P1, _cardLibrary.getLotroCardBlueprint("1_297"));
+        PhysicalCardImpl orcAssassin = new PhysicalCardImpl(102, "1_262", P2, _cardLibrary.getLotroCardBlueprint("1_262"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, hobbitPartyGuest, Zone.SUPPORT);
@@ -46,7 +46,7 @@ public class AssignmentAtTest extends AbstractAtTest {
         playerDecided(P1, "");
         playerDecided(P2, "");
 
-        // End arhcery phase
+        // End archery phase
         playerDecided(P1, "");
         playerDecided(P2, "");
 
@@ -59,7 +59,7 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignCharacter = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, assignCharacter.getDecisionType());
-        validateContents(new String[]{String.valueOf(merry.getCardId()), String.valueOf(_game.getGameState().getRingBearer(P1).getCardId())}, (String[]) assignCharacter.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(merry.getCardId()), String.valueOf(_game.getGameState().getRingBearer(P1).getCardId())}, assignCharacter.getDecisionParameters().get("cardId"));
     }
 
     @Test
@@ -68,10 +68,10 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl pippin = new LotroPhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
-        LotroPhysicalCardImpl saruman = new LotroPhysicalCardImpl(102, "3_69", P2, _cardLibrary.getLotroCardBlueprint("3_69"));
-        LotroPhysicalCardImpl urukHaiRaidingParty = new LotroPhysicalCardImpl(103, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl pippin = new PhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
+        PhysicalCardImpl saruman = new PhysicalCardImpl(102, "3_69", P2, _cardLibrary.getLotroCardBlueprint("3_69"));
+        PhysicalCardImpl urukHaiRaidingParty = new PhysicalCardImpl(103, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, pippin, Zone.FREE_CHARACTERS);
@@ -98,12 +98,12 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentActions = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, assignmentActions.getDecisionType());
-        validateContents(toCardIdArray(saruman), (String[]) assignmentActions.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(saruman), assignmentActions.getDecisionParameters().get("cardId"));
         playerDecided(P2, "0");
 
         AwaitingDecision chooseCompanion = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, chooseCompanion.getDecisionType());
-        validateContents(new String[]{String.valueOf(merry.getCardId()), String.valueOf(pippin.getCardId())}, (String[]) chooseCompanion.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(merry.getCardId()), String.valueOf(pippin.getCardId())}, chooseCompanion.getDecisionParameters().get("cardId"));
         playerDecided(P2, String.valueOf(merry.getCardId()));
 
         AwaitingDecision preventDecision = _userFeedback.getAwaitingDecision(P1);
@@ -120,7 +120,7 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentActions2 = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, assignmentActions2.getDecisionType());
-        validateContents(toCardIdArray(saruman), (String[]) assignmentActions.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(saruman), assignmentActions.getDecisionParameters().get("cardId"));
         playerDecided(P2, "0");
 
         // This effect fails, as there is no assignable minion anymore
@@ -133,10 +133,10 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl pippin = new LotroPhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
-        LotroPhysicalCardImpl urukHaiRaidingParty1 = new LotroPhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
-        LotroPhysicalCardImpl urukHaiRaidingParty2 = new LotroPhysicalCardImpl(103, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl pippin = new PhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
+        PhysicalCardImpl urukHaiRaidingParty1 = new PhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl urukHaiRaidingParty2 = new PhysicalCardImpl(103, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, pippin, Zone.FREE_CHARACTERS);
@@ -167,8 +167,8 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, assignmentDecision.getDecisionType());
-        validateContents(toCardIdArray(urukHaiRaidingParty1, urukHaiRaidingParty2), (String[]) assignmentDecision.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), (String[]) assignmentDecision.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(urukHaiRaidingParty1, urukHaiRaidingParty2), assignmentDecision.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), assignmentDecision.getDecisionParameters().get("freeCharacters"));
         playerDecided(P1, merry.getCardId() + " " + urukHaiRaidingParty1.getCardId());
 
         final List<Assignment> assignmentsAfterFreePlayer = _game.getGameState().getAssignments();
@@ -179,8 +179,8 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision shadowAssignmentDecision = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, shadowAssignmentDecision.getDecisionType());
-        validateContents(toCardIdArray(urukHaiRaidingParty2), (String[]) shadowAssignmentDecision.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), (String[]) shadowAssignmentDecision.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(urukHaiRaidingParty2), shadowAssignmentDecision.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), shadowAssignmentDecision.getDecisionParameters().get("freeCharacters"));
         playerDecided(P2, pippin.getCardId() + " " + urukHaiRaidingParty2.getCardId());
 
         final List<Assignment> assignmentsAfterShadowPlayer = _game.getGameState().getAssignments();
@@ -202,10 +202,10 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl pippin = new LotroPhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
-        LotroPhysicalCardImpl urukHaiRaidingParty1 = new LotroPhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
-        LotroPhysicalCardImpl urukHaiRaidingParty2 = new LotroPhysicalCardImpl(103, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl pippin = new PhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
+        PhysicalCardImpl urukHaiRaidingParty1 = new PhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl urukHaiRaidingParty2 = new PhysicalCardImpl(103, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, pippin, Zone.FREE_CHARACTERS);
@@ -240,8 +240,8 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, assignmentDecision.getDecisionType());
-        validateContents(toCardIdArray(urukHaiRaidingParty1, urukHaiRaidingParty2), (String[]) assignmentDecision.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), (String[]) assignmentDecision.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(urukHaiRaidingParty1, urukHaiRaidingParty2), assignmentDecision.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), assignmentDecision.getDecisionParameters().get("freeCharacters"));
         try {
             playerDecided(P1, pippin.getCardId() + " " + urukHaiRaidingParty1.getCardId() + " " + urukHaiRaidingParty2.getCardId());
             fail("Pippin can't have multiple minions assigned by FP player");
@@ -268,10 +268,10 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl pippin = new LotroPhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
-        LotroPhysicalCardImpl urukHaiRaidingParty = new LotroPhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
-        LotroPhysicalCardImpl gateTroll = new LotroPhysicalCardImpl(103, "6_128", P2, _cardLibrary.getLotroCardBlueprint("6_128"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl pippin = new PhysicalCardImpl(101, "1_306", P1, _cardLibrary.getLotroCardBlueprint("1_306"));
+        PhysicalCardImpl urukHaiRaidingParty = new PhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl gateTroll = new PhysicalCardImpl(103, "6_128", P2, _cardLibrary.getLotroCardBlueprint("6_128"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, pippin, Zone.FREE_CHARACTERS);
@@ -302,8 +302,8 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, assignmentDecision.getDecisionType());
-        validateContents(toCardIdArray(urukHaiRaidingParty, gateTroll), (String[]) assignmentDecision.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), (String[]) assignmentDecision.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(urukHaiRaidingParty, gateTroll), assignmentDecision.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), assignmentDecision.getDecisionParameters().get("freeCharacters"));
 
         // No assignment from FP player
         playerDecided(P1, "");
@@ -320,8 +320,8 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision fierceAssignmentDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, fierceAssignmentDecision.getDecisionType());
-        validateContents(toCardIdArray(gateTroll), (String[]) fierceAssignmentDecision.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), (String[]) fierceAssignmentDecision.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(gateTroll), fierceAssignmentDecision.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(merry, pippin, _game.getGameState().getRingBearer(P1)), fierceAssignmentDecision.getDecisionParameters().get("freeCharacters"));
     }
 
     @Test
@@ -344,8 +344,8 @@ public class AssignmentAtTest extends AbstractAtTest {
         // End fellowship phase
         playerDecided(P1, "");
 
-        LotroPhysicalCardImpl theBalrog = new LotroPhysicalCardImpl(102, "6_76", P2, _cardLibrary.getLotroCardBlueprint("6_76"));
-        LotroPhysicalCardImpl otherMinion = new LotroPhysicalCardImpl(103, "2_61", P2, _cardLibrary.getLotroCardBlueprint("2_61"));
+        PhysicalCardImpl theBalrog = new PhysicalCardImpl(102, "6_76", P2, _cardLibrary.getLotroCardBlueprint("6_76"));
+        PhysicalCardImpl otherMinion = new PhysicalCardImpl(103, "2_61", P2, _cardLibrary.getLotroCardBlueprint("2_61"));
 
         _game.getGameState().addCardToZone(_game, theBalrog, Zone.SHADOW_CHARACTERS);
         _game.getGameState().addCardToZone(_game, otherMinion, Zone.SHADOW_CHARACTERS);
@@ -373,8 +373,8 @@ public class AssignmentAtTest extends AbstractAtTest {
         AwaitingDecision fpAssignment = _userFeedback.getAwaitingDecision(P1);
 
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, fpAssignment.getDecisionType());
-        validateContents(toCardIdArray(theBalrog, otherMinion), (String[]) fpAssignment.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(galadriel), (String[]) fpAssignment.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(theBalrog, otherMinion), fpAssignment.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(galadriel), fpAssignment.getDecisionParameters().get("freeCharacters"));
 
         try {
             playerDecided(P1, galadriel.getCardId() + " " + theBalrog.getCardId());
@@ -387,8 +387,8 @@ public class AssignmentAtTest extends AbstractAtTest {
         AwaitingDecision shadowAssignment = _userFeedback.getAwaitingDecision(P2);
 
         assertEquals(AwaitingDecisionType.ASSIGN_MINIONS, shadowAssignment.getDecisionType());
-        validateContents(toCardIdArray(theBalrog), (String[]) shadowAssignment.getDecisionParameters().get("minions"));
-        validateContents(toCardIdArray(galadriel), (String[]) shadowAssignment.getDecisionParameters().get("freeCharacters"));
+        validateContents(toCardIdArray(theBalrog), shadowAssignment.getDecisionParameters().get("minions"));
+        validateContents(toCardIdArray(galadriel), shadowAssignment.getDecisionParameters().get("freeCharacters"));
 
         try {
             playerDecided(P2, galadriel.getCardId() + " " + theBalrog.getCardId());
@@ -404,8 +404,8 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl elrond = new LotroPhysicalCardImpl(101, "1_40", P1, _cardLibrary.getLotroCardBlueprint("1_40"));
-        LotroPhysicalCardImpl dunlendingWarrior = new LotroPhysicalCardImpl(102, "4_18", P2, _cardLibrary.getLotroCardBlueprint("4_18"));
+        PhysicalCardImpl elrond = new PhysicalCardImpl(101, "1_40", P1, _cardLibrary.getLotroCardBlueprint("1_40"));
+        PhysicalCardImpl dunlendingWarrior = new PhysicalCardImpl(102, "4_18", P2, _cardLibrary.getLotroCardBlueprint("4_18"));
 
         _game.getGameState().addCardToZone(_game, elrond, Zone.SUPPORT);
 
@@ -430,7 +430,7 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentActions = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, assignmentActions.getDecisionType());
-        validateContents(toCardIdArray(dunlendingWarrior), (String[]) assignmentActions.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(dunlendingWarrior), assignmentActions.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "0");
 
@@ -447,10 +447,10 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl carasGaladhon = new LotroPhysicalCardImpl(100, "3_115", P1, _cardLibrary.getLotroCardBlueprint("3_115"));
-        LotroPhysicalCardImpl orcAssassin1 = new LotroPhysicalCardImpl(101, "1_262", P2, _cardLibrary.getLotroCardBlueprint("1_262"));
-        LotroPhysicalCardImpl orcAssassin2 = new LotroPhysicalCardImpl(102, "1_262", P2, _cardLibrary.getLotroCardBlueprint("1_262"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl carasGaladhon = new PhysicalCardImpl(100, "3_115", P1, _cardLibrary.getLotroCardBlueprint("3_115"));
+        PhysicalCardImpl orcAssassin1 = new PhysicalCardImpl(101, "1_262", P2, _cardLibrary.getLotroCardBlueprint("1_262"));
+        PhysicalCardImpl orcAssassin2 = new PhysicalCardImpl(102, "1_262", P2, _cardLibrary.getLotroCardBlueprint("1_262"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
 
@@ -479,13 +479,13 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentActions = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, assignmentActions.getDecisionType());
-        validateContents(toCardIdArray(orcAssassin1, orcAssassin2), (String[]) assignmentActions.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(orcAssassin1, orcAssassin2), assignmentActions.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "0");
 
         AwaitingDecision fpFirstAssassinDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_SELECTION, fpFirstAssassinDecision.getDecisionType());
-        validateContents(toCardIdArray(merry, _game.getGameState().getRingBearer(P1)), (String[]) fpFirstAssassinDecision.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(merry, _game.getGameState().getRingBearer(P1)), fpFirstAssassinDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P1, String.valueOf(merry.getCardId()));
 
@@ -499,7 +499,7 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         assignmentActions = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, assignmentActions.getDecisionType());
-        validateContents(toCardIdArray(orcAssassin2), (String[]) assignmentActions.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(orcAssassin2), assignmentActions.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "0");
 
@@ -516,9 +516,9 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        LotroPhysicalCardImpl slowKindledCourage = new LotroPhysicalCardImpl(101, "7_328", P1, _cardLibrary.getLotroCardBlueprint("7_328"));
-        LotroPhysicalCardImpl urukHaiRaidingParty = new LotroPhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(100, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        PhysicalCardImpl slowKindledCourage = new PhysicalCardImpl(101, "7_328", P1, _cardLibrary.getLotroCardBlueprint("7_328"));
+        PhysicalCardImpl urukHaiRaidingParty = new PhysicalCardImpl(102, "1_158", P2, _cardLibrary.getLotroCardBlueprint("1_158"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, slowKindledCourage,  merry);
@@ -544,7 +544,7 @@ public class AssignmentAtTest extends AbstractAtTest {
 
         AwaitingDecision assignmentActions = _userFeedback.getAwaitingDecision(P2);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, assignmentActions.getDecisionType());
-        validateContents(toCardIdArray(urukHaiRaidingParty), (String[]) assignmentActions.getDecisionParameters().get("cardId"));
+        validateContents(toCardIdArray(urukHaiRaidingParty), assignmentActions.getDecisionParameters().get("cardId"));
 
         playerDecided(P2, "0");
 

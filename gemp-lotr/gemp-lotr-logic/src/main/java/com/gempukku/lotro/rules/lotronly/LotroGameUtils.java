@@ -51,7 +51,7 @@ public class LotroGameUtils extends GameUtils {
         final String fpPlayer = game.getGameState().getCurrentPlayerId();
         List<String> shadowPlayers = new LinkedList<>(game.getGameState().getPlayerOrder().getAllPlayers());
         shadowPlayers.remove(fpPlayer);
-        return shadowPlayers.toArray(new String[shadowPlayers.size()]);
+        return shadowPlayers.toArray(new String[0]);
     }
 
     public static String getFreePeoplePlayer(DefaultGame game) {

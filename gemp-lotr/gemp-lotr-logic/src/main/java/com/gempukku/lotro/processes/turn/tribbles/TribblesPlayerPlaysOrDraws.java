@@ -19,7 +19,6 @@ public class TribblesPlayerPlaysOrDraws implements GameProcess {
 
     @Override
     public void process(final DefaultGame game) {
-//        game.getGameState().sendMessage("DEBUG: Beginning TribblesPlayerPlaysOrDraws");
         final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_playerId);
 
         if (playableActions.size() == 0 && game.shouldAutoPass(_playerId, game.getGameState().getCurrentPhase())) {

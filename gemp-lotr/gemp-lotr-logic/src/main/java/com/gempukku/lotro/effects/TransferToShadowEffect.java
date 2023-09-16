@@ -19,16 +19,6 @@ public class TransferToShadowEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
             game.getGameState().removeCardsFromZone(_card.getOwner(), Collections.singleton(_card));

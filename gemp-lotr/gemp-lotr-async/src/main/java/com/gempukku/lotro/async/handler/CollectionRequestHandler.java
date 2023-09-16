@@ -12,7 +12,7 @@ import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.game.formats.LotroFormatLibrary;
-import com.gempukku.lotro.league.LeagueSerieData;
+import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.packs.ProductLibrary;
 import io.netty.handler.codec.http.HttpMethod;
@@ -225,7 +225,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
         Element collectionsElem = doc.createElement("collections");
 
         for (League league : _leagueService.getActiveLeagues()) {
-            LeagueSerieData serie = _leagueService.getCurrentLeagueSerie(league);
+            LeagueSeriesData serie = _leagueService.getCurrentLeagueSerie(league);
             if (serie != null && serie.isLimited() && _leagueService.isPlayerInLeague(league, resourceOwner)) {
                 CollectionType collectionType = serie.getCollectionType();
                 Element collectionElem = doc.createElement("collection");

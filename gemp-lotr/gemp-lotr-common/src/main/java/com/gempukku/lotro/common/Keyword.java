@@ -40,19 +40,19 @@ public enum Keyword implements Filterable {
     private final boolean _multiples;
     private final boolean _terrain;
 
-    private Keyword(String humanReadable) {
+    Keyword(String humanReadable) {
         this(humanReadable, false);
     }
 
-    private Keyword(String humanReadable, boolean infoDisplayable) {
+    Keyword(String humanReadable, boolean infoDisplayable) {
         this(humanReadable, infoDisplayable, false);
     }
 
-    private Keyword(String humanReadable, boolean infoDisplayable, boolean multiples) {
+    Keyword(String humanReadable, boolean infoDisplayable, boolean multiples) {
         this(humanReadable, infoDisplayable, multiples, false);
     }
 
-    private Keyword(String humanReadable, boolean infoDisplayable, boolean multiples, boolean terrain) {
+    Keyword(String humanReadable, boolean infoDisplayable, boolean multiples, boolean terrain) {
         _humanReadable = humanReadable;
         _infoDisplayable = infoDisplayable;
         _multiples = multiples;

@@ -14,12 +14,11 @@ public class TimeResolver {
     }
 
     private static Time parseTime(String value) throws InvalidCardDefinitionException {
+        final String phaseName = value.substring(value.indexOf("(") + 1, value.lastIndexOf(")"));
         if (value.toLowerCase().startsWith("start(") && value.endsWith(")")) {
-            final String phaseName = value.substring(value.indexOf("(") + 1, value.lastIndexOf(")"));
             return new Time(Phase.findPhase(phaseName), true, false);
         }
         else if (value.toLowerCase().startsWith("end(") && value.endsWith(")")) {
-            final String phaseName = value.substring(value.indexOf("(") + 1, value.lastIndexOf(")"));
             if (phaseName.equalsIgnoreCase("current"))
                 return new Time(null, false, false);
             return new Time(Phase.findPhase(phaseName), false, false);

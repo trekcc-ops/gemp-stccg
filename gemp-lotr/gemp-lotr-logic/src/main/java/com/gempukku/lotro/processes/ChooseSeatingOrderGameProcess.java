@@ -24,12 +24,7 @@ public class ChooseSeatingOrderGameProcess implements GameProcess {
         ArrayList<String> participantList = new ArrayList<>(bids.keySet());
         Collections.shuffle(participantList, ThreadLocalRandom.current());
 
-        participantList.sort(new Comparator<>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return _bids.get(o2) - _bids.get(o1);
-            }
-        });
+        participantList.sort((o1, o2) -> _bids.get(o2) - _bids.get(o1));
 
         _biddingOrderPlayers = participantList.iterator();
         _orderedPlayers = new String[participantList.size()];
@@ -74,7 +69,7 @@ public class ChooseSeatingOrderGameProcess implements GameProcess {
         for (int i = 0; i < _orderedPlayers.length; i++)
             if (_orderedPlayers[i] == null)
                 result.add("Go " + _choices[i]);
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new String[0]);
     }
 
     private void participantHasChosenSeat(DefaultGame game, String participant, int placeIndex) {

@@ -14,15 +14,7 @@ public class TriggerCheckerFactory {
     public TriggerCheckerFactory() {
         triggerCheckers.put("abouttobekilled", new AboutToBeKilled());
         triggerCheckers.put("abouttodiscard", new AboutToDiscardFromPlay());
-        triggerCheckers.put("abouttoexert", new AboutToExert());
-        triggerCheckers.put("abouttoheal", new AboutToHeal());
         triggerCheckers.put("abouttomoveto", new AboutToMoveTo());
-        triggerCheckers.put("abouttotakewound", new AboutToTakeWound());
-        triggerCheckers.put("addsburden", new AddsBurden());
-        triggerCheckers.put("addsthreat", new AddsThreat());
-        triggerCheckers.put("assignedagainst", new AssignedAgainst());
-        triggerCheckers.put("assignedtoskirmish", new AssignedToSkirmish());
-        triggerCheckers.put("cancelledskirmish", new CancelledSkirmish());
         triggerCheckers.put("requires", new ConditionTrigger());
         triggerCheckers.put("discarded", new Discarded());
         triggerCheckers.put("discardfromdeck", new DiscardFromDeck());
@@ -30,33 +22,19 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("discardfromhandby", new DiscardFromHandBy());
         triggerCheckers.put("endofphase", new EndOfPhase());
         triggerCheckers.put("endofturn", new EndOfTurn());
-        triggerCheckers.put("exertedby", new ExertedBy());
-        triggerCheckers.put("exerts", new Exerts());
-        triggerCheckers.put("fpdecidedifmoving", new FPDecidedIfMoving());
-        triggerCheckers.put("fpdecidedtomove", new FPDecidedToMove());
-        triggerCheckers.put("fpdecidedtostay", new FPDecidedToStay());
-        triggerCheckers.put("fpstartedassigning", new FPStartedAssigning());
-        triggerCheckers.put("heals", new Heals());
         triggerCheckers.put("killed", new Killed());
-        triggerCheckers.put("losesinitiative", new LosesInitiative());
-        triggerCheckers.put("losesskirmish", new LosesSkirmish());
         triggerCheckers.put("moves", new Moves());
         triggerCheckers.put("movesfrom", new MovesFrom());
         triggerCheckers.put("movesto", new MovesTo());
         triggerCheckers.put("played", new PlayedTriggerCheckerProducer());
         triggerCheckers.put("playedfromstacked", new PlayedFromStacked());
-        triggerCheckers.put("putsonring", new PutsOnRing());
         triggerCheckers.put("reconciles", new Reconciles());
         triggerCheckers.put("removedfromplay", new RemovedFromPlay());
-        triggerCheckers.put("removesburden", new RemovesBurden());
         triggerCheckers.put("revealscardfromtopofdrawdeck", new RevealsCardFromTopOfDrawDeck());
         triggerCheckers.put("startofphase", new StartOfPhase());
         triggerCheckers.put("startofturn", new StartOfTurn());
-        triggerCheckers.put("takesoffring", new TakesOffRing());
-        triggerCheckers.put("takeswound", new TakesWound());
         triggerCheckers.put("transferred", new Transferred());
         triggerCheckers.put("usesspecialability", new UsesSpecialAbility());
-        triggerCheckers.put("winsskirmish", new WinsSkirmish());
     }
 
     public TriggerChecker getTriggerChecker(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {

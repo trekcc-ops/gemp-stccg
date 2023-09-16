@@ -15,16 +15,6 @@ public class ReplaceInSkirmishEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return Filters.countActive(game, Filters.and(_replacingFilter, Filters.inSkirmish))>0;
     }

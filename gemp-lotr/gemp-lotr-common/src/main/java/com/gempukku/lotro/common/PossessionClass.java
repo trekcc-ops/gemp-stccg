@@ -13,7 +13,7 @@ public enum PossessionClass implements Filterable {
     
     private final String _humanReadable;
 
-    private PossessionClass(String humanReadable) {
+    PossessionClass(String humanReadable) {
         _humanReadable = humanReadable;
     }
 

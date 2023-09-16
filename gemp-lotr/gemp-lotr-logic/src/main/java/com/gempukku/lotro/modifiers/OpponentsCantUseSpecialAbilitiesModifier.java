@@ -19,9 +19,7 @@ public class OpponentsCantUseSpecialAbilitiesModifier extends AbstractModifier {
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        if (action.getType() == Action.Type.SPECIAL_ABILITY
-                && !performingPlayer.equals(_playerId))
-            return false;
-        return true;
+        return action.getType() != Action.Type.SPECIAL_ABILITY
+                || performingPlayer.equals(_playerId);
     }
 }

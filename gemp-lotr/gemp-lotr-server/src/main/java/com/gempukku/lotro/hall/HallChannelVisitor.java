@@ -3,21 +3,21 @@ package com.gempukku.lotro.hall;
 import java.util.Map;
 
 public interface HallChannelVisitor {
-    public void channelNumber(int channelNumber);
-    public void motdChanged(String motd);
+    void channelNumber(int channelNumber);
+    void motdChanged(String motd);
     
-    public void serverTime(String serverTime);
-    public void newPlayerGame(String gameId);
+    void serverTime(String serverTime);
+    void newPlayerGame(String gameId);
 
-    public void addTournamentQueue(String queueId, Map<String, String> props);
-    public void updateTournamentQueue(String queueId, Map<String, String> props);
-    public void removeTournamentQueue(String queueId);
+    void addTournamentQueue(String queueId, Map<String, String> props);
+    void updateTournamentQueue(String queueId, Map<String, String> props);
+    void removeTournamentQueue(String queueId);
 
-    public void addTournament(String tournamentId, Map<String, String> props);
-    public void updateTournament(String tournamentId, Map<String, String> props);
-    public void removeTournament(String tournamentId);
+    void addTournament(String tournamentId, Map<String, String> props);
+    void updateTournament(String tournamentId, Map<String, String> props);
+    void removeTournament(String tournamentId);
 
-    public void addTable(String tableId, Map<String, String> props);
-    public void updateTable(String tableId, Map<String, String> props);
-    public void removeTable(String tableId);
+    void addTable(String tableId, Map<String, String> props);
+    void updateTable(String tableId, Map<String, String> props);
+    void removeTable(String tableId);
 }

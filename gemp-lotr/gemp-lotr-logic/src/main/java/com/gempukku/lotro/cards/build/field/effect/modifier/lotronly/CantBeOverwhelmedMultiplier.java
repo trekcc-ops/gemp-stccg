@@ -22,14 +22,11 @@ public class CantBeOverwhelmedMultiplier implements ModifierSourceProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-                    @Override
-                    public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                        final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        return new OverwhelmedByMultiplierModifier(actionContext.getSource(), filterable,
-                                new RequirementCondition(requirements, actionContext),
-                                multiplier);
-                    }
+        return actionContext -> {
+            final Filterable filterable = filterableSource.getFilterable(actionContext);
+            return new OverwhelmedByMultiplierModifier(actionContext.getSource(), filterable,
+                    new RequirementCondition(requirements, actionContext),
+                    multiplier);
         };
     }
 }

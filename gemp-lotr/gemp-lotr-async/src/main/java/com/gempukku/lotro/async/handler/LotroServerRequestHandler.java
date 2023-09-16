@@ -3,11 +3,20 @@ package com.gempukku.lotro.async.handler;
 import com.gempukku.lotro.DateUtils;
 import com.gempukku.lotro.PlayerLock;
 import com.gempukku.lotro.async.HttpProcessingException;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.LotroCardBlueprint;
+import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.collection.TransferDAO;
 import com.gempukku.lotro.db.PlayerDAO;
 import com.gempukku.lotro.db.vo.CollectionType;
+import com.gempukku.lotro.game.CardCollection;
+import com.gempukku.lotro.game.DefaultCardCollection;
+import com.gempukku.lotro.game.SortAndFilterCards;
 import com.gempukku.lotro.game.User;
+import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -28,8 +37,9 @@ import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 public class LotroServerRequestHandler {
-    protected PlayerDAO _playerDao;
-    protected LoggedUserHolder _loggedUserHolder;
+    protected final CardBlueprintLibrary _library;
+    protected final PlayerDAO _playerDao;
+    protected final LoggedUserHolder _loggedUserHolder;
     private final TransferDAO _transferDAO;
     private final CollectionsManager _collectionManager;
 
@@ -40,6 +50,7 @@ public class LotroServerRequestHandler {
         _loggedUserHolder = extractObject(context, LoggedUserHolder.class);
         _transferDAO = extractObject(context, TransferDAO.class);
         _collectionManager = extractObject(context, CollectionsManager.class);
+        _library = extractObject(context, CardBlueprintLibrary.class);
     }
 
     private boolean isTest() {
@@ -155,8 +166,8 @@ public class LotroServerRequestHandler {
         }
     }
 
-    protected List<String> getFormParametersSafely(HttpPostRequestDecoder postRequestDecoder, String parameterName) throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
-        List<InterfaceHttpData> datas = postRequestDecoder.getBodyHttpDatas(parameterName);
+    protected List<String> getFormParametersSafely(HttpPostRequestDecoder postRequestDecoder) throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
+        List<InterfaceHttpData> datas = postRequestDecoder.getBodyHttpDatas("login[]");
         if (datas == null)
             return null;
         List<String> result = new LinkedList<>();
@@ -179,5 +190,95 @@ public class LotroServerRequestHandler {
 
         String sessionId = _loggedUserHolder.logUser(login);
         return Collections.singletonMap(SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
+    }
+
+    protected String generateCardTooltip(LotroCardBlueprint bp, String bpid) {
+        String[] parts = bpid.split("_");
+        int setnum = Integer.parseInt(parts[0]);
+        String set = String.format("%02d", setnum);
+        String subset = "S";
+        int version = 0;
+        if(setnum >= 50 && setnum <= 69) {
+            setnum -= 50;
+            set = String.format("%02d", setnum);
+            subset = "E";
+            version = 1;
+        }
+        else if(setnum >= 70 && setnum <= 89) {
+            setnum -= 70;
+            set = String.format("%02d", setnum);
+            subset = "E";
+            version = 1;
+        }
+        else if(setnum >= 100 && setnum <= 149) {
+            setnum -= 100;
+            set = "V" + setnum;
+        }
+        int cardnum = Integer.parseInt(parts[1].replace("*", "").replace("T", ""));
+
+        String id = "LOTR-EN" + set + subset + String.format("%03d", cardnum) + "." + String.format("%01d", version);
+
+        return "<span class=\"tooltip\">" + GameUtils.getFullName(bp)
+                + "<span><img class=\"ttimage\" src=\"https://wiki.lotrtcgpc.net/images/" + id + "_card.jpg\" ></span></span>";
+    }
+
+    protected String generateCardTooltip(CardCollection.Item item) throws CardNotFoundException {
+        return generateCardTooltip(_library.getLotroCardBlueprint(item.getBlueprintId()), item.getBlueprintId());
+    }
+
+    protected String listCard(String label, String card, boolean showToolTip) throws CardNotFoundException {
+        if (card == null) {
+            return "";
+        } else {
+            String cardText;
+            if (showToolTip)
+                cardText = generateCardTooltip(_library.getLotroCardBlueprint(card), card);
+            else
+                cardText = GameUtils.getFullName(_library.getLotroCardBlueprint(card));
+            return "<b>" + label + ":</b> " + cardText + "<br/>";
+        }
+    }
+    
+    protected String listCards(String deckName, String filter, DefaultCardCollection deckCards, boolean countCards,
+                               SortAndFilterCards sortAndFilter, LotroFormatLibrary formatLibrary, boolean showToolTip)
+            throws CardNotFoundException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<br/><b>").append(deckName).append(":</b><br/>");
+        for (CardCollection.Item item : sortAndFilter.process(filter, deckCards.getAll(), _library, formatLibrary)) {
+            if (countCards)
+                sb.append(item.getCount()).append("x ");
+            String cardText;
+            if (showToolTip)
+                cardText = generateCardTooltip(item);
+            else
+                cardText = GameUtils.getFullName(_library.getLotroCardBlueprint(item.getBlueprintId()));
+            sb.append(cardText).append("<br/>");
+        }
+        return sb.toString();
+    }
+    
+    protected String getHTMLDeck(LotroDeck deck,boolean showToolTip, SortAndFilterCards sortAndFilter,
+                                 LotroFormatLibrary formatLibrary)
+            throws CardNotFoundException {
+        
+        StringBuilder result = new StringBuilder();
+
+        result.append(listCard("Ring-Bearer", deck.getRingBearer(), showToolTip));
+        result.append(listCard("Ring", deck.getRing(), showToolTip));
+
+        DefaultCardCollection deckCards = new DefaultCardCollection();
+        for (String card : deck.getDrawDeckCards())
+            deckCards.addItem(_library.getBaseBlueprintId(card), 1);
+        for (String site : deck.getSites())
+            deckCards.addItem(_library.getBaseBlueprintId(site), 1);
+
+        result.append(listCards("Adventure Deck","cardType:SITE sort:siteNumber,twilight",
+                deckCards,false, sortAndFilter, formatLibrary, showToolTip));
+        result.append(listCards("Free Peoples Draw Deck","side:FREE_PEOPLE sort:cardType,culture,name",
+                deckCards,true, sortAndFilter, formatLibrary, showToolTip));
+        result.append(listCards("Shadow Draw Deck","side:SHADOW sort:cardType,culture,name",
+                deckCards,true, sortAndFilter, formatLibrary, showToolTip));
+
+        return result.toString();
     }
 }

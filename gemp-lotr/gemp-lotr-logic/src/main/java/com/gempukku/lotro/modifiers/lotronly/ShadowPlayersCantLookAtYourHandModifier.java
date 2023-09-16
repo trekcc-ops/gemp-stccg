@@ -15,9 +15,7 @@ public class ShadowPlayersCantLookAtYourHandModifier extends AbstractModifier {
 
     @Override
     public boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String actingPlayerId) {
-        if (_revealingPlayerId != null && _revealingPlayerId.equals(revealingPlayerId)
-                && actingPlayerId != null && !actingPlayerId.equals(game.getGameState().getCurrentPlayerId()))
-            return false;
-        return true;
+        return _revealingPlayerId == null || !_revealingPlayerId.equals(revealingPlayerId)
+                || actingPlayerId == null || actingPlayerId.equals(game.getGameState().getCurrentPlayerId());
     }
 }

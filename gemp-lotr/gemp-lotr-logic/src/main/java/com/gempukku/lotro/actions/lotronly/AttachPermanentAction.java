@@ -7,7 +7,6 @@ import com.gempukku.lotro.effects.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.effects.Effect;
 
 import java.util.Collections;
 
@@ -19,7 +18,6 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
     private final ChooseActiveCardEffect _chooseTargetEffect;
     private boolean _targetChosen;
 
-    private Effect _playCardEffect;
     private boolean _cardPlayed;
 
     private boolean _cardDiscarded;
@@ -118,29 +116,18 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
             insertCost(new PayPlayOnTwilightCostEffect(_cardToAttach, _target, _twilightModifier));
         }
 
-        if (_target != null) {
-            if (!isCostFailed()) {
-                Effect cost = getNextCost();
-                if (cost != null)
-                    return cost;
+        if ((_target != null) && (!isCostFailed())) {
+            Effect cost = getNextCost();
+            if (cost != null)
+                return cost;
 
-                if (!_cardPlayed) {
-                    _cardPlayed = true;
-                    _playCardEffect = new PlayCardEffect(_playedFrom, _cardToAttach, _target, null);
+            if (!_cardPlayed) {
+                _cardPlayed = true;
 
-                    return _playCardEffect;
-                }
-
-                Effect effect = getNextEffect();
-                if (effect != null)
-                    return effect;
-            } else {
-                if (!_cardDiscarded) {
-                    _cardDiscarded = true;
-                    game.getGameState().removeCardsFromZone(_cardToAttach.getOwner(), Collections.singleton(_cardToAttach));
-                    game.getGameState().addCardToZone(game, _cardToAttach, Zone.DISCARD);
-                }
+                return new PlayCardEffect(_playedFrom, _cardToAttach, _target, null);
             }
+
+            return getNextEffect();
         } else {
             if (!_cardDiscarded) {
                 _cardDiscarded = true;

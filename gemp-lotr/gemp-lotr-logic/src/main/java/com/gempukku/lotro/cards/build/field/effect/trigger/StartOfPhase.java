@@ -15,7 +15,7 @@ public class StartOfPhase implements TriggerCheckerProducer {
         FieldUtils.validateAllowedFields(value, "phase");
         final Phase phase = FieldUtils.getEnum(Phase.class, value.get("phase"), "phase");
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
                 return TriggerConditions.startOfPhase(actionContext.getGame(), actionContext.getEffectResult(), phase);

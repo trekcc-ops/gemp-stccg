@@ -18,7 +18,7 @@ public class MovesTo implements TriggerCheckerProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker() {
+        return new TriggerChecker<>() {
             @Override
             public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
                 return TriggerConditions.movesTo(actionContext.getGame(), actionContext.getEffectResult(), filterableSource.getFilterable(actionContext));

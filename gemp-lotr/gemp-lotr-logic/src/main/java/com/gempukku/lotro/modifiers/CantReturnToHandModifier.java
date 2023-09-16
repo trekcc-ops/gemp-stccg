@@ -16,8 +16,6 @@ public class CantReturnToHandModifier extends AbstractModifier {
 
     @Override
     public boolean canBeReturnedToHand(DefaultGame game, LotroPhysicalCard card, LotroPhysicalCard source) {
-        if (_sourceFilter.accepts(game, source))
-            return false;
-        return true;
+        return !_sourceFilter.accepts(game, source);
     }
 }

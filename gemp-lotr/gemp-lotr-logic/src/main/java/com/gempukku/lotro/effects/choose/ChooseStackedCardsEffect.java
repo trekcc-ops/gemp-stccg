@@ -4,11 +4,9 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.CardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
+import com.gempukku.lotro.effects.AbstractEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.AbstractEffect;
-import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.effects.Effect;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -16,25 +14,18 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class ChooseStackedCardsEffect extends AbstractEffect {
-    private final Action _action;
     private final String _playerId;
     private final int _minimum;
     private final int _maximum;
     private final Filterable _stackedOnFilter;
     private final Filterable _stackedCardFilter;
 
-    public ChooseStackedCardsEffect(Action action, String playerId, int minimum, int maximum, Filterable stackedOnFilter, Filterable stackedCardFilter) {
-        _action = action;
+    public ChooseStackedCardsEffect(String playerId, int minimum, int maximum, Filterable stackedOnFilter, Filterable stackedCardFilter) {
         _playerId = playerId;
         _minimum = minimum;
         _maximum = maximum;
         _stackedOnFilter = stackedOnFilter;
         _stackedCardFilter = stackedCardFilter;
-    }
-
-    @Override
-    public Effect.Type getType() {
-        return null;
     }
 
     @Override

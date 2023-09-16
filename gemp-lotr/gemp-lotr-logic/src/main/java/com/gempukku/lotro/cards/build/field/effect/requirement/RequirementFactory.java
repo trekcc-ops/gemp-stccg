@@ -33,6 +33,7 @@ public class RequirementFactory {
         requirementProducers.put("hascardindeadpile", new HasCardInDeadPile());
         requirementProducers.put("hascardindiscard", new HasCardInDiscard());
         requirementProducers.put("hascardinhand", new HasCardInHand());
+        requirementProducers.put("hascardinplaypile", new HasCardInPlayPile());
         requirementProducers.put("hasinzonedata", new HasInZoneData());
         requirementProducers.put("haveinitiative", new HaveInitiative());
         requirementProducers.put("isequal", new IsEqual());

@@ -203,8 +203,8 @@ public class PhysicalCardImpl implements LotroPhysicalCard {
         if (_blueprint.getOptionalAfterTriggers() != null) {
             result = new LinkedList<>();
             for (ActionSource optionalAfterTrigger : _blueprint.getOptionalAfterTriggers()) {
-                DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, effectResult,
-                        null);
+                DefaultActionContext<DefaultGame> actionContext = new DefaultActionContext<>(
+                        playerId, game, self, effectResult,null);
                 if (optionalAfterTrigger.isValid(actionContext)) {
                     OptionalTriggerAction action = new OptionalTriggerAction(self);
                     optionalAfterTrigger.createAction(action, actionContext);
@@ -218,9 +218,11 @@ public class PhysicalCardImpl implements LotroPhysicalCard {
             if (result == null)
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : _blueprint.getCopiedFilters()) {
-                DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, effectResult,
-                        null);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                DefaultActionContext<DefaultGame> actionContext = new DefaultActionContext<>(
+                        playerId, game, self, effectResult,null);
+                final LotroPhysicalCard firstActive = Filters.findFirstActive(
+                        game, copiedFilter.getFilterable(actionContext)
+                );
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getOptionalAfterTriggerActions(playerId, game,
                             effectResult, self));

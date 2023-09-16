@@ -9,10 +9,6 @@ import com.gempukku.lotro.modifiers.ModifierEffect;
 
 public class CantCancelSkirmishModifier extends AbstractModifier {
 
-    public CantCancelSkirmishModifier(LotroPhysicalCard source, Filterable affectFilter) {
-        super(source, "Can't cancel skirmish", affectFilter, ModifierEffect.CANCEL_SKIRMISH_MODIFIER);
-    }
-
     public CantCancelSkirmishModifier(LotroPhysicalCard source, Condition condition, Filterable affectFilter) {
         super(source, "Can't cancel skirmish", affectFilter, condition, ModifierEffect.CANCEL_SKIRMISH_MODIFIER);
     }

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CardBlueprintLibraryTests extends AbstractAtTest {
     @Test
-    public void LibraryLoadsWithNoDuplicates() throws CardNotFoundException {
+    public void LibraryLoadsWithNoDuplicates() {
         Map<String, String> cardNames = new HashMap<>();
         for (int i = 0; i <= 19; i++) {
             for (int j = 1; j <= 365; j++) {

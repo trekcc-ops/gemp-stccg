@@ -70,6 +70,7 @@ public class DefaultActionContext<AbstractGame extends DefaultGame> implements A
 
     @Override
     public Collection<? extends LotroPhysicalCard> getCardsFromMemory(String memory) {
+//    public Collection<? extends LotroPhysicalCard> getCardsFromMemory(String memory) {
         if(memory != null) {
             memory = memory.toLowerCase();
         }

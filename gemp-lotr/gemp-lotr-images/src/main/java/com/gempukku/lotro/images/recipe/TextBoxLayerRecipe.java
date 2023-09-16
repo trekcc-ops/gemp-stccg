@@ -48,10 +48,6 @@ public class TextBoxLayerRecipe implements LayerRecipe {
 
             final TextBox box = textBox.apply(renderContext);
 
-//            graphics.setPaint(Color.WHITE);
-//            graphics.fillRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
-//            graphics.setColor(Color.BLACK);
-
             graphics.setPaint(paint.apply(renderContext));
 
             FontRenderContext frc = graphics.getFontRenderContext();
@@ -80,13 +76,12 @@ public class TextBoxLayerRecipe implements LayerRecipe {
             }
 
             LineBreakMeasurer measurer = new LineBreakMeasurer(styledText, frc);
-            float wrappingWidth = width;
 
             while (measurer.getPosition() < styledText.getEndIndex()) {
-                TextLayout layout = measurer.nextLayout(wrappingWidth);
+                TextLayout layout = measurer.nextLayout(width);
 
                 pen.y += (layout.getAscent());
-                float xShift = horizontalAlignment.getXShift(wrappingWidth, layout.getAdvance());
+                float xShift = horizontalAlignment.getXShift(width, layout.getAdvance());
 
                 callback.drawLine(layout, pen.x + xShift, pen.y);
                 pen.y += layout.getDescent() + layout.getLeading();

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.cards.build.field.effect;
 
-import com.gempukku.lotro.cards.build.ActionContext;
+import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
 import com.gempukku.lotro.cards.BuiltLotroCardBlueprint;
 import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.build.DefaultActionContext;
@@ -9,10 +9,9 @@ import com.gempukku.lotro.cards.build.field.EffectProcessor;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.cards.build.field.effect.appender.AbstractEffectAppender;
 import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
+import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.IncrementPhaseLimitEffect;
 import com.gempukku.lotro.effects.IncrementTurnLimitEffect;
-import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.game.PlayConditions;
 import org.json.simple.JSONObject;
 

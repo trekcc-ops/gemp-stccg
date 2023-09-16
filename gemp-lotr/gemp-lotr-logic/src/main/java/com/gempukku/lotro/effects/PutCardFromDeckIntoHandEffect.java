@@ -28,11 +28,6 @@ public class PutCardFromDeckIntoHandEffect extends AbstractEffect {
     }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return _card.getZone() == Zone.DECK;
     }

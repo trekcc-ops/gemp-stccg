@@ -44,9 +44,7 @@ public class DbCollectionDAO implements CollectionDAO {
 
         var entries = extractCollectionEntries(collection.id);
 
-        var result = _collectionSerializer.deserializeCollection(collection, entries);
-
-        return result;
+        return _collectionSerializer.deserializeCollection(collection, entries);
     }
 
     public CardCollection getCollection(int collectionID) throws SQLException, IOException {
@@ -56,9 +54,8 @@ public class DbCollectionDAO implements CollectionDAO {
     public CardCollection getCollection(DBDefs.Collection coll) throws SQLException, IOException {
 
         var entries = extractCollectionEntries(coll.id);
-        var result = _collectionSerializer.deserializeCollection(coll, entries);
 
-        return result;
+        return _collectionSerializer.deserializeCollection(coll, entries);
     }
 
     private List<DBDefs.CollectionEntry> extractCollectionEntries(int collectionID) throws SQLException, IOException {
@@ -81,19 +78,14 @@ public class DbCollectionDAO implements CollectionDAO {
                         WHERE collection_id = :collID;
                                                 
                         """;
-                List<DBDefs.CollectionEntry> result = conn.createQuery(sql)
+
+                return conn.createQuery(sql)
                         .addParameter("collID", collectionID)
                         .executeAndFetch(DBDefs.CollectionEntry.class);
-
-                return result;
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve collection entries", ex);
         }
-    }
-
-    private class intContainer {
-        public int ID;
     }
 
     @Override
@@ -109,11 +101,10 @@ public class DbCollectionDAO implements CollectionDAO {
                         FROM collection
                         WHERE player_id = :playerID
                         """;
-                List<DBDefs.Collection> result = conn.createQuery(sql)
+
+                return conn.createQuery(sql)
                         .addParameter("playerID", playerId)
                         .executeAndFetch(DBDefs.Collection.class);
-
-                return result;
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve collection types", ex);
@@ -185,11 +176,10 @@ public class DbCollectionDAO implements CollectionDAO {
                         FROM collection
                         WHERE type = :type;
                         """;
-                List<DBDefs.Collection> result = conn.createQuery(sql)
+
+                return conn.createQuery(sql)
                         .addParameter("type", type)
                         .executeAndFetch(DBDefs.Collection.class);
-
-                return result;
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve collection infos", ex);
@@ -237,7 +227,7 @@ public class DbCollectionDAO implements CollectionDAO {
 
     public void convertCollection(int playerId, String type) throws SQLException, IOException {
         MutableCardCollection oldCollection = getOldPlayerCollection(playerId, type);
-        var oldinfo = new HashMap<String, Object>(oldCollection.getExtraInformation());
+        var oldinfo = new HashMap<>(oldCollection.getExtraInformation());
         oldinfo.put(DefaultCardCollection.CurrencyKey, oldCollection.getCurrency());
         oldCollection.setExtraInformation(oldinfo);
         overwriteCollectionContents(playerId, type, oldCollection, "Initial Convert");
@@ -321,7 +311,7 @@ public class DbCollectionDAO implements CollectionDAO {
                         VALUES (:playerId, :type, :extraInfo)
                         ON DUPLICATE KEY UPDATE extra_info = :extraInfo;
                         """;
-        String json = "";
+        String json;
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 

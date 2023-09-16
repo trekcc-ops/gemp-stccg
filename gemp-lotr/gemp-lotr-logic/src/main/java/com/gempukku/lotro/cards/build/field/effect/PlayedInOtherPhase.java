@@ -2,7 +2,6 @@ package com.gempukku.lotro.cards.build.field.effect;
 
 import com.gempukku.lotro.cards.BuiltLotroCardBlueprint;
 import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
-import com.gempukku.lotro.cards.build.DefaultActionContext;
 import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.build.Requirement;
 import com.gempukku.lotro.cards.build.field.EffectProcessor;
@@ -22,19 +21,16 @@ public class PlayedInOtherPhase implements EffectProcessor {
         final Requirement[] conditions = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
         blueprint.appendPlayInOtherPhaseCondition(
-                new Requirement() {
-                    @Override
-                    public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
-                        if (actionContext.getGame().getGameState().getCurrentPhase() != phase)
+                (Requirement<DefaultGame>) actionContext -> {
+                    if (actionContext.getGame().getGameState().getCurrentPhase() != phase)
+                        return false;
+
+                    for (Requirement condition : conditions) {
+                        if (!condition.accepts(actionContext))
                             return false;
-
-                        for (Requirement condition : conditions) {
-                            if (!condition.accepts(actionContext))
-                                return false;
-                        }
-
-                        return true;
                     }
+
+                    return true;
                 }
         );
     }

@@ -62,6 +62,7 @@ public class PlayoutSkirmishesGameProcess implements GameProcess {
                         game.getGameState().sendMessage("Next skirmish to resolve is for " + GameUtils.getCardLink(card));
                         final Assignment assignment = findAssignment(assignments, card);
                         game.getGameState().removeAssignment(assignment);
+                        assert assignment != null;
                         game.getActionsEnvironment().addActionToStack(
                                 new SkirmishPhaseAction(assignment.getFellowshipCharacter(), assignment.getShadowCharacters()));
                     }

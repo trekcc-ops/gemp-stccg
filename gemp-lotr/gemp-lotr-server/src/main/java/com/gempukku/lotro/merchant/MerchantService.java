@@ -147,11 +147,7 @@ public class MerchantService {
         lock.lock();
         try {
             PriceGuarantee guarantee = _priceGuarantees.get(player.getName());
-//            if (guarantee == null || guarantee.getDate().getTime() + _priceGuaranteeExpire < currentTime.getTime())
-//                throw new MerchantException("Price guarantee has expired");
-            Integer guaranteedPrice = guarantee.getBuyPrices().get(blueprintId);
-//            if (guaranteedPrice == null || price != guaranteedPrice)
-//                throw new MerchantException("Guaranteed price does not match the user asked price");
+            guarantee.getBuyPrices().get(blueprintId);
 
             boolean success = _collectionsManager.sellCardInPlayerCollection(player, _permanentCollection, blueprintId, price);
             if (!success)
@@ -172,11 +168,7 @@ public class MerchantService {
         lock.lock();
         try {
             PriceGuarantee guarantee = _priceGuarantees.get(player.getName());
-//            if (guarantee == null || guarantee.getDate().getTime() + _priceGuaranteeExpire < currentTime.getTime())
-//                throw new MerchantException("Price guarantee has expired");
-            Integer guaranteedPrice = guarantee.getSellPrices().get(blueprintId);
-//            if (guaranteedPrice == null || price != guaranteedPrice)
-//                throw new MerchantException("Guaranteed price does not match the user asked price");
+            guarantee.getSellPrices().get(blueprintId);
 
             boolean success = _collectionsManager.buyCardToPlayerCollection(player, _permanentCollection, blueprintId, price);
             if (!success)

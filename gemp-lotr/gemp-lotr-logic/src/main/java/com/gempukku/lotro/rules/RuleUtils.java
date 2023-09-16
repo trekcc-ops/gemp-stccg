@@ -17,56 +17,15 @@ import java.util.Set;
 
 public class RuleUtils {
     public static int calculateArcheryTotal(DefaultGame game, Side side) {
-        if (side == Side.FREE_PEOPLE)
-            return calculateFellowshipArcheryTotal(game);
-        else
-            return calculateShadowArcheryTotal(game);
-    }
-
-    public static int calculateFellowshipArcheryTotal(DefaultGame game) {
-        int normalArcheryTotal = Filters.countActive(game,
-                Filters.or(
-                        CardType.COMPANION,
-                        Filters.and(
-                                CardType.ALLY,
-                                Filters.or(
-                                        Filters.and(
-                                                Filters.allyAtHome,
-                                                new Filter() {
-                                                    @Override
-                                                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                                                        return !game.getModifiersQuerying().isAllyPreventedFromParticipatingInArcheryFire(game, physicalCard);
-                                                    }
-                                                }),
-                                        new Filter() {
-                                            @Override
-                                            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                                                return game.getModifiersQuerying().isAllyAllowedToParticipateInArcheryFire(game, physicalCard);
-                                            }
-                                        })
-                        )
-                ),
-                Keyword.ARCHER,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().addsToArcheryTotal(game, physicalCard);
-                    }
-                });
-
-        return game.getModifiersQuerying().getArcheryTotal(game, Side.FREE_PEOPLE, normalArcheryTotal);
+            // skipping free people because we're going to delete this eventually
+        return calculateShadowArcheryTotal(game);
     }
 
     public static int calculateShadowArcheryTotal(DefaultGame game) {
         int normalArcheryTotal = Filters.countActive(game,
                 CardType.MINION,
                 Keyword.ARCHER,
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        return game.getModifiersQuerying().addsToArcheryTotal(game, physicalCard);
-                    }
-                });
+                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().addsToArcheryTotal(game1, physicalCard));
 
         return game.getModifiersQuerying().getArcheryTotal(game, Side.SHADOW, normalArcheryTotal);
     }
@@ -144,40 +103,34 @@ public class RuleUtils {
     public static Filter getFullValidTargetFilter(String playerId, final DefaultGame game, final LotroPhysicalCard self) {
         final LotroCardBlueprint blueprint = self.getBlueprint();
         return Filters.and(blueprint.getValidTargetFilter(playerId, game, self),
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                        final CardType thisType = blueprint.getCardType();
-                        if (thisType == CardType.POSSESSION || thisType == CardType.ARTIFACT) {
-                            final CardType targetType = physicalCard.getBlueprint().getCardType();
-                            return targetType == CardType.COMPANION || targetType == CardType.ALLY
-                                    || targetType == CardType.MINION;
-                        }
-                        return true;
+                (Filter) (game12, physicalCard) -> {
+                    final CardType thisType = blueprint.getCardType();
+                    if (thisType == CardType.POSSESSION || thisType == CardType.ARTIFACT) {
+                        final CardType targetType = physicalCard.getBlueprint().getCardType();
+                        return targetType == CardType.COMPANION || targetType == CardType.ALLY
+                                || targetType == CardType.MINION;
                     }
+                    return true;
                 },
-                new Filter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, LotroPhysicalCard attachedTo) {
-                        Set<PossessionClass> possessionClasses = blueprint.getPossessionClasses();
-                        if (possessionClasses != null) {
-                            for (PossessionClass possessionClass : possessionClasses) {
-                                List<LotroPhysicalCard> attachedCards = game.getGameState().getAttachedCards(attachedTo);
+                (Filter) (game1, attachedTo) -> {
+                    Set<PossessionClass> possessionClasses = blueprint.getPossessionClasses();
+                    if (possessionClasses != null) {
+                        for (PossessionClass possessionClass : possessionClasses) {
+                            List<LotroPhysicalCard> attachedCards = game1.getGameState().getAttachedCards(attachedTo);
 
-                                Collection<LotroPhysicalCard> matchingClassPossessions = Filters.filter(attachedCards, game, Filters.or(CardType.POSSESSION, CardType.ARTIFACT), possessionClass);
-                                if (matchingClassPossessions.size() > 1)
+                            Collection<LotroPhysicalCard> matchingClassPossessions = Filters.filter(attachedCards, game1, Filters.or(CardType.POSSESSION, CardType.ARTIFACT), possessionClass);
+                            if (matchingClassPossessions.size() > 1)
+                                return false;
+
+                            boolean extraPossessionClass = self.getBlueprint().isExtraPossessionClass(game1, self, attachedTo);
+                            if (!extraPossessionClass && matchingClassPossessions.size() == 1) {
+                                final LotroPhysicalCard attachedPossession = matchingClassPossessions.iterator().next();
+                                if (!attachedPossession.getBlueprint().isExtraPossessionClass(game1, attachedPossession, attachedTo))
                                     return false;
-
-                                boolean extraPossessionClass = self.getBlueprint().isExtraPossessionClass(game, self, attachedTo);
-                                if (!extraPossessionClass && matchingClassPossessions.size() == 1) {
-                                    final LotroPhysicalCard attachedPossession = matchingClassPossessions.iterator().next();
-                                    if (!attachedPossession.getBlueprint().isExtraPossessionClass(game, attachedPossession, attachedTo))
-                                        return false;
-                                }
                             }
                         }
-                        return true;
                     }
+                    return true;
                 });
     }
 
@@ -194,13 +147,9 @@ public class RuleUtils {
 
     public static boolean isAllyInRegion(LotroPhysicalCard ally, int regionNumber, SitesBlock siteBlock) {
         final SitesBlock allySiteBlock = ally.getBlueprint().getAllyHomeSiteBlock();
-        final int[] allyHomeSites = ally.getBlueprint().getAllyHomeSiteNumbers();
+        ally.getBlueprint().getAllyHomeSiteNumbers();
         if (allySiteBlock != siteBlock)
             return false;
-//        for (int number : allyHomeSites)
-//            if (regionNumber == GameUtils.getRegion(number))
-//                return true;
-//        return false;
 
         return Arrays.stream(ally.getBlueprint().getAllyHomeSiteNumbers()).anyMatch(x -> regionNumber == LotroGameUtils.getRegion(x));
     }

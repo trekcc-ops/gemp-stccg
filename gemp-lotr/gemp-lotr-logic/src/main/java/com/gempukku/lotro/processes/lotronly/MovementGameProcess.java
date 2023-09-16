@@ -64,12 +64,7 @@ public class MovementGameProcess implements GameProcess {
                                 siteTwilightCost += 6;
                         }
                         int companionsAddingTwilightForMoveCount = Filters.countActive(game, CardType.COMPANION,
-                                new Filter() {
-                                    @Override
-                                    public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                                        return game.getModifiersQuerying().addsTwilightForCompanionMove(game, physicalCard);
-                                    }
-                                });
+                                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().addsTwilightForCompanionMove(game1, physicalCard));
 
                         AddTwilightEffect effect = new AddTwilightEffect(null, siteTwilightCost + companionsAddingTwilightForMoveCount);
                         effect.setSourceText("Moving");

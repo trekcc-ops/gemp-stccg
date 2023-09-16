@@ -79,18 +79,14 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShufflePlayPileIntoDrawDeck());
             // LotR-specific
         effectAppenderProducers.put("addburdens", new AddBurdens());
-        effectAppenderProducers.put("addthreats", new AddThreats());
         effectAppenderProducers.put("addtokens", new AddTokens());
         effectAppenderProducers.put("addtwilight", new AddTwilight());
-        effectAppenderProducers.put("allycanparticipateinarcheryfireandskirmishes", new AllyCanParticipateInArcheryFireAndSkirmishes());
-        effectAppenderProducers.put("allycanparticipateinskirmishes", new AllyCanParticipateInSkirmishes());
         effectAppenderProducers.put("assignfpcharactertoskirmish", new AssignFpCharacterToSkirmish());
         effectAppenderProducers.put("cancelskirmish", new CancelSkirmish());
         effectAppenderProducers.put("cantbeassignedtoskirmish", new CantBeAssignedToSkirmish());
         effectAppenderProducers.put("cantbeoverwhelmedmultiplier", new CantBeOverwhelmedMultiplier());
         effectAppenderProducers.put("canttakemorewoundsthan", new CantTakeMoreWoundsThan());
         effectAppenderProducers.put("canttakewounds", new CantTakeWounds());
-        effectAppenderProducers.put("chooseandheal", new ChooseAndHeal());
         effectAppenderProducers.put("choosearace", new ChooseARace());
         effectAppenderProducers.put("chooseandaddtwilight", new ChooseAndAddTwilight());
         effectAppenderProducers.put("chooseandremovetokens", new ChooseAndRemoveTokens());
@@ -104,7 +100,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("foreachshadowplayer", new ForEachShadowPlayer());
         effectAppenderProducers.put("heal", new Heal());
         effectAppenderProducers.put("kill", new Kill());
-        effectAppenderProducers.put("liberatesite", new LiberateSite());
         effectAppenderProducers.put("makeselfringbearer", new MakeSelfRingBearer());
         effectAppenderProducers.put("modifyarcherytotal", new ModifyArcheryTotal());
         effectAppenderProducers.put("modifysitenumber", new ModifySiteNumber());

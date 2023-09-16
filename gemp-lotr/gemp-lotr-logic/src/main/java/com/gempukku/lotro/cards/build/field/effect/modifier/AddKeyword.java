@@ -30,14 +30,11 @@ public class AddKeyword implements ModifierSourceProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-                    @Override
-                    public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                        final Evaluator evaluator = amount.getEvaluator(actionContext);
-                        return new KeywordModifier(actionContext.getSource(),
-                                filterableSource.getFilterable(actionContext),
-                                new RequirementCondition(requirements, actionContext), keyword, evaluator);
-                    }
+        return actionContext -> {
+            final Evaluator evaluator = amount.getEvaluator(actionContext);
+            return new KeywordModifier(actionContext.getSource(),
+                    filterableSource.getFilterable(actionContext),
+                    new RequirementCondition(requirements, actionContext), keyword, evaluator);
         };
     }
 }

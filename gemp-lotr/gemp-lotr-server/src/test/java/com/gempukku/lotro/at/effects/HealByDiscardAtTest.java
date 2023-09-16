@@ -1,7 +1,7 @@
 package com.gempukku.lotro.at.effects;
 
 import com.gempukku.lotro.at.AbstractAtTest;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.decisions.AwaitingDecision;
@@ -15,8 +15,8 @@ public class HealByDiscardAtTest extends AbstractAtTest {
     public void healSuccessful() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        final LotroPhysicalCardImpl merryInHand = new LotroPhysicalCardImpl(102, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merryInHand = new PhysicalCardImpl(102, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addWound(merry);
@@ -34,8 +34,8 @@ public class HealByDiscardAtTest extends AbstractAtTest {
     public void cantHealIfNotWounded() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl merry = new LotroPhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        final LotroPhysicalCardImpl merryInHand = new LotroPhysicalCardImpl(102, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merryInHand = new PhysicalCardImpl(102, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, merryInHand, Zone.HAND);
@@ -43,7 +43,7 @@ public class HealByDiscardAtTest extends AbstractAtTest {
         skipMulligans();
 
         final AwaitingDecision awaitingDecision = _userFeedback.getAwaitingDecision(P1);
-        final String[] actionIds = (String[]) awaitingDecision.getDecisionParameters().get("actionId");
+        final String[] actionIds = awaitingDecision.getDecisionParameters().get("actionId");
         assertEquals(0, actionIds.length);
     }
 
@@ -51,8 +51,8 @@ public class HealByDiscardAtTest extends AbstractAtTest {
     public void cantHealNonUnique() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final LotroPhysicalCardImpl lorienElf = new LotroPhysicalCardImpl(101, "1_53", P1, _cardLibrary.getLotroCardBlueprint("1_53"));
-        final LotroPhysicalCardImpl lorienElfInHand = new LotroPhysicalCardImpl(102, "1_53", P1, _cardLibrary.getLotroCardBlueprint("1_53"));
+        final PhysicalCardImpl lorienElf = new PhysicalCardImpl(101, "1_53", P1, _cardLibrary.getLotroCardBlueprint("1_53"));
+        final PhysicalCardImpl lorienElfInHand = new PhysicalCardImpl(102, "1_53", P1, _cardLibrary.getLotroCardBlueprint("1_53"));
 
         _game.getGameState().addCardToZone(_game, lorienElf, Zone.FREE_CHARACTERS);
         _game.getGameState().addWound(lorienElf);

@@ -22,11 +22,6 @@ public class RemoveTwilightEffect extends AbstractEffect {
     }
 
     @Override
-    public Effect.Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         return game.getGameState().getTwilightPool() >= _twilight.evaluateExpression(game, null);
     }

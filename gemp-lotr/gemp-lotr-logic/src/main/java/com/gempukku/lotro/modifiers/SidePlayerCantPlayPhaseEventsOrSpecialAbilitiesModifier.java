@@ -24,11 +24,8 @@ public class SidePlayerCantPlayPhaseEventsOrSpecialAbilitiesModifier extends Abs
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        if (action.getActionTimeword() == _phase
-                && (
-                (_side == Side.FREE_PEOPLE && LotroGameUtils.isFP(game, action.getPerformingPlayer()))
-                        || (_side == Side.SHADOW && LotroGameUtils.isShadow(game, action.getPerformingPlayer()))))
-            return false;
-        return true;
+        return action.getActionTimeword() != _phase
+                || ((_side != Side.FREE_PEOPLE || !LotroGameUtils.isFP(game, action.getPerformingPlayer()))
+                && (_side != Side.SHADOW || !LotroGameUtils.isShadow(game, action.getPerformingPlayer())));
     }
 }

@@ -11,7 +11,7 @@ public class ConstructedLeagueDataTest extends AbstractAtTest {
     @Test
     public void testParameters() {
         ConstructedLeagueData leagueData = new ConstructedLeagueData(_cardLibrary, _formatLibrary, "20120312,fotr_block,0.7,default,All cards,7,10,3,fotr1_block,fotr_block,fotr2_block,fotr_block,fotr_block,fotr_block");
-        final List<LeagueSerieData> series = leagueData.getSeries();
+        final List<LeagueSeriesData> series = leagueData.getSeries();
         assertEquals(3, series.size());
         assertEquals(20120312, series.get(0).getStart());
         assertEquals(20120318, series.get(0).getEnd());

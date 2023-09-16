@@ -1,10 +1,11 @@
 package com.gempukku.lotro.cards.build.field.effect.modifier;
 
-import com.gempukku.lotro.cards.build.*;
+import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.build.ModifierSource;
+import com.gempukku.lotro.cards.build.Requirement;
 import com.gempukku.lotro.cards.build.field.FieldUtils;
 import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.modifiers.ShouldSkipPhaseModifier;
 import org.json.simple.JSONObject;
 
@@ -18,12 +19,7 @@ public class SkipPhase implements ModifierSourceProducer {
 
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new ModifierSource() {
-            @Override
-            public Modifier getModifier(DefaultActionContext<DefaultGame> actionContext) {
-                return new ShouldSkipPhaseModifier(actionContext.getSource(),
-                        new RequirementCondition(requirements, actionContext), phase);
-            }
-        };
+        return actionContext -> new ShouldSkipPhaseModifier(actionContext.getSource(),
+                new RequirementCondition(requirements, actionContext), phase);
     }
 }

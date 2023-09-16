@@ -29,7 +29,7 @@ public class CostToEffect implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
 
-                if(!checkConditions(actionContext))
+                if(requirementsNotMet(actionContext))
                     return null;
 
                 SubAction subAction = new SubAction(action);
@@ -42,18 +42,18 @@ public class CostToEffect implements EffectAppenderProducer {
                 return new StackActionEffect(subAction);
             }
 
-            private boolean checkConditions(DefaultActionContext<DefaultGame> actionContext) {
+            private boolean requirementsNotMet(DefaultActionContext<DefaultGame> actionContext) {
                 for (Requirement req : requirements) {
                     if (!req.accepts(actionContext))
-                        return false;
+                        return true;
                 }
-                return true;
+                return false;
             }
 
             @Override
             public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
 
-                if(!checkConditions(actionContext))
+                if(requirementsNotMet(actionContext))
                     return false;
 
                 for (EffectAppender costAppender : costAppenders) {

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCardImpl;
+import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Zone;
@@ -26,9 +26,9 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl gimli = new LotroPhysicalCardImpl(100, "5_7", P1, _cardLibrary.getLotroCardBlueprint("5_7"));
-        LotroPhysicalCardImpl stoutAndStrong = new LotroPhysicalCardImpl(101, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl goblinRunner = new LotroPhysicalCardImpl(102, "1_178", P2, _cardLibrary.getLotroCardBlueprint("1_178"));
+        PhysicalCardImpl gimli = new PhysicalCardImpl(100, "5_7", P1, _cardLibrary.getLotroCardBlueprint("5_7"));
+        PhysicalCardImpl stoutAndStrong = new PhysicalCardImpl(101, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(102, "1_178", P2, _cardLibrary.getLotroCardBlueprint("1_178"));
 
         skipMulligans();
 
@@ -69,7 +69,7 @@ public class TriggersAtTest extends AbstractAtTest {
 
         AwaitingDecision chooseTriggersDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, chooseTriggersDecision.getDecisionType());
-        validateContents(new String[]{"" + gimli.getCardId(), "" + stoutAndStrong.getCardId()}, (String[]) chooseTriggersDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(gimli.getCardId()), String.valueOf(stoutAndStrong.getCardId())}, chooseTriggersDecision.getDecisionParameters().get("cardId"));
     }
 
     @Test
@@ -77,12 +77,12 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl dervorin = new LotroPhysicalCardImpl(100, "7_88", P1, _cardLibrary.getLotroCardBlueprint("7_88"));
-        LotroPhysicalCardImpl boromir = new LotroPhysicalCardImpl(101, "1_96", P1, _cardLibrary.getLotroCardBlueprint("1_96"));
-        LotroPhysicalCardImpl cardInHand1 = new LotroPhysicalCardImpl(102, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand2 = new LotroPhysicalCardImpl(103, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand3 = new LotroPhysicalCardImpl(104, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand4 = new LotroPhysicalCardImpl(105, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl dervorin = new PhysicalCardImpl(100, "7_88", P1, _cardLibrary.getLotroCardBlueprint("7_88"));
+        PhysicalCardImpl boromir = new PhysicalCardImpl(101, "1_96", P1, _cardLibrary.getLotroCardBlueprint("1_96"));
+        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(102, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(103, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(104, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(105, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
 
         skipMulligans();
 
@@ -104,13 +104,13 @@ public class TriggersAtTest extends AbstractAtTest {
 
         final AwaitingDecision optionalStartOfRegroupDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, optionalStartOfRegroupDecision.getDecisionType());
-        validateContents(new String[]{"" + dervorin.getCardId(), "" + dervorin.getCardId()}, (String[]) optionalStartOfRegroupDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(dervorin.getCardId()), String.valueOf(dervorin.getCardId())}, optionalStartOfRegroupDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P1, getCardActionId(optionalStartOfRegroupDecision, "Optional "));
 
         final AwaitingDecision optionalSecondStartOfRegroupDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, optionalSecondStartOfRegroupDecision.getDecisionType());
-        validateContents(new String[]{"" + dervorin.getCardId()}, (String[]) optionalSecondStartOfRegroupDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(dervorin.getCardId())}, optionalSecondStartOfRegroupDecision.getDecisionParameters().get("cardId"));
     }
 
     @Test
@@ -118,13 +118,13 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        LotroPhysicalCardImpl dervorin = new LotroPhysicalCardImpl(100, "7_88", P1, _cardLibrary.getLotroCardBlueprint("7_88"));
-        LotroPhysicalCardImpl boromir = new LotroPhysicalCardImpl(101, "1_96", P1, _cardLibrary.getLotroCardBlueprint("1_96"));
-        LotroPhysicalCardImpl cardInHand1 = new LotroPhysicalCardImpl(102, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand2 = new LotroPhysicalCardImpl(103, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand3 = new LotroPhysicalCardImpl(104, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand4 = new LotroPhysicalCardImpl(105, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand5 = new LotroPhysicalCardImpl(106, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl dervorin = new PhysicalCardImpl(100, "7_88", P1, _cardLibrary.getLotroCardBlueprint("7_88"));
+        PhysicalCardImpl boromir = new PhysicalCardImpl(101, "1_96", P1, _cardLibrary.getLotroCardBlueprint("1_96"));
+        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(102, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(103, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(104, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(105, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand5 = new PhysicalCardImpl(106, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
 
         skipMulligans();
 
@@ -147,7 +147,7 @@ public class TriggersAtTest extends AbstractAtTest {
 
         final AwaitingDecision optionalStartOfRegroupDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, optionalStartOfRegroupDecision.getDecisionType());
-        validateContents(new String[]{"" + dervorin.getCardId()}, (String[]) optionalStartOfRegroupDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(dervorin.getCardId())}, optionalStartOfRegroupDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P1, getCardActionId(optionalStartOfRegroupDecision, "Use "));
 
@@ -155,7 +155,7 @@ public class TriggersAtTest extends AbstractAtTest {
 
         final AwaitingDecision optionalSecondStartOfRegroupDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, optionalSecondStartOfRegroupDecision.getDecisionType());
-        validateContents(new String[]{"" + dervorin.getCardId()}, (String[]) optionalSecondStartOfRegroupDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(dervorin.getCardId())}, optionalSecondStartOfRegroupDecision.getDecisionParameters().get("cardId"));
         assertTrue(((String[]) optionalSecondStartOfRegroupDecision.getDecisionParameters().get("actionText"))[0].startsWith("Optional "));
     }
 
@@ -163,12 +163,12 @@ public class TriggersAtTest extends AbstractAtTest {
     public void userOfMusterDisablesUseOfOtherOptionalStartOfRegroupTrigger() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl dervorin = new LotroPhysicalCardImpl(100, "7_88", P1, _cardLibrary.getLotroCardBlueprint("7_88"));
-        LotroPhysicalCardImpl boromir = new LotroPhysicalCardImpl(101, "1_96", P1, _cardLibrary.getLotroCardBlueprint("1_96"));
-        LotroPhysicalCardImpl cardInHand1 = new LotroPhysicalCardImpl(102, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand2 = new LotroPhysicalCardImpl(103, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand3 = new LotroPhysicalCardImpl(104, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
-        LotroPhysicalCardImpl cardInHand4 = new LotroPhysicalCardImpl(105, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl dervorin = new PhysicalCardImpl(100, "7_88", P1, _cardLibrary.getLotroCardBlueprint("7_88"));
+        PhysicalCardImpl boromir = new PhysicalCardImpl(101, "1_96", P1, _cardLibrary.getLotroCardBlueprint("1_96"));
+        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(102, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(103, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(104, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(105, "4_57", P1, _cardLibrary.getLotroCardBlueprint("4_57"));
 
         skipMulligans();
 
@@ -190,14 +190,14 @@ public class TriggersAtTest extends AbstractAtTest {
 
         final AwaitingDecision optionalStartOfRegroupDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, optionalStartOfRegroupDecision.getDecisionType());
-        validateContents(new String[]{"" + dervorin.getCardId(), "" + dervorin.getCardId()}, (String[]) optionalStartOfRegroupDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(dervorin.getCardId()), String.valueOf(dervorin.getCardId())}, optionalStartOfRegroupDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P1, getCardActionId(optionalStartOfRegroupDecision, "Use "));
         playerDecided(P1, String.valueOf(cardInHand1.getCardId()));
 
         final AwaitingDecision regroupPhaseActionDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, regroupPhaseActionDecision.getDecisionType());
-        validateContents(new String[]{}, (String[]) regroupPhaseActionDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{}, regroupPhaseActionDecision.getDecisionParameters().get("cardId"));
 
         assertEquals(Phase.REGROUP, _game.getGameState().getCurrentPhase());
     }
@@ -206,8 +206,8 @@ public class TriggersAtTest extends AbstractAtTest {
     public void musterForShadowSideTriggersCorrectly() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl musterWitchKing = new LotroPhysicalCardImpl(100, "11_226", P2, _cardLibrary.getLotroCardBlueprint("11_226"));
-        LotroPhysicalCardImpl musterWitchKing2 = new LotroPhysicalCardImpl(101, "11_226", P2, _cardLibrary.getLotroCardBlueprint("11_226"));
+        PhysicalCardImpl musterWitchKing = new PhysicalCardImpl(100, "11_226", P2, _cardLibrary.getLotroCardBlueprint("11_226"));
+        PhysicalCardImpl musterWitchKing2 = new PhysicalCardImpl(101, "11_226", P2, _cardLibrary.getLotroCardBlueprint("11_226"));
 
         skipMulligans();
 
@@ -252,9 +252,9 @@ public class TriggersAtTest extends AbstractAtTest {
     public void replaceSiteNotPossibleWithMountDoom() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        LotroPhysicalCardImpl gandalf = new LotroPhysicalCardImpl(100, "1_72", P1, _cardLibrary.getLotroCardBlueprint("1_72"));
-        LotroPhysicalCardImpl traveledLeader = new LotroPhysicalCardImpl(101, "12_34", P1, _cardLibrary.getLotroCardBlueprint("12_34"));
-        LotroPhysicalCardImpl mountDoom = new LotroPhysicalCardImpl(102, "15_193", P2, _cardLibrary.getLotroCardBlueprint("15_193"));
+        PhysicalCardImpl gandalf = new PhysicalCardImpl(100, "1_72", P1, _cardLibrary.getLotroCardBlueprint("1_72"));
+        PhysicalCardImpl traveledLeader = new PhysicalCardImpl(101, "12_34", P1, _cardLibrary.getLotroCardBlueprint("12_34"));
+        PhysicalCardImpl mountDoom = new PhysicalCardImpl(102, "15_193", P2, _cardLibrary.getLotroCardBlueprint("15_193"));
 
         skipMulligans();
 
@@ -295,13 +295,13 @@ public class TriggersAtTest extends AbstractAtTest {
 
         final AwaitingDecision regroupActionDecision = _userFeedback.getAwaitingDecision(P1);
         assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, regroupActionDecision.getDecisionType());
-        validateContents(new String[]{"" + traveledLeader.getCardId()}, (String[]) regroupActionDecision.getDecisionParameters().get("cardId"));
+        validateContents(new String[]{String.valueOf(traveledLeader.getCardId())}, regroupActionDecision.getDecisionParameters().get("cardId"));
 
         playerDecided(P1, "0");
 
         LotroPhysicalCard siteOne = _game.getGameState().getSite(1);
 
-        playerDecided(P1, "" + siteOne.getCardId());
+        playerDecided(P1, String.valueOf(siteOne.getCardId()));
 
         assertEquals(siteOne, _game.getGameState().getSite(1));
     }

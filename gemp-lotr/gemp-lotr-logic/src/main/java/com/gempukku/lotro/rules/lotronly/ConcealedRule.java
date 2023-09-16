@@ -27,7 +27,7 @@ public class ConcealedRule {
             new AbstractActionProxy() {
                 @Override
                 public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(final DefaultGame game, EffectResult effectResult) {
-                    if (TriggerConditions.moves(game, effectResult)
+                    if (TriggerConditions.moves(effectResult)
                             && game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP) {
                         List<RequiredTriggerAction> actions = new ArrayList<>();
 

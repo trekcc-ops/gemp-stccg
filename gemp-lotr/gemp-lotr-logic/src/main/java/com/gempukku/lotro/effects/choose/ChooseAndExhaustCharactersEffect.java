@@ -22,13 +22,8 @@ public class ChooseAndExhaustCharactersEffect extends ChooseActiveCardsEffect {
 
     @Override
     protected Filter getExtraFilterForPlaying(DefaultGame game) {
-        return new Filter() {
-            @Override
-            public boolean accepts(DefaultGame game, LotroPhysicalCard physicalCard) {
-                return game.getModifiersQuerying().canBeExerted(game, _action.getActionSource(), physicalCard)
-                        && game.getModifiersQuerying().getVitality(game, physicalCard) > 1;
-            }
-        };
+        return (game1, physicalCard) -> game1.getModifiersQuerying().canBeExerted(game1, _action.getActionSource(), physicalCard)
+                && game1.getModifiersQuerying().getVitality(game1, physicalCard) > 1;
     }
 
     @Override

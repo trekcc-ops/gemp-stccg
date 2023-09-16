@@ -46,20 +46,8 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         _ipBanDAO = (IpBanDAO) _objects.get(IpBanDAO.class);
     }
 
-    private static class RequestInformation {
-        private final String uri;
-        private final String remoteIp;
-        private final long requestTime;
+    private record RequestInformation(String uri, String remoteIp, long requestTime) {
 
-        private RequestInformation(String uri, String remoteIp, long requestTime) {
-            this.uri = uri;
-            this.remoteIp = remoteIp;
-            this.requestTime = requestTime;
-        }
-
-        public void printLog(int statusCode, long finishedTime) {
-            _accesslog.debug(remoteIp + "," + statusCode + "," + uri + "," + (finishedTime - requestTime));
-        }
     }
 
     @Override

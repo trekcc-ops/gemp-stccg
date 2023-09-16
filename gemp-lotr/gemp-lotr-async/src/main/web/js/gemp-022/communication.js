@@ -913,7 +913,7 @@ var GempLotrCommunication = Class.extend({
         });
     },
     
-    previewSealedLeague:function (format, start, serieDuration, maxMatches, name, cost, callback, errorMap) {
+    previewSealedLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/previewSealedLeague",
@@ -921,7 +921,7 @@ var GempLotrCommunication = Class.extend({
             data:{
                 format:format,
                 start:start,
-                serieDuration:serieDuration,
+                seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
                 cost:cost
@@ -932,7 +932,7 @@ var GempLotrCommunication = Class.extend({
         });
     },
     
-    addSealedLeague:function (format, start, serieDuration, maxMatches, name, cost, callback, errorMap) {
+    addSealedLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addSealedLeague",
@@ -940,7 +940,7 @@ var GempLotrCommunication = Class.extend({
             data:{
                 format:format,
                 start:start,
-                serieDuration:serieDuration,
+                seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
                 cost:cost
@@ -951,7 +951,7 @@ var GempLotrCommunication = Class.extend({
         });
     },
     
-    previewSoloDraftLeague:function (format, start, serieDuration, maxMatches, name, cost, callback, errorMap) {
+    previewSoloDraftLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/previewSoloDraftLeague",
@@ -959,7 +959,7 @@ var GempLotrCommunication = Class.extend({
             data:{
                 format:format,
                 start:start,
-                serieDuration:serieDuration,
+                seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
                 cost:cost
@@ -970,7 +970,7 @@ var GempLotrCommunication = Class.extend({
         });
     },
     
-    addSoloDraftLeague:function (format, start, serieDuration, maxMatches, name, cost, callback, errorMap) {
+    addSoloDraftLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addSoloDraftLeague",
@@ -978,7 +978,7 @@ var GempLotrCommunication = Class.extend({
             data:{
                 format:format,
                 start:start,
-                serieDuration:serieDuration,
+                seriesDuration:seriesDuration,
                 maxMatches:maxMatches,
                 name:name,
                 cost:cost
@@ -989,7 +989,7 @@ var GempLotrCommunication = Class.extend({
         });
     },
     
-    previewConstructedLeague:function (start, collectionType, prizeMultiplier, name, cost, formats, serieDurations, maxMatches, callback, errorMap) {
+    previewConstructedLeague:function (start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/previewConstructedLeague",
@@ -1001,7 +1001,7 @@ var GempLotrCommunication = Class.extend({
                 name:name,
                 cost:cost,
                 format:formats,
-                serieDuration:serieDurations,
+                seriesDuration:seriesDurations,
                 maxMatches:maxMatches
             },
             success:this.deliveryCheck(callback),
@@ -1010,7 +1010,7 @@ var GempLotrCommunication = Class.extend({
         });
     },
     
-    addConstructedLeague:function (start, collectionType, prizeMultiplier, name, cost, formats, serieDurations, maxMatches, callback, errorMap) {
+    addConstructedLeague:function (start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addConstructedLeague",
@@ -1022,7 +1022,7 @@ var GempLotrCommunication = Class.extend({
                 name:name,
                 cost:cost,
                 format:formats,
-                serieDuration:serieDurations,
+                seriesDuration:seriesDurations,
                 maxMatches:maxMatches
             },
             success:this.deliveryCheck(callback),

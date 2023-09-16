@@ -58,7 +58,7 @@ public class GameTable {
     }
 
     public Set<GameParticipant> getPlayers() {
-        return Collections.unmodifiableSet(new HashSet<>(players.values()));
+        return Set.copyOf(players.values());
     }
 
     public GameSettings getGameSettings() {

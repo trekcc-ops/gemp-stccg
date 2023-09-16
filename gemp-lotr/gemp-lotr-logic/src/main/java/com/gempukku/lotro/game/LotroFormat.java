@@ -9,61 +9,58 @@ import java.util.List;
 import java.util.Map;
 
 public interface LotroFormat {
-    public boolean isOrderedSites();
+    boolean isOrderedSites();
 
-    public boolean canCancelRingBearerSkirmish();
+    boolean canCancelRingBearerSkirmish();
 
-    public boolean hasRuleOfFour();
+    boolean hasRuleOfFour();
 
-    public boolean hasMulliganRule();
+    boolean hasMulliganRule();
 
-    public boolean winWhenShadowReconciles();
+    boolean winWhenShadowReconciles();
 
-    public boolean discardPileIsPublic();
+    boolean discardPileIsPublic();
 
-    public boolean winOnControlling5Sites();
+    boolean winOnControlling5Sites();
 
-    public boolean isPlaytest();
-    public boolean hallVisible();
+    boolean isPlaytest();
 
-    public String getName();
+    String getName();
 
-    public String getCode();
-    public int getOrder();
+    String getCode();
+    int getOrder();
 
-    public String validateCard(String cardId);
+    String validateCard(String cardId);
 
-    public List<String> validateDeck(LotroDeck deck);
-    public String validateDeckForHall(LotroDeck deck);
+    List<String> validateDeck(LotroDeck deck);
+    String validateDeckForHall(LotroDeck deck);
 
-    public LotroDeck applyErrata(LotroDeck deck);
+    LotroDeck applyErrata(LotroDeck deck);
 
-    public List<Integer> getValidSets();
+    List<Integer> getValidSets();
 
-    public List<String> getBannedCards();
+    List<String> getBannedCards();
 
-    public List<String> getRestrictedCards();
+    List<String> getRestrictedCards();
 
-    public List<String> getValidCards();
+    List<String> getValidCards();
 
-    public List<String> getLimit2Cards();
+    List<String> getLimit2Cards();
 
-    public List<String> getLimit3Cards();
+    List<String> getLimit3Cards();
 
-    public List<String> getRestrictedCardNames();
+    List<String> getRestrictedCardNames();
 
-    public Map<String,String> getErrataCardMap();
+    Map<String,String> getErrataCardMap();
 
-    public String applyErrata(String bpID);
+    String applyErrata(String bpID);
 
-    public List<String> findBaseCards(String bpID);
+    List<String> findBaseCards(String bpID);
 
-    public SitesBlock getSiteBlock();
+    SitesBlock getSiteBlock();
 
-    public String getSurveyUrl();
+    int getHandSize();
 
-    public int getHandSize();
-
-    public Adventure getAdventure();
-    public JSONDefs.Format Serialize();
+    Adventure getAdventure();
+    JSONDefs.Format Serialize();
 }

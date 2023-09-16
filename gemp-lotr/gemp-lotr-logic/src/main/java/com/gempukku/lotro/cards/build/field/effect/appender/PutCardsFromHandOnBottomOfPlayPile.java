@@ -39,7 +39,7 @@ public class PutCardsFromHandOnBottomOfPlayPile implements EffectAppenderProduce
 
         result.addEffectAppender(
                 CardResolver.resolveCardsInHand(filter, valueSource, "_temp", player, player,
-                        "Choose cards from hand", environment));
+                        "Choose cards from hand to put beneath play pile", environment));
         result.addEffectAppender(
                 new DelayedAppender<>() {
                     @Override

@@ -15,7 +15,6 @@ import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.NegateWoundEffect;
 import com.gempukku.lotro.effects.WoundCharactersEffect;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
 import org.json.simple.JSONObject;
 
@@ -46,10 +45,6 @@ public class NegateWound implements EffectAppenderProducer {
                         return new NegateWoundEffect(woundEffect, Filters.in(cards));
                     }
 
-                    @Override
-                    public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
-                        return true;
-                    }
                 });
 
         return result;

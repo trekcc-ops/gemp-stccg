@@ -21,16 +21,6 @@ public class RemoveCardsFromDiscardEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return null;
-    }
-
-    @Override
     public boolean isPlayableInFull(DefaultGame game) {
         for (LotroPhysicalCard physicalCard : _cardsToRemove) {
             if (physicalCard.getZone() != Zone.DISCARD)
