@@ -60,7 +60,7 @@ public abstract class ChooseActiveCardsEffect extends AbstractEffect {
     @Override
     protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
         final Collection<LotroPhysicalCard> matchingCards = Filters.filterActive(game, Filters.and(_filters, getExtraFilterForPlaying(game)));
-        // Lets get the count realistic
+        // Let's get the count realistic
         int maximum = Math.min(_maximum, matchingCards.size());
 
         int minimum = _minimum;

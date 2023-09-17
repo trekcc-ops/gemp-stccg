@@ -105,11 +105,11 @@ public class LotroPlayUtils extends PlayUtils {
                 return false;
         }
 
-        // Check if can play extra costs
+        // Check if player can play extra costs
         if (!game.getModifiersQuerying().canPayExtraCostsToPlay(game, card))
             return false;
 
-        if (!game.getModifiersQuerying().canPlayCard(game, card.getOwner(), card))
+        if (game.getModifiersQuerying().canNotPlayCard(game, card.getOwner(), card))
             return false;
 
         // Check uniqueness

@@ -17,7 +17,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,8 +34,6 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
     private final LotroFormatLibrary _formatLibrary;
     private final CardBlueprintLibrary _library;
 
-    private static final Logger _log = Logger.getLogger(LeagueRequestHandler.class);
-
     public LeagueRequestHandler(Map<Type, Object> context) {
         super(context);
 
@@ -49,7 +46,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("") && request.method() == HttpMethod.GET) {
-            getNonExpiredLeagues(request, responseWriter);
+            getNonExpiredLeagues(responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getLeagueInformation(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
@@ -115,7 +112,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
         leagueElem.setAttribute("end", String.valueOf(end));
 
         for (LeagueSeriesData serie : series) {
-            Element seriesElem = doc.createElement("serie");
+            Element seriesElem = doc.createElement("series");
             seriesElem.setAttribute("type", serie.getName());
             seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
             seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
@@ -157,7 +154,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
         responseWriter.writeXmlResponse(doc);
     }
 
-    private void getNonExpiredLeagues(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    private void getNonExpiredLeagues(ResponseWriter responseWriter) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

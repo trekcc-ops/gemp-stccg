@@ -129,7 +129,7 @@ var LeagueResultsUI = Class.extend({
             var matchResults = $("<div id='leaguematches'></div>");
             tabDiv.append(matchResults);
 
-            var series = league.getElementsByTagName("serie");
+            var series = league.getElementsByTagName("series");
             for (var j = 0; j < series.length; j++) {
                 var serie = series[j];
                 matchResults.append("<div>Serie " + (j + 1) + "</div>");

@@ -11,13 +11,8 @@ public class User {
 
     public enum Type {
         ADMIN("a"),
-        //wow this is such a better idea than a blank column
-        //DEACTIVATED("d"),
         LEAGUE_ADMIN("l"),
         PLAY_TESTER("p"),
-        //PLAY_TESTING_ADMIN("t"),
-        //COMMENTATOR("c"),
-        //COMMENTATOR_ADMIN("m"),
         UNBANNED("n"),
         USER("u");
 

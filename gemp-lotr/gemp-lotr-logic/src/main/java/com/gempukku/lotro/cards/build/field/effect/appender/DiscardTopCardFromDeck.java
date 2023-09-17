@@ -31,7 +31,7 @@ public class DiscardTopCardFromDeck implements EffectAppenderProducer {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                // Don't check if can discard top cards, since it's a cost
+                // Don't check if player can discard top cards, since it's a cost
                 final DefaultGame game = actionContext.getGame();
                 return game.getGameState().getDeck(deckId).size() >= count
                         && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(game, actionContext.getPerformingPlayer(), actionContext.getSource()));

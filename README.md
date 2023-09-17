@@ -1,7 +1,7 @@
 # gemp-lotr
 GEMP is a platform for running a rules-enforced CCG in a web-hosted fashion, so players can play in their browser.  This instance of GEMP is for the Lord of the Rings TCG, which has a public instance [hosted here](https://play.lotrtcgpc.net) by the [LOTR-TCG Player's Council](https://lotrtcgpc.net).
 
-The engine is adaptable to other games, but essentially requires forking and ripping out all of the LOTR-based stuff and replacing it with context specific to the game of your choice.  The [Star Wars CCG Players Committee](https://www.starwarsccg.org/) has done so with [their SWCCG GEMP](https://github.com/PlayersCommittee/gemp-swccg-public), which is [hosted publicly here](https://www.starwarsccg.org/).  If forking for a new game, we recommend using this one as the base, as it contains several advancements not in the SW GEMP, including JSON-based card definitions and an updated Java version.
+The engine is adaptable to other games, but essentially requires forking and ripping out all the LOTR-based stuff and replacing it with context specific to the game of your choice.  The [Star Wars CCG Players Committee](https://www.starwarsccg.org/) has done so with [their SWCCG GEMP](https://github.com/PlayersCommittee/gemp-swccg-public), which is [hosted publicly here](https://www.starwarsccg.org/).  If forking for a new game, we recommend using this one as the base, as it contains several advancements not in the SW GEMP, including JSON-based card definitions and an updated Java version.
 
 # Getting Help
 
@@ -23,7 +23,7 @@ gemp-lotr-async is also the home for the web portion of the project; everything 
 
 This module contains the card definitions of both styles.  Originally, cards were each written in Java, one class per card, and the majority of LOTR-TCG cards are still implemented in that format here, in [/src/main/java/com/gempukku/lotro/cards](gemp-lotr/gemp-lotr-cards/src/main/java/com/gempukku/lotro/cards).  
 
-However, in August 2019 work was underway to implement a "Second Edition" fan set, and requiring a server restart for every balance update and addition was proving to be too obnoxious, so the engine was extended to permit definitions of cards in JSON, which, as data, could simply be reloaded with an admin command rather than requiring a recompile.  To date, all of the following card sets are implemented in JSON and not Java:
+However, in August 2019 work was underway to implement a "Second Edition" fan set, and requiring a server restart for every balance update and addition was proving to be too obnoxious, so the engine was extended to permit definitions of cards in JSON, which, as data, could simply be reloaded with an admin command rather than requiring a recompile.  To date, all the following card sets are implemented in JSON and not Java:
 
 * 0 (Promotional)
 * 1 (The Fellowship of the Ring)

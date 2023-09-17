@@ -592,20 +592,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public boolean isAllyAllowedToParticipateInArcheryFire(DefaultGame game, LotroPhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
-                if (modifier.isAllyParticipateInArcheryFire(game, card))
-                    return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
     public boolean isAllyAllowedToParticipateInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
         LoggingThreadLocal.logMethodStart();
         try {
@@ -656,11 +642,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public boolean canPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
+    public boolean canNotPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
         for (Modifier modifier : getModifiers(game, ModifierEffect.ACTION_MODIFIER))
             if (!modifier.canPlayCard(game, performingPlayer, card))
-                return false;
-        return true;
+                return true;
+        return false;
     }
 
     @Override
@@ -1029,15 +1015,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 return false;
 
         return true;
-    }
-
-    @Override
-    public int getSanctuaryHealModifier(DefaultGame game) {
-        int result = 0;
-        for (Modifier modifier : getModifiers(game, ModifierEffect.SANCTUARY_HEAL_MODIFIER))
-            result += modifier.getSanctuaryHealModifier(game);
-
-        return result;
     }
 
     @Override

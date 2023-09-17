@@ -261,7 +261,7 @@ public class TribblesGame implements DefaultGame {
         }
 
         // Check if the card's playability has been modified in the current game state
-        if (!_modifiersLogic.canPlayCard(this, card.getOwner(), card)) {
+        if (_modifiersLogic.canNotPlayCard(this, card.getOwner(), card)) {
 //            _gameState.sendMessage("getModifiersQuerying.canPlayCard failed");
             return false;
         }

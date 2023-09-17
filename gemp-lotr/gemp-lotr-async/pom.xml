@@ -52,7 +52,40 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+<!--                <executions>
+                    <execution>
+                        <id>build-async-jar</id>
+                        <phase>package</phase> -->
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <mainClass>com.gempukku.lotro.async.LotroAsyncServer</mainClass>
+                            </manifest>
+                        </archive>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <finalName>gemp-lotr-async</finalName>
+<!--                            <appendAssemblyId>false</appendAssemblyId> -->
+                    </configuration>
+<!--                        <goals><goal>assembly</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>zip-web-descriptor.xml</descriptor>
+                            </descriptors>
+                            <finalName>web</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <archive>
                         <manifest>
@@ -63,7 +96,7 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <finalName>gemp-lotr-async</finalName>
-                </configuration>
+                </configuration> -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

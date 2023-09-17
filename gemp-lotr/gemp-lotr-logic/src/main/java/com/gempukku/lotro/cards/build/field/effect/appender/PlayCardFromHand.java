@@ -34,7 +34,7 @@ public class PlayCardFromHand implements EffectAppenderProducer {
         if(noCheck)
         {
             //This range will cause choice checks to succeed even if no valid choices are found (which is how draw deck
-            // searching is supposed to work RAW).  However we don't want this to be the default, else dual-choice cards
+            // searching is supposed to work RAW).  However, we don't want this to be the default, else dual-choice cards
             // that play "from draw deck or discard pile" would allow empty sources to be chosen, which is NPE.
             countSource = ValueResolver.resolveEvaluator("0-1", 1, environment);
         }

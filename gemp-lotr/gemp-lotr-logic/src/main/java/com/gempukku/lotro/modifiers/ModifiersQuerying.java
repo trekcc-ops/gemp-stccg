@@ -93,8 +93,6 @@ public interface ModifiersQuerying {
 
     boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, LotroPhysicalCard card);
 
-    boolean isAllyAllowedToParticipateInArcheryFire(DefaultGame game, LotroPhysicalCard card);
-
     boolean isAllyAllowedToParticipateInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card);
 
     boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card);
@@ -104,7 +102,7 @@ public interface ModifiersQuerying {
     // Playing actions
     boolean canPlayAction(DefaultGame game, String performingPlayer, Action action);
 
-    boolean canPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card);
+    boolean canNotPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card);
 
     boolean canHavePlayedOn(DefaultGame game, LotroPhysicalCard playedCard, LotroPhysicalCard target);
 
@@ -128,7 +126,6 @@ public interface ModifiersQuerying {
     boolean canBeReturnedToHand(DefaultGame game, LotroPhysicalCard card, LotroPhysicalCard source);
 
     boolean canDrawCardNoIncrement(DefaultGame game, String playerId);
-
     boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId);
 
     boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
@@ -152,8 +149,6 @@ public interface ModifiersQuerying {
     boolean canReplaceSite(DefaultGame game, String playerId, LotroPhysicalCard siteToReplace);
 
     boolean canPlaySite(DefaultGame game, String playerId);
-
-    int getSanctuaryHealModifier(DefaultGame game);
 
     int getPotentialDiscount(DefaultGame game, LotroPhysicalCard playedCard);
 

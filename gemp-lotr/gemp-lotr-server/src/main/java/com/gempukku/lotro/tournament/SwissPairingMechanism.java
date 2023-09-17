@@ -74,7 +74,7 @@ public class SwissPairingMechanism implements PairingMechanism {
                 if (!previouslyPaired.get(firstCarryOver).contains(player)) {
                     // This might be a good pairing
                     pairingsResult.put(firstCarryOver, player);
-                    // Lets give it a try
+                    // Let's give it a try
                     boolean success = tryPairBracketAndFurther(bracketIndex, carryOverPlayers, carryOverFromThisBracket, playersGroupedByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
                     if (success) {
                         return true;
@@ -97,7 +97,7 @@ public class SwissPairingMechanism implements PairingMechanism {
                     if (!previouslyPaired.get(firstPlayer).contains(secondPlayer)) {
                         // This pairing might work
                         pairingsResult.put(firstPlayer, secondPlayer);
-                        // Lets give it a try
+                        // Let's give it a try
                         boolean success = tryPairBracketAndFurther(bracketIndex, Collections.emptySet(), carryOverFromThisBracket, playersGroupedByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
                         if (success) {
                             return true;

@@ -434,7 +434,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             leagueElem.setAttribute("end", String.valueOf(end));
 
             for (LeagueSeriesData serie : series) {
-                Element seriesElem = doc.createElement("serie");
+                Element seriesElem = doc.createElement("series");
                 seriesElem.setAttribute("type", serie.getName());
                 seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
                 seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
@@ -540,7 +540,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             leagueElem.setAttribute("end", String.valueOf(end));
 
             for (LeagueSeriesData serie : series) {
-                Element seriesElem = doc.createElement("serie");
+                Element seriesElem = doc.createElement("series");
                 seriesElem.setAttribute("type", serie.getName());
                 seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
                 seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
@@ -651,7 +651,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             leagueElem.setAttribute("end", String.valueOf(end));
 
             for (LeagueSeriesData serie : series) {
-                Element seriesElem = doc.createElement("serie");
+                Element seriesElem = doc.createElement("series");
                 seriesElem.setAttribute("type", serie.getName());
                 seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
                 seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
