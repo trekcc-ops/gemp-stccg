@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -201,11 +200,16 @@ public class HallServer extends AbstractServer {
                     _hallChat.sendToUser("System", from, message.replace("\n", "<br />"));
                 });
         _hallChat.addChatCommandCallback("noCommand",
-                (from, parameters, admin) -> _hallChat.sendToUser("System", from, "\"" + parameters + "\" is not a recognized command."));
+                (from, parameters, admin) -> _hallChat.sendToUser(
+                        "System", from, "\"" + parameters + "\" is not a recognized command."
+                ));
 
-/*        _tournamentQueues.put("fotr_queue", new ImmediateRecurringQueue(1500, "fotr_block",
-                CollectionType.ALL_CARDS, "fotrQueue-", "Fellowship Block", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
+/*        _tournamentQueues.put("fotr_queue", new ImmediateRecurringQueue(
+                1500, "Tribbles", CollectionType.ALL_CARDS, "tribblesQueue-",
+                "Tribbles Block", 4, true, tournamentService,
+                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"),
+                _pairingMechanismRegistry.getPairingMechanism("singleElimination")
+        ));
         _tournamentQueues.put("ts_queue", new ImmediateRecurringQueue(1500, "towers_standard",
                 CollectionType.ALL_CARDS, "tsQueue-", "Towers Standard", 4,
                 true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
@@ -216,20 +220,18 @@ public class HallServer extends AbstractServer {
                 CollectionType.ALL_CARDS, "expandedQueue-", "Expanded", 4,
                 true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
 */
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 /*        try {
-            _tournamentQueues.put("fotr_daily_eu", new RecurringScheduledQueue(sdf.parse("2013-01-15 19:30:00").getTime(), _repeatTournaments, "fotrDailyEu-", "Daily Gondor Fellowship Block", 0,
+            _tournamentQueues.put("fotr_daily_eu", new RecurringScheduledQueue(7, "fotrDailyEu-", "Daily Gondor Fellowship Block", 0,
                     true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
                     "fotr_block", 4));
-            _tournamentQueues.put("fotr_daily_us", new RecurringScheduledQueue(sdf.parse("2013-01-16 00:30:00").getTime(), _repeatTournaments, "fotrDailyUs-", "Daily Rohan Fellowship Block", 0,
+            _tournamentQueues.put("fotr_daily_us", new RecurringScheduledQueue(7, "fotrDailyUs-", "Daily Rohan Fellowship Block", 0,
                     true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
                     "fotr_block", 4));
-            _tournamentQueues.put("movie_daily_eu", new RecurringScheduledQueue(sdf.parse("2013-01-16 19:30:00").getTime(), _repeatTournaments, "movieDailyEu-", "Daily Gondor Movie Block", 0,
+            _tournamentQueues.put("movie_daily_eu", new RecurringScheduledQueue(7, "movieDailyEu-", "Daily Gondor Movie Block", 0,
                     true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
                     "movie", 4));
-            _tournamentQueues.put("movie_daily_us", new RecurringScheduledQueue(sdf.parse("2013-01-17 00:30:00").getTime(), _repeatTournaments, "movieDailyUs-", "Daily Rohan Movie Block", 0,
+            _tournamentQueues.put("movie_daily_us", new RecurringScheduledQueue(7, "movieDailyUs-", "Daily Rohan Movie Block", 0,
                     true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
                     "movie", 4));
         } catch (ParseException exp) {
@@ -553,7 +555,7 @@ public class HallServer extends AbstractServer {
         final boolean isAdmin = player.getType().contains("a");
         _hallDataAccessLock.readLock().lock();
         try {
-            visitor.serverTime(DateUtils.getStringDateWithHour());
+            visitor.serverTime(DateUtils.getCurrentDateAsString());
             if (_motd != null)
                 visitor.motd(_motd);
 
@@ -671,10 +673,6 @@ public class HallServer extends AbstractServer {
                         collectionCount += collection.getItemCount(id);
                     }
                 }
-
-//                for(String id : format.findBaseCards(cardCount.getKey())) {
-//                    collectionCount += collection.getItemCount(id);
-//                }
 
                 if (collectionCount < cardCount.getValue()) {
                     String cardName;

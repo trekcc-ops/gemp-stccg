@@ -11,7 +11,6 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
 import com.gempukku.lotro.effects.EffectResult;
 
 import java.util.Collection;

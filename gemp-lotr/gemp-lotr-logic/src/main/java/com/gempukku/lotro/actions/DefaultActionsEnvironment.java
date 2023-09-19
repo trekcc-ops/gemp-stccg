@@ -12,7 +12,7 @@ import java.util.*;
 public class DefaultActionsEnvironment implements ActionsEnvironment {
     private static final Logger LOG = Logger.getLogger(DefaultActionsEnvironment.class);
     private final DefaultGame _lotroGame;
-    private final ActionStack _actionStack;
+    private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final Map<Phase, List<ActionProxy>> _untilStartOfPhaseActionProxies = new HashMap<>();
     private final Map<Phase, List<ActionProxy>> _untilEndOfPhaseActionProxies = new HashMap<>();
@@ -23,7 +23,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final List<EffectResult> turnEffectResults = new LinkedList<>();
     private final List<EffectResult> phaseEffectResults = new LinkedList<>();
 
-    public DefaultActionsEnvironment(DefaultGame lotroGame, ActionStack actionStack) {
+    public DefaultActionsEnvironment(DefaultGame lotroGame, Stack<Action> actionStack) {
         _lotroGame = lotroGame;
         _actionStack = actionStack;
     }
@@ -235,11 +235,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     @Override
     public void addActionToStack(Action action) {
-        _actionStack.stackAction(action);
+        _actionStack.add(action);
     }
 
-    @Override
-    public <T extends Action> T findTopmostActionOfType(Class<T> clazz) {
-        return _actionStack.findTopmostActionOfType(clazz);
-    }
 }

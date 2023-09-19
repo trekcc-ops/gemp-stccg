@@ -79,7 +79,6 @@ public abstract class ChooseActiveCardsEffect extends AbstractEffect {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<LotroPhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            validateChoice();
                             if (_source != null && selectedCards.size() > 0)
                                 game.getGameState().cardAffectsCard(_playerId, _source, selectedCards);
                             cardsSelected(game, selectedCards);
@@ -92,7 +91,4 @@ public abstract class ChooseActiveCardsEffect extends AbstractEffect {
 
     protected abstract void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> cards);
 
-    protected void validateChoice() {
-
-    }
 }

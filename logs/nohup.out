@@ -7709,3 +7709,488 @@ Listening for transport dt_socket at address: 8000
 2023-09-16 16:15:29,603 DEBUG HallRequestHandler:17 - HTTP 401 response for /gemp-lotr-server/hall?participantId=&_=1694880929458
 2023-09-16 16:15:29,605 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/deck/list?participantId=&_=1694880929459
 2023-09-16 16:15:30,610 DEBUG LoggingProxy:34 - GameHistoryDAO::getGamesPlayedCount(...) 127ms
+2023-09-16 16:28:19,994 DEBUG GempukkuHttpRequestHandler:87 - HTTP 404 response for 172.28.1.1: /favicon.ico
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Error: Unable to access jarfile /etc/gemp-lotr/gemp-lotr-async/target/web.jar
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+2023-09-17 12:36:55,120  INFO GempukkuServer:26 - GempukkuServer loading prerequisites...
+2023-09-17 12:36:55,130 DEBUG ServerBuilder:31 - Calling CreatePrerequisites function
+2023-09-17 12:36:55,670  INFO CardBlueprintLibrary:59 - Locking blueprint library in constructor
+2023-09-17 12:36:55,672  INFO CardBlueprintLibrary:62 - Unlocking blueprint library in constructor
+2023-09-17 12:36:55,745 DEBUG CardBlueprintLibrary:158 - Loading set 101 (Premiere) to _allsets
+2023-09-17 12:36:55,754 DEBUG CardBlueprintLibrary:158 - Loading set 144 (More Tribbles, More Troubles) to _allsets
+2023-09-17 12:36:55,760 DEBUG CardBlueprintLibrary:158 - Loading set 145 (No Tribble at All) to _allsets
+2023-09-17 12:36:55,767 DEBUG CardBlueprintLibrary:158 - Loading set 150 (Trials and Tribble-ations) to _allsets
+2023-09-17 12:36:55,774 DEBUG CardBlueprintLibrary:158 - Loading set 157 (Nothing But Tribble) to _allsets
+2023-09-17 12:36:55,779 DEBUG CardBlueprintLibrary:158 - Loading set 164 (Big Tribble in Little Qo'noS) to _allsets
+2023-09-17 12:36:55,785 DEBUG CardBlueprintLibrary:158 - Loading set 190 (Star Trek 50 [Tribbles]) to _allsets
+2023-09-17 12:36:55,792 DEBUG CardBlueprintLibrary:158 - Loading set 221 (A Tribble of a Different Color) to _allsets
+2023-09-17 12:36:55,851 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set101.hjson
+2023-09-17 12:36:55,935 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set144.hjson
+2023-09-17 12:36:55,963 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set145.hjson
+2023-09-17 12:36:55,988 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set150.hjson
+2023-09-17 12:36:56,009 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set157.hjson
+2023-09-17 12:36:56,030 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set164.hjson
+2023-09-17 12:36:56,048 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set190.hjson
+2023-09-17 12:36:56,078 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set221.hjson
+2023-09-17 12:36:56,083 DEBUG CardBlueprintLibrary:257 - Java cards for set 101 successfully loaded
+2023-09-17 12:36:56,086 DEBUG CardBlueprintLibrary:257 - Java cards for set 144 successfully loaded
+2023-09-17 12:36:56,088 DEBUG CardBlueprintLibrary:257 - Java cards for set 145 successfully loaded
+2023-09-17 12:36:56,089 DEBUG CardBlueprintLibrary:257 - Java cards for set 150 successfully loaded
+2023-09-17 12:36:56,091 DEBUG CardBlueprintLibrary:257 - Java cards for set 157 successfully loaded
+2023-09-17 12:36:56,092 DEBUG CardBlueprintLibrary:257 - Java cards for set 164 successfully loaded
+2023-09-17 12:36:56,093 DEBUG CardBlueprintLibrary:257 - Java cards for set 190 successfully loaded
+2023-09-17 12:36:56,095 DEBUG CardBlueprintLibrary:257 - Java cards for set 221 successfully loaded
+2023-09-17 12:36:56,472 DEBUG ProductLibrary:82 - Loading pack definitions for Premiere - Booster
+2023-09-17 12:36:56,509 DEBUG ServerBuilder:42 - Ending CreatePrerequisites function
+2023-09-17 12:36:56,510  INFO GempukkuServer:29 - GempukkuServer loading DAOs...
+2023-09-17 12:36:56,519 DEBUG DbAccess:25 - Creating DbAccess for jdbc:mysql://db:3306/gemp_db
+2023-09-17 12:36:57,083 DEBUG DbAccess:85 - setupDataSource - connection successfully created
+2023-09-17 12:36:57,085 DEBUG DbAccess:33 - DbAccess - _dataSource created for jdbc:mysql://db:3306/gemp_db
+2023-09-17 12:36:57,187  INFO GempukkuServer:31 - GempukkuServer loading services...
+2023-09-17 12:36:57,188 DEBUG ServerBuilder:46 - Calling CreateServices function
+2023-09-17 12:36:57,498 TRACE Game Hall:103 - System: Welcome to room: Game Hall
+2023-09-17 12:36:57,507 DEBUG ServerBuilder:139 - Ending CreateServices function
+2023-09-17 12:36:57,508  INFO GempukkuServer:33 - GempukkuServer starting servers...
+2023-09-17 12:36:57,509 DEBUG ServerBuilder:150 - Function StartServers - starting HallServer
+2023-09-17 12:36:57,510 DEBUG AbstractServer:15 - Starting startServer function for HallServer
+2023-09-17 12:36:57,512 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.hall.HallServer
+2023-09-17 12:36:57,514 DEBUG AbstractServer:19 - Started: HallServer
+2023-09-17 12:36:57,515 DEBUG ITournamentService:131 - Calling getLiveTournaments function
+2023-09-17 12:36:57,516 DEBUG ITournamentService:133 - Created result object
+2023-09-17 12:36:57,518 DEBUG DbTournamentDAO:75 - Called getUnfinishedTournaments function
+2023-09-17 12:36:57,520 DEBUG DbTournamentDAO:76 - getUnfinishedTournaments function - attempting connection to org.apache.commons.dbcp.PoolingDataSource@77258e59
+2023-09-17 12:36:57,761 DEBUG LoggingProxy:34 - TournamentDAO::getUnstartedScheduledTournamentQueues(...) 242ms
+2023-09-17 12:36:57,762 DEBUG LoggingProxy:34 - TournamentDAO::getUnfinishedTournaments(...) 237ms
+2023-09-17 12:36:57,764 DEBUG ServerBuilder:152 - Function StartServers - starting LotroServer
+2023-09-17 12:36:57,765 DEBUG AbstractServer:15 - Starting startServer function for LotroServer
+2023-09-17 12:36:57,766 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.game.LotroServer
+2023-09-17 12:36:57,766 DEBUG AbstractServer:19 - Started: LotroServer
+2023-09-17 12:36:57,768 DEBUG ServerBuilder:154 - Function StartServers - starting ChatServer
+2023-09-17 12:36:57,769 DEBUG AbstractServer:15 - Starting startServer function for ChatServer
+2023-09-17 12:36:57,770 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.chat.ChatServer
+2023-09-17 12:36:57,771 DEBUG AbstractServer:19 - Started: ChatServer
+2023-09-17 12:36:57,772  INFO GempukkuServer:35 - GempukkuServer startup complete.
+2023-09-17 12:36:59,393 DEBUG LoggingProxy:34 - GameHistoryDAO::getGamesPlayedCount(...) 154ms
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+log4j:WARN No such property [immediateFlush] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [bufferSize] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [immediateFlush] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [bufferSize] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [immediateFlush] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [bufferSize] in org.apache.log4j.PatternLayout.
+2023-09-17 13:01:23,656  INFO GempukkuServer:26 - GempukkuServer loading prerequisites...
+2023-09-17 13:01:23,667 DEBUG ServerBuilder:31 - Calling CreatePrerequisites function
+2023-09-17 13:01:24,297  INFO CardBlueprintLibrary:59 - Locking blueprint library in constructor
+2023-09-17 13:01:24,299  INFO CardBlueprintLibrary:62 - Unlocking blueprint library in constructor
+2023-09-17 13:01:24,363 DEBUG CardBlueprintLibrary:158 - Loading set 101 (Premiere) to _allsets
+2023-09-17 13:01:24,368 DEBUG CardBlueprintLibrary:158 - Loading set 144 (More Tribbles, More Troubles) to _allsets
+2023-09-17 13:01:24,374 DEBUG CardBlueprintLibrary:158 - Loading set 145 (No Tribble at All) to _allsets
+2023-09-17 13:01:24,380 DEBUG CardBlueprintLibrary:158 - Loading set 150 (Trials and Tribble-ations) to _allsets
+2023-09-17 13:01:24,385 DEBUG CardBlueprintLibrary:158 - Loading set 157 (Nothing But Tribble) to _allsets
+2023-09-17 13:01:24,390 DEBUG CardBlueprintLibrary:158 - Loading set 164 (Big Tribble in Little Qo'noS) to _allsets
+2023-09-17 13:01:24,396 DEBUG CardBlueprintLibrary:158 - Loading set 190 (Star Trek 50 [Tribbles]) to _allsets
+2023-09-17 13:01:24,403 DEBUG CardBlueprintLibrary:158 - Loading set 221 (A Tribble of a Different Color) to _allsets
+2023-09-17 13:01:24,453 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set101.hjson
+2023-09-17 13:01:24,520 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set144.hjson
+2023-09-17 13:01:24,551 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set145.hjson
+2023-09-17 13:01:24,573 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set150.hjson
+2023-09-17 13:01:24,592 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set157.hjson
+2023-09-17 13:01:24,609 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set164.hjson
+2023-09-17 13:01:24,627 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set190.hjson
+2023-09-17 13:01:24,654 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set221.hjson
+2023-09-17 13:01:24,659 DEBUG CardBlueprintLibrary:257 - Java cards for set 101 successfully loaded
+2023-09-17 13:01:24,661 DEBUG CardBlueprintLibrary:257 - Java cards for set 144 successfully loaded
+2023-09-17 13:01:24,662 DEBUG CardBlueprintLibrary:257 - Java cards for set 145 successfully loaded
+2023-09-17 13:01:24,664 DEBUG CardBlueprintLibrary:257 - Java cards for set 150 successfully loaded
+2023-09-17 13:01:24,666 DEBUG CardBlueprintLibrary:257 - Java cards for set 157 successfully loaded
+2023-09-17 13:01:24,667 DEBUG CardBlueprintLibrary:257 - Java cards for set 164 successfully loaded
+2023-09-17 13:01:24,669 DEBUG CardBlueprintLibrary:257 - Java cards for set 190 successfully loaded
+2023-09-17 13:01:24,671 DEBUG CardBlueprintLibrary:257 - Java cards for set 221 successfully loaded
+2023-09-17 13:01:24,943 DEBUG ProductLibrary:82 - Loading pack definitions for Premiere - Booster
+2023-09-17 13:01:24,972 DEBUG ServerBuilder:42 - Ending CreatePrerequisites function
+2023-09-17 13:01:24,973  INFO GempukkuServer:29 - GempukkuServer loading DAOs...
+2023-09-17 13:01:24,982 DEBUG DbAccess:25 - Creating DbAccess for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:01:25,517 DEBUG DbAccess:85 - setupDataSource - connection successfully created
+2023-09-17 13:01:25,520 DEBUG DbAccess:33 - DbAccess - _dataSource created for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:01:25,623  INFO GempukkuServer:31 - GempukkuServer loading services...
+2023-09-17 13:01:25,625 DEBUG ServerBuilder:46 - Calling CreateServices function
+2023-09-17 13:01:25,976 TRACE Game Hall:103 - System: Welcome to room: Game Hall
+2023-09-17 13:01:25,989 DEBUG ServerBuilder:139 - Ending CreateServices function
+2023-09-17 13:01:25,991  INFO GempukkuServer:33 - GempukkuServer starting servers...
+2023-09-17 13:01:25,992 DEBUG ServerBuilder:150 - Function StartServers - starting HallServer
+2023-09-17 13:01:25,995 DEBUG AbstractServer:15 - Starting startServer function for HallServer
+2023-09-17 13:01:25,999 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.hall.HallServer
+2023-09-17 13:01:26,004 DEBUG AbstractServer:19 - Started: HallServer
+2023-09-17 13:01:26,006 DEBUG ITournamentService:131 - Calling getLiveTournaments function
+2023-09-17 13:01:26,008 DEBUG ITournamentService:133 - Created result object
+2023-09-17 13:01:26,010 DEBUG DbTournamentDAO:75 - Called getUnfinishedTournaments function
+2023-09-17 13:01:26,013 DEBUG DbTournamentDAO:76 - getUnfinishedTournaments function - attempting connection to org.apache.commons.dbcp.PoolingDataSource@77258e59
+2023-09-17 13:01:26,095 DEBUG ServerBuilder:152 - Function StartServers - starting LotroServer
+2023-09-17 13:01:26,099 DEBUG AbstractServer:15 - Starting startServer function for LotroServer
+2023-09-17 13:01:26,100 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.game.LotroServer
+2023-09-17 13:01:26,102 DEBUG AbstractServer:19 - Started: LotroServer
+2023-09-17 13:01:26,104 DEBUG ServerBuilder:154 - Function StartServers - starting ChatServer
+2023-09-17 13:01:26,107 DEBUG AbstractServer:15 - Starting startServer function for ChatServer
+2023-09-17 13:01:26,109 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.chat.ChatServer
+2023-09-17 13:01:26,112 DEBUG AbstractServer:19 - Started: ChatServer
+2023-09-17 13:01:26,119  INFO GempukkuServer:35 - GempukkuServer startup complete.
+2023-09-17 13:01:27,808 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/deck/list?participantId=&_=1694955687551
+2023-09-17 13:01:27,811 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/player?participantId=&_=1694955687549
+2023-09-17 13:01:27,810 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/player?participantId=&_=1694955687547
+2023-09-17 13:01:27,825 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/chat/Game%20Hall?participantId=&_=1694955687548
+2023-09-17 13:01:27,823 DEBUG HallRequestHandler:17 - HTTP 401 response for /gemp-lotr-server/hall?participantId=&_=1694955687550
+2023-09-17 13:01:29,552 DEBUG LoggingProxy:34 - GameHistoryDAO::getGamesPlayedCount(...) 134ms
+2023-09-17 13:01:36,309 DEBUG GempukkuHttpRequestHandler:87 - HTTP 404 response for 172.28.1.1: /gemp-lotr-server/playerStats?participantId=&_=1694955692341
+2023-09-17 13:01:37,808 DEBUG GempukkuHttpRequestHandler:87 - HTTP 404 response for 172.28.1.1: /gemp-lotr-server/gameHistory?start=0&count=20&participantId=&_=1694955692342
+2023-09-17 13:01:38,362 DEBUG GempukkuHttpRequestHandler:87 - HTTP 404 response for 172.28.1.1: /gemp-lotr-server/playerStats?participantId=&_=1694955692343
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+2023-09-17 13:08:28,441  INFO GempukkuServer:26 - GempukkuServer loading prerequisites...
+2023-09-17 13:08:28,450 DEBUG ServerBuilder:31 - Calling CreatePrerequisites function
+2023-09-17 13:08:29,057  INFO CardBlueprintLibrary:59 - Locking blueprint library in constructor
+2023-09-17 13:08:29,058  INFO CardBlueprintLibrary:62 - Unlocking blueprint library in constructor
+2023-09-17 13:08:29,142 DEBUG CardBlueprintLibrary:158 - Loading set 101 (Premiere) to _allsets
+2023-09-17 13:08:29,150 DEBUG CardBlueprintLibrary:158 - Loading set 144 (More Tribbles, More Troubles) to _allsets
+2023-09-17 13:08:29,158 DEBUG CardBlueprintLibrary:158 - Loading set 145 (No Tribble at All) to _allsets
+2023-09-17 13:08:29,165 DEBUG CardBlueprintLibrary:158 - Loading set 150 (Trials and Tribble-ations) to _allsets
+2023-09-17 13:08:29,173 DEBUG CardBlueprintLibrary:158 - Loading set 157 (Nothing But Tribble) to _allsets
+2023-09-17 13:08:29,180 DEBUG CardBlueprintLibrary:158 - Loading set 164 (Big Tribble in Little Qo'noS) to _allsets
+2023-09-17 13:08:29,187 DEBUG CardBlueprintLibrary:158 - Loading set 190 (Star Trek 50 [Tribbles]) to _allsets
+2023-09-17 13:08:29,194 DEBUG CardBlueprintLibrary:158 - Loading set 221 (A Tribble of a Different Color) to _allsets
+2023-09-17 13:08:29,256 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set101.hjson
+2023-09-17 13:08:29,383 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set144.hjson
+2023-09-17 13:08:29,420 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set145.hjson
+2023-09-17 13:08:29,448 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set150.hjson
+2023-09-17 13:08:29,477 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set157.hjson
+2023-09-17 13:08:29,496 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set164.hjson
+2023-09-17 13:08:29,516 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set190.hjson
+2023-09-17 13:08:29,550 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set221.hjson
+2023-09-17 13:08:29,558 DEBUG CardBlueprintLibrary:257 - Java cards for set 101 successfully loaded
+2023-09-17 13:08:29,559 DEBUG CardBlueprintLibrary:257 - Java cards for set 144 successfully loaded
+2023-09-17 13:08:29,561 DEBUG CardBlueprintLibrary:257 - Java cards for set 145 successfully loaded
+2023-09-17 13:08:29,563 DEBUG CardBlueprintLibrary:257 - Java cards for set 150 successfully loaded
+2023-09-17 13:08:29,564 DEBUG CardBlueprintLibrary:257 - Java cards for set 157 successfully loaded
+2023-09-17 13:08:29,566 DEBUG CardBlueprintLibrary:257 - Java cards for set 164 successfully loaded
+2023-09-17 13:08:29,567 DEBUG CardBlueprintLibrary:257 - Java cards for set 190 successfully loaded
+2023-09-17 13:08:29,569 DEBUG CardBlueprintLibrary:257 - Java cards for set 221 successfully loaded
+2023-09-17 13:08:30,036 DEBUG ProductLibrary:82 - Loading pack definitions for Premiere - Booster
+2023-09-17 13:08:30,072 DEBUG ServerBuilder:42 - Ending CreatePrerequisites function
+2023-09-17 13:08:30,074  INFO GempukkuServer:29 - GempukkuServer loading DAOs...
+2023-09-17 13:08:30,085 DEBUG DbAccess:25 - Creating DbAccess for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:08:30,672 DEBUG DbAccess:85 - setupDataSource - connection successfully created
+2023-09-17 13:08:30,673 DEBUG DbAccess:33 - DbAccess - _dataSource created for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:08:30,787  INFO GempukkuServer:31 - GempukkuServer loading services...
+2023-09-17 13:08:30,788 DEBUG ServerBuilder:46 - Calling CreateServices function
+2023-09-17 13:08:31,167 TRACE Game Hall:103 - System: Welcome to room: Game Hall
+2023-09-17 13:08:31,184 DEBUG ServerBuilder:139 - Ending CreateServices function
+2023-09-17 13:08:31,186  INFO GempukkuServer:33 - GempukkuServer starting servers...
+2023-09-17 13:08:31,187 DEBUG ServerBuilder:150 - Function StartServers - starting HallServer
+2023-09-17 13:08:31,189 DEBUG AbstractServer:15 - Starting startServer function for HallServer
+2023-09-17 13:08:31,191 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.hall.HallServer
+2023-09-17 13:08:31,196 DEBUG AbstractServer:19 - Started: HallServer
+2023-09-17 13:08:31,197 DEBUG ITournamentService:131 - Calling getLiveTournaments function
+2023-09-17 13:08:31,199 DEBUG ITournamentService:133 - Created result object
+2023-09-17 13:08:31,201 DEBUG DbTournamentDAO:75 - Called getUnfinishedTournaments function
+2023-09-17 13:08:31,202 DEBUG DbTournamentDAO:76 - getUnfinishedTournaments function - attempting connection to org.apache.commons.dbcp.PoolingDataSource@77258e59
+2023-09-17 13:08:31,288 DEBUG ServerBuilder:152 - Function StartServers - starting LotroServer
+2023-09-17 13:08:31,289 DEBUG AbstractServer:15 - Starting startServer function for LotroServer
+2023-09-17 13:08:31,290 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.game.LotroServer
+2023-09-17 13:08:31,292 DEBUG AbstractServer:19 - Started: LotroServer
+2023-09-17 13:08:31,294 DEBUG ServerBuilder:154 - Function StartServers - starting ChatServer
+2023-09-17 13:08:31,295 DEBUG AbstractServer:15 - Starting startServer function for ChatServer
+2023-09-17 13:08:31,296 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.chat.ChatServer
+2023-09-17 13:08:31,298 DEBUG AbstractServer:19 - Started: ChatServer
+2023-09-17 13:08:31,299  INFO GempukkuServer:35 - GempukkuServer startup complete.
+2023-09-17 13:08:33,357 DEBUG HallRequestHandler:17 - HTTP 401 response for /gemp-lotr-server/hall?participantId=&_=1694956113071
+2023-09-17 13:08:33,367 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/player?participantId=&_=1694956113068
+2023-09-17 13:08:33,369 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/chat/Game%20Hall?participantId=&_=1694956113069
+2023-09-17 13:08:33,367 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/player?participantId=&_=1694956113070
+2023-09-17 13:08:33,372 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/deck/list?participantId=&_=1694956113072
+2023-09-17 13:08:35,085 DEBUG LoggingProxy:34 - GameHistoryDAO::getGamesPlayedCount(...) 195ms
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+2023-09-17 13:35:58,703  INFO GempukkuServer:26 - GempukkuServer loading prerequisites...
+2023-09-17 13:35:58,718 DEBUG ServerBuilder:31 - Calling CreatePrerequisites function
+2023-09-17 13:35:59,298  INFO CardBlueprintLibrary:59 - Locking blueprint library in constructor
+2023-09-17 13:35:59,299  INFO CardBlueprintLibrary:62 - Unlocking blueprint library in constructor
+2023-09-17 13:35:59,362 DEBUG CardBlueprintLibrary:158 - Loading set 101 (Premiere) to _allsets
+2023-09-17 13:35:59,367 DEBUG CardBlueprintLibrary:158 - Loading set 144 (More Tribbles, More Troubles) to _allsets
+2023-09-17 13:35:59,373 DEBUG CardBlueprintLibrary:158 - Loading set 145 (No Tribble at All) to _allsets
+2023-09-17 13:35:59,379 DEBUG CardBlueprintLibrary:158 - Loading set 150 (Trials and Tribble-ations) to _allsets
+2023-09-17 13:35:59,386 DEBUG CardBlueprintLibrary:158 - Loading set 157 (Nothing But Tribble) to _allsets
+2023-09-17 13:35:59,393 DEBUG CardBlueprintLibrary:158 - Loading set 164 (Big Tribble in Little Qo'noS) to _allsets
+2023-09-17 13:35:59,400 DEBUG CardBlueprintLibrary:158 - Loading set 190 (Star Trek 50 [Tribbles]) to _allsets
+2023-09-17 13:35:59,408 DEBUG CardBlueprintLibrary:158 - Loading set 221 (A Tribble of a Different Color) to _allsets
+2023-09-17 13:35:59,475 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set101.hjson
+2023-09-17 13:35:59,594 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set144.hjson
+2023-09-17 13:35:59,632 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set145.hjson
+2023-09-17 13:35:59,656 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set150.hjson
+2023-09-17 13:35:59,674 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set157.hjson
+2023-09-17 13:35:59,693 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set164.hjson
+2023-09-17 13:35:59,714 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set190.hjson
+2023-09-17 13:35:59,735 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set221.hjson
+2023-09-17 13:35:59,739 DEBUG CardBlueprintLibrary:257 - Java cards for set 101 successfully loaded
+2023-09-17 13:35:59,741 DEBUG CardBlueprintLibrary:257 - Java cards for set 144 successfully loaded
+2023-09-17 13:35:59,743 DEBUG CardBlueprintLibrary:257 - Java cards for set 145 successfully loaded
+2023-09-17 13:35:59,744 DEBUG CardBlueprintLibrary:257 - Java cards for set 150 successfully loaded
+2023-09-17 13:35:59,745 DEBUG CardBlueprintLibrary:257 - Java cards for set 157 successfully loaded
+2023-09-17 13:35:59,746 DEBUG CardBlueprintLibrary:257 - Java cards for set 164 successfully loaded
+2023-09-17 13:35:59,748 DEBUG CardBlueprintLibrary:257 - Java cards for set 190 successfully loaded
+2023-09-17 13:35:59,750 DEBUG CardBlueprintLibrary:257 - Java cards for set 221 successfully loaded
+2023-09-17 13:36:00,069 DEBUG ProductLibrary:82 - Loading pack definitions for Premiere - Booster
+2023-09-17 13:36:00,104 DEBUG ServerBuilder:42 - Ending CreatePrerequisites function
+2023-09-17 13:36:00,106  INFO GempukkuServer:29 - GempukkuServer loading DAOs...
+2023-09-17 13:36:00,116 DEBUG DbAccess:25 - Creating DbAccess for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:36:00,503 DEBUG DbAccess:87 - setupDataSource - unable to connect
+2023-09-17 13:36:00,506 DEBUG DbAccess:33 - DbAccess - _dataSource created for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:36:00,696  INFO GempukkuServer:31 - GempukkuServer loading services...
+2023-09-17 13:36:00,698 DEBUG ServerBuilder:46 - Calling CreateServices function
+2023-09-17 13:36:01,144 TRACE Game Hall:103 - System: Welcome to room: Game Hall
+2023-09-17 13:36:01,225 DEBUG ServerBuilder:139 - Ending CreateServices function
+2023-09-17 13:36:01,227  INFO GempukkuServer:33 - GempukkuServer starting servers...
+2023-09-17 13:36:01,228 DEBUG ServerBuilder:150 - Function StartServers - starting HallServer
+2023-09-17 13:36:01,231 DEBUG AbstractServer:15 - Starting startServer function for HallServer
+2023-09-17 13:36:01,241 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.hall.HallServer
+2023-09-17 13:36:01,258 DEBUG AbstractServer:19 - Started: HallServer
+2023-09-17 13:36:01,260 DEBUG ITournamentService:131 - Calling getLiveTournaments function
+2023-09-17 13:36:01,262 DEBUG ITournamentService:133 - Created result object
+2023-09-17 13:36:01,288 DEBUG DbTournamentDAO:75 - Called getUnfinishedTournaments function
+2023-09-17 13:36:01,298 DEBUG DbTournamentDAO:76 - getUnfinishedTournaments function - attempting connection to org.apache.commons.dbcp.PoolingDataSource@5cdec700
+2023-09-17 13:36:01,338 DEBUG DbTournamentDAO:80 - Unable to connect to data source
+Exception in thread "main" java.lang.RuntimeException: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.gempukku.lotro.db.DbTournamentDAO.getUnfinishedTournaments(DbTournamentDAO.java:81)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:577)
+	at com.gempukku.lotro.log.LoggingProxy.lambda$createLoggingProxy$0(LoggingProxy.java:21)
+	at jdk.proxy2/jdk.proxy2.$Proxy5.getUnfinishedTournaments(Unknown Source)
+	at com.gempukku.lotro.tournament.TournamentService.getLiveTournaments(TournamentService.java:134)
+	at com.gempukku.lotro.hall.HallServer.doAfterStartup(HallServer.java:250)
+	at com.gempukku.lotro.AbstractServer.startServer(AbstractServer.java:20)
+	at com.gempukku.lotro.builder.ServerBuilder.StartServers(ServerBuilder.java:151)
+	at com.gempukku.lotro.async.GempukkuServer.<init>(GempukkuServer.java:34)
+	at com.gempukku.lotro.async.LotroAsyncServer.main(LotroAsyncServer.java:25)
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+2023-09-17 13:36:01,372 ERROR ServerCleaner:43 - Error while cleaning up a server
+java.lang.RuntimeException: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.gempukku.lotro.db.DbTournamentDAO.getUnstartedScheduledTournamentQueues(DbTournamentDAO.java:174)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:577)
+	at com.gempukku.lotro.log.LoggingProxy.lambda$createLoggingProxy$0(LoggingProxy.java:21)
+	at jdk.proxy2/jdk.proxy2.$Proxy5.getUnstartedScheduledTournamentQueues(Unknown Source)
+	at com.gempukku.lotro.tournament.TournamentService.getUnstartedScheduledTournamentQueues(TournamentService.java:191)
+	at com.gempukku.lotro.hall.HallServer.cleanup(HallServer.java:805)
+	at com.gempukku.lotro.ServerCleaner$CleaningThread.run(ServerCleaner.java:40)
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:828)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:448)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:198)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:683)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:191)
+	at org.apache.commons.dbcp.DriverManagerConnectionFactory.createConnection(DriverManagerConnectionFactory.java:78)
+	at org.apache.commons.dbcp.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:582)
+	at org.apache.commons.pool.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:1148)
+	at org.apache.commons.dbcp.PoolingDataSource.getConnection(PoolingDataSource.java:106)
+	at com.gempukku.lotro.db.DbTournamentDAO.getUnstartedScheduledTournamentQueues(DbTournamentDAO.java:160)
+	... 7 more
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:151)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:167)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:89)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:948)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:818)
+	... 17 more
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:579)
+	at java.base/sun.nio.ch.Net.connect(Net.java:568)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:585)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:63)
+	... 20 more
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:828)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:448)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:198)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:683)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:191)
+	at org.apache.commons.dbcp.DriverManagerConnectionFactory.createConnection(DriverManagerConnectionFactory.java:78)
+	at org.apache.commons.dbcp.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:582)
+	at org.apache.commons.pool.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:1148)
+	at org.apache.commons.dbcp.PoolingDataSource.getConnection(PoolingDataSource.java:106)
+	at com.gempukku.lotro.db.DbTournamentDAO.getUnfinishedTournaments(DbTournamentDAO.java:78)
+	... 10 more
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:151)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:167)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:89)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:948)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:818)
+	... 20 more
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:579)
+	at java.base/sun.nio.ch.Net.connect(Net.java:568)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:585)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:63)
+	... 23 more
+2023-09-17 13:37:02,901 DEBUG LoggingProxy:34 - TournamentDAO::getUnstartedScheduledTournamentQueues(...) 438ms
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+log4j:WARN No such property [immediateFlush] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [bufferSize] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [immediateFlush] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [bufferSize] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [immediateFlush] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [bufferSize] in org.apache.log4j.PatternLayout.
+2023-09-17 13:38:00,794  INFO GempukkuServer:26 - GempukkuServer loading prerequisites...
+2023-09-17 13:38:00,812 DEBUG ServerBuilder:31 - Calling CreatePrerequisites function
+2023-09-17 13:38:01,520  INFO CardBlueprintLibrary:59 - Locking blueprint library in constructor
+2023-09-17 13:38:01,523  INFO CardBlueprintLibrary:62 - Unlocking blueprint library in constructor
+2023-09-17 13:38:01,600 DEBUG CardBlueprintLibrary:158 - Loading set 101 (Premiere) to _allsets
+2023-09-17 13:38:01,608 DEBUG CardBlueprintLibrary:158 - Loading set 144 (More Tribbles, More Troubles) to _allsets
+2023-09-17 13:38:01,617 DEBUG CardBlueprintLibrary:158 - Loading set 145 (No Tribble at All) to _allsets
+2023-09-17 13:38:01,625 DEBUG CardBlueprintLibrary:158 - Loading set 150 (Trials and Tribble-ations) to _allsets
+2023-09-17 13:38:01,632 DEBUG CardBlueprintLibrary:158 - Loading set 157 (Nothing But Tribble) to _allsets
+2023-09-17 13:38:01,640 DEBUG CardBlueprintLibrary:158 - Loading set 164 (Big Tribble in Little Qo'noS) to _allsets
+2023-09-17 13:38:01,648 DEBUG CardBlueprintLibrary:158 - Loading set 190 (Star Trek 50 [Tribbles]) to _allsets
+2023-09-17 13:38:01,656 DEBUG CardBlueprintLibrary:158 - Loading set 221 (A Tribble of a Different Color) to _allsets
+2023-09-17 13:38:01,768 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set101.hjson
+2023-09-17 13:38:01,914 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set144.hjson
+2023-09-17 13:38:01,953 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set145.hjson
+2023-09-17 13:38:01,975 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set150.hjson
+2023-09-17 13:38:01,992 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set157.hjson
+2023-09-17 13:38:02,008 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set164.hjson
+2023-09-17 13:38:02,029 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set190.hjson
+2023-09-17 13:38:02,073 DEBUG CardBlueprintLibrary:235 - Loaded JSON card file set221.hjson
+2023-09-17 13:38:02,109 DEBUG CardBlueprintLibrary:257 - Java cards for set 101 successfully loaded
+2023-09-17 13:38:02,112 DEBUG CardBlueprintLibrary:257 - Java cards for set 144 successfully loaded
+2023-09-17 13:38:02,114 DEBUG CardBlueprintLibrary:257 - Java cards for set 145 successfully loaded
+2023-09-17 13:38:02,118 DEBUG CardBlueprintLibrary:257 - Java cards for set 150 successfully loaded
+2023-09-17 13:38:02,119 DEBUG CardBlueprintLibrary:257 - Java cards for set 157 successfully loaded
+2023-09-17 13:38:02,121 DEBUG CardBlueprintLibrary:257 - Java cards for set 164 successfully loaded
+2023-09-17 13:38:02,122 DEBUG CardBlueprintLibrary:257 - Java cards for set 190 successfully loaded
+2023-09-17 13:38:02,123 DEBUG CardBlueprintLibrary:257 - Java cards for set 221 successfully loaded
+2023-09-17 13:38:02,747 DEBUG ProductLibrary:82 - Loading pack definitions for Premiere - Booster
+2023-09-17 13:38:02,783 DEBUG ServerBuilder:42 - Ending CreatePrerequisites function
+2023-09-17 13:38:02,784  INFO GempukkuServer:29 - GempukkuServer loading DAOs...
+2023-09-17 13:38:02,794 DEBUG DbAccess:25 - Creating DbAccess for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:38:03,380 DEBUG DbAccess:85 - setupDataSource - connection successfully created
+2023-09-17 13:38:03,382 DEBUG DbAccess:33 - DbAccess - _dataSource created for jdbc:mysql://db:3306/gemp_db
+2023-09-17 13:38:03,499  INFO GempukkuServer:31 - GempukkuServer loading services...
+2023-09-17 13:38:03,502 DEBUG ServerBuilder:46 - Calling CreateServices function
+2023-09-17 13:38:03,990 TRACE Game Hall:103 - System: Welcome to room: Game Hall
+2023-09-17 13:38:04,025 DEBUG ServerBuilder:139 - Ending CreateServices function
+2023-09-17 13:38:04,029  INFO GempukkuServer:33 - GempukkuServer starting servers...
+2023-09-17 13:38:04,034 DEBUG ServerBuilder:150 - Function StartServers - starting HallServer
+2023-09-17 13:38:04,037 DEBUG AbstractServer:15 - Starting startServer function for HallServer
+2023-09-17 13:38:04,041 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.hall.HallServer
+2023-09-17 13:38:04,055 DEBUG AbstractServer:19 - Started: HallServer
+2023-09-17 13:38:04,058 DEBUG ITournamentService:131 - Calling getLiveTournaments function
+2023-09-17 13:38:04,060 DEBUG ITournamentService:133 - Created result object
+2023-09-17 13:38:04,064 DEBUG DbTournamentDAO:75 - Called getUnfinishedTournaments function
+2023-09-17 13:38:04,074 DEBUG DbTournamentDAO:76 - getUnfinishedTournaments function - attempting connection to org.apache.commons.dbcp.PoolingDataSource@77258e59
+2023-09-17 13:38:04,223 DEBUG LoggingProxy:34 - TournamentDAO::getUnstartedScheduledTournamentQueues(...) 158ms
+2023-09-17 13:38:04,224 DEBUG LoggingProxy:34 - TournamentDAO::getUnfinishedTournaments(...) 157ms
+2023-09-17 13:38:04,228 DEBUG ServerBuilder:152 - Function StartServers - starting LotroServer
+2023-09-17 13:38:04,232 DEBUG AbstractServer:15 - Starting startServer function for LotroServer
+2023-09-17 13:38:04,235 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.game.LotroServer
+2023-09-17 13:38:04,238 DEBUG AbstractServer:19 - Started: LotroServer
+2023-09-17 13:38:04,242 DEBUG ServerBuilder:154 - Function StartServers - starting ChatServer
+2023-09-17 13:38:04,251 DEBUG AbstractServer:15 - Starting startServer function for ChatServer
+2023-09-17 13:38:04,258 DEBUG ServerCleaner:15 - Adding server: class com.gempukku.lotro.chat.ChatServer
+2023-09-17 13:38:04,261 DEBUG AbstractServer:19 - Started: ChatServer
+2023-09-17 13:38:04,265  INFO GempukkuServer:35 - GempukkuServer startup complete.
+2023-09-17 13:38:05,967 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/player?participantId=&_=1694957885741
+2023-09-17 13:38:05,972 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/deck/list?participantId=&_=1694957885743
+2023-09-17 13:38:05,974 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/chat/Game%20Hall?participantId=&_=1694957885740
+2023-09-17 13:38:05,973 DEBUG GempukkuHttpRequestHandler:87 - HTTP 401 response for 172.28.1.1: /gemp-lotr-server/player?participantId=&_=1694957885739
+2023-09-17 13:38:05,985 DEBUG HallRequestHandler:17 - HTTP 401 response for /gemp-lotr-server/hall?participantId=&_=1694957885742
+2023-09-17 13:38:07,584 DEBUG LoggingProxy:34 - GameHistoryDAO::getGamesPlayedCount(...) 146ms

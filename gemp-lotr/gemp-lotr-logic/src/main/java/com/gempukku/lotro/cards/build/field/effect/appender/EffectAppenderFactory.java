@@ -78,7 +78,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
         effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShufflePlayPileIntoDrawDeck());
             // LotR-specific
-        effectAppenderProducers.put("addburdens", new AddBurdens());
         effectAppenderProducers.put("addtokens", new AddTokens());
         effectAppenderProducers.put("addtwilight", new AddTwilight());
         effectAppenderProducers.put("assignfpcharactertoskirmish", new AssignFpCharacterToSkirmish());

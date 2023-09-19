@@ -1,6 +1,6 @@
 package com.gempukku.lotro.game;
 
-import com.gempukku.lotro.actions.ActionStack;
+import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.actions.ActionsEnvironment;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.adventure.Adventure;
@@ -45,7 +45,7 @@ public class LotroGame implements DefaultGame {
         _library = library;
         Adventure _adventure = format.getAdventure();
         _format = format;
-        ActionStack _actionStack = new ActionStack();
+        Stack<Action> _actionStack = new Stack<>();
 
         _allPlayers = decks.keySet();
 

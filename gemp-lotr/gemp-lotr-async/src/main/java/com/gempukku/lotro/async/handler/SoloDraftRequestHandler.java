@@ -70,7 +70,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
         LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().get(0).getStart();
 
-        if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDate() < leagueStart)
+        if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
             throw new HttpProcessingException(404);
 
         SoloDraftLeagueData soloDraftLeagueData = (SoloDraftLeagueData) leagueData;
@@ -133,7 +133,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
         LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().get(0).getStart();
 
-        if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDate() < leagueStart)
+        if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
             throw new HttpProcessingException(404);
 
         SoloDraftLeagueData soloDraftLeagueData = (SoloDraftLeagueData) leagueData;

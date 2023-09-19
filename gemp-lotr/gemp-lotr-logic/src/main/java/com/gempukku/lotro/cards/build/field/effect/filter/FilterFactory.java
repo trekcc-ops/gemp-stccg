@@ -266,9 +266,7 @@ public class FilterFactory {
                 (parameter, environment) -> {
                     String name = Sanitize(parameter);
                     return (actionContext) -> (Filter)
-                            (game, physicalCard) -> name != null
-                                    && physicalCard.getBlueprint().getTitle() != null
-                                    && name.equals(Sanitize(physicalCard.getBlueprint().getTitle()));
+                            (game, physicalCard) -> physicalCard.getBlueprint().getTitle() != null && name.equals(Sanitize(physicalCard.getBlueprint().getTitle()));
                 });
         parameterFilters.put("namefrommemory",
                 (parameter, environment) -> actionContext -> {

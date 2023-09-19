@@ -61,7 +61,7 @@ public class ReturnCardsToHandEffect extends AbstractEffect {
         for (LotroPhysicalCard card : toGoToDiscardCards)
             gameState.addCardToZone(game, card, Zone.DISCARD);
 
-        if (_source != null && cardsToReturnToHand.size() > 0)
+        if (cardsToReturnToHand.size() > 0)
             gameState.sendMessage(GameUtils.getCardLink(_source) + " returns " + getAppendedNames(cardsToReturnToHand) + " to hand");
 
         for (LotroPhysicalCard discardedCard : discardedFromPlay)

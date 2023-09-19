@@ -61,7 +61,7 @@ public class LeagueService {
     }
 
     private synchronized void ensureLoadedCurrentLeagues() {
-        int currentDate = DateUtils.getCurrentDate();
+        int currentDate = DateUtils.getCurrentDateAsInt();
         if (currentDate != _activeLeaguesLoadedDate) {
             _leagueMatchDao.clearCache();
             _leagueParticipationDAO.clearCache();
@@ -77,7 +77,7 @@ public class LeagueService {
     }
 
     public synchronized List<League> getActiveLeagues() {
-        if (DateUtils.getCurrentDate() == _activeLeaguesLoadedDate)
+        if (DateUtils.getCurrentDateAsInt() == _activeLeaguesLoadedDate)
             return Collections.unmodifiableList(_activeLeagues);
         else {
             ensureLoadedCurrentLeagues();
@@ -103,7 +103,7 @@ public class LeagueService {
             return false;
         int cost = league.getCost();
         if (_collectionsManager.removeCurrencyFromPlayerCollection("Joining "+league.getName()+" league", player, CollectionType.MY_CARDS, cost)) {
-            league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).joinLeague(_collectionsManager, player, DateUtils.getCurrentDate());
+            league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).joinLeague(_collectionsManager, player, DateUtils.getCurrentDateAsInt());
             _leagueParticipationDAO.userJoinsLeague(league.getType(), player, remoteAddr);
             _leagueStandings.remove(LeagueMapKeys.getLeagueMapKey(league));
 
@@ -133,7 +133,7 @@ public class LeagueService {
     }
 
     public synchronized LeagueSeriesData getCurrentLeagueSerie(League league) {
-        final int currentDate = DateUtils.getCurrentDate();
+        final int currentDate = DateUtils.getCurrentDateAsInt();
 
         for (LeagueSeriesData LeagueSeriesData : league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).getSeries()) {
             if (currentDate >= LeagueSeriesData.getStart() && currentDate <= LeagueSeriesData.getEnd())

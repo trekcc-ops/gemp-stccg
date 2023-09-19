@@ -7,7 +7,6 @@ import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
 import com.gempukku.lotro.modifiers.AbstractModifier;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.modifiers.ModifierEffect;
 import com.gempukku.lotro.actions.Action;
 import org.json.simple.JSONObject;

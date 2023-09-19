@@ -23,9 +23,6 @@ public class LookAtRandomCardsFromHand implements EffectAppenderProducer {
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String memorized = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
 
-        if (hand == null)
-            throw new InvalidCardDefinitionException("LookAtRandomCardsFromHand requires that 'hand' be specified.");
-
         return new DelayedAppender<>() {
             @Override
             public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {

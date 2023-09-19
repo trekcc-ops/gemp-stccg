@@ -1,62 +1,31 @@
 package com.gempukku.lotro;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.time.DayOfWeek;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
-    public static int getCurrentDate() {
-        Calendar date = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        return date.get(Calendar.YEAR) * 10000 + (date.get(Calendar.MONTH) + 1) * 100 + date.get(Calendar.DAY_OF_MONTH);
+    public static int getCurrentDateAsInt() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
+        return Integer.parseInt(now.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
 
-    public static int getCurrentMinute() {
-        Calendar date = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        return date.get(Calendar.YEAR) * 100000000 + (date.get(Calendar.MONTH) + 1) * 1000000 + date.get(Calendar.DAY_OF_MONTH) * 10000 + date.get(Calendar.HOUR_OF_DAY) * 100 + date.get(Calendar.MINUTE);
-    }
-
-    public static String getStringDateWithHour() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return format.format(new Date());
-    }
-
-    public static String formatDateWithHour(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return format.format(date);
-    }
-
-    public static Date parseDateWithHour(String date) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return format.parse(date);
+    public static String getCurrentDateAsString() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
+        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public static int offsetDate(int start, int dayOffset) {
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            Date date = format.parse(String.valueOf(start));
-            date.setDate(date.getDate() + dayOffset);
-            return Integer.parseInt(format.format(date));
-        } catch (ParseException exp) {
-            throw new RuntimeException("Can't parse date", exp);
-        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        ZonedDateTime startDate = ZonedDateTime.parse(String.valueOf(start), formatter);
+        ZonedDateTime endDate = startDate.plusDays(dayOffset);
+        return Integer.parseInt(endDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
 
-    public static int getMondayBeforeOrOn(int date) {
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            Date current = format.parse(String.valueOf(date));
-            if (current.getDay() == 0)
-                return offsetDate(date, -6);
-            else
-                return offsetDate(date, 1 - current.getDay());
-        } catch (ParseException exp) {
-            throw new RuntimeException("Can't parse date", exp);
-        }
+    public static int getMondayBeforeOrOn(ZonedDateTime date) {
+        ZonedDateTime lastMonday = date.minusDays(date.getDayOfWeek().getValue() - DayOfWeek.MONDAY.getValue());
+        return Integer.parseInt(lastMonday.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
+
 }

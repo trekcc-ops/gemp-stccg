@@ -57,14 +57,9 @@ public class AssignmentEffect extends AbstractEffect {
             game.getActionsEnvironment().emitEffectResult(new AssignAgainstResult(_playerId, _fpChar, _minion));
             game.getActionsEnvironment().emitEffectResult(new AssignAgainstResult(_playerId, _minion, _fpChar));
 
-            assignmentMadeCallback(_fpChar, _minion);
-
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);
     }
 
-    protected void assignmentMadeCallback(LotroPhysicalCard fpChar, LotroPhysicalCard minion) {
-
-    }
 }

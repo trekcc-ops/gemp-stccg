@@ -1,7 +1,6 @@
 package com.gempukku.lotro.processes.turn.tribbles;
 
 import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.ActionStack;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
@@ -32,12 +31,12 @@ import java.util.*;
 public class TribblesTurnProcedure {
     private final UserFeedback _userFeedback;
     private final TribblesGame _game;
-    private final ActionStack _actionStack;
+    private final Stack<Action> _actionStack;
     private GameProcess _gameProcess;
     private boolean _playedGameProcess;
     private final GameStats _gameStats;
     public TribblesTurnProcedure(TribblesGame tribblesGame, Map<String, CardDeck> decks, final UserFeedback userFeedback,
-                                 CardBlueprintLibrary library, ActionStack actionStack,
+                                 CardBlueprintLibrary library, Stack<Action> actionStack,
                                  final PlayerOrderFeedback playerOrderFeedback) {
         _userFeedback = userFeedback;
         _game = tribblesGame;
@@ -55,9 +54,10 @@ public class TribblesTurnProcedure {
     public void carryOutPendingActionsUntilDecisionNeeded() {
         while (_userFeedback.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null) {
             // First check for any "state-based" effects
-            Set<EffectResult> effectResults = ((DefaultActionsEnvironment) _game.getActionsEnvironment()).consumeEffectResults();
+            Set<EffectResult> effectResults =
+                    ((DefaultActionsEnvironment) _game.getActionsEnvironment()).consumeEffectResults();
             if (effectResults.size() > 0) {
-                _actionStack.stackAction(new PlayOutEffectResults(effectResults));
+                _actionStack.add(new PlayOutEffectResults(effectResults));
             } else {
                 if (_actionStack.isEmpty()) {
                     if (_playedGameProcess) {
@@ -70,7 +70,11 @@ public class TribblesTurnProcedure {
                         _playedGameProcess = true;
                     }
                 } else {
-                    Effect effect = _actionStack.getNextEffect(_game);
+                    Action action = _actionStack.peek();
+                    Effect effect = action.nextEffect(_game);
+                    if (effect == null) {
+                        _actionStack.remove(_actionStack.lastIndexOf(action));
+                    }
                     if (effect != null) {
                         if (effect.getType() == null) {
                             try {
@@ -79,7 +83,7 @@ public class TribblesTurnProcedure {
                                 _game.playerLost(_game.getGameState().getCurrentPlayerId(), exp.getMessage());
                             }
                         } else
-                            _actionStack.stackAction(new PlayOutEffect(effect));
+                            _actionStack.add(new PlayOutEffect(effect));
                     }
                 }
             }
@@ -106,8 +110,13 @@ public class TribblesTurnProcedure {
         public Effect nextEffect(DefaultGame game) {
             if (!_initialized) {
                 _initialized = true;
-                appendEffect(new PlayoutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
-                appendEffect(new PlayoutOptionalBeforeResponsesEffect(this, new HashSet<>(), _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_game.getGameState().getCurrentPlayerId(), true), 0, _effect));
+                appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
+                appendEffect(new PlayOutOptionalBeforeResponsesEffect(
+                        this, new HashSet<>(),
+                        _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(
+                                _game.getGameState().getCurrentPlayerId(), true
+                        ), 0, _effect
+                ));
                 appendEffect(new PlayEffect(_effect));
             }
 
@@ -162,12 +171,13 @@ public class TribblesTurnProcedure {
 
     }
 
-    private class PlayoutRequiredBeforeResponsesEffect extends UnrespondableEffect {
+    private class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
         private final Set<LotroPhysicalCard> _cardTriggersUsed;
         private final Effect _effect;
 
-        private PlayoutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<LotroPhysicalCard> cardTriggersUsed, Effect effect) {
+        private PlayOutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<LotroPhysicalCard> cardTriggersUsed,
+                                                     Effect effect) {
             _action = action;
             _cardTriggersUsed = cardTriggersUsed;
             _effect = effect;
@@ -183,7 +193,11 @@ public class TribblesTurnProcedure {
                 _game.getActionsEnvironment().addActionToStack(requiredBeforeTriggers.get(0));
             } else if (requiredBeforeTriggers.size() > 1) {
                 _game.getUserFeedback().sendAwaitingDecision(_game.getGameState().getCurrentPlayerId(),
-                        new ActionSelectionDecision(game, 1, _effect.getText(game) + " - Required \"is about to\" responses", requiredBeforeTriggers) {
+                        new ActionSelectionDecision(
+                                game, 1,
+                                _effect.getText(game) + " - Required \"is about to\" responses",
+                                requiredBeforeTriggers
+                        ) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
@@ -192,7 +206,9 @@ public class TribblesTurnProcedure {
                                     if (requiredBeforeTriggers.contains(action))
                                         _cardTriggersUsed.add(action.getActionSource());
                                     _game.getActionsEnvironment().addActionToStack(action);
-                                    _action.insertEffect(new PlayoutRequiredBeforeResponsesEffect(_action, _cardTriggersUsed, _effect));
+                                    _action.insertEffect(
+                                            new PlayOutRequiredBeforeResponsesEffect(_action, _cardTriggersUsed, _effect)
+                                    );
                                 }
                             }
                         });
@@ -200,14 +216,15 @@ public class TribblesTurnProcedure {
         }
     }
 
-    private class PlayoutOptionalBeforeResponsesEffect extends UnrespondableEffect {
+    private class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
         private final Set<LotroPhysicalCard> _cardTriggersUsed;
         private final PlayOrder _playOrder;
         private final int _passCount;
         private final Effect _effect;
 
-        private PlayoutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<LotroPhysicalCard> cardTriggersUsed, PlayOrder playOrder, int passCount, Effect effect) {
+        private PlayOutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<LotroPhysicalCard> cardTriggersUsed,
+                                                     PlayOrder playOrder, int passCount, Effect effect) {
             _action = action;
             _cardTriggersUsed = cardTriggersUsed;
             _playOrder = playOrder;
@@ -219,18 +236,23 @@ public class TribblesTurnProcedure {
         public void doPlayEffect(DefaultGame game) {
             final String activePlayer = _playOrder.getNextPlayer();
 
-            final List<Action> optionalBeforeTriggers = game.getActionsEnvironment().getOptionalBeforeTriggers(activePlayer, _effect);
+            final List<Action> optionalBeforeTriggers =
+                    game.getActionsEnvironment().getOptionalBeforeTriggers(activePlayer, _effect);
             // Remove triggers already resolved
             optionalBeforeTriggers.removeIf(action -> _cardTriggersUsed.contains(action.getActionSource()));
 
-            final List<Action> optionalBeforeActions = _game.getActionsEnvironment().getOptionalBeforeActions(activePlayer, _effect);
+            final List<Action> optionalBeforeActions =
+                    _game.getActionsEnvironment().getOptionalBeforeActions(activePlayer, _effect);
 
             List<Action> possibleActions = new LinkedList<>(optionalBeforeTriggers);
             possibleActions.addAll(optionalBeforeActions);
 
             if (possibleActions.size() > 0) {
                 _game.getUserFeedback().sendAwaitingDecision(activePlayer,
-                        new CardActionSelectionDecision(game, 1, _effect.getText(game) + " - Optional \"is about to\" responses", possibleActions) {
+                        new CardActionSelectionDecision(
+                                game, 1,
+                                _effect.getText(game) + " - Optional \"is about to\" responses", possibleActions
+                        ) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
@@ -238,17 +260,23 @@ public class TribblesTurnProcedure {
                                     _game.getActionsEnvironment().addActionToStack(action);
                                     if (optionalBeforeTriggers.contains(action))
                                         _cardTriggersUsed.add(action.getActionSource());
-                                    _action.insertEffect(new PlayoutOptionalBeforeResponsesEffect(_action, _cardTriggersUsed, _playOrder, 0, _effect));
+                                    _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
+                                            _action, _cardTriggersUsed, _playOrder, 0, _effect
+                                    ));
                                 } else {
                                     if ((_passCount + 1) < _playOrder.getPlayerCount()) {
-                                        _action.insertEffect(new PlayoutOptionalBeforeResponsesEffect(_action, _cardTriggersUsed, _playOrder, _passCount + 1, _effect));
+                                        _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
+                                                _action, _cardTriggersUsed, _playOrder, _passCount + 1, _effect
+                                        ));
                                     }
                                 }
                             }
                         });
             } else {
                 if ((_passCount + 1) < _playOrder.getPlayerCount()) {
-                    _action.insertEffect(new PlayoutOptionalBeforeResponsesEffect(_action, _cardTriggersUsed, _playOrder, _passCount + 1, _effect));
+                    _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
+                            _action, _cardTriggersUsed, _playOrder, _passCount + 1, _effect
+                    ));
                 }
             }
         }
@@ -260,7 +288,8 @@ public class TribblesTurnProcedure {
         private final int _passCount;
         private final Collection<? extends EffectResult> _effectResults;
 
-        private PlayoutOptionalAfterResponsesEffect(SystemQueueAction action, PlayOrder playOrder, int passCount, Collection<? extends EffectResult> effectResults) {
+        private PlayoutOptionalAfterResponsesEffect(SystemQueueAction action, PlayOrder playOrder, int passCount,
+                                                    Collection<? extends EffectResult> effectResults) {
             _action = action;
             _playOrder = playOrder;
             _passCount = passCount;
@@ -271,35 +300,47 @@ public class TribblesTurnProcedure {
         public void doPlayEffect(DefaultGame game) {
             final String activePlayer = _playOrder.getNextPlayer();
 
-            final Map<OptionalTriggerAction, EffectResult> optionalAfterTriggers = _game.getActionsEnvironment().getOptionalAfterTriggers(activePlayer, _effectResults);
+            final Map<OptionalTriggerAction, EffectResult> optionalAfterTriggers =
+                    _game.getActionsEnvironment().getOptionalAfterTriggers(activePlayer, _effectResults);
 
-            final List<Action> optionalAfterActions = _game.getActionsEnvironment().getOptionalAfterActions(activePlayer, _effectResults);
+            final List<Action> optionalAfterActions =
+                    _game.getActionsEnvironment().getOptionalAfterActions(activePlayer, _effectResults);
 
             List<Action> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
             possibleActions.addAll(optionalAfterActions);
 
             if (possibleActions.size() > 0) {
                 _game.getUserFeedback().sendAwaitingDecision(activePlayer,
-                        new CardActionSelectionDecision(game, 1, "Activate Tribble power?", possibleActions) {
+                        new CardActionSelectionDecision(
+                                game, 1, "Activate Tribble power?", possibleActions
+                        ) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
                                     _game.getActionsEnvironment().addActionToStack(action);
                                     if (optionalAfterTriggers.containsKey(action))
-                                        optionalAfterTriggers.get(action).optionalTriggerUsed((OptionalTriggerAction) action);
+                                        optionalAfterTriggers.get(action).optionalTriggerUsed(
+                                                (OptionalTriggerAction) action
+                                        );
 
-                                    _action.insertEffect(new PlayoutOptionalAfterResponsesEffect(_action, _playOrder, 0, _effectResults));
+                                    _action.insertEffect(new PlayoutOptionalAfterResponsesEffect(
+                                            _action, _playOrder, 0, _effectResults
+                                    ));
                                 } else {
                                     if ((_passCount + 1) < _playOrder.getPlayerCount()) {
-                                        _action.insertEffect(new PlayoutOptionalAfterResponsesEffect(_action, _playOrder, _passCount + 1, _effectResults));
+                                        _action.insertEffect(new PlayoutOptionalAfterResponsesEffect(
+                                                _action, _playOrder, _passCount + 1, _effectResults
+                                        ));
                                     }
                                 }
                             }
                         });
             } else {
                 if ((_passCount + 1) < _playOrder.getPlayerCount()) {
-                    _action.insertEffect(new PlayoutOptionalAfterResponsesEffect(_action, _playOrder, _passCount + 1, _effectResults));
+                    _action.insertEffect(new PlayoutOptionalAfterResponsesEffect(
+                            _action, _playOrder, _passCount + 1, _effectResults
+                    ));
                 }
             }
         }
@@ -346,7 +387,8 @@ public class TribblesTurnProcedure {
 
             while (actionIterator.hasNext()) {
                 Action otherAction = actionIterator.next();
-                if (otherAction.getActionSource() == null || otherAction.getActionSource().getBlueprint() != firstAction.getActionSource().getBlueprint())
+                if (otherAction.getActionSource() == null ||
+                        otherAction.getActionSource().getBlueprint() != firstAction.getActionSource().getBlueprint())
                     return false;
             }
             return true;

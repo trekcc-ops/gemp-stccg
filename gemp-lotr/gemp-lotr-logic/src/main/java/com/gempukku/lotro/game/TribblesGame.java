@@ -1,20 +1,19 @@
 package com.gempukku.lotro.game;
 
-import com.gempukku.lotro.cards.CardBlueprintLibrary; // has some LotR stuff
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard; // has some LotR stuff
-import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.common.Phase; // has some LotR stuff
-import com.gempukku.lotro.gamestate.GameStateListener; // has some LotR stuff
-import com.gempukku.lotro.gamestate.UserFeedback;
-import com.gempukku.lotro.actions.ActionStack;
+import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.actions.ActionsEnvironment;
-import com.gempukku.lotro.actions.DefaultActionsEnvironment; // sort of has some LotR stuff (costs for effects)
-import com.gempukku.lotro.adventure.Adventure; // LotR-specific
-import com.gempukku.lotro.modifiers.ModifiersEnvironment; // has some LotR stuff
-import com.gempukku.lotro.modifiers.ModifiersLogic; // has some LotR stuff
-import com.gempukku.lotro.modifiers.ModifiersQuerying; // has some LotR stuff
+import com.gempukku.lotro.actions.DefaultActionsEnvironment;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.common.Phase;
+import com.gempukku.lotro.gamestate.GameStateListener;
+import com.gempukku.lotro.gamestate.GameStats;
 import com.gempukku.lotro.gamestate.TribblesGameState;
-import com.gempukku.lotro.gamestate.GameStats; // relies on a couple LotR things (like "adventure deck")
+import com.gempukku.lotro.gamestate.UserFeedback;
+import com.gempukku.lotro.modifiers.ModifiersEnvironment;
+import com.gempukku.lotro.modifiers.ModifiersLogic;
+import com.gempukku.lotro.modifiers.ModifiersQuerying;
 import com.gempukku.lotro.processes.turn.tribbles.TribblesTurnProcedure;
 import com.gempukku.lotro.rules.tribbles.TribblesRuleSet;
 
@@ -44,17 +43,14 @@ public class TribblesGame implements DefaultGame {
 
     public TribblesGame(LotroFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
+        _userFeedback = userFeedback;
         _library = library;
-        Adventure _adventure = format.getAdventure();
         _format = format;
-        ActionStack _actionStack = new ActionStack();
 
         _allPlayers = decks.keySet();
-
-        _actionsEnvironment = new DefaultActionsEnvironment(this, _actionStack);
-
         final Map<String, List<String>> cards = new HashMap<>();
-        for (String playerId : decks.keySet()) {
+
+        for (String playerId : _allPlayers) {
 
             CardDeck playerDeck = decks.get(playerId);
             List<String> deck = new LinkedList<>(playerDeck.getDrawDeckCards());
@@ -63,6 +59,11 @@ public class TribblesGame implements DefaultGame {
         }
 
         _gameState = new TribblesGameState();
+        Stack<Action> _actionStack = new Stack<>();
+        _actionsEnvironment = new DefaultActionsEnvironment(this, _actionStack);
+        format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
+        TribblesRuleSet ruleSet = new TribblesRuleSet(_actionsEnvironment, _modifiersLogic);
+        ruleSet.applyRuleSet();
 
         _turnProcedure = new TribblesTurnProcedure(this, decks, userFeedback, _library, _actionStack,
                 new PlayerOrderFeedback() {
@@ -72,12 +73,6 @@ public class TribblesGame implements DefaultGame {
                         _gameState.init(playerOrder, firstPlayer, cards, library, format);
                     }
                 });
-        _userFeedback = userFeedback;
-
-        TribblesRuleSet ruleSet = new TribblesRuleSet(_actionsEnvironment, _modifiersLogic);
-        ruleSet.applyRuleSet();
-
-        _adventure.applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
     }
 
 
@@ -255,16 +250,11 @@ public class TribblesGame implements DefaultGame {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met
-        if (card.getBlueprint().playRequirementsNotMet(this, card)) {
-//            _gameState.sendMessage("card.checkPlayRequirements failed");
+        if (card.getBlueprint().playRequirementsNotMet(this, card))
             return false;
-        }
-
         // Check if the card's playability has been modified in the current game state
-        if (_modifiersLogic.canNotPlayCard(this, card.getOwner(), card)) {
-//            _gameState.sendMessage("getModifiersQuerying.canPlayCard failed");
+        if (_modifiersLogic.canNotPlayCard(this, card.getOwner(), card))
             return false;
-        }
 
         // Otherwise, the play requirements are met if the card is next in the tribble sequence
         return isNextInSequence(card);

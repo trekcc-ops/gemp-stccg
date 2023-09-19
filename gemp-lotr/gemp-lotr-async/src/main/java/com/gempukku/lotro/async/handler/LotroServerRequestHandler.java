@@ -31,6 +31,8 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
@@ -61,8 +63,8 @@ public class LotroServerRequestHandler {
         if (loggedUser != null) {
             User player = _playerDao.getPlayer(loggedUser);
             synchronized (PlayerLock.getLock(player)) {
-                int currentDate = DateUtils.getCurrentDate();
-                int latestMonday = DateUtils.getMondayBeforeOrOn(currentDate);
+                ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
+                int latestMonday = DateUtils.getMondayBeforeOrOn(now);
 
                 Integer lastReward = player.getLastLoginReward();
                 if (lastReward == null) {

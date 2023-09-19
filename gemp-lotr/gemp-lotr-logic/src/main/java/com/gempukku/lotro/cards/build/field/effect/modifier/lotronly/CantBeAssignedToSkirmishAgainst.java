@@ -6,8 +6,6 @@ import com.gempukku.lotro.cards.build.field.effect.modifier.ModifierSourceProduc
 import com.gempukku.lotro.cards.build.field.effect.modifier.RequirementCondition;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Side;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.modifiers.lotronly.CantBeAssignedAgainstModifier;
 import org.json.simple.JSONObject;
 

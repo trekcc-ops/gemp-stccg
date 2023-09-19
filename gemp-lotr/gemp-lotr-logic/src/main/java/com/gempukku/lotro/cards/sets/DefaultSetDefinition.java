@@ -40,8 +40,6 @@ public class DefaultSetDefinition implements SetDefinition {
 
     @Override
     public List<String> getTengwarCards() {
-        if (_tengwarCards == null)
-            return Collections.emptyList();
         return Collections.unmodifiableList(_tengwarCards);
     }
 

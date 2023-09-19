@@ -16,7 +16,6 @@ public class ModifierSourceFactory {
     public ModifierSourceFactory() {
         modifierProducers.put("addactivated", new AddActivated());
         modifierProducers.put("addkeyword", new AddKeyword());
-        modifierProducers.put("addnotwilightforcompanionmove", new AddNoTwilightForCompanionMove());
         modifierProducers.put("addsignet", new AddSignet());
         modifierProducers.put("allycanparticipateinarcheryfire", new AllyCanParticipateInArcheryFire());
         modifierProducers.put("archerytotal", new ArcheryTotal());

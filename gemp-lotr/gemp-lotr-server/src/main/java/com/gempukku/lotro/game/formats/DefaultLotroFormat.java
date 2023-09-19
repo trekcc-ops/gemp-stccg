@@ -351,7 +351,7 @@ public class DefaultLotroFormat implements LotroFormat {
 
         // Deck
         valid = validateDeckStructure(deck);
-        if(valid != null && !valid.isEmpty()) {
+        if(!valid.isEmpty()) {
             result.add(valid);
         }
 
@@ -362,26 +362,16 @@ public class DefaultLotroFormat implements LotroFormat {
             if(newLine == null || newLine.isEmpty())
                 continue;
 
-            if(!newLine.equalsIgnoreCase(prevLine))
-            {
-                if(newLine.toLowerCase().contains("errata"))
-                {
-                    errataResult.add(newLine);
-                }
-                else
-                {
-                    result.add(newLine);
-                }
-            }
-            else
-            {
-                prevLine = newLine;
+            if (newLine.toLowerCase().contains("errata")) {
+                errataResult.add(newLine);
+            } else {
+                result.add(newLine);
             }
         }
 
         // Sites
         valid = validateSitesStructure(deck);
-        if(valid != null && !valid.isEmpty()) {
+        if(!valid.isEmpty()) {
             result.add(valid);
         }
 

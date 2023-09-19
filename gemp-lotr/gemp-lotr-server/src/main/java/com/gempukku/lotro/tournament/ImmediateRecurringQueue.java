@@ -37,7 +37,7 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
         if (_players.size() >= _playerCap) {
             String tournamentId = _tournamentIdPrefix + System.currentTimeMillis();
 
-            String tournamentName = _tournamentQueueName + " - " + DateUtils.getStringDateWithHour();
+            String tournamentName = _tournamentQueueName + " - " + DateUtils.getCurrentDateAsString();
 
             for (int i=0; i<_playerCap; i++) {
                 String player = _players.poll();

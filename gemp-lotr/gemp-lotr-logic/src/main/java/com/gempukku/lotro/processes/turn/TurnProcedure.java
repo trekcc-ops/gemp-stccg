@@ -1,7 +1,6 @@
 package com.gempukku.lotro.processes.turn;
 
 import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.ActionStack;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
@@ -29,13 +28,13 @@ import java.util.*;
 public class TurnProcedure<AbstractGame extends DefaultGame> {
     private final UserFeedback _userFeedback;
     private final AbstractGame _game;
-    private final ActionStack _actionStack;
+    private final Stack<Action> _actionStack;
     private GameProcess _gameProcess;
     private boolean _playedGameProcess;
     private final GameStats _gameStats;
 
     public TurnProcedure(AbstractGame game, Set<String> players, final UserFeedback userFeedback,
-                         ActionStack actionStack, final PlayerOrderFeedback playerOrderFeedback) {
+                         Stack<Action> actionStack, final PlayerOrderFeedback playerOrderFeedback) {
         _userFeedback = userFeedback;
         _game = game;
         _actionStack = actionStack;
@@ -54,7 +53,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
             // First check for any "state-based" effects
             Set<EffectResult> effectResults = ((DefaultActionsEnvironment) _game.getActionsEnvironment()).consumeEffectResults();
             if (effectResults.size() > 0) {
-                _actionStack.stackAction(new PlayOutEffectResults(effectResults));
+                _actionStack.add(new PlayOutEffectResults(effectResults));
             } else {
                 if (_actionStack.isEmpty()) {
                     if (_playedGameProcess) {
@@ -67,7 +66,11 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
                         _playedGameProcess = true;
                     }
                 } else {
-                    Effect effect = _actionStack.getNextEffect(_game);
+                    Action action = _actionStack.peek();
+                    Effect effect = action.nextEffect(_game);
+                    if (effect == null) {
+                        _actionStack.remove(_actionStack.lastIndexOf(action));
+                    }
                     if (effect != null) {
                         if (effect.getType() == null) {
                             try {
@@ -76,7 +79,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
                                 _game.playerLost(_game.getGameState().getCurrentPlayerId(), exp.getMessage());
                             }
                         } else
-                            _actionStack.stackAction(new PlayOutEffect(effect));
+                            _actionStack.add(new PlayOutEffect(effect));
                     }
                 }
             }

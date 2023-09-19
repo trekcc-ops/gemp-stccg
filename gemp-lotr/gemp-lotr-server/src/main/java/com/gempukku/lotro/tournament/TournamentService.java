@@ -1,16 +1,14 @@
 package com.gempukku.lotro.tournament;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
-import com.gempukku.lotro.draft.DraftPack;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
 import com.gempukku.lotro.packs.DraftPackStorage;
 import com.gempukku.lotro.packs.ProductLibrary;
+import org.apache.log4j.Logger;
 
 import java.util.*;
-
-import org.apache.log4j.Logger;
 
 
 public class TournamentService implements ITournamentService {
@@ -158,12 +156,11 @@ public class TournamentService implements ITournamentService {
     private Tournament createTournamentAndStoreInCache(String tournamentId, TournamentInfo tournamentInfo) {
         Tournament tournament;
         try {
-            DraftPack draftPack = null;
             String draftType = tournamentInfo.getDraftType();
             if (draftType != null)
                 _draftPackStorage.getDraftPack(draftType);
 
-            tournament = new DefaultTournament(_collectionsManager, this, _productLibrary, draftPack,
+            tournament = new DefaultTournament(_collectionsManager, this, _productLibrary, null,
                     tournamentId,  tournamentInfo.getTournamentName(), tournamentInfo.getTournamentFormat(),
                     tournamentInfo.getCollectionType(), tournamentInfo.getTournamentRound(), tournamentInfo.getTournamentStage(), 
                     _pairingMechanismRegistry.getPairingMechanism(tournamentInfo.getPairingMechanism()),

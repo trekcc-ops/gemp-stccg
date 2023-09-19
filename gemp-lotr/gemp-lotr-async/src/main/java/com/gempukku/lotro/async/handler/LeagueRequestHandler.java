@@ -97,7 +97,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
 
         int end = series.get(series.size() - 1).getEnd();
         int start = series.get(0).getStart();
-        int currentDate = DateUtils.getCurrentDate();
+        int currentDate = DateUtils.getCurrentDateAsInt();
 
         Element leagueElem = doc.createElement("league");
         boolean inLeague = _leagueService.isPlayerInLeague(league, resourceOwner);

@@ -1,11 +1,13 @@
 package com.gempukku.lotro.tournament;
 
-import com.gempukku.lotro.DateUtils;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ScheduledTournamentQueue extends AbstractTournamentQueue implements TournamentQueue {
@@ -27,7 +29,8 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
         _tournamentService = tournamentService;
         _startTime = startTime;
         _minimumPlayers = minimumPlayers;
-        _startCondition = DateUtils.formatDateWithHour(new Date(_startTime));
+        ZonedDateTime startDate = new Date(_startTime).toInstant().atZone(ZoneId.of("GMT"));
+        _startCondition = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         _tournamentName = tournamentName;
         _collectionType = collectionType;
         _stage = stage;

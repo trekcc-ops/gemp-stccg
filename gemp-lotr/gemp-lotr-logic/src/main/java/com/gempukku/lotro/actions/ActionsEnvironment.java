@@ -33,8 +33,6 @@ public interface ActionsEnvironment {
 
     void emitEffectResult(EffectResult effectResult);
 
-    <T extends Action> T findTopmostActionOfType(Class<T> clazz);
-
     List<EffectResult> getTurnEffectResults();
 
     List<EffectResult> getPhaseEffectResults();

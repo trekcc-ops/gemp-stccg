@@ -80,8 +80,6 @@ public class ProductLibrary {
 
             for (var def : defs) {
                 logger.debug("Loading pack definitions for " + def.Name);
-                if(def == null)
-                    continue;
 
                 PackBox result = null;
                 String[] rarities;

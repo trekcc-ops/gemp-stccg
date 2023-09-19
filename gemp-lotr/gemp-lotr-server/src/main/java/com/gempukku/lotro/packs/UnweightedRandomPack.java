@@ -35,6 +35,7 @@ public class UnweightedRandomPack implements PackBox {
 
     public List<CardCollection.Item> openPack(int selection) {
         String key = _contents.keySet().stream().skip(selection).findFirst().orElse(null);
+        assert key != null;
         var result = CardCollection.Item.createItem(key, _contents.get(key), true);
         return Collections.singletonList(result);
     }
