@@ -5,15 +5,15 @@ import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.processes.lotronly.MovementGameProcess;
 import com.gempukku.lotro.processes.lotronly.ShadowPhasesGameProcess;
-import com.gempukku.lotro.processes.turn.EndOfPhaseGameProcess;
-import com.gempukku.lotro.processes.turn.EndOfTurnGameProcess;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.processes.EndOfPhaseGameProcess;
+import com.gempukku.lotro.processes.EndOfTurnGameProcess;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.effects.TriggeringResultEffect;
 import com.gempukku.lotro.modifiers.ModifierFlag;
 import com.gempukku.lotro.rules.RuleUtils;
 import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.effects.results.FreePlayerMoveDecisionResult;
+import com.gempukku.lotro.results.FreePlayerMoveDecisionResult;
 
 public class FellowshipPlayerChoosesToMoveOrStayGameProcess implements GameProcess {
     private GameProcess _nextProcess;

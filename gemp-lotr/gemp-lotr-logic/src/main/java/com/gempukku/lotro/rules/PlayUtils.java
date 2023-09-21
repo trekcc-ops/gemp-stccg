@@ -1,10 +1,10 @@
 package com.gempukku.lotro.rules;
 
-import com.gempukku.lotro.actions.lotronly.AttachPermanentAction;
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
-import com.gempukku.lotro.actions.lotronly.PlayEventAction;
-import com.gempukku.lotro.actions.lotronly.PlayPermanentAction;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.AttachPermanentAction;
+import com.gempukku.lotro.actions.CostToEffectAction;
+import com.gempukku.lotro.actions.PlayEventAction;
+import com.gempukku.lotro.actions.PlayPermanentAction;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;

@@ -1,11 +1,11 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
 import com.gempukku.lotro.modifiers.ModifierEffect;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.evaluator.Evaluator;
 
 public class VitalityModifier extends AbstractModifier {
     private final Evaluator _modifier;

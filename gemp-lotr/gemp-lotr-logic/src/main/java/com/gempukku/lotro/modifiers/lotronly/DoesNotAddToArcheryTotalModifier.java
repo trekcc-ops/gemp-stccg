@@ -1,11 +1,11 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
 import com.gempukku.lotro.modifiers.ModifierEffect;
-import com.gempukku.lotro.modifiers.condition.Condition;
+import com.gempukku.lotro.condition.Condition;
 
 public class DoesNotAddToArcheryTotalModifier extends AbstractModifier {
     public DoesNotAddToArcheryTotalModifier(LotroPhysicalCard source, Filterable affectFilter) {

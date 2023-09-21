@@ -7,13 +7,13 @@ import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.cards.PhysicalCardImpl;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;
 import com.gempukku.lotro.effects.EffectResult;
-import com.gempukku.lotro.effects.results.DiscardCardsFromPlayResult;
+import com.gempukku.lotro.results.DiscardCardsFromPlayResult;
 import org.junit.Test;
 
 import java.util.HashSet;

@@ -1,9 +1,9 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.effects.results.ActivateCardResult;
+import com.gempukku.lotro.results.ActivateCardResult;
 
 public class CancelActivatedEffect extends AbstractEffect {
     private final LotroPhysicalCard _source;

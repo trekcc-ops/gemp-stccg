@@ -1,11 +1,11 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.game.Preventable;
-import com.gempukku.lotro.effects.results.TakeControlOfSiteResult;
+import com.gempukku.lotro.results.TakeControlOfSiteResult;
 
 public class TakeControlOfASiteEffect extends AbstractEffect implements Preventable {
     private final LotroPhysicalCard _source;

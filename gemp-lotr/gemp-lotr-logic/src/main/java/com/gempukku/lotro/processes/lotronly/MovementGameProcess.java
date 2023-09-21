@@ -1,20 +1,20 @@
 package com.gempukku.lotro.processes.lotronly;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.effects.AddTwilightEffect;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.effects.TriggeringResultEffect;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.effects.results.WhenMoveFromResult;
-import com.gempukku.lotro.effects.results.WhenMoveToResult;
-import com.gempukku.lotro.effects.results.WhenMovesResult;
+import com.gempukku.lotro.results.WhenMoveFromResult;
+import com.gempukku.lotro.results.WhenMoveToResult;
+import com.gempukku.lotro.results.WhenMovesResult;
 
 public class MovementGameProcess implements GameProcess {
     private final GameProcess _afterMovementGameProcess;

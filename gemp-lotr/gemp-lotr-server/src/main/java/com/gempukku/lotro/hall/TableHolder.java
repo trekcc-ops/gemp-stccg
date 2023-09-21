@@ -1,6 +1,6 @@
 package com.gempukku.lotro.hall;
 
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
+import com.gempukku.lotro.cards.LotroDeck;
 import com.gempukku.lotro.db.IgnoreDAO;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.CardGameMediator;

@@ -2,7 +2,7 @@ package com.gempukku.lotro.merchant;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.db.MerchantDAO;
-import com.gempukku.lotro.cards.sets.SetDefinition;
+import com.gempukku.lotro.cards.SetDefinition;
 
 import java.util.Date;
 import java.util.HashMap;

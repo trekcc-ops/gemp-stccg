@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.results.PutOnTheOneRingResult;
+import com.gempukku.lotro.results.PutOnTheOneRingResult;
 
 public class PutOnTheOneRingEffect extends AbstractEffect {
 

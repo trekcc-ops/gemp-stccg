@@ -9,7 +9,7 @@ import com.gempukku.lotro.effects.PreventCardEffect;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.WoundCharactersEffect;
 import com.gempukku.lotro.modifiers.ModifierFlag;

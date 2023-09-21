@@ -1,9 +1,9 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.SubAction;
-import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.actions.SubAction;
+import com.gempukku.lotro.evaluator.ConstantEvaluator;
+import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.actions.Action;
 
 import java.util.LinkedList;

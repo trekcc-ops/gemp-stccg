@@ -1,11 +1,11 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.game.PlayOrder;
-import com.gempukku.lotro.effects.results.RevealCardFromTopOfDeckResult;
+import com.gempukku.lotro.results.RevealCardFromTopOfDeckResult;
 
 import java.util.Collections;
 import java.util.LinkedList;

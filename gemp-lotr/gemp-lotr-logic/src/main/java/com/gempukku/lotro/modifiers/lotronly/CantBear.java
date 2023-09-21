@@ -1,0 +1,26 @@
+package com.gempukku.lotro.modifiers.lotronly;
+
+import com.gempukku.lotro.cards.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.FilterableSource;
+import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.ModifierSource;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.modifiers.ModifierSourceProducer;
+import org.json.simple.JSONObject;
+
+public class CantBear implements ModifierSourceProducer {
+    @Override
+    public ModifierSource getModifierSource(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        FieldUtils.validateAllowedFields(object, "filter", "cardFilter");
+
+        final String filter = FieldUtils.getString(object.get("filter"), "filter");
+        final String cardFilter = FieldUtils.getString(object.get("cardFilter"), "cardFilter");
+
+        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+        final FilterableSource cardFilterSource = environment.getFilterFactory().generateFilter(cardFilter, environment);
+
+        return actionContext -> new MayNotBearModifier(actionContext.getSource(),
+                filterableSource.getFilterable(actionContext),
+                cardFilterSource.getFilterable(actionContext));
+    }
+}

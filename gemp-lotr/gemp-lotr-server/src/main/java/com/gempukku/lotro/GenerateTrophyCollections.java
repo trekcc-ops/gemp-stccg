@@ -7,7 +7,7 @@ import com.gempukku.lotro.db.DbCollectionDAO;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
-import com.gempukku.lotro.cards.sets.SetDefinition;
+import com.gempukku.lotro.cards.SetDefinition;
 
 import java.io.IOException;
 import java.sql.SQLException;

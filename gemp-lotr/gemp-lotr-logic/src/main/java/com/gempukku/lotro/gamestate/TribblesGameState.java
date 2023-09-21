@@ -1,7 +1,7 @@
 package com.gempukku.lotro.gamestate;
 
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Side;

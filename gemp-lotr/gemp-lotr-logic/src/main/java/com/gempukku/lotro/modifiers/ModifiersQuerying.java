@@ -1,10 +1,10 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
+import com.gempukku.lotro.evaluator.Evaluator;
+import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.Action;
 
 import java.util.Collection;

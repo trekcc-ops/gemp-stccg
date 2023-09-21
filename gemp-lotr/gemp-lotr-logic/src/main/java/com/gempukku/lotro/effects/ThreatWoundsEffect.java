@@ -1,8 +1,8 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.results.KilledResult;
-import com.gempukku.lotro.effects.results.ThreatWoundTriggerResult;
+import com.gempukku.lotro.results.KilledResult;
+import com.gempukku.lotro.results.ThreatWoundTriggerResult;
 
 public class ThreatWoundsEffect extends AbstractEffect {
     private final KilledResult _killResult;

@@ -2,7 +2,7 @@ package com.gempukku.lotro.rules.lotronly;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.effects.AddTwilightEffect;
@@ -11,7 +11,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.effects.results.AssignAgainstResult;
+import com.gempukku.lotro.results.AssignAgainstResult;
 
 import java.util.Collections;
 import java.util.List;

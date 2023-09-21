@@ -1,6 +1,6 @@
 package com.gempukku.lotro.filters;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.cards.CompletePhysicalCardVisitor;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
@@ -10,8 +10,8 @@ import com.gempukku.lotro.processes.lotronly.assign.Assignment;
 import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
-import com.gempukku.lotro.modifiers.condition.Condition;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.condition.Condition;
+import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.rules.RuleUtils;
 
 import java.util.*;

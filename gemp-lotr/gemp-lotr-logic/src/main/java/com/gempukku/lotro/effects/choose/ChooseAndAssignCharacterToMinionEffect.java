@@ -4,12 +4,11 @@ import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.effects.AssignmentEffect;
-import com.gempukku.lotro.effects.ChooseActiveCardEffect;
-import com.gempukku.lotro.actions.lotronly.SubAction;
+import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.actions.Action;
 
 public class ChooseAndAssignCharacterToMinionEffect extends ChooseActiveCardEffect {

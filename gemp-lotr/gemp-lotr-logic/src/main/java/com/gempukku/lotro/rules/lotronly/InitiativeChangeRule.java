@@ -3,7 +3,7 @@ package com.gempukku.lotro.rules.lotronly;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.results.InitiativeChangeResult;
+import com.gempukku.lotro.results.InitiativeChangeResult;
 
 public class InitiativeChangeRule {
     private Side _initiativeSide = null;

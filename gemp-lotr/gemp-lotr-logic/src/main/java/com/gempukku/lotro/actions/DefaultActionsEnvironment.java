@@ -1,6 +1,5 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;

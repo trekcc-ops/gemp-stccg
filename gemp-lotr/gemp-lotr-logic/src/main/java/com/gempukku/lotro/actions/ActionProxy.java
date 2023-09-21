@@ -1,7 +1,6 @@
 package com.gempukku.lotro.actions;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;
 

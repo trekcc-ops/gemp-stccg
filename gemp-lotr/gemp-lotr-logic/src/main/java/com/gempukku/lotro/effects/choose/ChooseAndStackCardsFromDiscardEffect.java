@@ -1,12 +1,12 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.SubAction;
+import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.effects.StackCardFromDiscardEffect;
 import com.gempukku.lotro.effects.AbstractEffect;
 import com.gempukku.lotro.actions.Action;

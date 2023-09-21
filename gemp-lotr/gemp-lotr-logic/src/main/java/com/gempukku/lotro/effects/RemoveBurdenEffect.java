@@ -1,9 +1,9 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.effects.results.RemoveBurdenResult;
+import com.gempukku.lotro.results.RemoveBurdenResult;
 
 public class RemoveBurdenEffect extends AbstractEffect {
     private final String _performingPlayerId;

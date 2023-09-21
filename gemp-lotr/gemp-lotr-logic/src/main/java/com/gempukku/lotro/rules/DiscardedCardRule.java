@@ -2,11 +2,11 @@ package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.effects.results.DiscardCardsFromPlayResult;
+import com.gempukku.lotro.results.DiscardCardsFromPlayResult;
 import com.gempukku.lotro.effects.EffectResult;
 
 import java.util.Collections;

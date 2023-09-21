@@ -1,8 +1,8 @@
 package com.gempukku.lotro.rules.lotronly;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.effects.TakeOffTheOneRingEffect;
 import com.gempukku.lotro.game.DefaultGame;

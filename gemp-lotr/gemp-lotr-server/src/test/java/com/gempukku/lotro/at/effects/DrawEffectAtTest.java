@@ -6,7 +6,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TriggerConditions;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.DrawCardsEffect;
 import com.gempukku.lotro.effects.PreventEffect;

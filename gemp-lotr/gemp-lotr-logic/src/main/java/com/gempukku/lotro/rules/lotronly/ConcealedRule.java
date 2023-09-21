@@ -1,7 +1,7 @@
 package com.gempukku.lotro.rules.lotronly;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.common.Phase;
@@ -9,7 +9,7 @@ import com.gempukku.lotro.effects.RemoveTwilightEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.modifiers.evaluator.LocationEvaluator;
+import com.gempukku.lotro.evaluator.LocationEvaluator;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.game.TriggerConditions;
 

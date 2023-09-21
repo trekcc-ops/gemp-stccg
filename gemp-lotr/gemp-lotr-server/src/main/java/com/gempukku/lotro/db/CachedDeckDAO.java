@@ -2,7 +2,7 @@ package com.gempukku.lotro.db;
 
 import com.gempukku.lotro.cache.Cached;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
+import com.gempukku.lotro.cards.LotroDeck;
 import org.apache.commons.collections.map.LRUMap;
 
 import java.util.*;

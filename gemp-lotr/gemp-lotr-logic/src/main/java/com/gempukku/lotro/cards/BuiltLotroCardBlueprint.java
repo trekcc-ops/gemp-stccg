@@ -1,19 +1,20 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
-import com.gempukku.lotro.actions.lotronly.PlayEventAction;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
-import com.gempukku.lotro.cards.build.*;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.actions.ActionSource;
+import com.gempukku.lotro.actions.CostToEffectAction;
+import com.gempukku.lotro.actions.PlayEventAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.lotronly.ActivateCardAction;
+import com.gempukku.lotro.actions.ActivateCardAction;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.modifiers.ExtraPlayCost;
+import com.gempukku.lotro.requirement.Requirement;
 import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
-import com.gempukku.lotro.effects.DiscountEffect;
+import com.gempukku.lotro.effects.discount.DiscountEffect;
 import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;
@@ -85,17 +86,11 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
 
     private AidCostSource aidCostSource;
 
-    private ExtraPossessionClassTest extraPossessionClassTest;
-
     // Building methods
 
     public void setAllyHomeSites(SitesBlock block, int[] numbers) {
         this.allyHomeBlock = block;
         this.allyHomeSites = numbers;
-    }
-
-    public void setExtraPossessionClassTest(ExtraPossessionClassTest extraPossessionClassTest) {
-        this.extraPossessionClassTest = extraPossessionClassTest;
     }
 
     public void appendCopiedFilter(FilterableSource filterableSource) {
@@ -800,13 +795,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     // Default implementations - not needed (for now)
-
-    @Override
-    public boolean isExtraPossessionClass(DefaultGame game, LotroPhysicalCard self, LotroPhysicalCard attachedTo) {
-        if (extraPossessionClassTest != null)
-            return extraPossessionClassTest.isExtraPossessionClass(game, self, attachedTo);
-        return false;
-    }
 
     @Override
     public int getPotentialDiscount(DefaultGame game, String playerId, LotroPhysicalCard self) {

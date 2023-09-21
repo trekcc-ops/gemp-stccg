@@ -1,0 +1,24 @@
+package com.gempukku.lotro.effectprocessor;
+
+import com.gempukku.lotro.cards.BuiltLotroCardBlueprint;
+import com.gempukku.lotro.cards.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.actions.DefaultActionSource;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import org.json.simple.JSONObject;
+
+public class EventEffectProcessor implements EffectProcessor {
+    @Override
+    public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        FieldUtils.validateAllowedFields(value, "cost", "effect", "requires", "requiresRanger");
+
+        final boolean requiresRanger = FieldUtils.getBoolean(value.get("requiresRanger"), "requiresRanger", false);
+
+        DefaultActionSource actionSource = new DefaultActionSource();
+        actionSource.setRequiresRanger(requiresRanger);
+
+        EffectUtils.processRequirementsCostsAndEffects(value, environment, actionSource);
+
+        blueprint.setPlayEventAction(actionSource);
+    }
+}

@@ -1,10 +1,9 @@
 package com.gempukku.lotro.effects.discount;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.DiscountEffect;
-import com.gempukku.lotro.actions.lotronly.SubAction;
+import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.effects.OptionalEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromPlayEffect;
 import com.gempukku.lotro.effects.AbstractSubActionEffect;

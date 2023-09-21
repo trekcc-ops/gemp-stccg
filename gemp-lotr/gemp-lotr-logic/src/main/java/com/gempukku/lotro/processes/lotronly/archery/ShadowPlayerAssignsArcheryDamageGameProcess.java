@@ -1,8 +1,8 @@
 package com.gempukku.lotro.processes.lotronly.archery;
 
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.common.CardType;
-import com.gempukku.lotro.effects.ChooseAndWoundCharactersEffect;
+import com.gempukku.lotro.effects.choose.ChooseAndWoundCharactersEffect;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;

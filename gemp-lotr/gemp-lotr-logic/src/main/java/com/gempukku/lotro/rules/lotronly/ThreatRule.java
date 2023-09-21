@@ -1,10 +1,10 @@
 package com.gempukku.lotro.rules.lotronly;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Filterable;
-import com.gempukku.lotro.effects.ChooseAndWoundCharactersEffect;
+import com.gempukku.lotro.effects.choose.ChooseAndWoundCharactersEffect;
 import com.gempukku.lotro.effects.RemoveThreatsEffect;
 import com.gempukku.lotro.effects.ThreatWoundsEffect;
 import com.gempukku.lotro.filters.Filters;
@@ -12,7 +12,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.modifiers.ModifierFlag;
 import com.gempukku.lotro.effects.EffectResult;
-import com.gempukku.lotro.effects.results.KilledResult;
+import com.gempukku.lotro.results.KilledResult;
 
 import java.util.Collections;
 import java.util.List;

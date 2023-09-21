@@ -3,9 +3,8 @@ package com.gempukku.lotro.effects.discount;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.decisions.IntegerAwaitingDecision;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.DiscountEffect;
 import com.gempukku.lotro.effects.RemoveThreatsEffect;
-import com.gempukku.lotro.actions.lotronly.SubAction;
+import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.effects.AbstractSubActionEffect;
 import com.gempukku.lotro.actions.Action;
 

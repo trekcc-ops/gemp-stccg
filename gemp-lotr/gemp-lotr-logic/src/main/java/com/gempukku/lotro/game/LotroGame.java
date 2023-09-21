@@ -5,15 +5,15 @@ import com.gempukku.lotro.actions.ActionsEnvironment;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.adventure.Adventure;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.modifiers.ModifiersEnvironment;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.modifiers.ModifiersQuerying;
-import com.gempukku.lotro.processes.turn.TurnProcedure;
+import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
 import com.gempukku.lotro.rules.lotronly.CharacterDeathRule;
 

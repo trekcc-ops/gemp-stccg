@@ -5,7 +5,7 @@ import com.gempukku.lotro.actions.ActionsEnvironment;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.gamestate.GameStateListener;
 import com.gempukku.lotro.gamestate.GameStats;
@@ -14,7 +14,7 @@ import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.modifiers.ModifiersEnvironment;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.modifiers.ModifiersQuerying;
-import com.gempukku.lotro.processes.turn.tribbles.TribblesTurnProcedure;
+import com.gempukku.lotro.processes.TribblesTurnProcedure;
 import com.gempukku.lotro.rules.tribbles.TribblesRuleSet;
 
 import java.util.*;

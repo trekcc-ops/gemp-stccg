@@ -2,7 +2,7 @@ package com.gempukku.lotro.processes.lotronly.regroup;
 
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;
 import com.gempukku.lotro.processes.GameProcess;
 

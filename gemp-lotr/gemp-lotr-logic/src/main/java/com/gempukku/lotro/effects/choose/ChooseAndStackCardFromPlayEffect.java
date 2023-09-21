@@ -1,11 +1,10 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.ChooseActiveCardEffect;
 import com.gempukku.lotro.effects.StackCardFromPlayEffect;
-import com.gempukku.lotro.actions.lotronly.SubAction;
+import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.effects.AbstractSubActionEffect;
 import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.game.PlayConditions;

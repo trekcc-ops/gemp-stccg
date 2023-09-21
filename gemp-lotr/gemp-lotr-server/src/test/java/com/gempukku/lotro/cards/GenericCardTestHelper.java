@@ -1,16 +1,11 @@
 package com.gempukku.lotro.cards;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.ActionProxy;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.at.AbstractAtTest;
-import com.gempukku.lotro.cards.build.CardGenerationEnvironment;
-import com.gempukku.lotro.cards.build.DefaultActionContext;
-import com.gempukku.lotro.cards.build.InvalidCardDefinitionException;
-import com.gempukku.lotro.cards.build.LotroCardBlueprintBuilder;
-import com.gempukku.lotro.cards.build.field.effect.filter.FilterFactory;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.filters.FilterFactory;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;

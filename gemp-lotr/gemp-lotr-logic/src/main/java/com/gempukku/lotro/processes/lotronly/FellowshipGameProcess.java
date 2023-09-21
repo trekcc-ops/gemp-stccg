@@ -2,9 +2,9 @@ package com.gempukku.lotro.processes.lotronly;
 
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.turn.EndOfPhaseGameProcess;
-import com.gempukku.lotro.processes.turn.PlayerPlaysPhaseActionsUntilPassesGameProcess;
-import com.gempukku.lotro.processes.turn.StartOfPhaseGameProcess;
+import com.gempukku.lotro.processes.EndOfPhaseGameProcess;
+import com.gempukku.lotro.processes.PlayerPlaysPhaseActionsUntilPassesGameProcess;
+import com.gempukku.lotro.processes.StartOfPhaseGameProcess;
 import com.gempukku.lotro.processes.GameProcess;
 
 public class FellowshipGameProcess implements GameProcess {

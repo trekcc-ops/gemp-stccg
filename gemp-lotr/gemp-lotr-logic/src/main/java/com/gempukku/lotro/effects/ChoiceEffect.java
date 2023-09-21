@@ -2,7 +2,7 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.SubAction;
+import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.actions.Action;
 
 import java.util.LinkedList;

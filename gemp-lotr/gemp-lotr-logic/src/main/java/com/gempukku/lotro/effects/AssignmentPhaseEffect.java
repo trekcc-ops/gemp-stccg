@@ -1,10 +1,10 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.results.AssignAgainstResult;
-import com.gempukku.lotro.effects.results.AssignedToSkirmishResult;
+import com.gempukku.lotro.results.AssignAgainstResult;
+import com.gempukku.lotro.results.AssignedToSkirmishResult;
 
 import java.util.HashMap;
 import java.util.Map;

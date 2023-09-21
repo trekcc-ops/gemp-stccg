@@ -1,6 +1,6 @@
 package com.gempukku.lotro.tournament;
 
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
+import com.gempukku.lotro.cards.LotroDeck;
 
 public interface TournamentCallback {
     void createGame(String playerOne, LotroDeck deckOne, String playerTwo, LotroDeck deckTwo);

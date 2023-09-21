@@ -4,7 +4,7 @@ import com.gempukku.lotro.common.PossessionClass;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.sets.SetDefinition;
+import com.gempukku.lotro.cards.SetDefinition;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

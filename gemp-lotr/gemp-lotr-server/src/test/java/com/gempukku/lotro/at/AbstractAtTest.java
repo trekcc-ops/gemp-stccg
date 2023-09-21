@@ -1,13 +1,13 @@
 package com.gempukku.lotro.at;
 
 import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.PhysicalCardImpl;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;

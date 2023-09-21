@@ -1,12 +1,12 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
 import com.gempukku.lotro.modifiers.ModifierEffect;
-import com.gempukku.lotro.modifiers.condition.Condition;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.condition.Condition;
+import com.gempukku.lotro.evaluator.Evaluator;
 
 public class FPSkirmishResistanceStrengthOverrideModifier extends AbstractModifier {
     private static final Evaluator _resistanceEvaluator =

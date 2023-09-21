@@ -1,9 +1,9 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.game.TriggerConditions;
 
 import java.util.Collections;

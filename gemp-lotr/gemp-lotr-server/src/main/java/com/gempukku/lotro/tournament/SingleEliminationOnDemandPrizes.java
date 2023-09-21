@@ -4,7 +4,7 @@ import com.gempukku.lotro.competitive.PlayerStanding;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.sets.SetDefinition;
+import com.gempukku.lotro.cards.SetDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

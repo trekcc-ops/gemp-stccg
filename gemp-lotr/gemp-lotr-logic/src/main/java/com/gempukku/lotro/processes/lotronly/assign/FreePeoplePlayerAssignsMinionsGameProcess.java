@@ -1,6 +1,6 @@
 package com.gempukku.lotro.processes.lotronly.assign;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.common.Side;
@@ -10,12 +10,12 @@ import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.effects.AssignmentPhaseEffect;
 import com.gempukku.lotro.effects.TriggeringResultEffect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.effects.results.FreePlayerStartsAssigningResult;
+import com.gempukku.lotro.results.FreePlayerStartsAssigningResult;
 
 import java.util.Collection;
 import java.util.HashSet;

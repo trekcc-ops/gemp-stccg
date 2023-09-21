@@ -1,12 +1,12 @@
 package com.gempukku.lotro.game;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.*;
-import com.gempukku.lotro.effects.results.*;
 import com.gempukku.lotro.filters.Filters;
+import com.gempukku.lotro.results.*;
 
 public class TriggerConditions {
 

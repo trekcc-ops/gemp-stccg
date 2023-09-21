@@ -2,9 +2,9 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.results.SkirmishCancelledResult;
+import com.gempukku.lotro.results.SkirmishCancelledResult;
 
 public class CancelSkirmishEffect extends AbstractEffect {
     private final Filterable[] _involvementFilter;

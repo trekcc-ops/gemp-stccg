@@ -1,7 +1,5 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-
 public abstract class CompletePhysicalCardVisitor implements PhysicalCardVisitor {
     @Override
     public boolean visitPhysicalCard(LotroPhysicalCard physicalCard) {

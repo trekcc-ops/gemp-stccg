@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.results.TakeOffTheOneRingResult;
+import com.gempukku.lotro.results.TakeOffTheOneRingResult;
 
 public class TakeOffTheOneRingEffect extends AbstractEffect {
     @Override

@@ -1,7 +1,7 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.condition.Condition;
+import com.gempukku.lotro.condition.Condition;
 
 public class SpotBurdensCondition implements Condition {
     private final int _count;

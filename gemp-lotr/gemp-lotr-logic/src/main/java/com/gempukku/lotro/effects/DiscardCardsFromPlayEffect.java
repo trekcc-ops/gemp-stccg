@@ -4,11 +4,11 @@ import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.effects.results.DiscardCardsFromPlayResult;
+import com.gempukku.lotro.results.DiscardCardsFromPlayResult;
 
 import java.util.Collection;
 import java.util.HashSet;

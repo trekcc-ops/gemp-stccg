@@ -1,10 +1,10 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.evaluator.ConstantEvaluator;
+import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.game.Preventable;
 
 public class AddTwilightEffect extends AbstractEffect implements Preventable {

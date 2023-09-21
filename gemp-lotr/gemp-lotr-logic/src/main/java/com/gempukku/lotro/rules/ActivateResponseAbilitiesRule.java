@@ -1,13 +1,13 @@
 package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.actions.lotronly.ActivateCardAction;
+import com.gempukku.lotro.actions.ActivateCardAction;
 import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;

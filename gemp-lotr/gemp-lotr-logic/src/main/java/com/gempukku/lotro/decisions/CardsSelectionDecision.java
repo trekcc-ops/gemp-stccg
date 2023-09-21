@@ -1,6 +1,6 @@
 package com.gempukku.lotro.decisions;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package com.gempukku.lotro.processes.lotronly.skirmish;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.evaluator.Evaluator;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -3,7 +3,7 @@ package com.gempukku.lotro.modifiers.lotronly;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.condition.Condition;
+import com.gempukku.lotro.condition.Condition;
 
 public class SpotCondition implements Condition {
     private final Filterable[] _filter;

@@ -1,0 +1,78 @@
+package com.gempukku.lotro.effectappender;
+
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.actioncontext.DelegateActionContext;
+import com.gempukku.lotro.actions.CostToEffectAction;
+import com.gempukku.lotro.actions.SubAction;
+import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
+import com.gempukku.lotro.decisions.YesNoDecision;
+import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.effects.PlayoutDecisionEffect;
+import com.gempukku.lotro.effects.StackActionEffect;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.rules.GameUtils;
+import org.json.simple.JSONObject;
+
+public class Optional implements EffectAppenderProducer {
+    @Override
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        FieldUtils.validateAllowedFields(effectObject, "player", "text", "effect");
+
+        final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
+        final String text = FieldUtils.getString(effectObject.get("text"), "text");
+        final JSONObject[] effectArray = FieldUtils.getObjectArray(effectObject.get("effect"), "effect");
+
+        if (text == null)
+            throw new InvalidCardDefinitionException("There is a text required for optional effects");
+
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
+        final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
+
+        return new DelayedAppender<>() {
+            @Override
+            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                final String choosingPlayer = playerSource.getPlayer(actionContext);
+                SubAction subAction = new SubAction(action);
+                subAction.appendCost(
+                        new PlayoutDecisionEffect(choosingPlayer,
+                        new YesNoDecision(GameUtils.SubstituteText(text, actionContext)) {
+                            @Override
+                            protected void yes() {
+                                DefaultActionContext delegate = new DelegateActionContext(actionContext,
+                                        choosingPlayer, actionContext.getGame(), actionContext.getSource(),
+                                        actionContext.getEffectResult(), actionContext.getEffect());
+                                for (EffectAppender effectAppender : effectAppenders) {
+                                    effectAppender.appendEffect(cost, subAction, delegate);
+                                }
+                            }
+                        }));
+                return new StackActionEffect(subAction);
+            }
+
+            @Override
+            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+                final String choosingPlayer = playerSource.getPlayer(actionContext);
+                DefaultActionContext delegate = new DelegateActionContext(actionContext,
+                        choosingPlayer, actionContext.getGame(), actionContext.getSource(),
+                        actionContext.getEffectResult(), actionContext.getEffect());
+                for (EffectAppender effectAppender : effectAppenders) {
+                    if (!effectAppender.isPlayableInFull(delegate))
+                        return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean isPlayabilityCheckedForEffect() {
+                for (EffectAppender effectAppender : effectAppenders) {
+                    if (effectAppender.isPlayabilityCheckedForEffect())
+                        return true;
+                }
+                return false;
+            }
+        };
+    }
+}

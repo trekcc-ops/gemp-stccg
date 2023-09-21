@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.discount;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
@@ -9,7 +9,6 @@ import com.gempukku.lotro.decisions.YesNoDecision;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.effects.DiscountEffect;
 
 import java.util.Collection;
 import java.util.HashSet;

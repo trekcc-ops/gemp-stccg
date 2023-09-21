@@ -1,10 +1,8 @@
 package com.gempukku.lotro.cards;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
-import com.gempukku.lotro.cards.build.ActionSource;
-import com.gempukku.lotro.cards.build.DefaultActionContext;
-import com.gempukku.lotro.cards.build.FilterableSource;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.ActionSource;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.filters.Filters;

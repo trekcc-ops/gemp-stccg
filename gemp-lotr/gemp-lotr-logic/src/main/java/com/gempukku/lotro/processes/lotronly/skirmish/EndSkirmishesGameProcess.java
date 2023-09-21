@@ -1,12 +1,12 @@
 package com.gempukku.lotro.processes.lotronly.skirmish;
 
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.effects.TriggeringResultEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.processes.GameProcess;
 import com.gempukku.lotro.processes.lotronly.AssignmentGameProcess;
 import com.gempukku.lotro.processes.lotronly.RegroupGameProcess;
-import com.gempukku.lotro.effects.results.AfterAllSkirmishesResult;
+import com.gempukku.lotro.results.AfterAllSkirmishesResult;
 
 public class EndSkirmishesGameProcess implements GameProcess {
     private final AfterAllSkirmishesResult _afterAllSkirmishesResult = new AfterAllSkirmishesResult();

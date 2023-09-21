@@ -2,8 +2,8 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.modifiers.evaluator.ConstantEvaluator;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.evaluator.ConstantEvaluator;
+import com.gempukku.lotro.evaluator.Evaluator;
 
 public class RemoveTwilightEffect extends AbstractEffect {
     private final Evaluator _twilight;

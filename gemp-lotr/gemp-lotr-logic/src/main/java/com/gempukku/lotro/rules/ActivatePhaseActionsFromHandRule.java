@@ -4,7 +4,7 @@ import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;

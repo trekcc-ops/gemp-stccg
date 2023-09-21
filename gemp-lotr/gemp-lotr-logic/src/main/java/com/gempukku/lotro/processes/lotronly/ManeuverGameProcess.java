@@ -4,9 +4,9 @@ import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.turn.EndOfPhaseGameProcess;
-import com.gempukku.lotro.processes.turn.PlayersPlayPhaseActionsInOrderGameProcess;
-import com.gempukku.lotro.processes.turn.StartOfPhaseGameProcess;
+import com.gempukku.lotro.processes.EndOfPhaseGameProcess;
+import com.gempukku.lotro.processes.PlayersPlayPhaseActionsInOrderGameProcess;
+import com.gempukku.lotro.processes.StartOfPhaseGameProcess;
 import com.gempukku.lotro.processes.GameProcess;
 
 public class ManeuverGameProcess implements GameProcess {

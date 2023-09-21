@@ -1,15 +1,15 @@
 package com.gempukku.lotro.rules.lotronly;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
-import com.gempukku.lotro.actions.lotronly.ResolveSkirmishDamageAction;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
+import com.gempukku.lotro.actions.ResolveSkirmishDamageAction;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.effects.KillEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.effects.results.NormalSkirmishResult;
+import com.gempukku.lotro.results.NormalSkirmishResult;
 import com.gempukku.lotro.effects.EffectResult;
-import com.gempukku.lotro.effects.results.OverwhelmSkirmishResult;
+import com.gempukku.lotro.results.OverwhelmSkirmishResult;
 
 import java.util.Collections;
 import java.util.HashSet;

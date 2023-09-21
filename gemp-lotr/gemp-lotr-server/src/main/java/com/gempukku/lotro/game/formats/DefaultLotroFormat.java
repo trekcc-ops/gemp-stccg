@@ -8,7 +8,7 @@ import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.adventure.Adventure;
 import com.gempukku.lotro.adventure.AdventureLibrary;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.cards.lotronly.LotroDeck;
+import com.gempukku.lotro.cards.LotroDeck;
 
 import java.util.*;
 import java.util.stream.Collectors;

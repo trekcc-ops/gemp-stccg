@@ -1,9 +1,9 @@
 package com.gempukku.lotro.adventure;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.actions.lotronly.SystemQueueAction;
+import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.game.PlayerOrderFeedback;
 import com.gempukku.lotro.processes.GameProcess;

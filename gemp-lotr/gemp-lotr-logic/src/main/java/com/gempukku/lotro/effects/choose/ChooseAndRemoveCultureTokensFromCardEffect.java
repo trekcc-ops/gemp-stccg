@@ -4,9 +4,8 @@ import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.ChooseActiveCardEffect;
 import com.gempukku.lotro.modifiers.ModifierFlag;
 
 public class ChooseAndRemoveCultureTokensFromCardEffect extends ChooseActiveCardEffect {

@@ -1,14 +1,12 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.actions.lotronly.CostToEffectAction;
-import com.gempukku.lotro.actions.lotronly.PlayEventAction;
-import com.gempukku.lotro.actions.lotronly.RequiredTriggerAction;
-import com.gempukku.lotro.cards.build.ActionSource;
-import com.gempukku.lotro.cards.build.FilterableSource;
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.actions.CostToEffectAction;
+import com.gempukku.lotro.actions.PlayEventAction;
+import com.gempukku.lotro.actions.RequiredTriggerAction;
+import com.gempukku.lotro.actions.ActionSource;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.lotronly.ActivateCardAction;
+import com.gempukku.lotro.actions.ActivateCardAction;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.modifiers.ExtraPlayCost;
 import com.gempukku.lotro.game.DefaultGame;
@@ -122,8 +120,6 @@ public interface LotroCardBlueprint {
     int getSiteNumber();
 
     Set<PossessionClass> getPossessionClasses();
-
-    boolean isExtraPossessionClass(DefaultGame game, LotroPhysicalCard self, LotroPhysicalCard attachedTo);
 
     Direction getSiteDirection();
 

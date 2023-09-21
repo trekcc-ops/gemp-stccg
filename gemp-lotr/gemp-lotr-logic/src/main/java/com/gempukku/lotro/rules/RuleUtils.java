@@ -1,13 +1,13 @@
 package com.gempukku.lotro.rules;
 
-import com.gempukku.lotro.cards.lotronly.LotroPhysicalCard;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
-import com.gempukku.lotro.modifiers.evaluator.Evaluator;
+import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 
 import java.util.Arrays;
@@ -122,12 +122,12 @@ public class RuleUtils {
                             if (matchingClassPossessions.size() > 1)
                                 return false;
 
-                            boolean extraPossessionClass = self.getBlueprint().isExtraPossessionClass(game1, self, attachedTo);
+/*                            boolean extraPossessionClass = self.getBlueprint().isExtraPossessionClass(game1, self, attachedTo);
                             if (!extraPossessionClass && matchingClassPossessions.size() == 1) {
                                 final LotroPhysicalCard attachedPossession = matchingClassPossessions.iterator().next();
                                 if (!attachedPossession.getBlueprint().isExtraPossessionClass(game1, attachedPossession, attachedTo))
                                     return false;
-                            }
+                            } */
                         }
                     }
                     return true;
