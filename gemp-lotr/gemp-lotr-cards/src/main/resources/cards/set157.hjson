@@ -24,6 +24,19 @@
             ]
 		}
     }
+    157_004: {
+        title: "10 Tribbles - Advance"
+        type: tribble
+        tribble-value: 10
+        tribble-power: advance
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/58V.jpg
+		effects: {
+		    type: playOutOfSequence
+            requires: {
+                type: tribbleSequenceBroken
+            }
+		}
+    }
     157_010: {
         title: "1,000 Tribbles - Masaka"
         type: tribble

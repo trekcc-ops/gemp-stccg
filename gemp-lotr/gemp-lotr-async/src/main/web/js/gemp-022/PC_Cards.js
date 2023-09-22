@@ -38,6 +38,7 @@ var PCCards = {
 // Set 147 - Virtual Promos [Tribbles]
 '147_001': 'https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg',
 '147_008': 'https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg',
+'147_018': 'https://www.trekcc.org/tribbles/cardimages/vpromos/18VTP.jpg',
 
 // Set 150 - Trials and Tribble-ations
 '150_002': 'https://www.trekcc.org/tribbles/cardimages/tat/38V.jpg',
@@ -57,12 +58,26 @@ var PCCards = {
 
 // Set 157 - Nothing But Tribble
 '157_001': 'https://www.trekcc.org/tribbles/cardimages/nbt/55V.jpg',
+'157_002': 'https://www.trekcc.org/tribbles/cardimages/nbt/56V.jpg',
+'157_003': 'https://www.trekcc.org/tribbles/cardimages/nbt/57V.jpg',
+'157_004': 'https://www.trekcc.org/tribbles/cardimages/nbt/58V.jpg',
+'157_005': 'https://www.trekcc.org/tribbles/cardimages/nbt/59V.jpg',
+'157_006': 'https://www.trekcc.org/tribbles/cardimages/nbt/60V.jpg',
+'157_007': 'https://www.trekcc.org/tribbles/cardimages/nbt/61V.jpg',
+'157_008': 'https://www.trekcc.org/tribbles/cardimages/nbt/62V.jpg',
+'157_009': 'https://www.trekcc.org/tribbles/cardimages/nbt/63V.jpg',
 '157_010': 'https://www.trekcc.org/tribbles/cardimages/nbt/64V.jpg',
 '157_011': 'https://www.trekcc.org/tribbles/cardimages/nbt/65V.jpg',
+'157_012': 'https://www.trekcc.org/tribbles/cardimages/nbt/66V.jpg',
+'157_013': 'https://www.trekcc.org/tribbles/cardimages/nbt/67V.jpg',
 '157_014': 'https://www.trekcc.org/tribbles/cardimages/nbt/68V.jpg',
 '157_015': 'https://www.trekcc.org/tribbles/cardimages/nbt/69V.jpg',
+'157_016': 'https://www.trekcc.org/tribbles/cardimages/nbt/70V.jpg',
+'157_017': 'https://www.trekcc.org/tribbles/cardimages/nbt/71V.jpg',
+'157_018': 'https://www.trekcc.org/tribbles/cardimages/nbt/72V.jpg',
 
 // Set 164 - Big Tribble in Little Qo'noS
+'164_001': 'https://www.trekcc.org/tribbles/cardimages/btilq/73V.jpg',
 '164_002': 'https://www.trekcc.org/tribbles/cardimages/btilq/74V.jpg',
 '164_004': 'https://www.trekcc.org/tribbles/cardimages/btilq/76V.jpg',
 '164_007': 'https://www.trekcc.org/tribbles/cardimages/btilq/79V.jpg',
@@ -73,6 +88,7 @@ var PCCards = {
 // Set 190 - Star Trek 50 [Tribbles]
 '190_004': 'https://www.trekcc.org/tribbles/cardimages/50th/121V.jpg',
 '190_005': 'https://www.trekcc.org/tribbles/cardimages/50th/122V.jpg',
+'190_009': 'https://www.trekcc.org/tribbles/cardimages/50th/126V.jpg',
 '190_012': 'https://www.trekcc.org/tribbles/cardimages/50th/129V.jpg',
 
 // Set 221 - A Tribble of a Different Color
@@ -82,6 +98,17 @@ var PCCards = {
 '221_004': 'https://www.trekcc.org/tribbles/cardimages/toadc/139V.jpg',
 '221_005': 'https://www.trekcc.org/tribbles/cardimages/toadc/140V.jpg',
 '221_006': 'https://www.trekcc.org/tribbles/cardimages/toadc/141V.jpg',
+'221_007': 'https://www.trekcc.org/tribbles/cardimages/toadc/142V.jpg',
+'221_008': 'https://www.trekcc.org/tribbles/cardimages/toadc/143V.jpg',
+'221_009': 'https://www.trekcc.org/tribbles/cardimages/toadc/144V.jpg',
 '221_010': 'https://www.trekcc.org/tribbles/cardimages/toadc/145V.jpg',
+'221_011': 'https://www.trekcc.org/tribbles/cardimages/toadc/146V.jpg',
+'221_012': 'https://www.trekcc.org/tribbles/cardimages/toadc/147V.jpg',
+'221_013': 'https://www.trekcc.org/tribbles/cardimages/toadc/148V.jpg',
+'221_014': 'https://www.trekcc.org/tribbles/cardimages/toadc/149V.jpg',
+'221_015': 'https://www.trekcc.org/tribbles/cardimages/toadc/150V.jpg',
+'221_016': 'https://www.trekcc.org/tribbles/cardimages/toadc/151V.jpg',
+'221_017': 'https://www.trekcc.org/tribbles/cardimages/toadc/152V.jpg',
+'221_018': 'https://www.trekcc.org/tribbles/cardimages/toadc/153V.jpg',
 
 }

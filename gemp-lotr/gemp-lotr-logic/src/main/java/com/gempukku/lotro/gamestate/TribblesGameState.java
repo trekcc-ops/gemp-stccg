@@ -36,8 +36,8 @@ public class TribblesGameState extends GameState {
     private final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     private final LinkedList<String> _lastMessages = new LinkedList<>();
     private int _nextCardId = 0;
-    private int _nextTribble;
-    private int _lastTribble;
+    private int _nextTribbleInSequence;
+    private int _lastTribblePlayed;
     private boolean _chainBroken;
     private int _currentRound = 0;
     private int nextCardId() {
@@ -54,7 +54,7 @@ public class TribblesGameState extends GameState {
             _players.put(player, new Player(player));
         }
 
-        _nextTribble = 1;
+        _nextTribbleInSequence = 1;
         _chainBroken = false;
 
         for (Map.Entry<String, List<String>> stringListEntry : cards.entrySet()) {
@@ -710,59 +710,53 @@ public class TribblesGameState extends GameState {
             listener.sendWarning(player, warning);
     }
 
-    public void setNextTribble(int num) {
-        _nextTribble = num;
+    public void setNextTribbleInSequence(int num) {
+        _nextTribbleInSequence = num;
         for (GameStateListener listener : getAllGameStateListeners()) {
             DecimalFormat df = new DecimalFormat("#,###");
             listener.setTribbleSequence(df.format(num));
         }
     }
 
-    public void setLastTribble(int num) {
-        _lastTribble = num;
+    public void setLastTribblePlayed(int num) {
+        _lastTribblePlayed = num;
     }
 
-    public int getLastTribble() { return _lastTribble; }
+    public int getLastTribblePlayed() { return _lastTribblePlayed; }
 
-    public int getNextTribble() { return _nextTribble; }
+    public int getNextTribbleInSequence() { return _nextTribbleInSequence; }
 
-    public void setChainBroken(boolean chainBroken) {
-        _chainBroken = chainBroken;
-        if (chainBroken) {
-            sendMessage("The chain has been broken.");
-            for (GameStateListener listener : getAllGameStateListeners()) {
-                DecimalFormat df = new DecimalFormat("#,###");
-                listener.setTribbleSequence("1 or " + df.format(_nextTribble));
-            }
+    public void breakChain() {
+        _chainBroken = true;
+        sendMessage("The chain has been broken.");
+        for (GameStateListener listener : getAllGameStateListeners()) {
+            DecimalFormat df = new DecimalFormat("#,###");
+            listener.setTribbleSequence("1 or " + df.format(_nextTribbleInSequence));
         }
     }
 
-    public boolean getChainBroken() {
+    public boolean isChainBroken() {
         return _chainBroken;
     }
 
     @Override
     public void playEffectReturningResult(LotroPhysicalCard cardPlayed) {
-        setLastTribble(cardPlayed.getBlueprint().getTribbleValue());
-        if (_lastTribble == 100000) {
-            setNextTribble(1);
+        setLastTribblePlayed(cardPlayed.getBlueprint().getTribbleValue());
+        if (_lastTribblePlayed == 100000) {
+            setNextTribbleInSequence(1);
         } else {
-            setNextTribble(_lastTribble * 10);
+            setNextTribbleInSequence(_lastTribblePlayed * 10);
         }
         _chainBroken = false;
     }
 
     @Override
     public void playerPassEffect() {
-        this.setChainBroken(true);
+        this.breakChain();
     }
 
     public void playerWentOut(String player) {
         // TODO
-    }
-
-    public void advanceRoundNum() {
-        _currentRound++;
     }
 
     public int getRoundNum() {
@@ -775,4 +769,18 @@ public class TribblesGameState extends GameState {
     public int getPlayerScore(String playerId) {
         return _players.get(playerId).getScore();
     }
+
+    public void advanceRound() {
+        // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
+        _chainBroken = false;
+        setNextTribbleInSequence(1);
+        _playerOrder.setReversed(false);
+
+        // TODO: Handle "decked" players
+
+        // Increment round number
+        _currentRound++;
+        sendMessage("Beginning Round " + _currentRound);
+    }
+
 }

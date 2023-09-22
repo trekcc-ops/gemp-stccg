@@ -26,7 +26,7 @@ public class SetNextTribble implements EffectAppenderProducer {
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect(DefaultGame game) {
-                        actionContext.getGame().getGameState().setNextTribble(value);
+                        actionContext.getGame().getGameState().setNextTribbleInSequence(value);
                     }
                 };
             }

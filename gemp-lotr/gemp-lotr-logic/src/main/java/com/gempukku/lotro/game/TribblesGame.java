@@ -263,10 +263,10 @@ public class TribblesGame implements DefaultGame {
 
     public boolean isNextInSequence(LotroPhysicalCard card) {
         final int cardValue = card.getBlueprint().getTribbleValue();
-        if (_gameState.getChainBroken() && (cardValue == 1)) {
+        if (_gameState.isChainBroken() && (cardValue == 1)) {
             return true;
         }
-        return (cardValue == _gameState.getNextTribble());
+        return (cardValue == _gameState.getNextTribbleInSequence());
     }
     public Set<String> getPlayers() { return _allPlayers; }
 

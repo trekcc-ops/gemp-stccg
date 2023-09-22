@@ -47,6 +47,20 @@
 			}
 		}
     }
+    190_009: {
+        title: "1,000 Tribbles - Cheat"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: cheat
+        image-url: https://www.trekcc.org/tribbles/cardimages/50th/126V.jpg
+        effects: {
+            type: playOutOfSequence
+            requires: {
+                type: nextTribbleInSequence
+                value: 100
+            }
+        }
+    }
     190_012: {
         title: "10,000 Tribbles - Exchange"
         type: tribble

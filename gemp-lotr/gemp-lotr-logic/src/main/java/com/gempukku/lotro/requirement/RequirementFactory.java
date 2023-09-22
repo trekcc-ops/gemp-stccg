@@ -20,7 +20,6 @@ public class RequirementFactory {
         requirementProducers.put("cardsinhandmorethan", new CardsInHandMoreThan());
         requirementProducers.put("hascardindiscard", new HasCardInDiscard());
         requirementProducers.put("hascardinhand", new HasCardInHand());
-        requirementProducers.put("hascardinplaypile", new HasCardInPlayPile());
         requirementProducers.put("hasinzonedata", new HasInZoneData());
         requirementProducers.put("isequal", new IsEqual());
         requirementProducers.put("isgreaterthan", new IsGreaterThan());
@@ -30,7 +29,6 @@ public class RequirementFactory {
         requirementProducers.put("isnotequal", new IsNotEqual());
         requirementProducers.put("isowner", new IsOwnerRequirementProducer());
         requirementProducers.put("isside", new IsSideRequirementProducer());
-        requirementProducers.put("lasttribbleplayed", new LastTribblePlayedProducer());
         requirementProducers.put("location", new Location());
         requirementProducers.put("memoryis", new MemoryIs());
         requirementProducers.put("memorylike", new MemoryLike());
@@ -41,6 +39,11 @@ public class RequirementFactory {
         requirementProducers.put("phase", new PhaseRequirement());
         requirementProducers.put("playedcardthisphase", new PlayedCardThisPhase());
         requirementProducers.put("playerisnotself", new PlayerIsNotSelf());
+            // Tribbles specific
+        requirementProducers.put("hascardinplaypile", new HasCardInPlayPile());
+        requirementProducers.put("lasttribbleplayed", new LastTribblePlayedProducer());
+        requirementProducers.put("nexttribbleinsequence", new NextTribbleInSequenceRequirement());
+        requirementProducers.put("tribblesequencebroken", new TribbleSequenceBroken());
     }
 
     public <AbstractGame extends DefaultGame> Requirement<AbstractGame> getRequirement(

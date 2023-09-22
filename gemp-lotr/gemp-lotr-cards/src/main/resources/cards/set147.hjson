@@ -29,4 +29,17 @@
             }
 		}
 	}
+    147_018: {
+        title: "10,000 Tribbles - Advance"
+        type: tribble
+        tribble-value: 10000
+        tribble-power: advance
+        image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/18VTP.jpg
+		effects: {
+		    type: playOutOfSequence
+            requires: {
+                type: tribbleSequenceBroken
+            }
+		}
+    }
 }
