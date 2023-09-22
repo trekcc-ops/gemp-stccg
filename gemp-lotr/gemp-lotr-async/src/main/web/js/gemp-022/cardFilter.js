@@ -113,10 +113,11 @@ var CardFilter = Class.extend({
         
         this.fullFilterDiv = $("<div id='filter-inputs' style='display:flex;flex-wrap:wrap;'></div>");
         this.setSelect = $("<select id='setSelect' style='width: 130px; font-size: 80%;'>"
-            + "<option value='144,145,150,157,164,190,221'>All Tribbles Sets</option>"
+            + "<option value='144,145,147,150,157,164,190,221'>All Tribbles Sets</option>"
             + "<option disabled>----------</option>"
             + "<option value='144'>More Tribbles, More Troubles</option>"
             + "<option value='145'>No Tribble at All</option>"
+            + "<option value='147'>Virtual Promos [Tribbles]</option>"
             + "<option value='150'>Trials and Tribble-ations</option>"
             + "<option value='157'>Nothing But Tribble</option>"
             + "<option value='164'>Big Tribble in Little Qo'noS</option>"

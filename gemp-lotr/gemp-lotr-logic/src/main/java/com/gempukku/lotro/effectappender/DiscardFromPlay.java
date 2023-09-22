@@ -6,7 +6,6 @@ import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;

@@ -8,7 +8,6 @@ import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.results.ActivateCardResult;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
 import org.json.simple.JSONObject;
 
 public class UsesSpecialAbility implements TriggerCheckerProducer {

@@ -14,13 +14,6 @@ public class OrRequirementProducer implements RequirementProducer {
 
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return (actionContext) -> {
-            for (Requirement requirement : requirements) {
-                if (requirement.accepts(actionContext))
-                    return true;
-            }
-
-            return false;
-        };
+        return (actionContext) -> RequirementUtils.acceptsAnyRequirements(requirements, actionContext);
     }
 }

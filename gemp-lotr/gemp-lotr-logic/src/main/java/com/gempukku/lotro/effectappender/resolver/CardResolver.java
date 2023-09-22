@@ -4,7 +4,6 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.effectappender.EffectAppender;
 import com.gempukku.lotro.effectappender.DelayedAppender;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;

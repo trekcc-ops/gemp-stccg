@@ -141,24 +141,6 @@ public class LotroGameUtils extends GameUtils {
         return tokensTotal;
     }
 
-    // "If you can spot X culture tokens on conditions..."
-    public static int getAllSpottableCultureTokens(DefaultGame game, Filterable... filters) {
-        int tokensTotal = 0;
-
-        final var cards = Filters.filterActive(game, Filters.and(filters, Filters.hasAnyCultureTokens()));
-
-        for (LotroPhysicalCard physicalCard : cards) {
-            var tokens = game.getGameState().getTokens(physicalCard);
-            for(var token : tokens.entrySet()) {
-                if(token.getKey().getCulture() != null) {
-                    tokensTotal += token.getValue();
-                }
-            }
-        }
-
-        return tokensTotal;
-    }
-
     public static int getSpottableCulturesCount(DefaultGame game, Filterable... filters) {
         Set<Culture> cultures = new HashSet<>();
         for (LotroPhysicalCard physicalCard : Filters.filterActive(game, filters)) {

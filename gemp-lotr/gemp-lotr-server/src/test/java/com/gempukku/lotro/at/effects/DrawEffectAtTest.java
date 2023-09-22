@@ -3,7 +3,7 @@ package com.gempukku.lotro.at.effects;
 import com.gempukku.lotro.at.AbstractAtTest;
 import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
+import com.gempukku.lotro.requirement.trigger.TriggerConditions;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.actions.RequiredTriggerAction;

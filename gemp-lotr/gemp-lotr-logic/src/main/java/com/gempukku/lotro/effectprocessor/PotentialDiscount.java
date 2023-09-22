@@ -6,7 +6,6 @@ import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
 import com.gempukku.lotro.common.Filterable;
-import com.gempukku.lotro.effects.discount.DiscountEffect;
 import com.gempukku.lotro.effects.discount.*;
 import com.gempukku.lotro.game.DefaultGame;
 import org.json.simple.JSONObject;

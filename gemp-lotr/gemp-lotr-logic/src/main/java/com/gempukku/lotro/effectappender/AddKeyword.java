@@ -1,19 +1,20 @@
 package com.gempukku.lotro.effectappender;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.cards.ValueSource;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.TimeResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.effects.AddUntilModifierEffect;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.evaluator.ConstantEvaluator;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.lotronly.KeywordModifier;
 import com.gempukku.lotro.rules.GameUtils;
 import org.json.simple.JSONObject;
@@ -28,7 +29,7 @@ public class AddKeyword implements EffectAppenderProducer {
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(effectObject, "count", "filter", "memorize", "keyword", "amount", "until");
 
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final ValueSource<DefaultGame> valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
         final String memory = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
         final String keywordString = FieldUtils.getString(effectObject.get("keyword"), "keyword");

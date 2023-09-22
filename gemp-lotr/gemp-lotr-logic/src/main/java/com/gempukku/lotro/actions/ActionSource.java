@@ -8,5 +8,5 @@ public interface ActionSource {
 
     boolean isValid(DefaultActionContext<DefaultGame> actionContext);
 
-    void createAction(CostToEffectAction action, DefaultActionContext actionContext);
+    void createAction(CostToEffectAction action, DefaultActionContext<DefaultGame> actionContext);
 }

@@ -23,8 +23,8 @@ public class PlayEventResult extends PlayCardResult {
         _eventCancelled = true;
     }
 
-    public boolean isEventCancelled() {
-        return _eventCancelled;
+    public boolean isEventNotCancelled() {
+        return !_eventCancelled;
     }
 
     public PlayEventAction getPlayEventAction() {

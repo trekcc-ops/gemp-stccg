@@ -1,7 +1,6 @@
 package com.gempukku.lotro.gamestate;
 
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.game.DefaultGame;

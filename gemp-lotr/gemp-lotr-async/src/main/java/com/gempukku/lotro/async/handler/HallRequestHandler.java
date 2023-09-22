@@ -109,7 +109,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
                 responseWriter.writeXmlResponse(null);
                 return;
             } catch (HallException ex) {
-                if(!IgnoreError(ex)) {
+                if(doNotIgnoreError(ex)) {
                     _log.error("Error response for " + request.uri(), ex);
                 }
             }
@@ -203,7 +203,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         catch (Exception ex)
         {
             //This is a worthless error that doesn't need to be spammed into the log
-            if(!IgnoreError(ex)) {
+            if(doNotIgnoreError(ex)) {
                 _log.error("Error response for " + request.uri(), ex);
             }
             responseWriter.writeXmlResponse(marshalException(new HallException("Failed to create table. Please try again later.")));
@@ -215,11 +215,12 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
 
 
 
-    private boolean IgnoreError(Exception ex) {
+    private boolean doNotIgnoreError(Exception ex) {
         String msg = ex.getMessage();
 
-        return msg != null && msg.contains("You don't have a deck registered yet") ||
-                msg.contains("Your selected deck is not valid for this format");
+        if ((msg != null && msg.contains("You don't have a deck registered yet"))) return false;
+        assert msg != null;
+        return !msg.contains("Your selected deck is not valid for this format");
     }
 
     private void dropFromTournament(HttpRequest request, String tournamentId, ResponseWriter responseWriter) throws Exception {
@@ -248,7 +249,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
             _hallServer.joinQueue(queueId, resourceOwner, deckName);
             responseWriter.writeXmlResponse(null);
         } catch (HallException e) {
-            if(!IgnoreError(e)) {
+            if(doNotIgnoreError(e)) {
                 _log.error("Error response for " + request.uri(), e);
             }
             responseWriter.writeXmlResponse(marshalException(e));

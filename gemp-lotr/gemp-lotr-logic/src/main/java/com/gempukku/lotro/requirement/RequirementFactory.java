@@ -3,6 +3,7 @@ package com.gempukku.lotro.requirement;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class RequirementFactory {
         requirementProducers.put("isnotequal", new IsNotEqual());
         requirementProducers.put("isowner", new IsOwnerRequirementProducer());
         requirementProducers.put("isside", new IsSideRequirementProducer());
+        requirementProducers.put("lasttribbleplayed", new LastTribblePlayedProducer());
         requirementProducers.put("location", new Location());
         requirementProducers.put("memoryis", new MemoryIs());
         requirementProducers.put("memorylike", new MemoryLike());
@@ -41,7 +43,8 @@ public class RequirementFactory {
         requirementProducers.put("playerisnotself", new PlayerIsNotSelf());
     }
 
-    public Requirement getRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public <AbstractGame extends DefaultGame> Requirement<AbstractGame> getRequirement(
+            JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final String type = FieldUtils.getString(object.get("type"), "type");
         final RequirementProducer requirementProducer = requirementProducers.get(type.toLowerCase());
         if (requirementProducer == null)
@@ -49,8 +52,9 @@ public class RequirementFactory {
         return requirementProducer.getPlayRequirement(object, environment);
     }
 
-    public Requirement[] getRequirements(JSONObject[] object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        Requirement[] result = new Requirement[object.length];
+    public <AbstractGame extends DefaultGame> Requirement<AbstractGame>[] getRequirements(
+            JSONObject[] object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        Requirement<AbstractGame>[] result = new Requirement[object.length];
         for (int i = 0; i < object.length; i++)
             result[i] = getRequirement(object[i], environment);
         return result;

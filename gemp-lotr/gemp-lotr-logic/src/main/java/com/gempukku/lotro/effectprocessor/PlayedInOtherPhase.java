@@ -3,10 +3,11 @@ package com.gempukku.lotro.effectprocessor;
 import com.gempukku.lotro.cards.BuiltLotroCardBlueprint;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
-import com.gempukku.lotro.requirement.Requirement;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.common.Phase;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.requirement.Requirement;
+import com.gempukku.lotro.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class PlayedInOtherPhase implements EffectProcessor {
@@ -24,12 +25,7 @@ public class PlayedInOtherPhase implements EffectProcessor {
                     if (actionContext.getGame().getGameState().getCurrentPhase() != phase)
                         return false;
 
-                    for (Requirement condition : conditions) {
-                        if (!condition.accepts(actionContext))
-                            return false;
-                    }
-
-                    return true;
+                    return RequirementUtils.acceptsAllRequirements(conditions, actionContext);
                 }
         );
     }

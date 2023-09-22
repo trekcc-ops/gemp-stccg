@@ -144,8 +144,8 @@ public class DefaultLotroFormat implements LotroFormat {
     }
 
     @Override
-    public boolean hasRuleOfFour() {
-        return _hasRuleOfFour;
+    public boolean doesNotHaveRuleOfFour() {
+        return !_hasRuleOfFour;
     }
 
     @Override

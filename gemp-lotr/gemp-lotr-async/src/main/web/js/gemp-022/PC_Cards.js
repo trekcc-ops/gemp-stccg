@@ -35,6 +35,10 @@ var PCCards = {
 '145_011': 'https://www.trekcc.org/tribbles/cardimages/ntaa/29V.jpg',
 '145_016': 'https://www.trekcc.org/tribbles/cardimages/ntaa/34V.jpg',
 
+// Set 147 - Virtual Promos [Tribbles]
+'147_001': 'https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg',
+'147_008': 'https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg',
+
 // Set 150 - Trials and Tribble-ations
 '150_002': 'https://www.trekcc.org/tribbles/cardimages/tat/38V.jpg',
 '150_003': 'https://www.trekcc.org/tribbles/cardimages/tat/39V.jpg',

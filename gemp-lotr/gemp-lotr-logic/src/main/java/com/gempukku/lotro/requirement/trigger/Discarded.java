@@ -4,11 +4,9 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.results.DiscardCardsFromPlayResult;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
 import org.json.simple.JSONObject;
 
 public class Discarded implements TriggerCheckerProducer {

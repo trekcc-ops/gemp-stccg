@@ -15,17 +15,18 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractModifier implements Modifier {
-    private final LotroPhysicalCard _physicalCard;
+    protected final LotroPhysicalCard _physicalCard;
     private final String _text;
-    private final Filter _affectFilter;
-    private final Condition _condition;
+    protected final Filter _affectFilter;
+    protected final Condition _condition;
     private final ModifierEffect _effect;
 
     protected AbstractModifier(LotroPhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
     }
 
-    protected AbstractModifier(LotroPhysicalCard source, String text, Filterable affectFilter, Condition condition, ModifierEffect effect) {
+    protected AbstractModifier(LotroPhysicalCard source, String text, Filterable affectFilter,
+                               Condition condition, ModifierEffect effect) {
         _physicalCard = source;
         _text = text;
         _affectFilter = (affectFilter != null) ? Filters.and(affectFilter) : null;
@@ -306,6 +307,7 @@ public abstract class AbstractModifier implements Modifier {
         return true;
     }
 
+    public boolean canPlayCardOutOfSequence(DefaultGame game, LotroPhysicalCard source) { return false; }
     @Override
     public boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, LotroPhysicalCard source) {
         return true;
@@ -361,11 +363,6 @@ public abstract class AbstractModifier implements Modifier {
 
     @Override
     public int getFPCulturesSpotCountModifier(DefaultGame game, String playerId) {
-        return 0;
-    }
-
-    @Override
-    public int getSanctuaryHealModifier(DefaultGame game) {
         return 0;
     }
 

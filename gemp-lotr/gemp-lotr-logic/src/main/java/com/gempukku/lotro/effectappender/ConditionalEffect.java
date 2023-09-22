@@ -1,15 +1,16 @@
 package com.gempukku.lotro.effectappender;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
-import com.gempukku.lotro.requirement.Requirement;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.StackActionEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.requirement.Requirement;
+import com.gempukku.lotro.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class ConditionalEffect implements EffectAppenderProducer {
@@ -38,11 +39,7 @@ public class ConditionalEffect implements EffectAppenderProducer {
             }
 
             private boolean checkConditions(DefaultActionContext<DefaultGame> actionContext) {
-                for (Requirement condition : conditions) {
-                    if (!condition.accepts(actionContext))
-                        return false;
-                }
-                return true;
+                return RequirementUtils.acceptsAllRequirements(conditions, actionContext);
             }
 
             @Override

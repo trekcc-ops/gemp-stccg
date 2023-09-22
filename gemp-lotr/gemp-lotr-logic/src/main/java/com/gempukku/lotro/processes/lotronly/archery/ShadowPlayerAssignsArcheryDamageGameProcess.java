@@ -2,7 +2,6 @@ package com.gempukku.lotro.processes.lotronly.archery;
 
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.common.CardType;
-import com.gempukku.lotro.effects.choose.ChooseAndWoundCharactersEffect;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
@@ -31,10 +30,10 @@ public class ShadowPlayerAssignsArcheryDamageGameProcess implements GameProcess 
             SystemQueueAction action = new SystemQueueAction();
             for (int i = 0; i < _woundsToAssign; i++) {
                 final int woundsLeft = _woundsToAssign - i;
-                ChooseAndWoundCharactersEffect woundCharacter = new ChooseAndWoundCharactersEffect(action, _playerId, 1, 1, filter);
+/*                ChooseAndWoundCharactersEffect woundCharacter = new ChooseAndWoundCharactersEffect(action, _playerId, 1, 1, filter);
                 woundCharacter.setSourceText("Archery Fire");
                 woundCharacter.setChoiceText("Choose minion to assign archery wound to - remaining wounds: " + woundsLeft);
-                action.appendEffect(woundCharacter);
+                action.appendEffect(woundCharacter); */
             }
 
             game.getActionsEnvironment().addActionToStack(action);

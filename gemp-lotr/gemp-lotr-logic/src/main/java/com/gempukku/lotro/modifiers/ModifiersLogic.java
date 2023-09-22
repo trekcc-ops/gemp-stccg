@@ -1,14 +1,15 @@
 package com.gempukku.lotro.modifiers;
 
+import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.gamestate.LoggingThreadLocal;
 import com.gempukku.lotro.condition.Condition;
 import com.gempukku.lotro.evaluator.Evaluator;
-import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.filters.Filters;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.TribblesGame;
+import com.gempukku.lotro.gamestate.LoggingThreadLocal;
 import com.gempukku.lotro.modifiers.lotronly.KeywordAffectingModifier;
 
 import java.util.*;
@@ -115,7 +116,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return getKeywordModifiersAffectingCard(game, modifierEffect, null, card);
     }
 
-    private List<Modifier> getKeywordModifiersAffectingCard(DefaultGame game, ModifierEffect modifierEffect, Keyword keyword, LotroPhysicalCard card) {
+    private List<Modifier> getKeywordModifiersAffectingCard(DefaultGame game, ModifierEffect modifierEffect,
+                                                            Keyword keyword, LotroPhysicalCard card) {
+        if (card != null) {
+            if (card.getTitle() == "10,000 Tribbles - Clone") {
+                game.getGameState().sendMessage("DEBUG: Calling ModifiersLogic.getKeywordModifiersAffectingCard for " + card.getTitle());
+            }
+        }
         List<Modifier> modifiers = _modifiers.get(modifierEffect);
         if (modifiers == null)
             return Collections.emptyList();
@@ -896,6 +903,19 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             if (!modifier.canDiscardCardsFromTopOfDeck(game, playerId, source))
                 return false;
         return true;
+    }
+
+    public boolean canPlayOutOfSequence(TribblesGame game, LotroPhysicalCard source) {
+/*        game.getGameState().sendMessage(
+                "DEBUG: Calling ModifiersLogic.canPlayOutOfSequence for " + source.getBlueprint().getTitle()
+        );*/
+        for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PLAY_OUT_OF_SEQUENCE, source))
+            if (modifier.canPlayCardOutOfSequence(game, source)) {
+//                game.getGameState().sendMessage("Returning true for canPlayOutOfSequence");
+                return true;
+            }
+//        game.getGameState().sendMessage("Returning false for canPlayOutOfSequence");
+        return false;
     }
 
     @Override

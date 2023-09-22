@@ -256,8 +256,9 @@ public class TribblesGame implements DefaultGame {
         if (_modifiersLogic.canNotPlayCard(this, card.getOwner(), card))
             return false;
 
-        // Otherwise, the play requirements are met if the card is next in the tribble sequence
-        return isNextInSequence(card);
+        // Otherwise, the play requirements are met if the card is next in the tribble sequence,
+        // or if it can be played out of sequence
+        return (isNextInSequence(card) || card.getBlueprint().canPlayOutOfSequence(this, card));
     }
 
     public boolean isNextInSequence(LotroPhysicalCard card) {

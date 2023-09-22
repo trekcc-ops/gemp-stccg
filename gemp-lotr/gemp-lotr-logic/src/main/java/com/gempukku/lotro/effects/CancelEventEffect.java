@@ -16,7 +16,7 @@ public class CancelEventEffect extends AbstractEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return !_effect.isEventCancelled();
+        return _effect.isEventNotCancelled();
     }
 
     @Override

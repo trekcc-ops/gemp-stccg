@@ -9,19 +9,22 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.requirement.Requirement;
 import org.json.simple.JSONObject;
 
-public class CantPlayCards implements ModifierSourceProducer {
+public class CanPlayCardOutOfSequence implements ModifierSourceProducer {
     @Override
     public ModifierSource getModifierSource(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "filter", "requires");
 
-        final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
         final String filter = FieldUtils.getString(object.get("filter"), "filter");
+        final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
 
-        final FilterableSource<DefaultGame> filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-        final Requirement<DefaultGame>[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
+        final Requirement<DefaultGame>[] requirements =
+                environment.getRequirementFactory().getRequirements(conditionArray, environment);
+        final FilterableSource<DefaultGame> filterableSource =
+                environment.getFilterFactory().generateFilter(filter, environment);
 
-        return (actionContext) -> new CantPlayCardsModifier(actionContext.getSource(),
-                new RequirementCondition(requirements, actionContext),
-                filterableSource.getFilterable(actionContext));
+        return actionContext ->
+                new CanPlayCardOutOfSequenceModifier(actionContext.getSource(),
+                        new RequirementCondition(requirements, actionContext),
+                        filterableSource.getFilterable(actionContext));
     }
 }

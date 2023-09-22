@@ -18,6 +18,12 @@
     needsLoading: false
   }
   {
+    setId: "147"
+    setName: Virtual Promos [Tribbles]
+    rarityFile: "/set147-rarity.txt"
+    needsLoading: false
+  }
+  {
     setId: "150"
     setName: Trials and Tribble-ations
     rarityFile: "/set150-rarity.txt"

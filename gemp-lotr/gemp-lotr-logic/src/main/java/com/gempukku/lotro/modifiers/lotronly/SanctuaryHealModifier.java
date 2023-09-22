@@ -1,7 +1,6 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
 import com.gempukku.lotro.modifiers.ModifierEffect;
 import com.gempukku.lotro.condition.Condition;
@@ -21,8 +20,4 @@ public class SanctuaryHealModifier extends AbstractModifier {
         evaluator = new ConstantEvaluator(amount);
     }
 
-    @Override
-    public int getSanctuaryHealModifier(DefaultGame game) {
-        return evaluator.evaluateExpression(game, null);
-    }
 }

@@ -1,9 +1,10 @@
 package com.gempukku.lotro.actions;
 
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
-import com.gempukku.lotro.requirement.Requirement;
 import com.gempukku.lotro.effectappender.EffectAppender;
 import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.requirement.Requirement;
+import com.gempukku.lotro.requirement.RequirementUtils;
 import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.LinkedList;
@@ -45,11 +46,7 @@ public class DefaultActionSource implements ActionSource {
 
     @Override
     public boolean isValid(DefaultActionContext<DefaultGame> actionContext) {
-        for (Requirement requirement : requirements) {
-            if (!requirement.accepts(actionContext))
-                return false;
-        }
-        return true;
+        return RequirementUtils.acceptsAllRequirements(requirements, actionContext);
     }
 
     @Override
@@ -57,10 +54,8 @@ public class DefaultActionSource implements ActionSource {
         if (text != null)
             action.setText(GameUtils.SubstituteText(text, actionContext));
 
-        for (EffectAppender cost : costs)
-            cost.appendEffect(true, action, actionContext);
+        costs.forEach(cost -> cost.appendEffect(true, action, actionContext));
 
-        for (EffectAppender actionEffect : effects)
-            actionEffect.appendEffect(false, action, actionContext);
+        effects.forEach(actionEffect -> actionEffect.appendEffect(false, action, actionContext));
     }
 }

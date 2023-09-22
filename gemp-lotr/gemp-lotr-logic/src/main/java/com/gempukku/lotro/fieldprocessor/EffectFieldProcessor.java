@@ -4,7 +4,6 @@ import com.gempukku.lotro.cards.BuiltLotroCardBlueprint;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.effectprocessor.*;
-import com.gempukku.lotro.effectprocessor.ModifierProcessor;
 import com.gempukku.lotro.modifiers.ModifyOwnCost;
 import org.json.simple.JSONObject;
 
@@ -29,6 +28,7 @@ public class EffectFieldProcessor implements FieldProcessor {
         effectProcessors.put("modifier", new ModifierProcessor());
         effectProcessors.put("modifyowncost", new ModifyOwnCost());
         effectProcessors.put("playedinotherphase", new PlayedInOtherPhase());
+        effectProcessors.put("playoutofsequence", new PlayOutOfSequenceProcessor());
         effectProcessors.put("responseevent", new ResponseEventEffectProcessor());
         effectProcessors.put("trigger", new TriggerEffectProcessor());
     }

@@ -14,29 +14,12 @@ public class RuleSet {
     }
 
     public void applyRuleSet() {
-        new RoamingRule(_modifiersLogic).applyRule();
         new EnduringRule(_modifiersLogic).applyRule();
         new HunterRule(_modifiersLogic).applyRule();
-
-        new MusterRule(_actionsEnvironment).applyRule();
-
-        new AmbushRule(_actionsEnvironment).applyRule();
-
-        new ResolveSkirmishRule(_actionsEnvironment).applyRule();
 
         new DiscardedCardRule(_actionsEnvironment).applyRule();
 
         new KilledCardRule(_actionsEnvironment).applyRule();
-
-        new RingRelatedRule(_modifiersLogic).applyRule();
-
-        new RingBearerRule(_modifiersLogic).applyRule();
-
-        new ThreatRule(_actionsEnvironment).applyRule();
-
-        new CunningRule(_modifiersLogic).applyRule();
-
-        new ToilRule(_modifiersLogic).applyRule();
 
         new TransferItemRule(_actionsEnvironment).applyRule();
 

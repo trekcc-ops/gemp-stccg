@@ -14,7 +14,7 @@ import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.game.PlayConditions;
-import com.gempukku.lotro.game.TriggerConditions;
+import com.gempukku.lotro.requirement.trigger.TriggerConditions;
 
 import java.util.LinkedList;
 import java.util.List;

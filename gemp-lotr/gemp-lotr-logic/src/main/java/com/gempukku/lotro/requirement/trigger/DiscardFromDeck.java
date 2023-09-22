@@ -7,7 +7,6 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.results.DiscardCardFromDeckResult;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
 import org.json.simple.JSONObject;
 
 public class DiscardFromDeck implements TriggerCheckerProducer {

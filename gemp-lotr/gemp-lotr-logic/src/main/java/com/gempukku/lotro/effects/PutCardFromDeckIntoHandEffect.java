@@ -34,7 +34,7 @@ public class PutCardFromDeckIntoHandEffect extends AbstractEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
-        if ((!game.getFormat().hasRuleOfFour() || game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(game, _card.getOwner()))
+        if ((game.getFormat().doesNotHaveRuleOfFour() || game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(game, _card.getOwner()))
                 && _card.getZone() == Zone.DECK) {
             GameState gameState = game.getGameState();
             if(_reveal) {

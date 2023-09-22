@@ -1,7 +1,6 @@
 package com.gempukku.lotro.gamestate;
 
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Side;
@@ -38,6 +37,7 @@ public class TribblesGameState extends GameState {
     private final LinkedList<String> _lastMessages = new LinkedList<>();
     private int _nextCardId = 0;
     private int _nextTribble;
+    private int _lastTribble;
     private boolean _chainBroken;
     private int _currentRound = 0;
     private int nextCardId() {
@@ -718,6 +718,12 @@ public class TribblesGameState extends GameState {
         }
     }
 
+    public void setLastTribble(int num) {
+        _lastTribble = num;
+    }
+
+    public int getLastTribble() { return _lastTribble; }
+
     public int getNextTribble() { return _nextTribble; }
 
     public void setChainBroken(boolean chainBroken) {
@@ -737,18 +743,13 @@ public class TribblesGameState extends GameState {
 
     @Override
     public void playEffectReturningResult(LotroPhysicalCard cardPlayed) {
-        int tribblePlayed = cardPlayed.getBlueprint().getTribbleValue();
-        int currentTribble = _nextTribble;
-        if (tribblePlayed == 100000) {
-            _nextTribble = 1;
+        setLastTribble(cardPlayed.getBlueprint().getTribbleValue());
+        if (_lastTribble == 100000) {
+            setNextTribble(1);
         } else {
-            _nextTribble = tribblePlayed * 10;
+            setNextTribble(_lastTribble * 10);
         }
         _chainBroken = false;
-        sendMessage("Tribble chain advanced from " + currentTribble + " to " + _nextTribble);
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.setTribbleSequence(String.valueOf(_nextTribble));
-        }
     }
 
     @Override
@@ -774,5 +775,4 @@ public class TribblesGameState extends GameState {
     public int getPlayerScore(String playerId) {
         return _players.get(playerId).getScore();
     }
-
 }

@@ -16,6 +16,8 @@ import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import org.json.simple.JSONObject;
 
+import java.util.Arrays;
+
 public class PreventableAppenderProducer implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
@@ -93,21 +95,12 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
             }
 
             private boolean areCostsPlayable(DefaultActionContext<DefaultGame> actionContext) {
-                for (EffectAppender costAppender : costAppenders) {
-                    if (!costAppender.isPlayableInFull(actionContext))
-                        return false;
-                }
-                return true;
+                return Arrays.stream(costAppenders).allMatch(costAppender -> costAppender.isPlayableInFull(actionContext));
             }
 
             @Override
             public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
-                for (EffectAppender effectAppender : effectAppenders) {
-                    if (!effectAppender.isPlayableInFull(actionContext))
-                        return false;
-                }
-
-                return true;
+                return Arrays.stream(effectAppenders).allMatch(effectAppender -> effectAppender.isPlayableInFull(actionContext));
             }
         };
     }

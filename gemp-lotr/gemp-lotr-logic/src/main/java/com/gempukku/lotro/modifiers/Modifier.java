@@ -124,6 +124,7 @@ public interface Modifier {
     boolean canDiscardCardsFromHand(DefaultGame game, String playerId, LotroPhysicalCard source);
 
     boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, LotroPhysicalCard source);
+    boolean canPlayCardOutOfSequence(DefaultGame game, LotroPhysicalCard source);
 
     int getSpotCountModifier(DefaultGame game, Filterable filter);
 
@@ -145,8 +146,6 @@ public interface Modifier {
     Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard fpCharacter);
 
     int getFPCulturesSpotCountModifier(DefaultGame game, String playerId);
-
-    int getSanctuaryHealModifier(DefaultGame game);
 
     int getPotentialDiscount(DefaultGame game, LotroPhysicalCard discountCard);
 

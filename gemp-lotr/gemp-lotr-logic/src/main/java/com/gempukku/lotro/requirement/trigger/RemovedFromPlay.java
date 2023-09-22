@@ -11,7 +11,6 @@ import com.gempukku.lotro.results.DiscardCardsFromPlayResult;
 import com.gempukku.lotro.results.ForEachKilledResult;
 import com.gempukku.lotro.results.ReturnCardsToHandResult;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
 import org.json.simple.JSONObject;
 
 public class RemovedFromPlay implements TriggerCheckerProducer {

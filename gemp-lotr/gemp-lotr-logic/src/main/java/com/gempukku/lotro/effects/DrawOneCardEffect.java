@@ -40,7 +40,7 @@ public class DrawOneCardEffect extends AbstractEffect implements Preventable {
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         int drawn = 0;
         if (!_prevented && game.getGameState().getDeck(_playerId).size() > 0 &&
-                (!game.getFormat().hasRuleOfFour() || game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(game, _playerId))) {
+                (game.getFormat().doesNotHaveRuleOfFour() || game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(game, _playerId))) {
             game.getGameState().playerDrawsCard(_playerId);
             drawn++;
         }

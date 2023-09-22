@@ -235,4 +235,8 @@ public class PhysicalCardImpl implements LotroPhysicalCard {
             list.addAll(possiblyNullList);
     }
 
+    public String getTitle() {
+        return _blueprint.getTitle();
+    }
+
 }

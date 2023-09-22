@@ -4,7 +4,7 @@ import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.RequiredTriggerAction;
-import com.gempukku.lotro.game.TriggerConditions;
+import com.gempukku.lotro.requirement.trigger.TriggerConditions;
 
 import java.util.Collections;
 import java.util.List;

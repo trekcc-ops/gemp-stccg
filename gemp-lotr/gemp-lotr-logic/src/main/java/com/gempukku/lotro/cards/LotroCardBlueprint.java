@@ -1,18 +1,13 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.actions.PlayEventAction;
-import com.gempukku.lotro.actions.RequiredTriggerAction;
-import com.gempukku.lotro.actions.ActionSource;
+import com.gempukku.lotro.actions.*;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.ActivateCardAction;
-import com.gempukku.lotro.actions.OptionalTriggerAction;
-import com.gempukku.lotro.modifiers.ExtraPlayCost;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.TribblesGame;
+import com.gempukku.lotro.modifiers.ExtraPlayCost;
+import com.gempukku.lotro.modifiers.Modifier;
 
 import java.util.List;
 import java.util.Set;
@@ -136,4 +131,6 @@ public interface LotroCardBlueprint {
     void appendAidCosts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard self);
 
     List<FilterableSource> getCopiedFilters();
+
+    boolean canPlayOutOfSequence(TribblesGame game, LotroPhysicalCard self);
 }

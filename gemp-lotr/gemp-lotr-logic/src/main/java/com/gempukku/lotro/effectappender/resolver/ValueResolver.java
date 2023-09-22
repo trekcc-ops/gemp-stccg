@@ -2,15 +2,14 @@ package com.gempukku.lotro.effectappender.resolver;
 
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.evaluator.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
-import com.gempukku.lotro.evaluator.CountSpottableEvaluator;
 import com.gempukku.lotro.requirement.Requirement;
+import com.gempukku.lotro.requirement.RequirementUtils;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,11 +17,11 @@ import org.json.simple.JSONObject;
 import java.util.Collection;
 
 public class ValueResolver {
-    public static ValueSource<DefaultGame> resolveEvaluator(Object value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public static <AbstractGame extends DefaultGame> ValueSource<AbstractGame> resolveEvaluator(Object value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         return resolveEvaluator(value, null, environment);
     }
 
-    public static ValueSource<DefaultGame> resolveEvaluator(Object value, Integer defaultValue, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public static <AbstractGame extends DefaultGame> ValueSource<AbstractGame> resolveEvaluator(Object value, Integer defaultValue, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         if (value == null && defaultValue == null)
             throw new InvalidCardDefinitionException("Value not defined");
         if (value == null)
@@ -38,17 +37,17 @@ public class ValueResolver {
                     throw new InvalidCardDefinitionException("Unable to resolve count: " + value);
                 return new ValueSource<>() {
                     @Override
-                    public Evaluator getEvaluator(DefaultActionContext<DefaultGame> actionContext) {
+                    public Evaluator getEvaluator(DefaultActionContext<AbstractGame> actionContext) {
                         throw new RuntimeException("Evaluator has resolved to range");
                     }
 
                     @Override
-                    public int getMinimum(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getMinimum(DefaultActionContext<AbstractGame> actionContext) {
                         return min;
                     }
 
                     @Override
-                    public int getMaximum(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getMaximum(DefaultActionContext<AbstractGame> actionContext) {
                         return max;
                     }
                 };
@@ -65,17 +64,17 @@ public class ValueResolver {
                 ValueSource toValue = resolveEvaluator(object.get("to"), environment);
                 return new ValueSource<>() {
                     @Override
-                    public Evaluator getEvaluator(DefaultActionContext<DefaultGame> actionContext) {
+                    public Evaluator getEvaluator(DefaultActionContext<AbstractGame> actionContext) {
                         throw new RuntimeException("Evaluator has resolved to range");
                     }
 
                     @Override
-                    public int getMinimum(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getMinimum(DefaultActionContext<AbstractGame> actionContext) {
                         return fromValue.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
                     }
 
                     @Override
-                    public int getMaximum(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getMaximum(DefaultActionContext<AbstractGame> actionContext) {
                         return toValue.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
                     }
                 };
@@ -85,13 +84,14 @@ public class ValueResolver {
                 final Requirement[] conditions = environment.getRequirementFactory().getRequirements(conditionArray, environment);
                 ValueSource trueValue = resolveEvaluator(object.get("true"), environment);
                 ValueSource falseValue = resolveEvaluator(object.get("false"), environment);
-                return (actionContext) -> (Evaluator) (game, cardAffected) -> {
-                    for (Requirement condition : conditions) {
-                        if (!condition.accepts(actionContext))
-                            return falseValue.getEvaluator(actionContext).evaluateExpression(game, cardAffected);
+                return actionContext -> (Evaluator) (game, cardAffected) -> {
+                    if (RequirementUtils.acceptsAllRequirements(conditions, actionContext)) {
+                        return trueValue.getEvaluator(actionContext).evaluateExpression(game, cardAffected);
+                    } else {
+                        return falseValue.getEvaluator(actionContext).evaluateExpression(game, cardAffected);
                     }
-                    return trueValue.getEvaluator(actionContext).evaluateExpression(game, cardAffected);
                 };
+
             } else if (type.equalsIgnoreCase("currentSiteNumber")) {
                 return actionContext -> (game, cardAffected) -> game.getGameState().getCurrentSiteNumber();
             } else if (type.equalsIgnoreCase("nextSiteNumber")) {
@@ -205,18 +205,6 @@ public class ValueResolver {
                     final Filterable on1 = onFilter.getFilterable(actionContext);
                     return new CountStackedEvaluator(on1, filterableSource.getFilterable(actionContext));
                 };
-            } else if (type.equalsIgnoreCase("forEachYouCanSpot")) {
-                FieldUtils.validateAllowedFields(object, "filter", "over", "limit", "multiplier", "divider");
-                final String filter = FieldUtils.getString(object.get("filter"), "filter");
-                final ValueSource overSource = resolveEvaluator(object.get("over"), 0, environment);
-                final ValueSource limitSource = resolveEvaluator(object.get("limit"), Integer.MAX_VALUE, environment);
-                final ValueSource multiplier = resolveEvaluator(object.get("multiplier"), 1, environment);
-                final int divider = FieldUtils.getInteger(object.get("divider"), "divider", 1);
-                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> new DivideEvaluator(divider,
-                        new MultiplyEvaluator(multiplier.getEvaluator(actionContext),
-                                new CountSpottableEvaluator(overSource.getEvaluator(actionContext), limitSource.getEvaluator(actionContext),
-                                        filterableSource.getFilterable(actionContext))));
             } else if (type.equalsIgnoreCase("forEachInDiscard")) {
                 FieldUtils.validateAllowedFields(object, "filter", "multiplier", "limit", "player");
                 final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");

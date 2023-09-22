@@ -2,23 +2,16 @@ package com.gempukku.lotro.effectappender;
 
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actioncontext.DelegateActionContext;
-import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.actions.*;
+import com.gempukku.lotro.cards.CardGenerationEnvironment;
+import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.effectappender.resolver.TimeResolver;
-import com.gempukku.lotro.requirement.Requirement;
-import com.gempukku.lotro.requirement.trigger.TriggerChecker;
+import com.gempukku.lotro.effects.*;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.actions.ActionProxy;
-import com.gempukku.lotro.actions.AbstractCostToEffectAction;
-import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.actions.OptionalTriggerAction;
-import com.gempukku.lotro.actions.RequiredTriggerAction;
-import com.gempukku.lotro.effects.AddUntilEndOfPhaseActionProxyEffect;
-import com.gempukku.lotro.effects.AddUntilEndOfTurnActionProxyEffect;
-import com.gempukku.lotro.effects.AddUntilStartOfPhaseActionProxyEffect;
-import com.gempukku.lotro.effects.Effect;
-import com.gempukku.lotro.effects.EffectResult;
+import com.gempukku.lotro.requirement.Requirement;
+import com.gempukku.lotro.requirement.RequirementUtils;
+import com.gempukku.lotro.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
 
 import java.util.Collections;
@@ -61,10 +54,8 @@ public class AddTrigger implements EffectAppenderProducer {
                                           Requirement[] requirements, EffectAppender[] costs, EffectAppender[] effects) {
         return new AbstractActionProxy() {
             private boolean checkRequirements(DefaultActionContext<DefaultGame> actionContext) {
-                for (Requirement requirement : requirements) {
-                    if (!requirement.accepts(actionContext))
-                        return true;
-                }
+                if (!RequirementUtils.acceptsAllRequirements(requirements, actionContext))
+                    return true;
 
                 for (EffectAppender cost : costs) {
                     if (!cost.isPlayableInFull(actionContext))

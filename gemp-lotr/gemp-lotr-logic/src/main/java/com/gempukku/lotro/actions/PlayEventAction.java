@@ -117,7 +117,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
                 return _playCardEffect;
             }
 
-            if (_playCardEffect != null && !_playCardEffect.getPlayEventResult().isEventCancelled()) {
+            if (_playCardEffect != null && _playCardEffect.getPlayEventResult().isEventNotCancelled()) {
                 Effect effect = getNextEffect();
                 if (effect != null)
                     return effect;

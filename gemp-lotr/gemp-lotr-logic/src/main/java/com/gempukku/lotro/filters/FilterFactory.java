@@ -4,7 +4,6 @@ import com.gempukku.lotro.actioncontext.ActionContext;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.results.CharacterLostSkirmishResult;
 import com.gempukku.lotro.game.DefaultGame;
@@ -447,7 +446,7 @@ public class FilterFactory {
             simpleFilters.put(optionalFilterName, (actionContext -> value));
     }
 
-    public FilterableSource generateFilter(String value, CardGenerationEnvironment environment) throws
+    public <AbstractGame extends DefaultGame> FilterableSource<AbstractGame> generateFilter(String value, CardGenerationEnvironment environment) throws
             InvalidCardDefinitionException {
         if (value == null)
             throw new InvalidCardDefinitionException("Filter not specified");

@@ -13,7 +13,7 @@ public interface LotroFormat {
 
     boolean canCancelRingBearerSkirmish();
 
-    boolean hasRuleOfFour();
+    boolean doesNotHaveRuleOfFour();
 
     boolean hasMulliganRule();
 

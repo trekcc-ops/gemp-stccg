@@ -18,7 +18,7 @@ public class AidCost implements EffectProcessor {
 
         final JSONObject[] costArray = FieldUtils.getObjectArray(value.get("cost"), "cost");
 
-        final EffectAppender[] costAppenders = environment.getEffectAppenderFactory().getEffectAppenders(costArray, environment);
+        final EffectAppender<DefaultGame>[] costAppenders = environment.getEffectAppenderFactory().getEffectAppenders(costArray, environment);
 
         blueprint.setAidCostSource(
                 new AidCostSource() {

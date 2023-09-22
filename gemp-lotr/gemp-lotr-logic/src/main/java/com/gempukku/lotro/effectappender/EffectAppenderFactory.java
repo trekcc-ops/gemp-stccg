@@ -3,6 +3,7 @@ package com.gempukku.lotro.effectappender;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -122,8 +123,8 @@ public class EffectAppenderFactory {
         return effectAppenderProducer.createEffectAppender(effectObject, environment);
     }
 
-    public EffectAppender[] getEffectAppenders(JSONObject[] effectArray, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        EffectAppender[] result = new EffectAppender[effectArray.length];
+    public EffectAppender<DefaultGame>[] getEffectAppenders(JSONObject[] effectArray, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        EffectAppender<DefaultGame>[] result = new EffectAppender[effectArray.length];
         for (int i = 0; i < result.length; i++) {
             final String type = FieldUtils.getString(effectArray[i].get("type"), "type");
             final EffectAppenderProducer effectAppenderProducer = effectAppenderProducers.get(type.toLowerCase());

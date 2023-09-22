@@ -1,0 +1,32 @@
+// Set 147: Virtual Promos [Tribbles]
+
+{
+	147_001: {
+		title: "10,000 Tribbles - Clone"
+		type: tribble
+		tribble-value: 10000
+		tribble-power: clone
+		image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg
+		effects: {
+		    type: playOutOfSequence
+            requires: {
+                type: lastTribblePlayed
+                value: 10000
+            }
+		}
+	}
+	147_008: {
+		title: "100,000 Tribbles - Clone"
+		type: tribble
+		tribble-value: 100000
+		tribble-power: clone
+		image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg
+		effects: {
+		    type: playOutOfSequence
+            requires: {
+                type: lastTribblePlayed
+                value: 100000
+            }
+		}
+	}
+}

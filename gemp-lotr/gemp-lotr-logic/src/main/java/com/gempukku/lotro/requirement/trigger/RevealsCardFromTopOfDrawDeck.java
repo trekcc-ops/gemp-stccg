@@ -10,7 +10,6 @@ import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.results.RevealCardFromTopOfDeckResult;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
 import org.json.simple.JSONObject;
 
 public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {

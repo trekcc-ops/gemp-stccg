@@ -1,23 +1,19 @@
 package com.gempukku.lotro.cards;
 
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
-import com.gempukku.lotro.actions.ActionSource;
-import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.actions.PlayEventAction;
-import com.gempukku.lotro.actions.RequiredTriggerAction;
+import com.gempukku.lotro.actions.*;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.actions.ActivateCardAction;
-import com.gempukku.lotro.actions.OptionalTriggerAction;
-import com.gempukku.lotro.modifiers.ExtraPlayCost;
-import com.gempukku.lotro.requirement.Requirement;
-import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
-import com.gempukku.lotro.effects.discount.DiscountEffect;
-import com.gempukku.lotro.modifiers.Modifier;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;
+import com.gempukku.lotro.effects.discount.DiscountEffect;
+import com.gempukku.lotro.filters.Filters;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.TribblesGame;
+import com.gempukku.lotro.modifiers.ExtraPlayCost;
+import com.gempukku.lotro.modifiers.Modifier;
+import com.gempukku.lotro.requirement.Requirement;
+import com.gempukku.lotro.requirement.RequirementUtils;
+import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
 
 import java.util.*;
 
@@ -76,6 +72,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private List<DiscountSource> discountSources;
 
     private List<Requirement> playInOtherPhaseConditions;
+    private List<Requirement<TribblesGame>> playOutOfSequenceConditions;
     private List<FilterableSource> copiedFilters;
 
     private ActionSource playEventAction;
@@ -103,6 +100,12 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         if (playInOtherPhaseConditions == null)
             playInOtherPhaseConditions = new LinkedList<>();
         playInOtherPhaseConditions.add(requirement);
+    }
+
+    public void appendPlayOutOfSequenceCondition(Requirement<TribblesGame> requirement) {
+        if (playOutOfSequenceConditions == null)
+            playOutOfSequenceConditions = new LinkedList<>();
+        playOutOfSequenceConditions.add(requirement);
     }
 
     public void appendDiscountSource(DiscountSource discountSource) {
@@ -524,11 +527,9 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     public boolean playRequirementsNotMet(DefaultGame game, LotroPhysicalCard self) {
         DefaultActionContext dummy = new DefaultActionContext(self.getOwner(), game, self, null, null);
 
-        if (requirements != null)
-            for (Requirement requirement : requirements) {
-                if (!requirement.accepts(dummy))
-                    return true;
-            }
+        if (requirements != null) {
+            if (!RequirementUtils.acceptsAllRequirements(requirements, dummy)) return true;
+        }
 
         return !(playEventAction == null || playEventAction.isValid(dummy));
     }
@@ -782,13 +783,19 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     public List<? extends Action> getPhaseActionsInHand(String playerId, DefaultGame game, LotroPhysicalCard self) {
         if (playInOtherPhaseConditions == null)
             return null;
-
+        DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
         List<Action> playCardActions = new LinkedList<>();
-        for (Requirement playInOtherPhaseCondition : playInOtherPhaseConditions) {
-            DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
-            if (playInOtherPhaseCondition.accepts(actionContext)
-                    && LotroPlayUtils.checkPlayRequirements(game, self, Filters.any, 0, 0, false, false, false))
-                playCardActions.add(LotroPlayUtils.getPlayCardAction(game, self, 0, Filters.any, false));
+
+        if (LotroPlayUtils.checkPlayRequirements(
+                game, self, Filters.any, 0, 0, false,
+                false, false
+        )) {
+            for (Requirement playInOtherPhaseCondition : playInOtherPhaseConditions) {
+                if (playInOtherPhaseCondition.accepts(actionContext))
+                    playCardActions.add(LotroPlayUtils.getPlayCardAction(
+                            game, self, 0, Filters.any, false
+                    ));
+            }
         }
 
         return playCardActions;
@@ -976,4 +983,10 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         return copiedFilters;
     }
 
+    public boolean canPlayOutOfSequence(TribblesGame game, LotroPhysicalCard self) {
+        if (playOutOfSequenceConditions == null) return false;
+        DefaultActionContext<TribblesGame> actionContext =
+                new DefaultActionContext<>(self.getOwner(), game, self, null, null);
+        return playOutOfSequenceConditions.stream().anyMatch(requirement -> requirement.accepts(actionContext));
+    }
 }

@@ -5,7 +5,6 @@ import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.effects.PutCardFromStackedIntoHandEffect;
 import com.gempukku.lotro.effects.Effect;

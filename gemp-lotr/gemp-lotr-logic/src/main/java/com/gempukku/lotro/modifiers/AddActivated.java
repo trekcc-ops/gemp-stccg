@@ -4,16 +4,15 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.ActionSource;
 import com.gempukku.lotro.actions.ActivateCardAction;
 import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.actions.DefaultActionSource;
-import com.gempukku.lotro.effectprocessor.EffectUtils;
-import com.gempukku.lotro.effectappender.AbstractEffectAppender;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.common.Phase;
+import com.gempukku.lotro.effectappender.AbstractEffectAppender;
+import com.gempukku.lotro.effectprocessor.EffectUtils;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.IncrementPhaseLimitEffect;
 import com.gempukku.lotro.effects.IncrementTurnLimitEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayConditions;
 import org.json.simple.JSONObject;
@@ -31,7 +30,7 @@ public class AddActivated implements ModifierSourceProducer {
         final String[] phaseArray = FieldUtils.getStringArray(object.get("phase"), "phase");
         final int limitPerPhase = FieldUtils.getInteger(object.get("limitPerPhase"), "limitPerPhase", 0);
         final int limitPerTurn = FieldUtils.getInteger(object.get("limitPerTurn"), "limitPerTurn", 0);
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+        final FilterableSource<DefaultGame> filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
         if (phaseArray.length == 0)
             throw new InvalidCardDefinitionException("Unable to find phase for an activated effect");
@@ -45,7 +44,9 @@ public class AddActivated implements ModifierSourceProducer {
             actionSource.setText(text);
             if (limitPerPhase > 0) {
                 actionSource.addPlayRequirement(
-                        (actionContext) -> PlayConditions.checkPhaseLimit(actionContext.getGame(), actionContext.getSource(), phase, limitPerPhase));
+                        actionContext -> PlayConditions.checkPhaseLimit(
+                                actionContext.getGame(), actionContext.getSource(), phase, limitPerPhase
+                        ));
                 actionSource.addCost(
                         new AbstractEffectAppender<>() {
                             @Override

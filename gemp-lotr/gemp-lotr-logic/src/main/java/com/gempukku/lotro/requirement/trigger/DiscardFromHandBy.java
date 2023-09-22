@@ -6,7 +6,6 @@ import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
 import com.gempukku.lotro.results.DiscardCardFromHandResult;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.TriggerConditions;
 import org.json.simple.JSONObject;
 
 public class DiscardFromHandBy implements TriggerCheckerProducer {
