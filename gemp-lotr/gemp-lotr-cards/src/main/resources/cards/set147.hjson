@@ -15,6 +15,40 @@
             }
 		}
 	}
+    147_006: {
+        title: "10,000 Tribbles - Poison"
+        type: tribble
+        tribble-value: 10000
+        tribble-power: poison
+		image-url: https://www.trekcc.org/tribbles/cardimages/vpromos/6VTP.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: [
+                {
+                    type: ChoosePlayerWithCardsInDeck
+                    memorize: playerChosen
+                }
+                {
+                    type: discardTopCardsFromDeck
+                    deckowner: fromMemory(playerChosen)
+                    forced: true
+                    memorize: cardDiscarded
+                }
+                {
+                    type: scorePoints
+                    amount: {
+                        type: tribbleValueFromMemory
+                        memory: cardDiscarded
+                    }
+                }
+            ]
+		}
+    }
 	147_008: {
 		title: "100,000 Tribbles - Clone"
 		type: tribble

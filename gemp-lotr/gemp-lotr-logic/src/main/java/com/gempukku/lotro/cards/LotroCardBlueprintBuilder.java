@@ -6,6 +6,7 @@ import com.gempukku.lotro.modifiers.ModifierSourceFactory;
 import com.gempukku.lotro.fieldprocessor.*;
 import com.gempukku.lotro.requirement.RequirementFactory;
 import com.gempukku.lotro.requirement.trigger.TriggerCheckerFactory;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
+    final Logger LOG = Logger.getLogger(LotroCardBlueprintBuilder.class);
     private final Map<String, FieldProcessor> fieldProcessors = new HashMap<>();
 
     private final EffectAppenderFactory effectAppenderFactory = new EffectAppenderFactory();
@@ -58,6 +60,7 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
     }
 
     public LotroCardBlueprint buildFromJson(JSONObject json) throws InvalidCardDefinitionException {
+        LOG.debug("Calling buildFromJson");
         BuiltLotroCardBlueprint result = new BuiltLotroCardBlueprint();
 
         Set<Map.Entry<String, Object>> values = json.entrySet();
@@ -68,6 +71,7 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
             if (fieldProcessor == null)
                 throw new InvalidCardDefinitionException("Unrecognized field: " + field);
 
+            LOG.debug("Processing field " + field + " with value " + fieldValue);
             fieldProcessor.processField(field, fieldValue, result, this);
         }
 

@@ -16,25 +16,27 @@ import java.util.Collection;
 public class DiscardTopCardFromDeck implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "deck", "count", "forced", "memorize");
+        FieldUtils.validateAllowedFields(effectObject, "deckowner", "count", "forced", "memorize");
 
-        final String deck = FieldUtils.getString(effectObject.get("deck"), "deck", "you");
+        final String deckOwner = FieldUtils.getString(effectObject.get("deckowner"), "deckowner", "you");
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final boolean forced = FieldUtils.getBoolean(effectObject.get("forced"), "forced");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
+        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deckOwner);
 
         return new DelayedAppender<>() {
             @Override
             public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
-                final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+                final int count = countSource.getEvaluator(actionContext).evaluateExpression(
+                        actionContext.getGame(), null);
 
                 // Don't check if player can discard top cards, since it's a cost
                 final DefaultGame game = actionContext.getGame();
                 return game.getGameState().getDeck(deckId).size() >= count
-                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(game, actionContext.getPerformingPlayer(), actionContext.getSource()));
+                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(
+                                game, actionContext.getPerformingPlayer(), actionContext.getSource()));
             }
 
             @Override

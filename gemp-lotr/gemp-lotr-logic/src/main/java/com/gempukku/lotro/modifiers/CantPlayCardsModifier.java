@@ -21,8 +21,8 @@ public class CantPlayCardsModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean canPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
-        return !_filters.accepts(game, card);
+    public boolean cantPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
+        return _filters.accepts(game, card);
     }
 
     @Override

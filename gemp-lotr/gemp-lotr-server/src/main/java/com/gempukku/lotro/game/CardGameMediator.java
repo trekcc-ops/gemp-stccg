@@ -199,7 +199,7 @@ public class CardGameMediator {
                 } catch (UnsupportedOperationException ignored) {
                 }
                 try {
-                    String tribblePower = card.getBlueprint().getTribblePower();
+                    String tribblePower = card.getBlueprint().getTribblePower().getHumanReadable();
                     sb.append("<br><b>Tribble power:</b> ").append(tribblePower);
                 } catch (UnsupportedOperationException ignored) {
                 }

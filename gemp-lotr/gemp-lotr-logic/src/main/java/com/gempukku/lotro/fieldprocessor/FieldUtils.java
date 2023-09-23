@@ -2,12 +2,15 @@ package com.gempukku.lotro.fieldprocessor;
 
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.common.Side;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.Set;
 
 public class FieldUtils {
+
+    final static Logger LOG = Logger.getLogger(FieldUtils.class);
 
     public static int getInteger(Object value, String key) throws InvalidCardDefinitionException {
         return getInteger(value, key, 0);
@@ -88,6 +91,8 @@ public class FieldUtils {
     }
 
     public static JSONObject[] getObjectArray(Object value, String key) throws InvalidCardDefinitionException {
+        if (value != null)
+            LOG.debug(value.toString());
         if (value == null)
             return new JSONObject[0];
         else if (value instanceof JSONObject)

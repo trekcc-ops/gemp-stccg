@@ -393,6 +393,17 @@ public class ValueResolver {
                     }
                     return result;
                 };
+            } else if (type.equalsIgnoreCase("tribbleValueFromMemory")) {
+                FieldUtils.validateAllowedFields(object, "memory");
+                final String memory = FieldUtils.getString(object.get("memory"), "memory");
+
+                return actionContext -> (Evaluator<DefaultGame>) (game, cardAffected) -> {
+                    int result = 0;
+                    for (LotroPhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
+                        result += physicalCard.getBlueprint().getTribbleValue();
+                    }
+                    return result;
+                };
             }
             else if (type.equalsIgnoreCase("subtract")) {
                 FieldUtils.validateAllowedFields(object, "firstNumber", "secondNumber");

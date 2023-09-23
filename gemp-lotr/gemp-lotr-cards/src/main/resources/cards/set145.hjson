@@ -86,6 +86,36 @@
 			}
 		}
     }
+//    145_010: {
+//        title: "1,000 Tribbles - Freeze"
+//        type: tribble
+//        tribble-value: 1000
+//        tribble-power: process
+//        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/28V.jpg
+//		effects: {
+//			type: trigger
+//			optional: true
+//			trigger: {
+//			    type: played
+//			    filter: self
+//			}
+//          effect: [
+//            {
+//                    type: ChooseTribblePower
+//                    memorize: powerChosen
+//                }
+//                {
+//                    type: addModifier
+//                    modifier: {
+//                        type: cantPlayCards
+//                        filter: tribblePower(memory(powerChosen))
+//                    }
+//                    until: endOfPlayersNextTurn
+// need to specify which player
+//                }
+//            }
+//		}
+//    }
     145_011: {
         title: "1,000 Tribbles - Process"
         type: tribble

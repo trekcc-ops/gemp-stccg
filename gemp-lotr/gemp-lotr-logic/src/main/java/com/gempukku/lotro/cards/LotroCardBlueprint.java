@@ -52,7 +52,7 @@ public interface LotroCardBlueprint {
 
     int[] getAllyHomeSiteNumbers();
     int getTribbleValue();
-    String getTribblePower();
+    TribblePower getTribblePower();
 
     SitesBlock getAllyHomeSiteBlock();
 

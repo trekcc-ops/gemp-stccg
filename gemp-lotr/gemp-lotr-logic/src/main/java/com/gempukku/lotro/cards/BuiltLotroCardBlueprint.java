@@ -33,7 +33,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private int vitality;
     private int resistance;
     private int tribbleValue;
-    private String tribblePower;
+    private TribblePower tribblePower;
     private SitesBlock siteBlock;
     private int siteNumber;
     private Set<PossessionClass> possessionClasses;
@@ -309,7 +309,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         this.tribbleValue = tribbleValue;
     }
 
-    public void setTribblePower(String tribblePower) {
+    public void setTribblePower(TribblePower tribblePower) {
         this.tribblePower = tribblePower;
     }
 
@@ -394,7 +394,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public String getTribblePower() {
+    public TribblePower getTribblePower() {
         return tribblePower;
     }
 

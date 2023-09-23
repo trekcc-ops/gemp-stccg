@@ -19,6 +19,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     private final Map<Phase, List<Modifier>> _untilStartOfPhaseModifiers = new HashMap<>();
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new HashMap<>();
+
+    private final Map<String, List<Modifier>> _untilEndOfPlayersNextTurnThisRoundModifiers = new HashMap<>();
     private final List<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
 
     private final Set<Modifier> _skipSet = new HashSet<>();
@@ -175,6 +177,16 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             counterMap.clear();
     }
 
+    public void signalStartOfTurn(String playerId) {
+        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
+        if (list != null) {
+            for (Modifier modifier : list) {
+                list.remove(modifier);
+                _untilEndOfTurnModifiers.add(modifier);
+            }
+        }
+    }
+
     public void signalEndOfTurn() {
         removeModifiers(_untilEndOfTurnModifiers);
         _untilEndOfTurnModifiers.clear();
@@ -190,6 +202,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         _turnLimitCounters.clear();
         _startOfPhaseLimitCounters.clear();
         _endOfPhaseLimitCounters.clear();
+    }
+
+    public void signalEndOfRound() {
+        for (List<Modifier> modifiers: _untilEndOfPlayersNextTurnThisRoundModifiers.values())
+            removeModifiers(modifiers);
+        _untilEndOfPlayersNextTurnThisRoundModifiers.clear();
     }
 
     @Override
@@ -210,6 +228,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     public void addUntilEndOfTurnModifier(Modifier modifier) {
         addModifier(modifier);
         _untilEndOfTurnModifiers.add(modifier);
+    }
+
+    @Override
+    public void addUntilEndOfPlayersNextTurnThisRoundModifier(Modifier modifier, String playerId) {
+        addModifier(modifier);
+        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.computeIfAbsent(playerId, k -> new LinkedList<>());
+        list.add(modifier);
     }
 
     @Override
@@ -651,7 +676,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     @Override
     public boolean canNotPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
         for (Modifier modifier : getModifiers(game, ModifierEffect.ACTION_MODIFIER))
-            if (!modifier.canPlayCard(game, performingPlayer, card))
+            if (modifier.cantPlayCard(game, performingPlayer, card))
                 return true;
         return false;
     }

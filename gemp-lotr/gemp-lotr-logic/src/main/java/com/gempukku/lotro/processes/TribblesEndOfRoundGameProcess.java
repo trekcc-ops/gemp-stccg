@@ -3,6 +3,7 @@ package com.gempukku.lotro.processes;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.gamestate.TribblesGameState;
+import com.gempukku.lotro.modifiers.ModifiersLogic;
 
 import java.util.*;
 
@@ -31,6 +32,8 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
             // Each player then shuffles their play pile into their decks.
             gameState.shufflePlayPileIntoDeck(game, playerId);
         }
+
+        ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfRound();
 
         if (gameState.isLastRound()) {
             Map<String, Integer> finalPoints = new HashMap<>();

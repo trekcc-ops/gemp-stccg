@@ -5,19 +5,11 @@
         title: 1 Tribble - Discard
         type: tribble
         tribble-value: 1
-        tribble-power: discard
+        tribble-power: Discard
         image-url: https://www.trekcc.org/tribbles/cardimages/tat/38V.jpg
 		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: {
-                type: discardFromHand
-                forced: true
-            }
+			type: ActivateTribblePower
+			tribble-power: discard
 		}
     }
     150_004: {
@@ -49,6 +41,74 @@
                 {
                     type: discardFromHand
                     forced: false
+                }
+            ]
+		}
+    }
+    150_007: {
+        title: 10 Tribbles - Poison
+        type: tribble
+        tribble-value: 10
+        tribble-power: poison
+        image-url: https://www.trekcc.org/tribbles/cardimages/tat/43V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: [
+                {
+                    type: ChoosePlayerWithCardsInDeck
+                    memorize: playerChosen
+                }
+                {
+                    type: discardTopCardsFromDeck
+                    deckowner: fromMemory(playerChosen)
+                    forced: true
+                    memorize: cardDiscarded
+                }
+                {
+                    type: scorePoints
+                    amount: {
+                        type: tribbleValueFromMemory
+                        memory: cardDiscarded
+                    }
+                }
+            ]
+		}
+    }
+    150_009: {
+        title: "100 Tribbles - Poison"
+        type: tribble
+        tribble-value: 100
+        tribble-power: poison
+        image-url: https://www.trekcc.org/tribbles/cardimages/tat/45V.jpg
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: [
+                {
+                    type: ChoosePlayerWithCardsInDeck
+                    memorize: playerChosen
+                }
+                {
+                    type: discardTopCardsFromDeck
+                    deckowner: fromMemory(playerChosen)
+                    forced: true
+                    memorize: cardDiscarded
+                }
+                {
+                    type: scorePoints
+                    amount: {
+                        type: tribbleValueFromMemory
+                        memory: cardDiscarded
+                    }
                 }
             ]
 		}

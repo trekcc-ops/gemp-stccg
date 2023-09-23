@@ -11,6 +11,7 @@ public interface ModifiersEnvironment {
     void addUntilEndOfPhaseModifier(Modifier modifier, Phase phase);
 
     void addUntilEndOfTurnModifier(Modifier modifier);
+    void addUntilEndOfPlayersNextTurnThisRoundModifier(Modifier modifier, String playerId);
 
     void addedWound(LotroPhysicalCard card);
 

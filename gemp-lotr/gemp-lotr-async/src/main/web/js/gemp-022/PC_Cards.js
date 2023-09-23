@@ -1,7 +1,7 @@
 var PCCards = {
 
 // Set 101 - Premiere [1E]
-'101_001': 'http://trekcc.org/1e/cardimages/premiere/betazoidgiftbox95.jpg',
+'101_001': 'https://www.trekcc.org/1e/cardimages/premiere/betazoidgiftbox.gif',
 '101_002': 'http://trekcc.org/1e/cardimages/premiere/horgahn95.jpg',
 
 // Set 144 - More Tribbles, More Troubles
@@ -37,10 +37,12 @@ var PCCards = {
 
 // Set 147 - Virtual Promos [Tribbles]
 '147_001': 'https://www.trekcc.org/tribbles/cardimages/vpromos/1VTP.jpg',
+'147_006': 'https://www.trekcc.org/tribbles/cardimages/vpromos/6VTP.jpg',
 '147_008': 'https://www.trekcc.org/tribbles/cardimages/vpromos/8VTP.jpg',
 '147_018': 'https://www.trekcc.org/tribbles/cardimages/vpromos/18VTP.jpg',
 
 // Set 150 - Trials and Tribble-ations
+'150_001': 'https://www.trekcc.org/tribbles/cardimages/tat/37V.jpg',
 '150_002': 'https://www.trekcc.org/tribbles/cardimages/tat/38V.jpg',
 '150_003': 'https://www.trekcc.org/tribbles/cardimages/tat/39V.jpg',
 '150_004': 'https://www.trekcc.org/tribbles/cardimages/tat/40V.jpg',

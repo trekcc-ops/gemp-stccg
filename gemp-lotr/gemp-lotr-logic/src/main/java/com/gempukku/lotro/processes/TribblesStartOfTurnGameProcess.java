@@ -4,6 +4,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.effects.TriggeringResultEffect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
+import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.results.StartOfTurnResult;
 
 public class TribblesStartOfTurnGameProcess implements GameProcess {
@@ -23,7 +24,7 @@ public class TribblesStartOfTurnGameProcess implements GameProcess {
 
         action.appendEffect(
                 new TriggeringResultEffect(new StartOfTurnResult(), "Start of turn"));
-
+        ((ModifiersLogic) game.getModifiersEnvironment()).signalStartOfTurn(game.getGameState().getCurrentPlayerId());
         game.getActionsEnvironment().addActionToStack(action);
     }
 

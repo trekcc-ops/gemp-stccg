@@ -208,8 +208,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
-        return true;
+    public boolean cantPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
+        return false;
     }
 
     @Override
