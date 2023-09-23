@@ -3,7 +3,6 @@ package com.gempukku.lotro.fieldprocessor;
 import com.gempukku.lotro.cards.BuiltLotroCardBlueprint;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
-import com.gempukku.lotro.common.TribblePower;
 import com.gempukku.lotro.effectprocessor.*;
 import com.gempukku.lotro.modifiers.ModifyOwnCost;
 import org.json.simple.JSONObject;
@@ -16,7 +15,6 @@ public class EffectFieldProcessor implements FieldProcessor {
 
     public EffectFieldProcessor() {
         effectProcessors.put("activated", new ActivatedEffectProcessor());
-        effectProcessors.put("activatetribblepower", new ActivateTribblePowerProcessor(TribblePower.DISCARD));
         effectProcessors.put("activatedindiscard", new ActivatedInDiscardEffectProcessor());
         effectProcessors.put("activatedtrigger", new ActivatedTriggerEffectProcessor());
         effectProcessors.put("aidcost", new AidCost());

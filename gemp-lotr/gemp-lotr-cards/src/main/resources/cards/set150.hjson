@@ -5,12 +5,8 @@
         title: 1 Tribble - Discard
         type: tribble
         tribble-value: 1
-        tribble-power: Discard
+        tribble-power: discard
         image-url: https://www.trekcc.org/tribbles/cardimages/tat/38V.jpg
-		effects: {
-			type: ActivateTribblePower
-			tribble-power: discard
-		}
     }
     150_004: {
         title: 10 Tribbles - Avalanche
@@ -119,18 +115,6 @@
         tribble-value: 1000
         tribble-power: discard
         image-url: https://www.trekcc.org/tribbles/cardimages/tat/49V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: {
-                type: discardFromHand
-                forced: true
-            }
-		}
     }
     150_014: {
         title: "1,000 Tribbles - Famine"

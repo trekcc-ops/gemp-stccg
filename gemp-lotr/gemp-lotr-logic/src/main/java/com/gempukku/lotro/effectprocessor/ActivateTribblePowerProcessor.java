@@ -7,7 +7,6 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.common.TribblePower;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.requirement.trigger.TriggerChecker;
-import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,8 +21,8 @@ public class ActivateTribblePowerProcessor implements EffectProcessor {
     @Override
     public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint,
                               CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "tribble-power");
-        final Logger LOG = Logger.getLogger(ActivateTribblePowerProcessor.class);
+//        FieldUtils.validateAllowedFields(value, "tribble-power");
+//        final Logger LOG = Logger.getLogger(ActivateTribblePowerProcessor.class);
 
         final boolean optional = true;
 
