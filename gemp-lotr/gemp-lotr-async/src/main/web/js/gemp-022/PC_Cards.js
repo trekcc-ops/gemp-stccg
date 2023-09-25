@@ -32,6 +32,7 @@ var PCCards = {
 '145_005': 'https://www.trekcc.org/tribbles/cardimages/ntaa/23V.jpg',
 '145_006': 'https://www.trekcc.org/tribbles/cardimages/ntaa/24V.jpg',
 '145_007': 'https://www.trekcc.org/tribbles/cardimages/ntaa/25V.jpg',
+'145_010': 'https://www.trekcc.org/tribbles/cardimages/ntaa/28V.jpg',
 '145_011': 'https://www.trekcc.org/tribbles/cardimages/ntaa/29V.jpg',
 '145_016': 'https://www.trekcc.org/tribbles/cardimages/ntaa/34V.jpg',
 

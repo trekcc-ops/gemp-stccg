@@ -44,7 +44,7 @@ public class DiscardCardsFromHandEffect extends AbstractEffect {
             GameState gameState = game.getGameState();
 
             Set<LotroPhysicalCard> discardedCards = new HashSet<>();
-            for (LotroPhysicalCard card : _cards)
+            for (LotroPhysicalCard card : _cards) // TODO: Throwing errors here as of 9/25/23 because _cards is null
                 if (card.getZone() == Zone.HAND)
                     discardedCards.add(card);
 

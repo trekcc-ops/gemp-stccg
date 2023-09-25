@@ -72,7 +72,8 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new ShuffleCardsFromHandIntoDrawDeck());
         effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleHandIntoDrawDeck());
             // Tribbles-specific
-//        effectAppenderProducers.put("activatetribblepower", new ActivateTribblePowerAppender());
+        effectAppenderProducers.put("activatetribblepower", new ActivateTribblePowerAppender());
+        effectAppenderProducers.put("choosetribblepower", new ChooseTribblePower());
         effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
         effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new PlaceTopCardOfDrawDeckOnTopOfPlayPile());
         effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new PutCardsFromHandOnBottomOfPlayPile());

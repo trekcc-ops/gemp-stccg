@@ -40,9 +40,6 @@ public class RuleSet {
         new OptionalTriggersRule(_actionsEnvironment).applyRule();
         new OptionalTriggersFromHandRule(_actionsEnvironment).applyRule();
 
-        new HealByDiscardRule(_actionsEnvironment).applyRule();
-
-        new TakeOffRingRule(_actionsEnvironment).applyRule();
         new ConcealedRule(_actionsEnvironment).applyRule();
     }
 }

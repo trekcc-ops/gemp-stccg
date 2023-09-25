@@ -69,12 +69,6 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean forEachWounded(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_WOUNDED)
-            return Filters.and(filters).accepts(game, ((WoundResult) effectResult).getWoundedCard());
-        return false;
-    }
-
     public static boolean revealedCardsFromTopOfDeck(EffectResult effectResult, String playerId) {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_REVEALED_FROM_TOP_OF_DECK) {
             RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) effectResult;
@@ -111,14 +105,6 @@ public class TriggerConditions {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_KILLED) {
             ForEachKilledResult killResult = (ForEachKilledResult) effectResult;
             return Filters.and(filters).accepts(game, killResult.getKilledCard());
-        }
-        return false;
-    }
-
-    public static boolean isGettingWounded(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_WOUND) {
-            PreventableCardEffect woundEffect = (PreventableCardEffect) effect;
-            return Filters.filter(woundEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
         }
         return false;
     }

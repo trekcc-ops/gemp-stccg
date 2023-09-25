@@ -54,7 +54,7 @@ public class TribblesGameState extends GameState {
             _players.put(player, new Player(player));
         }
 
-        _nextTribbleInSequence = 1;
+        _nextTribbleInSequence = 1; // TODO: Replace with setNextTribble statement
         _chainBroken = false;
 
         for (Map.Entry<String, List<String>> stringListEntry : cards.entrySet()) {
@@ -125,7 +125,8 @@ public class TribblesGameState extends GameState {
         return createPhysicalCardImpl(ownerPlayerId, library, blueprintId);
     }
 
-    private PhysicalCardImpl createPhysicalCardImpl(String playerId, CardBlueprintLibrary library, String blueprintId) throws CardNotFoundException {
+    private PhysicalCardImpl createPhysicalCardImpl(String playerId, CardBlueprintLibrary library, String blueprintId)
+            throws CardNotFoundException {
         LotroCardBlueprint card = library.getLotroCardBlueprint(blueprintId);
 
         int cardId = nextCardId();

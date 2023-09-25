@@ -43,8 +43,8 @@ public enum TribblePower implements Filterable {
     TIMEWARP("Time Warp", false), TOXIN("Toxin", true),
     TRICK("Trick", false), UTILIZE("Utilize", true);
 
-    private boolean _isActive;
-    private String _humanReadable;
+    private final boolean _isActive;
+    private final String _humanReadable;
     TribblePower(String humanReadable, boolean isActive) {
         _humanReadable = humanReadable;
         _isActive = isActive;
@@ -55,4 +55,14 @@ public enum TribblePower implements Filterable {
     }
 
     public boolean isActive() { return _isActive; }
+
+    public static String[] names() {
+        TribblePower[] tribblePowers = values();
+        String[] names = new String[values().length];
+
+        for (int i = 0; i < tribblePowers.length; i++) {
+            names[i] = tribblePowers[i].getHumanReadable();
+        }
+        return names;
+    }
 }

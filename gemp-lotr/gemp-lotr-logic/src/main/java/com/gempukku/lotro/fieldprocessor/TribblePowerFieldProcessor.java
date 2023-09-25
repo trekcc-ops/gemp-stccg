@@ -24,7 +24,10 @@ public class TribblePowerFieldProcessor implements FieldProcessor {
 /*            jsonString += "{\"type\":\"trigger\",\"optional\":\"true\",";
             jsonString += "\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},";
             jsonString += "\"effect\":{\"forced\":true,\"type\":\"discardFromHand\"}}";*/
-            jsonString += "{\"effect\":{\"forced\":true,\"type\":\"discardFromHand\"}";
+                // The code below has been tested and works
+//            jsonString += "{\"effect\":{\"forced\":true,\"type\":\"discardFromHand\"}";
+//            jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
+            jsonString += "{\"effect\":{\"type\":\"activateTribblePower\"}";
             jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
 
             try {
@@ -34,8 +37,8 @@ public class TribblePowerFieldProcessor implements FieldProcessor {
                 throw new RuntimeException(e);
             }
 
-//            ActivateTribblePowerProcessor tribbleProcessor = new ActivateTribblePowerProcessor(tribblePower);
             new TriggerEffectProcessor().processEffect(jsonObject, blueprint, environment);
+
         }
     }
 }

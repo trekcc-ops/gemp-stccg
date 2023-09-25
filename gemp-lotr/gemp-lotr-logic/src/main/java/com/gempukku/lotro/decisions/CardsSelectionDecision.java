@@ -13,6 +13,15 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         this(id, text, physicalCard, 0, physicalCard.size());
     }
 
+    public CardsSelectionDecision(int id, String text, List<LotroPhysicalCard> physicalCards, int minimum, int maximum) {
+        super(id, text, AwaitingDecisionType.CARD_SELECTION);
+        _physicalCards = physicalCards;
+        _minimum = minimum;
+        _maximum = maximum;
+        setParam("min", String.valueOf(minimum));
+        setParam("max", String.valueOf(maximum));
+        setParam("cardId", getCardIds(_physicalCards));
+    }
     public CardsSelectionDecision(int id, String text, Collection<? extends LotroPhysicalCard> physicalCards, int minimum, int maximum) {
         super(id, text, AwaitingDecisionType.CARD_SELECTION);
         _physicalCards = new LinkedList<LotroPhysicalCard>(physicalCards);
