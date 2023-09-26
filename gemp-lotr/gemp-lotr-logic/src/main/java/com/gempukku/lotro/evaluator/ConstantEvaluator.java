@@ -3,7 +3,7 @@ package com.gempukku.lotro.evaluator;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
-public class ConstantEvaluator implements Evaluator {
+public class ConstantEvaluator<AbstractGame extends DefaultGame> implements Evaluator<AbstractGame> {
     private final int _value;
 
     public ConstantEvaluator(int value) {
@@ -11,7 +11,7 @@ public class ConstantEvaluator implements Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, LotroPhysicalCard self) {
+    public int evaluateExpression(AbstractGame game, LotroPhysicalCard self) {
         return _value;
     }
 }

@@ -2,15 +2,15 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
-import com.gempukku.lotro.results.DiscardCardFromPlayPileResult;
-import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.gamestate.GameState;
+import com.gempukku.lotro.results.DiscardCardFromPlayPileResult;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DiscardTopCardFromPlayPileEffect extends AbstractEffect {
+public class DiscardTopCardFromPlayPileEffect extends AbstractEffect<TribblesGame> {
     private final LotroPhysicalCard _source;
     private final String _playerId;
     private final int _count;
@@ -26,12 +26,12 @@ public class DiscardTopCardFromPlayPileEffect extends AbstractEffect {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
+    public boolean isPlayableInFull(TribblesGame game) {
         return game.getGameState().getZoneCards(_playerId, Zone.PLAY_PILE).size() >= _count;
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(DefaultGame game) {
+    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
         GameState gameState = game.getGameState();
         List<LotroPhysicalCard> cardsDiscarded = new LinkedList<>();
         for (int i = 0; i < _count; i++) {

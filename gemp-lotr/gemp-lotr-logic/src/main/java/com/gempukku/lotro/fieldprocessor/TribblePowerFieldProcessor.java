@@ -21,8 +21,11 @@ public class TribblePowerFieldProcessor implements FieldProcessor {
 
         if (tribblePower.isActive()) {
             JSONObject jsonObject;
-            String jsonString = "{\"effect\":{\"type\":\"activateTribblePower\"}" +
-                    ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
+            String jsonString = "{\"effect\":{\"type\":\"activateTribblePower\"}";
+            if (tribblePower == TribblePower.AVALANCHE) {
+                jsonString += ",\"requires\":{\"type\":\"cardsInHandMoreThan\",\"player\":\"you\",\"count\":3}";
+            }
+            jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
 
             try {
                 JSONParser parser = new JSONParser();

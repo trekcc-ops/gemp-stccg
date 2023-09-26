@@ -4,11 +4,11 @@ import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.TribblePower;
-import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.results.ActivateTribblePowerResult;
 import com.gempukku.lotro.rules.GameUtils;
 
-public abstract class ActivateTribblePowerEffect extends AbstractEffect {
+public class ActivateTribblePowerEffect extends AbstractEffect<TribblesGame> {
     protected LotroPhysicalCard _source;
     protected String _activatingPlayer;
     protected TribblePower _tribblePower;
@@ -23,17 +23,13 @@ public abstract class ActivateTribblePowerEffect extends AbstractEffect {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
+    public boolean isPlayableInFull(TribblesGame game) {
         return true;
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText(TribblesGame game) {
         return "Activated " + GameUtils.getCardLink(_source);
-    }
-
-    public ActivateTribblePowerResult getActivateTribblePowerResult() {
-        return _result;
     }
 
     public LotroPhysicalCard getSource() {
@@ -41,13 +37,120 @@ public abstract class ActivateTribblePowerEffect extends AbstractEffect {
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(DefaultGame game) {
+    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
         return new FullEffectResult(true);
     }
 
-    protected FullEffectResult addActionAndReturnResult(DefaultGame game, SubAction subAction) {
+    protected FullEffectResult addActionAndReturnResult(TribblesGame game, SubAction subAction) {
         game.getActionsEnvironment().addActionToStack(subAction);
         game.getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 }
+
+
+/*
+FREEZE (WIP)
+		effects: {
+			type: trigger
+			optional: true
+			trigger: {
+			    type: played
+			    filter: self
+			}
+            effect: [
+                {
+                    type: ChooseTribblePower
+                    memorize: powerChosen
+                }
+//                {
+//                    type: addModifier
+//                    modifier: {
+//                        type: cantPlayCards
+//                        filter: tribblePower(memory(powerChosen))
+//                    }
+//                    until: endOfPlayersNextTurn
+// need to specify which player
+//                }
+//            }
+            ]
+		}
+
+ */
+
+/*
+    GENEROSITY, LAUGHTER
+         effects: {
+ 			type: trigger
+ 			optional: true
+ 			trigger: {
+ 			    type: played
+ 			    filter: self
+ 			}
+ 			effect: [
+ 			    {
+                    type: ChooseOpponent
+                    memorize: opp
+                }
+                {
+                    type: ScorePoints
+                    amount: 25000
+                }
+                {
+                    type: ScorePoints
+                    amount: 25000
+                    player: FromMemory(opp)
+                }
+                {
+                    type: drawCards
+                }
+            ]
+ 		}
+         effects: {
+ 			type: trigger
+ 			optional: true
+ 			trigger: {
+ 			    type: played
+ 			    filter: self
+ 			}
+ 			effect: [
+ 			    {
+                    type: ChoosePlayer
+                    memorize: player1
+                }
+                {
+                    type: discardFromHand
+                    forced: true
+                    hand: fromMemory(player1)
+                    player: fromMemory(player1)
+                }
+                {
+                    type: ChoosePlayerExcept
+                    exclude: fromMemory(player1)
+                    memorize: player2
+                }
+                {
+                    type: putCardsFromHandOnBottomOfDeck
+                    player: fromMemory(player2)
+                }
+                {
+                    type: conditional
+                    requires: [
+                        {
+                            type: playerIsNotSelf
+                            memory: player1
+                        }
+                        {
+                            type: playerIsNotSelf
+                            memory: player2
+                        }
+                    ]
+                    effect: {
+                        type: scorePoints
+                        amount: 25000
+                    }
+                }
+            ]
+ 		}
+
+ */

@@ -7,7 +7,7 @@ import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collection;
 
-public abstract class AbstractSubActionEffect implements Effect {
+public abstract class AbstractSubActionEffect implements Effect<DefaultGame> {
     private CostToEffectAction _subAction;
 
     protected void processSubAction(DefaultGame game, CostToEffectAction subAction) {

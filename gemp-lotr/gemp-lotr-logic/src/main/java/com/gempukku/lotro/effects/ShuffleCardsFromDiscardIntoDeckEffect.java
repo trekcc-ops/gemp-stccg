@@ -9,14 +9,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ShuffleCardsFromDiscardIntoDeckEffect extends AbstractEffect {
+public class ShuffleCardsFromDiscardIntoDeckEffect extends AbstractEffect<DefaultGame> {
     private final LotroPhysicalCard _source;
-    private final String _playerDeck;
+    private final String _shufflingPlayer;
     private final Collection<? extends LotroPhysicalCard> _cards;
 
-    public ShuffleCardsFromDiscardIntoDeckEffect(LotroPhysicalCard source, String playerDeck, Collection<? extends LotroPhysicalCard> cards) {
+    public ShuffleCardsFromDiscardIntoDeckEffect(LotroPhysicalCard source, String shufflingPlayer,
+                                                 Collection<? extends LotroPhysicalCard> cards) {
         _source = source;
-        _playerDeck = playerDeck;
+        _shufflingPlayer = shufflingPlayer;
         _cards = cards;
     }
 
@@ -41,9 +42,9 @@ public class ShuffleCardsFromDiscardIntoDeckEffect extends AbstractEffect {
         if (toShuffleIn.size() > 0) {
             game.getGameState().removeCardsFromZone(_source.getOwner(), toShuffleIn);
 
-            game.getGameState().shuffleCardsIntoDeck(toShuffleIn, _playerDeck);
+            game.getGameState().shuffleCardsIntoDeck(toShuffleIn, _shufflingPlayer);
 
-            game.getGameState().sendMessage(getAppendedNames(toShuffleIn) + " " + GameUtils.be(toShuffleIn) + " shuffled into " + _playerDeck + " deck");
+            game.getGameState().sendMessage(getAppendedNames(toShuffleIn) + " " + GameUtils.be(toShuffleIn) + " shuffled into " + _shufflingPlayer + " deck");
         }
 
         return new FullEffectResult(toShuffleIn.size() == _cards.size());

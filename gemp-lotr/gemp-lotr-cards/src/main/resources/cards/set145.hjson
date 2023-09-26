@@ -7,29 +7,6 @@
         tribble-value: 1
         tribble-power: evolve
         image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/20V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			cost: {
-			    type: discardFromHand
-			    forced: true
-			    count: {
-			        type: forEachInHand
-			    }
-			    memorize: discardedCards
-			}
-			effect: {
-				type: drawCards
-				count: {
-				    type:forEachInMemory
-                    memory: discardedCards
-				}
-			}
-		}
     }
     145_003: {
         title: 1 Tribble - Process
@@ -37,24 +14,6 @@
         tribble-value: 1
         tribble-power: process
         image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/21V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			effect:[
-			    {
-                    type: drawCards
-                    count: 3
-				}
-				{
-				    type: putcardsfromhandonbottomofdeck
-				    count: 2
-				}
-	        ]
-		}
     }
     145_005: {
         title: 10 Tribbles - Evolve
@@ -62,29 +21,6 @@
         tribble-value: 10
         tribble-power: evolve
         image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/23V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			cost: {
-			    type: discardFromHand
-			    forced: true
-			    count: {
-			        type: forEachInHand
-			    }
-			    memorize: discardedCards
-			}
-			effect: {
-				type: drawCards
-				count: {
-				    type:forEachInMemory
-                    memory: discardedCards
-				}
-			}
-		}
     }
     145_010: {
         title: "1,000 Tribbles - Freeze"
@@ -92,30 +28,6 @@
         tribble-value: 1000
         tribble-power: freeze
         image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/28V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: [
-                {
-                    type: ChooseTribblePower
-                    memorize: powerChosen
-                }
-//                {
-//                    type: addModifier
-//                    modifier: {
-//                        type: cantPlayCards
-//                        filter: tribblePower(memory(powerChosen))
-//                    }
-//                    until: endOfPlayersNextTurn
-// need to specify which player
-//                }
-//            }
-            ]
-		}
     }
     145_011: {
         title: "1,000 Tribbles - Process"
@@ -123,24 +35,6 @@
         tribble-value: 1000
         tribble-power: process
         image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/29V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			effect:[
-			    {
-                    type: drawCards
-                    count: 3
-				}
-				{
-				    type: putcardsfromhandonbottomofdeck
-				    count: 2
-				}
-	        ]
-		}
     }
     145_016: {
         title: "100,000 Tribbles - Mutate"
@@ -148,32 +42,5 @@
         tribble-value: 100000
         tribble-power: mutate
         image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/34V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			effect:[
-                {
-                    type: memorizenumber
-                    amount:{
-                        type: countCardsInPlayPile
-                    }
-                    memory: cardsInPlayPile
-                }
-                {
-                    type: shuffleplaypileintodrawdeck
-                }
-			    {
-                    type: placetopcardofdrawdeckontopofplaypile
-                    count: {
-                        type: FromMemory
-                        memory: cardsInPlayPile
-                    }
-				}
-	        ]
-		}
     }
 }

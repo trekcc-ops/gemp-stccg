@@ -3,7 +3,7 @@ package com.gempukku.lotro.effects;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
-public interface Effect {
+public interface Effect<AbstractGame extends DefaultGame> {
     enum Type {
         BEFORE_EXERT, BEFORE_DISCARD_FROM_PLAY,
         BEFORE_ADD_TWILIGHT, BEFORE_KILLED, BEFORE_HEALED,
@@ -20,7 +20,7 @@ public interface Effect {
      * @param game
      * @return
      */
-    String getText(DefaultGame game);
+    String getText(AbstractGame game);
 
     /**
      * Returns the type of the effect. This should list the type of effect it represents
@@ -38,7 +38,7 @@ public interface Effect {
      * @param game
      * @return
      */
-    boolean isPlayableInFull(DefaultGame game);
+    boolean isPlayableInFull(AbstractGame game);
 
     /**
      * Plays the effect and emits the results.
@@ -46,7 +46,7 @@ public interface Effect {
      * @param game
      * @return
      */
-    void playEffect(DefaultGame game);
+    void playEffect(AbstractGame game);
 
     /**
      * Returns if the effect was carried out (not prevented) in full. This is required

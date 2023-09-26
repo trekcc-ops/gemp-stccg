@@ -7,22 +7,6 @@
         tribble-value: 1
         tribble-power: convert
         image-url: https://www.trekcc.org/tribbles/cardimages/nbt/55V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: [
-                {
-                    type: placePlayedCardBeneathDrawDeck
-                }
-                {
-                    type: placeTopCardOfDrawDeckOnTopOfPlayPile
-                }
-            ]
-		}
     }
     157_004: {
         title: "10 Tribbles - Advance"
@@ -43,29 +27,6 @@
         tribble-value: 1000
         tribble-power: masaka
         image-url: https://www.trekcc.org/tribbles/cardimages/nbt/64V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: {
-                type: forEachPlayer
-                effect: [
-                    {
-                        type: putCardsFromHandOnBottomOfDeck
-                        count: {
-                            type: forEachInHand
-                        }
-                    }
-                    {
-                        type: drawCards
-                        count: 3
-                    }
-                ]
-            }
-		}
     }
     157_011: {
         title: "1,000 Tribbles - Reverse"
@@ -73,17 +34,6 @@
         tribble-value: 1000
         tribble-power: reverse
         image-url: https://www.trekcc.org/tribbles/cardimages/nbt/65V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: {
-                type: reversePlayerOrder
-            }
-		}
     }
     157_014: {
         title: "10,000 Tribbles - Masaka"
@@ -91,29 +41,6 @@
         tribble-value: 10000
         tribble-power: masaka
         image-url: https://www.trekcc.org/tribbles/cardimages/nbt/68V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: {
-                type: forEachPlayer
-                effect: [
-                    {
-                        type: putCardsFromHandOnBottomOfDeck
-                        count: {
-                            type: forEachInHand
-                        }
-                    }
-                    {
-                        type: drawCards
-                        count: 3
-                    }
-                ]
-            }
-		}
     }
     157_015: {
         title: "10,000 Tribbles - Reverse"
@@ -121,16 +48,5 @@
         tribble-value: 10000
         tribble-power: reverse
         image-url: https://www.trekcc.org/tribbles/cardimages/nbt/69V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-            effect: {
-                type: reversePlayerOrder
-            }
-		}
     }
 }

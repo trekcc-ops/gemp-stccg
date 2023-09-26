@@ -6,7 +6,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.results.ActivateCardResult;
 
-public class ActivateCardEffect extends AbstractEffect {
+public class ActivateCardEffect extends AbstractEffect<DefaultGame> {
     private final LotroPhysicalCard _source;
     private final Phase _actionTimeword;
 

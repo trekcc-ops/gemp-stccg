@@ -25,9 +25,9 @@ public class ValueResolver {
         if (value == null && defaultValue == null)
             throw new InvalidCardDefinitionException("Value not defined");
         if (value == null)
-            return new ConstantEvaluator(defaultValue);
+            return new ConstantEvaluator<>(defaultValue);
         if (value instanceof Number)
-            return new ConstantEvaluator(((Number) value).intValue());
+            return new ConstantEvaluator<>(((Number) value).intValue());
         if (value instanceof String stringValue) {
             if (stringValue.contains("-")) {
                 final String[] split = stringValue.split("-", 2);
@@ -37,7 +37,7 @@ public class ValueResolver {
                     throw new InvalidCardDefinitionException("Unable to resolve count: " + value);
                 return new ValueSource<>() {
                     @Override
-                    public Evaluator getEvaluator(DefaultActionContext<AbstractGame> actionContext) {
+                    public Evaluator<AbstractGame> getEvaluator(DefaultActionContext<AbstractGame> actionContext) {
                         throw new RuntimeException("Evaluator has resolved to range");
                     }
 
@@ -53,7 +53,7 @@ public class ValueResolver {
                 };
             } else {
                 int v = Integer.parseInt(stringValue);
-                return new ConstantEvaluator(v);
+                return new ConstantEvaluator<>(v);
             }
         }
         if (value instanceof JSONObject object) {

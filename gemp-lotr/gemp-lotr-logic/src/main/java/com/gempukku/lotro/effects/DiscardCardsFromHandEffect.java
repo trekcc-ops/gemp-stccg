@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DiscardCardsFromHandEffect extends AbstractEffect {
+public class DiscardCardsFromHandEffect extends AbstractEffect<DefaultGame> {
     private final LotroPhysicalCard _source;
     private final String _playerId;
     private final Collection<? extends LotroPhysicalCard> _cards;
@@ -44,7 +44,7 @@ public class DiscardCardsFromHandEffect extends AbstractEffect {
             GameState gameState = game.getGameState();
 
             Set<LotroPhysicalCard> discardedCards = new HashSet<>();
-            for (LotroPhysicalCard card : _cards) // TODO: Throwing errors here as of 9/25/23 because _cards is null
+            for (LotroPhysicalCard card : _cards)
                 if (card.getZone() == Zone.HAND)
                     discardedCards.add(card);
 

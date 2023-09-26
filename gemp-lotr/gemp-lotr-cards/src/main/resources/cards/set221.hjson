@@ -7,36 +7,6 @@
          tribble-value: 1
          tribble-power: kindness
          image-url: https://www.trekcc.org/tribbles/cardimages/toadc/137V.jpg
-         effects: {
- 			type: trigger
- 			optional: true
- 			trigger: {
- 			    type: played
- 			    filter: self
- 			}
- 			effect: [
- 			    {
- 			        type: drawCards
- 			    }
- 			    {
- 			        type: forEachPlayer
- 			        effect: {
- 			            type: conditional
- 			            requires: {
- 			                type: cardsInHandMoreThan
- 			                player: you
- 			                count: 3
- 			            }
- 			            effect: {
- 			                type: putCardsFromHandOnBottomOfPlayPile
- 			            }
- 			        }
- 			    }
- 			    {
- 			        type: putCardsFromHandOnBottomOfDeck
- 			    }
-            ]
- 		}
     }
     221_004: {
          title: 1 Tribble - Recycle
@@ -44,27 +14,6 @@
          tribble-value: 1
          tribble-power: recycle
          image-url: https://www.trekcc.org/tribbles/cardimages/toadc/139V.jpg
-         effects: {
- 			type: trigger
- 			optional: true
- 			trigger: {
- 			    type: played
- 			    filter: self
- 			}
- 			effect: [
- 			    {
-                    type: ChoosePlayer
-                    memorize: playerChosen
-                }
-                {
-                    type: shufflecardsfromdiscardintodrawdeck
-                    count: {
-                        type: forEachInDiscard
-                    }
-                    player: fromMemory(playerChosen)
-                }
-            ]
- 		}
     }
     221_006: {
          title: 10 Tribbles - Generosity
@@ -72,32 +21,6 @@
          tribble-value: 10
          tribble-power: generosity
          image-url: https://www.trekcc.org/tribbles/cardimages/toadc/141V.jpg
-         effects: {
- 			type: trigger
- 			optional: true
- 			trigger: {
- 			    type: played
- 			    filter: self
- 			}
- 			effect: [
- 			    {
-                    type: ChooseOpponent
-                    memorize: opp
-                }
-                {
-                    type: ScorePoints
-                    amount: 25000
-                }
-                {
-                    type: ScorePoints
-                    amount: 25000
-                    player: FromMemory(opp)
-                }
-                {
-                    type: drawCards
-                }
-            ]
- 		}
     }
     221_008: {
         title: 100 Tribbles - Cheat
@@ -119,51 +42,5 @@
          tribble-value: 100
          tribble-power: laughter
          image-url: https://www.trekcc.org/tribbles/cardimages/toadc/145V.jpg
-         effects: {
- 			type: trigger
- 			optional: true
- 			trigger: {
- 			    type: played
- 			    filter: self
- 			}
- 			effect: [
- 			    {
-                    type: ChoosePlayer
-                    memorize: player1
-                }
-                {
-                    type: discardFromHand
-                    forced: true
-                    hand: fromMemory(player1)
-                    player: fromMemory(player1)
-                }
-                {
-                    type: ChoosePlayerExcept
-                    exclude: fromMemory(player1)
-                    memorize: player2
-                }
-                {
-                    type: putCardsFromHandOnBottomOfDeck
-                    player: fromMemory(player2)
-                }
-                {
-                    type: conditional
-                    requires: [
-                        {
-                            type: playerIsNotSelf
-                            memory: player1
-                        }
-                        {
-                            type: playerIsNotSelf
-                            memory: player2
-                        }
-                    ]
-                    effect: {
-                        type: scorePoints
-                        amount: 25000
-                    }
-                }
-            ]
- 		}
     }
 }

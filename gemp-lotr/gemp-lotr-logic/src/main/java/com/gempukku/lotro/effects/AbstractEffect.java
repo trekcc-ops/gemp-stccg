@@ -6,14 +6,14 @@ import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collection;
 
-public abstract class AbstractEffect implements Effect {
+public abstract class AbstractEffect<AbstractGame extends DefaultGame> implements Effect<AbstractGame> {
     private Boolean _carriedOut;
     protected boolean _prevented;
 
-    protected abstract FullEffectResult playEffectReturningResult(DefaultGame game);
+    protected abstract FullEffectResult playEffectReturningResult(AbstractGame game);
 
     @Override
-    public final void playEffect(DefaultGame game) {
+    public final void playEffect(AbstractGame game) {
         FullEffectResult fullEffectResult = playEffectReturningResult(game);
         _carriedOut = fullEffectResult.isCarriedOut();
     }
@@ -26,7 +26,7 @@ public abstract class AbstractEffect implements Effect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText(AbstractGame game) {
         return null;
     }
 

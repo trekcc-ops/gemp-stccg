@@ -7,17 +7,18 @@ import com.gempukku.lotro.effects.choose.ChooseAndPutCardsFromHandBeneathDrawDec
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.TribblesGame;
 
-public class ActivateCycleTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateCycleTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+public class ActivateProcessTribblePowerEffect extends ActivateTribblePowerEffect {
+    public ActivateProcessTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
         super(action, source);
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult(TribblesGame game) {
         SubAction subAction = new SubAction(_action);
+        subAction.appendEffect(new DrawCardsEffect(subAction, _activatingPlayer, 3));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
-                _action, _activatingPlayer, 1, false, Filters.any));
-        subAction.appendEffect(new DrawCardsEffect(_action, _activatingPlayer, 1));
-        return addActionAndReturnResult(game, subAction);
+                subAction, _activatingPlayer, 2, false, Filters.any));
+        game.getActionsEnvironment().emitEffectResult(_result);
+        return new FullEffectResult(true);
     }
 }
