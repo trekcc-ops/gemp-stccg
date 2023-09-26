@@ -30,22 +30,6 @@
         tribble-value: 100
         tribble-power: cycle
         image-url: https://www.trekcc.org/tribbles/cardimages/50th/122V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			cost: [
-				{
-					type: putCardsFromHandOnBottomOfDeck
-				}
-			]
-			effect: {
-				type: drawCards
-			}
-		}
     }
     190_009: {
         title: "1,000 Tribbles - Cheat"
@@ -67,22 +51,5 @@
         tribble-value: 10000
         tribble-power: exchange
         image-url: https://www.trekcc.org/tribbles/cardimages/50th/129V.jpg
-		effects: {
-			type: trigger
-			optional: true
-			trigger: {
-			    type: played
-			    filter: self
-			}
-			cost: [
-				{
-					type: DiscardFromHand
-					forced: true
-				}
-			]
-			effect: {
-				type: PutCardsFromDiscardIntoHand
-			}
-		}
     }
 }

@@ -1,16 +1,15 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.game.DefaultGame;
 
 public class ActivateDiscardTribblePowerEffect extends ActivateTribblePowerEffect {
-    Action _action;
-
-    public ActivateDiscardTribblePowerEffect(Action action, LotroPhysicalCard source) {
-        super(source);
-        _action = action;
+    public ActivateDiscardTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source,
+                                             DefaultActionContext actionContext) {
+        super(action, source, actionContext);
     }
 
     @Override

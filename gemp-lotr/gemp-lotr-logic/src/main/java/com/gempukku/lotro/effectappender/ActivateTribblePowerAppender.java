@@ -4,9 +4,9 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.TribblePower;
-import com.gempukku.lotro.effects.ActivateDiscardTribblePowerEffect;
-import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.effects.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
@@ -22,10 +22,19 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
             protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
 //                final Map<TribblePower, ActivateTribblePowerEffect> activateEffects = new HashMap<>();
 
-                if (actionContext.getSource().getBlueprint().getTribblePower() == TribblePower.DISCARD)
-                    return new ActivateDiscardTribblePowerEffect(action, actionContext.getSource());
+                TribblePower tribblePower = actionContext.getSource().getBlueprint().getTribblePower();
+                LotroPhysicalCard actionSource = actionContext.getSource();
+
+                if (tribblePower == TribblePower.DISCARD)
+                    return new ActivateDiscardTribblePowerEffect(action, actionSource, actionContext);
+                else if (tribblePower == TribblePower.DRAW)
+                    return new ActivateDrawTribblePowerEffect(action, actionSource, actionContext);
+                else if (tribblePower == TribblePower.CYCLE)
+                    return new ActivateCycleTribblePowerEffect(action, actionSource, actionContext);
+                else if (tribblePower == TribblePower.EXCHANGE)
+                    return new ActivateExchangeTribblePowerEffect(action, actionSource, actionContext);
                 else
-                    return new ActivateDiscardTribblePowerEffect(action, actionContext.getSource());
+                    return new ActivateCycleTribblePowerEffect(action, actionSource, actionContext);
             }
         };
     }

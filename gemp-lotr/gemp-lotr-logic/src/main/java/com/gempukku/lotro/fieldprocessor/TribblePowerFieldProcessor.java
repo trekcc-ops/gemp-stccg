@@ -12,23 +12,17 @@ import org.json.simple.parser.ParseException;
 
 public class TribblePowerFieldProcessor implements FieldProcessor {
     @Override
-    public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint,
+                             CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final Logger LOG = Logger.getLogger(TribblePowerFieldProcessor.class);
         LOG.debug("Processing TribblePower field. " + value.toString());
         TribblePower tribblePower = FieldUtils.getEnum(TribblePower.class, value, key);
         blueprint.setTribblePower(tribblePower);
-        String jsonString = "";
-        JSONObject jsonObject;
 
-        if (tribblePower == TribblePower.DISCARD) {
-/*            jsonString += "{\"type\":\"trigger\",\"optional\":\"true\",";
-            jsonString += "\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},";
-            jsonString += "\"effect\":{\"forced\":true,\"type\":\"discardFromHand\"}}";*/
-                // The code below has been tested and works
-//            jsonString += "{\"effect\":{\"forced\":true,\"type\":\"discardFromHand\"}";
-//            jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
-            jsonString += "{\"effect\":{\"type\":\"activateTribblePower\"}";
-            jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
+        if (tribblePower.isActive()) {
+            JSONObject jsonObject;
+            String jsonString = "{\"effect\":{\"type\":\"activateTribblePower\"}" +
+                    ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
 
             try {
                 JSONParser parser = new JSONParser();

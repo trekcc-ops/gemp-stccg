@@ -43,4 +43,5 @@ public class EffectUtils {
             actionSource.addEffect(effectAppender);
         }
     }
+
 }

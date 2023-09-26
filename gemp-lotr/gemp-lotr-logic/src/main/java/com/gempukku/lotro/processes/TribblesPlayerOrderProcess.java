@@ -31,6 +31,11 @@ public class TribblesPlayerOrderProcess implements GameProcess {
     @Override
     public void process(DefaultGame game) {
         LinkedList<String> playersSelecting = new LinkedList<>(_players);
+        Map<String, Integer> playersWithOneValue = new LinkedHashMap<>();
+
+        for (String player: playersSelecting) {
+            playersWithOneValue.put(player, playerOnlyHasOneTribbleValue(player));
+        }
 
         while (playersSelecting.size() > 1) {
             _startingTribbles.clear();
@@ -50,12 +55,49 @@ public class TribblesPlayerOrderProcess implements GameProcess {
 
             int highestTribble = Collections.max(_startingTribbles.values());
 
-            playersSelecting.removeIf(player -> _startingTribbles.get(player) < highestTribble);
+            boolean infiniteLoopPossible = true;
+
+            for (Map.Entry<String, Integer> entry : playersWithOneValue.entrySet()) {
+                if (entry.getValue() != highestTribble) {
+                    infiniteLoopPossible = false;
+                    break;
+                }
+            }
+
+            for (String player : playersSelecting) {
+                if (_startingTribbles.get(player) < highestTribble) {
+                    playersSelecting.remove(player);
+                    playersWithOneValue.remove(player);
+                }
+            }
+
+            /* If all remaining players have only one tribble value in their deck, and it's the same,
+                    choose the first player at random. */
+            if (infiniteLoopPossible) {
+                Collections.shuffle(playersSelecting, ThreadLocalRandom.current());
+                playersSelecting.subList(1, playersSelecting.size()).clear();
+            }
         }
 
         _firstPlayer = playersSelecting.get(0);
 
         _playerOrderFeedback.setPlayerOrder(new PlayerOrder(_players), _firstPlayer);
+    }
+
+    private Integer playerOnlyHasOneTribbleValue(String playerId) {
+        ArrayList<Integer> uniqueValues = new ArrayList<>();
+        for (String card : _decks.get(playerId).getDrawDeckCards()) {
+            try {
+                Integer value = _library.getLotroCardBlueprint(card).getTribbleValue();
+                if (!uniqueValues.contains(value))
+                    uniqueValues.add(value);
+            } catch (CardNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (uniqueValues.size() == 1)
+            return uniqueValues.get(0);
+        else return 0;
     }
 
     @Override
