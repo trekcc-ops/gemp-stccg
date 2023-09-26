@@ -26,15 +26,15 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
                 LotroPhysicalCard actionSource = actionContext.getSource();
 
                 if (tribblePower == TribblePower.DISCARD)
-                    return new ActivateDiscardTribblePowerEffect(action, actionSource, actionContext);
+                    return new ActivateDiscardTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.DRAW)
-                    return new ActivateDrawTribblePowerEffect(action, actionSource, actionContext);
+                    return new ActivateDrawTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.CYCLE)
-                    return new ActivateCycleTribblePowerEffect(action, actionSource, actionContext);
+                    return new ActivateCycleTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.EXCHANGE)
-                    return new ActivateExchangeTribblePowerEffect(action, actionSource, actionContext);
+                    return new ActivateExchangeTribblePowerEffect(action, actionSource);
                 else
-                    return new ActivateCycleTribblePowerEffect(action, actionSource, actionContext);
+                    return new ActivateCycleTribblePowerEffect(action, actionSource);
             }
         };
     }

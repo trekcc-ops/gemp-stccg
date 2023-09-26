@@ -1,6 +1,5 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
@@ -10,9 +9,8 @@ import com.gempukku.lotro.rules.GameUtils;
 public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
 
     String _drawingPlayer;
-    public ActivateDrawTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source,
-                                          DefaultActionContext actionContext) {
-        super(action, source, actionContext);
+    public ActivateDrawTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+        super(action, source);
     }
 
     @Override

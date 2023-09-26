@@ -1,6 +1,5 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
@@ -10,9 +9,8 @@ import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 
 public class ActivateExchangeTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateExchangeTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source,
-                                              DefaultActionContext actionContext) {
-        super(action, source, actionContext);
+    public ActivateExchangeTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+        super(action, source);
     }
 
     @Override
