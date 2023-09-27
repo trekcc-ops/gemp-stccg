@@ -41,14 +41,16 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
                     return new ActivateExchangeTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.FAMINE)
                     return new ActivateFamineTribblePowerEffect(action, actionSource);
-                else if (tribblePower == TribblePower.GENEROSITY) // TODO: Code for generosity tribble power
+                else if (tribblePower == TribblePower.FREEZE) // TODO- Freeze not yet implemented
                     return new ActivateCycleTribblePowerEffect(action, actionSource);
+                else if (tribblePower == TribblePower.GENEROSITY)
+                    return new ActivateGenerosityTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.KILL)
                     return new ActivateKillTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.KINDNESS)
                     return new ActivateKindnessTribblePowerEffect(action, actionSource);
-                else if (tribblePower == TribblePower.LAUGHTER) // TODO: Code for laughter tribble power
-                    return new ActivateCycleTribblePowerEffect(action, actionSource);
+                else if (tribblePower == TribblePower.LAUGHTER)
+                    return new ActivateLaughterTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.MASAKA)
                     return new ActivateMasakaTribblePowerEffect(action, actionSource);
                 else if (tribblePower == TribblePower.MUTATE)
@@ -62,7 +64,8 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
                 else if (tribblePower == TribblePower.REVERSE)
                     return new ActivateReverseTribblePowerEffect(action, actionSource);
                 else
-                    return new ActivateCycleTribblePowerEffect(action, actionSource);
+                    throw new RuntimeException(
+                            "Code not yet implemented for Tribble power " + tribblePower.getHumanReadable());
             }
         };
     }
