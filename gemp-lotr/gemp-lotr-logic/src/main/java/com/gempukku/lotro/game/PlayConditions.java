@@ -120,19 +120,6 @@ public class PlayConditions {
             return (getTotalCompanions(self.getOwner(), game) < 9);
     }
 
-    public static boolean checkPlayRingBearer(DefaultGame game, LotroPhysicalCard self) {
-        // If a character other than Frodo is your Ringbearer,
-        // you cannot play any version of Frodo
-        // with the Ring-bearer keyword during the game
-        LotroPhysicalCard ringBearer = game.getGameState().getRingBearer(game.getGameState().getCurrentPlayerId());
-        boolean ringBearerIsNotFrodo = ringBearer != null && !ringBearer.getBlueprint().getTitle().equals("Frodo");
-        if (ringBearerIsNotFrodo) {
-            boolean isRingBearerFrodo = self.getBlueprint().getTitle().equals("Frodo") && self.getBlueprint().hasKeyword(Keyword.CAN_START_WITH_RING);
-            return !isRingBearerFrodo;
-        }
-        return true;
-    }
-
     public static boolean canExert(final LotroPhysicalCard source, final DefaultGame game, final int times, final int count, Filterable... filters) {
         final Filter filter = Filters.and(filters, Filters.character);
         return Filters.countActive(game, filter,
@@ -176,14 +163,6 @@ public class PlayConditions {
 
     public static boolean canSpot(DefaultGame game, int count, Filterable... filters) {
         return Filters.canSpot(game, count, filters);
-    }
-
-    public static boolean canSpotThreat(DefaultGame game, int count) {
-        return game.getGameState().getThreats() >= count;
-    }
-
-    public static boolean canSpotBurdens(DefaultGame game, int count) {
-        return game.getGameState().getBurdens() >= count;
     }
 
     // "If you can spot X [elven] tokens on conditions..."

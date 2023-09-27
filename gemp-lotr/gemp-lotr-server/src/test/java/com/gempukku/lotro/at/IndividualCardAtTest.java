@@ -1,18 +1,15 @@
 package com.gempukku.lotro.at;
 
-import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.cards.PhysicalCardImpl;
+import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
-import com.gempukku.lotro.cards.LotroDeck;
 import org.junit.Test;
 
 import java.util.*;
@@ -575,8 +572,6 @@ public class IndividualCardAtTest extends AbstractAtTest {
         AwaitingDecision skirmishAction = _userFeedback.getAwaitingDecision(P1);
         playerDecided(P1, getCardActionId(skirmishAction, "Use The One"));
 
-        assertTrue(_game.getGameState().isWearingRing());
-
         // End skirmish phase
         playerDecided(P2, "");
         playerDecided(P1, "");
@@ -736,10 +731,14 @@ public class IndividualCardAtTest extends AbstractAtTest {
 
         _userFeedback = new DefaultUserFeedback();
 
-        LotroFormatLibrary formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
-        LotroFormat format = formatLibrary.getFormat("movie");
+        FormatLibrary formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+        GameFormat format = formatLibrary.getFormat("movie");
+        Map<String, CardDeck> genericDecks = new HashMap<>();
+        for (Map.Entry<String, LotroDeck> entry : decks.entrySet()) {
+            genericDecks.put(entry.getKey(), entry.getValue());
+        }
 
-        _game = new LotroGame(format, decks, _userFeedback, _cardLibrary);
+        _game = new LotroGame(format, genericDecks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
         _game.startGame();
 
@@ -777,10 +776,14 @@ public class IndividualCardAtTest extends AbstractAtTest {
 
         _userFeedback = new DefaultUserFeedback();
 
-        LotroFormatLibrary formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
-        LotroFormat format = formatLibrary.getFormat("movie");
+        FormatLibrary formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+        GameFormat format = formatLibrary.getFormat("movie");
 
-        _game = new LotroGame(format, decks, _userFeedback, _cardLibrary);
+        Map<String, CardDeck> genericDecks = new HashMap<>();
+        for (Map.Entry<String, LotroDeck> entry : decks.entrySet()) {
+            genericDecks.put(entry.getKey(), entry.getValue());
+        }
+        _game = new LotroGame(format, genericDecks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
         _game.startGame();
 
@@ -860,10 +863,14 @@ public class IndividualCardAtTest extends AbstractAtTest {
 
         _userFeedback = new DefaultUserFeedback();
 
-        LotroFormatLibrary formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
-        LotroFormat format = formatLibrary.getFormat("movie");
+        FormatLibrary formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+        GameFormat format = formatLibrary.getFormat("movie");
 
-        _game = new LotroGame(format, decks, _userFeedback, _cardLibrary);
+        Map<String, CardDeck> genericDecks = new HashMap<>();
+        for (Map.Entry<String, LotroDeck> entry : decks.entrySet()) {
+            genericDecks.put(entry.getKey(), entry.getValue());
+        }
+        _game = new LotroGame(format, genericDecks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
         _game.startGame();
 
@@ -1117,10 +1124,14 @@ public class IndividualCardAtTest extends AbstractAtTest {
 
         _userFeedback = new DefaultUserFeedback();
 
-        LotroFormatLibrary formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
-        LotroFormat format = formatLibrary.getFormat("movie");
+        FormatLibrary formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+        GameFormat format = formatLibrary.getFormat("movie");
 
-        _game = new LotroGame(format, decks, _userFeedback, _cardLibrary);
+        Map<String, CardDeck> genericDecks = new HashMap<>();
+        for (Map.Entry<String, LotroDeck> entry : decks.entrySet()) {
+            genericDecks.put(entry.getKey(), entry.getValue());
+        }
+        _game = new LotroGame(format, genericDecks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
         _game.startGame();
 

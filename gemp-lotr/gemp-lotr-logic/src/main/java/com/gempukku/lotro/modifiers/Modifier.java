@@ -22,6 +22,9 @@ public interface Modifier {
     boolean isNonCardTextModifier();
 
     Condition getCondition();
+    boolean isCumulative();
+    String getForPlayer();
+    boolean isForPlayer(String playerId);
 
     boolean affectsCard(DefaultGame game, LotroPhysicalCard physicalCard);
 

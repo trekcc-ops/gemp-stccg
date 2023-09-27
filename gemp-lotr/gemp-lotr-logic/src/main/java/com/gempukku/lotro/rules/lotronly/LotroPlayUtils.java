@@ -116,10 +116,6 @@ public class LotroPlayUtils extends PlayUtils {
         if (!PlayConditions.checkUniqueness(game, card, ignoreCheckingDeadPile))
             return false;
 
-        if (blueprint.getCardType() == CardType.COMPANION
-            && !(PlayConditions.checkRuleOfNine(game, card) && PlayConditions.checkPlayRingBearer(game, card)))
-            return false;
-
         if(blueprint.getCardType() == CardType.EVENT)
         {
             if(game.getModifiersQuerying().hasKeyword(game, card, Keyword.RESPONSE)) {

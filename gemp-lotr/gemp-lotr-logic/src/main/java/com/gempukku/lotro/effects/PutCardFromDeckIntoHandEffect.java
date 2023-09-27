@@ -9,7 +9,7 @@ import com.gempukku.lotro.results.DrawCardOrPutIntoHandResult;
 
 import java.util.Collections;
 
-public class PutCardFromDeckIntoHandEffect extends AbstractEffect {
+public class PutCardFromDeckIntoHandEffect extends AbstractEffect<DefaultGame> {
     private final LotroPhysicalCard _card;
     private final boolean _reveal;
 

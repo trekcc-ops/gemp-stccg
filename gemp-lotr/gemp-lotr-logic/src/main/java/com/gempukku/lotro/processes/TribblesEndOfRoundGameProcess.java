@@ -4,6 +4,7 @@ import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
+import com.gempukku.lotro.results.PlayerWentOutResult;
 
 import java.util.*;
 
@@ -24,6 +25,7 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
                 _pointsScored.put(playerId, score);
                 gameState.addToPlayerScore(playerId, score);
                 gameState.sendMessage(playerId + " went out with " + score + " points");
+                game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
             }
 
             // Each player places the cards remaining in their hand into their discard pile.

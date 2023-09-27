@@ -12,7 +12,7 @@ import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.LeagueData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.league.SoloDraftLeagueData;
@@ -33,7 +33,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
     private final CollectionsManager _collectionsManager;
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final CardBlueprintLibrary _cardLibrary;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final LeagueService _leagueService;
 
     private static final Logger _log = Logger.getLogger(SoloDraftRequestHandler.class);
@@ -42,7 +42,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
         super(context);
         _leagueService = extractObject(context, LeagueService.class);
         _cardLibrary = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
         _soloDraftDefinitions = extractObject(context, SoloDraftDefinitions.class);
         _collectionsManager = extractObject(context, CollectionsManager.class);
     }

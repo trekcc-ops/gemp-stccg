@@ -8,7 +8,19 @@
       hall:false
     }
     {
+        name: "1E Modern Complete"
+        game: st1e
+        code: st1emoderncomplete
+        sites: FELLOWSHIP
+        set:[101, 155]
+        minimumDeckSize: 60
+        maximumSameName: 9999
+        validateShadowFPCount: false
+        mulliganRule: false
+    }
+    {
         name: Tribbles
+        game: tribbles
         code: tribbles
         sites: FELLOWSHIP
         set:[144, 145, 146, 147, 150, 157, 164, 180, 190, 221]

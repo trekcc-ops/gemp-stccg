@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.common.AppConfig;
 import com.gempukku.lotro.draft2.builder.*;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,12 +27,12 @@ public class SoloDraftDefinitions {
     private final Semaphore collectionReady = new Semaphore(1);
 
     public SoloDraftDefinitions(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
-                                LotroFormatLibrary formatLibrary) {
+                                FormatLibrary formatLibrary) {
         this(collectionsManager, cardLibrary, formatLibrary, AppConfig.getDraftPath());
     }
 
     public SoloDraftDefinitions(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
-                                LotroFormatLibrary formatLibrary, File draftDefinitionPath) {
+                                FormatLibrary formatLibrary, File draftDefinitionPath) {
         _draftChoiceBuilder = new DraftChoiceBuilder(collectionsManager, cardLibrary, formatLibrary);
         _draftDefinitionPath = draftDefinitionPath;
         ReloadDraftsFromFile();

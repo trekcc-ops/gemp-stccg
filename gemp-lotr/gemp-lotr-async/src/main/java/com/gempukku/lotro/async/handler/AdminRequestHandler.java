@@ -13,7 +13,7 @@ import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.hall.HallServer;
 import com.gempukku.lotro.league.*;
 import com.gempukku.lotro.packs.ProductLibrary;
@@ -41,7 +41,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
     private final TournamentService _tournamentService;
     private final CacheManager _cacheManager;
     private final HallServer _hallServer;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final LeagueDAO _leagueDao;
     private final CollectionsManager _collectionManager;
     private final PlayerDAO _playerDAO;
@@ -57,7 +57,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
         _tournamentService = extractObject(context, TournamentService.class);
         _cacheManager = extractObject(context, CacheManager.class);
         _hallServer = extractObject(context, HallServer.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
         _leagueDao = extractObject(context, LeagueDAO.class);
         _playerDAO = extractObject(context, PlayerDAO.class);
         _collectionManager = extractObject(context, CollectionsManager.class);

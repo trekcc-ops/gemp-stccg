@@ -3,7 +3,7 @@ package com.gempukku.lotro.library;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.at.AbstractAtTest;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueProduct;
 import com.gempukku.lotro.league.SealedLeagueType;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class FormatLibraryTests extends AbstractAtTest {
 
-    protected static final LotroFormatLibrary _formatLibrary = new LotroFormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+    protected static final FormatLibrary _formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
     protected static final SealedLeagueProduct _sealedLeagueProduct = new SealedLeagueProduct();
 
     @ParameterizedTest(name = "{0} in LotroFormatLibrary matches SealedLeagueProduct.")

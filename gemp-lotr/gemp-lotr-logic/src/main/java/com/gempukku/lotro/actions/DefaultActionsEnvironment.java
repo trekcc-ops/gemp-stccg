@@ -237,4 +237,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionStack.add(action);
     }
 
+    public Stack<Action> getActionStack() { return _actionStack; }
+
 }

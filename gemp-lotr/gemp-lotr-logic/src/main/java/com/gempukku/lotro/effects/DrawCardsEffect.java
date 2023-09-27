@@ -12,9 +12,9 @@ import java.util.List;
 public class DrawCardsEffect extends AbstractSubActionEffect {
     private final Action _action;
     private final String _playerId;
-    private final Evaluator _count;
+    private final Evaluator<DefaultGame> _count;
 
-    public DrawCardsEffect(Action action, String playerId, Evaluator count) {
+    public DrawCardsEffect(Action action, String playerId, Evaluator<DefaultGame> count) {
         _action = action;
         _playerId = playerId;
         _count = count;
@@ -23,7 +23,7 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
     public DrawCardsEffect(Action action, String playerId, int count) {
         _action = action;
         _playerId = playerId;
-        _count = new ConstantEvaluator(count);
+        _count = new ConstantEvaluator<>(count);
     }
 
     @Override
@@ -62,7 +62,8 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
                                 count++;
                         }
                         if (count > 0)
-                            game.getGameState().sendMessage(_playerId + " draws " + count + " card" + ((count > 1) ? "s" : ""));
+                            game.getGameState().sendMessage(
+                                    _playerId + " draws " + count + " card" + ((count > 1) ? "s" : ""));
                     }
                 }
         );

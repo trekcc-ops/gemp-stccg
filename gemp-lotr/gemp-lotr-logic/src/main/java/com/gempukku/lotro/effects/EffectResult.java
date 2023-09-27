@@ -17,6 +17,7 @@ public abstract class EffectResult {
 
         // Tribbles-specific
         ACTIVATE_TRIBBLE_POWER,  DRAW_CARD_OR_PUT_INTO_HAND, FOR_EACH_DISCARDED_FROM_PLAY_PILE,
+        PLAYER_WENT_OUT,
 
         // LotR-specific
         AFTER_ALL_SKIRMISHES, ASSIGNED_AGAINST, ASSIGNED_TO_SKIRMISH, CHARACTER_WON_SKIRMISH, CHARACTER_LOST_SKIRMISH,
@@ -28,6 +29,7 @@ public abstract class EffectResult {
     }
 
     private final Type _type;
+    protected String _playerId;
 
     protected EffectResult(Type type) {
         _type = type;
@@ -44,4 +46,6 @@ public abstract class EffectResult {
     public boolean wasOptionalTriggerUsed(OptionalTriggerAction action) {
         return _optionalTriggersUsed.contains(action.getTriggerIdentifier());
     }
+
+    public String getPlayer() { return _playerId; }
 }

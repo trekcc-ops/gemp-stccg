@@ -18,7 +18,6 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.game.PlayerOrderFeedback;
 import com.gempukku.lotro.game.TribblesGame;
-import com.gempukku.lotro.gamestate.GameStats;
 import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 
@@ -27,27 +26,22 @@ import java.util.*;
 // Action generates multiple Effects, both costs and result of an action are Effects.
 
 // Decision is also an Effect.
-public class TribblesTurnProcedure {
-    private final UserFeedback _userFeedback;
-    private final TribblesGame _game;
-    private final Stack<Action> _actionStack;
+public class TribblesTurnProcedure extends TurnProcedure<TribblesGame> {
     private GameProcess _gameProcess;
     private boolean _playedGameProcess;
-    private final GameStats _gameStats;
+    Map<String, CardDeck> _decks;
+    private final CardBlueprintLibrary _library;
     public TribblesTurnProcedure(TribblesGame tribblesGame, Map<String, CardDeck> decks, final UserFeedback userFeedback,
-                                 CardBlueprintLibrary library, Stack<Action> actionStack,
+                                 CardBlueprintLibrary library, DefaultActionsEnvironment actionsEnvironment,
                                  final PlayerOrderFeedback playerOrderFeedback) {
-        _userFeedback = userFeedback;
-        _game = tribblesGame;
-        _actionStack = actionStack;
-
-        _gameStats = new GameStats();
-
-        _gameProcess = new TribblesPlayerOrderProcess(decks, library, playerOrderFeedback);
+        super(tribblesGame, tribblesGame.getPlayers(), userFeedback, actionsEnvironment, playerOrderFeedback);
+        _decks = decks;
+        _library = library;
     }
 
-    public GameStats getGameStats() {
-        return _gameStats;
+    @Override
+    protected GameProcess setFirstGameProcess(TribblesGame game, Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
+        return new TribblesPlayerOrderProcess(_decks, _library, playerOrderFeedback);
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
@@ -70,7 +64,7 @@ public class TribblesTurnProcedure {
                     }
                 } else {
                     Action action = _actionStack.peek();
-                    Effect effect = action.nextEffect(_game);
+                    Effect<DefaultGame> effect = action.nextEffect(_game);
                     if (effect == null) {
                         _actionStack.remove(_actionStack.lastIndexOf(action));
                     }
@@ -93,10 +87,10 @@ public class TribblesTurnProcedure {
     }
 
     private class PlayOutEffect extends SystemQueueAction {
-        private final Effect _effect;
+        private final Effect<DefaultGame> _effect;
         private boolean _initialized;
 
-        private PlayOutEffect(Effect effect) {
+        private PlayOutEffect(Effect<DefaultGame> effect) {
             _effect = effect;
         }
 
@@ -106,7 +100,7 @@ public class TribblesTurnProcedure {
         }
 
         @Override
-        public Effect nextEffect(DefaultGame game) {
+        public Effect<DefaultGame> nextEffect(DefaultGame game) {
             if (!_initialized) {
                 _initialized = true;
                 appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));

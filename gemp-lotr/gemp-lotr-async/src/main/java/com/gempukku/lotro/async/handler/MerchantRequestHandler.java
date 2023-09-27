@@ -6,7 +6,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.merchant.MerchantService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -27,7 +27,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
     private final SortAndFilterCards _sortAndFilterCards;
     private final MerchantService _merchantService;
     private final CardBlueprintLibrary _library;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
 
     private static final Logger _log = Logger.getLogger(MerchantRequestHandler.class);
 
@@ -38,7 +38,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
         _sortAndFilterCards = new SortAndFilterCards();
         _merchantService = extractObject(context, MerchantService.class);
         _library = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
 
     }
 

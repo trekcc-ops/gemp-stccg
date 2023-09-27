@@ -7,7 +7,7 @@ import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.game.SortAndFilterCards;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -17,11 +17,11 @@ public class DraftChoiceBuilder {
     public static final int HIGH_ENOUGH_PRIME_NUMBER = 9497;
     private final CollectionsManager _collectionsManager;
     private final CardBlueprintLibrary _cardLibrary;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final SortAndFilterCards _sortAndFilterCards;
 
     public DraftChoiceBuilder(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
-                              LotroFormatLibrary formatLibrary) {
+                              FormatLibrary formatLibrary) {
         _collectionsManager = collectionsManager;
         _cardLibrary = cardLibrary;
         _formatLibrary = formatLibrary;

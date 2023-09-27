@@ -2,7 +2,7 @@ package com.gempukku.lotro.league;
 
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 
 public class DefaultLeagueSeriesData implements LeagueSeriesData {
     private final LeaguePrizes _leaguePrizes;
@@ -11,10 +11,10 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     private final int _start;
     private final int _end;
     private final int _maxMatches;
-    private final LotroFormat _format;
+    private final GameFormat _format;
     private final CollectionType _collectionType;
 
-    public DefaultLeagueSeriesData(LeaguePrizes leaguePrizes, boolean limited, String name, int start, int end, int maxMatches, LotroFormat format, CollectionType collectionType) {
+    public DefaultLeagueSeriesData(LeaguePrizes leaguePrizes, boolean limited, String name, int start, int end, int maxMatches, GameFormat format, CollectionType collectionType) {
         _leaguePrizes = leaguePrizes;
         _limited = limited;
         _name = name;
@@ -51,7 +51,7 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     }
 
     @Override
-    public LotroFormat getFormat() {
+    public GameFormat getFormat() {
         return _format;
     }
 

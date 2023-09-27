@@ -25,27 +25,28 @@ import java.util.*;
 
 // Decision is also an Effect.
 public class TurnProcedure<AbstractGame extends DefaultGame> {
-    private final UserFeedback _userFeedback;
-    private final AbstractGame _game;
-    private final Stack<Action> _actionStack;
+    protected final UserFeedback _userFeedback;
+    protected final AbstractGame _game;
+    protected final Stack<Action> _actionStack;
     private GameProcess _gameProcess;
     private boolean _playedGameProcess;
-    private final GameStats _gameStats;
+    protected final GameStats _gameStats;
 
     public TurnProcedure(AbstractGame game, Set<String> players, final UserFeedback userFeedback,
-                         Stack<Action> actionStack, final PlayerOrderFeedback playerOrderFeedback) {
+                         DefaultActionsEnvironment actionsEnvironment, final PlayerOrderFeedback playerOrderFeedback) {
         _userFeedback = userFeedback;
         _game = game;
-        _actionStack = actionStack;
+        _actionStack = actionsEnvironment.getActionStack();
 
         _gameStats = new GameStats();
-
-        _gameProcess = game.getFormat().getAdventure().getStartingGameProcess(players, playerOrderFeedback);
+        _gameProcess = setFirstGameProcess(game, players, playerOrderFeedback);
     }
 
-    public GameStats getGameStats() {
-        return _gameStats;
+    protected GameProcess setFirstGameProcess(AbstractGame game, Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
+        return game.getFormat().getAdventure().getStartingGameProcess(players, playerOrderFeedback);
     }
+
+    public GameStats getGameStats() { return _gameStats; }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
         while (_userFeedback.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null) {
@@ -89,10 +90,10 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
     }
 
     private class PlayOutEffect extends SystemQueueAction {
-        private final Effect _effect;
+        private final Effect<DefaultGame> _effect;
         private boolean _initialized;
 
-        private PlayOutEffect(Effect effect) {
+        private PlayOutEffect(Effect<DefaultGame> effect) {
             _effect = effect;
         }
 

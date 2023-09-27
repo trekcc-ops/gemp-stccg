@@ -10,7 +10,7 @@ import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.adventure.AdventureLibrary;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.hall.HallServer;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.merchant.MerchantService;
@@ -47,8 +47,8 @@ public class ServerBuilder {
         objectMap.put(AdventureLibrary.class,
                 new DefaultAdventureLibrary());
 
-        objectMap.put(LotroFormatLibrary.class,
-                new LotroFormatLibrary(
+        objectMap.put(FormatLibrary.class,
+                new FormatLibrary(
                         extract(objectMap, AdventureLibrary.class),
                         extract(objectMap, CardBlueprintLibrary.class)));
 
@@ -71,7 +71,7 @@ public class ServerBuilder {
                 new SoloDraftDefinitions(
                     extract(objectMap, CollectionsManager.class),
                     extract(objectMap, CardBlueprintLibrary.class),
-                    extract(objectMap, LotroFormatLibrary.class)
+                    extract(objectMap, FormatLibrary.class)
                 ));
 
         objectMap.put(LeagueService.class,
@@ -81,7 +81,7 @@ public class ServerBuilder {
                         extract(objectMap, LeagueParticipationDAO.class),
                         extract(objectMap, CollectionsManager.class),
                         extract(objectMap, CardBlueprintLibrary.class),
-                        extract(objectMap, LotroFormatLibrary.class),
+                        extract(objectMap, FormatLibrary.class),
                         extract(objectMap, SoloDraftDefinitions.class)));
 
         objectMap.put(AdminService.class,
@@ -130,7 +130,7 @@ public class ServerBuilder {
                         extract(objectMap, LeagueService.class),
                         extract(objectMap, TournamentService.class),
                         extract(objectMap, CardBlueprintLibrary.class),
-                        extract(objectMap, LotroFormatLibrary.class),
+                        extract(objectMap, FormatLibrary.class),
                         extract(objectMap, CollectionsManager.class),
                         extract(objectMap, AdminService.class),
                         tournamentPrizeSchemeRegistry,

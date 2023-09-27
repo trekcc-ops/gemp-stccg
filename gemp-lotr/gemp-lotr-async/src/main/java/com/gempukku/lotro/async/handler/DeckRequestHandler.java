@@ -9,7 +9,7 @@ import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.db.DeckDAO;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueDefinition;
 import com.gempukku.lotro.cards.LotroDeck;
 import io.netty.handler.codec.http.HttpMethod;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class DeckRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private final DeckDAO _deckDao;
     private final SortAndFilterCards _sortAndFilterCards;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final SoloDraftDefinitions _draftLibrary;
     private final LotroServer _lotroServer;
 
@@ -44,7 +44,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         super(context);
         _deckDao = extractObject(context, DeckDAO.class);
         _sortAndFilterCards = new SortAndFilterCards();
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
         _lotroServer = extractObject(context, LotroServer.class);
         _draftLibrary = extractObject(context, SoloDraftDefinitions.class);
     }
@@ -94,7 +94,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             {
                 JSONDefs.FullFormatReadout data = new JSONDefs.FullFormatReadout();
                 data.Formats = _formatLibrary.getAllFormats().values().stream()
-                        .map(LotroFormat::Serialize)
+                        .map(GameFormat::Serialize)
                         .collect(Collectors.toMap(x-> x.code, x-> x));
                 data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
                         .map(SealedLeagueDefinition::Serialize)
@@ -106,7 +106,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                 json = JSON.toJSONString(data);
             }
             else {
-                Map<String, LotroFormat> formats = _formatLibrary.getHallFormats();
+                Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
 
                 Object[] output = formats.entrySet().stream()
                         .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue().getName()))
@@ -152,7 +152,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             StringBuilder valid = new StringBuilder();
             StringBuilder invalid = new StringBuilder();
 
-            LotroFormat format = validateFormat(targetFormat);
+            GameFormat format = validateFormat(targetFormat);
             if(format == null || targetFormat == null)
             {
                 responseWriter.writeHtmlResponse("Invalid format: " + targetFormat);
@@ -235,7 +235,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-            LotroFormat validatedFormat = validateFormat(targetFormat);
+            GameFormat validatedFormat = validateFormat(targetFormat);
 
             LotroDeck lotroDeck = _lotroServer.createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
             if (lotroDeck == null)
@@ -397,21 +397,21 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        List<Map.Entry<LotroFormat, String>> decks = GetDeckNamesAndFormats(resourceOwner);
+        List<Map.Entry<GameFormat, String>> decks = GetDeckNamesAndFormats(resourceOwner);
         SortDecks(decks);
 
         Document doc = ConvertDeckNamesToXML(decks);
         responseWriter.writeXmlResponse(doc);
     }
 
-    private Document ConvertDeckNamesToXML(List<Map.Entry<LotroFormat, String>> deckNames)
+    private Document ConvertDeckNamesToXML(List<Map.Entry<GameFormat, String>> deckNames)
             throws ParserConfigurationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document doc = documentBuilder.newDocument();
         Element decksElem = doc.createElement("decks");
 
-        for (Map.Entry<LotroFormat, String> pair : deckNames) {
+        for (Map.Entry<GameFormat, String> pair : deckNames) {
             Element deckElem = doc.createElement("deck");
             deckElem.setTextContent(pair.getValue());
             deckElem.setAttribute("targetFormat", pair.getKey().getName());
@@ -421,7 +421,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         return doc;
     }
 
-    private List<Map.Entry<LotroFormat, String>> GetDeckNamesAndFormats(User player)
+    private List<Map.Entry<GameFormat, String>> GetDeckNamesAndFormats(User player)
     {
         Set<Map.Entry<String, String>> names = new HashSet(_deckDao.getPlayerDeckNames(player));
 
@@ -430,22 +430,22 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                 .collect(Collectors.toList());
     }
 
-    private void SortDecks(List<Map.Entry<LotroFormat, String>> decks)
+    private void SortDecks(List<Map.Entry<GameFormat, String>> decks)
     {
         decks.sort(Comparator.comparing((deck) -> {
-            LotroFormat format = deck.getKey();
+            GameFormat format = deck.getKey();
             return String.format("%02d", format.getOrder()) + format.getName() + deck.getValue();
         }));
     }
 
     private void listLibraryDecks(ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
-        List<Map.Entry<LotroFormat, String>> starterDecks = new ArrayList<>();
-        List<Map.Entry<LotroFormat, String>> championshipDecks = new ArrayList<>();
+        List<Map.Entry<GameFormat, String>> starterDecks = new ArrayList<>();
+        List<Map.Entry<GameFormat, String>> championshipDecks = new ArrayList<>();
 
-        List<Map.Entry<LotroFormat, String>> decks = GetDeckNamesAndFormats(getLibrarian());
+        List<Map.Entry<GameFormat, String>> decks = GetDeckNamesAndFormats(getLibrarian());
 
-        for (Map.Entry<LotroFormat, String> pair : decks) {
+        for (Map.Entry<GameFormat, String> pair : decks) {
 
             if (pair.getValue().contains("Starter"))
                 starterDecks.add(pair);
@@ -471,9 +471,9 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         return serializeDeck(deck);
     }
 
-    private LotroFormat validateFormat(String name)
+    private GameFormat validateFormat(String name)
     {
-        LotroFormat validatedFormat = _formatLibrary.getFormat(name);
+        GameFormat validatedFormat = _formatLibrary.getFormat(name);
         if(validatedFormat == null)
         {
             try {
@@ -499,7 +499,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         if (deck == null)
             return doc;
 
-        LotroFormat validatedFormat = validateFormat(deck.getTargetFormat());
+        GameFormat validatedFormat = validateFormat(deck.getTargetFormat());
 
         Element targetFormat = doc.createElement("targetFormat");
         targetFormat.setAttribute("formatName", validatedFormat.getName());

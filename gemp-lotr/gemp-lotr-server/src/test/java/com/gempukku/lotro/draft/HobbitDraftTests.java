@@ -5,7 +5,7 @@ import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.draft2.SoloDraft;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.cards.SetDefinition;
 import org.junit.Test;
 
@@ -18,9 +18,9 @@ public class HobbitDraftTests extends AbstractAtTest {
     public void HobbitDraftTest() {
         CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
         DefaultAdventureLibrary defaultAdventureLibrary = new DefaultAdventureLibrary();
-        LotroFormatLibrary lotroFormatLibrary = new LotroFormatLibrary(defaultAdventureLibrary, _cardLibrary);
+        FormatLibrary formatLibrary = new FormatLibrary(defaultAdventureLibrary, _cardLibrary);
 
-        SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, lotroFormatLibrary);
+        SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, formatLibrary);
 
         final SoloDraft hobbitDraft = soloDraftDefinitions.getSoloDraft("hobbit_draft");
 

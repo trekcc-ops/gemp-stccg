@@ -631,7 +631,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                     } else if (selectedCardElem.hasClass("cardInCollection")) {
                         var cardData = selectedCardElem.data("card");
                         this.selectionFunc(cardData.blueprintId, cardData.zone);
-                        cardData.tokens = {count:(parseInt(cardData.tokens["count"]) - 1)};
+                        cardData.tokens = {count:(parseInt(cardData.tokens["count"]) + 1)};
                         layoutTokens(selectedCardElem);
                     } else if (selectedCardElem.hasClass("packInCollection")) {
                         // if (confirm("Would you like to open this pack?")) {
@@ -763,7 +763,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         var ring = $(".card", this.ringDiv);
 
         var result = "";
-        if (ringBearer.length > 0)
+       if (ringBearer.length > 0)
             result += ringBearer.data("card").blueprintId;
         result += "|";
         if (ring.length > 0)
@@ -1045,7 +1045,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                         if (blueprintId == tempCardData.blueprintId)
                             countInDeck++;
                     });
-            card.tokens = {"count":count - countInDeck};
+            card.tokens = {"count":countInDeck};
             var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
             cardDiv.data("card", card);
             cardDiv.addClass("cardInCollection");

@@ -129,8 +129,8 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return cost;
     }
 
-    protected final Effect getNextEffect() {
-        final Effect effect = _effects.poll();
+    protected final Effect<DefaultGame> getNextEffect() {
+        final Effect<DefaultGame> effect = _effects.poll();
         if (effect != null)
             _processedEffects.add(effect);
         return effect;

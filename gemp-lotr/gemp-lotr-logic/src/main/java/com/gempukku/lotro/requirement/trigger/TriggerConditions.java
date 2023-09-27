@@ -9,6 +9,8 @@ import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.results.*;
 
+import java.util.Objects;
+
 public class TriggerConditions {
 
     public static boolean startOfPhase(DefaultGame game, EffectResult effectResult, Phase phase) {
@@ -27,6 +29,11 @@ public class TriggerConditions {
 
     public static boolean endOfTurn(EffectResult effectResult) {
         return effectResult.getType() == EffectResult.Type.END_OF_TURN;
+    }
+
+    public static boolean playerGoesOut(EffectResult effectResult, String playerId) {
+        return (effectResult.getType() == EffectResult.Type.PLAYER_WENT_OUT &&
+                Objects.equals(effectResult.getPlayer(), playerId));
     }
 
     public static boolean reconciles(EffectResult effectResult, String playerId) {

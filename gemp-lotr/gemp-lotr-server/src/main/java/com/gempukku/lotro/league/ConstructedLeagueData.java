@@ -7,9 +7,9 @@ import com.gempukku.lotro.competitive.PlayerStanding;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.draft2.SoloDraft;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ConstructedLeagueData implements LeagueData {
     // serie1 format, serie1 prize pool,
     // serie2 format, serie2 prize pool,
     // serie3 format, serie3 prize pool,
-    public ConstructedLeagueData(CardBlueprintLibrary library, LotroFormatLibrary formatLibrary, String parameters) {
+    public ConstructedLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
         
         String[] params = parameters.split(",");
@@ -35,7 +35,7 @@ public class ConstructedLeagueData implements LeagueData {
         int matchCount = Integer.parseInt(params[6]);
         int series = Integer.parseInt(params[7]);
         for (int i = 0; i < series; i++) {
-            LotroFormat format = formatLibrary.getFormat(params[8 + i * 2]);
+            GameFormat format = formatLibrary.getFormat(params[8 + i * 2]);
 
             DefaultLeagueSeriesData data = new DefaultLeagueSeriesData(_leaguePrizes, false, "Week " + (i + 1),
                     DateUtils.offsetDate(start, i * days), DateUtils.offsetDate(start, ((i + 1) * days) - 1),

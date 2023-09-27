@@ -10,10 +10,10 @@ import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.LotroServer;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.hall.*;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
@@ -38,7 +38,7 @@ import java.util.*;
 public class HallRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private static final Logger logger = Logger.getLogger(HallRequestHandler.class);
     private final CollectionsManager _collectionManager;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final HallServer _hallServer;
     private final LeagueService _leagueService;
     private final CardBlueprintLibrary _library;
@@ -49,7 +49,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
     public HallRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
         super(context);
         _collectionManager = extractObject(context, CollectionsManager.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
         _hallServer = extractObject(context, HallServer.class);
         _leagueService = extractObject(context, LeagueService.class);
         _library = extractObject(context, CardBlueprintLibrary.class);
@@ -288,57 +288,57 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
 
     private void getFormat(String format, ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
-        LotroFormat lotroFormat = _formatLibrary.getFormat(format);
-        appendFormat(result, lotroFormat);
+        GameFormat gameFormat = _formatLibrary.getFormat(format);
+        appendFormat(result, gameFormat);
 
         responseWriter.writeHtmlResponse(result.toString());
     }
 
     private void getFormats(ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
-        for (LotroFormat lotroFormat : _formatLibrary.getHallFormats().values()) {
-            appendFormat(result, lotroFormat);
+        for (GameFormat gameFormat : _formatLibrary.getHallFormats().values()) {
+            appendFormat(result, gameFormat);
         }
 
         responseWriter.writeHtmlResponse(result.toString());
     }
 
-    private void appendFormat(StringBuilder result, LotroFormat lotroFormat) throws CardNotFoundException {
-        result.append("<b>").append(lotroFormat.getName()).append("</b>");
+    private void appendFormat(StringBuilder result, GameFormat gameFormat) throws CardNotFoundException {
+        result.append("<b>").append(gameFormat.getName()).append("</b>");
         result.append("<ul>");
         result.append("<li>valid sets: ");
-        for (Integer integer : lotroFormat.getValidSets())
+        for (Integer integer : gameFormat.getValidSets())
             result.append(integer).append(", ");
         result.append("</li>");
-        result.append("<li>sites from block: ").append(lotroFormat.getSiteBlock().getHumanReadable()).append("</li>");
+        result.append("<li>sites from block: ").append(gameFormat.getSiteBlock().getHumanReadable()).append("</li>");
         result.append("<li>Ring-bearer skirmish can be cancelled: ");
-        result.append(lotroFormat.canCancelRingBearerSkirmish() ? "yes" : "no").append("</li>");
-        if (lotroFormat.getBannedCards().size() > 0) {
+        result.append(gameFormat.canCancelRingBearerSkirmish() ? "yes" : "no").append("</li>");
+        if (gameFormat.getBannedCards().size() > 0) {
             result.append("<li>X-listed (can't be played): ");
-            appendCards(result, lotroFormat.getBannedCards());
+            appendCards(result, gameFormat.getBannedCards());
             result.append("</li>");
         }
-        if (lotroFormat.getRestrictedCards().size() > 0) {
+        if (gameFormat.getRestrictedCards().size() > 0) {
             result.append("<li>R-listed (can play just one copy): ");
-            appendCards(result, lotroFormat.getRestrictedCards());
+            appendCards(result, gameFormat.getRestrictedCards());
             result.append("</li>");
         }
-        if (lotroFormat.getLimit2Cards().size() > 0) {
+        if (gameFormat.getLimit2Cards().size() > 0) {
             result.append("<li>Limited to 2 in deck: ");
-            List<String> limit2Cards = lotroFormat.getLimit2Cards();
+            List<String> limit2Cards = gameFormat.getLimit2Cards();
             appendCards(result, limit2Cards);
             result.append("</li>");
         }
-        if (lotroFormat.getLimit3Cards().size() > 0) {
+        if (gameFormat.getLimit3Cards().size() > 0) {
             result.append("<li>Limited to 3 in deck: ");
-            List<String> limit3Cards = lotroFormat.getLimit3Cards();
+            List<String> limit3Cards = gameFormat.getLimit3Cards();
             appendCards(result, limit3Cards);
             result.append("</li>");
         }
-        if (lotroFormat.getRestrictedCardNames().size() > 0) {
+        if (gameFormat.getRestrictedCardNames().size() > 0) {
             result.append("<li>Restricted by card name: ");
             boolean first = true;
-            for (String cardName : lotroFormat.getRestrictedCardNames()) {
+            for (String cardName : gameFormat.getRestrictedCardNames()) {
                 if (!first)
                     result.append(", ");
                 result.append(cardName);
@@ -346,14 +346,14 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
             }
             result.append("</li>");
         }
-        if (!lotroFormat.getErrataCardMap().isEmpty()) {
+        if (!gameFormat.getErrataCardMap().isEmpty()) {
             result.append("<li>Errata: ");
-            appendCards(result, new ArrayList<>(new LinkedHashSet<>(lotroFormat.getErrataCardMap().values())));
+            appendCards(result, new ArrayList<>(new LinkedHashSet<>(gameFormat.getErrataCardMap().values())));
             result.append("</li>");
         }
-        if (lotroFormat.getValidCards().size() > 0) {
+        if (gameFormat.getValidCards().size() > 0) {
             result.append("<li>Additional valid: ");
-            List<String> additionalValidCards = lotroFormat.getValidCards();
+            List<String> additionalValidCards = gameFormat.getValidCards();
             appendCards(result, additionalValidCards);
             result.append("</li>");
         }
@@ -396,7 +396,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
             hall.setAttribute("currency", String.valueOf(_collectionManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
 
             _hallServer.signupUserForHall(resourceOwner, new SerializeHallInfoVisitor(doc, hall));
-            for (Map.Entry<String, LotroFormat> format : _formatLibrary.getHallFormats().entrySet()) {
+            for (Map.Entry<String, GameFormat> format : _formatLibrary.getHallFormats().entrySet()) {
                 //playtest formats are opt-in
                 if (format.getKey().startsWith("test") && !player.getType().contains("p"))
                     continue;

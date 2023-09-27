@@ -139,7 +139,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                             if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
                                     modifier.isNonCardTextModifier() ||
                                     !hasTextRemoved(game, modifier.getSource())) {
-                                if (card == null || modifier.affectsCard(game, card))
+                                if ((card == null || modifier.affectsCard(game, card)) &&
+                                        (!foundCumulativeConflict(liveModifiers, modifier)))
                                     liveModifiers.add(modifier);
                             }
                         _skipSet.remove(modifier);
@@ -244,7 +245,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             for (Modifier modifier : modifiers) {
                 Condition condition = modifier.getCondition();
                 if (condition == null || condition.isFullfilled(game))
-                    if (affectsCardWithSkipSet(game, card, modifier))
+                    if (affectsCardWithSkipSet(game, card, modifier) && (!foundCumulativeConflict(result, modifier)))
                         result.add(modifier);
             }
         }
@@ -303,7 +304,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     public boolean hasKeyword(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
         LoggingThreadLocal.logMethodStart();
         try {
-            if (isCandidateForKeywordRemovalWithTextRemoval(game, physicalCard, keyword) &&
+            if (isCandidateForKeywordRemovalWithTextRemoval(keyword) &&
                     (hasTextRemoved(game, physicalCard) || hasAllKeywordsRemoved(game, physicalCard)))
                 return false;
 
@@ -330,7 +331,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     public int getKeywordCount(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
         LoggingThreadLocal.logMethodStart();
         try {
-            if (isCandidateForKeywordRemovalWithTextRemoval(game, physicalCard, keyword)
+            if (isCandidateForKeywordRemovalWithTextRemoval(keyword)
                     && (hasTextRemoved(game, physicalCard) || hasAllKeywordsRemoved(game, physicalCard)))
                 return 0;
 
@@ -350,12 +351,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         }
     }
 
-    private boolean isCandidateForKeywordRemovalWithTextRemoval(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
-        if (keyword == Keyword.ROAMING)
-            return false;
-        if (keyword == Keyword.RING_BOUND)
-            return game.getGameState().getRingBearer(physicalCard.getOwner()) != physicalCard;
-        return true;
+    private boolean isCandidateForKeywordRemovalWithTextRemoval(Keyword keyword) {
+        return keyword != Keyword.ROAMING;
     }
 
     private boolean appliesKeywordModifier(DefaultGame game, LotroPhysicalCard affecting, LotroPhysicalCard modifierSource, Keyword keyword) {
@@ -459,9 +456,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getResistance();
-            // Companions resistance is reduced by the number of burdens
-            if (physicalCard.getBlueprint().getCardType() == CardType.COMPANION)
-                result -= game.getGameState().getBurdens();
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.RESISTANCE_MODIFIER, physicalCard)) {
                 result += modifier.getResistanceModifier(game, physicalCard);
             }
@@ -1094,4 +1088,26 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
             removeModifier(_modifier);
         }
     }
+
+    private boolean foundCumulativeConflict(Collection<Modifier> modifierList, Modifier modifier) {
+        // If modifier is not cumulative, then check if modifiers from another copy
+        // card of same title is already in the list
+        if (!modifier.isCumulative() && modifier.getSource() != null) {
+
+            ModifierEffect modifierEffect = modifier.getModifierEffect();
+            String cardTitle = modifier.getSource().getTitle();
+            String forPlayer = modifier.getForPlayer();
+
+            for (Modifier liveModifier : modifierList) {
+                if (liveModifier.getModifierEffect() == modifierEffect
+                        && liveModifier.getSource() != null
+                        && liveModifier.getSource().getTitle().equals(cardTitle)
+                        && liveModifier.isForPlayer(forPlayer)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

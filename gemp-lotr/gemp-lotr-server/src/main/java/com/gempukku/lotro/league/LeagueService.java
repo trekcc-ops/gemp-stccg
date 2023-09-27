@@ -14,7 +14,7 @@ import com.gempukku.lotro.db.vo.LeagueMatchResult;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LeagueService {
     private final LeagueDAO _leagueDao;
     private final CardBlueprintLibrary _cardLibrary;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
 
     // Cached on this layer
     private final CachedLeagueMatchDAO _leagueMatchDao;
@@ -41,7 +41,7 @@ public class LeagueService {
 
     public LeagueService(LeagueDAO leagueDao, LeagueMatchDAO leagueMatchDao,
                          LeagueParticipationDAO leagueParticipationDAO, CollectionsManager collectionsManager,
-                         CardBlueprintLibrary library, LotroFormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
+                         CardBlueprintLibrary library, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
         _leagueDao = leagueDao;
         _cardLibrary = library;
         _formatLibrary = formatLibrary;

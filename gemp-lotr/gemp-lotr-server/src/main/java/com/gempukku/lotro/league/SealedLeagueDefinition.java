@@ -2,7 +2,7 @@ package com.gempukku.lotro.league;
 
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 public class SealedLeagueDefinition {
     private final String _name;
     private final String _id;
-    private final LotroFormat _format;
+    private final GameFormat _format;
     private final List<List<CardCollection.Item>> _seriesProduct = new ArrayList<>();
 
-    public SealedLeagueDefinition(String name, String id, LotroFormat format, List<List<String>> product) {
+    public SealedLeagueDefinition(String name, String id, GameFormat format, List<List<String>> product) {
         _name = name;
         _id = id;
         _format = format;
@@ -35,7 +35,7 @@ public class SealedLeagueDefinition {
 
     public String GetName() { return _name; }
     public String GetID() { return _id; }
-    public LotroFormat GetFormat() { return _format; }
+    public GameFormat GetFormat() { return _format; }
     public List<List<CardCollection.Item>> GetAllSeriesProducts() { return Collections.unmodifiableList(_seriesProduct); }
     public List<CardCollection.Item> GetProductForSerie(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
 

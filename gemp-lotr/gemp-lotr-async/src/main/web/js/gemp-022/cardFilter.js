@@ -44,6 +44,7 @@ var CardFilter = Class.extend({
         $("#keyword").prop("disabled", !enable);
         $("#race").prop("disabled", !enable);
         $("#itemClass").prop("disabled", !enable);
+        $("#tribblePower").prop("disabled", !enable);
         $("#phase").prop("disabled", !enable);
     },
 
@@ -113,8 +114,9 @@ var CardFilter = Class.extend({
         
         this.fullFilterDiv = $("<div id='filter-inputs' style='display:flex;flex-wrap:wrap;'></div>");
         this.setSelect = $("<select id='setSelect' style='width: 130px; font-size: 80%;'>"
-            + "<option value='144,145,147,150,157,164,190,221'>All Tribbles Sets</option>"
+            + "<option value='144,145,146,147,150,157,164,190,221'>All Tribbles Sets</option>"
             + "<option disabled>----------</option>"
+            + "<option value='146'>Tribbles</option>"
             + "<option value='144'>More Tribbles, More Troubles</option>"
             + "<option value='145'>No Tribble at All</option>"
             + "<option value='147'>Virtual Promos [Tribbles]</option>"
@@ -202,8 +204,8 @@ var CardFilter = Class.extend({
             + "<option value='strength,name'>Strength</option>"
             + "<option value='vitality,name'>Vitality</option>"
             + "<option value='cardType,name'>Card type</option>"
-            + "<option value='culture,name'>Culture</option>"
-            + "<option value='tribbleValue,name'>Tribble Value</option>"*/
+            + "<option value='culture,name'>Culture</option>"*/
+//            + "<option value='tribbleValue,name'>Tribble Value</option>"
             + "</select>");
         this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
             + "<option value=''>All Rarities</option>"
@@ -274,10 +276,11 @@ var CardFilter = Class.extend({
             + "<option value='MINION'>Minions</option>"
             + "<option value='POSSESSION'>Possessions</option>" */
             + "<option value='TRIBBLE'>Tribbles</option>"
+            + "<option value='TROUBLE'>Troubles</option>"
             + "</select>");
-        combos.append(" <select id='keyword' style='font-size: 80%;'>"
+/*        combos.append(" <select id='keyword' style='font-size: 80%;'>"
             + "<option value=''>No keyword filtering</option>"
-/*            + "<option value='ARCHER'>Archer</option>"
+            + "<option value='ARCHER'>Archer</option>"
             + "<option value='BATTLEGROUND'>Battleground</option>"
             + "<option value='BESIEGER'>Besieger</option>"
             + "<option value='CORSAIR'>Corsair</option>"
@@ -315,17 +318,21 @@ var CardFilter = Class.extend({
             + "<option value='WARG_RIDER'>Warg-rider</option>"
             + "<option value='WEATHER'>Weather</option>"
             //Additional Hobbit Draft keyword
-            + "<option value='WISE'>Wise</option>"*/
-            + "</select>");
-        combos.append(" <select id='type' style='font-size: 80%'>"
-            + "<option value=''>All types</option>"
-/*            + "<option value='pack'>Packs</option>"
+            + "<option value='WISE'>Wise</option>"
+            + "</select>");*/
+/*        combos.append(" <select id='type' style='font-size: 80%'>"
+            + "<option value=''>All physical card types</option>"
+            + "<option value='pack'>Packs</option>"
             + "<option value='card'>Cards</option>"
             + "<option value='foil'>Foils</option>"
             + "<option value='nonFoil'>Non-foils</option>"
-            + "<option value='tengwar'>Tengwar</option>"*/
+            + "<option value='tengwar'>Tengwar</option>"
+            + "</select>");*/
+        combos.append(" <select id='tribblePower' style='font-size: 80%'>"
+            + "<option value=''>All tribble powers</option>"
+            + "<option value='cheat'>Cheat</option>"
+            + "<option value='convert'>Convert</option>"
             + "</select>");
-
         combos.append(" <select id ='race' style='font-size: 80%'>"
             + "<option value=''>All races</option>"
             + "<option value='BALROG'>Balrog</option>"

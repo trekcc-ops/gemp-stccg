@@ -603,14 +603,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
     }
 
-    public void AddBurdens(int count) {
-        _game.getGameState().addBurdens(count);
-    }
-
-    public void RemoveBurdens(int count) {
-        _game.getGameState().removeBurdens(count);
-    }
-
     public int GetTwilight() { return _game.getGameState().getTwilightPool(); }
     public void SetTwilight(int amount) { _game.getGameState().setTwilight(amount); }
 
@@ -618,9 +610,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public int GetMoveCount() { return _game.getGameState().getMoveCount(); }
 
-    public PhysicalCardImpl GetRingBearer() { return (PhysicalCardImpl)_game.getGameState().getRingBearer(P1); }
-
-    public boolean RBWearingOneRing() { return _game.getGameState().isWearingRing(); }
     public PhysicalCardImpl GetCurrentSite() { return (PhysicalCardImpl)_game.getGameState().getCurrentSite(); }
 
     public void SkipToAssignments() throws DecisionResultInvalidException {

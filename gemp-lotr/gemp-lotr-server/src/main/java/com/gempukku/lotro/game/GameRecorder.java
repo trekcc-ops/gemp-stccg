@@ -45,7 +45,8 @@ public class GameRecorder {
     }
 
 
-    public GameRecordingInProgress recordGame(CardGameMediator lotroGame, LotroFormat format, final String tournamentName, final Map<String, CardDeck> decks) {
+    public GameRecordingInProgress recordGame(CardGameMediator<DefaultGame> lotroGame, GameFormat format,
+                                              final String tournamentName, final Map<String, CardDeck> decks) {
         final ZonedDateTime startDate = ZonedDateTime.now(ZoneOffset.UTC);
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();
         for (String playerId : lotroGame.getPlayersPlaying()) {

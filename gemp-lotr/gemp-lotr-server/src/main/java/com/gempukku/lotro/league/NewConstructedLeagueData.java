@@ -8,7 +8,7 @@ import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.draft2.SoloDraft;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class NewConstructedLeagueData implements LeagueData {
 
     private final int _maxRepeatGames;
 
-    public NewConstructedLeagueData(CardBlueprintLibrary library, LotroFormatLibrary formatLibrary, String parameters) {
+    public NewConstructedLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
         
         String[] params = parameters.split(",");

@@ -7,7 +7,7 @@ import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SealedLeagueDataTest extends AbstractAtTest {
 
-    private static final LotroFormatLibrary _formatLibrary = new LotroFormatLibrary(
+    private static final FormatLibrary _formatLibrary = new FormatLibrary(
             new DefaultAdventureLibrary(), _cardLibrary
     );
 

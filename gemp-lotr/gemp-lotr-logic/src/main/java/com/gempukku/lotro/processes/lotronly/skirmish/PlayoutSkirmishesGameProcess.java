@@ -64,7 +64,7 @@ public class PlayoutSkirmishesGameProcess implements GameProcess {
                         game.getGameState().removeAssignment(assignment);
                         assert assignment != null;
                         game.getActionsEnvironment().addActionToStack(
-                                new SkirmishPhaseAction(assignment.getFellowshipCharacter(), assignment.getShadowCharacters()));
+                                new SkirmishPhaseAction(assignment.getShadowCharacters()));
                     }
                 };
                 chooseNextSkirmish.setUseShortcut(false);

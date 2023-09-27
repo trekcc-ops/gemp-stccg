@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.Player;
 import com.gempukku.lotro.game.PlayerOrder;
 import com.gempukku.lotro.modifiers.ModifierFlag;
@@ -20,7 +20,7 @@ public class GameState {
     private static final Logger _log = Logger.getLogger(GameState.class);
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     private PlayerOrder _playerOrder;
-    private LotroFormat _format;
+    private GameFormat _format;
     protected final Map<String, Player> _players = new HashMap<>();
     private final Map<String, List<PhysicalCardImpl>> _adventureDecks = new HashMap<>();
     private final Map<String, List<PhysicalCardImpl>> _decks = new HashMap<>();
@@ -46,16 +46,12 @@ public class GameState {
     private boolean _fierceSkirmishes;
     private boolean _extraSkirmishes;
 
-    private boolean _wearingRing;
     private boolean _consecutiveAction;
 
     private final Map<String, Integer> _playerPosition = new HashMap<>();
     private final Map<String, Integer> _playerThreats = new HashMap<>();
 
     private final Map<LotroPhysicalCard, Map<Token, Integer>> _cardTokens = new HashMap<>();
-
-    private final Map<String, LotroPhysicalCard> _ringBearers = new HashMap<>();
-    private final Map<String, LotroPhysicalCard> _rings = new HashMap<>();
 
     private final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
 
@@ -71,7 +67,8 @@ public class GameState {
         return _nextCardId++;
     }
 
-    public void init(PlayerOrder playerOrder, String firstPlayer, Map<String, List<String>> cards, Map<String, String> ringBearers, Map<String, String> rings, CardBlueprintLibrary library, LotroFormat format) {
+    public void init(PlayerOrder playerOrder, String firstPlayer, Map<String, List<String>> cards,
+                     CardBlueprintLibrary library, GameFormat format) {
         _playerOrder = playerOrder;
         _currentPlayerId = firstPlayer;
         _format = format;
@@ -95,14 +92,6 @@ public class GameState {
             _stacked.put(playerId, new LinkedList<>());
 
             addPlayerCards(playerId, decks, library);
-            try {
-                _ringBearers.put(playerId, createPhysicalCardImpl(playerId, library, ringBearers.get(playerId)));
-                String ringBlueprintId = rings.get(playerId);
-                if (ringBlueprintId != null)
-                    _rings.put(playerId, createPhysicalCardImpl(playerId, library, ringBlueprintId));
-            } catch (CardNotFoundException exp) {
-                throw new RuntimeException("Unable to create game, due to either ring-bearer or ring being invalid cards");
-            }
         }
 
         for (String playerId : playerOrder.getAllPlayers()) {
@@ -149,7 +138,7 @@ public class GameState {
         _moving = moving;
     }
 
-    private void addPlayerCards(String playerId, List<String> cards, CardBlueprintLibrary library) {
+    void addPlayerCards(String playerId, List<String> cards, CardBlueprintLibrary library) {
         for (String blueprintId : cards) {
             try {
                 PhysicalCardImpl physicalCard = createPhysicalCardImpl(playerId, library, blueprintId);
@@ -189,14 +178,6 @@ public class GameState {
         _consecutiveAction = consecutiveAction;
     }
 
-    public void setWearingRing(boolean wearingRing) {
-        _wearingRing = wearingRing;
-    }
-
-    public boolean isWearingRing() {
-        return _wearingRing;
-    }
-
     public PlayerOrder getPlayerOrder() {
         return _playerOrder;
     }
@@ -210,7 +191,7 @@ public class GameState {
         _gameStateListeners.remove(gameStateListener);
     }
 
-    private Collection<GameStateListener> getAllGameStateListeners() {
+    Collection<GameStateListener> getAllGameStateListeners() {
         return Collections.unmodifiableSet(_gameStateListeners);
     }
 
@@ -381,16 +362,8 @@ public class GameState {
             listener.cardActivated(playerPerforming, card);
     }
 
-    public void setRingBearer(LotroPhysicalCard card) {
-        _ringBearers.put(card.getOwner(), card);
-    }
-
     public LotroPhysicalCard getRingBearer(String playerId) {
-        return _ringBearers.get(playerId);
-    }
-
-    public LotroPhysicalCard getRing(String playerId) {
-        return _rings.get(playerId);
+        return null;
     }
 
     public List<PhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
@@ -426,13 +399,6 @@ public class GameState {
             gameStateListener.finishSkirmish();
             gameStateListener.startSkirmish(_skirmish.getFellowshipCharacter(), _skirmish.getShadowCharacters());
         }
-    }
-
-    public void replaceInSkirmishMinion(LotroPhysicalCard card, LotroPhysicalCard removeMinion) {
-        removeFromSkirmish(removeMinion);
-        _skirmish.getShadowCharacters().add(card);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.addToSkirmish(card);
     }
 
     private void removeFromSkirmish(LotroPhysicalCard card, boolean notify) {
@@ -550,7 +516,7 @@ public class GameState {
         }
     }
 
-    private void assignNewCardId(LotroPhysicalCard card) {
+    void assignNewCardId(LotroPhysicalCard card) {
         _allCards.remove(card.getCardId());
         int newCardId = nextCardId();
         ((PhysicalCardImpl) card).setCardId(newCardId);
@@ -720,24 +686,12 @@ public class GameState {
         return getTokenCount(physicalCard, Token.WOUND);
     }
 
-    public void addBurdens(int burdens) {
-        addTokens(_ringBearers.get(getCurrentPlayerId()), Token.BURDEN, Math.max(0, burdens));
-    }
-
     public int getBurdens() {
-        return getTokenCount(_ringBearers.get(getCurrentPlayerId()), Token.BURDEN);
-    }
-
-    public int getPlayerThreats(String playerId) {
-        return _playerThreats.get(playerId);
+        return 0;
     }
 
     public int getThreats() {
         return _playerThreats.get(getCurrentPlayerId());
-    }
-
-    public void removeBurdens(int burdens) {
-        removeTokens(_ringBearers.get(getCurrentPlayerId()), Token.BURDEN, Math.max(0, burdens));
     }
 
     public void addWound(LotroPhysicalCard card) {
@@ -798,16 +752,8 @@ public class GameState {
         _extraSkirmishes = extraSkirmishes;
     }
 
-    public void setFierceSkirmishes(boolean value) {
-        _fierceSkirmishes = value;
-    }
-
     public boolean isFierceSkirmishes() {
         return _fierceSkirmishes;
-    }
-
-    public boolean isNormalSkirmishes() {
-        return !_fierceSkirmishes && !_extraSkirmishes;
     }
 
     public boolean isCardInPlayActive(LotroPhysicalCard card) {
@@ -858,13 +804,8 @@ public class GameState {
                 startAffectingInDiscard(game, discardedCard);
     }
 
-    private void startAffectingControlledSite(DefaultGame game, LotroPhysicalCard physicalCard) {
+    void startAffectingControlledSite(DefaultGame game, LotroPhysicalCard physicalCard) {
         ((PhysicalCardImpl) physicalCard).startAffectingGameControlledSite(game);
-    }
-
-    public void reapplyAffectingForCard(DefaultGame game, LotroPhysicalCard card) {
-        ((PhysicalCardImpl) card).stopAffectingGame();
-        ((PhysicalCardImpl) card).startAffectingGame(game);
     }
 
     public void stopAffectingCardsForCurrentPlayer() {
@@ -893,30 +834,30 @@ public class GameState {
         ((PhysicalCardImpl) physicalCard).stopAffectingGameControlledSite();
     }
 
-    private void startAffecting(DefaultGame game, LotroPhysicalCard card) {
+    void startAffecting(DefaultGame game, LotroPhysicalCard card) {
         ((PhysicalCardImpl) card).startAffectingGame(game);
     }
 
-    private void stopAffecting(LotroPhysicalCard card) {
+    void stopAffecting(LotroPhysicalCard card) {
         ((PhysicalCardImpl) card).stopAffectingGame();
     }
 
-    private void startAffectingStacked(DefaultGame game, LotroPhysicalCard card) {
+    void startAffectingStacked(DefaultGame game, LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
             ((PhysicalCardImpl) card).startAffectingGameStacked(game);
     }
 
-    private void stopAffectingStacked(LotroPhysicalCard card) {
+    void stopAffectingStacked(LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
             ((PhysicalCardImpl) card).stopAffectingGameStacked();
     }
 
-    private void startAffectingInDiscard(DefaultGame game, LotroPhysicalCard card) {
+    void startAffectingInDiscard(DefaultGame game, LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
             ((PhysicalCardImpl) card).startAffectingGameInDiscard(game);
     }
 
-    private void stopAffectingInDiscard(LotroPhysicalCard card) {
+    void stopAffectingInDiscard(LotroPhysicalCard card) {
         if (isCardAffectingGame(card))
             ((PhysicalCardImpl) card).stopAffectingGameInDiscard();
     }
@@ -1011,18 +952,6 @@ public class GameState {
             if (assignment.getFellowshipCharacter() == fp)
                 return assignment;
         return null;
-    }
-
-    public void startSkirmish(LotroPhysicalCard fellowshipCharacter, Set<LotroPhysicalCard> shadowCharacters) {
-        _skirmish = new Skirmish(fellowshipCharacter, new HashSet<>(shadowCharacters));
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.startSkirmish(_skirmish.getFellowshipCharacter(), _skirmish.getShadowCharacters());
-    }
-
-    public void restartSkirmish(Skirmish skirmish) {
-        _skirmish = skirmish;
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.startSkirmish(_skirmish.getFellowshipCharacter(), _skirmish.getShadowCharacters());
     }
 
     public Skirmish getSkirmish() {

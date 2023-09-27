@@ -5,7 +5,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.common.AppConfig;
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.adventure.AdventureLibrary;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.league.SealedLeagueDefinition;
 import com.gempukku.util.JsonUtils;
 import org.hjson.JsonValue;
@@ -16,9 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-public class LotroFormatLibrary {
-    private final Map<String, LotroFormat> _allFormats = new HashMap<>();
-    private final Map<String, LotroFormat> _hallFormats = new LinkedHashMap<>();
+public class FormatLibrary {
+    private final Map<String, GameFormat> _allFormats = new HashMap<>();
+    private final Map<String, GameFormat> _hallFormats = new LinkedHashMap<>();
 
     private final Map<String, SealedLeagueDefinition> _sealedTemplates = new LinkedHashMap<>();
 
@@ -30,11 +30,12 @@ public class LotroFormatLibrary {
 
     private final Semaphore collectionReady = new Semaphore(1);
 
-    public LotroFormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary) {
+    public FormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary) {
         this(adventureLibrary, bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
     }
 
-    public LotroFormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary, File formatPath, File sealedPath) {
+    public FormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary, File formatPath,
+                         File sealedPath) {
         _adventureLibrary = adventureLibrary;
         _cardLibrary = bpLibrary;
         _formatPath = formatPath;
@@ -116,7 +117,7 @@ public class LotroFormatLibrary {
                 if (def == null)
                     continue;
 
-                DefaultLotroFormat format = new DefaultLotroFormat(_adventureLibrary, _cardLibrary, def);
+                DefaultGameFormat format = new DefaultGameFormat(_adventureLibrary, _cardLibrary, def);
 
                 _allFormats.put(format.getCode(), format);
                 if (format.hallVisible()) {
@@ -130,7 +131,7 @@ public class LotroFormatLibrary {
         }
     }
 
-    public Map<String, LotroFormat> getHallFormats() {
+    public Map<String, GameFormat> getHallFormats() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_hallFormats);
@@ -142,7 +143,7 @@ public class LotroFormatLibrary {
         }
     }
 
-    public Map<String, LotroFormat> getAllFormats() {
+    public Map<String, GameFormat> getAllFormats() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_allFormats);
@@ -154,7 +155,7 @@ public class LotroFormatLibrary {
         }
     }
 
-    public LotroFormat getFormat(String formatCode) {
+    public GameFormat getFormat(String formatCode) {
         try {
             collectionReady.acquire();
             var data = _allFormats.get(formatCode);
@@ -166,7 +167,7 @@ public class LotroFormatLibrary {
         }
     }
 
-    public LotroFormat getFormatByName(String formatName) {
+    public GameFormat getFormatByName(String formatName) {
         try {
             collectionReady.acquire();
             var data = _allFormats.values().stream()

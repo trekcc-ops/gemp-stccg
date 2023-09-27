@@ -14,12 +14,11 @@ import com.gempukku.lotro.results.StartOfPhaseResult;
 import java.util.Set;
 
 public class SkirmishPhaseAction extends SystemQueueAction {
-    public SkirmishPhaseAction(final LotroPhysicalCard fellowshipCharacter, final Set<LotroPhysicalCard> shadowCharacters) {
+    public SkirmishPhaseAction(final Set<LotroPhysicalCard> shadowCharacters) {
         appendEffect(
                 new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect(DefaultGame game) {
-                        game.getGameState().startSkirmish(fellowshipCharacter, shadowCharacters);
                         game.getGameState().setCurrentPhase(Phase.SKIRMISH);
                     }
                 });

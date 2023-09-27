@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.cards.SetDefinition;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.util.MultipleComparator;
@@ -13,7 +13,7 @@ import java.text.Normalizer;
 import java.util.*;
 
 public class SortAndFilterCards {
-    public <T extends CardItem> List<T> process(String filter, Iterable<T> items, CardBlueprintLibrary cardLibrary, LotroFormatLibrary formatLibrary) {
+    public <T extends CardItem> List<T> process(String filter, Iterable<T> items, CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary) {
         if (filter == null)
             filter = "";
         String[] filterParams = filter.split(" ");
@@ -82,7 +82,7 @@ public class SortAndFilterCards {
     }
 
     private boolean acceptsFilters(
-            CardBlueprintLibrary library, Map<String, LotroCardBlueprint> cardBlueprint, LotroFormatLibrary formatLibrary, String blueprintId, Side side, String type, String[] rarity, String[] sets,
+            CardBlueprintLibrary library, Map<String, LotroCardBlueprint> cardBlueprint, FormatLibrary formatLibrary, String blueprintId, Side side, String type, String[] rarity, String[] sets,
             Set<CardType> cardTypes, Set<Culture> cultures, Set<Keyword> keywords, List<String> words, Integer siteNumber, Set<Race> races, Set<PossessionClass> itemClasses, Set<Keyword> phases) {
         if (isPack(blueprintId)) {
             return type == null || type.equals("pack");
@@ -161,9 +161,9 @@ public class SortAndFilterCards {
         return true;
     }
 
-    private boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library, LotroFormatLibrary formatLibrary, Map<String, LotroCardBlueprint> cardBlueprint) {
+    private boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library, FormatLibrary formatLibrary, Map<String, LotroCardBlueprint> cardBlueprint) {
         for (String set : sets) {
-            LotroFormat format = formatLibrary.getFormat(set);
+            GameFormat format = formatLibrary.getFormat(set);
 
             if (format != null) {
                 String valid = format.validateCard(blueprintId);

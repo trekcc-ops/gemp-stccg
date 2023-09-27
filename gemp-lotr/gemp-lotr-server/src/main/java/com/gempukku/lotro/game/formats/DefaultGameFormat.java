@@ -13,12 +13,13 @@ import com.gempukku.lotro.cards.LotroDeck;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DefaultLotroFormat implements LotroFormat {
+public class DefaultGameFormat implements GameFormat {
 
     public static final String CardRemovedError = "Deck contains card removed from the set";
     private final Adventure _adventure;
     private final CardBlueprintLibrary _library;
     private final String _name;
+    private final String _game;
     private final String _code;
     private final int _order;
     private final boolean _hallVisible;
@@ -45,8 +46,8 @@ public class DefaultLotroFormat implements LotroFormat {
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
 
-    public DefaultLotroFormat(AdventureLibrary adventureLibrary, CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
-        this(library, adventureLibrary.getAdventure(def.adventure), def.name, def.code, def.order, def.surveyUrl, SitesBlock.valueOf(def.sites),
+    public DefaultGameFormat(AdventureLibrary adventureLibrary, CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
+        this(library, adventureLibrary.getAdventure(def.adventure), def.name, def.game, def.code, def.order, def.surveyUrl, SitesBlock.valueOf(def.sites),
                 def.validateShadowFPCount, def.minimumDeckSize, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall);
 
@@ -73,15 +74,16 @@ public class DefaultLotroFormat implements LotroFormat {
             def.errata.forEach(this::addCardErrata);
     }
 
-    public DefaultLotroFormat(CardBlueprintLibrary library,
-                              Adventure adventure, String name, String code, int order, String surveyUrl,
-                              SitesBlock siteBlock,
-                              boolean validateShadowFPCount, int minimumDeckSize, int maximumSameName, boolean mulliganRule,
-                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
-                              boolean winOnControlling5Sites, boolean playtest, boolean hallVisible) {
+    public DefaultGameFormat(CardBlueprintLibrary library,
+                             Adventure adventure, String name, String game, String code, int order, String surveyUrl,
+                             SitesBlock siteBlock,
+                             boolean validateShadowFPCount, int minimumDeckSize, int maximumSameName, boolean mulliganRule,
+                             boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
+                             boolean winOnControlling5Sites, boolean playtest, boolean hallVisible) {
         _adventure = adventure;
         _library = library;
         _name = name;
+        _game = game;
         _code = code;
         _order = order;
         _surveyUrl = surveyUrl;
@@ -113,6 +115,7 @@ public class DefaultLotroFormat implements LotroFormat {
     public String getName() {
         return _name;
     }
+    public String getGame() { return _game; }
     @Override
     public String getCode() {
         return _code;
@@ -589,6 +592,7 @@ public class DefaultLotroFormat implements LotroFormat {
         return new JSONDefs.Format() {{
             adventure = null;
             code = _code;
+            game = _game;
             name = _name;
             order = _order;
             surveyUrl = _surveyUrl;

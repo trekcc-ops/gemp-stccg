@@ -2,13 +2,13 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.rules.GameUtils;
+import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.results.PlayCardResult;
+import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collections;
 
-public class TribblesPlayCardEffect extends AbstractEffect {
+public class TribblesPlayCardEffect extends AbstractEffect<TribblesGame> {
     private final Zone _playedFrom;
     private final LotroPhysicalCard _cardPlayed;
     private final Zone _zone;
@@ -24,17 +24,17 @@ public class TribblesPlayCardEffect extends AbstractEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText(TribblesGame game) {
         return "Play " + GameUtils.getFullName(_cardPlayed);
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
+    public boolean isPlayableInFull(TribblesGame game) {
         return true;
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(DefaultGame game) {
+    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
         game.getGameState().removeCardsFromZone(_cardPlayed.getOwner(), Collections.singleton(_cardPlayed));
         game.getGameState().addCardToZone(game, _cardPlayed, _zone);
 

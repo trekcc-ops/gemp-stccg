@@ -21,29 +21,28 @@ import org.apache.log4j.Logger;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class CardGameMediator {
-    private static final Logger LOG = Logger.getLogger(CardGameMediator.class);
+public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
+    protected static final Logger LOG = Logger.getLogger(CardGameMediator.class);
+    protected final Map<String, GameCommunicationChannel> _communicationChannels = Collections.synchronizedMap(new HashMap<>());
+    protected final DefaultUserFeedback _userFeedback;
+    protected final Map<String, CardDeck> _playerDecks = new HashMap<>();
+    protected final Map<String, Integer> _playerClocks = new HashMap<>();
+    protected final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
+    protected final Set<String> _playersPlaying = new HashSet<>();
 
-    private final Map<String, GameCommunicationChannel> _communicationChannels = Collections.synchronizedMap(new HashMap<>());
-    private final DefaultUserFeedback _userFeedback;
-    private final TribblesGame _tribblesgame;
-    private final Map<String, Integer> _playerClocks = new HashMap<>();
-    private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
-    private final Set<String> _playersPlaying = new HashSet<>();
+    protected final String _gameId;
 
-    private final String _gameId;
+    protected final GameTimer _timeSettings;
+    protected final boolean _allowSpectators;
+    protected final boolean _showInGameHall;
 
-    private final GameTimer _timeSettings;
-    private final boolean _allowSpectators;
-    private final boolean _showInGameHall;
+    protected final ReentrantReadWriteLock _lock = new ReentrantReadWriteLock(true);
+    protected final ReentrantReadWriteLock.ReadLock _readLock = _lock.readLock();
+    protected final ReentrantReadWriteLock.WriteLock _writeLock = _lock.writeLock();
+    protected int _channelNextIndex = 0;
+    protected volatile boolean _destroyed;
 
-    private final ReentrantReadWriteLock _lock = new ReentrantReadWriteLock(true);
-    private final ReentrantReadWriteLock.ReadLock _readLock = _lock.readLock();
-    private final ReentrantReadWriteLock.WriteLock _writeLock = _lock.writeLock();
-    private int _channelNextIndex = 0;
-    private volatile boolean _destroyed;
-
-    public CardGameMediator(String gameId, LotroFormat lotroFormat, GameParticipant[] participants, CardBlueprintLibrary library,
+    public CardGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary library,
                             GameTimer gameTimer, boolean allowSpectators, boolean showInGameHall) {
         _gameId = gameId;
         _timeSettings = gameTimer;
@@ -52,7 +51,6 @@ public class CardGameMediator {
         if (participants.length < 1)
             throw new IllegalArgumentException("Game can't have less than one participant");
 
-        Map<String, CardDeck> _playerDecks = new HashMap<>();
         for (GameParticipant participant : participants) {
             String participantId = participant.getPlayerId();
             _playerDecks.put(participantId, participant.getDeck());
@@ -61,8 +59,6 @@ public class CardGameMediator {
         }
 
         _userFeedback = new DefaultUserFeedback();
-        _tribblesgame = new TribblesGame(lotroFormat, _playerDecks, _userFeedback, library);
-        _userFeedback.setGame(_tribblesgame);
     }
 
     public boolean isVisibleToUser(String username) {
@@ -81,7 +77,7 @@ public class CardGameMediator {
         return _gameId;
     }
 
-    public TribblesGame getGame() { return _tribblesgame; }
+    public abstract AbstractGame getGame();
 
     public boolean isAllowSpectators() {
         return _allowSpectators;
@@ -89,32 +85,32 @@ public class CardGameMediator {
 
     public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
         if (_playersPlaying.contains(playerId)) {
-            _tribblesgame.setPlayerAutoPassSettings(playerId, phases);
+            getGame().setPlayerAutoPassSettings(playerId, phases);
         }
     }
 
     public void sendMessageToPlayers(String message) {
-        _tribblesgame.getGameState().sendMessage(message);
+        getGame().getGameState().sendMessage(message);
     }
 
     public void addGameStateListener(String playerId, GameStateListener listener) {
-        _tribblesgame.addGameStateListener(playerId, listener);
+        getGame().addGameStateListener(playerId, listener);
     }
 
     public void removeGameStateListener(GameStateListener listener) {
-        _tribblesgame.removeGameStateListener(listener);
+        getGame().removeGameStateListener(listener);
     }
 
     public void addGameResultListener(GameResultListener listener) {
-        _tribblesgame.addGameResultListener(listener);
+        getGame().addGameResultListener(listener);
     }
 
     public void removeGameResultListener(GameResultListener listener) {
-        _tribblesgame.removeGameResultListener(listener);
+        getGame().removeGameResultListener(listener);
     }
 
     public String getWinner() {
-        return _tribblesgame.getWinnerPlayerId();
+        return getGame().getWinnerPlayerId();
     }
 
     public List<String> getPlayersPlaying() {
@@ -122,24 +118,24 @@ public class CardGameMediator {
     }
 
     public String getGameStatus() {
-        if (_tribblesgame.isCancelled())
+        if (getGame().isCancelled())
             return "Cancelled";
-        if (_tribblesgame.isFinished())
+        if (getGame().isFinished())
             return "Finished";
-        final Phase currentPhase = _tribblesgame.getGameState().getCurrentPhase();
+        final Phase currentPhase = getGame().getGameState().getCurrentPhase();
         if (currentPhase == Phase.PLAY_STARTING_FELLOWSHIP || currentPhase == Phase.PUT_RING_BEARER)
             return "Preparation";
         return "At sites: " + getPlayerPositions();
     }
 
     public boolean isFinished() {
-        return _tribblesgame.isFinished();
+        return getGame().isFinished();
     }
 
     public String produceCardInfo(User player, int cardId) {
         _readLock.lock();
         try {
-            LotroPhysicalCard card = _tribblesgame.getGameState().findCardById(cardId);
+            LotroPhysicalCard card = getGame().getGameState().findCardById(cardId);
             if (card == null || card.getZone() == null)
                 return null;
 
@@ -148,12 +144,12 @@ public class CardGameMediator {
 
                 if (card.getZone() == Zone.HAND)
                     sb.append("<b>Card is in hand - stats are only provisional</b><br><br>");
-                else if (Filters.filterActive(_tribblesgame, card).size() == 0)
+                else if (Filters.filterActive(getGame(), card).size() == 0)
                     sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");
 
                 sb.append("<b>Affecting card:</b>");
                 Collection<Modifier> modifiers =
-                        _tribblesgame.getModifiersQuerying().getModifiersAffecting(_tribblesgame, card);
+                        getGame().getModifiersQuerying().getModifiersAffecting(getGame(), card);
                 for (Modifier modifier : modifiers) {
                     String sourceText;
                     LotroPhysicalCard source = modifier.getSource();
@@ -163,7 +159,7 @@ public class CardGameMediator {
                         sourceText = "<i>System</i>";
                     }
                     sb.append("<br><b>").append(sourceText).append(":</b> ");
-                    sb.append(modifier.getText(_tribblesgame, card));
+                    sb.append(modifier.getText(getGame(), card));
                 }
                 if (modifiers.size() == 0)
                     sb.append("<br><i>nothing</i>");
@@ -171,7 +167,7 @@ public class CardGameMediator {
                 if (card.getZone().isInPlay() && card.getBlueprint().getCardType() == CardType.SITE)
                     sb.append("<br><b>Owner:</b> ").append(card.getOwner());
 
-                Map<Token, Integer> map = _tribblesgame.getGameState().getTokens(card);
+                Map<Token, Integer> map = getGame().getGameState().getTokens(card);
                 if (map != null && map.size() > 0) {
                     sb.append("<br><b>Tokens:</b>");
                     for (Map.Entry<Token, Integer> tokenIntegerEntry : map.entrySet()) {
@@ -180,7 +176,7 @@ public class CardGameMediator {
                     }
                 }
 
-                List<LotroPhysicalCard> stackedCards = _tribblesgame.getGameState().getStackedCards(card);
+                List<LotroPhysicalCard> stackedCards = getGame().getGameState().getStackedCards(card);
                 if (stackedCards != null && stackedCards.size() > 0) {
                     sb.append("<br><b>Stacked cards:</b>");
                     sb.append("<br>").append(GameUtils.getAppendedNames(stackedCards));
@@ -213,13 +209,13 @@ public class CardGameMediator {
                 for (Keyword keyword : Keyword.values()) {
                     if (keyword.isInfoDisplayable()) {
                         if (keyword.isMultiples()) {
-                            int count = _tribblesgame.getModifiersQuerying().getKeywordCount(
-                                    _tribblesgame, card, keyword
+                            int count = getGame().getModifiersQuerying().getKeywordCount(
+                                    getGame(), card, keyword
                             );
                             if (count > 0)
                                 keywords.append(keyword.getHumanReadable()).append(" +").append(count).append(", ");
                         } else {
-                            if (_tribblesgame.getModifiersQuerying().hasKeyword(_tribblesgame, card, keyword))
+                            if (getGame().getModifiersQuerying().hasKeyword(getGame(), card, keyword))
                                 keywords.append(keyword.getHumanReadable()).append(", ");
                         }
                     }
@@ -238,7 +234,7 @@ public class CardGameMediator {
     public void startGame() {
         _writeLock.lock();
         try {
-            _tribblesgame.startGame();
+            getGame().startGame();
             startClocksForUsersPendingDecision();
         } finally {
             _writeLock.unlock();
@@ -256,18 +252,18 @@ public class CardGameMediator {
                 // User can always reconnect and establish a new channel
                 GameCommunicationChannel channel = playerChannels.getValue();
                 if (currentTime > channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * 1000L) {
-                    _tribblesgame.removeGameStateListener(channel);
+                    getGame().removeGameStateListener(channel);
                     _communicationChannels.remove(playerId);
                 }
             }
 
-            if (_tribblesgame != null && _tribblesgame.getWinnerPlayerId() == null) {
+            if (getGame() != null && getGame().getWinnerPlayerId() == null) {
                 for (Map.Entry<String, Long> playerDecision : new HashMap<>(_decisionQuerySentTimes).entrySet()) {
                     String player = playerDecision.getKey();
                     long decisionSent = playerDecision.getValue();
                     if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * 1000L) {
                         addTimeSpentOnDecisionToUserClock(player);
-                        _tribblesgame.playerLost(player, "Player decision timed-out");
+                        getGame().playerLost(player, "Player decision timed-out");
                     }
                 }
 
@@ -275,7 +271,7 @@ public class CardGameMediator {
                     String player = playerClock.getKey();
                     if (_timeSettings.maxSecondsPerPlayer() - playerClock.getValue() - getCurrentUserPendingTime(player) < 0) {
                         addTimeSpentOnDecisionToUserClock(player);
-                        _tribblesgame.playerLost(player, "Player run out of time");
+                        getGame().playerLost(player, "Player run out of time");
                     }
                 }
             }
@@ -288,9 +284,9 @@ public class CardGameMediator {
         String playerId = player.getName();
         _writeLock.lock();
         try {
-            if (_tribblesgame.getWinnerPlayerId() == null && _playersPlaying.contains(playerId)) {
+            if (getGame().getWinnerPlayerId() == null && _playersPlaying.contains(playerId)) {
                 addTimeSpentOnDecisionToUserClock(playerId);
-                _tribblesgame.playerLost(playerId, "Concession");
+                getGame().playerLost(playerId, "Concession");
             }
         } finally {
             _writeLock.unlock();
@@ -298,13 +294,13 @@ public class CardGameMediator {
     }
 
     public void cancel(User player) {
-        _tribblesgame.getGameState().sendWarning(player.getName(), "You can't cancel this game");
+        getGame().getGameState().sendWarning(player.getName(), "You can't cancel this game");
 
         String playerId = player.getName();
         _writeLock.lock();
         try {
             if (_playersPlaying.contains(playerId))
-                _tribblesgame.requestCancel(playerId);
+                getGame().requestCancel(playerId);
         } finally {
             _writeLock.unlock();
         }
@@ -319,7 +315,7 @@ public class CardGameMediator {
                 if (communicationChannel.getChannelNumber() == channelNumber) {
                     AwaitingDecision awaitingDecision = _userFeedback.getAwaitingDecision(playerName);
                     if (awaitingDecision != null) {
-                        if (awaitingDecision.getAwaitingDecisionId() == decisionId && !_tribblesgame.isFinished()) {
+                        if (awaitingDecision.getAwaitingDecisionId() == decisionId && !getGame().isFinished()) {
                             try {
                                 _userFeedback.participantDecided(playerName);
                                 awaitingDecision.decisionMade(answer);
@@ -327,16 +323,16 @@ public class CardGameMediator {
                                 // Decision successfully made, add the time to user clock
                                 addTimeSpentOnDecisionToUserClock(playerName);
 
-                                _tribblesgame.carryOutPendingActionsUntilDecisionNeeded();
+                                getGame().carryOutPendingActionsUntilDecisionNeeded();
                                 startClocksForUsersPendingDecision();
 
                             } catch (DecisionResultInvalidException decisionResultInvalidException) {
                                 // Participant provided wrong answer - send a warning message, and ask again for the same decision
-                                _tribblesgame.getGameState().sendWarning(playerName, decisionResultInvalidException.getWarningMessage());
+                                getGame().getGameState().sendWarning(playerName, decisionResultInvalidException.getWarningMessage());
                                 _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
                             } catch (RuntimeException runtimeException) {
                                 LOG.error("Error processing game decision", runtimeException);
-                                _tribblesgame.cancelGame();
+                                getGame().cancelGame();
                             }
                         }
                     }
@@ -401,10 +397,10 @@ public class CardGameMediator {
             int number = _channelNextIndex;
             _channelNextIndex++;
 
-            GameCommunicationChannel participantCommunicationChannel = new GameCommunicationChannel(playerName, number, _tribblesgame.getFormat());
+            GameCommunicationChannel participantCommunicationChannel = new GameCommunicationChannel(playerName, number, getGame().getFormat());
             _communicationChannels.put(playerName, participantCommunicationChannel);
 
-            _tribblesgame.addGameStateListener(playerName, participantCommunicationChannel);
+            getGame().addGameStateListener(playerName, participantCommunicationChannel);
 
             visitor.visitChannelNumber(number);
 
@@ -455,7 +451,7 @@ public class CardGameMediator {
     public String getPlayerPositions() {
         StringBuilder stringBuilder = new StringBuilder();
         for (String player : _playersPlaying) {
-            stringBuilder.append(_tribblesgame.getGameState().getPlayerPosition(player)).append(", ");
+            stringBuilder.append(getGame().getGameState().getPlayerPosition(player)).append(", ");
         }
         if (stringBuilder.length() > 0)
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());

@@ -9,7 +9,7 @@ import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.db.vo.LeagueMatchResult;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.LeagueData;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class LeagueRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final LeagueService _leagueService;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final CardBlueprintLibrary _library;
 
     public LeagueRequestHandler(Map<Type, Object> context) {
@@ -40,7 +40,7 @@ public class LeagueRequestHandler extends LotroServerRequestHandler implements U
         _library = extractObject(context, CardBlueprintLibrary.class);
         _soloDraftDefinitions = extractObject(context, SoloDraftDefinitions.class);
         _leagueService = extractObject(context, LeagueService.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
     }
 
     @Override

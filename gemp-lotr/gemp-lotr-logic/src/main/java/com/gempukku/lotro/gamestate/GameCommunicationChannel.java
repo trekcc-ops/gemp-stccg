@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.AwaitingDecision;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.polling.LongPollableResource;
 import com.gempukku.polling.WaitingRequest;
 
@@ -19,9 +19,9 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     private final int _channelNumber;
     private volatile WaitingRequest _waitingRequest;
 
-    private final LotroFormat _format;
+    private final GameFormat _format;
 
-    public GameCommunicationChannel(String self, int channelNumber, LotroFormat format) {
+    public GameCommunicationChannel(String self, int channelNumber, GameFormat format) {
         _self = self;
         _channelNumber = channelNumber;
         _format = format;

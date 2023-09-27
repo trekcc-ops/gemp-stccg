@@ -8,7 +8,7 @@ import com.gempukku.lotro.cards.LotroDeck;
 import java.util.List;
 import java.util.Map;
 
-public interface LotroFormat {
+public interface GameFormat {
     boolean isOrderedSites();
 
     boolean canCancelRingBearerSkirmish();
@@ -26,6 +26,7 @@ public interface LotroFormat {
     boolean isPlaytest();
 
     String getName();
+    String getGame();
 
     String getCode();
     int getOrder();

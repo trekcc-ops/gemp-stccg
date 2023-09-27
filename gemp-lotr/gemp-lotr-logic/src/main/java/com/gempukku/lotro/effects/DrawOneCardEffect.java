@@ -4,7 +4,7 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.Preventable;
 import com.gempukku.lotro.results.DrawCardOrPutIntoHandResult;
 
-public class DrawOneCardEffect extends AbstractEffect implements Preventable {
+public class DrawOneCardEffect extends AbstractEffect<DefaultGame> implements Preventable {
     private final String _playerId;
     private boolean _prevented;
 

@@ -31,5 +31,5 @@ public interface Action {
 
     String getText(DefaultGame game);
 
-    Effect nextEffect(DefaultGame game);
+    Effect<DefaultGame> nextEffect(DefaultGame game);
 }

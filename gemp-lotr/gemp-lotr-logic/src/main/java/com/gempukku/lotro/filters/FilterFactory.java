@@ -64,8 +64,6 @@ public class FilterFactory {
         simpleFilters.put("mounted", (actionContext) -> Filters.mounted);
         simpleFilters.put("notassignedtoskirmish",
                 (actionContext) -> Filters.notAssignedToSkirmish);
-        simpleFilters.put("ringbearer", (actionContext) -> Filters.ringBearer);
-        simpleFilters.put("ring-bearer", (actionContext) -> Filters.ringBearer);
         simpleFilters.put("ringbound",
                 (actionContext) -> Filters.ringBoundCompanion);
         simpleFilters.put("ring-bound",

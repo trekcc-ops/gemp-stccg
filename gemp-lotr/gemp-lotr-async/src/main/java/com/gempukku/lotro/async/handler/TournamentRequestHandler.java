@@ -5,7 +5,7 @@ import com.gempukku.lotro.async.ResponseWriter;
 import com.gempukku.lotro.cards.LotroDeck;
 import com.gempukku.lotro.competitive.PlayerStanding;
 import com.gempukku.lotro.game.SortAndFilterCards;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.tournament.Tournament;
 import com.gempukku.lotro.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class TournamentRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private final TournamentService _tournamentService;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final SortAndFilterCards _sortAndFilterCards;
 
     private static final Logger _log = Logger.getLogger(TournamentRequestHandler.class);
@@ -33,7 +33,7 @@ public class TournamentRequestHandler extends LotroServerRequestHandler implemen
         super(context);
 
         _tournamentService = extractObject(context, TournamentService.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
         _sortAndFilterCards = new SortAndFilterCards();
     }
 

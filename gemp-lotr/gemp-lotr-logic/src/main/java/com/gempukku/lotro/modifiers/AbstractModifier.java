@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractModifier implements Modifier {
+    protected String _playerId;
     protected final LotroPhysicalCard _physicalCard;
     private final String _text;
     protected final Filter _affectFilter;
@@ -375,4 +376,15 @@ public abstract class AbstractModifier implements Modifier {
     public void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard card) {
 
     }
+
+    public String getForPlayer() {
+        return _playerId;
+    }
+
+    public boolean isForPlayer(String playerId) {
+        return _playerId == null || _playerId.equals(playerId);
+    }
+
+    public boolean isCumulative() { return true; }
+
 }

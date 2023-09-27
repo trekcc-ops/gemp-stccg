@@ -104,9 +104,20 @@ public class LotroServer extends AbstractServer {
             boolean spectate = (gameSettings.getLeague() != null) ||
                     (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
-            CardGameMediator cardGameMediator = new CardGameMediator(gameId, gameSettings.getLotroFormat(), participants, _CardBlueprintLibrary,
-                    gameSettings.getTimeSettings(),
-                    spectate, gameSettings.isHiddenGame());
+            CardGameMediator cardGameMediator;
+
+            if (Objects.equals(gameSettings.getLotroFormat().getGame(), "tribbles")) {
+                cardGameMediator = new TribblesGameMediator(gameId, gameSettings.getLotroFormat(), participants,
+                        _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+            } else if (Objects.equals(gameSettings.getLotroFormat().getGame(), "st1e")){
+                cardGameMediator = new ST1EGameMediator(gameId, gameSettings.getLotroFormat(), participants,
+                        _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+            } else if (Objects.equals(gameSettings.getLotroFormat().getGame(), "st2e")){
+                cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getLotroFormat(), participants,
+                        _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+            } else { // TODO: This error catch should happen when the format library is created
+                throw new RuntimeException("Format '" + gameSettings.getLotroFormat().getName() + "' does not belong to 1E, 2E, or Tribbles");
+            }
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override

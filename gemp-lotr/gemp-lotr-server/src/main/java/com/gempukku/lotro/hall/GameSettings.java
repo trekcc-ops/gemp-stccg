@@ -2,12 +2,12 @@ package com.gempukku.lotro.hall;
 
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
-import com.gempukku.lotro.game.LotroFormat;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.league.LeagueSeriesData;
 
 public class GameSettings {
     private final CollectionType collectionType;
-    private final LotroFormat lotroFormat;
+    private final GameFormat gameFormat;
     private final League league;
     private final LeagueSeriesData leagueSerie;
     private final boolean competitive;
@@ -17,11 +17,11 @@ public class GameSettings {
     private final String userDescription;
     private final boolean isInviteOnly;
 
-    public GameSettings(CollectionType collectionType, LotroFormat lotroFormat, League league, LeagueSeriesData leagueSerie,
+    public GameSettings(CollectionType collectionType, GameFormat gameFormat, League league, LeagueSeriesData leagueSerie,
                         boolean competitive, boolean privateGame, boolean isInviteOnly, boolean hiddenGame,
                         GameTimer timer, String description) {
         this.collectionType = collectionType;
-        this.lotroFormat = lotroFormat;
+        this.gameFormat = gameFormat;
         this.league = league;
         this.leagueSerie = leagueSerie;
         this.competitive = competitive;
@@ -36,8 +36,8 @@ public class GameSettings {
         return collectionType;
     }
 
-    public LotroFormat getLotroFormat() {
-        return lotroFormat;
+    public GameFormat getLotroFormat() {
+        return gameFormat;
     }
 
     public League getLeague() {

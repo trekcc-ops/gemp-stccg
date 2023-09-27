@@ -13,7 +13,7 @@ import com.gempukku.lotro.db.IgnoreDAO;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.rules.GameUtils;
@@ -43,7 +43,7 @@ public class HallServer extends AbstractServer {
     private final LeagueService _leagueService;
     private final TournamentService _tournamentService;
     private final CardBlueprintLibrary _library;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final CollectionsManager _collectionsManager;
     private final LotroServer _lotroServer;
     private final PairingMechanismRegistry _pairingMechanismRegistry;
@@ -72,7 +72,7 @@ public class HallServer extends AbstractServer {
     private static final Logger _log = Logger.getLogger(HallServer.class);
 
     public HallServer(IgnoreDAO ignoreDAO, LotroServer lotroServer, ChatServer chatServer, LeagueService leagueService, TournamentService tournamentService, CardBlueprintLibrary library,
-                      LotroFormatLibrary formatLibrary, CollectionsManager collectionsManager,
+                      FormatLibrary formatLibrary, CollectionsManager collectionsManager,
                       AdminService adminService,
                       TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry,
                       PairingMechanismRegistry pairingMechanismRegistry) {
@@ -355,7 +355,7 @@ public class HallServer extends AbstractServer {
         League league = null;
         LeagueSeriesData leagueSerie = null;
         CollectionType collectionType = _defaultCollectionType;
-        LotroFormat format = _formatLibrary.getHallFormats().get(formatSelection);
+        GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
         GameTimer gameTimer = GameTimer.ResolveTimer(timer);
 
         if (format == null) {
@@ -583,7 +583,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private LotroDeck validateUserAndDeck(LotroFormat format, User player, String deckName, CollectionType collectionType) throws HallException {
+    private LotroDeck validateUserAndDeck(GameFormat format, User player, String deckName, CollectionType collectionType) throws HallException {
         logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deckName);
         LotroDeck lotroDeck = _lotroServer.getParticipantDeck(player, deckName);
         if (lotroDeck == null) {
@@ -601,7 +601,7 @@ public class HallServer extends AbstractServer {
         return lotroDeck;
     }
 
-    private LotroDeck validateUserAndDeck(LotroFormat format, User player, CollectionType collectionType, LotroDeck lotroDeck) throws HallException, DeckInvalidException {
+    private LotroDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, LotroDeck lotroDeck) throws HallException, DeckInvalidException {
         logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + lotroDeck);
         String validation = format.validateDeckForHall(lotroDeck);
         if(validation == null || !validation.isEmpty())

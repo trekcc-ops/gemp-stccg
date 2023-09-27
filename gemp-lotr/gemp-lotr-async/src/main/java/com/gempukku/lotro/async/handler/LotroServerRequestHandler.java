@@ -15,7 +15,7 @@ import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.game.SortAndFilterCards;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;
@@ -242,7 +242,7 @@ public class LotroServerRequestHandler {
     }
     
     protected String listCards(String deckName, String filter, DefaultCardCollection deckCards, boolean countCards,
-                               SortAndFilterCards sortAndFilter, LotroFormatLibrary formatLibrary, boolean showToolTip)
+                               SortAndFilterCards sortAndFilter, FormatLibrary formatLibrary, boolean showToolTip)
             throws CardNotFoundException {
         StringBuilder sb = new StringBuilder();
         sb.append("<br/><b>").append(deckName).append(":</b><br/>");
@@ -260,7 +260,7 @@ public class LotroServerRequestHandler {
     }
     
     protected String getHTMLDeck(LotroDeck deck,boolean showToolTip, SortAndFilterCards sortAndFilter,
-                                 LotroFormatLibrary formatLibrary)
+                                 FormatLibrary formatLibrary)
             throws CardNotFoundException {
         
         StringBuilder result = new StringBuilder();

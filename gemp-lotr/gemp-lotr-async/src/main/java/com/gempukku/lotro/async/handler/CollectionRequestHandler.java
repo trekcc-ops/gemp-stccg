@@ -11,7 +11,7 @@ import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.game.formats.LotroFormatLibrary;
+import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.packs.ProductLibrary;
@@ -35,7 +35,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
     private final CollectionsManager _collectionsManager;
     private final ProductLibrary _productLibrary;
     private final CardBlueprintLibrary _library;
-    private final LotroFormatLibrary _formatLibrary;
+    private final FormatLibrary _formatLibrary;
     private final SortAndFilterCards _sortAndFilterCards;
     private final ImportCards _importCards;
 
@@ -47,7 +47,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
         _collectionsManager = extractObject(context, CollectionsManager.class);
         _productLibrary = extractObject(context, ProductLibrary.class);
         _library = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, LotroFormatLibrary.class);
+        _formatLibrary = extractObject(context, FormatLibrary.class);
         _sortAndFilterCards = new SortAndFilterCards();
         _importCards = new ImportCards();
     }

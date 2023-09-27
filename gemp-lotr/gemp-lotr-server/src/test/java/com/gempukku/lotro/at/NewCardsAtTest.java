@@ -435,7 +435,6 @@ public class NewCardsAtTest extends AbstractAtTest {
         _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, goBackToTheShadows, Zone.HAND);
         _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
-        _game.getGameState().removeBurdens(_game.getGameState().getBurdens());
 
         skipMulligans();
 
