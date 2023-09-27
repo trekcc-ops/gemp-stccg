@@ -50,9 +50,8 @@ public class AssignmentPhaseEffect extends AbstractEffect {
             LotroPhysicalCard fpChar = physicalCardListEntry.getKey();
             Set<LotroPhysicalCard> minions = physicalCardListEntry.getValue();
 
-            if (Filters.notAssignedToSkirmish.accepts(game, fpChar))
-                game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(fpChar, _playerId));
-            for (LotroPhysicalCard notAssignedMinion : Filters.filter(minions, game, Filters.notAssignedToSkirmish))
+            game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(fpChar, _playerId));
+            for (LotroPhysicalCard notAssignedMinion : Filters.filter(minions, game, Filters.any))
                 game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(notAssignedMinion, _playerId));
 
             game.getGameState().assignToSkirmishes(fpChar, minions);

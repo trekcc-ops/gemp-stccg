@@ -104,7 +104,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("reconcilehand", new ReconcileHand());
         effectAppenderProducers.put("removekeyword", new RemoveKeyword());
         effectAppenderProducers.put("removetext", new RemoveText());
-        effectAppenderProducers.put("replaceinassignment", new ReplaceInAssignment());
         effectAppenderProducers.put("resetwhileinzonedata", new ResetWhileInZoneData());
         effectAppenderProducers.put("shufflecardsfromplayintodrawdeck", new ShuffleCardsFromPlayIntoDrawDeck());
         effectAppenderProducers.put("stackcards", new StackCardsFromPlay());

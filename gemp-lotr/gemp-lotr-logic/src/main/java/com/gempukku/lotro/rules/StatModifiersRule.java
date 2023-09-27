@@ -2,7 +2,9 @@ package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
+import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.filters.Filters;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.modifiers.StrengthModifier;
 import com.gempukku.lotro.modifiers.lotronly.MinionSiteNumberModifier;
@@ -19,24 +21,30 @@ public class StatModifiersRule {
     public void applyRule() {
         modifiersLogic.addAlwaysOnModifier(
                 new StrengthModifier(null, Filters.and(Filters.inPlay, Filters.character, Filters.hasAttached(Filters.any)), null,
-                        (game, cardAffected) -> {
-                            int sum = 0;
-                            for (LotroPhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected)) {
-                                final int strength = attachedCard.getBlueprint().getStrength();
-                                if (strength <= 0 || modifiersLogic.appliesStrengthBonusModifier(game, attachedCard, cardAffected))
-                                    sum += strength;
-                            }
+                        new Evaluator() {
+                            @Override
+                            public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
+                                int sum = 0;
+                                for (LotroPhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected)) {
+                                    final int strength = attachedCard.getBlueprint().getStrength();
+                                    if (strength <= 0 || modifiersLogic.appliesStrengthBonusModifier(game, attachedCard, cardAffected))
+                                        sum += strength;
+                                }
 
-                            return sum;
+                                return sum;
+                            }
                         }, true));
         modifiersLogic.addAlwaysOnModifier(
                 new VitalityModifier(null, Filters.and(Filters.inPlay, Filters.character, Filters.hasAttached(Filters.any)),
-                        (game, cardAffected) -> {
-                            int sum = 0;
-                            for (LotroPhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected))
-                                sum += attachedCard.getBlueprint().getVitality();
+                        new Evaluator() {
+                            @Override
+                            public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
+                                int sum = 0;
+                                for (LotroPhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected))
+                                    sum += attachedCard.getBlueprint().getVitality();
 
-                            return sum;
+                                return sum;
+                            }
                         }, true));
         modifiersLogic.addAlwaysOnModifier(
                 new ResistanceModifier(null, Filters.and(Filters.inPlay, Filters.character, Filters.hasAttached(Filters.any)), null,

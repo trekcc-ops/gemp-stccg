@@ -2,6 +2,7 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.results.PlayCardResult;
 import com.gempukku.lotro.rules.GameUtils;
@@ -24,7 +25,7 @@ public class TribblesPlayCardEffect extends AbstractEffect<TribblesGame> {
     }
 
     @Override
-    public String getText(TribblesGame game) {
+    public String getText(DefaultGame game) {
         return "Play " + GameUtils.getFullName(_cardPlayed);
     }
 

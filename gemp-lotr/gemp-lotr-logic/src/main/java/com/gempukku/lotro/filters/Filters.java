@@ -6,7 +6,6 @@ import com.gempukku.lotro.cards.CompletePhysicalCardVisitor;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.PhysicalCardVisitor;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.assign.Assignment;
 import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
@@ -269,14 +268,13 @@ public class Filters {
                                 || game.getModifiersQuerying().isUnhastyCompanionAllowedToParticipateInSkirmishes(game, physicalCard)),
                 Filters.and(
                         CardType.MINION,
-                        Filters.notAssignedToSkirmish,
                         (Filter) (game, physicalCard) -> (!game.getGameState().isFierceSkirmishes()) || game.getModifiersQuerying().hasKeyword(game, physicalCard, Keyword.FIERCE)));
 
         return Filters.and(
                 assignableFilter,
                 (Filter) (game, physicalCard) -> {
                     if (!ignoreUnassigned) {
-                        boolean notAssignedToSkirmish = Filters.notAssignedToSkirmish.accepts(game, physicalCard);
+                        boolean notAssignedToSkirmish = true;
                         if (!notAssignedToSkirmish)
                             return false;
                     }
@@ -367,41 +365,6 @@ public class Filters {
     public static Filter canExert(final LotroPhysicalCard source, final int count) {
         return (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) > count
                 && game.getModifiersQuerying().canBeExerted(game, source, physicalCard);
-    }
-
-    public static final Filter canHeal =
-            (game, physicalCard) -> game.getGameState().getWounds(physicalCard) > 0 && game.getModifiersQuerying().canBeHealed(game, physicalCard);
-
-    public static final Filter notAssignedToSkirmish = (game, physicalCard) -> {
-        for (Assignment assignment : game.getGameState().getAssignments()) {
-            if (assignment.getFellowshipCharacter() == physicalCard
-                    || assignment.getShadowCharacters().contains(physicalCard))
-                return false;
-        }
-        Skirmish skirmish = game.getGameState().getSkirmish();
-        if (skirmish != null) {
-            return skirmish.getFellowshipCharacter() != physicalCard
-                    && !skirmish.getShadowCharacters().contains(physicalCard);
-        }
-        return true;
-    };
-
-    public static final Filter assignedToSkirmish = Filters.not(Filters.notAssignedToSkirmish);
-
-    public static Filter assignedToSkirmishAgainst(final Filterable... againstFilters) {
-        return Filters.or(Filters.assignedAgainst(againstFilters), Filters.inSkirmishAgainst(againstFilters));
-    }
-
-    public static Filter assignedAgainst(final Filterable... againstFilters) {
-        return (game, physicalCard) -> {
-            for (Assignment assignment : game.getGameState().getAssignments()) {
-                if (assignment.getFellowshipCharacter() == physicalCard)
-                    return Filters.filter(assignment.getShadowCharacters(), game, againstFilters).size() > 0;
-                else if (assignment.getShadowCharacters().contains(physicalCard) && assignment.getFellowshipCharacter() != null)
-                    return Filters.and(againstFilters).accepts(game, assignment.getFellowshipCharacter());
-            }
-            return false;
-        };
     }
 
     public static Filter playable(final DefaultGame game) {

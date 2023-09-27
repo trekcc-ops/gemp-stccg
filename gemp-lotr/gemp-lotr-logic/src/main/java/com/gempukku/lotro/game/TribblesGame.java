@@ -5,14 +5,18 @@ import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
-import com.gempukku.lotro.processes.TribblesTurnProcedure;
+import com.gempukku.lotro.processes.GameProcess;
+import com.gempukku.lotro.processes.TribblesPlayerOrderProcess;
+import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.tribbles.TribblesRuleSet;
 
 import java.util.Map;
+import java.util.Set;
 
 public class TribblesGame extends DefaultGame {
     private final TribblesGameState _gameState;
-    private final TribblesTurnProcedure _turnProcedure;
+    private final TurnProcedure<TribblesGame> _turnProcedure;
+//    private final TribblesTurnProcedure _turnProcedure;
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
@@ -20,15 +24,24 @@ public class TribblesGame extends DefaultGame {
 
         new TribblesRuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new TribblesGameState();
-        _turnProcedure = new TribblesTurnProcedure(this, decks, userFeedback, _library, _actionsEnvironment,
-                (playerOrder, firstPlayer) -> _gameState.init(playerOrder, firstPlayer, _cards, _library, _format));
+        _gameState = new TribblesGameState(_cards, library, _format);
+        _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
+                _gameState::init) {
+            @Override
+            protected GameProcess setFirstGameProcess(TribblesGame game, Set<String> players,
+                                                      PlayerOrderFeedback playerOrderFeedback) {
+                return new TribblesPlayerOrderProcess(decks, _library, playerOrderFeedback);
+            }
+        };
+/*        _turnProcedure = new TribblesTurnProcedure(this, decks, userFeedback, _library, _actionsEnvironment,
+                (playerOrder, firstPlayer) -> _gameState.init(playerOrder, firstPlayer, _cards, _library, _format));*/
     }
 
+    @Override
     public TribblesGameState getGameState() {
         return _gameState;
     }
-    public TribblesTurnProcedure getTurnProcedure() { return _turnProcedure; }
+    public TurnProcedure<TribblesGame> getTurnProcedure() { return _turnProcedure; }
     public boolean checkPlayRequirements(LotroPhysicalCard card) {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 

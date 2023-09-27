@@ -28,7 +28,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
     protected final UserFeedback _userFeedback;
     protected final AbstractGame _game;
     protected final Stack<Action> _actionStack;
-    private GameProcess _gameProcess;
+    protected GameProcess _gameProcess;
     private boolean _playedGameProcess;
     protected final GameStats _gameStats;
 
@@ -89,11 +89,11 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
     }
 
-    private class PlayOutEffect extends SystemQueueAction {
-        private final Effect<DefaultGame> _effect;
+    protected class PlayOutEffect extends SystemQueueAction {
+        private final Effect<AbstractGame> _effect;
         private boolean _initialized;
 
-        private PlayOutEffect(Effect<DefaultGame> effect) {
+        protected PlayOutEffect(Effect<AbstractGame> effect) {
             _effect = effect;
         }
 
@@ -115,7 +115,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
     }
 
-    private class PlayEffect extends UnrespondableEffect {
+    protected class PlayEffect extends UnrespondableEffect {
         private final Effect _effect;
 
         private PlayEffect(Effect effect) {
@@ -132,11 +132,11 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
     }
 
-    private class PlayOutEffectResults extends SystemQueueAction {
+    protected class PlayOutEffectResults extends SystemQueueAction {
         private final Set<EffectResult> _effectResults;
         private boolean _initialized;
 
-        private PlayOutEffectResults(Set<EffectResult> effectResults) {
+        protected PlayOutEffectResults(Set<EffectResult> effectResults) {
             _effectResults = effectResults;
         }
 
@@ -162,7 +162,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
 
     }
 
-    private class PlayoutRequiredBeforeResponsesEffect extends UnrespondableEffect {
+    protected class PlayoutRequiredBeforeResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
         private final Set<LotroPhysicalCard> _cardTriggersUsed;
         private final Effect _effect;
@@ -200,7 +200,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
     }
 
-    private class PlayoutOptionalBeforeResponsesEffect extends UnrespondableEffect {
+    protected class PlayoutOptionalBeforeResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
         private final Set<LotroPhysicalCard> _cardTriggersUsed;
         private final PlayOrder _playOrder;
@@ -254,7 +254,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
     }
 
-    private class PlayoutOptionalAfterResponsesEffect extends UnrespondableEffect {
+    protected class PlayoutOptionalAfterResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
         private final PlayOrder _playOrder;
         private final int _passCount;
@@ -305,7 +305,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
     }
 
-    private class PlayoutAllActionsIfEffectNotCancelledEffect extends UnrespondableEffect {
+    protected class PlayoutAllActionsIfEffectNotCancelledEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
         private final List<Action> _actions;
 

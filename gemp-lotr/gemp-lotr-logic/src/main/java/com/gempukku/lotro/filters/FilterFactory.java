@@ -62,8 +62,6 @@ public class FilterFactory {
         simpleFilters.put("inskirmish", (actionContext) -> Filters.inSkirmish);
         simpleFilters.put("item", (actionContext) -> Filters.item);
         simpleFilters.put("mounted", (actionContext) -> Filters.mounted);
-        simpleFilters.put("notassignedtoskirmish",
-                (actionContext) -> Filters.notAssignedToSkirmish);
         simpleFilters.put("ringbound",
                 (actionContext) -> Filters.ringBoundCompanion);
         simpleFilters.put("ring-bound",
@@ -106,19 +104,6 @@ public class FilterFactory {
 
                         return Filters.and(filters1);
                     };
-                });
-        parameterFilters.put("assignabletoskirmishagainst",
-                (parameter, environment) -> {
-                    final FilterableSource againstFilterableSource = environment.getFilterFactory().generateFilter(parameter, environment);
-                    return actionContext -> {
-                        final Side side = LotroGameUtils.getSide(actionContext.getGame(), actionContext.getPerformingPlayer());
-                        return Filters.assignableToSkirmishAgainst(side, againstFilterableSource.getFilterable(actionContext));
-                    };
-                });
-        parameterFilters.put("assignedtoskirmish",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter, environment);
-                    return (actionContext) -> Filters.assignedToSkirmishAgainst(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("attachedto",
                 (parameter, environment) -> {

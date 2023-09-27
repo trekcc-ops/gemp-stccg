@@ -1,6 +1,17 @@
 package com.gempukku.lotro.common;
 
 public enum Phase {
+    // Generic
+    BETWEEN_TURNS("Between turns", false, false),
+    // 1E
+    SEED_DOORWAY("Doorway seed phase", true, true),
+    SEED_MISSION("Mission seed phase", true, true),
+    SEED_DILEMMA("Dilemma seed phase", true, true),
+    SEED_FACILITY("Facility seed phase", true, true),
+    PLAY("Play phase", true, true),
+    // Tribbles
+    TRIBBLES_TURN("Tribbles turn", true, true),
+    // LotR
     PUT_RING_BEARER("Put Ring-bearer", false, false),
     PLAY_STARTING_FELLOWSHIP("Play starting fellowship", false, true),
     FELLOWSHIP("Fellowship", true, true),
@@ -9,9 +20,7 @@ public enum Phase {
     ARCHERY("Archery", true, true),
     ASSIGNMENT("Assignment", true, true),
     SKIRMISH("Skirmish", true, true),
-    REGROUP("Regroup", true, true),
-    TRIBBLES_TURN("Tribbles turn", true, true),
-    BETWEEN_TURNS("Between turns", false, false);
+    REGROUP("Regroup", true, true);
 
     private final String humanReadable;
     private final boolean realPhase;

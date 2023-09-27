@@ -20,7 +20,7 @@ public interface Effect<AbstractGame extends DefaultGame> {
      * @param game
      * @return
      */
-    String getText(AbstractGame game);
+    String getText(DefaultGame game);
 
     /**
      * Returns the type of the effect. This should list the type of effect it represents

@@ -26,7 +26,7 @@ public abstract class AbstractEffect<AbstractGame extends DefaultGame> implement
     }
 
     @Override
-    public String getText(AbstractGame game) {
+    public String getText(DefaultGame game) {
         return null;
     }
 

@@ -53,8 +53,8 @@ public abstract class DefaultGame {
             _cards.put(playerId, deck);
         }
 
-        format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
         _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
+        format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
     }
 
     public abstract GameState getGameState();
@@ -209,6 +209,5 @@ public abstract class DefaultGame {
             getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
     }
 
-
-
+    public CardBlueprintLibrary getCardBlueprintLibrary() { return _library; }
 }

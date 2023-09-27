@@ -46,10 +46,8 @@ public class AssignmentEffect extends AbstractEffect {
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
-            if (Filters.notAssignedToSkirmish.accepts(game, _fpChar))
-                game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(_fpChar, _playerId));
-            if (Filters.notAssignedToSkirmish.accepts(game, _minion))
-                game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(_minion, _playerId));
+            game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(_fpChar, _playerId));
+            game.getActionsEnvironment().emitEffectResult(new AssignedToSkirmishResult(_minion, _playerId));
 
             game.getGameState().sendMessage(_playerId + " assigns " + GameUtils.getCardLink(_minion) + " to skirmish " + GameUtils.getCardLink(_fpChar));
             game.getGameState().assignToSkirmishes(_fpChar, Collections.singleton(_minion));

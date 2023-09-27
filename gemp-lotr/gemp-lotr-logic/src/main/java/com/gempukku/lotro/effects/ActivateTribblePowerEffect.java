@@ -4,6 +4,7 @@ import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.TribblePower;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.results.ActivateTribblePowerResult;
 import com.gempukku.lotro.rules.GameUtils;
@@ -28,7 +29,7 @@ public class ActivateTribblePowerEffect extends AbstractEffect<TribblesGame> {
     }
 
     @Override
-    public String getText(TribblesGame game) {
+    public String getText(DefaultGame game) {
         return "Activated " + GameUtils.getCardLink(_source);
     }
 
