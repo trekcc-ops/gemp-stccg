@@ -501,7 +501,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             for (String card : deck.getSubDecks().get(subDeck)) {
                 Element cardElement = doc.createElement("card");
                 cardElement.setAttribute("blueprintId", card);
-                cardElement.setAttribute("subdeck", subDeck);
+                cardElement.setAttribute("subDeck", subDeck);
                 deckElem.appendChild(cardElement);
             }
         }

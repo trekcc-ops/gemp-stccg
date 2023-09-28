@@ -733,8 +733,8 @@ var GempLotrDeckBuildingUI = Class.extend({
             });
     },
 
-    addCardToContainer:function (blueprintId, subdeck, container, tokens) {
-        var card = new Card(blueprintId, subdeck, "deck", "player");
+    addCardToContainer:function (blueprintId, subDeck, container, tokens) {
+        var card = new Card(blueprintId, subDeck, "deck", "player");
         var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         cardDiv.data("card", card);
         container.append(cardDiv);
@@ -773,7 +773,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         }
     },
 
-    addCardToDeck:function (blueprintId, subdeck) {
+    addCardToDeck:function (blueprintId, subDeck) {
         var that = this;
         var added = false;
         $(".card.cardInDeck", this.drawDeckDiv).each(
@@ -786,7 +786,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                     }
                 });
         if (!added) {
-            var div = this.addCardToContainer(blueprintId, subdeck, this.drawDeckDiv, false)
+            var div = this.addCardToContainer(blueprintId, subDeck, this.drawDeckDiv, false)
             div.addClass("cardInDeck");
             div.draggable({
                 helper: "clone",
@@ -909,7 +909,7 @@ var GempLotrDeckBuildingUI = Class.extend({
 
             var cards = root.getElementsByTagName("card");
             for (var i = 0; i < cards.length; i++)
-                this.addCardToDeck(cards[i].getAttribute("blueprintId"), cards[i].getAttribute("subdeck"));
+                this.addCardToDeck(cards[i].getAttribute("blueprintId"), cards[i].getAttribute("subDeck"));
 
             this.layoutUI(false);
 
