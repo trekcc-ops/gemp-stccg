@@ -465,7 +465,7 @@ var Card = Class.extend({
 });
 
 function createCardDiv(image, text, foil, tokens, noBorder, errata) {
-    var cardDiv = $("<div class='card'><img src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
+    var cardDiv = $("<div class='card'><img class='card_img' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
 
     if (errata) {
         var errataDiv = $("<div class='errataOverlay'><img src='/gemp-lotr/images/errata-vertical.png' width='100%' height='100%'></div>");
@@ -507,8 +507,8 @@ function createFullCardDiv(image, foil, horizontal, noBorder) {
     var foilPresentation = getFoilPresentation();
 
     if (horizontal) {
-        var cardDiv = $("<div style='position: relative;width:497px;height:357px;'></div>");
-        cardDiv.append("<div style='position:absolute'><img src='" + image + "' width='497' height='357'></div>");
+        var cardDiv = $("<div class='fullCard' style='position: relative;width:497px;height:357px;'></div>");
+        cardDiv.append("<div style='position:absolute'><img class='card_img' src='" + image + "' width='497' height='357'></div>");
 
         if (noBorder) {
             var borderDiv = $("<div class='borderOverlay,noBorder' style='position:absolute;width:497px;height:357px;border-width:0px'><img class='actionArea' src='/gemp-lotr/images/pixel.png' width='100%' height='100%'></div>");

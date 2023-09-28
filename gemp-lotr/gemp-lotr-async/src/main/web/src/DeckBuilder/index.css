@@ -81,3 +81,15 @@
     z-index: 1000;
     outline: currentcolor none 0px;
 }
+
+.card {
+    border-radius: 3.5%;
+}
+
+.borderOverlay {
+    border-radius: 3.5%;
+}
+
+.card_img {
+    border-radius: 3.5%;
+}

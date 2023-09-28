@@ -1,47 +1,22 @@
 var GempLotrDeckBuildingUI = Class.extend({
     comm:null,
-
-    deckDiv:null,
-
-    manageDecksDiv:null,
-
-    collectionDiv:null,
-    formatSelect:null,
-    currentFormat:null,
     notes:null,
-
-    normalCollectionDiv:null,
-    normalCollectionGroup:null,
-
     selectionFunc:null,
-    drawDeckDiv:null,
-
-    drawDeckGroup:null,
-
     start:0,
     count:18,
     filter:null,
-
     deckName:null,
-
     filterDirty:false,
     deckValidationDirty:true,
     deckContentsDirty:true,
-
     checkDirtyInterval:500,
-
     deckListDialog:null,
     selectionDialog:null,
     selectionGroup:null,
     packSelectionId:null,
     deckImportDialog:null,
     notesDialog:null,
-
-    cardFilter:null,
-
     collectionType:null,
-
-    specialSelection:false,
 
     init:function () {
         var that = this;
@@ -50,9 +25,6 @@ var GempLotrDeckBuildingUI = Class.extend({
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
                 function (filter, start, count, callback) {
-                    if (!that.specialSelection) {
-                        filter = filter + " cardType:-THE_ONE_RING";
-                    }
                     that.comm.getCollection(that.collectionType, filter, start, count, function (xml) {
                         callback(xml);
                     }, {
@@ -71,11 +43,8 @@ var GempLotrDeckBuildingUI = Class.extend({
                     that.finishCollection();
                 });
         this.collectionType = "default";
-
         this.deckDiv = $("#deckDiv");
-
         this.manageDecksDiv = $("#manageDecks");
-        
         this.formatSelect = $("#formatSelect");
         $("#formatSelect").change(
                 function () {
@@ -83,21 +52,13 @@ var GempLotrDeckBuildingUI = Class.extend({
                 });
 
         var collectionSelect = $("#collectionSelect");
-
         var newDeckBut = $("#newDeckBut").button();
-
         var saveDeckBut = $("#saveDeckBut").button();
-
         var renameDeckBut = $("#renameDeckBut").button();
-
         var copyDeckBut = $("#copyDeckBut").button();
-        
         var importDeckBut = $("#importDeckBut").button();
-        
         var libraryListBut = $("#libraryListBut").button();
-
         var deckListBut = $("#deckListBut").button();
-        
         var notesBut = $("#notesBut").button();
 
         this.deckNameSpan = ("#editingDeck");
@@ -198,7 +159,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         });
         this.drawDeckGroup.maxCardHeight = 200;
 
-        this.bottomBarDiv = $("#statsDiv");
+        this.statsDiv = $("#statsDiv");
 
         this.selectionFunc = this.addCardToDeckAndLayout;
 
@@ -804,7 +765,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         if (deckContents != null && deckContents != "") 
         {
             this.comm.getDeckStats(deckContents, 
-                   $("#formatSelect").val(),
+                   that.formatSelect.val(),
                     function (html) 
                     {
                         $("#deckStats").html(html);
@@ -822,7 +783,7 @@ var GempLotrDeckBuildingUI = Class.extend({
     
     updateFormatOptions:function() {
         var that = this;
-        var currentFormat = $("#formatSelect").val();
+        var currentFormat = that.formatSelect.val();
         
         this.comm.getFormats(false,
             function (json) 
@@ -998,7 +959,7 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
             this.drawDeckDiv.css({ position:"absolute", left:padding, top:manageHeight + 2 * padding, width:deckWidth - padding, height:deckHeight - 2 * padding - 50 });
             this.drawDeckGroup.setBounds(0, 0, deckWidth - padding, (deckHeight - 2 * padding - 50));
             this.cardFilter.layoutUi(padding, 0, collectionWidth - padding, 160);
-            this.bottomBarDiv.css({ position:"absolute", left:padding * 2 + sitesWidth, top:manageHeight + padding + deckHeight - 50, width:deckWidth - (sitesWidth + padding) - padding, height:70 });
+            this.statsDiv.css({ position:"absolute", left:padding * 2 + sitesWidth, top:manageHeight + padding + deckHeight - 50, width:deckWidth - (sitesWidth + padding) - padding, height:70 });
             this.normalCollectionGroup.setBounds(0, 0, collectionWidth - padding * 2, collectionHeight - 160);
         } else {
             this.layoutDeck();
@@ -1034,42 +995,78 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
 
 var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
     init:function () {
+        that = this;
         this._super();
-        this.siteDiv = $("#sitesDiv");
-        this.siteGroup = new VerticalBarGroup(this.siteDiv, function (card) {
-            return true;
+        this.missionsDiv = $("#missionsDiv");
+        this.missionsGroup = new VerticalBarGroup(this.missionsDiv, function (card) {
+            return (card.zone == "MISSIONS");
         }, true);
+        this.missionsDiv.droppable({
+            accept: function(d) {
+                return (d.hasClass("cardInCollection"));
+            },
+            drop: function(event, ui) {
+                that.selectionFunc($(ui.draggable).closest(".card"), that.missionsDiv);
+            }
+        });
+
+        this.seedDeckDiv = $("#seedDeckDiv");
+        this.seedDeckGroup = new NormalCardGroup(this.seedDeckDiv, function (card) {
+            return (card.zone == "SEED_DECK");
+        });
+        this.seedDeckDiv.droppable({
+            accept: function(d) {
+                return (d.hasClass("cardInCollection"));
+            },
+            drop: function(event, ui) {
+                that.selectionFunc($(ui.draggable).closest(".card"), that.seedDeckDiv);
+            }
+        });
     },
 
     layoutUI:function (layoutDivs) {
         if (layoutDivs) {
-            var manageHeight = 23;
-
             var padding = 5;
+            var manageHeight = 23;
+            var statsHeight = 70;
+            var statsTop = this.deckDiv.height() - statsHeight - padding;
+            var deckDivWidth = this.deckDiv.width();
+            var deckDivHeight = this.deckDiv.height();
+
+            this.manageDecksDiv.css({position:"absolute", left:padding, top:padding,
+                width:deckDivWidth - padding, height:manageHeight});
+            this.statsDiv.css({ position:"absolute", left:padding, top:statsTop,
+                width:deckDivWidth - padding, height:statsHeight });
+
             var collectionWidth = this.collectionDiv.width();
             var collectionHeight = this.collectionDiv.height();
-
-            var deckWidth = this.deckDiv.width();
-            var deckHeight = this.deckDiv.height() - (manageHeight + padding);
-
-            var rowHeight = Math.floor((deckHeight - 6 * padding) / 5);
-            var sitesWidth = Math.floor(1.5 * deckHeight / 5);
-            sitesWidth = Math.min(sitesWidth, 250);
-
-            this.manageDecksDiv.css({position:"absolute", left:padding, top:padding, width:deckWidth, height:manageHeight});
-
-            this.siteDiv.css({ position:"absolute", left:padding, top:manageHeight + 3 * padding + rowHeight, width:sitesWidth, height:deckHeight - rowHeight - 2 * padding});
-            this.siteGroup.setBounds(0, 0, sitesWidth, deckHeight - rowHeight - 2 * padding);
-
-            this.drawDeckDiv.css({ position:"absolute", left:padding * 2 + sitesWidth, top:manageHeight + 2 * padding, width:deckWidth - (sitesWidth + padding) - padding, height:deckHeight - 2 * padding - 50 });
-            this.drawDeckGroup.setBounds(0, 0, deckWidth - (sitesWidth + padding) - padding, (deckHeight - 2 * padding - 50));
-
-            this.bottomBarDiv.css({ position:"absolute", left:padding * 2 + sitesWidth, top:manageHeight + padding + deckHeight - 50, width:deckWidth - (sitesWidth + padding) - padding, height:70 });
-
-            this.cardFilter.layoutUi(padding, 0, collectionWidth - padding, 160);
-            //this.normalCollectionDiv.css({ position:"absolute", left:padding, top:160, width:collectionWidth - padding * 2, height:collectionHeight - 160 });
-
             this.normalCollectionGroup.setBounds(0, 0, collectionWidth - padding * 2, collectionHeight - 160);
+            this.cardFilter.layoutUi(padding, 0, collectionWidth - padding, 160);
+
+            var subDeckTop = manageHeight + padding * 2;
+            var subDeckBottom = statsTop - padding;
+            var subDeckLeft = padding;
+            var subDeckRight = deckDivWidth;
+            var subDeckWidth = subDeckRight - subDeckLeft;
+
+            var deckRowHeight = (subDeckBottom - subDeckTop - padding) / 2;
+            var drawDeckTop = subDeckTop + deckRowHeight + padding;
+            var missionsWidth = subDeckWidth * 0.3;
+            var seedDeckLeft = missionsWidth + padding * 2;
+            var seedDeckWidth = subDeckRight - seedDeckLeft;
+            
+            this.missionsDiv.css({ position:"absolute", left:padding, top:subDeckTop, width:missionsWidth,
+                height:deckRowHeight});
+            this.missionsGroup.setBounds(0, 0, missionsWidth, deckRowHeight);
+
+            this.seedDeckDiv.css({ position:"absolute", left:seedDeckLeft, top:subDeckTop, width:seedDeckWidth,
+                height:deckRowHeight});
+            this.seedDeckGroup.setBounds(0, 0, seedDeckWidth, deckRowHeight);
+
+            this.drawDeckDiv.css({ position:"absolute", left:padding, top:drawDeckTop, width:subDeckWidth,
+                height:deckRowHeight });
+            this.drawDeckGroup.setBounds(0, 0, subDeckWidth, deckRowHeight);
+
         } else {
             this.layoutDeck();
             this.normalCollectionGroup.layoutCards();
@@ -1079,27 +1076,47 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
     getDeckContents:function () {
 
         var result = "";
-
-        var sites = new Array();
-        $(".card", this.siteDiv).each(
-                function () {
-                    sites.push($(this).data("card").blueprintId);
-                });
-        result += sites;
-        result += "|";
-
         var cards = new Array();
+        result += "DRAW_DECK|";
         $(".card", this.drawDeckDiv).each(
                 function () {
                     cards.push($(this).data("card").blueprintId);
                 });
-        result += cards;
+        if (cards.length > 0) {
+            result += cards;
+        } else {
+            result += ",";
+        }
+
+        result += "|SEED_DECK|";
+        cards = new Array();
+        $(".card", this.seedDeckDiv).each(
+                function () {
+                    cards.push($(this).data("card").blueprintId);
+                });
+        if (cards.length > 0) {
+            result += cards;
+        } else {
+            result += ",";
+        }
+
+        result += "|MISSIONS|";
+        cards = new Array();
+        $(".card", this.missionsDiv).each(
+                function () {
+                    cards.push($(this).data("card").blueprintId);
+                });
+        if (cards.length > 0) {
+            result += cards;
+        } else {
+            result += ",";
+        }
 
         return result;
     },
 
     layoutDeck:function () {
-        this.siteGroup.layoutCards();
+        this.missionsGroup.layoutCards();
         this.drawDeckGroup.layoutCards();
     }
 
