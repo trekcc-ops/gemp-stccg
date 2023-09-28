@@ -1,22 +1,14 @@
 package com.gempukku.lotro.game;
 
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CollectionUtils {
-    public static Map<String, Integer> getTotalCardCountForDeck(LotroDeck deck) {
+    public static Map<String, Integer> getTotalCardCountForDeck(CardDeck deck) {
         Map<String, Integer> counts = new HashMap<>();
-        String ring = deck.getRing();
-        if (ring != null)
-            incrementCardCount(counts, ring);
-        String ringBearer = deck.getRingBearer();
-        if (ringBearer != null)
-            incrementCardCount(counts, ringBearer);
-        for (String site : deck.getSites())
-            incrementCardCount(counts, site);
         for (String adventureCard : deck.getDrawDeckCards())
             incrementCardCount(counts, adventureCard);
         return counts;

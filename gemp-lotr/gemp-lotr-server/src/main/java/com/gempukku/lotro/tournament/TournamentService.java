@@ -1,7 +1,7 @@
 package com.gempukku.lotro.tournament;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.packs.DraftPackStorage;
@@ -47,7 +47,7 @@ public class TournamentService implements ITournamentService {
     }
 
     @Override
-    public void addPlayer(String tournamentId, String playerName, LotroDeck deck) {
+    public void addPlayer(String tournamentId, String playerName, CardDeck deck) {
         _tournamentPlayerDao.addPlayer(tournamentId, playerName, deck);
     }
 
@@ -62,7 +62,7 @@ public class TournamentService implements ITournamentService {
     }
 
     @Override
-    public Map<String, LotroDeck> getPlayerDecks(String tournamentId, String format) {
+    public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
         return _tournamentPlayerDao.getPlayerDecks(tournamentId, format);
     }
 
@@ -72,7 +72,7 @@ public class TournamentService implements ITournamentService {
     }
 
     @Override
-    public LotroDeck getPlayerDeck(String tournamentId, String player, String format) {
+    public CardDeck getPlayerDeck(String tournamentId, String player, String format) {
         return _tournamentPlayerDao.getPlayerDeck(tournamentId, player, format);
     }
 
@@ -87,7 +87,7 @@ public class TournamentService implements ITournamentService {
     }
 
     @Override
-    public void setPlayerDeck(String tournamentId, String player, LotroDeck deck) {
+    public void setPlayerDeck(String tournamentId, String player, CardDeck deck) {
         _tournamentPlayerDao.updatePlayerDeck(tournamentId, player, deck);
     }
 

@@ -1,9 +1,10 @@
 package com.gempukku.lotro.tournament;
 
 import com.gempukku.lotro.at.AbstractAtTest;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.LotroDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
-import com.gempukku.lotro.cards.LotroDeck;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.Times;
@@ -19,7 +20,7 @@ public class DefaultTournamentTest extends AbstractAtTest {
     public void testTournament() throws InterruptedException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
         String tournamentId = "t1";
-        Map<String, LotroDeck> playerDecks = new HashMap<>();
+        Map<String, CardDeck> playerDecks = new HashMap<>();
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"));
         playerDecks.put("p1", new LotroDeck("p1"));
         playerDecks.put("p2", new LotroDeck("p2"));

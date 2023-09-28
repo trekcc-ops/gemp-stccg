@@ -3,15 +3,16 @@ package com.gempukku.lotro.async.handler;
 import com.alibaba.fastjson.JSON;
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.LotroCardBlueprint;
+import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.JSONDefs;
-import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.db.DeckDAO;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueDefinition;
-import com.gempukku.lotro.cards.LotroDeck;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -131,23 +132,11 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             //check for valid access
             getResourceOwnerSafely(request, participantId);
 
-            LotroDeck deck = _lotroServer.createDeckWithValidate("tempDeck", contents, targetFormat, "");
+            CardDeck deck = _lotroServer.createDeckWithValidate("tempDeck", contents, targetFormat, "");
             if (deck == null)
                 throw new HttpProcessingException(400);
 
-            int fpCount = 0;
-            int shadowCount = 0;
-            for (String card : deck.getDrawDeckCards()) {
-                Side side = _library.getLotroCardBlueprint(card).getSide();
-                if (side == Side.SHADOW)
-                    shadowCount++;
-                else if (side == Side.FREE_PEOPLE)
-                    fpCount++;
-            }
-
             StringBuilder sb = new StringBuilder();
-            sb.append("<b>Free People</b>: ").append(fpCount);
-            sb.append(", <b>Shadow</b>: ").append(shadowCount).append("<br/>");
 
             StringBuilder valid = new StringBuilder();
             StringBuilder invalid = new StringBuilder();
@@ -162,7 +151,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             List<String> validation = format.validateDeck(deck);
             List<String> errataValidation = null;
             if (!format.getErrataCardMap().isEmpty()) {
-                LotroDeck deckWithErrata = format.applyErrata(deck);
+                CardDeck deckWithErrata = format.applyErrata(deck);
                 errataValidation = format.validateDeck(deckWithErrata);
             }
             if(validation.size() == 0) {
@@ -214,7 +203,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-            LotroDeck deck = _deckDao.renameDeck(resourceOwner, oldDeckName, deckName);
+            CardDeck deck = _deckDao.renameDeck(resourceOwner, oldDeckName, deckName);
             if (deck == null)
                 throw new HttpProcessingException(404);
 
@@ -237,7 +226,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
 
             GameFormat validatedFormat = validateFormat(targetFormat);
 
-            LotroDeck lotroDeck = _lotroServer.createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
+            CardDeck lotroDeck = _lotroServer.createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
             if (lotroDeck == null)
                 throw new HttpProcessingException(400);
 
@@ -277,7 +266,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         String shareCode = getQueryParameterSafely(queryDecoder, "id");
 
         User resourceOwner;
-        LotroDeck deck;
+        CardDeck deck;
 
         if (shareCode != null)
         {
@@ -309,7 +298,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String deckName = getQueryParameterSafely(queryDecoder, "deckName");
 
-        LotroDeck deck = _deckDao.getDeckForPlayer(getLibrarian(), deckName);
+        CardDeck deck = _deckDao.getDeckForPlayer(getLibrarian(), deckName);
 
         if (deck == null)
             throw new HttpProcessingException(404);
@@ -319,7 +308,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         responseWriter.writeHtmlResponse(result);
     }
 
-    public String convertDeckToHTML(LotroDeck deck, String author) throws CardNotFoundException {
+    public String convertDeckToHTML(CardDeck deck, String author) throws CardNotFoundException {
 
         if (deck == null)
             return null;
@@ -466,7 +455,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
     }
 
     private Document serializeDeck(User player, String deckName) throws ParserConfigurationException {
-        LotroDeck deck = _deckDao.getDeckForPlayer(player, deckName);
+        CardDeck deck = _deckDao.getDeckForPlayer(player, deckName);
 
         return serializeDeck(deck);
     }
@@ -488,7 +477,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         return validatedFormat;
     }
 
-    private Document serializeDeck(LotroDeck deck) throws ParserConfigurationException {
+    private Document serializeDeck(CardDeck deck) throws ParserConfigurationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -509,24 +498,6 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         Element notes = doc.createElement("notes");
         notes.setTextContent(deck.getNotes());
         deckElem.appendChild(notes);
-
-        if (deck.getRingBearer() != null) {
-            Element ringBearer = doc.createElement("ringBearer");
-            ringBearer.setAttribute("blueprintId", deck.getRingBearer());
-            deckElem.appendChild(ringBearer);
-        }
-
-        if (deck.getRing() != null) {
-            Element ring = doc.createElement("ring");
-            ring.setAttribute("blueprintId", deck.getRing());
-            deckElem.appendChild(ring);
-        }
-
-        for (CardItem cardItem : _sortAndFilterCards.process("sort:siteNumber,twilight", createCardItems(deck.getSites()), _library, _formatLibrary)) {
-            Element site = doc.createElement("site");
-            site.setAttribute("blueprintId", cardItem.getBlueprintId());
-            deckElem.appendChild(site);
-        }
 
         for (CardItem cardItem : _sortAndFilterCards.process("sort:cardType,culture,name", createCardItems(deck.getDrawDeckCards()), _library, _formatLibrary)) {
             Element card = doc.createElement("card");

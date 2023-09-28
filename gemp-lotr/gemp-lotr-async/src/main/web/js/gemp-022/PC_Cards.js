@@ -3,6 +3,12 @@ var PCCards = {
 // Set 101 - Premiere [1E]
 '101_001': 'https://www.trekcc.org/1e/cardimages/premiere/betazoidgiftbox.gif',
 '101_002': 'http://trekcc.org/1e/cardimages/premiere/horgahn95.jpg',
+'101_104': 'https://www.trekcc.org/1e/cardimages/errata/Federation-Outpost.jpg',
+'101_105': 'https://www.trekcc.org/1e/cardimages/errata/Klingon-Outpost.jpg',
+'101_106': 'https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg',
+
+// Set 103 - Alternate Universe
+'103_032': 'https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg',
 
 // Set 144 - More Tribbles, More Troubles
 '144_001': 'https://www.trekcc.org/tribbles/cardimages/mtmt/1V.jpg',
@@ -58,6 +64,39 @@ var PCCards = {
 '150_016': 'https://www.trekcc.org/tribbles/cardimages/tat/52V.jpg',
 '150_017': 'https://www.trekcc.org/tribbles/cardimages/tat/53V.jpg',
 '150_018': 'https://www.trekcc.org/tribbles/cardimages/tat/54V.jpg',
+
+// Set 155 - The Next Generation
+'155_001': 'https://www.trekcc.org/1e/cardimages/tng/1V.jpg',
+'155_002': 'https://www.trekcc.org/1e/cardimages/tng/2V.jpg',
+'155_003': 'https://www.trekcc.org/1e/cardimages/tng/3V.jpg',
+'155_004': 'https://www.trekcc.org/1e/cardimages/tng/4V.jpg',
+'155_005': 'https://www.trekcc.org/1e/cardimages/tng/5V.jpg',
+'155_006': 'https://www.trekcc.org/1e/cardimages/tng/6V.jpg',
+'155_007': 'https://www.trekcc.org/1e/cardimages/tng/7V.jpg',
+'155_008': 'https://www.trekcc.org/1e/cardimages/tng/8V.jpg',
+'155_009': 'https://www.trekcc.org/1e/cardimages/tng/9V.jpg',
+'155_010': 'https://www.trekcc.org/1e/cardimages/tng/10V.jpg',
+'155_011': 'https://www.trekcc.org/1e/cardimages/tng/11V.jpg',
+'155_012': 'https://www.trekcc.org/1e/cardimages/tng/12V.jpg',
+'155_013': 'https://www.trekcc.org/1e/cardimages/tng/13V.jpg',
+'155_014': 'https://www.trekcc.org/1e/cardimages/tng/14V.jpg',
+'155_015': 'https://www.trekcc.org/1e/cardimages/tng/15V.jpg',
+'155_035': 'https://www.trekcc.org/1e/cardimages/tng/35V.jpg',
+'155_036': 'https://www.trekcc.org/1e/cardimages/tng/36V.jpg',
+'155_037': 'https://www.trekcc.org/1e/cardimages/tng/37V.jpg',
+'155_038': 'https://www.trekcc.org/1e/cardimages/tng/38V.jpg',
+'155_039': 'https://www.trekcc.org/1e/cardimages/tng/39V.jpg',
+'155_040': 'https://www.trekcc.org/1e/cardimages/tng/40V.jpg',
+'155_041': 'https://www.trekcc.org/1e/cardimages/tng/41V.jpg',
+'155_042': 'https://www.trekcc.org/1e/cardimages/tng/42V.jpg',
+'155_043': 'https://www.trekcc.org/1e/cardimages/tng/43V.jpg',
+'155_044': 'https://www.trekcc.org/1e/cardimages/tng/44V.jpg',
+'155_045': 'https://www.trekcc.org/1e/cardimages/tng/45V.jpg',
+'155_046': 'https://www.trekcc.org/1e/cardimages/tng/46V.jpg',
+'155_047': 'https://www.trekcc.org/1e/cardimages/tng/47V.jpg',
+'155_048': 'https://www.trekcc.org/1e/cardimages/tng/48V.jpg',
+'155_049': 'https://www.trekcc.org/1e/cardimages/tng/49V.jpg',
+
 
 // Set 157 - Nothing But Tribble
 '157_001': 'https://www.trekcc.org/tribbles/cardimages/nbt/55V.jpg',

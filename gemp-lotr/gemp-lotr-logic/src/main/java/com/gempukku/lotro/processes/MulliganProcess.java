@@ -1,13 +1,11 @@
-package com.gempukku.lotro.processes.lotronly;
+package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.BetweenTurnsProcess;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -2,7 +2,7 @@ package com.gempukku.lotro.async.handler;
 
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.competitive.PlayerStanding;
 import com.gempukku.lotro.game.SortAndFilterCards;
 import com.gempukku.lotro.game.formats.FormatLibrary;
@@ -101,7 +101,7 @@ public class TournamentRequestHandler extends LotroServerRequestHandler implemen
         if (tournament.getTournamentStage() != Tournament.Stage.FINISHED)
             throw new HttpProcessingException(403);
 
-        LotroDeck deck = _tournamentService.getPlayerDeck(tournamentId, playerName, tournament.getFormat());
+        CardDeck deck = _tournamentService.getPlayerDeck(tournamentId, playerName, tournament.getFormat());
         if (deck == null)
             throw new HttpProcessingException(404);
 

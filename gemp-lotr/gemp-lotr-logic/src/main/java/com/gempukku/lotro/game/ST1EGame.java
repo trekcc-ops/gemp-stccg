@@ -6,14 +6,17 @@ import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.gamestate.GameStateListener;
 import com.gempukku.lotro.gamestate.UserFeedback;
+import com.gempukku.lotro.processes.GameProcess;
+import com.gempukku.lotro.processes.ST1EPlayerOrderProcess;
 import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
 
 import java.util.Map;
+import java.util.Set;
 
 public class ST1EGame extends DefaultGame {
     private final GameState _gameState;
-    private final TurnProcedure<DefaultGame> _turnProcedure;
+    private final TurnProcedure<ST1EGame> _turnProcedure;
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                     final CardBlueprintLibrary library) {
@@ -23,7 +26,13 @@ public class ST1EGame extends DefaultGame {
 
         _gameState = new GameState(_cards, library, _format);
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
-                _gameState::init);
+                _gameState::init) {
+            @Override
+            protected GameProcess setFirstGameProcess(ST1EGame game, Set<String> players,
+                                                      PlayerOrderFeedback playerOrderFeedback) {
+                return new ST1EPlayerOrderProcess(players, playerOrderFeedback);
+            }
+        };
     }
 
 
@@ -31,7 +40,7 @@ public class ST1EGame extends DefaultGame {
     public GameState getGameState() {
         return _gameState;
     }
-    public TurnProcedure<DefaultGame> getTurnProcedure() { return _turnProcedure; }
+    public TurnProcedure<ST1EGame> getTurnProcedure() { return _turnProcedure; }
     @Override
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
         getGameState().addGameStateListener(playerId, gameStateListener, _turnProcedure.getGameStats());

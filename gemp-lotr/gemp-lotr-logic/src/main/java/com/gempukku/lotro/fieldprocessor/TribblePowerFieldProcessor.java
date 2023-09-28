@@ -15,7 +15,7 @@ public class TribblePowerFieldProcessor implements FieldProcessor {
     public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint,
                              CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final Logger LOG = Logger.getLogger(TribblePowerFieldProcessor.class);
-        LOG.debug("Processing TribblePower field. " + value.toString());
+//        LOG.debug("Processing TribblePower field. " + value.toString());
         TribblePower tribblePower = FieldUtils.getEnum(TribblePower.class, value, key);
         blueprint.setTribblePower(tribblePower);
 

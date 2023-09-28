@@ -1,11 +1,11 @@
 package com.gempukku.lotro.gamestate;
 
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.AwaitingDecision;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -57,7 +57,7 @@ public class GameEvent {
     private Boolean _bool;
     private Token _token;
     private int[] _otherCardIds;
-    private Map<String, LotroDeck> _decks;
+    private Map<String, CardDeck> _decks;
     private GameStats _gameStats;
     private AwaitingDecision _awaitingDecision;
     private final ZonedDateTime _timestamp;
@@ -162,11 +162,11 @@ public class GameEvent {
         return this;
     }
 
-    public Map<String, LotroDeck> getDecks() {
+    public Map<String, CardDeck> getDecks() {
         return _decks;
     }
 
-    public GameEvent decks(Map<String, LotroDeck> decks) {
+    public GameEvent decks(Map<String, CardDeck> decks) {
         _decks = decks;
         return this;
     }

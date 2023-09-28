@@ -1,10 +1,9 @@
-package com.gempukku.lotro.processes.lotronly.assign;
+package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.PlayOrder;
-import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.Set;
 

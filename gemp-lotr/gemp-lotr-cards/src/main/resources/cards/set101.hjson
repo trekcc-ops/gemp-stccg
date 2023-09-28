@@ -9,4 +9,22 @@
         title: Horga'hn
         type: artifact
     }
+    101_104: {
+        title: Federation Outpost
+        type: facility
+        facility-type: outpost
+        affiliation: federation
+    }
+    101_105: {
+        title: Klingon Outpost
+        type: facility
+        facility-type: outpost
+        affiliation: klingon
+    }
+    101_106: {
+        title: Romulan Outpost
+        type: facility
+        facility-type: outpost
+        affiliation: romulan
+    }
 }

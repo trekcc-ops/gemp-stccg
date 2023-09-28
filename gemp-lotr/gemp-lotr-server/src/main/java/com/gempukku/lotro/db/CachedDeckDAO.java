@@ -1,16 +1,19 @@
 package com.gempukku.lotro.db;
 
 import com.gempukku.lotro.cache.Cached;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.cards.LotroDeck;
 import org.apache.commons.collections.map.LRUMap;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class CachedDeckDAO implements DeckDAO, Cached {
     private final DeckDAO _delegate;
     private final Map<String, Set<Map.Entry<String, String>>> _playerDeckNames = Collections.synchronizedMap(new LRUMap(100));
-    private final Map<String, LotroDeck> _decks = Collections.synchronizedMap(new LRUMap(100));
+    private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap(100));
 
     public CachedDeckDAO(DeckDAO delegate) {
         _delegate = delegate;
@@ -27,10 +30,6 @@ public class CachedDeckDAO implements DeckDAO, Cached {
         return _playerDeckNames.size()+_decks.size();
     }
 
-    @Override
-    public LotroDeck buildLotroDeckFromContents(String deckName, String contents, String target_format, String notes) {
-        return _delegate.buildLotroDeckFromContents(deckName, contents, target_format, notes);
-    }
     private String constructPlayerDeckNamesKey(User player) {
         return player.getName();
     }
@@ -45,9 +44,9 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public LotroDeck getDeckForPlayer(User player, String name) {
+    public CardDeck getDeckForPlayer(User player, String name) {
         String key = constructDeckKey(player, name);
-        LotroDeck deck = _decks.get(key);
+        CardDeck deck = _decks.get(key);
         if (deck == null) {
             deck = _delegate.getDeckForPlayer(player, name);
             _decks.put(key, deck);
@@ -67,17 +66,17 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public LotroDeck renameDeck(User player, String oldName, String newName) {
-        LotroDeck lotroDeck = _delegate.renameDeck(player, oldName, newName);
+    public CardDeck renameDeck(User player, String oldName, String newName) {
+        CardDeck deck = _delegate.renameDeck(player, oldName, newName);
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.remove(constructDeckKey(player, oldName));
-        _decks.put(constructDeckKey(player, newName), lotroDeck);
+        _decks.put(constructDeckKey(player, newName), deck);
 
-        return lotroDeck;
+        return deck;
     }
 
     @Override
-    public void saveDeckForPlayer(User player, String name, String target_format, String notes, LotroDeck deck) {
+    public void saveDeckForPlayer(User player, String name, String target_format, String notes, CardDeck deck) {
         _delegate.saveDeckForPlayer(player, name, target_format, notes, deck);
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.put(constructDeckKey(player, name), deck);

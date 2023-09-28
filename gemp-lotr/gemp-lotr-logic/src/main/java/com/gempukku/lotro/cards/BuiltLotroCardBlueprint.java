@@ -21,9 +21,11 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private String title;
     private String subtitle;
     private String imageUrl;
-    private boolean unique;
+    private Uniqueness uniqueness = null;
     private Side side;
     private CardType cardType;
+    private FacilityType facilityType;
+    private Affiliation affiliation;
     private Culture culture;
     private Race race;
     private Signet signet;
@@ -261,16 +263,23 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public void setUnique(boolean unique) {
-        this.unique = unique;
-    }
+    public void setUniqueness(Uniqueness uniqueness) { this.uniqueness = uniqueness;}
+    public Uniqueness getUniqueness() { return this.uniqueness;}
 
     public void setSide(Side side) {
         this.side = side;
     }
 
+    public void setAffiliation(Affiliation affiliation) {
+        this.affiliation = affiliation;
+    }
+
     public void setCardType(CardType cardType) {
         this.cardType = cardType;
+    }
+
+    public void setFacilityType(FacilityType facilityType) {
+        this.facilityType = facilityType;
     }
 
     public void setCulture(Culture culture) {
@@ -353,7 +362,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
 
     @Override
     public boolean isUnique() {
-        return unique;
+        return this.uniqueness == Uniqueness.UNIQUE;
     }
 
     @Override

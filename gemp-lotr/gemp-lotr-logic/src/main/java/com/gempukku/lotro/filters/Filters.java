@@ -6,7 +6,7 @@ import com.gempukku.lotro.cards.CompletePhysicalCardVisitor;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.PhysicalCardVisitor;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
+import com.gempukku.lotro.processes.Skirmish;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
 import com.gempukku.lotro.condition.Condition;
@@ -402,7 +402,8 @@ public class Filters {
 
     public static final Filter none = (game, physicalCard) -> false;
 
-    public static final Filter unique = (game, physicalCard) -> physicalCard.getBlueprint().isUnique();
+    public static final Filter unique = (game, physicalCard) ->
+            physicalCard.getBlueprint().getUniqueness() == Uniqueness.UNIQUE;
 
     private static Filter signet(final Signet signet) {
         return (game, physicalCard) -> game.getModifiersQuerying().hasSignet(game, physicalCard, signet);

@@ -2,7 +2,6 @@ package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.MulliganProcess;
 
 public class PlayersDrawStartingHandGameProcess implements GameProcess {
     private final String _firstPlayer;

@@ -1,0 +1,124 @@
+// Set 155: The Next Generation
+
+{
+    155_001: {
+        title: A Good Day to Lie
+        type: dilemma
+    }
+    155_002: {
+        title: All Available Personnel
+        type: dilemma
+    }
+    155_003: {
+        title: Diplomatic Intervention
+        type: dilemma
+    }
+    155_004: {
+        title: Divided Loyalties
+        type: dilemma
+    }
+    155_005: {
+        title: Ferengi Ambush
+        type: dilemma
+    }
+    155_006: {
+        title: "I'm Not Going to Fight You"
+        type: dilemma
+    }
+    155_007: {
+        title: Local Trouble
+        type: dilemma
+    }
+    155_008: {
+        title: Magnetic Field Disruptions
+        type: dilemma
+    }
+    155_009: {
+        title: Microbrain
+        type: dilemma
+    }
+    155_010: {
+        title: Pinned Down
+        type: dilemma
+    }
+    155_011: {
+        title: Temptation
+        type: dilemma
+    }
+    155_012: {
+        title: Tense Negotiations
+        type: dilemma
+    }
+    155_013: {
+        title: Triage
+        type: dilemma
+    }
+    155_014: {
+        title: War Games
+        type: dilemma
+    }
+    155_015: {
+        title: Warp Bubble Mishap
+        type: dilemma
+    }
+    155_035: {
+        title: Acquire Surplus Ships
+        type: mission
+    }
+    155_036: {
+        title: Amnesty Talks
+        type: mission
+    }
+    155_037: {
+        title: Avert Solar Implosion
+        type: mission
+    }
+    155_038: {
+        title: Encounter at Farpoint
+        type: mission
+    }
+    155_039: {
+        title: Host Metaphasic Shielding Test
+        type: mission
+    }
+    155_040: {
+        title: Intercept Sleeper Ship
+        type: mission
+    }
+    155_041: {
+        title: Investigate Destruction
+        type: mission
+    }
+    155_042: {
+        title: Raid Ancient Burial Site
+        type: mission
+    }
+    155_043: {
+        title: Revenge Plot
+        type: mission
+    }
+    155_044: {
+        title: Salvage Borg Ship
+        type: mission
+    }
+    155_045: {
+        title: Seize Freighter
+        type: mission
+    }
+    155_046: {
+        title: Steal Technology
+        type: mission
+    }
+    155_047: {
+        title: The Last Outpost
+        type: mission
+    }
+    155_048: {
+        title: Treat Plague Ship
+        type: mission
+    }
+    155_049: {
+        title: Visit Tranquil Colony
+        type: mission
+    }
+}

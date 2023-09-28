@@ -1,6 +1,6 @@
 package com.gempukku.lotro.hall;
 
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.db.IgnoreDAO;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.CardGameMediator;
@@ -35,7 +35,7 @@ public class TableHolder {
         awaitingTables.clear();
     }
 
-    public GameTable createTable(User player, GameSettings gameSettings, LotroDeck lotroDeck) throws HallException {
+    public GameTable createTable(User player, GameSettings gameSettings, CardDeck lotroDeck) throws HallException {
         logger.debug("TableHolder - createTable function called");
         String tableId = String.valueOf(_nextTableId++);
 
@@ -62,7 +62,7 @@ public class TableHolder {
         return null;
     }
 
-    public GameTable joinTable(String tableId, User player, LotroDeck lotroDeck) throws HallException {
+    public GameTable joinTable(String tableId, User player, CardDeck lotroDeck) throws HallException {
         final GameTable awaitingTable = awaitingTables.get(tableId);
 
         if (awaitingTable == null || awaitingTable.wasGameStarted())

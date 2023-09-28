@@ -1,9 +1,9 @@
 package com.gempukku.lotro.game;
 
+import com.gempukku.lotro.adventure.Adventure;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.common.SitesBlock;
-import com.gempukku.lotro.adventure.Adventure;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.util.List;
 import java.util.Map;
@@ -33,10 +33,10 @@ public interface GameFormat {
 
     String validateCard(String cardId);
 
-    List<String> validateDeck(LotroDeck deck);
-    String validateDeckForHall(LotroDeck deck);
+    List<String> validateDeck(CardDeck deck);
+    String validateDeckForHall(CardDeck deck);
 
-    LotroDeck applyErrata(LotroDeck deck);
+    CardDeck applyErrata(CardDeck deck);
 
     List<Integer> getValidSets();
 

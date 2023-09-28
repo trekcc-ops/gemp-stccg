@@ -1,8 +1,8 @@
 package com.gempukku.lotro.gamestate;
 
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.AwaitingDecision;
-import com.gempukku.lotro.cards.LotroDeck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,7 +84,7 @@ public class EventSerializer {
         return sb.toString();
     }
 
-    private void serializeDecks(Document document, Element eventElem, Map<String, LotroDeck> decks) {
+    private void serializeDecks(Document document, Element eventElem, Map<String, CardDeck> decks) {
         for(var pair : decks.entrySet()) {
             String player = pair.getKey();
             var deck = pair.getValue();
@@ -92,9 +92,6 @@ public class EventSerializer {
             var deckElement = document.createElement("deckReadout");
             deckElement.setAttribute("playerId", player);
             deckElement.setAttribute("name", deck.getDeckName());
-            deckElement.setAttribute("rb", deck.getRingBearer());
-            deckElement.setAttribute("ring", deck.getRing());
-            deckElement.setAttribute("sites", String.join(",", deck.getSites()));
             deckElement.setAttribute("deck", String.join(",", deck.getDrawDeckCards()));
 
             eventElem.appendChild(deckElement);

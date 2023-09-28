@@ -18,17 +18,18 @@ public class SortAndFilterCards {
             filter = "";
         String[] filterParams = filter.split(" ");
 
-        Side side = getSideFilter(filterParams);
-        String type = getTypeFilter(filterParams);
-        String[] rarity = getRarityFilter(filterParams);
+//        Side side = getSideFilter(filterParams);
+//        String type = getTypeFilter(filterParams);
+//        String[] rarity = getRarityFilter(filterParams);
         String[] sets = getSetFilter(filterParams);
         List<String> words = getWords(filterParams);
         Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", null, filterParams);
-        Set<Culture> cultures = getEnumFilter(Culture.values(), Culture.class, "culture", null, filterParams);
-        Set<Keyword> keywords = getEnumFilter(Keyword.values(), Keyword.class, "keyword", Collections.emptySet(), filterParams);
-        Integer siteNumber = getSiteNumber(filterParams);
-        Set<Race> races = getEnumFilter(Race.values(), Race.class, "race", null, filterParams);
-        Set<PossessionClass> itemClasses = getEnumFilter(PossessionClass.values(), PossessionClass.class, "itemClass", Collections.emptySet(), filterParams);
+        Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class, "tribblePower", null, filterParams);
+//        Set<Culture> cultures = getEnumFilter(Culture.values(), Culture.class, "culture", null, filterParams);
+//        Set<Keyword> keywords = getEnumFilter(Keyword.values(), Keyword.class, "keyword", Collections.emptySet(), filterParams);
+//        Integer siteNumber = getSiteNumber(filterParams);
+//        Set<Race> races = getEnumFilter(Race.values(), Race.class, "race", null, filterParams);
+//        Set<PossessionClass> itemClasses = getEnumFilter(PossessionClass.values(), PossessionClass.class, "itemClass", Collections.emptySet(), filterParams);
         Set<Keyword> phases = getEnumFilter(Keyword.values(),Keyword.class, "phase", Collections.emptySet(), filterParams);
 
         List<T> result = new ArrayList<>();
@@ -37,12 +38,14 @@ public class SortAndFilterCards {
         for (T item : items) {
             String blueprintId = item.getBlueprintId();
             if (isPack(blueprintId)) {
-                if (acceptsFilters(cardLibrary, cardBlueprintMap, formatLibrary, blueprintId, side, type, rarity, sets, cardTypes, cultures, keywords, words, siteNumber, races, itemClasses, phases))
+                if (acceptsFilters(cardLibrary, cardBlueprintMap, formatLibrary, blueprintId, sets, cardTypes,
+                        tribblePowers, words, phases))
                     result.add(item);
             } else {
                 try {
                     cardBlueprintMap.put(blueprintId, cardLibrary.getLotroCardBlueprint(blueprintId));
-                    if (acceptsFilters(cardLibrary, cardBlueprintMap, formatLibrary, blueprintId, side, type, rarity, sets, cardTypes, cultures, keywords, words, siteNumber, races, itemClasses, phases))
+                    if (acceptsFilters(cardLibrary, cardBlueprintMap, formatLibrary, blueprintId, sets, cardTypes,
+                            tribblePowers, words, phases))
                         result.add(item);
                 } catch (CardNotFoundException e) {
                     // Ignore the card
@@ -81,31 +84,32 @@ public class SortAndFilterCards {
         return result;
     }
 
-    private boolean acceptsFilters(
-            CardBlueprintLibrary library, Map<String, LotroCardBlueprint> cardBlueprint, FormatLibrary formatLibrary, String blueprintId, Side side, String type, String[] rarity, String[] sets,
-            Set<CardType> cardTypes, Set<Culture> cultures, Set<Keyword> keywords, List<String> words, Integer siteNumber, Set<Race> races, Set<PossessionClass> itemClasses, Set<Keyword> phases) {
-        if (isPack(blueprintId)) {
+    private boolean acceptsFilters(CardBlueprintLibrary library, Map<String, LotroCardBlueprint> cardBlueprint,
+                                   FormatLibrary formatLibrary, String blueprintId, String[] sets, Set<CardType> cardTypes,
+                                   Set<TribblePower> tribblePowers, List<String> words, Set<Keyword> phases) {
+/*        if (isPack(blueprintId)) {
             return type == null || type.equals("pack");
         } else {
             if (type == null
                     || type.equals("card")
                     || (type.equals("foil") && blueprintId.endsWith("*"))
                     || (type.equals("nonFoil") && !blueprintId.endsWith("*"))
-                    || (type.equals("tengwar") && (blueprintId.endsWith("T*") || blueprintId.endsWith("T")))) {
+                    || (type.equals("tengwar") && (blueprintId.endsWith("T*") || blueprintId.endsWith("T")))) {*/
                 final LotroCardBlueprint blueprint = cardBlueprint.get(blueprintId);
-                if (side == null || blueprint.getSide() == side)
-                    if (rarity == null || isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
+//                if (side == null || blueprint.getSide() == side)
+//                    if (rarity == null || isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
                         if (sets == null || isInSets(blueprintId, sets, library, formatLibrary, cardBlueprint))
                             if (cardTypes == null || cardTypes.contains(blueprint.getCardType()))
-                                if (cultures == null || cultures.contains(blueprint.getCulture()))
-                                    if (containsAllKeywords(blueprint, keywords))
+                                if (tribblePowers == null || tribblePowers.contains(blueprint.getTribblePower()))
+//                                if (cultures == null || cultures.contains(blueprint.getCulture()))
+//                                    if (containsAllKeywords(blueprint, keywords))
                                         if (containsAllWords(blueprint, words))
-                                            if (siteNumber == null || blueprint.getSiteNumber() == siteNumber)
-                                                if (races == null || races.contains(blueprint.getRace()))
-                                                    if (containsAllClasses(blueprint, itemClasses))
+//                                            if (siteNumber == null || blueprint.getSiteNumber() == siteNumber)
+//                                                if (races == null || races.contains(blueprint.getRace()))
+//                                                    if (containsAllClasses(blueprint, itemClasses))
                                                         return containsAllKeywords(blueprint, phases);
-            }
-        }
+//            }
+//        }
         return false;
     }
 

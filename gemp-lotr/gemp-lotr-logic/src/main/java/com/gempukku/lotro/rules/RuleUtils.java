@@ -6,7 +6,7 @@ import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
+import com.gempukku.lotro.processes.Skirmish;
 import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 

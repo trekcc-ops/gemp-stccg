@@ -1,17 +1,17 @@
 package com.gempukku.lotro.cards;
 
+import com.gempukku.lotro.common.CardType;
+import com.gempukku.lotro.common.Uniqueness;
 import com.gempukku.lotro.effectappender.EffectAppenderFactory;
+import com.gempukku.lotro.fieldprocessor.*;
 import com.gempukku.lotro.filters.FilterFactory;
 import com.gempukku.lotro.modifiers.ModifierSourceFactory;
-import com.gempukku.lotro.fieldprocessor.*;
 import com.gempukku.lotro.requirement.RequirementFactory;
 import com.gempukku.lotro.requirement.trigger.TriggerCheckerFactory;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
     final Logger LOG = Logger.getLogger(LotroCardBlueprintBuilder.class);
@@ -29,11 +29,13 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
         fieldProcessors.put("image-url", new ImageUrlFieldProcessor());
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
-        fieldProcessors.put("unique", new UniqueFieldProcessor());
+        fieldProcessors.put("unique", new UniquenessFieldProcessor());
         fieldProcessors.put("side", new SideFieldProcessor());
         fieldProcessors.put("culture", new CultureFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
         fieldProcessors.put("race", new RaceFieldProcessor());
+        fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
+        fieldProcessors.put("facility-type", new FacilityTypeFieldProcessor());
         fieldProcessors.put("itemclass", new PossessionClassFieldProcessor());
         fieldProcessors.put("keyword", new KeywordFieldProcessor());
         fieldProcessors.put("keywords", new KeywordFieldProcessor());
@@ -73,6 +75,17 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
 
             LOG.debug("Processing field " + field + " with value " + fieldValue);
             fieldProcessor.processField(field, fieldValue, result, this);
+        }
+
+        // Apply uniqueness based on ST1E glossary
+        List<CardType> implicitlyUniqueTypes = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
+                CardType.SITE, CardType.MISSION, CardType.TIME_LOCATION);
+        if (result.getUniqueness() == null) {
+            if (implicitlyUniqueTypes.contains(result.getCardType())) {
+                result.setUniqueness(Uniqueness.UNIQUE);
+            } else {
+                result.setUniqueness(Uniqueness.UNIVERSAL);
+            }
         }
 
         result.validateConsistency();

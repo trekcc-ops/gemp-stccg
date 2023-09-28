@@ -550,8 +550,10 @@ function layoutTokens(cardElem) {
             for (var token in tokens)
                 if (tokens.hasOwnProperty(token)) {
                     if (token == "count") {
-                        var tokenElem = $("<div class='cardCount token'>" + tokens[token] + "</div>").css({position:"absolute", left:((width - 20) / 2) + "px", top:((height - 18) / 2) + "px"});
-                        tokenOverlay.append(tokenElem);
+                        if (tokens[token] > 0) {
+                            var tokenElem = $("<div class='cardCount token'>" + tokens[token] + "</div>").css({position:"absolute", left:((width - 20) / 2) + "px", top:((height - 18) / 2) + "px"});
+                            tokenOverlay.append(tokenElem);
+                        }
                     } else if (tokens[token] > 0) {
                         var tokenCount = tokens[token];
 

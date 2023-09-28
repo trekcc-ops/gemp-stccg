@@ -1,11 +1,10 @@
 package com.gempukku.lotro.cards;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CardDeck {
-    protected final List<String> _drawDeckCards = new ArrayList<>();
+    protected List<String> _drawDeckCards = new ArrayList<>();
+    Map<String, List<String>> _subDecks = new HashMap<>();
     protected final String _deckName;
     protected String _notes;
     protected String _targetFormat;
@@ -19,20 +18,24 @@ public class CardDeck {
         _targetFormat = targetFormat;
         _notes = notes;
 
-        if (parts.length > 0 && !parts[0].equals(""))
-            this.addCard(parts[0]);
-        if (parts.length > 1 && !parts[1].equals(""))
-            this.addCard(parts[1]);
-        if (parts.length > 2)
-            for (String card : parts[2].split(",")) {
+        for (int i = 0; i < parts.length; i += 2) {
+            List<String> cards = new ArrayList<>();
+            for (String card : parts[i+1].split(",")) {
                 if (!card.equals(""))
-                    this.addCard(card);
+                    cards.add(card);
             }
-        if (parts.length > 3)
-            for (String card : parts[3].split(",")) {
-                if (!card.equals(""))
-                    this.addCard(card);
-            }
+            _subDecks.put(parts[i], cards);
+        }
+        _drawDeckCards = _subDecks.get("DRAW_DECK");
+    }
+
+    public String buildContentsFromDeck() {
+        List<String> parts = new ArrayList<>();
+        _subDecks.forEach((k,v) -> {
+            parts.add(k);
+            parts.add(String.join(",",v));
+        });
+        return String.join("|", parts);
     }
 
     public String getDeckName() {

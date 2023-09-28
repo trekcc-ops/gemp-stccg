@@ -1,6 +1,6 @@
 $(document).ready(
     function () {
-        var ui = new GempLotrDeckBuildingUI();
+        var ui = new TribblesDeckBuildingUI();
 
         $('body').layout({
             applyDefaultStyles:true,

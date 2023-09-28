@@ -1,14 +1,14 @@
 package com.gempukku.lotro.game.formats;
 
-import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.adventure.Adventure;
 import com.gempukku.lotro.adventure.AdventureLibrary;
+import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.common.CardType;
+import com.gempukku.lotro.common.JSONDefs;
+import com.gempukku.lotro.common.Side;
+import com.gempukku.lotro.common.SitesBlock;
+import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.rules.GameUtils;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -330,7 +330,7 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public String validateDeckForHall(LotroDeck deck) {
+    public String validateDeckForHall(CardDeck deck) {
         List<String> validations = validateDeck(deck);
         if(validations.size() == 0)
             return "";
@@ -347,7 +347,7 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public List<String> validateDeck(LotroDeck deck) {
+    public List<String> validateDeck(CardDeck deck) {
         ArrayList<String> result = new ArrayList<>();
         ArrayList<String> errataResult = new ArrayList<>();
         String valid;
@@ -372,8 +372,6 @@ public class DefaultGameFormat implements GameFormat {
             }
         }
 
-        // Sites
-        valid = validateSitesStructure(deck);
         if(!valid.isEmpty()) {
             result.add(valid);
         }
@@ -383,16 +381,23 @@ public class DefaultGameFormat implements GameFormat {
         Map<String, Integer> cardCountByName = new HashMap<>();
         Map<String, Integer> cardCountByBaseBlueprintId = new HashMap<>();
 
-        if (deck.getRing() != null) {
-            processCardCounts(deck.getRing(), cardCountByName, cardCountByBaseBlueprintId);
-        }
-        if (deck.getRingBearer() != null) {
-            processCardCounts(deck.getRingBearer(), cardCountByName, cardCountByBaseBlueprintId);
-        }
         for (String blueprintId : deck.getDrawDeckCards())
             processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
-        for (String blueprintId : deck.getSites())
-            processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
+
+        /* TODO - The actual rule is that missions need to be unique to location, not blueprint.
+            This is also specifically a 1E rule, as I imagine 2E has a different system for mission uniqueness.
+         */
+        List<String> distinctCardsInDeck = deck.getDrawDeckCards().stream().distinct().toList();
+        distinctCardsInDeck.forEach((card) -> {
+            try {
+                LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(card);
+                if (blueprint.getCardType() == CardType.MISSION && blueprint.isUnique())
+                    if (Collections.frequency(deck.getDrawDeckCards(), card) > 1)
+                        result.add("Deck contains multiple copies of unique mission: " + blueprint.getTitle());
+            } catch (CardNotFoundException e) {
+                throw new RuntimeException("Deck contains card with no blueprint: " + card);
+            }
+        });
 
         for (Map.Entry<String, Integer> count : cardCountByName.entrySet()) {
             if (count.getValue() > _maximumSameName) {
@@ -442,20 +447,11 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public LotroDeck applyErrata(LotroDeck deck) {
-        LotroDeck deckWithErrata = new LotroDeck(deck.getDeckName());
+    public CardDeck applyErrata(CardDeck deck) {
+        CardDeck deckWithErrata = new LotroDeck(deck.getDeckName());
         deckWithErrata.setTargetFormat(deck.getTargetFormat());
-        if (deck.getRingBearer() != null) {
-            deckWithErrata.setRingBearer(applyErrata(deck.getRingBearer()));
-        }
-        if (deck.getRing() != null) {
-            deckWithErrata.setRing(applyErrata(deck.getRing()));
-        }
         for (String card : deck.getDrawDeckCards()) {
             deckWithErrata.addCard(applyErrata(card));
-        }
-        for (String site : deck.getSites()) {
-            deckWithErrata.addSite(applyErrata(site));
         }
         return deckWithErrata;
     }
@@ -483,7 +479,7 @@ public class DefaultGameFormat implements GameFormat {
                 .toList();
     }
 
-    private String validateDeckStructure(LotroDeck deck) {
+    private String validateDeckStructure(CardDeck deck) {
         StringBuilder result = new StringBuilder();
         if (deck.getDrawDeckCards().size() < _minimumDeckSize) {
             result.append("Deck contains below minimum number of cards: ").append(deck.getDrawDeckCards().size()).append("<").append(_minimumDeckSize).append(".\n");
@@ -508,63 +504,6 @@ public class DefaultGameFormat implements GameFormat {
             }
             if (fp != shadow) {
                 result.append("Deck contains different number of Shadow and Free peoples cards.\n");
-            }
-        }
-
-        return result.toString();
-    }
-
-    private String validateSitesStructure(LotroDeck deck)  {
-        StringBuilder result = new StringBuilder();
-        if (isOrderedSites()) {
-            boolean[] sites = new boolean[9];
-            for (String site : deck.getSites()) {
-                try {
-                    LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(site);
-                    if(blueprint.getSiteNumber() == 0)
-                        continue; // a shadows site which will already have tripped a validation
-                    if (sites[blueprint.getSiteNumber() - 1]) {
-                        result.append("Deck has multiple of the same site number: ").append(blueprint.getSiteNumber()).append("\n");
-                    }
-                    sites[blueprint.getSiteNumber() - 1] = true;
-                }
-                catch(CardNotFoundException exception)
-                {
-                    result.append(CardRemovedError + ": ").append(site).append("\n");
-                }
-            }
-        } else {
-            Set<LotroCardBlueprint> siteBlueprints = new HashSet<>();
-
-            List<String> sites = deck.getSites();
-            int size = sites.size();
-            for (String site : sites) {
-                try {
-                    siteBlueprints.add(_library.getLotroCardBlueprint(site));
-                }
-                catch(CardNotFoundException ex)
-                {
-                    result.append(CardRemovedError + ": ").append(site).append("\n");
-                }
-            }
-
-            if (siteBlueprints.size() < size) {
-                result.append("Deck contains multiple of the same site.\n");
-            }
-
-            Map<Integer, Integer> twilightCount = new HashMap<>();
-            for (LotroCardBlueprint siteBlueprint : siteBlueprints) {
-                int twilight = siteBlueprint.getTwilightCost();
-                Integer count = twilightCount.get(twilight);
-                if (count == null)
-                    count = 0;
-                twilightCount.put(twilight, count + 1);
-            }
-
-            for (Map.Entry<Integer, Integer> twilightCountEntry : twilightCount.entrySet()) {
-                if (twilightCountEntry.getValue() > 3) {
-                    result.append("Deck contains ").append(twilightCountEntry.getValue()).append(" sites with twilight number of ").append(twilightCountEntry.getKey()).append(".\n");
-                }
             }
         }
 

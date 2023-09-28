@@ -1,10 +1,7 @@
 package com.gempukku.lotro.hall;
 
 import com.gempukku.lotro.*;
-import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.DeckInvalidException;
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.chat.ChatCommandErrorException;
 import com.gempukku.lotro.chat.ChatRoomMediator;
 import com.gempukku.lotro.chat.ChatServer;
@@ -315,7 +312,7 @@ public class HallServer extends AbstractServer {
 
         GameSettings gameSettings = createGameSettings(format, timer, description, isInviteOnly, isPrivate, isHidden);
 
-        LotroDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), player, deckName, gameSettings.getCollectionType());
+        CardDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), player, deckName, gameSettings.getCollectionType());
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -335,7 +332,7 @@ public class HallServer extends AbstractServer {
 
         GameSettings gameSettings = createGameSettings(type, timer, description, isInviteOnly, isPrivate, isHidden);
 
-        LotroDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), librarian, deckName, gameSettings.getCollectionType());
+        CardDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), librarian, deckName, gameSettings.getCollectionType());
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -404,7 +401,7 @@ public class HallServer extends AbstractServer {
             if (tournamentQueue.isPlayerSignedUp(player.getName()))
                 throw new HallException("You have already joined that queue");
 
-            LotroDeck lotroDeck = null;
+            CardDeck lotroDeck = null;
             if (tournamentQueue.isRequiresDeck())
                 lotroDeck = validateUserAndDeck(_formatLibrary.getFormat(tournamentQueue.getFormat()), player, deckName, tournamentQueue.getCollectionType());
 
@@ -426,7 +423,7 @@ public class HallServer extends AbstractServer {
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
-        LotroDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), player, deckName, gameSettings.getCollectionType());
+        CardDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), player, deckName, gameSettings.getCollectionType());
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -446,7 +443,7 @@ public class HallServer extends AbstractServer {
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
-        LotroDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), librarian, deckName, gameSettings.getCollectionType());
+        CardDeck lotroDeck = validateUserAndDeck(gameSettings.getLotroFormat(), librarian, deckName, gameSettings.getCollectionType());
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -583,9 +580,9 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private LotroDeck validateUserAndDeck(GameFormat format, User player, String deckName, CollectionType collectionType) throws HallException {
+    private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName, CollectionType collectionType) throws HallException {
         logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deckName);
-        LotroDeck lotroDeck = _lotroServer.getParticipantDeck(player, deckName);
+        CardDeck lotroDeck = _lotroServer.getParticipantDeck(player, deckName);
         if (lotroDeck == null) {
             _log.debug("Player '" + player.getName() + "' attempting to use deck '" + deckName + "' but failed.");
             throw new HallException("You don't have a deck registered yet");
@@ -601,7 +598,7 @@ public class HallServer extends AbstractServer {
         return lotroDeck;
     }
 
-    private LotroDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, LotroDeck lotroDeck) throws HallException, DeckInvalidException {
+    private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck lotroDeck) throws HallException, DeckInvalidException {
         logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + lotroDeck);
         String validation = format.validateDeckForHall(lotroDeck);
         if(validation == null || !validation.isEmpty())
@@ -613,14 +610,8 @@ public class HallServer extends AbstractServer {
         if (collectionType.getCode().equals("default")) {
             CardCollection ownedCollection = _collectionsManager.getPlayerCollection(player, "permanent+trophy");
 
-            LotroDeck filteredSpecialCardsDeck = new LotroDeck(lotroDeck.getDeckName());
+            CardDeck filteredSpecialCardsDeck = new CardDeck(lotroDeck.getDeckName());
             filteredSpecialCardsDeck.setTargetFormat(lotroDeck.getTargetFormat());
-            if (lotroDeck.getRing() != null)
-                filteredSpecialCardsDeck.setRing(filterCard(lotroDeck.getRing(), ownedCollection));
-            filteredSpecialCardsDeck.setRingBearer(filterCard(lotroDeck.getRingBearer(), ownedCollection));
-
-            for (String site : lotroDeck.getSites())
-                filteredSpecialCardsDeck.addSite(filterCard(site, ownedCollection));
 
             for (Map.Entry<String, Integer> cardCount : CollectionUtils.getTotalCardCount(lotroDeck.getDrawDeckCards()).entrySet()) {
                 String blueprintId = cardCount.getKey();
@@ -837,7 +828,7 @@ public class HallServer extends AbstractServer {
         }
 
         @Override
-        public void createGame(String playerOne, LotroDeck deckOne, String playerTwo, LotroDeck deckTwo) {
+        public void createGame(String playerOne, CardDeck deckOne, String playerTwo, CardDeck deckTwo) {
             final GameParticipant[] participants = new GameParticipant[2];
             participants[0] = new GameParticipant(playerOne, deckOne);
             participants[1] = new GameParticipant(playerTwo, deckTwo);

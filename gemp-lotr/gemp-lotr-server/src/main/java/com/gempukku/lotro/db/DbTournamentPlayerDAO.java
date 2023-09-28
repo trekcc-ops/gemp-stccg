@@ -1,6 +1,6 @@
 package com.gempukku.lotro.db;
 
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.tournament.TournamentPlayerDAO;
 
 import java.sql.Connection;
@@ -20,7 +20,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public void addPlayer(String tournamentId, String playerName, LotroDeck deck) {
+    public void addPlayer(String tournamentId, String playerName, CardDeck deck) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = conn.prepareStatement("insert into tournament_player (tournament_id, player, deck_name, deck) values (?, ?, ?, ?)")) {
@@ -37,7 +37,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public void updatePlayerDeck(String tournamentId, String playerName, LotroDeck deck) {
+    public void updatePlayerDeck(String tournamentId, String playerName, CardDeck deck) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = conn.prepareStatement("update tournament_player set deck_name = ?, deck = ? where tournament_id=? and player=?")) {
@@ -90,19 +90,19 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public Map<String, LotroDeck> getPlayerDecks(String tournamentId, String format) {
+    public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select player, deck_name, deck from tournament_player where tournament_id=? and deck_name is not null")) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
-                        Map<String, LotroDeck> result = new HashMap<>();
+                        Map<String, CardDeck> result = new HashMap<>();
                         while (rs.next()) {
                             String player = rs.getString(1);
                             String deckName = rs.getString(2);
                             String contents = rs.getString(3);
 
-                            result.put(player, new LotroDeck(deckName, contents, format, ""));
+                            result.put(player, new CardDeck(deckName, contents, format, ""));
                         }
                         return result;
                     }
@@ -134,7 +134,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public LotroDeck getPlayerDeck(String tournamentId, String playerName, String format) {
+    public CardDeck getPlayerDeck(String tournamentId, String playerName, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select deck_name, deck from tournament_player where tournament_id=? and player=?")) {
@@ -142,7 +142,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
                     statement.setString(2, playerName);
                     try (ResultSet rs = statement.executeQuery()) {
                         if (rs.next())
-                            return new LotroDeck(rs.getString(1), rs.getString(2), format, "");
+                            return new CardDeck(rs.getString(1), rs.getString(2), format, "");
                         else
                             return null;
                     }

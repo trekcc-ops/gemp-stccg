@@ -1,11 +1,10 @@
-package com.gempukku.lotro.processes.lotronly.archery;
+package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.GameProcess;
 
 public class ShadowPlayerAssignsArcheryDamageGameProcess implements GameProcess {
     private final String _playerId;

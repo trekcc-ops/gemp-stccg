@@ -1,7 +1,7 @@
 package com.gempukku.lotro.tournament;
 
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.db.vo.CollectionType;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.util.Date;
 import java.util.List;
@@ -11,23 +11,23 @@ import java.util.Set;
 public interface ITournamentService {
     void clearCache();
 
-    void addPlayer(String tournamentId, String playerName, LotroDeck deck);
+    void addPlayer(String tournamentId, String playerName, CardDeck deck);
 
     void dropPlayer(String tournamentId, String playerName);
 
     Set<String> getPlayers(String tournamentId);
 
-    Map<String, LotroDeck> getPlayerDecks(String tournamentId, String format);
+    Map<String, CardDeck> getPlayerDecks(String tournamentId, String format);
 
     Set<String> getDroppedPlayers(String tournamentId);
 
-    LotroDeck getPlayerDeck(String tournamentId, String player, String format);
+    CardDeck getPlayerDeck(String tournamentId, String player, String format);
 
     void addMatch(String tournamentId, int round, String playerOne, String playerTwo);
 
     void setMatchResult(String tournamentId, int round, String winner);
 
-    void setPlayerDeck(String tournamentId, String player, LotroDeck deck);
+    void setPlayerDeck(String tournamentId, String player, CardDeck deck);
 
     List<TournamentMatch> getMatches(String tournamentId);
 

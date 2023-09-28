@@ -1,17 +1,17 @@
 package com.gempukku.lotro.db;
 
-import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.common.CardType;
-import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.game.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class DbDeckDAO implements DeckDAO {
     private final DbAccess _dbAccess;
@@ -22,11 +22,11 @@ public class DbDeckDAO implements DeckDAO {
         _library = library;
     }
 
-    public synchronized LotroDeck getDeckForPlayer(User player, String name) {
+    public synchronized CardDeck getDeckForPlayer(User player, String name) {
         return getPlayerDeck(player.getId(), name);
     }
 
-    public synchronized void saveDeckForPlayer(User player, String name, String target_format, String notes, LotroDeck deck) {
+    public synchronized void saveDeckForPlayer(User player, String name, String target_format, String notes, CardDeck deck) {
         boolean newDeck = getPlayerDeck(player.getId(), name) == null;
         storeDeckToDB(player.getId(), name, target_format, notes, deck, newDeck);
     }
@@ -39,8 +39,8 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    public synchronized LotroDeck renameDeck(User player, String oldName, String newName) {
-        LotroDeck deck = getDeckForPlayer(player, oldName);
+    public synchronized CardDeck renameDeck(User player, String oldName, String newName) {
+        CardDeck deck = getDeckForPlayer(player, oldName);
         if (deck == null)
             return null;
         saveDeckForPlayer(player, newName, deck.getTargetFormat(), deck.getNotes(), deck);
@@ -72,7 +72,7 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    private LotroDeck getPlayerDeck(int playerId, String name) {
+    private CardDeck getPlayerDeck(int playerId, String name) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select contents, target_format, notes from deck where player_id=? and name=?")) {
@@ -80,7 +80,7 @@ public class DbDeckDAO implements DeckDAO {
                     statement.setString(2, name);
                     try (ResultSet rs = statement.executeQuery()) {
                         if (rs.next())
-                            return buildLotroDeckFromContents(name, rs.getString(1), rs.getString(2), rs.getString(3));
+                            return new CardDeck(name, rs.getString(1), rs.getString(2), rs.getString(3));
 
                         return null;
                     }
@@ -92,7 +92,8 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    private void storeDeckToDB(int playerId, String name, String target_format, String notes, LotroDeck deck, boolean newDeck) {
+    private void storeDeckToDB(int playerId, String name, String target_format, String notes, CardDeck deck,
+                               boolean newDeck) {
         String contents = deck.buildContentsFromDeck();
         try {
             if (newDeck)
@@ -104,41 +105,12 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    public synchronized LotroDeck buildLotroDeckFromContents(String deckName, String contents, String target_format, String notes) {
-        if (contents.contains("|")) {
-            return new LotroDeck(deckName, contents, target_format, notes);
-        } else {
-            // Old format
-            List<String> cardsList = Arrays.asList(contents.split(","));
-            String ringBearer = cardsList.get(0);
-            String ring = cardsList.get(1);
-            final LotroDeck lotroDeck = new LotroDeck(deckName);
-            lotroDeck.setTargetFormat(target_format);
-            lotroDeck.setNotes(notes);
-            if (ringBearer.length() > 0)
-                lotroDeck.setRingBearer(ringBearer);
-            if (ring.length() > 0)
-                lotroDeck.setRing(ring);
-            for (String blueprintId : cardsList.subList(2, cardsList.size())) {
-                final LotroCardBlueprint cardBlueprint;
-                try {
-                    cardBlueprint = _library.getLotroCardBlueprint(blueprintId);
-                    if (cardBlueprint.getCardType() == CardType.SITE)
-                        lotroDeck.addSite(blueprintId);
-                    else
-                        lotroDeck.addCard(blueprintId);
-                } catch (CardNotFoundException e) {
-                    // Ignore the card
-                }
-            }
-
-            return lotroDeck;
-        }
-    }
-
     private void deleteDeckFromDB(int playerId, String name) throws SQLException {
         try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("delete from deck where player_id=? and name=?")) {
+            try (
+                    PreparedStatement statement =
+                            connection.prepareStatement("delete from deck where player_id=? and name=?")
+            ) {
                 statement.setInt(1, playerId);
                 statement.setString(2, name);
                 statement.execute();

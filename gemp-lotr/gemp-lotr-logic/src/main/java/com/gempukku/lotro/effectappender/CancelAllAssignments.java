@@ -5,13 +5,10 @@ import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.effectappender.EffectAppender;
-import com.gempukku.lotro.effectappender.EffectAppenderProducer;
-import com.gempukku.lotro.effectappender.DelayedAppender;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.assign.Assignment;
+import com.gempukku.lotro.processes.Assignment;
 import org.json.simple.JSONObject;
 
 import java.util.LinkedList;

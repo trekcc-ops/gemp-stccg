@@ -1,10 +1,9 @@
-package com.gempukku.lotro.processes.lotronly.archery;
+package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -25,6 +25,8 @@ public interface LotroCardBlueprint {
 
     Race getRace();
 
+    Uniqueness getUniqueness();
+
     boolean isUnique();
 
     String getTitle();

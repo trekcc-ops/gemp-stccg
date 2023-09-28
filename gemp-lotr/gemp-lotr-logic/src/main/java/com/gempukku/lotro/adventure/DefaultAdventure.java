@@ -1,25 +1,17 @@
 package com.gempukku.lotro.adventure;
 
+import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.effects.PlaySiteEffect;
-import com.gempukku.lotro.gamestate.GameState;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.DefaultActionsEnvironment;
-import com.gempukku.lotro.game.PlayOrder;
-import com.gempukku.lotro.modifiers.ModifiersLogic;
-import com.gempukku.lotro.game.PlayerOrderFeedback;
 import com.gempukku.lotro.effects.UnrespondableEffect;
-import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.processes.lotronly.BiddingGameProcess;
-import com.gempukku.lotro.processes.lotronly.ShadowPhasesGameProcess;
-import com.gempukku.lotro.processes.lotronly.archery.FellowshipPlayerChoosesShadowPlayerToAssignDamageToGameProcess;
-import com.gempukku.lotro.processes.lotronly.assign.ShadowPlayersAssignTheirMinionsGameProcess;
-import com.gempukku.lotro.processes.lotronly.regroup.DiscardAllMinionsGameProcess;
-import com.gempukku.lotro.processes.lotronly.regroup.PlayerReconcilesGameProcess;
-import com.gempukku.lotro.processes.lotronly.regroup.ReturnFollowersToSupportGameProcess;
-import com.gempukku.lotro.processes.lotronly.regroup.ShadowPlayersReconcileGameProcess;
+import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.game.PlayOrder;
+import com.gempukku.lotro.game.PlayerOrderFeedback;
+import com.gempukku.lotro.gamestate.GameState;
+import com.gempukku.lotro.modifiers.ModifiersLogic;
+import com.gempukku.lotro.processes.*;
 import com.gempukku.lotro.rules.WinConditionRule;
 
 import java.util.Set;
@@ -73,19 +65,17 @@ public class DefaultAdventure implements Adventure {
 
     @Override
     public GameProcess getBeforeFellowshipChooseToMoveGameProcess(GameProcess followingProcess) {
-        return new ShadowPlayersReconcileGameProcess(followingProcess);
+        return null;
     }
 
     @Override
     public GameProcess getPlayerStaysGameProcess(DefaultGame game, GameProcess followingProcess) {
-        return new PlayerReconcilesGameProcess(game.getGameState().getCurrentPlayerId(),
-                new ReturnFollowersToSupportGameProcess(
-                        new DiscardAllMinionsGameProcess(followingProcess)));
+        return null;
     }
 
     @Override
     public GameProcess getAfterFellowshipPhaseGameProcess() {
-        return new ShadowPhasesGameProcess();
+        return null;
     }
 
     @Override

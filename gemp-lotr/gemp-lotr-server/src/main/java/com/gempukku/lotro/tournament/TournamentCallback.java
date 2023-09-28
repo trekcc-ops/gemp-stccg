@@ -1,9 +1,9 @@
 package com.gempukku.lotro.tournament;
 
-import com.gempukku.lotro.cards.LotroDeck;
+import com.gempukku.lotro.cards.CardDeck;
 
 public interface TournamentCallback {
-    void createGame(String playerOne, LotroDeck deckOne, String playerTwo, LotroDeck deckTwo);
+    void createGame(String playerOne, CardDeck deckOne, String playerTwo, CardDeck deckTwo);
 
     void broadcastMessage(String message);
 }

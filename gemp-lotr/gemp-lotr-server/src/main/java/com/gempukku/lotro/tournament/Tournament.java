@@ -1,10 +1,10 @@
 package com.gempukku.lotro.tournament;
 
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.competitive.PlayerStanding;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.draft.Draft;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.util.List;
 
@@ -38,8 +38,8 @@ public interface Tournament {
     void reportGameFinished(String winner, String loser);
 
     void playerChosenCard(String playerName, String cardId);
-    void playerSummittedDeck(String player, LotroDeck deck);
-    LotroDeck getPlayerDeck(String player);
+    void playerSummittedDeck(String player, CardDeck deck);
+    CardDeck getPlayerDeck(String player);
     void dropPlayer(String player);
 
     Draft getDraft();

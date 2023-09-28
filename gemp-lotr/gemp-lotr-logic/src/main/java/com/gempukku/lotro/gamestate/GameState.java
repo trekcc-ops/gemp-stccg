@@ -5,8 +5,8 @@ import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.modifiers.ModifierFlag;
-import com.gempukku.lotro.processes.lotronly.assign.Assignment;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
+import com.gempukku.lotro.processes.Assignment;
+import com.gempukku.lotro.processes.Skirmish;
 import org.apache.log4j.Logger;
 
 import java.security.InvalidParameterException;

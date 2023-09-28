@@ -4,9 +4,9 @@ import com.gempukku.lotro.DateUtils;
 import com.gempukku.lotro.PlayerLock;
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.cards.LotroDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.collection.TransferDAO;
 import com.gempukku.lotro.db.PlayerDAO;
@@ -259,20 +259,15 @@ public class LotroServerRequestHandler {
         return sb.toString();
     }
     
-    protected String getHTMLDeck(LotroDeck deck,boolean showToolTip, SortAndFilterCards sortAndFilter,
+    protected String getHTMLDeck(CardDeck deck, boolean showToolTip, SortAndFilterCards sortAndFilter,
                                  FormatLibrary formatLibrary)
             throws CardNotFoundException {
         
         StringBuilder result = new StringBuilder();
 
-        result.append(listCard("Ring-Bearer", deck.getRingBearer(), showToolTip));
-        result.append(listCard("Ring", deck.getRing(), showToolTip));
-
         DefaultCardCollection deckCards = new DefaultCardCollection();
         for (String card : deck.getDrawDeckCards())
             deckCards.addItem(_library.getBaseBlueprintId(card), 1);
-        for (String site : deck.getSites())
-            deckCards.addItem(_library.getBaseBlueprintId(site), 1);
 
         result.append(listCards("Adventure Deck","cardType:SITE sort:siteNumber,twilight",
                 deckCards,false, sortAndFilter, formatLibrary, showToolTip));

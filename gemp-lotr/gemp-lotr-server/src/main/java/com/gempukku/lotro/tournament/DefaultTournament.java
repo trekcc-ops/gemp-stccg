@@ -1,5 +1,6 @@
 package com.gempukku.lotro.tournament;
 
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.competitive.BestOfOneStandingsProducer;
 import com.gempukku.lotro.competitive.PlayerStanding;
@@ -8,7 +9,6 @@ import com.gempukku.lotro.draft.DefaultDraft;
 import com.gempukku.lotro.draft.Draft;
 import com.gempukku.lotro.draft.DraftPack;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.cards.LotroDeck;
 import com.gempukku.lotro.packs.ProductLibrary;
 import org.apache.commons.lang.StringUtils;
 
@@ -29,7 +29,7 @@ public class DefaultTournament implements Tournament {
     private int _tournamentRound;
 
     private final Set<String> _players;
-    private final Map<String, LotroDeck> _playerDecks;
+    private final Map<String, CardDeck> _playerDecks;
     private final Set<String> _droppedPlayers;
     private final Map<String, Integer> _playerByes;
 
@@ -168,7 +168,7 @@ public class DefaultTournament implements Tournament {
     }
 
     @Override
-    public void playerSummittedDeck(String player, LotroDeck deck) {
+    public void playerSummittedDeck(String player, CardDeck deck) {
         _lock.writeLock().lock();
         try {
             if (_tournamentStage == Stage.DECK_BUILDING && _players.contains(player)) {
@@ -180,7 +180,7 @@ public class DefaultTournament implements Tournament {
         }
     }
 
-    public LotroDeck getPlayerDeck(String player) {
+    public CardDeck getPlayerDeck(String player) {
         _lock.readLock().lock();
         try {
             return _playerDecks.get(player);

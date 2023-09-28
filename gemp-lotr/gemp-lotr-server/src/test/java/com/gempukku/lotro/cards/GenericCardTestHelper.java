@@ -13,8 +13,8 @@ import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.Modifier;
-import com.gempukku.lotro.processes.lotronly.assign.Assignment;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
+import com.gempukku.lotro.processes.Assignment;
+import com.gempukku.lotro.processes.Skirmish;
 import com.gempukku.lotro.rules.GameUtils;
 import org.junit.Assert;
 

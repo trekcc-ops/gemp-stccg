@@ -4,7 +4,6 @@ import com.gempukku.lotro.AbstractServer;
 import com.gempukku.lotro.PrivateInformationException;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroDeck;
 import com.gempukku.lotro.chat.ChatCommandErrorException;
 import com.gempukku.lotro.chat.ChatServer;
 import com.gempukku.lotro.db.DeckDAO;
@@ -180,19 +179,19 @@ public class LotroServer extends AbstractServer {
         }
     }
 
-    public LotroDeck getParticipantDeck(User player, String deckName) {
+    public CardDeck getParticipantDeck(User player, String deckName) {
         return _deckDao.getDeckForPlayer(player, deckName);
     }
 
-    public LotroDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
-        if (contents.contains("|")) {
+    public CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
+/*        if (contents.contains("|")) {
             // New format
             int cnt = 0;
             for (char c : contents.toCharArray()) {
                 if (c == '|')
                     cnt++;
             }
-
+// TODO: Deck checking
             if (cnt != 3)
                 return null;
 
@@ -202,8 +201,8 @@ public class LotroServer extends AbstractServer {
             if (cards.size() < 2)
                 return null;
 
-        }
-        return _deckDao.buildLotroDeckFromContents(deckName, contents, targetFormat, notes);
+        } */
+        return new CardDeck(deckName, contents, targetFormat, notes);
     }
 
     public CardGameMediator getGameById(String gameId) {

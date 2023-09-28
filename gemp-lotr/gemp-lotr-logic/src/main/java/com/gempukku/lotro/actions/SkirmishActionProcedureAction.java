@@ -1,12 +1,10 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.Action;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
+import com.gempukku.lotro.processes.Skirmish;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 

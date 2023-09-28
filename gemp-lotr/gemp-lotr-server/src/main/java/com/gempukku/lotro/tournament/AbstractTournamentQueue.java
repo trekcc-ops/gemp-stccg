@@ -1,9 +1,9 @@
 package com.gempukku.lotro.tournament;
 
+import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ import java.util.Queue;
 public abstract class AbstractTournamentQueue implements TournamentQueue {
     protected final int _cost;
     protected final Queue<String> _players = new LinkedList<>();
-    protected final Map<String, LotroDeck> _playerDecks = new HashMap<>();
+    protected final Map<String, CardDeck> _playerDecks = new HashMap<>();
     protected final boolean _requiresDeck;
 
     private final CollectionType _currencyCollection = CollectionType.MY_CARDS;
@@ -50,7 +50,7 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     }
 
     @Override
-    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, LotroDeck deck) throws SQLException, IOException {
+    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException {
         if (!_players.contains(player.getName()) && isJoinable()) {
             if (_cost <= 0 || collectionsManager.removeCurrencyFromPlayerCollection("Joined "+getTournamentQueueName()+" queue", player, _currencyCollection, _cost)) {
                 _players.add(player.getName());

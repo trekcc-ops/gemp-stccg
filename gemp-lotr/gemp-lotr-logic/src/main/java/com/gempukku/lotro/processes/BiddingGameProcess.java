@@ -1,9 +1,7 @@
-package com.gempukku.lotro.processes.lotronly;
+package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayerOrderFeedback;
-import com.gempukku.lotro.processes.ChooseSeatingOrderGameProcess;
-import com.gempukku.lotro.processes.GameProcess;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedHashMap;

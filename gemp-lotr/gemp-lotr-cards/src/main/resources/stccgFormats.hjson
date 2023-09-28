@@ -12,7 +12,7 @@
         game: st1e
         code: st1emoderncomplete
         sites: FELLOWSHIP
-        set:[101, 155]
+        set:[101, 103, 155]
         minimumDeckSize: 60
         maximumSameName: 9999
         validateShadowFPCount: false

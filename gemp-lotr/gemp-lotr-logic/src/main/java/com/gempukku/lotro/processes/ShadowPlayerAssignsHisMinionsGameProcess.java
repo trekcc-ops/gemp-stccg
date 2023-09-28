@@ -1,4 +1,4 @@
-package com.gempukku.lotro.processes.lotronly.assign;
+package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.common.CardType;
@@ -12,7 +12,6 @@ import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.effects.AssignmentPhaseEffect;
-import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.Collection;
 import java.util.Map;

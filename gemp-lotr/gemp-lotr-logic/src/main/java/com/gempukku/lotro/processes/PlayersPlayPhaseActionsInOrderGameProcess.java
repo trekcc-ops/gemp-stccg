@@ -2,7 +2,6 @@ package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.lotronly.skirmish.Skirmish;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
