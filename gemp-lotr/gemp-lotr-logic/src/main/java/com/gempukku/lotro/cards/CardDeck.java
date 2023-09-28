@@ -4,6 +4,7 @@ import java.util.*;
 
 public class CardDeck {
     protected List<String> _drawDeckCards = new ArrayList<>();
+    protected List<String> _allDeckCards = new ArrayList<>();
     Map<String, List<String>> _subDecks = new HashMap<>();
     protected final String _deckName;
     protected String _notes;
@@ -21,8 +22,10 @@ public class CardDeck {
         for (int i = 0; i < parts.length; i += 2) {
             List<String> cards = new ArrayList<>();
             for (String card : parts[i+1].split(",")) {
-                if (!card.equals(""))
+                if (!card.equals("")) {
+                    _allDeckCards.add(card);
                     cards.add(card);
+                }
             }
             _subDecks.put(parts[i], cards);
         }
@@ -46,6 +49,9 @@ public class CardDeck {
     }
     public List<String> getDrawDeckCards() {
         return Collections.unmodifiableList(_drawDeckCards);
+    }
+    public List<String> getAllDeckCards() {
+        return Collections.unmodifiableList(_allDeckCards);
     }
     public Map<String, List<String>> getSubDecks() { return _subDecks; }
     public String getTargetFormat() { return _targetFormat; }

@@ -299,19 +299,24 @@ public class DefaultGameFormat implements GameFormat {
                 return null;
 
             if (_validSets.size() > 0 && !isValidInSets(blueprintId))
-                return "Deck contains card not from valid set: " + GameUtils.getFullName(_library.getLotroCardBlueprint(blueprintId));
+                return "Deck contains card not from valid set: " +
+                        GameUtils.getFullName(_library.getLotroCardBlueprint(blueprintId));
 
             // Banned cards
             Set<String> allAlternates = _library.getAllAlternates(blueprintId);
             for (String bannedBlueprintId : _bannedCards) {
-                if (bannedBlueprintId.equals(blueprintId) || (allAlternates != null && allAlternates.contains(bannedBlueprintId)))
-                    return "Deck contains a copy of an X-listed card: " + GameUtils.getFullName(_library.getLotroCardBlueprint(bannedBlueprintId));
+                if (bannedBlueprintId.equals(blueprintId) ||
+                        (allAlternates != null && allAlternates.contains(bannedBlueprintId)))
+                    return "Deck contains a copy of an X-listed card: " +
+                            GameUtils.getFullName(_library.getLotroCardBlueprint(bannedBlueprintId));
             }
 
             // Errata
             for (String originalBlueprintId : _errataCardMap.keySet()) {
-                if (originalBlueprintId.equals(blueprintId) || (allAlternates != null && allAlternates.contains(originalBlueprintId)))
-                    return "Deck contains non-errata of an errata'd card: " + GameUtils.getFullName(_library.getLotroCardBlueprint(originalBlueprintId));
+                if (originalBlueprintId.equals(blueprintId) ||
+                        (allAlternates != null && allAlternates.contains(originalBlueprintId)))
+                    return "Deck contains non-errata of an errata'd card: " +
+                            GameUtils.getFullName(_library.getLotroCardBlueprint(originalBlueprintId));
             }
 
         } catch (CardNotFoundException e) {
@@ -481,8 +486,9 @@ public class DefaultGameFormat implements GameFormat {
 
     private String validateDeckStructure(CardDeck deck) {
         StringBuilder result = new StringBuilder();
-        if (deck.getDrawDeckCards().size() < _minimumDeckSize) {
-            result.append("Deck contains below minimum number of cards: ").append(deck.getDrawDeckCards().size()).append("<").append(_minimumDeckSize).append(".\n");
+        if (deck.getAllDeckCards().size() < _minimumDeckSize) {
+            result.append("Deck contains below minimum number of cards: ")
+                    .append(deck.getAllDeckCards().size()).append("<").append(_minimumDeckSize).append(".\n");
         }
         if (_validateShadowFPCount) {
             int shadow = 0;
@@ -495,7 +501,8 @@ public class DefaultGameFormat implements GameFormat {
                     else if (card.getSide() == Side.FREE_PEOPLE)
                         fp++;
                     else
-                        result.append("Deck contains non-Shadow, non-Free-Peoples card: ").append(GameUtils.getFullName(card)).append(".\n");
+                        result.append("Deck contains non-Shadow, non-Free-Peoples card: ")
+                                .append(GameUtils.getFullName(card)).append(".\n");
                 }
                 catch(CardNotFoundException exception)
                 {
@@ -510,7 +517,8 @@ public class DefaultGameFormat implements GameFormat {
         return result.toString();
     }
 
-    private void processCardCounts(String blueprintId, Map<String, Integer> cardCountByName, Map<String, Integer> cardCountByBaseBlueprintId)  {
+    private void processCardCounts(String blueprintId, Map<String, Integer> cardCountByName,
+                                   Map<String, Integer> cardCountByBaseBlueprintId)  {
         try {
             LotroCardBlueprint cardBlueprint = _library.getLotroCardBlueprint(blueprintId);
             increaseCount(cardCountByName, cardBlueprint.getTitle());
