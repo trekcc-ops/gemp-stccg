@@ -5,9 +5,6 @@ var GempLotrDeckBuildingUI = Class.extend({
 
     manageDecksDiv:null,
 
-    siteDiv:null,
-    siteGroup:null,
-
     collectionDiv:null,
     formatSelect:null,
     currentFormat:null,
@@ -187,14 +184,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         });
         this.normalCollectionGroup.maxCardHeight = 200;
 
-        this.siteDiv = $("#sitesDiv");
-        this.siteGroup = new VerticalBarGroup(this.siteDiv, function (card) {
-            return true;
-        }, true);
-
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
-            return (card.zone == "FREE_PEOPLE");
+            return (card.zone == "DRAW_DECK");
         });
         this.drawDeckDiv.droppable({
             accept: function(d) {
@@ -741,47 +733,24 @@ var GempLotrDeckBuildingUI = Class.extend({
             });
     },
 
-    addCardToContainer:function (blueprintId, zone, container, tokens) {
-        var card = new Card(blueprintId, zone, "deck", "player");
+    addCardToContainer:function (blueprintId, subdeck, container, tokens) {
+        var card = new Card(blueprintId, subdeck, "deck", "player");
         var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         cardDiv.data("card", card);
         container.append(cardDiv);
         return cardDiv;
     },
 
-    showPredefinedFilter:function (filter, container) {
-        this.cardFilter.enableDetailFilters(false);
-        this.specialSelection = true;
-        this.cardFilter.setFilter(filter);
-
-        var that = this;
-        this.selectionFunc = function (blueprintId) {
-            var cardDiv = this.addCardToContainer(blueprintId, "special", container, false);
-            cardDiv.addClass("cardInDeck");
-            that.showNormalFilter();
-            that.layoutSpecialGroups();
-            that.deckModified(true);
-        };
-    },
-
-    showNormalFilter:function () {
-        this.cardFilter.enableDetailFilters(true);
-        this.specialSelection = false;
-        this.cardFilter.setFilter("");
-
-        this.selectionFunc = this.addCardToDeckAndLayout;
-    },
-
     addCardToDeckDontLayout:function (blueprintId, side) {
         var that = this;
-        this.addCardToDeck(blueprintId, "FREE_PEOPLE"); // "free_people" is a holdover from LotR syntax
+        this.addCardToDeck(blueprintId, "DRAW_DECK");
     },
 
     addCardToDeckAndLayout:function (cardElem) {
         var that = this;
         var cardData = cardElem.data("card");
         var blueprintId = cardData.blueprintId;
-        this.addCardToDeck(blueprintId, "FREE_PEOPLE"); // "free_people" is a holdover from LotR syntax
+        this.addCardToDeck(blueprintId, "DRAW_DECK");
         that.drawDeckGroup.layoutCards();
         that.deckModified(true);
         cardData.tokens = {count:(parseInt(cardData.tokens["count"]) + 1)};
@@ -804,7 +773,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         }
     },
 
-    addCardToDeck:function (blueprintId, side) {
+    addCardToDeck:function (blueprintId, subdeck) {
         var that = this;
         var added = false;
         $(".card.cardInDeck", this.drawDeckDiv).each(
@@ -817,7 +786,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                     }
                 });
         if (!added) {
-            var div = this.addCardToContainer(blueprintId, side, this.drawDeckDiv, false)
+            var div = this.addCardToContainer(blueprintId, subdeck, this.drawDeckDiv, false)
             div.addClass("cardInDeck");
             div.draggable({
                 helper: "clone",
@@ -938,21 +907,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             var notes = root.getElementsByTagName("notes");
             this.notes = notes[0].innerHTML;
 
-/*            var ringBearer = root.getElementsByTagName("ringBearer");
-            if (ringBearer.length > 0)
-                this.addCardToContainer(ringBearer[0].getAttribute("blueprintId"), "deck", this.ringBearerDiv, false).addClass("cardInDeck");
-
-            var ring = root.getElementsByTagName("ring");
-            if (ring.length > 0)
-                this.addCardToContainer(ring[0].getAttribute("blueprintId"), "deck", this.ringDiv, false).addClass("cardInDeck");*/
-
-            var sites = root.getElementsByTagName("site");
-            for (var i = 0; i < sites.length; i++)
-                this.addCardToContainer(sites[i].getAttribute("blueprintId"), "deck", this.siteDiv, false).addClass("cardInDeck");
-
             var cards = root.getElementsByTagName("card");
             for (var i = 0; i < cards.length; i++)
-                this.addCardToDeck(cards[i].getAttribute("blueprintId"), cards[i].getAttribute("side"));
+                this.addCardToDeck(cards[i].getAttribute("blueprintId"), cards[i].getAttribute("subdeck"));
 
             this.layoutUI(false);
 
@@ -1006,15 +963,6 @@ var GempLotrDeckBuildingUI = Class.extend({
 
     finishCollection:function () {
         this.normalCollectionGroup.layoutCards();
-    },
-
-    layoutSpecialGroups:function () {
-        this.siteGroup.layoutCards();
-    },
-
-    layoutDeck:function () {
-        this.layoutSpecialGroups();
-        this.drawDeckGroup.layoutCards();
     },
 
     processError:function (xhr, ajaxOptions, thrownError) {
@@ -1076,12 +1024,22 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
         }
 
         return result;
+    },
+
+    layoutDeck:function () {
+        this.drawDeckGroup.layoutCards();
     }
 
 });
 
 var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
-    init:function () { this._super(); },
+    init:function () {
+        this._super();
+        this.siteDiv = $("#sitesDiv");
+        this.siteGroup = new VerticalBarGroup(this.siteDiv, function (card) {
+            return true;
+        }, true);
+    },
 
     layoutUI:function (layoutDivs) {
         if (layoutDivs) {
@@ -1138,6 +1096,11 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
         result += cards;
 
         return result;
+    },
+
+    layoutDeck:function () {
+        this.siteGroup.layoutCards();
+        this.drawDeckGroup.layoutCards();
     }
 
 });

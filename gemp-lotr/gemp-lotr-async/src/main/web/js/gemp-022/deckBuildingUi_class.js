@@ -1,3 +1,4 @@
+// WIP code to try to remove dependence on JQuery. For now, this seems to be more effort than it will be worth.
 class TribblesDeckJSUI {
 
     constructor() {

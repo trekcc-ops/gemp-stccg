@@ -5,12 +5,13 @@ import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
 import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.db.DeckDAO;
 import com.gempukku.lotro.draft2.SoloDraftDefinitions;
-import com.gempukku.lotro.game.*;
+import com.gempukku.lotro.game.GameFormat;
+import com.gempukku.lotro.game.LotroServer;
+import com.gempukku.lotro.game.SortAndFilterCards;
+import com.gempukku.lotro.game.User;
 import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueDefinition;
 import io.netty.handler.codec.http.HttpMethod;
@@ -18,7 +19,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -38,8 +38,6 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
     private final FormatLibrary _formatLibrary;
     private final SoloDraftDefinitions _draftLibrary;
     private final LotroServer _lotroServer;
-
-    private static final Logger _log = Logger.getLogger(DeckRequestHandler.class);
 
     public DeckRequestHandler(Map<Type, Object> context) {
         super(context);
@@ -412,7 +410,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
 
     private List<Map.Entry<GameFormat, String>> GetDeckNamesAndFormats(User player)
     {
-        Set<Map.Entry<String, String>> names = new HashSet(_deckDao.getPlayerDeckNames(player));
+        Set<Map.Entry<String, String>> names = new HashSet<>(_deckDao.getPlayerDeckNames(player));
 
         return names.stream()
                 .map(pair -> new AbstractMap.SimpleEntry<>(_formatLibrary.getFormatByName(pair.getKey()), pair.getValue()))
@@ -499,31 +497,16 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
         notes.setTextContent(deck.getNotes());
         deckElem.appendChild(notes);
 
-        for (CardItem cardItem : _sortAndFilterCards.process("sort:cardType,culture,name", createCardItems(deck.getDrawDeckCards()), _library, _formatLibrary)) {
-            Element card = doc.createElement("card");
-            String side;
-            try {
-                side = _library.getLotroCardBlueprint(cardItem.getBlueprintId()).getSide().toString();
-            } catch (CardNotFoundException e) {
-                side = "FREE_PEOPLE";
+        for (String subDeck : deck.getSubDecks().keySet()) {
+            for (String card : deck.getSubDecks().get(subDeck)) {
+                Element cardElement = doc.createElement("card");
+                cardElement.setAttribute("blueprintId", card);
+                cardElement.setAttribute("subdeck", subDeck);
+                deckElem.appendChild(cardElement);
             }
-            catch (NullPointerException e) {
-                _log.debug("Non-sided card?? " + cardItem.getBlueprintId());
-                side = "FREE_PEOPLE";
-            }
-            card.setAttribute("side", side);
-            card.setAttribute("blueprintId", cardItem.getBlueprintId());
-            deckElem.appendChild(card);
         }
 
         return doc;
     }
 
-    private List<CardItem> createCardItems(List<String> blueprintIds) {
-        List<CardItem> cardItems = new LinkedList<>();
-        for (String blueprintId : blueprintIds)
-            cardItems.add(new BasicCardItem(blueprintId));
-
-        return cardItems;
-    }
 }

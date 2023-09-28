@@ -47,6 +47,7 @@ public class CardDeck {
     public List<String> getDrawDeckCards() {
         return Collections.unmodifiableList(_drawDeckCards);
     }
+    public Map<String, List<String>> getSubDecks() { return _subDecks; }
     public String getTargetFormat() { return _targetFormat; }
     public void setTargetFormat(String value) { _targetFormat = value; }
     public String getNotes() {
