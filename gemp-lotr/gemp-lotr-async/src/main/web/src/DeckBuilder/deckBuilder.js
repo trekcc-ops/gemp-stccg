@@ -1,6 +1,6 @@
 $(document).ready(
     function () {
-        var ui = new ST1EDeckBuildingUI();
+        var ui = new TribblesDeckBuildingUI();
 
         $('body').layout({
             applyDefaultStyles:true,

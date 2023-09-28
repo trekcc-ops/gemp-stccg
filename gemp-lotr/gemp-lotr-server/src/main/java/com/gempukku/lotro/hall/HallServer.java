@@ -1,7 +1,9 @@
 package com.gempukku.lotro.hall;
 
 import com.gempukku.lotro.*;
-import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.DeckInvalidException;
 import com.gempukku.lotro.chat.ChatCommandErrorException;
 import com.gempukku.lotro.chat.ChatRoomMediator;
 import com.gempukku.lotro.chat.ChatServer;
@@ -13,7 +15,6 @@ import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.game.formats.FormatLibrary;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
-import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.service.AdminService;
 import com.gempukku.lotro.tournament.*;
 import org.apache.log4j.Logger;
@@ -589,8 +590,7 @@ public class HallServer extends AbstractServer {
         }
 
         try {
-            lotroDeck = format.applyErrata(lotroDeck);
-            lotroDeck = validateUserAndDeck(format, player, collectionType, lotroDeck);
+            lotroDeck = validateUserAndDeck(format, player, collectionType, format.applyErrata(lotroDeck));
         } catch (DeckInvalidException e) {
             throw new HallException("Your selected deck is not valid for this format: " + e.getMessage());
         }
@@ -598,9 +598,10 @@ public class HallServer extends AbstractServer {
         return lotroDeck;
     }
 
-    private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck lotroDeck) throws HallException, DeckInvalidException {
-        logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + lotroDeck);
-        String validation = format.validateDeckForHall(lotroDeck);
+    private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck deck) throws HallException, DeckInvalidException {
+        // TODO - Removing this functionality since it seems closely related to the collections feature which will not be implemented in ST:CCG. Review to make sure it is not needed.
+/*        logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deck);
+        String validation = format.validateDeckForHall(deck);
         if(validation == null || !validation.isEmpty())
         {
             throw new DeckInvalidException(validation);
@@ -610,10 +611,9 @@ public class HallServer extends AbstractServer {
         if (collectionType.getCode().equals("default")) {
             CardCollection ownedCollection = _collectionsManager.getPlayerCollection(player, "permanent+trophy");
 
-            CardDeck filteredSpecialCardsDeck = new CardDeck(lotroDeck.getDeckName());
-            filteredSpecialCardsDeck.setTargetFormat(lotroDeck.getTargetFormat());
+            CardDeck filteredSpecialCardsDeck = new CardDeck(deck);
 
-            for (Map.Entry<String, Integer> cardCount : CollectionUtils.getTotalCardCount(lotroDeck.getDrawDeckCards()).entrySet()) {
+            for (Map.Entry<String, Integer> cardCount : CollectionUtils.getTotalCardCount(deck.getDrawDeckCards()).entrySet()) {
                 String blueprintId = cardCount.getKey();
                 int count = cardCount.getValue();
 
@@ -646,13 +646,13 @@ public class HallServer extends AbstractServer {
                 }
             }
 
-            lotroDeck = filteredSpecialCardsDeck;
+            deck = filteredSpecialCardsDeck;
         } else {
             CardCollection collection = _collectionsManager.getPlayerCollection(player, collectionType.getCode());
             if (collection == null)
                 throw new HallException("You don't have cards in the required collection to play in this format");
 
-            Map<String, Integer> deckCardCounts = CollectionUtils.getTotalCardCountForDeck(lotroDeck);
+            Map<String, Integer> deckCardCounts = CollectionUtils.getTotalCardCountForDeck(deck);
 
             for (Map.Entry<String, Integer> cardCount : deckCardCounts.entrySet()) {
                 int collectionCount = collection.getItemCount(cardCount.getKey()) +
@@ -675,8 +675,8 @@ public class HallServer extends AbstractServer {
                     }
                 }
             }
-        }
-        return lotroDeck;
+        }*/
+        return deck;
     }
 
     private String filterCard(String blueprintId, CardCollection ownedCollection) {

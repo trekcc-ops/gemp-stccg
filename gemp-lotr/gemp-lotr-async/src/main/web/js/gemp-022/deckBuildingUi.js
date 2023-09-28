@@ -46,6 +46,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         this.deckDiv = $("#deckDiv");
         this.manageDecksDiv = $("#manageDecks");
         this.formatSelect = $("#formatSelect");
+
         $("#formatSelect").change(
                 function () {
                     that.deckModified(true);
@@ -144,20 +145,6 @@ var GempLotrDeckBuildingUI = Class.extend({
             return true;
         });
         this.normalCollectionGroup.maxCardHeight = 200;
-
-        this.drawDeckDiv = $("#decksRegion");
-        this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
-            return (card.zone == "DRAW_DECK");
-        });
-        this.drawDeckDiv.droppable({
-            accept: function(d) {
-                return (d.hasClass("cardInCollection"));
-            },
-            drop: function(event, ui) {
-                that.selectionFunc($(ui.draggable).closest(".card"), "DRAW_DECK");
-            }
-        });
-        this.drawDeckGroup.maxCardHeight = 200;
 
         this.statsDiv = $("#statsDiv");
 
@@ -938,7 +925,22 @@ var GempLotrDeckBuildingUI = Class.extend({
 });
 
 var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
-    init:function () { this._super(); },
+    init:function () {
+            this._super();
+            this.drawDeckDiv = $("#decksRegion");
+            this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
+                return (card.zone == "DRAW_DECK");
+            });
+            this.drawDeckDiv.droppable({
+                accept: function(d) {
+                    return (d.hasClass("cardInCollection"));
+                },
+                drop: function(event, ui) {
+                    that.selectionFunc($(ui.draggable).closest(".card"), "DRAW_DECK");
+                }
+            });
+            this.drawDeckGroup.maxCardHeight = 200;
+    },
 
     layoutUI:function (layoutDivs) {
         if (layoutDivs) {
@@ -997,6 +999,19 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
     init:function () {
         that = this;
         this._super();
+        this.drawDeckDiv = $("#decksRegion");
+        this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
+            return (card.zone == "DRAW_DECK");
+        });
+        this.drawDeckDiv.droppable({
+            accept: function(d) {
+                return (d.hasClass("cardInCollection"));
+            },
+            drop: function(event, ui) {
+                that.selectionFunc($(ui.draggable).closest(".card"), "DRAW_DECK");
+            }
+        });
+        this.drawDeckGroup.maxCardHeight = 200;
         this.missionsDiv = $("#missionsDiv");
         this.missionsGroup = new NormalCardGroup(this.missionsDiv, function (card) {
             return (card.zone == "MISSIONS");

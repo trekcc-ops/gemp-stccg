@@ -363,7 +363,6 @@ public class DefaultGameFormat implements GameFormat {
             result.add(valid);
         }
 
-        String prevLine = "";
         String newLine;
         for (String card : deck.getDrawDeckCards()){
             newLine = validateCard(card);
@@ -453,11 +452,10 @@ public class DefaultGameFormat implements GameFormat {
 
     @Override
     public CardDeck applyErrata(CardDeck deck) {
-        CardDeck deckWithErrata = new LotroDeck(deck.getDeckName());
-        deckWithErrata.setTargetFormat(deck.getTargetFormat());
-        for (String card : deck.getDrawDeckCards()) {
-            deckWithErrata.addCard(applyErrata(card));
-        }
+        CardDeck deckWithErrata = new CardDeck(deck);
+        Map<String, List<String>> newSubDecks = deckWithErrata.getSubDecks();
+        newSubDecks.forEach((k, v) -> v.replaceAll(this::applyErrata));
+        deckWithErrata.setSubDecks(newSubDecks);
         return deckWithErrata;
     }
 

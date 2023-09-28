@@ -3,14 +3,18 @@ package com.gempukku.lotro.cards;
 import java.util.*;
 
 public class CardDeck {
-    protected List<String> _drawDeckCards = new ArrayList<>();
-    protected List<String> _allDeckCards = new ArrayList<>();
     Map<String, List<String>> _subDecks = new HashMap<>();
     protected final String _deckName;
     protected String _notes;
     protected String _targetFormat;
     public CardDeck(String deckName) {
         _deckName = deckName;
+    }
+    public CardDeck(CardDeck deck) {
+        _deckName = deck.getDeckName();
+        _subDecks = deck.getSubDecks();
+        _notes = deck.getNotes();
+        _targetFormat = deck.getTargetFormat();
     }
     public CardDeck(String deckName, String contents, String targetFormat, String notes) {
         // Assumes "new format" of LotR Gemp syntax
@@ -23,13 +27,11 @@ public class CardDeck {
             List<String> cards = new ArrayList<>();
             for (String card : parts[i+1].split(",")) {
                 if (!card.equals("")) {
-                    _allDeckCards.add(card);
                     cards.add(card);
                 }
             }
             _subDecks.put(parts[i], cards);
         }
-        _drawDeckCards = _subDecks.get("DRAW_DECK");
     }
 
     public String buildContentsFromDeck() {
@@ -45,17 +47,20 @@ public class CardDeck {
         return _deckName;
     }
     public void addCard(String card) {
-        _drawDeckCards.add(card);
+        _subDecks.get("DRAW_DECK").add(card);
     }
     public List<String> getDrawDeckCards() {
-        return Collections.unmodifiableList(_drawDeckCards);
+        return _subDecks.get("DRAW_DECK");
     }
     public List<String> getAllDeckCards() {
-        return Collections.unmodifiableList(_allDeckCards);
+        List<String> allCards = new ArrayList<>();
+        _subDecks.forEach((k, v) -> allCards.addAll(v));
+        return allCards;
     }
     public Map<String, List<String>> getSubDecks() { return _subDecks; }
+    public void setSubDecks(Map<String, List<String>> subDecks) { _subDecks = subDecks; }
     public String getTargetFormat() { return _targetFormat; }
-    public void setTargetFormat(String value) { _targetFormat = value; }
+
     public String getNotes() {
         return _notes;
     }
