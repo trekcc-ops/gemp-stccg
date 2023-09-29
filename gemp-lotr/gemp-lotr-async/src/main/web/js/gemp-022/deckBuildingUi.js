@@ -37,9 +37,9 @@ var GempLotrDeckBuildingUI = Class.extend({
                 function () {
                     that.clearCollection();
                 },
-                function (elem, type, blueprintId, count) {
+                function (elem, type, blueprintId, count, imageUrl) {
                     that.addCardToCollection(type, blueprintId, count, elem.getAttribute("side"),
-                        elem.getAttribute("contents"));
+                        elem.getAttribute("contents"), elem.getAttribute("imageUrl"));
                 },
                 function () {
                     that.finishCollection();
@@ -301,9 +301,10 @@ var GempLotrDeckBuildingUI = Class.extend({
                 var blueprintId = cardElem.getAttribute("blueprintId");
                 var subDeck = cardElem.getAttribute("subDeck");
                 var group = cardElem.getAttribute("group");
+                var imageUrl = cardElem.getAttribute("imageUrl");
                 var cardCount = parseInt(cardElem.getAttribute("count"));
                 for (var j = 0; j < cardCount; j++) {
-                    that.addCardToDeckDontLayout(blueprintId, subDeck);
+                    that.addCardToDeckDontLayout(blueprintId, imageUrl, subDeck);
                 }
             }
             that.deckModified(true);
@@ -568,7 +569,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                         selectedCardElem.data("card").displayCardInfo(that.infoDialog);
                         return false;
                     } else if (selectedCardElem.hasClass("cardInCollection")) {
-                        this.selectionFunc(selectedCardElem, "DRAW_DECK");
+                        this.selectionFunc(selectedCardElem, selectedCardElem.data("card").imageUrl, "DRAW_DECK");
                         // TODO: Refers to packs in collection
                     } else if (selectedCardElem.hasClass("packInCollection")) {
                         // if (confirm("Would you like to open this pack?")) {
@@ -621,6 +622,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                         var selection = selectedCardElem.data("selection");
                         var blueprintIds = selection.split("|");
                         for (var i = 0; i < blueprintIds.length; i++) {
+                                // TODO - This call of new Card() doesn't have an imageUrl parameter, is this a problem?
                             var card = new Card(blueprintIds[i], "selection", "selection" + i, "player");
                             var cardDiv = createCardDiv(
                                 card.imageUrl, null, card.isFoil(), false, card.isPack(), card.hasErrata()
@@ -659,24 +661,24 @@ var GempLotrDeckBuildingUI = Class.extend({
             });
     },
 
-    addCardToContainer:function (blueprintId, subDeck, container, tokens) {
-        var card = new Card(blueprintId, subDeck, "deck", "player");
+    addCardToContainer:function (blueprintId, imageUrl, subDeck, container, tokens) {
+        var card = new Card(blueprintId, subDeck, "deck", "player", imageUrl);
         var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         cardDiv.data("card", card);
         container.append(cardDiv);
         return cardDiv;
     },
 
-    addCardToDeckDontLayout:function (blueprintId, zone) {
+    addCardToDeckDontLayout:function (blueprintId, imageUrl, zone) {
         var that = this;
-        this.addCardToDeck(blueprintId, zone);
+        this.addCardToDeck(blueprintId, imageUrl, zone);
     },
 
-    addCardToDeckAndLayout:function (cardElem, zone) {
+    addCardToDeckAndLayout:function (cardElem, imageUrl, zone) {
         var that = this;
         var cardData = cardElem.data("card");
         var blueprintId = cardData.blueprintId;
-        this.addCardToDeck(blueprintId, zone);
+        this.addCardToDeck(blueprintId, imageUrl, zone);
         that.layoutDeck();
         that.deckModified(true);
         cardData.tokens = {count:(parseInt(cardData.tokens["count"]) + 1)};
@@ -699,20 +701,20 @@ var GempLotrDeckBuildingUI = Class.extend({
         }
     },
 
-    addCardToDeck:function (blueprintId, subDeck) {
+    addCardToDeck:function (blueprintId, imageUrl, subDeck) {
         var that = this;
         var added = false;
         $(".card.cardInDeck", this.drawDeckDiv).each(
                 function () {
                     var cardData = $(this).data("card");
                     if (cardData.blueprintId == blueprintId) {
-                        var attDiv = that.addCardToContainer(blueprintId, "attached", that.drawDeckDiv, false);
+                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "attached", that.drawDeckDiv, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }
                 });
         if (!added) {
-            var div = this.addCardToContainer(blueprintId, subDeck, this.drawDeckDiv, false)
+            var div = this.addCardToContainer(blueprintId, imageUrl, subDeck, this.drawDeckDiv, false)
             div.addClass("cardInDeck");
             div.draggable({
                 helper: "clone",
@@ -832,7 +834,7 @@ var GempLotrDeckBuildingUI = Class.extend({
 
             var cards = root.getElementsByTagName("card");
             for (var i = 0; i < cards.length; i++)
-                this.addCardToDeck(cards[i].getAttribute("blueprintId"), cards[i].getAttribute("subDeck"));
+                this.addCardToDeck(cards[i].getAttribute("blueprintId"), cards[i].getAttribute("imageUrl"), cards[i].getAttribute("subDeck"));
 
             this.layoutUI(false);
 
@@ -845,17 +847,17 @@ var GempLotrDeckBuildingUI = Class.extend({
         $(".card", this.normalCollectionDiv).remove();
     },
 
-    addCardToCollection:function (type, blueprintId, count, side, contents) {
+    addCardToCollection:function (type, blueprintId, count, side, contents, imageUrl) {
         if (type == "pack") {
             if (blueprintId.substr(0, 3) == "(S)") {
-                var card = new Card(blueprintId, "pack", "collection", "player");
+                var card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
                 card.tokens = {"count":count};
                 var cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv.data("card", card);
                 cardDiv.data("selection", contents);
                 cardDiv.addClass("selectionInCollection");
             } else {
-                var card = new Card(blueprintId, "pack", "collection", "player");
+                var card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
                 card.tokens = {"count":count};
                 var cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv.data("card", card);
@@ -863,7 +865,7 @@ var GempLotrDeckBuildingUI = Class.extend({
             }
             this.normalCollectionDiv.append(cardDiv);
         } else if (type == "card") {
-            var card = new Card(blueprintId, side, "collection", "player");
+            var card = new Card(blueprintId, side, "collection", "player", imageUrl);
             var countInDeck = 0;
             $(".card", this.deckDiv).each(
                     function () {
@@ -913,7 +915,7 @@ var GempLotrDeckBuildingUI = Class.extend({
 
 var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
     init:function () {
-        that = this;
+        deckBuildingUI = this;
         this._super();
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
@@ -924,7 +926,9 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 return (d.hasClass("cardInCollection"));
             },
             drop: function(event, ui) {
-                that.selectionFunc($(ui.draggable).closest(".card"), "DRAW_DECK");
+                deckBuildingUI.selectionFunc(
+                    $(ui.draggable).closest(".card"), $(ui.draggable).closest(".card").data("card").imageUrl, "DRAW_DECK"
+                );
             }
         });
         this.drawDeckGroup.maxCardHeight = 200;
@@ -1009,7 +1013,7 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 return (d.hasClass("cardInCollection"));
             },
             drop: function(event, ui) {
-                that.selectionFunc($(ui.draggable).closest(".card"), "MISSIONS");
+                that.selectionFunc($(ui.draggable).closest(".card"), "MISSIONS"); // TODO - 1E still needs image url here
             }
         });
 
@@ -1124,7 +1128,7 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
         this.drawDeckGroup.layoutCards();
     },
 
-    addCardToDeck:function (blueprintId, subDeck) {
+    addCardToDeck:function (blueprintId, imageUrl, subDeck) {
         var that = this;
         var added = false;
         var container = null;
@@ -1139,13 +1143,13 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 function () {
                     var cardData = $(this).data("card");
                     if (cardData.blueprintId == blueprintId) {
-                        var attDiv = that.addCardToContainer(blueprintId, "attached", container, false);
+                        var attDiv = that.addCardToContainer(blueprintId, imageUrl, "attached", container, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }
                 });
         if (!added) {
-            var div = this.addCardToContainer(blueprintId, subDeck, container, false)
+            var div = this.addCardToContainer(blueprintId, imageUrl, subDeck, container, false)
             div.addClass("cardInDeck");
             div.draggable({
                 helper: "clone",

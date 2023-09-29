@@ -47,7 +47,8 @@ function deliveryService(xml) {
                 var packElem = packs[j];
                 var blueprintId = packElem.getAttribute("blueprintId");
                 var count = packElem.getAttribute("count");
-                var card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player");
+                var imageUrl = packElem.getAttribute("imageUrl");
+                var card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player", imageUrl);
                 card.tokens = {"count":count};
                 var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, true, false);
                 cardDiv.data("card", card);
@@ -59,7 +60,8 @@ function deliveryService(xml) {
                 var cardElem = cards[j];
                 var blueprintId = cardElem.getAttribute("blueprintId");
                 var count = cardElem.getAttribute("count");
-                var card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player");
+                var imageUrl = cardElem.getAttribute("imageUrl");
+                var card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player", imageUrl);
                 card.tokens = {"count":count};
                 var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
                 cardDiv.data("card", card);

@@ -193,16 +193,17 @@ var Card = Class.extend({
     tengwar: null,
     hasWiki: null,
     horizontal: null,
-    imageUrl: null,
+//    imageUrl: null,
     zone: null,
     cardId: null,
     owner: null,
-    siteNumber: null,
+    siteNumber: 1,
     attachedCards: null,
     errata: null,
 
-    init: function (blueprintId, zone, cardId, owner, siteNumber) {
+    init: function (blueprintId, zone, cardId, owner, imageUrl) {
         this.blueprintId = blueprintId;
+        this.imageUrl = imageUrl;
 
         var imageBlueprint = blueprintId;
         var len = imageBlueprint.length;
@@ -216,14 +217,11 @@ var Card = Class.extend({
         if (this.tengwar)
             bareBlueprint = bareBlueprint.substring(0, len - 1);
 
-        this.hasWiki = this.getFixedImage(imageBlueprint) == null
-            && packBlueprints[imageBlueprint] == null;
+        this.hasWiki = packBlueprints[imageBlueprint] == null;
 
         this.zone = zone;
         this.cardId = cardId;
         this.owner = owner;
-        if (siteNumber)
-            this.siteNumber = parseInt(siteNumber);
         this.attachedCards = new Array();
         if (imageBlueprint == "rules") {
             this.imageUrl = "/gemp-lotr/images/rules.png";
@@ -231,10 +229,10 @@ var Card = Class.extend({
             if (cardCache[imageBlueprint] != null) {
                 var cardFromCache = cardCache[imageBlueprint];
                 this.horizontal = cardFromCache.horizontal;
-                this.imageUrl = cardFromCache.imageUrl;
+//                this.imageUrl = cardFromCache.imageUrl;
                 this.errata = cardFromCache.errata;
             } else {
-                this.imageUrl = this.getUrlByBlueprintId(bareBlueprint);
+//                this.imageUrl = this.getUrlByBlueprintId(bareBlueprint);
                 this.horizontal = this.isHorizontal(bareBlueprint);
 
                 var separator = bareBlueprint.indexOf("_");
@@ -249,13 +247,6 @@ var Card = Class.extend({
                 };
             }
         }
-    },
-
-    getFixedImage: function (blueprintId) {
-        img = PCCards[blueprintId];
-        if (img != null)
-            return img;
-        return null;
     },
 
     isTengwar: function () {
@@ -338,9 +329,6 @@ var Card = Class.extend({
     },
 
     getUrlByBlueprintId: function (blueprintId, ignoreErrata) {
-        if (this.getFixedImage(blueprintId) != null)
-            return this.getFixedImage(blueprintId);
-
         if (packBlueprints[blueprintId] != null)
             return packBlueprints[blueprintId];
 
@@ -468,8 +456,8 @@ var Card = Class.extend({
         container.html("");
         container.html("<div style='scroll: auto'></div>");
         container.append(createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack()));
-        if (that.hasWikiInfo())
-            container.append("<div><a href='" + that.getWikiLink() + "' target='_blank'>Wiki</a></div>");
+//        if (that.hasWikiInfo())
+//            container.append("<div><a href='" + that.getWikiLink() + "' target='_blank'>Wiki</a></div>");
 
         var horSpace = 30;
         var vertSpace = 65;
@@ -532,41 +520,23 @@ function getFoilPresentation() {
 }
 
 function createFullCardDiv(image, foil, horizontal, noBorder) {
-    var foilPresentation = getFoilPresentation();
 
-    if (horizontal) {
-        var cardDiv = $("<div class='fullCard' style='position: relative;width:497px;height:357px;'></div>");
-        cardDiv.append("<div style='position:absolute'><img class='card_img' src='" + image + "' width='497' height='357'></div>");
+    if (horizontal) orientation = "Horizontal";
+    else orientation = "Vertical";
 
-        if (noBorder) {
-            var borderDiv = $("<div class='borderOverlay,noBorder' style='position:absolute;width:497px;height:357px;border-width:0px'><img class='actionArea' src='/gemp-lotr/images/pixel.png' width='100%' height='100%'></div>");
-            cardDiv.append(borderDiv);
-        } else {
-            var borderDiv = $("<div class='borderOverlay' style='position:absolute;width:465px;height:325px;border-width:16px'><img class='actionArea' src='/gemp-lotr/images/pixel.png' width='100%' height='100%'></div>");
-            cardDiv.append(borderDiv);
-        }
+    if (noBorder) var borderClass = "noBorderOverlay";
+    else var borderClass = "borderOverlay";
 
-        if (foil && foilPresentation !== 'none') {
-            var foilDiv = $("<div class='foilOverlay' style='position:absolute;width:497px;height:357px'><img src='/gemp-lotr/images/" + foilImage + "' width='100%' height='100%'></div>");
-            cardDiv.append(foilDiv);
-        }
-    } else {
-        var cardDiv = $("<div style='position: relative;width:357px;height:497px;'></div>");
-        cardDiv.append("<div style='position:absolute'><img src='" + image + "' width='357' height='497'></div>");
+    var cardDiv = $("<div class='fullCardDiv" + orientation + "'></div>");
+    cardDiv.append($("<div class='fullCardWrapper'>" +
+        "<img class='fullCardImg" + orientation + "' src='" + image + "'></div>"));
+    cardDiv.append($("<div class='" + borderClass + orientation + "'>" +
+        "<img class='actionArea' src='/gemp-lotr/images/pixel.png' width='100%' height='100%'></div>"));
 
-        if (noBorder) {
-            var borderDiv = $("<div class='borderOverlay,noBorder' style='position:absolute;width:357px;height:497px;border-width:0px'><img class='actionArea' src='/gemp-lotr/images/pixel.png' width='100%' height='100%'></div>");
-            cardDiv.append(borderDiv);
-        } else {
-            var borderDiv = $("<div class='borderOverlay' style='position:absolute;width:325px;height:465px;border-width:16px'><img class='actionArea' src='/gemp-lotr/images/pixel.png' width='100%' height='100%'></div>");
-            cardDiv.append(borderDiv);
-        }
-
-        if (foil && foilPresentation !== 'none') {
-            var foilImage = (foilPresentation === 'animated') ? "foil.gif" : "holo.jpg";
-            var foilDiv = $("<div class='foilOverlay' style='position:absolute;width:357px;height:497px'><img src='/gemp-lotr/images/" + foilImage + "' width='100%' height='100%'></div>");
-            cardDiv.append(foilDiv);
-        }
+    if (foil && getFoilPresentation() !== 'none') {
+        var foilImage = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";
+        cardDiv.append($("div class='foilOverlay" + orientation + "'>" +
+            "<img src='/gemp-lotr/images/" + foilImage + "' width='100%' height='100%'></div>"));
     }
 
     return cardDiv;

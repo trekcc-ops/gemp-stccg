@@ -202,7 +202,7 @@ public class LotroServer extends AbstractServer {
                 return null;
 
         } */
-        return new CardDeck(deckName, contents, targetFormat, notes);
+        return new CardDeck(deckName, contents, targetFormat, notes, _CardBlueprintLibrary);
     }
 
     public CardGameMediator getGameById(String gameId) {
@@ -213,5 +213,7 @@ public class LotroServer extends AbstractServer {
             _lock.readLock().unlock();
         }
     }
+
+    public CardBlueprintLibrary getLibrary() { return _CardBlueprintLibrary; }
 }
 

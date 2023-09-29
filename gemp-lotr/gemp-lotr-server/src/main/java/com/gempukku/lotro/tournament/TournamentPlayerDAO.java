@@ -1,7 +1,7 @@
 package com.gempukku.lotro.tournament;
 
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroDeck;
 
 import java.util.Map;
 import java.util.Set;
@@ -13,11 +13,11 @@ public interface TournamentPlayerDAO {
 
     void dropPlayer(String tournamentId, String playerName);
 
-    Map<String, CardDeck> getPlayerDecks(String tournamentId, String format);
+    Map<String, CardDeck> getPlayerDecks(String tournamentId, String format, CardBlueprintLibrary library);
 
     Set<String> getDroppedPlayers(String tournamentId);
 
-    CardDeck getPlayerDeck(String tournamentId, String playerName, String format);
+    CardDeck getPlayerDeck(String tournamentId, String playerName, String format, CardBlueprintLibrary library);
 
     Set<String> getPlayers(String tournamentId);
 }

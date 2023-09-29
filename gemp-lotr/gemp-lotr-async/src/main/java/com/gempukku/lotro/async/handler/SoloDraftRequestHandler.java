@@ -4,6 +4,7 @@ import com.gempukku.lotro.DateUtils;
 import com.gempukku.lotro.async.HttpProcessingException;
 import com.gempukku.lotro.async.ResponseWriter;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
@@ -195,6 +196,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
             Element pickedCard = doc.createElement("pickedCard");
             pickedCard.setAttribute("blueprintId", item.getBlueprintId());
             pickedCard.setAttribute("count", String.valueOf(item.getCount()));
+            pickedCard.setAttribute("imageUrl", _library.getLotroCardBlueprint(item.getBlueprintId()).getImageUrl());
             pickResultElem.appendChild(pickedCard);
         }
 
@@ -216,8 +218,14 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
             String choiceUrl = availableChoice.getChoiceUrl();
             Element availablePick = doc.createElement("availablePick");
             availablePick.setAttribute("id", choiceId);
-            if (blueprintId != null)
+            if (blueprintId != null) {
                 availablePick.setAttribute("blueprintId", blueprintId);
+                try {
+                    availablePick.setAttribute("imageUrl", _library.getLotroCardBlueprint(blueprintId).getImageUrl());
+                } catch (CardNotFoundException e) {
+                    throw new RuntimeException("Blueprint " + blueprintId + " not found in library");
+                }
+            }
             if (choiceUrl != null)
                 availablePick.setAttribute("url", choiceUrl);
             rootElem.appendChild(availablePick);

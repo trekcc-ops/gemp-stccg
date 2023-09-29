@@ -53,10 +53,11 @@ var GameAnimations = Class.extend({
 
             var participantId = element.getAttribute("participantId");
             var blueprintId = element.getAttribute("blueprintId");
+            var imageUrl = element.getAttribute("imageUrl");
 
             // Play-out game event animation only if it's not the player who initiated it
             if (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
-                var card = new Card(blueprintId, "ANIMATION", "anim", participantId);
+                var card = new Card(blueprintId, "ANIMATION", "anim", participantId, imageUrl);
                 var cardDiv = createSimpleCardDiv(card.imageUrl);
 
                 $("#main").queue(
@@ -120,6 +121,7 @@ var GameAnimations = Class.extend({
 
             var participantId = element.getAttribute("participantId");
             var blueprintId = element.getAttribute("blueprintId");
+            var imageUrl = element.getAttribute("imageUrl");
             var targetCardIds = element.getAttribute("otherCardIds").split(",");
 
             // Play-out card affects card animation only if it's not the player who initiated it
@@ -129,7 +131,7 @@ var GameAnimations = Class.extend({
                         for (var i = 0; i < targetCardIds.length; i++) {
                             var targetCardId = targetCardIds[i];
 
-                            var card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId);
+                            var card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId, imageUrl);
                             var cardDiv = createSimpleCardDiv(card.imageUrl);
 
                             var targetCard = $(".card:cardId(" + targetCardId + ")");
@@ -208,6 +210,7 @@ var GameAnimations = Class.extend({
         $("#main").queue(
             function (next) {
                 var blueprintId = element.getAttribute("blueprintId");
+                var imageUrl = element.getAttribute("imageUrl");
                 var targetCardId = element.getAttribute("targetCardId");
                 var controllerId = element.getAttribute("controllerId");
 
@@ -215,10 +218,10 @@ var GameAnimations = Class.extend({
                     participantId = controllerId;
 
                 var card;
-                if (zone == "ADVENTURE_PATH")
-                    card = new Card(blueprintId, zone, cardId, participantId, element.getAttribute("index"));
-                else
-                    card = new Card(blueprintId, zone, cardId, participantId);
+//                if (zone == "ADVENTURE_PATH")
+//                    card = new Card(blueprintId, zone, cardId, participantId, element.getAttribute("index"));
+//                else
+                card = new Card(blueprintId, zone, cardId, participantId, imageUrl);
 
                 var cardDiv = that.game.createCardDiv(card, null, card.isFoil(), card.hasErrata());
                 if (zone == "DISCARD")

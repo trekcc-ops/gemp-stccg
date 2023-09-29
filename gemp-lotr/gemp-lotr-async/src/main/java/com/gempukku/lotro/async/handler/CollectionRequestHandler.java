@@ -91,6 +91,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
                 LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(blueprintId);
                 appendCardSide(card, blueprint);
                 appendCardGroup(card, blueprint);
+                card.setAttribute("imageUrl", blueprint.getImageUrl());
                 collectionElem.appendChild(card);
             }
         }
@@ -136,6 +137,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
                     card.setAttribute("count", String.valueOf(item.getCount()));
                     card.setAttribute("blueprintId", blueprintId);
                     LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(blueprintId);
+                    card.setAttribute("imageUrl", blueprint.getImageUrl());
                     appendCardSide(card, blueprint);
                     appendCardGroup(card, blueprint);
                     collectionElem.appendChild(card);
@@ -196,6 +198,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
                 card.setAttribute("count", String.valueOf(item.getCount()));
                 card.setAttribute("blueprintId", blueprintId);
                 appendCardSide(card, _library.getLotroCardBlueprint(blueprintId));
+                card.setAttribute("imageUrl", _library.getLotroCardBlueprint(blueprintId).getImageUrl());
                 collectionElem.appendChild(card);
             } else {
                 Element pack = doc.createElement("pack");

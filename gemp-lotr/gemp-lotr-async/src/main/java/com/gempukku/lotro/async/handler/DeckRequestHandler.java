@@ -502,6 +502,11 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                 Element cardElement = doc.createElement("card");
                 cardElement.setAttribute("blueprintId", card);
                 cardElement.setAttribute("subDeck", subDeck);
+                try {
+                    cardElement.setAttribute("imageUrl", deck.getLibrary().getLotroCardBlueprint(card).getImageUrl());
+                } catch (CardNotFoundException e) {
+                    throw new RuntimeException("Blueprints not found: " + card);
+                }
                 deckElem.appendChild(cardElement);
             }
         }

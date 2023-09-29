@@ -90,16 +90,17 @@ var GempLotrSoloDraftUI = Class.extend({
                         var availablePick = availablePicks[i];
                         var id = availablePick.getAttribute("id");
                         var url = availablePick.getAttribute("url");
+                        var imageUrl = availablePick.getAttribute("imageUrl");
                         var blueprintId = availablePick.getAttribute("blueprintId");
 
                         if (blueprintId != null) {
-                            var card = new Card(blueprintId, "picks", "deck", "player");
+                            var card = new Card(blueprintId, "picks", "deck", "player", imageUrl);
                             var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
                             cardDiv.data("card", card);
                             cardDiv.data("choiceId", id);
                             that.picksDiv.append(cardDiv);
                         } else {
-                            var card = new Card("rules", "picks", "deck", "player");
+                            var card = new Card("rules", "picks", "deck", "player", url);
                             var cardDiv = createCardDiv(url, null, false, false, true, false);
                             cardDiv.data("card", card);
                             cardDiv.data("choiceId", id);
@@ -123,8 +124,9 @@ var GempLotrSoloDraftUI = Class.extend({
                         var card = cards[i];
                         var count = card.getAttribute("count");
                         var blueprintId = card.getAttribute("blueprintId");
+                        var imageUrl = card.getAttribute("imageUrl");
                         for (var no = 0; no < count; no++) {
-                            var card = new Card(blueprintId, "drafted", "deck", "player");
+                            var card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
                             var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
                             cardDiv.data("card", card);
                             that.draftedDiv.append(cardDiv);
@@ -165,8 +167,9 @@ var GempLotrSoloDraftUI = Class.extend({
                                         var pickedCard = pickedCards[i];
                                         var blueprintId = pickedCard.getAttribute("blueprintId");
                                         var count = pickedCard.getAttribute("count");
+                                        var imageUrl = pickedCard.getAttribute("imageUrl");
                                         for (var no = 0; no < count; no++) {
-                                            var card = new Card(blueprintId, "drafted", "deck", "player");
+                                            var card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
                                             var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
                                             cardDiv.data("card", card);
                                             that.draftedDiv.append(cardDiv);
@@ -180,15 +183,16 @@ var GempLotrSoloDraftUI = Class.extend({
                                         var id = availablePick.getAttribute("id");
                                         var url = availablePick.getAttribute("url");
                                         var blueprintId = availablePick.getAttribute("blueprintId");
+                                        var imageUrl = availablePick.getAttribute("imageUrl");
 
                                         if (blueprintId != null) {
-                                            var card = new Card(blueprintId, "picks", "deck", "player");
+                                            var card = new Card(blueprintId, "picks", "deck", "player", imageUrl);
                                             var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
                                             cardDiv.data("card", card);
                                             cardDiv.data("choiceId", id);
                                             that.picksDiv.append(cardDiv);
                                         } else {
-                                            var card = new Card("rules", "picks", "deck", "player");
+                                            var card = new Card("rules", "picks", "deck", "player", url);
                                             var cardDiv = createCardDiv(url, null, false, false, true, false);
                                             cardDiv.data("card", card);
                                             cardDiv.data("choiceId", id);

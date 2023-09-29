@@ -18,6 +18,7 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         setParam("actionId", getActionIds(actions));
         setParam("cardId", getCardIds(actions));
         setParam("blueprintId", getBlueprintIdsForVirtualActions(actions));
+        setParam("imageUrl", getImageUrlsForVirtualActions(actions));
         setParam("actionText", getActionTexts(actions));
     }
 
@@ -43,6 +44,18 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
             Action action = actions.get(i);
             if (action.isVirtualCardAction())
                 result[i] = String.valueOf(action.getActionSource().getBlueprintId());
+            else
+                result[i] = "inPlay";
+        }
+        return result;
+    }
+
+    private String[] getImageUrlsForVirtualActions(List<? extends Action> actions) {
+        String[] result = new String[actions.size()];
+        for (int i = 0; i < result.length; i++) {
+            Action action = actions.get(i);
+            if (action.isVirtualCardAction())
+                result[i] = String.valueOf(action.getActionSource().getBlueprint().getImageUrl());
             else
                 result[i] = "inPlay";
         }

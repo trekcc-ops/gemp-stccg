@@ -80,7 +80,8 @@ public class DbDeckDAO implements DeckDAO {
                     statement.setString(2, name);
                     try (ResultSet rs = statement.executeQuery()) {
                         if (rs.next())
-                            return new CardDeck(name, rs.getString(1), rs.getString(2), rs.getString(3));
+                            return new CardDeck(name, rs.getString(1), rs.getString(2),
+                                    rs.getString(3), _library);
 
                         return null;
                     }

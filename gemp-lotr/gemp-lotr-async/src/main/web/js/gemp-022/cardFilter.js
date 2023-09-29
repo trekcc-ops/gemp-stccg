@@ -542,7 +542,8 @@ var CardFilter = Class.extend({
             var cardElem = cards[i];
             var blueprintId = cardElem.getAttribute("blueprintId");
             var count = cardElem.getAttribute("count");
-            this.addCardFunc(cardElem, "card", blueprintId, count);
+            var imageUrl = cardElem.getAttribute("imageUrl");
+            this.addCardFunc(cardElem, "card", blueprintId, count, imageUrl);
         }
 
         this.finishCollectionFunc();

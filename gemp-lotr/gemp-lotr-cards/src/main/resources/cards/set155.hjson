@@ -4,121 +4,151 @@
     155_001: {
         title: A Good Day to Lie
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/1V.jpg
     }
     155_002: {
         title: All Available Personnel
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/2V.jpg
     }
     155_003: {
         title: Diplomatic Intervention
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/3V.jpg
     }
     155_004: {
         title: Divided Loyalties
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/4V.jpg
     }
     155_005: {
         title: Ferengi Ambush
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/5V.jpg
     }
     155_006: {
         title: "I'm Not Going to Fight You"
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/6V.jpg
     }
     155_007: {
         title: Local Trouble
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/7V.jpg
     }
     155_008: {
         title: Magnetic Field Disruptions
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/8V.jpg
     }
     155_009: {
         title: Microbrain
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
     }
     155_010: {
         title: Pinned Down
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/10V.jpg
     }
     155_011: {
         title: Temptation
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/11V.jpg
     }
     155_012: {
         title: Tense Negotiations
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/12V.jpg
     }
     155_013: {
         title: Triage
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/13V.jpg
     }
     155_014: {
         title: War Games
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/14V.jpg
     }
     155_015: {
         title: Warp Bubble Mishap
         type: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/tng/15V.jpg
     }
     155_035: {
         title: Acquire Surplus Ships
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/35V.jpg
     }
     155_036: {
         title: Amnesty Talks
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/36V.jpg
     }
     155_037: {
         title: Avert Solar Implosion
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/37V.jpg
     }
     155_038: {
         title: Encounter at Farpoint
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/38V.jpg
     }
     155_039: {
         title: Host Metaphasic Shielding Test
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
     }
     155_040: {
         title: Intercept Sleeper Ship
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/40V.jpg
     }
     155_041: {
         title: Investigate Destruction
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/41V.jpg
     }
     155_042: {
         title: Raid Ancient Burial Site
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
     }
     155_043: {
         title: Revenge Plot
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
     }
     155_044: {
         title: Salvage Borg Ship
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/44V.jpg
     }
     155_045: {
         title: Seize Freighter
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/45V.jpg
     }
     155_046: {
         title: Steal Technology
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/46V.jpg
     }
     155_047: {
         title: The Last Outpost
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/47V.jpg
     }
     155_048: {
         title: Treat Plague Ship
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/48V.jpg
     }
     155_049: {
         title: Visit Tranquil Colony
         type: mission
+        image-url: https://www.trekcc.org/1e/cardimages/tng/49V.jpg
     }
 }

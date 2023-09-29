@@ -7,6 +7,7 @@ public class CardDeck {
     protected final String _deckName;
     protected String _notes;
     protected String _targetFormat;
+    protected CardBlueprintLibrary _library;
     public CardDeck(String deckName) {
         _deckName = deckName;
     }
@@ -15,14 +16,19 @@ public class CardDeck {
         _subDecks = deck.getSubDecks();
         _notes = deck.getNotes();
         _targetFormat = deck.getTargetFormat();
+        _library = deck.getLibrary();
     }
-    public CardDeck(String deckName, String contents, String targetFormat, String notes) {
-        // Assumes "new format" of LotR Gemp syntax
-        String[] parts = contents.split("\\|");
+
+    public CardDeck(String deckName, String contents, String targetFormat, String notes, CardBlueprintLibrary library) {
         _deckName = deckName;
         _targetFormat = targetFormat;
         _notes = notes;
+        parseContents(contents);
+        _library = library;
+    }
 
+    public void parseContents(String contents) {
+        String[] parts = contents.split("\\|");
         for (int i = 0; i < parts.length; i += 2) {
             List<String> cards = new ArrayList<>();
             for (String card : parts[i+1].split(",")) {
@@ -60,6 +66,7 @@ public class CardDeck {
     public Map<String, List<String>> getSubDecks() { return _subDecks; }
     public void setSubDecks(Map<String, List<String>> subDecks) { _subDecks = subDecks; }
     public String getTargetFormat() { return _targetFormat; }
+    public CardBlueprintLibrary getLibrary() { return _library; }
 
     public String getNotes() {
         return _notes;

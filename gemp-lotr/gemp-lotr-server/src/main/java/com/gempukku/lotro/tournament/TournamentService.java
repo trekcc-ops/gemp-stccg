@@ -63,7 +63,7 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
-        return _tournamentPlayerDao.getPlayerDecks(tournamentId, format);
+        return _tournamentPlayerDao.getPlayerDecks(tournamentId, format, _library);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public CardDeck getPlayerDeck(String tournamentId, String player, String format) {
-        return _tournamentPlayerDao.getPlayerDeck(tournamentId, player, format);
+        return _tournamentPlayerDao.getPlayerDeck(tournamentId, player, format, _library);
     }
 
     @Override

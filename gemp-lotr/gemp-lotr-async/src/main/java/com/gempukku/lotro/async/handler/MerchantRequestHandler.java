@@ -187,6 +187,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
             if (blueprintId.contains("_") && !blueprintId.endsWith("*") && collection.getItemCount(blueprintId) >= 4)
                 elem.setAttribute("tradeFoil", "true");
             elem.setAttribute("blueprintId", blueprintId);
+            elem.setAttribute("imageUrl", _library.getLotroCardBlueprint(blueprintId).getImageUrl());
             Integer buyPrice = buyPrices.get(blueprintId);
             if (buyPrice != null && collection.getItemCount(blueprintId) > 0)
                 elem.setAttribute("buyPrice", buyPrice.toString());

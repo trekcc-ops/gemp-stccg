@@ -1537,6 +1537,7 @@ var GameTableUI = Class.extend({
         var max = this.getDecisionParameter(decision, "max");
         var cardIds = this.getDecisionParameters(decision, "cardId");
         var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
+        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
         var selectable = this.getDecisionParameters(decision, "selectable");
 
         var that = this;
@@ -1553,11 +1554,12 @@ var GameTableUI = Class.extend({
         for (var i = 0; i < blueprintIds.length; i++) {
             var cardId = cardIds[i];
             var blueprintId = blueprintIds[i];
+            var imageUrl = imageUrls[i];
 
             if (selectable[i] == "true")
                 selectableCardIds.push(cardId);
 
-            var card = new Card(blueprintId, "SPECIAL", cardId, null);
+            var card = new Card(blueprintId, "SPECIAL", cardId, null, imageUrl);
 
             var cardDiv = this.createCardDiv(card);
 
@@ -1634,6 +1636,7 @@ var GameTableUI = Class.extend({
 
         var cardIds = this.getDecisionParameters(decision, "cardId");
         var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
+        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
         var actionIds = this.getDecisionParameters(decision, "actionId");
         var actionTexts = this.getDecisionParameters(decision, "actionText");
 
@@ -1701,6 +1704,7 @@ var GameTableUI = Class.extend({
                 var actionId = actionIds[i];
                 var actionText = actionTexts[i];
                 var blueprintId = blueprintIds[i];
+                var imageUrl = imageUrls[i];
 
                 if (blueprintId == "inPlay") {
                     var cardIdElem = $(".card:cardId(" + cardId + ")");
@@ -1713,7 +1717,7 @@ var GameTableUI = Class.extend({
                 } else {
                     hasVirtual = true;
                     cardIds[i] = "extra" + cardId;
-                    var card = new Card(blueprintId, "EXTRA", "extra" + cardId, null);
+                    var card = new Card(blueprintId, "EXTRA", "extra" + cardId, null, imageUrl);
 
                     var cardDiv = that.createCardDiv(card);
                     $(cardDiv).css({opacity: "0.8"});
@@ -1832,6 +1836,7 @@ var GameTableUI = Class.extend({
         var text = decision.getAttribute("text");
 
         var blueprintIds = this.getDecisionParameters(decision, "blueprintId");
+        var imageUrls = this.getDecisionParameters(decision, "imageUrl");
         var actionIds = this.getDecisionParameters(decision, "actionId");
         var actionTexts = this.getDecisionParameters(decision, "actionText");
 
@@ -1847,9 +1852,10 @@ var GameTableUI = Class.extend({
 
         for (var i = 0; i < blueprintIds.length; i++) {
             var blueprintId = blueprintIds[i];
+            var imageUrl = imageUrls[i];
 
             cardIds.push("temp" + i);
-            var card = new Card(blueprintId, "SPECIAL", "temp" + i, null);
+            var card = new Card(blueprintId, "SPECIAL", "temp" + i, null, imageUrl);
 
             var cardDiv = this.createCardDiv(card, actionTexts[i]);
 

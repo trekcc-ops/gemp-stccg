@@ -30,6 +30,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         setParam("max", String.valueOf(maximum));
         setParam("cardId", getCardIds(physicalCards));
         setParam("blueprintId", getBlueprintIds(physicalCards));
+        setParam("imageUrl", getImageUrls(physicalCards));
         setParam("selectable", getSelectable(physicalCards, selectable));
     }
 
@@ -58,6 +59,16 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
             index++;
         }
         return result;
+    }
+
+    private String[] getImageUrls(Collection<? extends LotroPhysicalCard> physicalCards) {
+        String[] images = new String[physicalCards.size()];
+        int index = 0;
+        for (LotroPhysicalCard physicalCard : physicalCards) {
+            images[index] = physicalCard.getBlueprint().getImageUrl();
+            index++;
+        }
+        return images;
     }
 
     protected LotroPhysicalCard getPhysicalCardByIndex(int index) {

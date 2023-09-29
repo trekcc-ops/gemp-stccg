@@ -93,3 +93,80 @@
 .card_img {
     border-radius: 3.5%;
 }
+
+.fullCardDivHorizontal {
+    border-radius: 3.5%;
+    position: relative;
+    width: 497;
+    height: 357;
+}
+
+.fullCardDivVertical {
+    border-radius: 3.5%;
+    position: relative;
+    width: 357;
+    height: 497;
+}
+
+.fullCardImgHorizontal {
+    border-radius: 3.5%;
+    width: 497;
+    height: 357;
+}
+
+.fullCardImgVertical {
+    border-radius: 3.5%;
+    width: 357;
+    height: 497;
+}
+
+.noBorderOverlayHorizontal {
+    border-radius: 3.5%;
+    position: absolute;
+    width: 497px;
+    height: 357px;
+    border-width: 0px;
+}
+
+.noBorderOverlayVertical {
+    border-radius: 3.5%;
+    position: absolute;
+    width: 357px;
+    height: 497px;
+    border-width: 0px;
+}
+
+.borderOverlayHorizontal {
+    border-radius: 3.5%;
+    position: absolute;
+    width: 465px;
+    height: 325px;
+    border-width: 16px;
+}
+
+.borderOverlayVertical {
+    border-radius: 3.5%;
+    position: absolute;
+    width: 325px;
+    height: 465px;
+    border-width: 16px;
+}
+
+.foilOverlayHorizontal {
+    border-radius: 3.5%;
+    position: absolute;
+    width: 497px;
+    height: 357px;
+}
+
+.foilOverlayVertical {
+    border-radius: 3.5%;
+    position: absolute;
+    width: 357px;
+    height: 497px;
+}
+
+.fullCardWrapper {
+    position: absolute;
+    border-radius: 3.5%;
+}

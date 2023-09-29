@@ -181,7 +181,7 @@ public abstract class DefaultGame {
     public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
         _autoPassConfiguration.put(playerId, phases);
     }
-    public CardBlueprintLibrary getLotroCardBlueprintLibrary() {
+    public CardBlueprintLibrary getBlueprintLibrary() {
         return _library;
     }
 
