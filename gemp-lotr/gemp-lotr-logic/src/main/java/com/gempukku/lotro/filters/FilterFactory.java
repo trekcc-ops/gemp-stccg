@@ -352,13 +352,6 @@ public class FilterFactory {
 
             return (actionContext) -> side;
         });
-        parameterFilters.put("signet", (parameter, environment) -> {
-            final Signet signet = Signet.findSignet(parameter);
-            if (signet == null)
-                throw new InvalidCardDefinitionException("Unable to find signet for: " + parameter);
-
-            return (actionContext) -> signet;
-        });
         parameterFilters.put("siteblock",
                 (parameter, environment) -> {
                     final SitesBlock sitesBlock = SitesBlock.findBlock(parameter);

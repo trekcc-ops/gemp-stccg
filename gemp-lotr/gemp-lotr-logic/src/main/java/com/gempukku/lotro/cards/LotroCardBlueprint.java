@@ -34,8 +34,6 @@ public interface LotroCardBlueprint {
 
     String getSubtitle();
 
-    Signet getSignet();
-
     boolean hasKeyword(Keyword keyword);
 
     int getKeywordCount(Keyword keyword);

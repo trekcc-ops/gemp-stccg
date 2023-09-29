@@ -37,8 +37,6 @@ public interface ModifiersQuerying {
 
     int getKeywordCount(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword);
 
-    boolean hasSignet(DefaultGame game, LotroPhysicalCard physicalCard, Signet signet);
-
     // Archery
     int getArcheryTotal(DefaultGame game, Side side, int baseArcheryTotal);
 

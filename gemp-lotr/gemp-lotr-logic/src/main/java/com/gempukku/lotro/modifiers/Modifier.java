@@ -32,8 +32,6 @@ public interface Modifier {
 
     boolean hasKeyword(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword);
 
-    boolean hasSignet(DefaultGame game, LotroPhysicalCard physicalCard, Signet signet);
-
     int getKeywordCountModifier(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword);
 
     boolean appliesKeywordModifier(DefaultGame game, LotroPhysicalCard modifierSource, Keyword keyword);

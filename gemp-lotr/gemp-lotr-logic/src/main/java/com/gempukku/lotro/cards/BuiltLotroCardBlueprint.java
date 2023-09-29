@@ -28,7 +28,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private Affiliation affiliation;
     private Culture culture;
     private Race race;
-    private Signet signet;
     private Map<Keyword, Integer> keywords;
     private int cost = -1;
     private int strength;
@@ -84,6 +83,9 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private ActionSource discardedFromPlayOptionalTriggerAction;
 
     private AidCostSource aidCostSource;
+
+    public BuiltLotroCardBlueprint() {
+    }
 
     // Building methods
 
@@ -290,10 +292,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         this.race = race;
     }
 
-    public void setSignet(Signet signet) {
-        this.signet = signet;
-    }
-
     public void setKeywords(Map<Keyword, Integer> keywords) {
         this.keywords = keywords;
     }
@@ -376,11 +374,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
     @Override
     public String getImageUrl() { return imageUrl; }
-
-    @Override
-    public Signet getSignet() {
-        return signet;
-    }
 
     @Override
     public int getTwilightCost() {

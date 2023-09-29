@@ -151,7 +151,6 @@ public class CardBlueprintLibrary {
                     readSetRarityFile(rarity, setId, rarityFile);
 
                     _allSets.put(setId, rarity);
-                    logger.debug("Loading set " + setId + " (" + setName + ") to _allsets");
                 }
             } finally {
                 IOUtils.closeQuietly(reader);

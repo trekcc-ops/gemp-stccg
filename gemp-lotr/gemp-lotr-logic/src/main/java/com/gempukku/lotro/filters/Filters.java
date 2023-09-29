@@ -18,7 +18,6 @@ import java.util.*;
 public class Filters {
     private static final Map<CardType, Filter> _typeFilterMap = new HashMap<>();
     private static final Map<PossessionClass, Filter> _possessionClassFilterMap = new HashMap<>();
-    private static final Map<Signet, Filter> _signetFilterMap = new HashMap<>();
     private static final Map<Race, Filter> _raceFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
     private static final Map<Side, Filter> _sideFilterMap = new HashMap<>();
@@ -36,8 +35,6 @@ public class Filters {
             _typeFilterMap.put(cardType, type(cardType));
         for (Race race : Race.values())
             _raceFilterMap.put(race, race(race));
-        for (Signet signet : Signet.values())
-            _signetFilterMap.put(signet, signet(signet));
         for (PossessionClass possessionClass : PossessionClass.values())
             _possessionClassFilterMap.put(possessionClass, possessionClass(possessionClass));
         for (Keyword keyword : Keyword.values())
@@ -405,10 +402,6 @@ public class Filters {
     public static final Filter unique = (game, physicalCard) ->
             physicalCard.getBlueprint().getUniqueness() == Uniqueness.UNIQUE;
 
-    private static Filter signet(final Signet signet) {
-        return (game, physicalCard) -> game.getModifiersQuerying().hasSignet(game, physicalCard, signet);
-    }
-
     private static Filter race(final Race race) {
         return Filters.and(
                 Filters.or(CardType.COMPANION, CardType.ALLY, CardType.MINION, CardType.FOLLOWER),
@@ -630,8 +623,6 @@ public class Filters {
             return _raceFilterMap.get((Race) filter);
         else if (filter instanceof Side)
             return _sideFilterMap.get((Side) filter);
-        else if (filter instanceof Signet)
-            return _signetFilterMap.get((Signet) filter);
         else if (filter instanceof Zone)
             return _zoneFilterMap.get((Zone) filter);
         else

@@ -366,22 +366,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public boolean hasSignet(DefaultGame game, LotroPhysicalCard physicalCard, Signet signet) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            if (physicalCard.getBlueprint().getSignet() == signet)
-                return true;
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.SIGNET_MODIFIER, physicalCard)) {
-                if (modifier.hasSignet(game, physicalCard, signet))
-                    return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
     public int getArcheryTotal(DefaultGame game, Side side, int baseArcheryTotal) {
         int result = baseArcheryTotal;
         for (Modifier modifier : getModifiers(game, ModifierEffect.ARCHERY_MODIFIER))

@@ -4,14 +4,16 @@ import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.effects.PlaySiteEffect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.game.PlayerOrderFeedback;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
-import com.gempukku.lotro.processes.*;
+import com.gempukku.lotro.processes.BiddingGameProcess;
+import com.gempukku.lotro.processes.FellowshipPlayerChoosesShadowPlayerToAssignDamageToGameProcess;
+import com.gempukku.lotro.processes.GameProcess;
+import com.gempukku.lotro.processes.ShadowPlayersAssignTheirMinionsGameProcess;
 import com.gempukku.lotro.rules.WinConditionRule;
 
 import java.util.Set;
@@ -45,9 +47,6 @@ public class DefaultAdventure implements Adventure {
                                 order.getNextPlayer();
                                 playerToPlaySite = order.getNextPlayer();
                             }
-
-                            action.insertEffect(
-                                    new PlaySiteEffect(action, playerToPlaySite, null, nextSiteNumber));
                         }
                     }
                 });

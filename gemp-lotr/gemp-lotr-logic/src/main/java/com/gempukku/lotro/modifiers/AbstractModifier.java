@@ -91,11 +91,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean hasSignet(DefaultGame game, LotroPhysicalCard physicalCard, Signet signet) {
-        return false;
-    }
-
-    @Override
     public int getStrengthModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
         return 0;
     }
