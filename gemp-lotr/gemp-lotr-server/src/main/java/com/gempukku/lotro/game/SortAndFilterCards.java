@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.cards.SetDefinition;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.util.MultipleComparator;

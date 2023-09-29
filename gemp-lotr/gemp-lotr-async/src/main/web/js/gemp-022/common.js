@@ -60,22 +60,32 @@ function replaceIncludes($) {
         $(this).load(file)
         //alert( "Loaded " + file );
     })
-  
-  // var $window = $(window);
-  
-  // window.setTimeout(function() {
-  //       $body.removeClass('is-preload');
-  //   }, 100);
-
-  // $window.on('load', function() {
-  //   window.setTimeout(function() {
-  //       $body.removeClass('is-preload');
-  //   }, 100);
-  // });
 
 }
 
 function log(text) {
     if (getUrlParam("log") == "true")
         console.log(text);
+}
+
+function openSizeDialog(dialog) {
+    var dialogsSized = new Array();
+    var sizedDialog = function () {
+        for (var i = 0; i < dialogsSized.length; i++)
+            if (dialogsSized[i] == dialog)
+                return true;
+        return false;
+    };
+
+    if (!sizedDialog(dialog)) {
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+
+        var dialogWidth = windowWidth * 0.8;
+        var dialogHeight = windowHeight * 0.8;
+
+        dialogsSized.push(dialog);
+        dialog.dialog({width:dialogWidth, height:dialogHeight});
+    }
+    dialog.dialog("open");
 }

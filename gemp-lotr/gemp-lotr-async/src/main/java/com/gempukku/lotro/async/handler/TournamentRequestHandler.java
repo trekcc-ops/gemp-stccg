@@ -5,7 +5,7 @@ import com.gempukku.lotro.async.ResponseWriter;
 import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.competitive.PlayerStanding;
 import com.gempukku.lotro.game.SortAndFilterCards;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.tournament.Tournament;
 import com.gempukku.lotro.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;

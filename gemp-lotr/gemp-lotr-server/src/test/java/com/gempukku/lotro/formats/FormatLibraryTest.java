@@ -1,4 +1,4 @@
-package com.gempukku.lotro.game.formats;
+package com.gempukku.lotro.formats;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;

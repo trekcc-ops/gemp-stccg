@@ -3,7 +3,7 @@ var TournamentResultsUI = Class.extend({
     formatDialog:null,
 
     init:function (url) {
-        this.communication = new GempLotrCommunication(url,
+        this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
 

@@ -1,11 +1,9 @@
-var TribblesGameUI = Class.extend({
+var GameTableUI = Class.extend({
     padding: 5,
-
-    bottomPlayerId: null,
-    replayMode: null,
     spectatorMode: null,
 
     currentPlayerId: null,
+    bottomPlayerId: null,
     allPlayerIds: null,
 
     cardActionDialog: null,
@@ -34,15 +32,9 @@ var TribblesGameUI = Class.extend({
 
     selectionFunction: null,
 
-    chatBoxDiv: null,
     chatBox: null,
     communication: null,
     channelNumber: null,
-
-    settingsFoilPresentation: "static",
-    settingsAutoPass: false,
-    settingsAutoAccept: false,
-    settingsAlwaysDropDown: false,
 
     windowWidth: null,
     windowHeight: null,
@@ -59,35 +51,31 @@ var TribblesGameUI = Class.extend({
         var that = this;
 
         this.animations = new GameAnimations(this);
+        this.gameSettings = new Map();
+        this.gameSettings.set("autoAccept", false);
+        this.gameSettings.set("alwaysDropDown", false);
+        this.gameSettings.set("foilPresentation", "static");
+        this.gameSettings.set("autoPass", false);
 
-        this.communication = new GempLotrCommunication(url,
+            // TODO: LotR-specific. Replace with correct arrays for ST-specific implementations.
+        this.gamePhases = new Array("Fellowship", "Shadow", "Maneuver", "Archery", "Assignment", "Skirmish", "Regroup");
+
+        this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
                 if (thrownError != "abort") {
                     var xhr_status = "";
                     if (xhr != null) {
                         if (xhr.status == 401) {
-                            that.chatBox.appendMessage(
-                                "Game problem - You're not logged in. " +
-                                "Go to the <a href='index.html'>main page</a> to log in", "warningMessage"
-                            );
+                            that.chatBox.appendNotLoggedIntoGameMessage();
                             return;
                         } else {
                             xhr_status = " (" + xhr.status + ")";
                         }
                     }
-                    that.chatBox.appendMessage(
-                        "There was a problem communicating with the server" + xhr_status + "." +
-                        "If the game is finished, it has been removed. " +
-                        "Otherwise, you have lost connection to the server.",
-                        "warningMessage"
-                    );
-                    that.chatBox.appendMessage(
-                        "Refresh the page (press F5) to resume the game, " +
-                        "or press back on your browser to get back to the Game Hall.",
-                        "warningMessage"
-                    );
+                    that.chatBox.appendServerCommunicationProblemMessage(xhr_status);
                 }
-            });
+            }
+        );
 
         $.expr[':'].cardId = function (obj, index, meta, stack) {
             var cardIds = meta[3].split(",");
@@ -96,12 +84,11 @@ var TribblesGameUI = Class.extend({
         };
 
         if (this.replayMode) {
-            var replayDiv = $("<div class='replay' style='position:absolute'></div>");
-            var slowerBut = $("<button id='slowerButton'>Slower</button>").button({
+            var slowerBut = $("#slowerButton").button({
                 icons: {primary: 'ui-icon-triangle-1-w'},
                 text: false
             });
-            var fasterBut = $("<button id='fasterButton'>Faster</button>").button({
+            var fasterBut = $("#fasterButton").button({
                 icons: {primary: 'ui-icon-triangle-1-e'},
                 text: false
             });
@@ -113,15 +100,10 @@ var TribblesGameUI = Class.extend({
                 function () {
                     that.animations.replaySpeed = Math.max(0.2, that.animations.replaySpeed - 0.2);
                 });
-            replayDiv.append(slowerBut);
-            replayDiv.append(fasterBut);
-            replayDiv.append("<br/>");
 
-            var replayBut = $("<img id='replayButton' src='images/play.png' width='64' height='64'>").button();
-            replayDiv.append(replayBut);
-
-            $("#main").append(replayDiv);
-            replayDiv.css({"z-index": 1000});
+            var replayBut = $("#replayButton").button();
+        } else {
+            $("#replay").remove();
         }
 
         this.discardPileDialogs = {};
@@ -165,9 +147,15 @@ var TribblesGameUI = Class.extend({
     },
 
     initializeGameUI: function (discardPublic) {
-        this.advPathGroup = new AdvPathCardGroup($("#main"));
-
         var that = this;
+
+        this.alertBox = $("#alertBox");
+        this.alertText = $("#alertText");
+        this.alertButtons = $("#alertButtons");
+        this.gameStateElem = $("#gameStateElem");
+        this.statsDiv = $("#statsDiv");
+
+        this.advPathGroup = new AdvPathCardGroup($("#main"));
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
             this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup(
@@ -190,9 +178,6 @@ var TribblesGameUI = Class.extend({
         }, false);
         this.specialGroup.setBounds(this.padding, this.padding, 580 - 2 * (this.padding), 250 - 2 * (this.padding));
 
-        this.gameStateElem = $("<div class='ui-widget-content'></div>");
-        this.gameStateElem.css({"border-radius": "7px"});
-
         for (var i = 0; i < this.allPlayerIds.length; i++) {
             this.gameStateElem.append(
                 "<div class='player'>" + (i + 1) + ". " + this.allPlayerIds[i] +
@@ -206,8 +191,6 @@ var TribblesGameUI = Class.extend({
         }
 
         this.gameStateElem.append("<div class='tribbleSequence'>1</div>");
-
-        $("#main").append(this.gameStateElem);
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
             var showBut = $("<div class='slimButton'>+</div>").button().click(
@@ -284,39 +267,6 @@ var TribblesGameUI = Class.extend({
             }
         }
 
-        this.alertBox = $("<div class='ui-widget-content'></div>");
-        this.alertBox.css({"border-radius": "7px"});
-
-        this.alertText = $("<div></div>");
-        this.alertText.css({
-            position: "absolute",
-            left: "0px",
-            top: "0px",
-            width: "100%",
-            height: "50px",
-            scroll: "auto"
-        });
-
-        this.alertButtons = $("<div class='alertButtons'></div>");
-        this.alertButtons.css({
-            position: "absolute",
-            left: "0px",
-            top: "50px",
-            width: "100%",
-            height: "30px",
-            scroll: "auto"
-        });
-
-        this.alertBox.append(this.alertText);
-        this.alertBox.append(this.alertButtons);
-
-        $("#main").append(this.alertBox);
-
-        this.statsDiv = $("<div class='ui-widget-content stats'></div>");
-        this.statsDiv.css({"border-radius": "7px"});
-        this.statsDiv.append("<div class='fpArchery'></div> <div class='shadowArchery'></div> <div class='move'></div>");
-        $("#main").append(this.statsDiv);
-
         var dragFunc = function (event) {
             return that.dragContinuesCardFunction(event);
         };
@@ -367,84 +317,52 @@ var TribblesGameUI = Class.extend({
 
     addBottomLeftTabPane: function () {
         var that = this;
-        var tabsLabels = "<li><a href='#chatBox' class='slimTab'>Chat</a></li>";
-        var tabsBodies = "<div id='chatBox' class='slimPanel'></div>";
-        if (!this.replayMode) {
-            tabsLabels += "<li><a href='#settingsBox' class='slimTab'>Settings</a></li><li>" +
-                "<a href='#gameOptionsBox' class='slimTab'>Options</a></li><li>" +
-                "<a href='#playersInRoomBox' class='slimTab'>Players</a></li>";
-            tabsBodies += "<div id='settingsBox' class='slimPanel'></div>" +
-                "<div id='gameOptionsBox' class='slimPanel'></div>" +
-                "<div id='playersInRoomBox' class='slimPanel'></div>";
-        }
-        var tabsStr = "<div id='bottomLeftTabs'><ul>" + tabsLabels + "</ul>" + tabsBodies + "</div>";
 
-        this.tabPane = $(tabsStr).tabs();
-
-        $("#main").append(this.tabPane);
-
-        this.chatBoxDiv = $("#chatBox");
-
-        var foilSelection = $("<select id='foilPresentation' style='font-size: 80%;'>" +
-            "<option value='static'>Static layer</option>" +
-            "<option value='animated'>Animated layer</option>" +
-            "<option value='none'>None</option>" +
-            "</select>");
-
-        $("#settingsBox").append("Foil presentation: ");
-        $("#settingsBox").append(foilSelection);
-        $("#settingsBox").append("<br/>");
-
-        var foilPresentation = $.cookie("foilPresentation");
-        if (foilPresentation != null) {
-            foilSelection.val(foilPresentation);
-            this.settingsFoilPresentation = foilPresentation;
+        if (this.replayMode) {
+            $("#settingsBoxTab").remove();
+            $("#gameOptionsTab").remove();
+            $("#playersInRoomTab").remove();
+            $("#settingsBox").remove();
+            $("#gameOptionsBox").remove();
+            $("#playersInRoomBox").remove();
         }
 
-        $("#foilPresentation").bind("change", function () {
-            var value = "" + foilSelection.val();
-            that.settingsFoilPresentation = value;
-            $.cookie("foilPresentation", value, {expires: 365});
-        });
+        this.tabPane = $("#bottomLeftTabs").tabs();
 
-        $("#settingsBox").append(
-            "<input id='autoAccept' type='checkbox' value='selected' />" +
-            "<label for='autoAccept'>Auto-accept after selecting action or card</label><br />"
-        );
+            // Process game settings
+        for (setting of that.gameSettings.entries()) {
+            var settingName = setting[0];
+            if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
+                var optionSelection = $("#" + settingName);
+                var cookie = $.cookie(settingName);
 
-        var autoAccept = $.cookie("autoAccept");
-        if (autoAccept == "true" || autoAccept == null) {
-            $("#autoAccept").prop("checked", true);
-            this.settingsAutoAccept = true;
+                    // Multiple choice settings: foilPresentation
+                if (settingName == "foilPresentation" && cookie != null) {
+                    optionSelection.val(cookie);
+                    that.gameSettings.set(settingName, cookie);
+                }
+
+                    // True/false settings: autoAccept, alwaysDropDown
+                if (cookie == "true" || cookie == null) {
+                    optionSelection.prop("checked", true);
+                    that.gameSettings.set(settingName, true);
+                }
+
+                optionSelection.bind("change", function() {
+                    var userSelection = null;
+                    if (settingName == "foilPresentation") {
+                        userSelection = "" + optionSelection.val(); // Multiple choice
+                    } else {
+                        userSelection = optionSelection.prop("checked"); // True/false
+                    }
+                    that.gameSettings.set(settingName, userSelection);
+                    $.cookie(settingName, "" + userSelection, {expires: 365});
+                });
+            }
         }
-
-        $("#autoAccept").bind("change", function () {
-            var selected = $("#autoAccept").prop("checked");
-            that.settingsAutoAccept = selected;
-            $.cookie("autoAccept", "" + selected, {expires: 365});
-        });
-
-        $("#settingsBox").append(
-            "<input id='alwaysDropDown' type='checkbox' value='selected' />" +
-            "<label for='alwaysDropDown'>Always display drop-down in answer selection</label><br />"
-        );
-
-        var alwaysDropDown = $.cookie("alwaysDropDown");
-        if (alwaysDropDown == "true") {
-            $("#alwaysDropDown").prop("checked", true);
-            this.settingsAlwaysDropDown = true;
-        }
-
-        $("#alwaysDropDown").bind("change", function () {
-            var selected = $("#alwaysDropDown").prop("checked");
-            that.settingsAlwaysDropDown = selected;
-            $.cookie("alwaysDropDown", "" + selected, {expires: 365});
-        });
 
         // Create arrays for phase-specific functions
-        var allPhaseNames = new Array(
-            "Fellowship", "Shadow", "Maneuver", "Archery", "Assignment", "Skirmish", "Regroup"
-        );
+        var allPhaseNames = that.gamePhases;
         var autoPassArr = new Array();
         var autoPassArrHashtag = new Array();
         for (var i = 0; i < allPhaseNames.length; i++) {
@@ -462,9 +380,8 @@ var TribblesGameUI = Class.extend({
         }
 
         // Create settings panel for user selection of auto-pass settings
-        $("#settingsBox").append("Phases when game auto-passes for you, if you have no phase actions to play<br />");
         for (var i = 0; i < allPhaseNames.length; i++) {
-            $("#settingsBox").append(
+            $("#autoPassOptionsDiv").append(
                 "<input id='" + autoPassArr[i] + "' type='checkbox' value='selected' />" +
                 "<label for='" + autoPassArr[i] + "'>" + allPhaseNames[i] + "</label> "
             );
@@ -513,12 +430,10 @@ var TribblesGameUI = Class.extend({
         this.chatBox.chatUpdateInterval = 3000;
 
         if (!this.spectatorMode && !this.replayMode) {
-            $("#gameOptionsBox").append("<button id='concedeGame'>Concede game</button><br/>");
             $("#concedeGame").button().click(
                 function () {
                     that.communication.concede();
                 });
-            $("#gameOptionsBox").append("<button id='cancelGame'>Request game cancel</button>");
             $("#cancelGame").button().click(
                 function () {
                     that.communication.cancel();
@@ -853,7 +768,7 @@ var TribblesGameUI = Class.extend({
                 );
             }
 
-            var i = 0; // Can probably delete this but leaving it in for now
+            var i = 0; // I don't think this is used, but not deleting it for now to avoid breaking anything
 
             if (!this.spectatorMode)
                 this.hand.setBounds(
@@ -918,10 +833,7 @@ var TribblesGameUI = Class.extend({
 
     startReplaySession: function (replayId) {
         var that = this;
-        this.communication.getReplay(replayId,
-            function (xml) {
-                that.processXmlReplay(xml, true);
-            });
+        this.communication.getReplay(replayId, function (xml) { that.processXmlReplay(xml, true); });
     },
 
     startGameSession: function () {
@@ -1061,9 +973,7 @@ var TribblesGameUI = Class.extend({
         }
     },
 
-    shouldPlay: function () {
-        return this.replayPlay;
-    },
+    shouldPlay: function () { return this.replayPlay; },
 
     playNextReplayEvent: function () {
         if (this.shouldPlay()) {
@@ -1399,7 +1309,7 @@ var TribblesGameUI = Class.extend({
         this.smallDialog
             .html(text);
 
-        if (results.length > 2 || this.settingsAlwaysDropDown) {
+        if (results.length > 2 || this.gameSettings.get("alwaysDropDown")) {
             var html = "<br /><select id='multipleChoiceDecision' selectedIndex='0'>";
             for (var i = 0; i < results.length; i++)
                 html += "<option value='" + i + "'>" + results[i] + "</option>";
@@ -1687,7 +1597,7 @@ var TribblesGameUI = Class.extend({
                 selectedCardIds.push(cardId);
 
                 if (selectedCardIds.length == max) {
-                    if (that.settingsAutoAccept) {
+                    if (that.gameSettings.get("autoAccept")) {
                         finishChoice();
                         return;
                     } else {
@@ -1729,7 +1639,7 @@ var TribblesGameUI = Class.extend({
 
         var that = this;
 
-        if (cardIds.length == 0 && this.settingsAutoPass && !this.replayMode) {
+        if (cardIds.length == 0 && this.gameSettings.get("autoPass") && !this.replayMode) {
             that.decisionFunction(id, "");
             return;
         }
@@ -1830,7 +1740,7 @@ var TribblesGameUI = Class.extend({
 
                 var selectActionFunction = function (actionId) {
                     selectedCardIds.push(actionId);
-                    if (that.settingsAutoAccept) {
+                    if (that.gameSettings.get("autoAccept")) {
                         finishChoice();
                     } else {
                         that.clearSelection();
@@ -1981,7 +1891,7 @@ var TribblesGameUI = Class.extend({
 
                 that.clearSelection();
 
-                if (this.settingsAutoAccept) {
+                if (this.gameSettings.get("autoAccept")) {
                     finishChoice();
                 } else {
                     processButtons();
@@ -2057,7 +1967,7 @@ var TribblesGameUI = Class.extend({
             that.selectionFunction = function (cardId) {
                 selectedCardIds.push(cardId);
                 if (selectedCardIds.length == max) {
-                    if (this.settingsAutoAccept) {
+                    if (this.gameSettings.get("autoAccept")) {
                         finishChoice();
                         return;
                     } else {
@@ -2105,5 +2015,11 @@ var TribblesGameUI = Class.extend({
             );
         } else
             this.dialogResize(this.cardActionDialog, this.specialGroup);
+    }
+});
+
+var TribblesGameTableUI = GameTableUI.extend({
+    init: function (url, replayMode) {
+        this._super(url, replayMode);
     }
 });

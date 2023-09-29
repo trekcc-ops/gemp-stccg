@@ -4,7 +4,7 @@ var GameHistoryUI = Class.extend({
     pageSize:20,
 
     init:function (url) {
-        this.communication = new GempLotrCommunication(url,
+        this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
         this.loadHistory();

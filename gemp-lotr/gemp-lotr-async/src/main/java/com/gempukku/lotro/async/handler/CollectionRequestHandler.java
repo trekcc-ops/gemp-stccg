@@ -11,7 +11,7 @@ import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.db.vo.CollectionType;
 import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.*;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;
 import com.gempukku.lotro.packs.ProductLibrary;

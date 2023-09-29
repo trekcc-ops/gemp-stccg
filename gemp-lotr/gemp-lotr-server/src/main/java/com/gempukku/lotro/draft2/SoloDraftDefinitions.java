@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.collection.CollectionsManager;
 import com.gempukku.lotro.common.AppConfig;
 import com.gempukku.lotro.draft2.builder.*;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

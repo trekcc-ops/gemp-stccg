@@ -1,4 +1,4 @@
-package com.gempukku.lotro.game.formats;
+package com.gempukku.lotro.formats;
 
 import com.gempukku.lotro.adventure.Adventure;
 import com.gempukku.lotro.adventure.AdventureLibrary;

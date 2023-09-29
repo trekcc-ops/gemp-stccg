@@ -3,7 +3,7 @@ package com.gempukku.lotro.library;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.at.AbstractAtTest;
 import com.gempukku.lotro.game.CardCollection;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueProduct;
 import com.gempukku.lotro.league.SealedLeagueType;
 import org.junit.jupiter.api.Assertions;

@@ -7,7 +7,7 @@ import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.game.SortAndFilterCards;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

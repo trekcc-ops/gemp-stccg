@@ -13,7 +13,7 @@ import com.gempukku.lotro.db.vo.League;
 import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.LotroServer;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.hall.*;
 import com.gempukku.lotro.league.LeagueSeriesData;
 import com.gempukku.lotro.league.LeagueService;

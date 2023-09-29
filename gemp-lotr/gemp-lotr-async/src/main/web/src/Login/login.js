@@ -1,5 +1,5 @@
 
-var comm = new GempLotrCommunication("/gemp-lotr-server", function () {
+var comm = new GempClientCommunication("/gemp-lotr-server", function () {
     alert("Unable to contact the server");
 });
 

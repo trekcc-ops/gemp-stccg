@@ -40,7 +40,7 @@ var GempLotrHallUI = Class.extend({
 			$.cookie("chatResize", $("#chat").height(), { expires:365 });
 		});
 		
-		this.comm = new GempLotrCommunication(url, function (xhr, ajaxOptions, thrownError) {
+		this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
 			if (thrownError != "abort") {
 				if (xhr != null) {
 					if (xhr.status == 401) {

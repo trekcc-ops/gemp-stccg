@@ -7,3 +7,34 @@
     background-color: #000000;
     overflow: hidden;
 }
+
+#alertText {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    scroll: auto;
+}
+
+#alertButtons {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 100%;
+    height: 30px;
+    scroll: auto;
+}
+
+.rounded {
+    border-radius: 7px;
+}
+
+#foilPresentation {
+    font-size: 80%;
+}
+
+#replay {
+    position: absolute;
+    z-index: 1000;
+}

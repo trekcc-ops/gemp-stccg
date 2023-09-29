@@ -12,7 +12,7 @@ import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.game.DefaultUserFeedback;
 import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.LotroGame;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 
 import java.util.*;
 

@@ -21,7 +21,7 @@ var GempLotrMerchantUI = Class.extend({
     init:function (cardListElem, cardFilterElem) {
         var that = this;
 
-        this.comm = new GempLotrCommunication("/gemp-lotr-server", that.processError);
+        this.comm = new GempClientCommunication("/gemp-lotr-server", that.processError);
 
         this.cardFilter = new CardFilter(cardFilterElem, 
                 function (filter, start, count, callback) {
@@ -135,9 +135,10 @@ var GempLotrMerchantUI = Class.extend({
     },
 
     dragStopCardFunction:function (event) {
+        that = this;
         if (this.dragCardData != null) {
             if (this.dragStartY - event.clientY >= 20) {
-                this.displayCardInfo(this.dragCardData);
+                this.dragCardData.displayCardInfo(that.infoDialog);
                 this.successfulDrag = true;
             }
             this.dragCardData = null;
@@ -166,7 +167,7 @@ var GempLotrMerchantUI = Class.extend({
             if (event.which == 1) {
                 if (!this.successfulDrag) {
                     if (event.shiftKey) {
-                        this.displayCardInfo(selectedCardElem.data("card"));
+                        selectedCardElem.data("card").displayCardInfo(that.infoDialog);
                     }
                     event.stopPropagation();
                 }
@@ -174,28 +175,6 @@ var GempLotrMerchantUI = Class.extend({
             return false;
         }
         return true;
-    },
-
-    displayCardInfo:function (card) {
-        this.infoDialog.html("");
-        this.infoDialog.html("<div style='scroll: auto'></div>");
-        this.infoDialog.append(createFullCardDiv(card.imageUrl, card.foil, card.horizontal, card.isPack()));
-        if (card.hasWikiInfo())
-            this.infoDialog.append("<div><a href='" + card.getWikiLink() + "' target='_blank'>Wiki</a></div>");
-        var windowWidth = $(window).width();
-        var windowHeight = $(window).height();
-
-        var horSpace = 30;
-        var vertSpace = 45;
-
-        if (card.horizontal) {
-            // 500x360
-            this.infoDialog.dialog({width:Math.min(500 + horSpace, windowWidth), height:Math.min(380 + vertSpace, windowHeight)});
-        } else {
-            // 360x500
-            this.infoDialog.dialog({width:Math.min(360 + horSpace, windowWidth), height:Math.min(520 + vertSpace, windowHeight)});
-        }
-        this.infoDialog.dialog("open");
     },
 
     clearList:function (rootElem) {

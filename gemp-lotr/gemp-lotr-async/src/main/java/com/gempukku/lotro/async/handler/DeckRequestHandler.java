@@ -12,7 +12,7 @@ import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.LotroServer;
 import com.gempukku.lotro.game.SortAndFilterCards;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.league.SealedLeagueDefinition;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;

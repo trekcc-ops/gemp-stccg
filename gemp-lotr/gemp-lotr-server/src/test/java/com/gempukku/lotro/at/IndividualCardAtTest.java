@@ -6,7 +6,7 @@ import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.AwaitingDecisionType;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;

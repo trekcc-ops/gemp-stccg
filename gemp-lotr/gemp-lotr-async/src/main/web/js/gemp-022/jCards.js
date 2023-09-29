@@ -461,7 +461,35 @@ var Card = Class.extend({
             return maxDimension;
         else
             return Math.floor(maxDimension * cardScale);
+    },
+
+    displayCardInfo: function (container) {
+        that = this;
+        container.html("");
+        container.html("<div style='scroll: auto'></div>");
+        container.append(createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack()));
+        if (that.hasWikiInfo())
+            container.append("<div><a href='" + that.getWikiLink() + "' target='_blank'>Wiki</a></div>");
+
+        var horSpace = 30;
+        var vertSpace = 65;
+        var dialogWidth;
+        var dialogHeight;
+
+        if (that.horizontal) {
+            dialogWidth = 500 + horSpace;
+            dialogHeight = 360 + vertSpace;
+        } else {
+            dialogWidth = 360 + horSpace;
+            dialogHeight = 500 + vertSpace;
+        }
+
+        container.dialog(
+            {width:Math.min(dialogWidth, $(window).width()), height:Math.min(dialogHeight, $(window).height())}
+        );
+        container.dialog("open");
     }
+
 });
 
 function createCardDiv(image, text, foil, tokens, noBorder, errata) {

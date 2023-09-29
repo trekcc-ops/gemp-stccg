@@ -15,7 +15,7 @@ import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.game.SortAndFilterCards;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;

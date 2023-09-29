@@ -4,7 +4,7 @@ var StatsUI = Class.extend({
     statsDiv:null,
 
     init:function (url, paramControl, statControl) {
-        this.communication = new GempLotrCommunication(url,
+        this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
 

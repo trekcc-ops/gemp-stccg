@@ -7,7 +7,7 @@ import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.adventure.DefaultAdventureLibrary;
 import com.gempukku.lotro.game.DefaultCardCollection;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;

@@ -9,7 +9,7 @@ import com.gempukku.lotro.draft2.SoloDraft;
 import com.gempukku.lotro.game.CardCollection;
 import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.User;
-import com.gempukku.lotro.game.formats.FormatLibrary;
+import com.gempukku.lotro.formats.FormatLibrary;
 
 import java.util.ArrayList;
 import java.util.List;

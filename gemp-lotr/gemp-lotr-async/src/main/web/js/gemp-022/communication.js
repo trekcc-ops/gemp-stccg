@@ -1,4 +1,4 @@
-var GempLotrCommunication = Class.extend({
+var GempClientCommunication = Class.extend({
     url:null,
     failure:null,
 

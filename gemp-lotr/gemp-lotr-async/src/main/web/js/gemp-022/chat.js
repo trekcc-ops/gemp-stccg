@@ -59,7 +59,7 @@ var ChatBoxUI = Class.extend({
         }
 
         
-        this.comm = new GempLotrCommunication(url, function (xhr, ajaxOptions, thrownError) {
+        this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
             that.appendMessage("Unknown chat problem occured (error=" + xhr.status + ")", "warningMessage");
         });
         this.enableDiscord = allowDiscord;
@@ -370,6 +370,21 @@ var ChatBoxUI = Class.extend({
             this.scrollChatToBottom();
         
         this.checkForEnd(message, msgClass);
+    },
+
+    appendNotLoggedIntoGameMessage:function() {
+        message = "Game problem - You're not logged in. Go to the <a href='index.html'>main page</a> to log in.";
+        msgClass = "warningMessage";
+        this.appendMessage(message, msgClass);
+    },
+
+    appendServerCommunicationProblemMessage:function(xhr_status) {
+        message = "There was a problem communicating with the server" + xhr_status + ". " +
+            "If the game is finished, it has been removed. Otherwise, you have lost connection to the server.";
+        this.appendMessage(message, "warningMessage");
+        message = "Refresh the page (press F5) to resume the game, " +
+            "or press back on your browser to get back to the Game Hall.";
+        this.appendMessage(message, "warningMessage");
     },
 
     monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
