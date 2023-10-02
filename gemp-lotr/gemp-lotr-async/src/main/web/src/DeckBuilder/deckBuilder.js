@@ -1,6 +1,12 @@
 $(document).ready(
     function () {
-        var ui = new TribblesDeckBuildingUI();
+
+        let gameType = prompt("Select the game you are building for. Type 'ST1E' or 'Tribbles'");
+        if (gameType == "Tribbles") {
+            var ui = new TribblesDeckBuildingUI();
+        } else {
+            var ui = new ST1EDeckBuildingUI();
+        }
 
         $('body').layout({
             applyDefaultStyles:true,

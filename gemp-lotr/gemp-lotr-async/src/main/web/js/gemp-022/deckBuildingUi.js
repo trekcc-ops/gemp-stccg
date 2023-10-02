@@ -77,7 +77,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                 function () {
                     if (that.deckName == null) {
                         var newDeckName = prompt("Enter the name of the deck", "");
-                        if (validateDeckName(newDeckName)) {
+                        if (that.validateDeckName(newDeckName)) {
                             that.deckName = newDeckName;
                             $("#editingDeck").text(newDeckName);
                             that.saveDeck(true);
@@ -219,7 +219,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         var that = this;
         
         var newDeckName = prompt("Enter new name for the deck", oldName);
-        if (validateDeckName(newDeckName)) {
+        if (that.validateDeckName(newDeckName)) {
 
             that.comm.renameDeck(oldName, newDeckName, () => callback(newDeckName),
                 {
@@ -989,7 +989,7 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
 
 var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
     init:function () {
-        that = this;
+        var deckBuildingUI = this;
         this._super();
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
@@ -1000,7 +1000,9 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 return (d.hasClass("cardInCollection"));
             },
             drop: function(event, ui) {
-                that.selectionFunc($(ui.draggable).closest(".card"), "DRAW_DECK");
+                deckBuildingUI.selectionFunc(
+                    $(ui.draggable).closest(".card"), $(ui.draggable).closest(".card").data("card").imageUrl, "DRAW_DECK"
+                );
             }
         });
         this.drawDeckGroup.maxCardHeight = 200;
@@ -1013,7 +1015,9 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 return (d.hasClass("cardInCollection"));
             },
             drop: function(event, ui) {
-                that.selectionFunc($(ui.draggable).closest(".card"), "MISSIONS"); // TODO - 1E still needs image url here
+                deckBuildingUI.selectionFunc(
+                    $(ui.draggable).closest(".card"), $(ui.draggable).closest(".card").data("card").imageUrl, "MISSIONS"
+                );
             }
         });
 
@@ -1026,7 +1030,9 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 return (d.hasClass("cardInCollection"));
             },
             drop: function(event, ui) {
-                that.selectionFunc($(ui.draggable).closest(".card"), "SEED_DECK");
+                deckBuildingUI.selectionFunc(
+                    $(ui.draggable).closest(".card"), $(ui.draggable).closest(".card").data("card").imageUrl, "SEED_DECK"
+                );
             }
         });
     },

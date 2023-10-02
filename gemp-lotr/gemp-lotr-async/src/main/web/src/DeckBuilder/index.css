@@ -97,27 +97,27 @@
 .fullCardDivHorizontal {
     border-radius: 3.5%;
     position: relative;
-    width: 497;
-    height: 357;
+    width: 497px;
+    height: 357px;
 }
 
 .fullCardDivVertical {
     border-radius: 3.5%;
     position: relative;
-    width: 357;
-    height: 497;
+    width: 357px;
+    height: 497px;
 }
 
 .fullCardImgHorizontal {
     border-radius: 3.5%;
-    width: 497;
-    height: 357;
+    width: 497px;
+    height: 357px;
 }
 
 .fullCardImgVertical {
     border-radius: 3.5%;
-    width: 357;
-    height: 497;
+    width: 357px;
+    height: 497px;
 }
 
 .noBorderOverlayHorizontal {

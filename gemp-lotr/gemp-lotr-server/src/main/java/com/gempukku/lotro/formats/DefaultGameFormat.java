@@ -115,7 +115,7 @@ public class DefaultGameFormat implements GameFormat {
     public String getName() {
         return _name;
     }
-    public String getGame() { return _game; }
+    public String getGameType() { return _game; }
     @Override
     public String getCode() {
         return _code;

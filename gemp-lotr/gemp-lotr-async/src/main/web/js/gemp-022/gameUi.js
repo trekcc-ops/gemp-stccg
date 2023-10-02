@@ -2029,3 +2029,9 @@ var TribblesGameTableUI = GameTableUI.extend({
         this._super(url, replayMode);
     }
 });
+
+var ST1EGameTableUI = GameTableUI.extend({
+    init: function (url, replayMode) {
+        this._super(url, replayMode);
+    }
+});

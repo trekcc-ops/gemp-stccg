@@ -180,7 +180,7 @@ public class TableHolder {
                 players = table.getPlayerNames();
 
             if (isAdmin || isNoIgnores(players, player.getName()))
-                visitor.visitTable(tableInformation.getKey(), null, false, HallInfoVisitor.TableStatus.WAITING, "Waiting", table.getGameSettings().getLotroFormat().getName(), getTournamentName(table), table.getGameSettings().getUserDescription(), players, table.getPlayerNames().contains(player.getName()), table.getGameSettings().isPrivateGame(), table.getGameSettings().isUserInviteOnly(), null);
+                visitor.visitTable(tableInformation.getKey(), null, false, HallInfoVisitor.TableStatus.WAITING, "Waiting", table.getGameSettings().getLotroFormat().getGameType(), table.getGameSettings().getLotroFormat().getName(), getTournamentName(table), table.getGameSettings().getUserDescription(), players, table.getPlayerNames().contains(player.getName()), table.getGameSettings().isPrivateGame(), table.getGameSettings().isUserInviteOnly(), null);
         }
 
         // Then non-finished
@@ -195,7 +195,18 @@ public class TableHolder {
                     if (cardGameMediator.isFinished())
                         finishedTables.put(runningGame.getKey(), runningTable);
                     else
-                        visitor.visitTable(runningGame.getKey(), cardGameMediator.getGameId(), isAdmin || cardGameMediator.isAllowSpectators(), HallInfoVisitor.TableStatus.PLAYING, cardGameMediator.getGameStatus(), runningTable.getGameSettings().getLotroFormat().getName(), getTournamentName(runningTable), runningTable.getGameSettings().getUserDescription(), cardGameMediator.getPlayersPlaying(), cardGameMediator.getPlayersPlaying().contains(player.getName()), runningTable.getGameSettings().isPrivateGame(),  runningTable.getGameSettings().isUserInviteOnly(), cardGameMediator.getWinner());
+                        visitor.visitTable(runningGame.getKey(), cardGameMediator.getGameId(),
+                                isAdmin || cardGameMediator.isAllowSpectators(),
+                                HallInfoVisitor.TableStatus.PLAYING, cardGameMediator.getGameStatus(),
+                                runningTable.getGameSettings().getLotroFormat().getGameType(),
+                                runningTable.getGameSettings().getLotroFormat().getName(),
+                                getTournamentName(runningTable), runningTable.getGameSettings().getUserDescription(),
+                                cardGameMediator.getPlayersPlaying(),
+                                cardGameMediator.getPlayersPlaying().contains(player.getName()),
+                                runningTable.getGameSettings().isPrivateGame(),
+                                runningTable.getGameSettings().isUserInviteOnly(),
+                                cardGameMediator.getWinner()
+                        );
 
                     if (!cardGameMediator.isFinished() && cardGameMediator.getPlayersPlaying().contains(player.getName()))
                         visitor.runningPlayerGame(cardGameMediator.getGameId());
@@ -209,7 +220,15 @@ public class TableHolder {
             CardGameMediator cardGameMediator = runningTable.getLotroGameMediator();
             if (cardGameMediator != null) {
                 if (isAdmin || isNoIgnores(cardGameMediator.getPlayersPlaying(), player.getName()))
-                    visitor.visitTable(nonPlayingGame.getKey(), cardGameMediator.getGameId(), false, HallInfoVisitor.TableStatus.FINISHED, cardGameMediator.getGameStatus(), runningTable.getGameSettings().getLotroFormat().getName(), getTournamentName(runningTable), runningTable.getGameSettings().getUserDescription(), cardGameMediator.getPlayersPlaying(), cardGameMediator.getPlayersPlaying().contains(player.getName()), runningTable.getGameSettings().isPrivateGame(),  runningTable.getGameSettings().isUserInviteOnly(), cardGameMediator.getWinner());
+                    visitor.visitTable(nonPlayingGame.getKey(), cardGameMediator.getGameId(), false,
+                            HallInfoVisitor.TableStatus.FINISHED, cardGameMediator.getGameStatus(),
+                            runningTable.getGameSettings().getLotroFormat().getGameType(),
+                            runningTable.getGameSettings().getLotroFormat().getName(), getTournamentName(runningTable),
+                            runningTable.getGameSettings().getUserDescription(), cardGameMediator.getPlayersPlaying(),
+                            cardGameMediator.getPlayersPlaying().contains(player.getName()),
+                            runningTable.getGameSettings().isPrivateGame(),
+                            runningTable.getGameSettings().isUserInviteOnly(), cardGameMediator.getWinner()
+                    );
             }
         }
     }

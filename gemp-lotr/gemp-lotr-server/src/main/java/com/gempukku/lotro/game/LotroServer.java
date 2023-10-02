@@ -105,13 +105,13 @@ public class LotroServer extends AbstractServer {
 
             CardGameMediator cardGameMediator;
 
-            if (Objects.equals(gameSettings.getLotroFormat().getGame(), "tribbles")) {
+            if (Objects.equals(gameSettings.getLotroFormat().getGameType(), "tribbles")) {
                 cardGameMediator = new TribblesGameMediator(gameId, gameSettings.getLotroFormat(), participants,
                         _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            } else if (Objects.equals(gameSettings.getLotroFormat().getGame(), "st1e")){
+            } else if (Objects.equals(gameSettings.getLotroFormat().getGameType(), "st1e")){
                 cardGameMediator = new ST1EGameMediator(gameId, gameSettings.getLotroFormat(), participants,
                         _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            } else if (Objects.equals(gameSettings.getLotroFormat().getGame(), "st2e")){
+            } else if (Objects.equals(gameSettings.getLotroFormat().getGameType(), "st2e")){
                 cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getLotroFormat(), participants,
                         _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
             } else { // TODO: This error catch should happen when the format library is created

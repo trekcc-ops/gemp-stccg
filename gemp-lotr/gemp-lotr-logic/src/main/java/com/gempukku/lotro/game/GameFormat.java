@@ -26,7 +26,7 @@ public interface GameFormat {
     boolean isPlaytest();
 
     String getName();
-    String getGame();
+    String getGameType();
 
     String getCode();
     int getOrder();

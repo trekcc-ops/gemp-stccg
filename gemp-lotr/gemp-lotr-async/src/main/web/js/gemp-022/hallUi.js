@@ -450,6 +450,7 @@ var GempLotrHallUI = Class.extend({
 					var statusDescription = table.getAttribute("statusDescription");
 					var watchable = table.getAttribute("watchable");
 					var playersAttr = table.getAttribute("players");
+					var gameType = table.getAttribute("gameType");
 					var formatName = table.getAttribute("format");
 					var tournamentName = table.getAttribute("tournament");
 					var userDesc = table.getAttribute("userDescription");
@@ -548,7 +549,7 @@ var GempLotrHallUI = Class.extend({
 								participantIdAppend = "&participantId=" + participantId;
 
 							var but = $("<button>Play Match</button>");
-							var link = $("<a href='game.html?gameId=" + gameId + participantIdAppend + "'></a>");
+							var link = $("<a href='game.html?gameType=" + gameType + "&gameId=" + gameId + participantIdAppend + "'></a>");
 							link.append(but);
 							but.button();
 							lastField.append(link);
@@ -559,7 +560,7 @@ var GempLotrHallUI = Class.extend({
 								participantIdAppend = "&participantId=" + participantId;
 
 							var but = $("<button>Spectate</button>");
-							var link = $("<a target='_blank' href='game.html?gameId=" + gameId + participantIdAppend + "'></a>");
+							var link = $("<a target='_blank' href='game.html?gameType=" + gameType + "&gameId=" + gameId + participantIdAppend + "'></a>");
 							link.append(but);
 							but.button();
 							lastField.append(link);
@@ -636,7 +637,7 @@ var GempLotrHallUI = Class.extend({
 				var participantIdAppend = "";
 				if (participantId != null)
 					participantIdAppend = "&participantId=" + participantId;
-				window.open("/gemp-lotr/game.html?gameId=" + waitingGameId + participantIdAppend, "_blank");
+				window.open("/gemp-lotr/game.html?gameType=" + gameType + "&gameId=" + waitingGameId + participantIdAppend, "_blank");
 			}
 			if (games.length > 0) {
 			        // Turned off this sound because it was annoying :)

@@ -32,7 +32,7 @@ public class TriggerEffectProcessor implements EffectProcessor {
                 triggerActionSource.setText(text);
             }
             triggerActionSource.addPlayRequirement(triggerChecker);
-            LOG.debug("fullObject = " + value.toString());
+//            LOG.debug("fullObject = " + value.toString());
             EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
 
             if (before) {

@@ -11,6 +11,7 @@ import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -53,13 +54,14 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
 
     private void firstPlayerChosen(List<String> allPlayers, String chosenPlayer, TribblesGame game) {
         _discardingPlayer = chosenPlayer;
-        allPlayers.remove(chosenPlayer);
-        if (allPlayers.size() == 1)
-            secondPlayerChosen(Iterables.getOnlyElement(allPlayers), game);
+        List<String> newSelectablePlayers = new ArrayList<>(allPlayers);
+        newSelectablePlayers.remove(chosenPlayer);
+        if (newSelectablePlayers.size() == 1)
+            secondPlayerChosen(Iterables.getOnlyElement(newSelectablePlayers), game);
         else {
             game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision(1,
-                            "Choose a player to place a card from hand on the bottom of their deck", allPlayers) {
+                            "Choose a player to place a card from hand on the bottom of their deck", newSelectablePlayers) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             secondPlayerChosen(result, game);
