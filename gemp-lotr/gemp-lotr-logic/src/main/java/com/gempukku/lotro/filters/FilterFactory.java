@@ -28,11 +28,6 @@ public class FilterFactory {
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
-        simpleFilters.put("attachedtoinsameregion",
-                actionContext -> {
-                    final LotroPhysicalCard attachedTo = actionContext.getSource().getAttachedTo();
-                    return Filters.region(LotroGameUtils.getRegion(attachedTo.getSiteNumber()));
-                });
         simpleFilters.put("bearer", (actionContext -> Filters.hasAttached(actionContext.getSource())));
         simpleFilters.put("character", (actionContext) -> Filters.character);
         simpleFilters.put("controlledsite",

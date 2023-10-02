@@ -18,14 +18,15 @@ public class LotroGame extends DefaultGame {
     private final GameState _gameState;
     private final TurnProcedure<DefaultGame> _turnProcedure;
 
-    public LotroGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback, final CardBlueprintLibrary library) {
+    public LotroGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
+                     final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
 
         _format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
         new CharacterDeathRule(_actionsEnvironment).applyRule();
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new GameState(_cards, library, _format);
+        _gameState = new GameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, decks.keySet(), userFeedback, _actionsEnvironment,
                 _gameState::init);
     }

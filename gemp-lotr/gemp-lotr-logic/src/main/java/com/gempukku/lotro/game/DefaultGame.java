@@ -22,7 +22,6 @@ public abstract class DefaultGame {
     protected CardBlueprintLibrary _library;
     // IRL game mechanics
     protected Set<String> _allPlayers;
-    protected final Map<String, List<String>> _cards = new HashMap<>();
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
     protected boolean _cancelled;
@@ -44,14 +43,6 @@ public abstract class DefaultGame {
         _library = library;
 
         _allPlayers = decks.keySet();
-
-        for (String playerId : _allPlayers) {
-
-            CardDeck playerDeck = decks.get(playerId);
-            List<String> deck = new LinkedList<>(playerDeck.getDrawDeckCards());
-
-            _cards.put(playerId, deck);
-        }
 
         _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
         format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);

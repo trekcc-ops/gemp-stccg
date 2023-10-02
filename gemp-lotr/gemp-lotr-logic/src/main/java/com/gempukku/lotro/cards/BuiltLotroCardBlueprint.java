@@ -26,6 +26,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private CardType cardType;
     private FacilityType facilityType;
     private Affiliation affiliation;
+    private Quadrant quadrant;
     private Culture culture;
     private Race race;
     private Map<Keyword, Integer> keywords;
@@ -275,6 +276,11 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     public void setAffiliation(Affiliation affiliation) {
         this.affiliation = affiliation;
     }
+    public Affiliation getAffiliation() { return this.affiliation; }
+    public void setQuadrant(Quadrant quadrant) {
+        this.quadrant = quadrant;
+    }
+    public Quadrant getQuadrant() { return this.quadrant; }
 
     public void setCardType(CardType cardType) {
         this.cardType = cardType;

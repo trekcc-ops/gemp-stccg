@@ -1,12 +1,12 @@
 package com.gempukku.lotro.processes;
 
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayerOrder;
 import com.gempukku.lotro.game.PlayerOrderFeedback;
+import com.gempukku.lotro.game.ST1EGame;
 
 import java.util.*;
 
-public class ST1EPlayerOrderProcess implements GameProcess {
+public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
     private final PlayerOrderFeedback _playerOrderFeedback;
     private final Set<String> _players;
     private String _firstPlayer;
@@ -17,7 +17,7 @@ public class ST1EPlayerOrderProcess implements GameProcess {
     }
 
     @Override
-    public void process(DefaultGame game) {
+    public void process(ST1EGame game) {
         Map<String, Integer> diceResults = new HashMap<>();
         for (String player: _players) diceResults.put(player, 0);
 
@@ -43,7 +43,7 @@ public class ST1EPlayerOrderProcess implements GameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
+    public GameProcess<ST1EGame> getNextProcess() {
         return new ST1EDoorwaySeedPhaseProcess(_firstPlayer);
     }
 }

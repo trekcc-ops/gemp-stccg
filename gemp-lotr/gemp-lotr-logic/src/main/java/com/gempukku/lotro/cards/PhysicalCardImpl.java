@@ -16,9 +16,9 @@ import java.util.List;
 public class PhysicalCardImpl implements LotroPhysicalCard {
     protected int _cardId;
     protected final String _blueprintId;
+    protected Zone _zone;
     protected final String _owner;
     protected String _cardController;
-    protected Zone _zone;
     protected final LotroCardBlueprint _blueprint;
 
     protected PhysicalCardImpl _attachedTo;

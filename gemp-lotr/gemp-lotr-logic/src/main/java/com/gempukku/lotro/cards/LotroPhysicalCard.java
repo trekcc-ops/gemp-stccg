@@ -1,8 +1,14 @@
 package com.gempukku.lotro.cards;
 
+import com.gempukku.lotro.actions.OptionalTriggerAction;
+import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Zone;
+import com.gempukku.lotro.effects.EffectResult;
+import com.gempukku.lotro.game.DefaultGame;
 
-public interface LotroPhysicalCard extends PhysicalCard {
+import java.util.List;
+
+public interface LotroPhysicalCard extends Filterable {
     Zone getZone();
     String getBlueprintId();
     String getImageUrl();
@@ -27,5 +33,8 @@ public interface LotroPhysicalCard extends PhysicalCard {
 
     Integer getSiteNumber();
     String getTitle();
+    List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game,
+                                                               EffectResult effectResult,
+                                                               LotroPhysicalCard self);
 
 }

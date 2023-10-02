@@ -65,13 +65,14 @@ public class GameState {
         return _nextCardId++;
     }
 
-    public GameState(Map<String, List<String>> cards, CardBlueprintLibrary library, GameFormat format) {
-        _cards = cards;
+    public GameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
         _format = format;
-        for (Map.Entry<String, List<String>> stringListEntry : _cards.entrySet()) {
-            String playerId = stringListEntry.getKey();
-            List<String> decks = stringListEntry.getValue();
-
+        try {
+            addPlayerCards(players, decks, library);
+        } catch (CardNotFoundException e) {
+            throw new RuntimeException("Invalid blueprint ID found in card deck while creating game state");
+        }
+        for (String playerId : players) {
             _adventureDecks.put(playerId, new LinkedList<>());
             _decks.put(playerId, new LinkedList<>());
             _hands.put(playerId, new LinkedList<>());
@@ -81,8 +82,6 @@ public class GameState {
             _discards.put(playerId, new LinkedList<>());
             _deadPiles.put(playerId, new LinkedList<>());
             _stacked.put(playerId, new LinkedList<>());
-
-            addPlayerCards(playerId, decks, library);
 
             for(var site : getAdventureDeck(playerId)) {
                 for (GameStateListener listener : getAllGameStateListeners()) {
@@ -129,28 +128,17 @@ public class GameState {
         _moving = moving;
     }
 
-    void addPlayerCards(String playerId, List<String> cards, CardBlueprintLibrary library) {
-        for (String blueprintId : cards) {
-            try {
-                PhysicalCardImpl physicalCard = createPhysicalCardImpl(playerId, library, blueprintId);
-                if (physicalCard.getBlueprint().getCardType() == CardType.SITE) {
-                    physicalCard.setZone(Zone.ADVENTURE_DECK);
-                    _adventureDecks.get(playerId).add(physicalCard);
-                } else {
-                    physicalCard.setZone(Zone.DECK);
-                    _decks.get(playerId).add(physicalCard);
-                }
-            } catch (CardNotFoundException exp) {
-                // Ignore the card
-            }
-        }
+    void addPlayerCards(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library) throws CardNotFoundException {
+        /*
+            // TODO: Nothing implemented here, but this should also never get called
+         */
     }
 
     public LotroPhysicalCard createPhysicalCard(String ownerPlayerId, CardBlueprintLibrary library, String blueprintId) throws CardNotFoundException {
         return createPhysicalCardImpl(ownerPlayerId, library, blueprintId);
     }
 
-    private PhysicalCardImpl createPhysicalCardImpl(String playerId, CardBlueprintLibrary library, String blueprintId) throws CardNotFoundException {
+    protected PhysicalCardImpl createPhysicalCardImpl(String playerId, CardBlueprintLibrary library, String blueprintId) throws CardNotFoundException {
         LotroCardBlueprint card = library.getLotroCardBlueprint(blueprintId);
 
         int cardId = nextCardId();

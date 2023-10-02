@@ -24,7 +24,7 @@ public class TribblesGame extends DefaultGame {
 
         new TribblesRuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new TribblesGameState(_cards, library, _format);
+        _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {
             @Override

@@ -21,7 +21,7 @@ public class ST2EGame extends DefaultGame {
 
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new GameState(_cards, library, _format);
+        _gameState = new GameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init);
     }

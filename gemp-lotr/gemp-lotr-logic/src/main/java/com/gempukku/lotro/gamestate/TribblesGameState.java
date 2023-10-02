@@ -1,8 +1,6 @@
 package com.gempukku.lotro.gamestate;
 
-import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.cards.PhysicalCardImpl;
+import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.Player;
@@ -19,11 +17,8 @@ public class TribblesGameState extends GameState {
     private boolean _chainBroken;
     private int _currentRound;
 
-    public TribblesGameState(Map<String, List<String>> cards, CardBlueprintLibrary library, GameFormat format) {
-        super(cards, library, format);
-        for (Map.Entry<String, List<String>> stringListEntry : _cards.entrySet()) {
-            _playPiles.put(stringListEntry.getKey(), new LinkedList<>());
-        }
+    public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
+        super(players, decks, library, format);
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(1);
@@ -59,6 +54,23 @@ public class TribblesGameState extends GameState {
             return _stacked.get(playerId);
         else // This should never be accessed
             return _inPlay;
+    }
+
+    @Override
+    protected void addPlayerCards(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library) throws CardNotFoundException {
+        int cardId = 1;
+        for (String playerId : players) {
+            for (Map.Entry<String,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
+                List<PhysicalCardImpl> subDeck = new LinkedList<>();
+                for (String blueprintId : entry.getValue()) {
+                    subDeck.add(new PhysicalCardImpl(cardId, blueprintId, playerId, library.getLotroCardBlueprint(blueprintId)));
+                }
+                if (Objects.equals(entry.getKey(), "DRAW_DECK")) {
+                    _decks.put(playerId, subDeck);
+                }
+            }
+            _playPiles.put(playerId, new LinkedList<>());
+        }
     }
 
     public void shufflePlayPileIntoDeck(TribblesGame game, String playerId) {
