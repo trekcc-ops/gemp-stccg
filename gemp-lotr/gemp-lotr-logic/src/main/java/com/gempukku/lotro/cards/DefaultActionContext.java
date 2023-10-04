@@ -1,6 +1,5 @@
-package com.gempukku.lotro.actioncontext;
+package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;

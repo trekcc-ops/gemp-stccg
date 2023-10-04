@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.actions.ActionSource;
 import com.gempukku.lotro.actions.ActivateCardAction;
 import com.gempukku.lotro.actions.CostToEffectAction;

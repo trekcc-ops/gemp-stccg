@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effectappender.resolver;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.effectappender.EffectAppender;
 import com.gempukku.lotro.effectappender.DelayedAppender;

@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effectappender;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
-import com.gempukku.lotro.actioncontext.DelegateActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
+import com.gempukku.lotro.cards.DelegateActionContext;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;

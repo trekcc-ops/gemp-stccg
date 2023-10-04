@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effectappender;
 
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.DefaultGame;

@@ -1,13 +1,12 @@
 package com.gempukku.lotro.filters;
 
-import com.gempukku.lotro.actioncontext.ActionContext;
+import com.gempukku.lotro.cards.ActionContext;
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.effectappender.resolver.ValueResolver;
 import com.gempukku.lotro.common.*;
-import com.gempukku.lotro.results.CharacterLostSkirmishResult;
-import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.effectappender.resolver.ValueResolver;
 import com.gempukku.lotro.evaluator.SingleMemoryEvaluator;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 
 import java.util.*;
@@ -28,14 +27,7 @@ public class FilterFactory {
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
-        simpleFilters.put("bearer", (actionContext -> Filters.hasAttached(actionContext.getSource())));
         simpleFilters.put("character", (actionContext) -> Filters.character);
-        simpleFilters.put("controlledsite",
-                (actionContext -> Filters.siteControlled(actionContext.getPerformingPlayer())));
-        simpleFilters.put("currentsite",
-                (actionContext) -> Filters.currentSite);
-        simpleFilters.put("currentsitenumber",
-                (actionContext -> Filters.siteNumber(actionContext.getGame().getGameState().getCurrentSiteNumber())));
         simpleFilters.put("exhausted", (actionContext) -> Filters.exhausted);
         simpleFilters.put("idinstored",
                 (actionContext ->
@@ -53,27 +45,13 @@ public class FilterFactory {
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
         simpleFilters.put("insameregion",
                 actionContext -> Filters.region(LotroGameUtils.getRegion(actionContext.getSource().getSiteNumber())));
-        simpleFilters.put("inskirmish", (actionContext) -> Filters.inSkirmish);
         simpleFilters.put("item", (actionContext) -> Filters.item);
-        simpleFilters.put("mounted", (actionContext) -> Filters.mounted);
-        simpleFilters.put("ringbound",
-                (actionContext) -> Filters.ringBoundCompanion);
-        simpleFilters.put("ring-bound",
-                (actionContext) -> Filters.ringBoundCompanion);
         simpleFilters.put("self", ActionContext::getSource);
-        simpleFilters.put("sitehassitenumber",
-                (actionContext) -> Filters.siteHasSiteNumber);
         simpleFilters.put("siteincurrentregion",
                 (actionContext) -> Filters.siteInCurrentRegion);
-        simpleFilters.put("skirmishloser",
-                (actionContext) -> {
-                    final CharacterLostSkirmishResult lostSkirmish = (CharacterLostSkirmishResult) actionContext.getEffectResult();
-                    return lostSkirmish.getLoser();
-                });
         simpleFilters.put("unbound",
                 (actionContext) -> Filters.unboundCompanion);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
-        simpleFilters.put("unwounded", (actionContext) -> Filters.unwounded);
         simpleFilters.put("weapon", (actionContext) -> Filters.weapon);
         simpleFilters.put("wounded", (actionContext) -> Filters.wounded);
         simpleFilters.put("your", (actionContext) -> Filters.owner(actionContext.getPerformingPlayer()));

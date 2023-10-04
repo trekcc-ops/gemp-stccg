@@ -1,6 +1,6 @@
 package com.gempukku.lotro.requirement.trigger;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;

@@ -1,6 +1,5 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.ActionProxy;
 import com.gempukku.lotro.actions.RequiredTriggerAction;

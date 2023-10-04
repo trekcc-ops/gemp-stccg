@@ -1,6 +1,5 @@
 package com.gempukku.lotro.cards;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.ActionSource;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.common.Filterable;

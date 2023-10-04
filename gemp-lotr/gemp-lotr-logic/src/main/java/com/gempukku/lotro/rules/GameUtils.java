@@ -2,7 +2,7 @@ package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;

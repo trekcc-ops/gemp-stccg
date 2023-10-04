@@ -1,6 +1,6 @@
 package com.gempukku.lotro.evaluator;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.game.DefaultGame;

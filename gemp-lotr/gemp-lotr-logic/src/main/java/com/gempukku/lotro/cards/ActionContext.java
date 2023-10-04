@@ -1,4 +1,4 @@
-package com.gempukku.lotro.actioncontext;
+package com.gempukku.lotro.cards;
 
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.condition.Condition;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.requirement.Requirement;

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.requirement;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 
 import java.util.Arrays;
 import java.util.List;

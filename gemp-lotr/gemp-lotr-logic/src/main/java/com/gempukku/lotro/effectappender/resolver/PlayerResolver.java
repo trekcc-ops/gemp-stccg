@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effectappender.resolver;
 
-import com.gempukku.lotro.actioncontext.ActionContext;
+import com.gempukku.lotro.cards.ActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
 import com.gempukku.lotro.cards.PhysicalCard;

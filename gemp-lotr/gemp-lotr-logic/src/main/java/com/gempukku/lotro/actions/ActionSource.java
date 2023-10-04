@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.game.DefaultGame;
 
 public interface ActionSource {

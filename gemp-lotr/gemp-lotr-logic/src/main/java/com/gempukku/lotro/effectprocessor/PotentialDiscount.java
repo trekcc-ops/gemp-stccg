@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effectprocessor;
 
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.cards.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
