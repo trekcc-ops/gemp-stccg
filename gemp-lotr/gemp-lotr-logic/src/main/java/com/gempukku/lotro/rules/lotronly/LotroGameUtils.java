@@ -3,7 +3,7 @@ package com.gempukku.lotro.rules.lotronly;
 import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
@@ -135,7 +135,7 @@ public class LotroGameUtils extends GameUtils {
 
         final var cards = Filters.filterActive(game, Filters.and(filters, Filters.hasToken(token)));
 
-        for (LotroPhysicalCard physicalCard : cards)
+        for (PhysicalCard physicalCard : cards)
             tokensTotal += game.getGameState().getTokenCount(physicalCard, token);
 
         return tokensTotal;
@@ -143,7 +143,7 @@ public class LotroGameUtils extends GameUtils {
 
     public static int getSpottableCulturesCount(DefaultGame game, Filterable... filters) {
         Set<Culture> cultures = new HashSet<>();
-        for (LotroPhysicalCard physicalCard : Filters.filterActive(game, filters)) {
+        for (PhysicalCard physicalCard : Filters.filterActive(game, filters)) {
             final Culture culture = physicalCard.getBlueprint().getCulture();
             if (culture != null)
                 cultures.add(culture);
@@ -153,7 +153,7 @@ public class LotroGameUtils extends GameUtils {
 
     public static int getSpottableRacesCount(DefaultGame game, Filterable... filters) {
         Set<Race> races = new HashSet<>();
-        for (LotroPhysicalCard physicalCard : Filters.filterActive(game, filters)) {
+        for (PhysicalCard physicalCard : Filters.filterActive(game, filters)) {
             final Race race = physicalCard.getBlueprint().getRace();
             if (race != null)
                 races.add(race);

@@ -33,6 +33,11 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
         fieldProcessors.put("side", new SideFieldProcessor());
         fieldProcessors.put("culture", new CultureFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
+
+        fieldProcessors.put("quadrant", new QuadrantFieldProcessor());
+        fieldProcessors.put("region", new RegionFieldProcessor());
+        fieldProcessors.put("location", new LocationFieldProcessor());
+
         fieldProcessors.put("race", new RaceFieldProcessor());
         fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
         fieldProcessors.put("facility-type", new FacilityTypeFieldProcessor());
@@ -59,7 +64,7 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
     }
 
     public LotroCardBlueprint buildFromJson(JSONObject json) throws InvalidCardDefinitionException {
-        LOG.debug("Calling buildFromJson");
+//        LOG.debug("Calling buildFromJson");
         BuiltLotroCardBlueprint result = new BuiltLotroCardBlueprint();
 
         Set<Map.Entry<String, Object>> values = json.entrySet();
@@ -70,7 +75,7 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
             if (fieldProcessor == null)
                 throw new InvalidCardDefinitionException("Unrecognized field: " + field);
 
-            LOG.debug("Processing field " + field + " with value " + fieldValue);
+//            LOG.debug("Processing field " + field + " with value " + fieldValue);
             fieldProcessor.processField(field, fieldValue, result, this);
         }
 

@@ -8,7 +8,7 @@ import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.ReturnCardsToHandEffect;
 import com.gempukku.lotro.filters.Filter;
@@ -36,7 +36,7 @@ public class ReturnToHand implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory("_temp");
+                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory("_temp");
                         return new ReturnCardsToHandEffect(actionContext.getSource(), Filters.in(cardsFromMemory));
                     }
                 });

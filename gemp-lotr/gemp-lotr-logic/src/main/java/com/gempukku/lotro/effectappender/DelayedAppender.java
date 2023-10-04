@@ -54,7 +54,7 @@ public abstract class DelayedAppender<AbstractGame extends DefaultGame> implemen
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 
-    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action,
+    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction<AbstractGame> action,
                                                    DefaultActionContext<AbstractGame> actionContext) {
         final Effect effect = createEffect(cost, action, actionContext);
         if (effect == null)

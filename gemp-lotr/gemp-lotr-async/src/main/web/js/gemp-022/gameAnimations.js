@@ -205,6 +205,8 @@ var GameAnimations = Class.extend({
         var cardId = element.getAttribute("cardId");
         var zone = element.getAttribute("zone");
         var imageUrl = element.getAttribute("imageUrl");
+        var quadrant = element.getAttribute("quadrant");
+        var locationIndex = element.getAttribute("locationIndex");
 
         var that = this;
         $("#main").queue(
@@ -214,16 +216,16 @@ var GameAnimations = Class.extend({
                 var targetCardId = element.getAttribute("targetCardId");
                 var controllerId = element.getAttribute("controllerId");
 
+                if (zone == "SPACELINE") {
+                    that.game.addLocationDiv(locationIndex, quadrant);
+                }
+
                 if (controllerId != null)
                     participantId = controllerId;
 
-                var card;
-//                if (zone == "ADVENTURE_PATH")
-//                    card = new Card(blueprintId, zone, cardId, participantId, element.getAttribute("index"));
-//                else
-                card = new Card(blueprintId, zone, cardId, participantId, imageUrl);
-
+                var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex);
                 var cardDiv = that.game.createCardDiv(card, null, card.isFoil(), card.hasErrata());
+
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[participantId].append(cardDiv);
                 else if (zone == "ADVENTURE_DECK")

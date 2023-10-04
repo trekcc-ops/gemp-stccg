@@ -4,7 +4,7 @@ import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.PlayUtils;
 import com.gempukku.lotro.actions.CostToEffectAction;
@@ -51,14 +51,14 @@ public class ChooseAndPlayCardFromDeckEffect implements Effect {
     @Override
     public void playEffect(final DefaultGame game) {
         if (isPlayableInFull(game)) {
-            Collection<LotroPhysicalCard> deck = Filters.filter(game.getGameState().getDeck(_playerId), game, Filters.and(_filter, Filters.playable(game, _twilightModifier)));
+            Collection<PhysicalCard> deck = Filters.filter(game.getGameState().getDrawDeck(_playerId), game, Filters.and(_filter, Filters.playable(game, _twilightModifier)));
             game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new ArbitraryCardsSelectionDecision(1, "Choose a card to play", new LinkedList<>(deck), 0, 1) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            List<LotroPhysicalCard> selectedCards = getSelectedCardsByResponse(result);
+                            List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             if (selectedCards.size() > 0) {
-                                final LotroPhysicalCard selectedCard = selectedCards.get(0);
+                                final PhysicalCard selectedCard = selectedCards.get(0);
                                 cardSelectedToPlay(game, selectedCard);
                             }
                         }
@@ -66,7 +66,7 @@ public class ChooseAndPlayCardFromDeckEffect implements Effect {
         }
     }
 
-    protected void cardSelectedToPlay(DefaultGame game, final LotroPhysicalCard selectedCard) {
+    protected void cardSelectedToPlay(DefaultGame game, final PhysicalCard selectedCard) {
         _playCardAction = PlayUtils.getPlayCardAction(game, selectedCard, _twilightModifier, Filters.any, false);
         _playCardAction.appendEffect(
                 new UnrespondableEffect() {
@@ -78,7 +78,7 @@ public class ChooseAndPlayCardFromDeckEffect implements Effect {
         game.getActionsEnvironment().addActionToStack(_playCardAction);
     }
 
-    protected void afterCardPlayed(LotroPhysicalCard cardPlayed) {
+    protected void afterCardPlayed(PhysicalCard cardPlayed) {
     }
 
     @Override

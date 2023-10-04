@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 

@@ -1,18 +1,18 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.actions.Action;
 
 public class CheckTurnLimitPerPlayerEffect extends UnrespondableEffect {
     private final Action _action;
-    private final LotroPhysicalCard _card;
+    private final PhysicalCard _card;
     private final String _playerId;
     private final int _limit;
     private final Effect _limitedEffect;
 
-    public CheckTurnLimitPerPlayerEffect(Action action, LotroPhysicalCard card, String playerId, int limit, Effect limitedEffect) {
+    public CheckTurnLimitPerPlayerEffect(Action action, PhysicalCard card, String playerId, int limit, Effect limitedEffect) {
         _card = card;
         this._playerId = playerId;
         _limit = limit;

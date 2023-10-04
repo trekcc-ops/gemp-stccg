@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.game.DefaultGame;
@@ -12,11 +12,11 @@ public class SidePlayerCantPlayPhaseEventsOrSpecialAbilitiesModifier extends Abs
     private final Side _side;
     private final Phase _phase;
 
-    public SidePlayerCantPlayPhaseEventsOrSpecialAbilitiesModifier(LotroPhysicalCard source, Side side, Phase phase) {
+    public SidePlayerCantPlayPhaseEventsOrSpecialAbilitiesModifier(PhysicalCard source, Side side, Phase phase) {
         this(source, null, side, phase);
     }
 
-    public SidePlayerCantPlayPhaseEventsOrSpecialAbilitiesModifier(LotroPhysicalCard source, Condition condition, Side side, Phase phase) {
+    public SidePlayerCantPlayPhaseEventsOrSpecialAbilitiesModifier(PhysicalCard source, Condition condition, Side side, Phase phase) {
         super(source, null, null, condition, ModifierEffect.ACTION_MODIFIER);
         _side = side;
         _phase = phase;

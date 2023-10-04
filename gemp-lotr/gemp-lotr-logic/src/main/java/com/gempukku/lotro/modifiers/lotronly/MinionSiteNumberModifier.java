@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
@@ -13,19 +13,19 @@ public class MinionSiteNumberModifier extends AbstractModifier {
     private final Evaluator evaluator;
     private final boolean nonCardTextModifier;
 
-    public MinionSiteNumberModifier(LotroPhysicalCard source, Filterable affectFilter, int modifier) {
+    public MinionSiteNumberModifier(PhysicalCard source, Filterable affectFilter, int modifier) {
         this(source, affectFilter, null, modifier);
     }
 
-    public MinionSiteNumberModifier(LotroPhysicalCard source, Filterable affectFilter, Condition condition, int modifier) {
+    public MinionSiteNumberModifier(PhysicalCard source, Filterable affectFilter, Condition condition, int modifier) {
         this(source, affectFilter, condition, new ConstantEvaluator(modifier));
     }
 
-    public MinionSiteNumberModifier(LotroPhysicalCard source, Filterable affectFilter, Condition condition, Evaluator evaluator) {
+    public MinionSiteNumberModifier(PhysicalCard source, Filterable affectFilter, Condition condition, Evaluator evaluator) {
         this(source, affectFilter, condition, evaluator, false);
     }
 
-    public MinionSiteNumberModifier(LotroPhysicalCard source, Filterable affectFilter, Condition condition, Evaluator evaluator, boolean nonCardTextModifier) {
+    public MinionSiteNumberModifier(PhysicalCard source, Filterable affectFilter, Condition condition, Evaluator evaluator, boolean nonCardTextModifier) {
         super(source, null, affectFilter, condition, ModifierEffect.SITE_NUMBER_MODIFIER);
         this.evaluator = evaluator;
         this.nonCardTextModifier = nonCardTextModifier;
@@ -37,7 +37,7 @@ public class MinionSiteNumberModifier extends AbstractModifier {
     }
 
     @Override
-    public String getText(DefaultGame game, LotroPhysicalCard self) {
+    public String getText(DefaultGame game, PhysicalCard self) {
         final int value = evaluator.evaluateExpression(game, self);
         if (value >= 0)
             return "Site number +" + value;
@@ -46,7 +46,7 @@ public class MinionSiteNumberModifier extends AbstractModifier {
     }
 
     @Override
-    public int getMinionSiteNumberModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getMinionSiteNumberModifier(DefaultGame game, PhysicalCard physicalCard) {
         return evaluator.evaluateExpression(game, physicalCard);
     }
 }

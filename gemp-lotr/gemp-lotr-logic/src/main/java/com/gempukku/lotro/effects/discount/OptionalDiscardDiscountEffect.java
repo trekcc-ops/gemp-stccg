@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.discount;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.SubAction;
@@ -70,7 +70,7 @@ public class OptionalDiscardDiscountEffect extends AbstractSubActionEffect imple
                         new OptionalEffect(subAction, _playerId,
                                 new ChooseAndDiscardCardsFromPlayEffect(subAction, _playerId, _discardCount, _discardCount, _discardFilters) {
                                     @Override
-                                    protected void cardsToBeDiscardedCallback(Collection<LotroPhysicalCard> cards) {
+                                    protected void cardsToBeDiscardedCallback(Collection<PhysicalCard> cards) {
                                         if (cards.size() == _discardCount) {
                                             _paid = true;
                                             discountPaidCallback(_discardCount);

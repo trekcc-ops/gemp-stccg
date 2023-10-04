@@ -27,7 +27,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPile implements EffectAppenderProd
                 final String drawPlayer = playerSource.getPlayer(actionContext);
                 final Evaluator evaluator = count.getEvaluator(null);
                 final int cardCount = evaluator.evaluateExpression(actionContext.getGame(), null);
-                return actionContext.getGame().getGameState().getDeck(drawPlayer).size() >= cardCount;
+                return actionContext.getGame().getGameState().getDrawDeck(drawPlayer).size() >= cardCount;
             }
 
             @Override

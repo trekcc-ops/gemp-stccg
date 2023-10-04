@@ -1,22 +1,22 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.modifiers.ModifierFlag;
 
 public class RemoveTokenEffect extends AbstractEffect {
-    private final LotroPhysicalCard _source;
-    private final LotroPhysicalCard _target;
+    private final PhysicalCard _source;
+    private final PhysicalCard _target;
     private final Token _token;
     private final int _count;
 
-    public RemoveTokenEffect(LotroPhysicalCard source, LotroPhysicalCard target, Token token) {
+    public RemoveTokenEffect(PhysicalCard source, PhysicalCard target, Token token) {
         this(source, target, token, 1);
     }
 
-    public RemoveTokenEffect(LotroPhysicalCard source, LotroPhysicalCard target, Token token, int count) {
+    public RemoveTokenEffect(PhysicalCard source, PhysicalCard target, Token token, int count) {
         _source = source;
         _target = target;
         _token = token;

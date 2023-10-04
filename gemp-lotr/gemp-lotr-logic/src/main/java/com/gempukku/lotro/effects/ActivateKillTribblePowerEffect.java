@@ -1,13 +1,15 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
 
 public class ActivateKillTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateKillTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateKillTribblePowerEffect(CostToEffectAction<TribblesGame> action, PhysicalCard source) {
         super(action, source);
     }
 
@@ -32,6 +34,6 @@ public class ActivateKillTribblePowerEffect extends ActivateTribblePowerEffect {
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
         // ... to discard the top tribble of his or her play pile
-        new DiscardTopCardFromPlayPileEffect(_source, chosenPlayer).playEffect(game);
+        new DiscardCardsFromEndOfCardPileEffect(_source, Zone.PLAY_PILE, EndOfPile.TOP, chosenPlayer).playEffect(game);
     }
 }

@@ -1,22 +1,22 @@
 package com.gempukku.lotro.processes;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.evaluator.Evaluator;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Skirmish {
-    private LotroPhysicalCard _fellowshipCharacter;
-    private final Set<LotroPhysicalCard> _shadowCharacters;
+    private PhysicalCard _fellowshipCharacter;
+    private final Set<PhysicalCard> _shadowCharacters;
     private boolean _cancelled;
 
     private Evaluator _fpStrengthOverrideEvaluator;
     private Evaluator _shadowStrengthOverrideEvaluator;
 
-    private final Set<LotroPhysicalCard> _removedFromSkirmish = new HashSet<>();
+    private final Set<PhysicalCard> _removedFromSkirmish = new HashSet<>();
 
-    public Skirmish(LotroPhysicalCard fellowshipCharacter, Set<LotroPhysicalCard> shadowCharacters) {
+    public Skirmish(PhysicalCard fellowshipCharacter, Set<PhysicalCard> shadowCharacters) {
         _fellowshipCharacter = fellowshipCharacter;
         _shadowCharacters = shadowCharacters;
     }
@@ -37,23 +37,23 @@ public class Skirmish {
         _shadowStrengthOverrideEvaluator = shadowStrengthOverrideEvaluator;
     }
 
-    public LotroPhysicalCard getFellowshipCharacter() {
+    public PhysicalCard getFellowshipCharacter() {
         return _fellowshipCharacter;
     }
 
-    public Set<LotroPhysicalCard> getShadowCharacters() {
+    public Set<PhysicalCard> getShadowCharacters() {
         return _shadowCharacters;
     }
 
-    public void setFellowshipCharacter(LotroPhysicalCard fellowshipCharacter) {
+    public void setFellowshipCharacter(PhysicalCard fellowshipCharacter) {
         _fellowshipCharacter = fellowshipCharacter;
     }
 
-    public void addRemovedFromSkirmish(LotroPhysicalCard loser) {
+    public void addRemovedFromSkirmish(PhysicalCard loser) {
         _removedFromSkirmish.add(loser);
     }
 
-    public Set<LotroPhysicalCard> getRemovedFromSkirmish() {
+    public Set<PhysicalCard> getRemovedFromSkirmish() {
         return _removedFromSkirmish;
     }
 

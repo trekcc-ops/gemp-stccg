@@ -75,7 +75,7 @@ public class AddActivated implements ModifierSourceProducer {
 
         return actionContext -> new AddActionToCardModifier(actionContext.getSource(), null, filterableSource.getFilterable(actionContext)) {
             @Override
-            public List<? extends ActivateCardAction> getExtraPhaseAction(DefaultGame game, LotroPhysicalCard card) {
+            public List<? extends ActivateCardAction> getExtraPhaseAction(DefaultGame game, PhysicalCard card) {
                 LinkedList<ActivateCardAction> result = new LinkedList<>();
                 for (ActionSource inPlayPhaseAction : actionSources) {
                     DefaultActionContext actionContext = new DefaultActionContext(card.getOwner(), game, card, null, null);
@@ -90,7 +90,7 @@ public class AddActivated implements ModifierSourceProducer {
             }
 
             @Override
-            protected ActivateCardAction createExtraPhaseAction(DefaultGame game, LotroPhysicalCard matchingCard) {
+            protected ActivateCardAction createExtraPhaseAction(DefaultGame game, PhysicalCard matchingCard) {
                 return null;
             }
         };

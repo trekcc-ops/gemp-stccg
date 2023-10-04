@@ -1,7 +1,8 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateRecycleTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateRecycleTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 
@@ -38,8 +39,8 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
     }
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
-        new ShuffleCardsFromDiscardIntoDeckEffect(
-                _source, chosenPlayer, game.getGameState().getDiscard(chosenPlayer)).playEffect(game);
+        new ShuffleCardsIntoDrawDeckEffect(
+                _source, Zone.DISCARD, chosenPlayer, game.getGameState().getDiscard(chosenPlayer)).playEffect(game);
     }
 
 }

@@ -1,17 +1,18 @@
 package com.gempukku.lotro.effects.choose;
 
+import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.actions.SubAction;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.CardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.AbstractSubActionEffect;
-import com.gempukku.lotro.effects.DiscardCardsFromHandEffect;
-import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.actions.SubAction;
+import com.gempukku.lotro.effects.DiscardCardsFromZoneEffect;
 import com.gempukku.lotro.evaluator.ConstantEvaluator;
 import com.gempukku.lotro.evaluator.Evaluator;
-import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.filters.Filters;
+import com.gempukku.lotro.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -70,7 +71,7 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
         if (_forced && !game.getModifiersQuerying().canDiscardCardsFromHand(game, _playerId, _action.getActionSource()))
             return;
 
-        Collection<LotroPhysicalCard> hand = Filters.filter(game.getGameState().getHand(_playerId), game, _filter);
+        Collection<PhysicalCard> hand = Filters.filter(game.getGameState().getHand(_playerId), game, _filter);
         int maximum = Math.min(_maximum.evaluateExpression(game, null), hand.size());
 
         int minimum = _minimum.evaluateExpression(game, null);
@@ -78,7 +79,7 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
             cardsBeingDiscardedCallback(Collections.emptySet());
         } else if (hand.size() <= minimum) {
             SubAction subAction = new SubAction(_action);
-            subAction.appendEffect(new DiscardCardsFromHandEffect(_action.getActionSource(), _playerId, hand, _forced));
+            subAction.appendEffect(new DiscardCardsFromZoneEffect(_action.getActionSource(), Zone.HAND, _playerId, hand, _forced));
             processSubAction(game, subAction);
             cardsBeingDiscardedCallback(hand);
         } else {
@@ -86,9 +87,9 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
                     new CardsSelectionDecision(1, _text, hand, minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Set<LotroPhysicalCard> cards = getSelectedCardsByResponse(result);
+                            Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
                             SubAction subAction = new SubAction(_action);
-                            subAction.appendEffect(new DiscardCardsFromHandEffect(_action.getActionSource(), _playerId, cards, _forced));
+                            subAction.appendEffect(new DiscardCardsFromZoneEffect(_action.getActionSource(), Zone.HAND, _playerId, cards, _forced));
                             processSubAction(game, subAction);
                             cardsBeingDiscardedCallback(cards);
                         }
@@ -96,6 +97,6 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
         }
     }
 
-    protected void cardsBeingDiscardedCallback(Collection<LotroPhysicalCard> cardsBeingDiscarded) {
+    protected void cardsBeingDiscardedCallback(Collection<PhysicalCard> cardsBeingDiscarded) {
     }
 }

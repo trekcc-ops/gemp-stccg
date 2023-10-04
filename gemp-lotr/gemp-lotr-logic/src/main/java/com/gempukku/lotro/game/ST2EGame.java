@@ -2,9 +2,10 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.gamestate.GameStateListener;
+import com.gempukku.lotro.gamestate.ST1EGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
@@ -21,7 +22,8 @@ public class ST2EGame extends DefaultGame {
 
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new GameState(_allPlayers, decks, library, _format);
+            // TODO: Will likely need its own game state class
+        _gameState = new ST1EGameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init);
     }
@@ -38,7 +40,7 @@ public class ST2EGame extends DefaultGame {
     }
     
 
-    public boolean checkPlayRequirements(LotroPhysicalCard card) {
+    public boolean checkPlayRequirements(PhysicalCard card) {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met

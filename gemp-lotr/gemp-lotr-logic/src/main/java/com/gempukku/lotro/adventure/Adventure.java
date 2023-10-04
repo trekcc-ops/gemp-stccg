@@ -1,7 +1,7 @@
 package com.gempukku.lotro.adventure;
 
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
@@ -21,7 +21,7 @@ public interface Adventure {
 
     GameProcess getAfterFellowshipArcheryGameProcess(int fellowshipArcheryTotal, GameProcess followingProcess);
 
-    GameProcess getAfterFellowshipAssignmentGameProcess(Set<LotroPhysicalCard> leftoverMinions, GameProcess followingProcess);
+    GameProcess getAfterFellowshipAssignmentGameProcess(Set<PhysicalCard> leftoverMinions, GameProcess followingProcess);
 
     GameProcess getBeforeFellowshipChooseToMoveGameProcess(GameProcess followingProcess);
 

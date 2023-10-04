@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -31,7 +31,7 @@ public class ChooseAndPlayCardFromDiscardEffect implements Effect {
     public ChooseAndPlayCardFromDiscardEffect(String playerId, DefaultGame game, int twilightModifier, Filterable... filter) {
         _playerId = playerId;
         // Card has to be in discard when you start playing the card (we need to copy the collection)
-        _filter = Filters.and(filter, Filters.in(new LinkedList<LotroPhysicalCard>(game.getGameState().getDiscard(playerId))));
+        _filter = Filters.and(filter, Filters.in(new LinkedList<PhysicalCard>(game.getGameState().getDiscard(playerId))));
         _twilightModifier = twilightModifier;
     }
 
@@ -50,7 +50,7 @@ public class ChooseAndPlayCardFromDiscardEffect implements Effect {
         return null;
     }
 
-    private Collection<LotroPhysicalCard> getPlayableInDiscard(DefaultGame game) {
+    private Collection<PhysicalCard> getPlayableInDiscard(DefaultGame game) {
         return Filters.filter(game.getGameState().getDiscard(_playerId), game, _filter, Filters.playable(game, _twilightModifier));
     }
 
@@ -58,15 +58,15 @@ public class ChooseAndPlayCardFromDiscardEffect implements Effect {
     public void playEffect(final DefaultGame game) {
         if (game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
             return;
-        Collection<LotroPhysicalCard> discard = getPlayableInDiscard(game);
+        Collection<PhysicalCard> discard = getPlayableInDiscard(game);
         if (discard.size() > 0) {
             game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new ArbitraryCardsSelectionDecision(1, "Choose a card to play", new LinkedList<>(discard), 1, 1) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            List<LotroPhysicalCard> selectedCards = getSelectedCardsByResponse(result);
+                            List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             if (selectedCards.size() > 0) {
-                                final LotroPhysicalCard selectedCard = selectedCards.get(0);
+                                final PhysicalCard selectedCard = selectedCards.get(0);
                                 _playCardAction = PlayUtils.getPlayCardAction(game, selectedCard, _twilightModifier, Filters.any, false);
                                 _playCardAction.appendEffect(
                                         new UnrespondableEffect() {
@@ -82,7 +82,7 @@ public class ChooseAndPlayCardFromDiscardEffect implements Effect {
         }
     }
 
-    protected void afterCardPlayed(LotroPhysicalCard cardPlayed) {
+    protected void afterCardPlayed(PhysicalCard cardPlayed) {
     }
 
     @Override

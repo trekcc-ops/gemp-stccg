@@ -67,7 +67,7 @@ public class FieldUtils {
         if (value == null)
             return null;
         final String string = getString(value, key);
-        return Enum.valueOf(enumClass, string.toUpperCase().replace(' ', '_').replace('-', '_'));
+        return Enum.valueOf(enumClass, string.toUpperCase().replaceAll("[ '\\-]","_"));
     }
 
     public static Side getSide(Object value, String key) throws InvalidCardDefinitionException {
@@ -91,16 +91,15 @@ public class FieldUtils {
     }
 
     public static JSONObject[] getObjectArray(Object value, String key) throws InvalidCardDefinitionException {
-        if (value != null)
-            LOG.debug(value.toString());
+/*        if (value != null)
+            LOG.debug(value.toString());*/
         if (value == null)
             return new JSONObject[0];
         else if (value instanceof JSONObject)
             return new JSONObject[]{(JSONObject) value};
-        else if (value instanceof final JSONArray array) {
+        else if (value instanceof final JSONArray array)
             return (JSONObject[]) array.toArray(new JSONObject[0]);
-        }
-        throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
+        else throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
     }
 
     public static void validateAllowedFields(JSONObject object, String... fields) throws InvalidCardDefinitionException {

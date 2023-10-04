@@ -1,29 +1,29 @@
 package com.gempukku.lotro.results;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.EffectResult;
 
 public class CardTransferredResult extends EffectResult {
-    private final LotroPhysicalCard _transferredCard;
-    private final LotroPhysicalCard _transferredFrom;
-    private final LotroPhysicalCard _transferredTo;
+    private final PhysicalCard _transferredCard;
+    private final PhysicalCard _transferredFrom;
+    private final PhysicalCard _transferredTo;
 
-    public CardTransferredResult(LotroPhysicalCard transferredCard, LotroPhysicalCard transferredFrom, LotroPhysicalCard transferredTo) {
+    public CardTransferredResult(PhysicalCard transferredCard, PhysicalCard transferredFrom, PhysicalCard transferredTo) {
         super(EffectResult.Type.CARD_TRANSFERRED);
         _transferredCard = transferredCard;
         _transferredFrom = transferredFrom;
         _transferredTo = transferredTo;
     }
 
-    public LotroPhysicalCard getTransferredCard() {
+    public PhysicalCard getTransferredCard() {
         return _transferredCard;
     }
 
-    public LotroPhysicalCard getTransferredFrom() {
+    public PhysicalCard getTransferredFrom() {
         return _transferredFrom;
     }
 
-    public LotroPhysicalCard getTransferredTo() {
+    public PhysicalCard getTransferredTo() {
         return _transferredTo;
     }
 }

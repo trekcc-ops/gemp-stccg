@@ -1,6 +1,11 @@
 package com.gempukku.lotro.cards;
 
-import java.util.*;
+import com.gempukku.lotro.common.SubDeck;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CardDeck {
     Map<String, List<String>> _subDecks = new HashMap<>();
@@ -64,6 +69,14 @@ public class CardDeck {
         return allCards;
     }
     public Map<String, List<String>> getSubDecks() { return _subDecks; }
+    public Map<SubDeck, List<String>> getSubDecksWithEnum() {
+        Map<SubDeck, List<String>> subDecksWithEnum = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : _subDecks.entrySet()) {
+            subDecksWithEnum.put(SubDeck.valueOf(entry.getKey()), entry.getValue());
+        }
+        return subDecksWithEnum;
+    }
+
     public void setSubDecks(Map<String, List<String>> subDecks) { _subDecks = subDecks; }
     public String getTargetFormat() { return _targetFormat; }
     public CardBlueprintLibrary getLibrary() { return _library; }

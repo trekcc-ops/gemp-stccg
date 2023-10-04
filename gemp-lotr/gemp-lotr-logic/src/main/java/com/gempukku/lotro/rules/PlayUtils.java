@@ -4,7 +4,7 @@ import com.gempukku.lotro.actions.AttachPermanentAction;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.PlayEventAction;
 import com.gempukku.lotro.actions.PlayPermanentAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayUtils {
-    private static Zone getPlayToZone(LotroPhysicalCard card) {
+    private static Zone getPlayToZone(PhysicalCard card) {
         final CardType cardType = card.getBlueprint().getCardType();
         return switch (cardType) {
             case COMPANION -> Zone.FREE_CHARACTERS;
@@ -35,7 +35,7 @@ public class PlayUtils {
         put(Phase.REGROUP, Keyword.REGROUP);
     }});
 
-    private static Filter getFullAttachValidTargetFilter(final DefaultGame game, final LotroPhysicalCard card,
+    private static Filter getFullAttachValidTargetFilter(final DefaultGame game, final PhysicalCard card,
                                                          int twilightModifier) {
         return Filters.and(RuleUtils.getFullValidTargetFilter(card.getOwner(), game, card),
                 (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canHavePlayedOn(game1, card, physicalCard),
@@ -52,7 +52,7 @@ public class PlayUtils {
     }
 
 
-    public static CostToEffectAction getPlayCardAction(DefaultGame game, LotroPhysicalCard card, int twilightModifier, Filterable additionalAttachmentFilter, boolean ignoreRoamingPenalty) {
+    public static CostToEffectAction getPlayCardAction(DefaultGame game, PhysicalCard card, int twilightModifier, Filterable additionalAttachmentFilter, boolean ignoreRoamingPenalty) {
         final LotroCardBlueprint blueprint = card.getBlueprint();
 
         if (blueprint.getCardType() != CardType.EVENT) {

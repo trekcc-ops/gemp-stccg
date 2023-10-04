@@ -1,11 +1,13 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
-import com.gempukku.lotro.common.Filterable;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.effects.PutCardFromDiscardOnBottomOfDeckEffect;
-import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.actions.SubAction;
+import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Filterable;
+import com.gempukku.lotro.common.Zone;
+import com.gempukku.lotro.effects.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.lotro.game.DefaultGame;
 
 import java.util.Collection;
 
@@ -18,11 +20,11 @@ public class ChooseAndPutCardFromDiscardOnBottomOfDeckEffect extends ChooseCards
     }
 
     @Override
-    protected void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         if (cards.size() > 0) {
             SubAction subAction = new SubAction(_action);
-            for (LotroPhysicalCard card : cards)
-                subAction.appendEffect(new PutCardFromDiscardOnBottomOfDeckEffect(card));
+            for (PhysicalCard card : cards)
+                subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(true, Zone.DISCARD, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
             game.getActionsEnvironment().addActionToStack(subAction);
         }
     }

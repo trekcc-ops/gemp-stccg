@@ -3,7 +3,6 @@ package com.gempukku.lotro.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class PlayerOrder {
     private boolean _isReversed;
@@ -15,13 +14,6 @@ public class PlayerOrder {
         _isReversed = false;
         _firstPlayer = turnOrder.get(0);
         _currentPlayer = turnOrder.get(0);
-    }
-
-    public PlayerOrder(Set<String> turnOrder) {
-        _turnOrder = new ArrayList<>(turnOrder);
-        _isReversed = false;
-        _firstPlayer = _turnOrder.get(0);
-        _currentPlayer = _turnOrder.get(0);
     }
 
     public String getFirstPlayer() {
@@ -70,6 +62,15 @@ public class PlayerOrder {
 
     public int getPlayerCount() {
         return _turnOrder.size();
+    }
+    public void advancePlayer() {
+        int currentPlayerIndex = _turnOrder.indexOf(_currentPlayer);
+        if (currentPlayerIndex == _turnOrder.size() - 1) {
+            currentPlayerIndex = 0;
+        } else {
+            currentPlayerIndex++;
+        }
+        _currentPlayer = _turnOrder.get(currentPlayerIndex);
     }
 
     public boolean getReversed() { return _isReversed; }

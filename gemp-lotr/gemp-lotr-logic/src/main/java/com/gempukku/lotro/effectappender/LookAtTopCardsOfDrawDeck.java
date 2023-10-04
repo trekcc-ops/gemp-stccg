@@ -7,7 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.LookAtTopCardOfADeckEffect;
 import com.gempukku.lotro.game.DefaultGame;
@@ -31,7 +31,7 @@ public class LookAtTopCardsOfDrawDeck implements EffectAppenderProducer {
             public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
 
-                return actionContext.getGame().getGameState().getDeck(deckId).size() >= count;
+                return actionContext.getGame().getGameState().getDrawDeck(deckId).size() >= count;
             }
 
             @Override
@@ -40,7 +40,7 @@ public class LookAtTopCardsOfDrawDeck implements EffectAppenderProducer {
 
                 return new LookAtTopCardOfADeckEffect(actionContext.getPerformingPlayer(), count, deckId) {
                     @Override
-                    protected void cardsLookedAt(List<? extends LotroPhysicalCard> cards) {
+                    protected void cardsLookedAt(List<? extends PhysicalCard> cards) {
                         if (memorize != null)
                             actionContext.setCardMemory(memorize, cards);
                     }

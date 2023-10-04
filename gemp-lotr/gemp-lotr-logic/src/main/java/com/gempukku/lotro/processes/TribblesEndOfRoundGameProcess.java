@@ -1,6 +1,6 @@
 package com.gempukku.lotro.processes;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
@@ -69,9 +69,9 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
         }
     }
 
-    public int calculateScore(List<LotroPhysicalCard> playPile) {
+    public int calculateScore(List<PhysicalCard> playPile) {
         int score = 0;
-        for (LotroPhysicalCard card : playPile) {
+        for (PhysicalCard card : playPile) {
             score += card.getBlueprint().getTribbleValue();
         }
         return score;

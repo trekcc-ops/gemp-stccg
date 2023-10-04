@@ -4,7 +4,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.TribblePower;
 import com.gempukku.lotro.effects.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
@@ -23,7 +23,7 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
 //                final Map<TribblePower, ActivateTribblePowerEffect> activateEffects = new HashMap<>();
 
                 TribblePower tribblePower = actionContext.getSource().getBlueprint().getTribblePower();
-                LotroPhysicalCard actionSource = actionContext.getSource();
+                PhysicalCard actionSource = actionContext.getSource();
 
                 if (tribblePower == TribblePower.AVALANCHE)
                     return new ActivateAvalancheTribblePowerEffect(action, actionSource);

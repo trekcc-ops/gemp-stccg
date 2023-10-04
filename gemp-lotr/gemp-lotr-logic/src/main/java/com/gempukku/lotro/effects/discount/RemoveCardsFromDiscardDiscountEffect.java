@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.discount;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final String _playerId;
     private final int _count;
     private final int discount;
@@ -25,7 +25,7 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
     private boolean _paid;
     private boolean _required;
 
-    public RemoveCardsFromDiscardDiscountEffect(LotroPhysicalCard source, String playerId, int count, int discount, Filterable cardFilter) {
+    public RemoveCardsFromDiscardDiscountEffect(PhysicalCard source, String playerId, int count, int discount, Filterable cardFilter) {
         _source = source;
         _playerId = playerId;
         _count = count;
@@ -81,7 +81,7 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
     }
 
     private void proceedDiscount(final DefaultGame game) {
-        final Collection<LotroPhysicalCard> removableCards = Filters.filter(game.getGameState().getDiscard(_playerId), game, _cardFilter);
+        final Collection<PhysicalCard> removableCards = Filters.filter(game.getGameState().getDiscard(_playerId), game, _cardFilter);
         game.getUserFeedback().sendAwaitingDecision(_playerId,
                 new ArbitraryCardsSelectionDecision(1, "Choose cards to remove", removableCards, _count, _count) {
                     @Override
@@ -92,14 +92,14 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
                 });
     }
 
-    private void removeCards(DefaultGame game, List<LotroPhysicalCard> cardsToRemove) {
-        Set<LotroPhysicalCard> removedCards = new HashSet<>();
-        for (LotroPhysicalCard physicalCard : cardsToRemove)
+    private void removeCards(DefaultGame game, List<PhysicalCard> cardsToRemove) {
+        Set<PhysicalCard> removedCards = new HashSet<>();
+        for (PhysicalCard physicalCard : cardsToRemove)
             if (physicalCard.getZone() == Zone.DISCARD)
                 removedCards.add(physicalCard);
 
         game.getGameState().removeCardsFromZone(_playerId, removedCards);
-        for (LotroPhysicalCard removedCard : removedCards)
+        for (PhysicalCard removedCard : removedCards)
             game.getGameState().addCardToZone(game, removedCard, Zone.REMOVED);
 
         game.getGameState().sendMessage(_playerId + " removed " + GameUtils.getAppendedNames(removedCards) + " from discard using " + GameUtils.getCardLink(_source));

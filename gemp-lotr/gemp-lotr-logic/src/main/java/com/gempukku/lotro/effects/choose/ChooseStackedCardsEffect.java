@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.CardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -40,9 +40,9 @@ public abstract class ChooseStackedCardsEffect extends AbstractEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
-        List<LotroPhysicalCard> stackedCards = new LinkedList<>();
+        List<PhysicalCard> stackedCards = new LinkedList<>();
 
-        for (LotroPhysicalCard stackedOnCard : Filters.filterActive(game, _stackedOnFilter))
+        for (PhysicalCard stackedOnCard : Filters.filterActive(game, _stackedOnFilter))
             stackedCards.addAll(Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, _stackedCardFilter));
 
         int maximum = Math.min(_maximum, stackedCards.size());
@@ -56,7 +56,7 @@ public abstract class ChooseStackedCardsEffect extends AbstractEffect {
                     new CardsSelectionDecision(1, getText(game), stackedCards, _minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Set<LotroPhysicalCard> stackedCards = getSelectedCardsByResponse(result);
+                            Set<PhysicalCard> stackedCards = getSelectedCardsByResponse(result);
                             cardsChosen(game, stackedCards);
                         }
                     });
@@ -65,5 +65,5 @@ public abstract class ChooseStackedCardsEffect extends AbstractEffect {
         return new FullEffectResult(success);
     }
 
-    protected abstract void cardsChosen(DefaultGame game, Collection<LotroPhysicalCard> stackedCards);
+    protected abstract void cardsChosen(DefaultGame game, Collection<PhysicalCard> stackedCards);
 }

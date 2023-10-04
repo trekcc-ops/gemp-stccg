@@ -116,27 +116,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
             }
         }
 
-        if(siteIDs != null) {
-            for (var card : _game.getGameState().getAdventureDeck(P1)) {
-                String name = siteIDs.entrySet()
-                        .stream()
-                        .filter(x -> x.getValue().equals(card.getBlueprintId()))
-                        .map(Map.Entry::getKey)
-                        .findFirst().orElse(null);
-
-                Cards.get(P1).put(name, (PhysicalCardImpl) card);
-            }
-
-            for (var card : _game.getGameState().getAdventureDeck(P2)) {
-                String name = siteIDs.entrySet()
-                        .stream()
-                        .filter(x -> x.getValue().equals(card.getBlueprintId()))
-                        .map(Map.Entry::getKey)
-                        .findFirst().orElse(null);
-
-                Cards.get(P2).put(name, (PhysicalCardImpl) card);
-            }
-        }
     }
 
 
@@ -166,39 +145,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
                 .findFirst().orElse(null);
     }
 
-    public PhysicalCardImpl GetFreepsSite(int siteNum) { return GetSite(P1, siteNum); }
-    public PhysicalCardImpl GetShadowSite(int siteNum) { return GetSite(P2, siteNum); }
-    public PhysicalCardImpl GetSite(String playerID, int siteNum)
-    {
-        PhysicalCardImpl site = (PhysicalCardImpl)_game.getGameState().getSite(siteNum);
-        if(site != null && Objects.equals(site.getOwner(), playerID))
-            return site;
-
-        List<PhysicalCardImpl> advDeck = (List<PhysicalCardImpl>)_game.getGameState().getAdventureDeck(playerID);
-        return advDeck.stream().filter(x -> x.getBlueprint().getSiteNumber() == siteNum).findFirst().orElse(null);
-    }
-
-    public PhysicalCardImpl GetSite(int siteNum)
-    {
-        return (PhysicalCardImpl) _game.getGameState().getSite(siteNum);
-    }
-    public PhysicalCardImpl GetFreepsSite(String name) { return GetSiteByName(P1, name); }
-    public PhysicalCardImpl GetShadowSite(String name) { return GetSiteByName(P2, name); }
-    public PhysicalCardImpl GetSiteByName(String player, String name)
-    {
-        var attempt = GetCard(player, name);
-        if(attempt != null)
-            return attempt;
-
-        final String lowername = name.toLowerCase();
-        List<PhysicalCardImpl> advDeck = (List<PhysicalCardImpl>)_game.getGameState().getAdventureDeck(player);
-        return advDeck.stream().filter(
-                x -> x.getBlueprint().getTitle().toLowerCase().contains(lowername)).findFirst().orElse(null
-        );
-    }
-
-    public List<String> FreepsGetAvailableActions() { return GetAvailableActions(P1); }
-    public List<String> ShadowGetAvailableActions() { return GetAvailableActions(P2); }
     public List<String> GetAvailableActions(String playerID) {
         AwaitingDecision decision = GetAwaitingDecision(playerID);
         if(decision == null) {
@@ -311,9 +257,9 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public int GetBurdens() { return _game.getGameState().getBurdens(); }
 
-    public List<? extends LotroPhysicalCard> GetFreepsHand() { return GetPlayerHand(P1); }
-    public List<? extends LotroPhysicalCard> GetShadowHand() { return GetPlayerHand(P2); }
-    public List<? extends LotroPhysicalCard> GetPlayerHand(String player)
+    public List<? extends PhysicalCard> GetFreepsHand() { return GetPlayerHand(P1); }
+    public List<? extends PhysicalCard> GetShadowHand() { return GetPlayerHand(P2); }
+    public List<? extends PhysicalCard> GetPlayerHand(String player)
     {
         return _game.getGameState().getHand(player);
     }
@@ -322,7 +268,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public int GetShadowDeckCount() { return GetPlayerDeckCount(P2); }
     public int GetPlayerDeckCount(String player)
     {
-        return _game.getGameState().getDeck(player).size();
+        return _game.getGameState().getDrawDeck(player).size();
     }
 
     public PhysicalCardImpl GetFreepsBottomOfDeck() { return GetPlayerBottomOfDeck(P1); }
@@ -332,7 +278,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public PhysicalCardImpl GetPlayerBottomOfDeck(String player) { return GetFromBottomOfPlayerDeck(player, 1); }
     public PhysicalCardImpl GetFromBottomOfPlayerDeck(String player, int index)
     {
-        var deck = _game.getGameState().getDeck(player);
+        var deck = _game.getGameState().getDrawDeck(player);
         return (PhysicalCardImpl) deck.get(deck.size() - index);
     }
 
@@ -347,7 +293,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
      */
     public PhysicalCardImpl GetFromTopOfPlayerDeck(String player, int index)
     {
-        var deck = _game.getGameState().getDeck(player);
+        var deck = _game.getGameState().getDrawDeck(player);
         return (PhysicalCardImpl) deck.get(index - 1);
     }
     public int GetFreepsDiscardCount() { return GetPlayerDiscardCount(P1); }
@@ -577,22 +523,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         _game.getGameState().addTokens(card, Token.findTokenForCulture(card.getBlueprint().getCulture()), count);
     }
 
-    public void RemoveTokensFromCard(PhysicalCardImpl card, int count) {
-        _game.getGameState().removeTokens(card, Token.findTokenForCulture(card.getBlueprint().getCulture()), count);
-    }
-
-
-    public void AddThreats(int count) {
-        _game.getGameState().addThreats(_game.getGameState().getCurrentPlayerId(), count);
-    }
-
-    public void RemoveThreats(int count) {
-        _game.getGameState().removeThreats(_game.getGameState().getCurrentPlayerId(), count);
-    }
-
-    public int GetThreats() {
-        return _game.getGameState().getThreats();
-    }
 
     public void FreepsRemoveWoundsFromChar(String cardName, int count) { RemoveWoundsFromChar(GetFreepsCard(cardName), count); }
     public void ShadowRemoveWoundsFromChar(String cardName, int count) { RemoveWoundsFromChar(GetShadowCard(cardName), count); }
@@ -607,8 +537,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void SetTwilight(int amount) { _game.getGameState().setTwilight(amount); }
 
     public int GetMoveLimit() { return _game.getModifiersQuerying().getMoveLimit(_game, 2); }
-
-    public int GetMoveCount() { return _game.getGameState().getMoveCount(); }
 
     public PhysicalCardImpl GetCurrentSite() { return (PhysicalCardImpl)_game.getGameState().getCurrentSite(); }
 

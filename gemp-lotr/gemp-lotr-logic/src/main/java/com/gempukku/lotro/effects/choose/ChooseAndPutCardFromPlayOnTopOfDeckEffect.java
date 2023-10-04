@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.PutCardFromPlayOnTopOfDeckEffect;
@@ -18,7 +18,7 @@ public class ChooseAndPutCardFromPlayOnTopOfDeckEffect extends ChooseActiveCardE
     }
 
     @Override
-    protected void cardSelected(DefaultGame game, LotroPhysicalCard card) {
+    protected void cardSelected(DefaultGame game, PhysicalCard card) {
         _resultSubAction = new SubAction(_action);
         _resultSubAction.appendEffect(new PutCardFromPlayOnTopOfDeckEffect(card));
         game.getActionsEnvironment().addActionToStack(_resultSubAction);

@@ -4,7 +4,7 @@ import com.gempukku.lotro.actions.ActionsEnvironment;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.gamestate.GameStateListener;
@@ -60,7 +60,7 @@ public abstract class DefaultGame {
     public GameFormat getFormat() {
         return _format;
     }
-    public abstract boolean checkPlayRequirements(LotroPhysicalCard card);
+    public abstract boolean checkPlayRequirements(PhysicalCard card);
     public Set<String> getPlayers() { return _allPlayers; }
     public boolean isCancelled() { return _cancelled; }
 

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
@@ -12,17 +12,17 @@ public class FPSkirmishResistanceStrengthOverrideModifier extends AbstractModifi
     private static final Evaluator _resistanceEvaluator =
             (game, cardAffected) -> game.getModifiersQuerying().getResistance(game, cardAffected);
 
-    public FPSkirmishResistanceStrengthOverrideModifier(LotroPhysicalCard source, Filterable affectFilter, Condition condition) {
+    public FPSkirmishResistanceStrengthOverrideModifier(PhysicalCard source, Filterable affectFilter, Condition condition) {
         super(source, null, affectFilter, condition, ModifierEffect.SKIRMISH_STRENGTH_EVALUATOR_MODIFIER);
     }
 
     @Override
-    public String getText(DefaultGame game, LotroPhysicalCard self) {
+    public String getText(DefaultGame game, PhysicalCard self) {
         return "Uses resistance instead of strength when resolving skirmish";
     }
 
     @Override
-    public Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard fpCharacter) {
+    public Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter) {
         return _resistanceEvaluator;
     }
 }

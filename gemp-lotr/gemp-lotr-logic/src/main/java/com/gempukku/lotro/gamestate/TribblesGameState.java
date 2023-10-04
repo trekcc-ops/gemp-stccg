@@ -1,17 +1,18 @@
 package com.gempukku.lotro.gamestate;
 
-import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.GameFormat;
-import com.gempukku.lotro.game.Player;
-import com.gempukku.lotro.game.PlayerOrder;
 import com.gempukku.lotro.game.TribblesGame;
 
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class TribblesGameState extends GameState {
-    private final Map<String, List<PhysicalCardImpl>> _playPiles = new HashMap<>();
+    protected final Map<String, List<PhysicalCard>> _playPiles = new HashMap<>();
     private int _nextTribbleInSequence;
     private int _lastTribblePlayed;
     private boolean _chainBroken;
@@ -19,31 +20,20 @@ public class TribblesGameState extends GameState {
 
     public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
         super(players, decks, library, format);
+        for (String player : players) {
+            _playPiles.put(player, new LinkedList<>());
+        }
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(1);
     }
 
     @Override
-    public void init(PlayerOrder playerOrder, String firstPlayer) {
-        _playerOrder = playerOrder;
-        setCurrentPlayerId(firstPlayer);
-        for (String player : playerOrder.getAllPlayers()) {
-            _players.put(player, new Player(player));
-        }
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.initializeBoard(playerOrder.getAllPlayers(), _format.discardPileIsPublic());
-        }
-    }
-
-    @Override
-    public List<PhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
-        if (zone == Zone.DECK)
-            return _decks.get(playerId);
+    public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
+        if (zone == Zone.DRAW_DECK)
+            return this._drawDecks.get(playerId);
         else if (zone == Zone.PLAY_PILE)
             return _playPiles.get(playerId);
-        else if (zone == Zone.ADVENTURE_DECK)
-            return _adventureDecks.get(playerId);
         else if (zone == Zone.DISCARD)
             return _discards.get(playerId);
         else if (zone == Zone.HAND)
@@ -57,16 +47,22 @@ public class TribblesGameState extends GameState {
     }
 
     @Override
-    protected void addPlayerCards(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library) throws CardNotFoundException {
+    public void createPhysicalCards() {
         int cardId = 1;
-        for (String playerId : players) {
-            for (Map.Entry<String,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
-                List<PhysicalCardImpl> subDeck = new LinkedList<>();
+        for (String playerId : _players.keySet()) {
+            for (Map.Entry<String,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
+                List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
-                    subDeck.add(new PhysicalCardImpl(cardId, blueprintId, playerId, library.getLotroCardBlueprint(blueprintId)));
+                    try {
+                        subDeck.add(new PhysicalCard(cardId, blueprintId, playerId, _library.getLotroCardBlueprint(blueprintId)));
+                        cardId++;
+                    } catch (CardNotFoundException e) {
+                        throw new RuntimeException("Card blueprint not found");
+                    }
                 }
                 if (Objects.equals(entry.getKey(), "DRAW_DECK")) {
-                    _decks.put(playerId, subDeck);
+                    this._drawDecks.put(playerId, subDeck);
+                    subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
                 }
             }
             _playPiles.put(playerId, new LinkedList<>());
@@ -74,15 +70,15 @@ public class TribblesGameState extends GameState {
     }
 
     public void shufflePlayPileIntoDeck(TribblesGame game, String playerId) {
-        List<LotroPhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
+        List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
         removeCardsFromZone(playerId, playPile);
-        for (LotroPhysicalCard card : playPile) {
-            addCardToZone(game, card, Zone.DECK);
+        for (PhysicalCard card : playPile) {
+            addCardToZone(game, card, Zone.DRAW_DECK);
         }
         shuffleDeck(playerId);
     }
 
-    public List<LotroPhysicalCard> getPlayPile(String playerId) {
+    public List<PhysicalCard> getPlayPile(String playerId) {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }
     public void setPlayerDecked(String playerId, boolean bool) {
@@ -120,19 +116,13 @@ public class TribblesGameState extends GameState {
         }
     }
 
-    public boolean isChainBroken() {
-        return _chainBroken;
+    public void setChainBroken(boolean chainBroken) {
+        if (chainBroken) breakChain();
+        else _chainBroken = false;
     }
 
-    @Override
-    public void playEffectReturningResult(LotroPhysicalCard cardPlayed) {
-        setLastTribblePlayed(cardPlayed.getBlueprint().getTribbleValue());
-        if (_lastTribblePlayed == 100000) {
-            setNextTribbleInSequence(1);
-        } else {
-            setNextTribbleInSequence(_lastTribblePlayed * 10);
-        }
-        _chainBroken = false;
+    public boolean isChainBroken() {
+        return _chainBroken;
     }
 
     @Override

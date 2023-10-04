@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.Action;
@@ -10,11 +10,11 @@ public class OpponentsCantUsePhaseSpecialAbilitiesModifier extends AbstractModif
     private final Phase _phase;
     private final String _playerId;
 
-    public OpponentsCantUsePhaseSpecialAbilitiesModifier(LotroPhysicalCard source, Phase phase, String playerId) {
+    public OpponentsCantUsePhaseSpecialAbilitiesModifier(PhysicalCard source, Phase phase, String playerId) {
         this(source, null, phase, playerId);
     }
 
-    public OpponentsCantUsePhaseSpecialAbilitiesModifier(LotroPhysicalCard source, Condition condition, Phase phase, String playerId) {
+    public OpponentsCantUsePhaseSpecialAbilitiesModifier(PhysicalCard source, Condition condition, Phase phase, String playerId) {
         super(source, null, null, condition, ModifierEffect.ACTION_MODIFIER);
         _phase = phase;
         _playerId = playerId;
@@ -22,7 +22,7 @@ public class OpponentsCantUsePhaseSpecialAbilitiesModifier extends AbstractModif
 
     @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
-        return action.getType() != Action.Type.SPECIAL_ABILITY
+        return action.getActionType() != Action.ActionType.SPECIAL_ABILITY
                 || performingPlayer.equals(_playerId) || action.getActionTimeword() != _phase;
     }
 }

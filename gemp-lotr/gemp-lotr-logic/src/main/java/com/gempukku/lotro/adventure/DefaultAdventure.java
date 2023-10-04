@@ -3,7 +3,7 @@ package com.gempukku.lotro.adventure;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
@@ -13,7 +13,6 @@ import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.processes.BiddingGameProcess;
 import com.gempukku.lotro.processes.FellowshipPlayerChoosesShadowPlayerToAssignDamageToGameProcess;
 import com.gempukku.lotro.processes.GameProcess;
-import com.gempukku.lotro.processes.ShadowPlayersAssignTheirMinionsGameProcess;
 import com.gempukku.lotro.rules.WinConditionRule;
 
 import java.util.Set;
@@ -33,7 +32,7 @@ public class DefaultAdventure implements Adventure {
                         GameState gameState = game.getGameState();
 
                         final int nextSiteNumber = gameState.getCurrentSiteNumber() + 1;
-                        LotroPhysicalCard nextSite = gameState.getSite(nextSiteNumber);
+                        PhysicalCard nextSite = gameState.getSite(nextSiteNumber);
 
                         if (nextSite == null) {
                             LotroCardBlueprint.Direction nextSiteDirection = gameState.getCurrentSite().getBlueprint().getSiteDirection();
@@ -58,8 +57,8 @@ public class DefaultAdventure implements Adventure {
     }
 
     @Override
-    public GameProcess getAfterFellowshipAssignmentGameProcess(Set<LotroPhysicalCard> leftoverMinions, GameProcess followingProcess) {
-        return new ShadowPlayersAssignTheirMinionsGameProcess(followingProcess, leftoverMinions);
+    public GameProcess getAfterFellowshipAssignmentGameProcess(Set<PhysicalCard> leftoverMinions, GameProcess followingProcess) {
+        return null;
     }
 
     @Override

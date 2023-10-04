@@ -39,7 +39,7 @@ public class Discarded implements TriggerCheckerProducer {
                         result = false;
                 }
                 if (result && memorize != null) {
-                    final LotroPhysicalCard discardedCard = ((DiscardCardsFromPlayResult) actionContext.getEffectResult()).getDiscardedCard();
+                    final PhysicalCard discardedCard = ((DiscardCardsFromPlayResult) actionContext.getEffectResult()).getDiscardedCard();
                     actionContext.setCardMemory(memorize, discardedCard);
                 }
                 return result;

@@ -1,7 +1,7 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
 import com.gempukku.lotro.common.Side;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
 import com.gempukku.lotro.modifiers.ModifierEffect;
@@ -10,7 +10,7 @@ import com.gempukku.lotro.condition.Condition;
 public class HasInitiativeModifier extends AbstractModifier {
     private final Side _side;
 
-    public HasInitiativeModifier(LotroPhysicalCard source, Condition condition, Side side) {
+    public HasInitiativeModifier(PhysicalCard source, Condition condition, Side side) {
         super(source, side + " has initiative", null, condition, ModifierEffect.INITIATIVE_MODIFIER);
         _side = side;
     }

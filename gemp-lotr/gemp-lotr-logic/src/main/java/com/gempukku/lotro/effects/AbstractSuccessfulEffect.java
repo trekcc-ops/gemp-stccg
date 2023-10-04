@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 
@@ -17,11 +17,11 @@ public abstract class AbstractSuccessfulEffect implements Effect {
         return true;
     }
 
-    protected final String getAppendedTextNames(Collection<LotroPhysicalCard> cards) {
+    protected final String getAppendedTextNames(Collection<PhysicalCard> cards) {
         return GameUtils.getAppendedTextNames(cards);
     }
 
-    protected final String getAppendedNames(Collection<? extends LotroPhysicalCard> cards) {
+    protected final String getAppendedNames(Collection<? extends PhysicalCard> cards) {
         return GameUtils.getAppendedNames(cards);
     }
 }

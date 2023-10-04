@@ -4,7 +4,7 @@ import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.effects.EffectResult;
@@ -27,7 +27,7 @@ public class OptionalTriggersFromHandRule {
                     public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
                         final Side side = LotroGameUtils.getSide(game, playerId);
-                        for (LotroPhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game, side)) {
+                        for (PhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game, side)) {
                             final List<OptionalTriggerAction> actions = responseEvent.getBlueprint().getOptionalInHandAfterTriggers(playerId, game, effectResult, responseEvent);
                             if (actions != null)
                                 result.addAll(actions);

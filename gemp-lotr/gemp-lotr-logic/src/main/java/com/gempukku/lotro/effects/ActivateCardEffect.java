@@ -1,18 +1,18 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.results.ActivateCardResult;
 
 public class ActivateCardEffect extends AbstractEffect<DefaultGame> {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final Phase _actionTimeword;
 
     private final ActivateCardResult _activateCardResult;
 
-    public ActivateCardEffect(LotroPhysicalCard source, Phase actionTimeword) {
+    public ActivateCardEffect(PhysicalCard source, Phase actionTimeword) {
         _source = source;
         _actionTimeword = actionTimeword;
 
@@ -32,7 +32,7 @@ public class ActivateCardEffect extends AbstractEffect<DefaultGame> {
         return "Activated " + GameUtils.getCardLink(_source);
     }
 
-    public LotroPhysicalCard getSource() {
+    public PhysicalCard getSource() {
         return _source;
     }
 

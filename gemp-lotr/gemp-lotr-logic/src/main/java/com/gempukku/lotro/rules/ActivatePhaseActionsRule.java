@@ -5,7 +5,7 @@ import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.ActivateCardAction;
 import com.gempukku.lotro.actions.Action;
@@ -26,7 +26,7 @@ public class ActivatePhaseActionsRule {
                     @Override
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
                         List<Action> result = new LinkedList<>();
-                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getPhaseActionsInPlay(playerId, game, activatableCard);
                                 if (actions != null)

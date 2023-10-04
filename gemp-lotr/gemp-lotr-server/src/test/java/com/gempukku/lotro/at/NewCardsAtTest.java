@@ -2,7 +2,7 @@ package com.gempukku.lotro.at;
 
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.PhysicalCardImpl;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
@@ -169,7 +169,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         _game.getGameState().addCardToZone(_game, getOutOfTheShire, Zone.HAND);
         _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
 
-        final LotroPhysicalCard frodo = _game.getGameState().getRingBearer(P1);
+        final PhysicalCard frodo = _game.getGameState().getRingBearer(P1);
 
         skipMulligans();
 
@@ -310,7 +310,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         // Choose not to discard
         playerDecided(P1, "1");
 
-        assertEquals(Zone.DECK, celebornInDeck.getZone());
+        assertEquals(Zone.DRAW_DECK, celebornInDeck.getZone());
         assertEquals(0, _game.getGameState().getWounds(nazgul));
     }
 

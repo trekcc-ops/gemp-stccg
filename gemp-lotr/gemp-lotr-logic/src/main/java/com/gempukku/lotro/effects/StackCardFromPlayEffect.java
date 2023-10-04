@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
@@ -12,10 +12,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StackCardFromPlayEffect extends AbstractEffect {
-    private final LotroPhysicalCard _card;
-    private final LotroPhysicalCard _stackOn;
+    private final PhysicalCard _card;
+    private final PhysicalCard _stackOn;
 
-    public StackCardFromPlayEffect(LotroPhysicalCard card, LotroPhysicalCard stackOn) {
+    public StackCardFromPlayEffect(PhysicalCard card, PhysicalCard stackOn) {
         _card = card;
         _stackOn = stackOn;
     }
@@ -35,25 +35,25 @@ public class StackCardFromPlayEffect extends AbstractEffect {
         if (isPlayableInFull(game)) {
             GameState gameState = game.getGameState();
 
-            Set<LotroPhysicalCard> discardedFromPlayCards = new HashSet<>();
-            Set<LotroPhysicalCard> toMoveToDiscardCards = new HashSet<>();
+            Set<PhysicalCard> discardedFromPlayCards = new HashSet<>();
+            Set<PhysicalCard> toMoveToDiscardCards = new HashSet<>();
 
             DiscardUtils.cardsToChangeZones(game, Collections.singleton(_card), discardedFromPlayCards, toMoveToDiscardCards);
 
-            Set<LotroPhysicalCard> removeFromPlay = new HashSet<>(toMoveToDiscardCards);
+            Set<PhysicalCard> removeFromPlay = new HashSet<>(toMoveToDiscardCards);
             removeFromPlay.add(_card);
 
             gameState.removeCardsFromZone(_card.getOwner(), removeFromPlay);
 
             // And put them in new zones (attached and stacked to discard, the card gets stacked on)
-            for (LotroPhysicalCard attachedCard : toMoveToDiscardCards)
+            for (PhysicalCard attachedCard : toMoveToDiscardCards)
                 gameState.addCardToZone(game, attachedCard, Zone.DISCARD);
 
             game.getGameState().sendMessage(GameUtils.getCardLink(_card) + " is stacked on " + GameUtils.getCardLink(_stackOn));
             game.getGameState().stackCard(game, _card, _stackOn);
 
             // Send the result (attached cards get discarded)
-            for (LotroPhysicalCard discardedCard : discardedFromPlayCards)
+            for (PhysicalCard discardedCard : discardedFromPlayCards)
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
 
             return new FullEffectResult(true);

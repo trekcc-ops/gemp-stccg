@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.game.DefaultGame;
@@ -14,19 +14,19 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
     private final Keyword _keyword;
     private final Evaluator _evaluator;
 
-    public KeywordModifier(LotroPhysicalCard physicalCard, Filterable affectFilter, Keyword keyword) {
+    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Keyword keyword) {
         this(physicalCard, affectFilter, keyword, 1);
     }
 
-    public KeywordModifier(LotroPhysicalCard physicalCard, Filterable affectFilter, Keyword keyword, int count) {
+    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Keyword keyword, int count) {
         this(physicalCard, affectFilter, null, keyword, count);
     }
 
-    public KeywordModifier(LotroPhysicalCard physicalCard, Filterable affectFilter, Condition condition, Keyword keyword, int count) {
+    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Condition condition, Keyword keyword, int count) {
         this(physicalCard, affectFilter, condition, keyword, new ConstantEvaluator(count));
     }
 
-    public KeywordModifier(LotroPhysicalCard physicalCard, Filterable affectFilter, Condition condition, Keyword keyword, Evaluator evaluator) {
+    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Condition condition, Keyword keyword, Evaluator evaluator) {
         super(physicalCard, null, affectFilter, condition, ModifierEffect.GIVE_KEYWORD_MODIFIER);
         _keyword = keyword;
         _evaluator = evaluator;
@@ -38,7 +38,7 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
     }
 
     @Override
-    public String getText(DefaultGame game, LotroPhysicalCard self) {
+    public String getText(DefaultGame game, PhysicalCard self) {
         if (_keyword.isMultiples()) {
             int count = _evaluator.evaluateExpression(game, self);
             return _keyword.getHumanReadable() + " +" + count;
@@ -47,12 +47,12 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
     }
 
     @Override
-    public boolean hasKeyword(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
+    public boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
         return (keyword == _keyword && _evaluator.evaluateExpression(game, physicalCard) > 0);
     }
 
     @Override
-    public int getKeywordCountModifier(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
+    public int getKeywordCountModifier(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
         if (keyword == _keyword)
             return _evaluator.evaluateExpression(game, physicalCard);
         else

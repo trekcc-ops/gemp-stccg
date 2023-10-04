@@ -1,17 +1,18 @@
 package com.gempukku.lotro.effectappender;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.ValueSource;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.effects.Effect;
-import com.gempukku.lotro.effects.PutCardFromHandOnBottomOfDeckEffect;
-import com.gempukku.lotro.game.DefaultGame;
+import com.gempukku.lotro.effects.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -43,11 +44,11 @@ public class PutCardsFromHandOnBottomOfDeck implements EffectAppenderProducer {
         result.addEffectAppender(
                 new DelayedAppender<>() {
                     @Override
-                    protected List<Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext<DefaultGame> actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
+                    protected List<Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                        final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
-                        for (LotroPhysicalCard card : cards) {
-                            result.add(new PutCardFromHandOnBottomOfDeckEffect(reveal, card));
+                        for (PhysicalCard card : cards) {
+                            result.add(new PutCardsFromZoneOnEndOfPileEffect(reveal, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
                         }
                         return result;
                     }

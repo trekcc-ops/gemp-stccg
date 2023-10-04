@@ -9,7 +9,7 @@ import com.gempukku.lotro.effects.TransferPermanentEffect;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.effects.EffectResult;
 import com.gempukku.lotro.rules.GameUtils;
@@ -35,7 +35,7 @@ public class FollowerRule {
                             final Filter followerTarget = Filters.and(Filters.owner(playerId), Filters.or(CardType.COMPANION, CardType.MINION));
 
                             List<OptionalTriggerAction> optionalTriggerActions = new LinkedList<>();
-                            for (final LotroPhysicalCard follower : Filters.filterActive(game, CardType.FOLLOWER, Filters.owner(playerId))) {
+                            for (final PhysicalCard follower : Filters.filterActive(game, CardType.FOLLOWER, Filters.owner(playerId))) {
                                 if (follower.getBlueprint().canPayAidCost(game, follower)
                                         && PlayConditions.isActive(game, followerTarget)) {
                                     final OptionalTriggerAction action = new OptionalTriggerAction(follower);
@@ -44,7 +44,7 @@ public class FollowerRule {
                                     action.appendCost(
                                             new ChooseActiveCardEffect(follower, playerId, "Choose character to transfer follower to", followerTarget, Filters.not(Filters.hasAttached(follower))) {
                                                 @Override
-                                                protected void cardSelected(DefaultGame game, LotroPhysicalCard card) {
+                                                protected void cardSelected(DefaultGame game, PhysicalCard card) {
                                                     action.appendEffect(
                                                             new TransferPermanentEffect(follower, card));
                                                 }

@@ -16,7 +16,7 @@ public class SortAndFilterCards {
     public <T extends CardItem> List<T> process(String filter, Iterable<T> items, CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary) {
         if (filter == null)
             filter = "";
-        String[] filterParams = filter.split(" ");
+        String[] filterParams = filter.split("\\|");
 
 //        Side side = getSideFilter(filterParams);
 //        String type = getTypeFilter(filterParams);
@@ -76,6 +76,8 @@ public class SortAndFilterCards {
                         comparators.addComparator(new PacksFirstComparator(new CultureComparator(cardBlueprintMap)));
                 case "name" ->
                         comparators.addComparator(new PacksFirstComparator(new NameComparator(cardBlueprintMap)));
+                case "tribbleValue" ->
+                        comparators.addComparator(new PacksFirstComparator(new TribblesValueComparator(cardBlueprintMap)));
             }
         }
 
@@ -368,6 +370,19 @@ public class SortAndFilterCards {
         @Override
         public int compare(CardItem o1, CardItem o2) {
             return GameUtils.getFullName(_cardBlueprintMap.get(o1.getBlueprintId())).compareTo(GameUtils.getFullName(_cardBlueprintMap.get(o2.getBlueprintId())));
+        }
+    }
+
+    private static class TribblesValueComparator implements Comparator<CardItem> {
+        private final Map<String, LotroCardBlueprint> _cardBlueprintMap;
+
+        private TribblesValueComparator(Map<String, LotroCardBlueprint> cardBlueprintMap) {
+            _cardBlueprintMap = cardBlueprintMap;
+        }
+
+        @Override
+        public int compare(CardItem o1, CardItem o2) {
+            return _cardBlueprintMap.get(o1.getBlueprintId()).getTribbleValue() - _cardBlueprintMap.get(o2.getBlueprintId()).getTribbleValue();
         }
     }
 

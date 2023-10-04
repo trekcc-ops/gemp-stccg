@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.discount;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
@@ -61,7 +61,7 @@ public class DiscardCardFromHandDiscountEffect extends AbstractSubActionEffect i
             subAction.appendEffect(
                     new ChooseAndDiscardCardsFromHandEffect(_action, _playerId, false, _minimalDiscount, Integer.MAX_VALUE, _discardedCardFilter) {
                         @Override
-                        protected void cardsBeingDiscardedCallback(Collection<LotroPhysicalCard> cardsBeingDiscarded) {
+                        protected void cardsBeingDiscardedCallback(Collection<PhysicalCard> cardsBeingDiscarded) {
                             _discardedCount = cardsBeingDiscarded.size();
                             discountPaidCallback(_discardedCount);
                         }

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -8,10 +8,10 @@ import com.gempukku.lotro.rules.GameUtils;
 import java.util.Collections;
 
 public class StackCardFromDiscardEffect extends AbstractEffect {
-    private final LotroPhysicalCard _card;
-    private final LotroPhysicalCard _stackOn;
+    private final PhysicalCard _card;
+    private final PhysicalCard _stackOn;
 
-    public StackCardFromDiscardEffect(LotroPhysicalCard card, LotroPhysicalCard stackOn) {
+    public StackCardFromDiscardEffect(PhysicalCard card, PhysicalCard stackOn) {
         _card = card;
         _stackOn = stackOn;
     }

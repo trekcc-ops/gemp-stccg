@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.rules.GameUtils;
@@ -29,8 +29,8 @@ public class PutRandomCardFromHandOnBottomOfDeckEffect extends AbstractEffect {
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
             GameState gameState = game.getGameState();
-            final List<LotroPhysicalCard> randomCards = GameUtils.getRandomCards(gameState.getHand(_playerId), 1);
-            for (LotroPhysicalCard randomCard : randomCards) {
+            final List<PhysicalCard> randomCards = GameUtils.getRandomCards(gameState.getHand(_playerId), 1);
+            for (PhysicalCard randomCard : randomCards) {
                 gameState.sendMessage(randomCard.getOwner() + " puts a card at random from hand on bottom of their deck");
                 gameState.removeCardsFromZone(randomCard.getOwner(), Collections.singleton(randomCard));
                 gameState.putCardOnBottomOfDeck(randomCard);
@@ -42,7 +42,7 @@ public class PutRandomCardFromHandOnBottomOfDeckEffect extends AbstractEffect {
         return new FullEffectResult(false);
     }
 
-    protected void putCardFromHandOnBottomOfDeckCallback(LotroPhysicalCard card) {
+    protected void putCardFromHandOnBottomOfDeckCallback(PhysicalCard card) {
 
     }
 }

@@ -3,7 +3,7 @@ package com.gempukku.lotro.rules;
 import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.PlayOrder;
 import com.gempukku.lotro.game.PlayerOrder;
@@ -18,7 +18,7 @@ public class GameUtils {
         return game.getGameState().getCurrentPlayerId().equals(playerId);
     }
 
-    public static String getFullName(LotroPhysicalCard card) {
+    public static String getFullName(PhysicalCard card) {
         LotroCardBlueprint blueprint = card.getBlueprint();
         return getFullName(blueprint);
     }
@@ -52,26 +52,26 @@ public class GameUtils {
         return result;
     }
 
-    public static List<LotroPhysicalCard> getRandomCards(List<? extends LotroPhysicalCard> cards, int count) {
-        List<LotroPhysicalCard> randomizedCards = new ArrayList<>(cards);
+    public static List<PhysicalCard> getRandomCards(List<? extends PhysicalCard> cards, int count) {
+        List<PhysicalCard> randomizedCards = new ArrayList<>(cards);
         Collections.shuffle(randomizedCards, ThreadLocalRandom.current());
 
         return new LinkedList<>(randomizedCards.subList(0, Math.min(count, randomizedCards.size())));
     }
 
-    public static String s(Collection<LotroPhysicalCard> cards) {
+    public static String s(Collection<PhysicalCard> cards) {
         if (cards.size() > 1)
             return "s";
         return "";
     }
 
-    public static String be(Collection<LotroPhysicalCard> cards) {
+    public static String be(Collection<PhysicalCard> cards) {
         if (cards.size() > 1)
             return "are";
         return "is";
     }
 
-    public static String getCardLink(LotroPhysicalCard card) {
+    public static String getCardLink(PhysicalCard card) {
         LotroCardBlueprint blueprint = card.getBlueprint();
         return getCardLink(card.getBlueprintId(), blueprint);
     }
@@ -80,9 +80,9 @@ public class GameUtils {
         return "<div class='cardHint' value='" + blueprintId + "'>" + (blueprint.isUnique() ? "·" : "") + GameUtils.getFullName(blueprint) + "</div>";
     }
 
-    public static String getAppendedTextNames(Collection<? extends LotroPhysicalCard> cards) {
+    public static String getAppendedTextNames(Collection<? extends PhysicalCard> cards) {
         StringJoiner sj = new StringJoiner(", ");
-        for (LotroPhysicalCard card : cards)
+        for (PhysicalCard card : cards)
             sj.add(GameUtils.getFullName(card));
 
         if (sj.length() == 0)
@@ -91,9 +91,9 @@ public class GameUtils {
             return sj.toString();
     }
 
-    public static String getAppendedNames(Collection<? extends LotroPhysicalCard> cards) {
+    public static String getAppendedNames(Collection<? extends PhysicalCard> cards) {
         ArrayList<String> cardStrings = new ArrayList<>();
-        for (LotroPhysicalCard card : cards) {
+        for (PhysicalCard card : cards) {
             cardStrings.add(GameUtils.getCardLink(card));
         }
 

@@ -19,7 +19,7 @@ public class CardsInDeckCount implements RequirementProducer {
             final String player = playerSource.getPlayer(actionContext);
             final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-            return actionContext.getGame().getGameState().getDeck(player).size() == count;
+            return actionContext.getGame().getGameState().getDrawDeck(player).size() == count;
         };
     }
 }

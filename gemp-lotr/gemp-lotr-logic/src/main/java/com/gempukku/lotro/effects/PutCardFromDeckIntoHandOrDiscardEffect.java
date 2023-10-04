@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -9,15 +9,15 @@ import com.gempukku.lotro.results.DrawCardOrPutIntoHandResult;
 import java.util.Collections;
 
 public class PutCardFromDeckIntoHandOrDiscardEffect extends AbstractEffect {
-    private final LotroPhysicalCard _physicalCard;
+    private final PhysicalCard _physicalCard;
     private final boolean _reveal;
 
-    public PutCardFromDeckIntoHandOrDiscardEffect(LotroPhysicalCard physicalCard, boolean reveal) {
+    public PutCardFromDeckIntoHandOrDiscardEffect(PhysicalCard physicalCard, boolean reveal) {
         _physicalCard = physicalCard;
         _reveal = reveal;
     }
 
-    public LotroPhysicalCard getCard() {
+    public PhysicalCard getCard() {
         return _physicalCard;
     }
 
@@ -28,12 +28,12 @@ public class PutCardFromDeckIntoHandOrDiscardEffect extends AbstractEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return _physicalCard.getZone() == Zone.DECK;
+        return _physicalCard.getZone() == Zone.DRAW_DECK;
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
-        if (_physicalCard.getZone() == Zone.DECK) {
+        if (_physicalCard.getZone() == Zone.DRAW_DECK) {
             var gameState = game.getGameState();
             if ((game.getFormat().doesNotHaveRuleOfFour() || game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(game, _physicalCard.getOwner()))) {
                 if(_reveal) {

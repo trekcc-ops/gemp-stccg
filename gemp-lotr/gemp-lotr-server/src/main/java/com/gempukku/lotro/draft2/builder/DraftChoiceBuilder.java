@@ -49,7 +49,7 @@ public class DraftChoiceBuilder {
 
     private DraftChoiceDefinition buildFilterPickDraftChoiceDefinition(JSONObject data) {
         final int optionCount = ((Number) data.get("optionCount")).intValue();
-        String filter = (String) data.get("filter");
+        String filter = ((String) data.get("filter")).replace(" ","|");
 
         Iterable<CardCollection.Item> items = _collectionsManager.getCompleteCardCollection().getAll();
 

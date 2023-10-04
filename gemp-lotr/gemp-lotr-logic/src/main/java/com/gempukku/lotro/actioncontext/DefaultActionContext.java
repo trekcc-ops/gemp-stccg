@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actioncontext;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.EffectResult;
@@ -12,16 +12,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultActionContext<AbstractGame extends DefaultGame> implements ActionContext {
-    private final Multimap<String, LotroPhysicalCard> cardMemory = HashMultimap.create();
+    private final Multimap<String, PhysicalCard> cardMemory = HashMultimap.create();
     private final Map<String, String> valueMemory = new HashMap<>();
 
     protected final String performingPlayer;
     protected final AbstractGame game;
-    protected final LotroPhysicalCard source;
+    protected final PhysicalCard source;
     protected final EffectResult effectResult;
     protected final Effect effect;
 
-    public DefaultActionContext(String performingPlayer, AbstractGame game, LotroPhysicalCard source,
+    public DefaultActionContext(String performingPlayer, AbstractGame game, PhysicalCard source,
                                 EffectResult effectResult, Effect effect) {
         this.performingPlayer = performingPlayer;
         this.game = game;
@@ -50,7 +50,7 @@ public class DefaultActionContext<AbstractGame extends DefaultGame> implements A
     }
 
     @Override
-    public void setCardMemory(String memory, LotroPhysicalCard card) {
+    public void setCardMemory(String memory, PhysicalCard card) {
         if(memory != null) {
             memory = memory.toLowerCase();
         }
@@ -60,7 +60,7 @@ public class DefaultActionContext<AbstractGame extends DefaultGame> implements A
     }
 
     @Override
-    public void setCardMemory(String memory, Collection<? extends LotroPhysicalCard> cards) {
+    public void setCardMemory(String memory, Collection<? extends PhysicalCard> cards) {
         if(memory != null) {
             memory = memory.toLowerCase();
         }
@@ -69,8 +69,7 @@ public class DefaultActionContext<AbstractGame extends DefaultGame> implements A
     }
 
     @Override
-    public Collection<? extends LotroPhysicalCard> getCardsFromMemory(String memory) {
-//    public Collection<? extends LotroPhysicalCard> getCardsFromMemory(String memory) {
+    public Collection<PhysicalCard> getCardsFromMemory(String memory) {
         if(memory != null) {
             memory = memory.toLowerCase();
         }
@@ -78,11 +77,11 @@ public class DefaultActionContext<AbstractGame extends DefaultGame> implements A
     }
 
     @Override
-    public LotroPhysicalCard getCardFromMemory(String memory) {
+    public PhysicalCard getCardFromMemory(String memory) {
         if(memory != null) {
             memory = memory.toLowerCase();
         }
-        final Collection<LotroPhysicalCard> physicalCards = cardMemory.get(memory);
+        final Collection<PhysicalCard> physicalCards = cardMemory.get(memory);
         if (physicalCards.size() == 0)
             return null;
         if (physicalCards.size() != 1)
@@ -101,7 +100,7 @@ public class DefaultActionContext<AbstractGame extends DefaultGame> implements A
     }
 
     @Override
-    public LotroPhysicalCard getSource() {
+    public PhysicalCard getSource() {
         return source;
     }
 

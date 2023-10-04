@@ -7,7 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.TransferPermanentEffect;
 import com.gempukku.lotro.filters.Filter;
@@ -37,10 +37,10 @@ public class Transfer implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCards(where,
                         actionContext -> (Filter) (game, physicalCard) -> {
-                            final Collection<? extends LotroPhysicalCard> transferCard = actionContext.getCardsFromMemory(memorizeTransferred);
+                            final Collection<? extends PhysicalCard> transferCard = actionContext.getCardsFromMemory(memorizeTransferred);
                             if (transferCard.isEmpty())
                                 return false;
-                            final LotroPhysicalCard transferredCard = transferCard.iterator().next();
+                            final PhysicalCard transferredCard = transferCard.iterator().next();
                             // Can't be transferred to card it's already attached to
                             if (transferredCard.getAttachedTo() == physicalCard)
                                 return false;
@@ -55,11 +55,11 @@ public class Transfer implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> transferCard = actionContext.getCardsFromMemory(memorizeTransferred);
+                        final Collection<? extends PhysicalCard> transferCard = actionContext.getCardsFromMemory(memorizeTransferred);
                         if (transferCard.isEmpty())
                             return null;
 
-                        final Collection<? extends LotroPhysicalCard> transferredToCard = actionContext.getCardsFromMemory(memorizeTarget);
+                        final Collection<? extends PhysicalCard> transferredToCard = actionContext.getCardsFromMemory(memorizeTarget);
                         if (transferredToCard.isEmpty())
                             return null;
 

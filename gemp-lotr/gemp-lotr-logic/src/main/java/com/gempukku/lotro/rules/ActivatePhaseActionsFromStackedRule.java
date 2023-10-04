@@ -1,7 +1,7 @@
 package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
@@ -26,7 +26,7 @@ public class ActivatePhaseActionsFromStackedRule {
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
                         List<Action> result = new LinkedList<>();
                         final Side side = LotroGameUtils.getSide(game, playerId);
-                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getStacked(playerId), game, side,
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getStacked(playerId), game, side,
                                 Filters.stackedOn(Filters.active))) {
                             List<? extends Action> list = activatableCard.getBlueprint().getPhaseActionsFromStacked(playerId, game, activatableCard);
                             if (list != null)

@@ -6,7 +6,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
@@ -33,7 +33,7 @@ public class MemorizeActive implements EffectAppenderProducer {
                     @Override
                     protected void doPlayEffect(DefaultGame game) {
                         final Filterable filterable = filterSource.getFilterable(actionContext);
-                        final Collection<LotroPhysicalCard> physicalCards = Filters.filterActive(game, filterable);
+                        final Collection<PhysicalCard> physicalCards = Filters.filterActive(game, filterable);
                         actionContext.setCardMemory(memory, physicalCards);
                     }
                 };

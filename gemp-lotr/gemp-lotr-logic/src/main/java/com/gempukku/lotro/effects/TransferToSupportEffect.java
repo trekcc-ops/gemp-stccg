@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.results.CardTransferredResult;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 public class TransferToSupportEffect extends AbstractEffect {
-    private final LotroPhysicalCard _card;
+    private final PhysicalCard _card;
 
-    public TransferToSupportEffect(LotroPhysicalCard card) {
+    public TransferToSupportEffect(PhysicalCard card) {
         _card = card;
     }
 
@@ -24,17 +24,17 @@ public class TransferToSupportEffect extends AbstractEffect {
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
-            LotroPhysicalCard transferredFrom = _card.getAttachedTo();
+            PhysicalCard transferredFrom = _card.getAttachedTo();
 
-            Set<LotroPhysicalCard> transferredCards = new HashSet<>();
+            Set<PhysicalCard> transferredCards = new HashSet<>();
             transferredCards.add(_card);
 
-            final List<LotroPhysicalCard> attachedCards = game.getGameState().getAttachedCards(_card);
+            final List<PhysicalCard> attachedCards = game.getGameState().getAttachedCards(_card);
             transferredCards.addAll(attachedCards);
 
             game.getGameState().removeCardsFromZone(_card.getOwner(), transferredCards);
             game.getGameState().addCardToZone(game, _card, Zone.SUPPORT);
-            for (LotroPhysicalCard attachedCard : attachedCards)
+            for (PhysicalCard attachedCard : attachedCards)
                 game.getGameState().attachCard(game, attachedCard, _card);
 
             game.getActionsEnvironment().emitEffectResult(

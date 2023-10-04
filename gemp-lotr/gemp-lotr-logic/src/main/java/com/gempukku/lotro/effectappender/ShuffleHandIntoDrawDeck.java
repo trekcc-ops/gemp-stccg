@@ -7,7 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.game.DefaultGame;
@@ -31,9 +31,9 @@ public class ShuffleHandIntoDrawDeck implements EffectAppenderProducer {
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect(DefaultGame game) {
-                        List<LotroPhysicalCard> hand = new LinkedList<>(game.getGameState().getHand(handPlayer));
+                        List<PhysicalCard> hand = new LinkedList<>(game.getGameState().getHand(handPlayer));
                         game.getGameState().removeCardsFromZone(actionContext.getPerformingPlayer(), hand);
-                        for (LotroPhysicalCard physicalCard : hand) {
+                        for (PhysicalCard physicalCard : hand) {
                             game.getGameState().putCardOnBottomOfDeck(physicalCard);
                         }
                         game.getGameState().shuffleDeck(handPlayer);

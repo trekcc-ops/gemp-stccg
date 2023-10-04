@@ -38,7 +38,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        LotroPhysicalCard morgulBrute = _game.getGameState().getHand(P2).iterator().next();
+        PhysicalCard morgulBrute = _game.getGameState().getHand(P2).iterator().next();
 
         PhysicalCardImpl consortingWithWizards = new PhysicalCardImpl(100, "2_97", P1, _cardLibrary.getLotroCardBlueprint("2_97"));
         PhysicalCardImpl enquea = new PhysicalCardImpl(101, "1_231", P2, _cardLibrary.getLotroCardBlueprint("1_231"));
@@ -122,7 +122,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
         PhysicalCardImpl mumakChieftain2 = new PhysicalCardImpl(101, "10_45", P1, _cardLibrary.getLotroCardBlueprint("10_45"));
 
         _game.getGameState().addCardToZone(_game, mumakChieftain, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, mumakChieftain2, Zone.DECK);
+        _game.getGameState().addCardToZone(_game, mumakChieftain2, Zone.DRAW_DECK);
 
         // End fellowship phase
         playerDecided(P1, "");
@@ -693,7 +693,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         // Assign Gimli to goblin runner
-        LotroPhysicalCard frodo = _game.getGameState().getRingBearer(P1);
+        PhysicalCard frodo = _game.getGameState().getRingBearer(P1);
         playerDecided(P1, frodo.getCardId() + " " + goblinRunner.getCardId());
 
         // Choose skirmish to start
@@ -888,7 +888,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
         playerDecided(P1, "0");
         playerDecided(P2, "0");
 
-        final LotroPhysicalCard frodo = _game.getGameState().getRingBearer(P1);
+        final PhysicalCard frodo = _game.getGameState().getRingBearer(P1);
         _game.getGameState().addCardToZone(_game, cheapMinion, Zone.HAND);
         _game.getGameState().addCardToZone(_game, randomCard1, Zone.HAND);
 
@@ -1237,7 +1237,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         // Assign Frodo to Nelya
-        LotroPhysicalCard frodo = _game.getGameState().getRingBearer(P1);
+        PhysicalCard frodo = _game.getGameState().getRingBearer(P1);
         playerDecided(P1, frodo.getCardId() + " " + nelya.getCardId());
 
         // Start skirmish
@@ -1286,7 +1286,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         // Assign Frodo to Nelya
-        LotroPhysicalCard frodo = _game.getGameState().getRingBearer(P1);
+        PhysicalCard frodo = _game.getGameState().getRingBearer(P1);
         playerDecided(P1, frodo.getCardId() + " " + nelya.getCardId());
 
         // Start skirmish

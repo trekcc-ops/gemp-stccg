@@ -6,39 +6,39 @@ import com.gempukku.lotro.effects.EffectResult;
 
 import java.util.List;
 
-public abstract class AbstractActionProxy implements ActionProxy {
+public abstract class AbstractActionProxy<AbstractGame extends DefaultGame> implements ActionProxy<AbstractGame> {
     @Override
-    public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
+    public List<? extends Action> getPhaseActions(String playerId, AbstractGame game) {
         return null;
     }
 
     @Override
-    public List<? extends Action> getOptionalBeforeActions(String playerId, DefaultGame game, Effect effect) {
+    public List<? extends Action> getOptionalBeforeActions(String playerId, AbstractGame game, Effect effect) {
         return null;
     }
 
     @Override
-    public List<? extends Action> getOptionalAfterActions(String playerId, DefaultGame game, EffectResult effectResult) {
+    public List<? extends Action> getOptionalAfterActions(String playerId, AbstractGame game, EffectResult effectResult) {
         return null;
     }
 
     @Override
-    public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect) {
+    public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(AbstractGame game, Effect effect) {
         return null;
     }
 
     @Override
-    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(AbstractGame game, EffectResult effectResult) {
         return null;
     }
 
     @Override
-    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
+    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, AbstractGame game, EffectResult effectResult) {
         return null;
     }
 
     @Override
-    public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect) {
+    public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, AbstractGame game, Effect effect) {
         return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.gamestate;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 public interface GameStateListener {
-    void cardCreated(LotroPhysicalCard card);
-    void cardCreated(LotroPhysicalCard card, boolean overridePlayerVisibility);
+    void cardCreated(PhysicalCard card);
+    void cardCreated(PhysicalCard card, boolean overridePlayerVisibility);
 
-    void cardMoved(LotroPhysicalCard card);
+    void cardMoved(PhysicalCard card);
 
-    void cardsRemoved(String playerPerforming, Collection<LotroPhysicalCard> cards);
+    void cardsRemoved(String playerPerforming, Collection<PhysicalCard> cards);
 
     void initializeBoard(List<String> playerIds, boolean discardIsPublic);
 
@@ -31,33 +31,33 @@ public interface GameStateListener {
 
     void setCurrentPhase(String currentPhase);
 
-    void addAssignment(LotroPhysicalCard fp, Set<LotroPhysicalCard> minions);
+    void addAssignment(PhysicalCard fp, Set<PhysicalCard> minions);
 
-    void removeAssignment(LotroPhysicalCard fp);
+    void removeAssignment(PhysicalCard fp);
 
-    void startSkirmish(LotroPhysicalCard fp, Set<LotroPhysicalCard> minions);
+    void startSkirmish(PhysicalCard fp, Set<PhysicalCard> minions);
 
-    void addToSkirmish(LotroPhysicalCard card);
+    void addToSkirmish(PhysicalCard card);
 
-    void removeFromSkirmish(LotroPhysicalCard card);
+    void removeFromSkirmish(PhysicalCard card);
 
     void finishSkirmish();
 
-    void addTokens(LotroPhysicalCard card, Token token, int count);
+    void addTokens(PhysicalCard card, Token token, int count);
 
-    void removeTokens(LotroPhysicalCard card, Token token, int count);
+    void removeTokens(PhysicalCard card, Token token, int count);
 
     void sendMessage(String message);
 
-    void setSite(LotroPhysicalCard card);
+    void setSite(PhysicalCard card);
 
     void sendGameStats(GameStats gameStats);
 
-    void cardAffectedByCard(String playerPerforming, LotroPhysicalCard card, Collection<LotroPhysicalCard> affectedCard);
+    void cardAffectedByCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCard);
 
-    void eventPlayed(LotroPhysicalCard card);
+    void eventPlayed(PhysicalCard card);
 
-    void cardActivated(String playerPerforming, LotroPhysicalCard card);
+    void cardActivated(String playerPerforming, PhysicalCard card);
 
     void decisionRequired(String playerId, AwaitingDecision awaitingDecision);
 

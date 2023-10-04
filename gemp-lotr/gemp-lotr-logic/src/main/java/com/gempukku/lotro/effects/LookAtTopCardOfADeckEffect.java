@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.game.DefaultGame;
 
@@ -20,7 +20,7 @@ public class LookAtTopCardOfADeckEffect extends AbstractEffect {
 
     @Override
     public String getText(DefaultGame game) {
-        if(_count == game.getGameState().getDeck(_playerDeckId).size())
+        if(_count == game.getGameState().getDrawDeck(_playerDeckId).size())
             return _playerId + " looks at " + _playerDeckId + "'s draw deck.";
 
         return _playerId + " looks at the top " + _count + " cards of " + _playerDeckId + "'s draw deck.";
@@ -28,13 +28,13 @@ public class LookAtTopCardOfADeckEffect extends AbstractEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return game.getGameState().getDeck(_playerDeckId).size() >= _count;
+        return game.getGameState().getDrawDeck(_playerDeckId).size() >= _count;
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
-        List<? extends LotroPhysicalCard> deck = game.getGameState().getDeck(_playerDeckId);
-        List<? extends LotroPhysicalCard> cards = game.getGameState().getDeck(_playerDeckId).subList(0, Math.min(deck.size(), _count));
+        List<? extends PhysicalCard> deck = game.getGameState().getDrawDeck(_playerDeckId);
+        List<? extends PhysicalCard> cards = game.getGameState().getDrawDeck(_playerDeckId).subList(0, Math.min(deck.size(), _count));
 
         String message = "Cards on top of deck (left is top)";
         if(_count == deck.size())
@@ -50,7 +50,7 @@ public class LookAtTopCardOfADeckEffect extends AbstractEffect {
         return new FullEffectResult(deck.size() >= _count);
     }
 
-    protected void cardsLookedAt(List<? extends LotroPhysicalCard> cards) {
+    protected void cardsLookedAt(List<? extends PhysicalCard> cards) {
 
     }
 }

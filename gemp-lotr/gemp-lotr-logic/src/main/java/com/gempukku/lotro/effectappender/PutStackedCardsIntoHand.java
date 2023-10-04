@@ -1,13 +1,14 @@
 package com.gempukku.lotro.effectappender;
 
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.effects.PutCardFromStackedIntoHandEffect;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.effects.PutCardFromZoneIntoHandEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -31,10 +32,10 @@ public class PutStackedCardsIntoHand implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsToPutToHand = actionContext.getCardsFromMemory("_temp");
+                        final Collection<? extends PhysicalCard> cardsToPutToHand = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
-                        for (LotroPhysicalCard physicalCard : cardsToPutToHand)
-                            result.add(new PutCardFromStackedIntoHandEffect(physicalCard));
+                        for (PhysicalCard physicalCard : cardsToPutToHand)
+                            result.add(new PutCardFromZoneIntoHandEffect(physicalCard, Zone.STACKED, true));
 
                         return result;
                     }

@@ -1,14 +1,14 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 
 public class ScorePointsEffect extends AbstractEffect<DefaultGame> {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final String _scoringPlayer;
     private final int _points;
-    public ScorePointsEffect(LotroPhysicalCard source, String scoringPlayer, int points) {
+    public ScorePointsEffect(PhysicalCard source, String scoringPlayer, int points) {
         _source = source;
         _scoringPlayer = scoringPlayer;
         _points = points;

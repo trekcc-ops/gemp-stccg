@@ -5,7 +5,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.results.PlayCardResult;
 import com.gempukku.lotro.game.DefaultGame;
@@ -28,7 +28,7 @@ public class PlayedFromStacked implements TriggerCheckerProducer {
                 final Filterable from = fromFilter.getFilterable(actionContext);
                 final boolean played = TriggerConditions.playedFromStacked(actionContext.getGame(), actionContext.getEffectResult(), from, filterable);
                 if (played && memorize != null) {
-                    LotroPhysicalCard playedCard = ((PlayCardResult) actionContext.getEffectResult()).getPlayedCard();
+                    PhysicalCard playedCard = ((PlayCardResult) actionContext.getEffectResult()).getPlayedCard();
                     actionContext.setCardMemory(memorize, playedCard);
                 }
                 return played;

@@ -33,7 +33,7 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
 
                 return new RevealRandomCardsFromHandEffect(actionContext.getPerformingPlayer(), handPlayer, actionContext.getSource(), count) {
                     @Override
-                    protected void cardsRevealed(List<LotroPhysicalCard> revealedCards) {
+                    protected void cardsRevealed(List<PhysicalCard> revealedCards) {
                         actionContext.setCardMemory(memorized, revealedCards);
                     }
                 };

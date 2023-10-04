@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
@@ -11,7 +11,7 @@ public class VitalityModifier extends AbstractModifier {
     private final Evaluator _modifier;
     private final boolean _nonCardTextModifier;
 
-    public VitalityModifier(LotroPhysicalCard source, Filterable affectFilter, Evaluator modifier,
+    public VitalityModifier(PhysicalCard source, Filterable affectFilter, Evaluator modifier,
                             boolean nonCardTextModifier) {
         super(source, "Vitality modifier", affectFilter, ModifierEffect.VITALITY_MODIFIER);
         _modifier = modifier;
@@ -19,7 +19,7 @@ public class VitalityModifier extends AbstractModifier {
     }
 
     @Override
-    public int getVitalityModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getVitalityModifier(DefaultGame game, PhysicalCard physicalCard) {
         return _modifier.evaluateExpression(game, physicalCard);
     }
 

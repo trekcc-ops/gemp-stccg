@@ -8,7 +8,7 @@ import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.PutCardFromPlayOnBottomOfDeckEffect;
 import org.json.simple.JSONObject;
@@ -34,9 +34,9 @@ public class PutCardsFromPlayOnBottomOfDeck implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected List<Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
+                        final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
-                        for (LotroPhysicalCard card : cards) {
+                        for (PhysicalCard card : cards) {
                             result.add(new PutCardFromPlayOnBottomOfDeckEffect(card));
                         }
                         return result;

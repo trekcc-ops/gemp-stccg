@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.common.Zone;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.rules.GameUtils;
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscardCardAtRandomFromHandEffect extends AbstractEffect {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final String _playerId;
     private final boolean _forced;
 
-    public DiscardCardAtRandomFromHandEffect(LotroPhysicalCard source, String playerId, boolean forced) {
+    public DiscardCardAtRandomFromHandEffect(PhysicalCard source, String playerId, boolean forced) {
         _source = source;
         _playerId = playerId;
         _forced = forced;
@@ -37,8 +37,8 @@ public class DiscardCardAtRandomFromHandEffect extends AbstractEffect {
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
             GameState gameState = game.getGameState();
-            List<? extends LotroPhysicalCard> hand = gameState.getHand(_playerId);
-            LotroPhysicalCard randomCard = hand.get(ThreadLocalRandom.current().nextInt(hand.size()));
+            List<? extends PhysicalCard> hand = gameState.getHand(_playerId);
+            PhysicalCard randomCard = hand.get(ThreadLocalRandom.current().nextInt(hand.size()));
             gameState.sendMessage(_playerId + " randomly discards " + GameUtils.getCardLink(randomCard));
             gameState.removeCardsFromZone(_source.getOwner(), Collections.singleton(randomCard));
             gameState.addCardToZone(game, randomCard, Zone.DISCARD);

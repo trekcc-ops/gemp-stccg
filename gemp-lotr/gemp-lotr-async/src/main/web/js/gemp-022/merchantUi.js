@@ -202,13 +202,13 @@ var GempLotrMerchantUI = Class.extend({
         var card = null;
 
         if (type == "pack") {
-            card = new Card(blueprintId, "merchant", "collection", "player");
+            card = new Card(blueprintId, "merchant", "collection", "player"); // TODO - Card missing imageUrl and locationIndex
             cardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
             cardDiv.data("card", card);
             cardDiv.data("sizeListeners", sizeListeners);
             this.cardsDiv.append(cardDiv);
         } else if (type == "card") {
-            card = new Card(blueprintId, "merchant", "collection", "player");
+            card = new Card(blueprintId, "merchant", "collection", "player"); // TODO - Card missing imageUrl and locationIndex
             cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
             cardDiv.data("card", card);
             cardDiv.data("sizeListeners", sizeListeners);

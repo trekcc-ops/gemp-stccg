@@ -2,11 +2,11 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.TribblesGame;
 
 public class ActivateConvertTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateConvertTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateConvertTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 

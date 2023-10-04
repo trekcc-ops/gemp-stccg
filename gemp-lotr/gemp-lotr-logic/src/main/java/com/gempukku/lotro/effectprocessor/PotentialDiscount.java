@@ -46,60 +46,6 @@ public class PotentialDiscount implements EffectProcessor {
                     }
                 });
         }
-        else if (discountType.equalsIgnoreCase("perExert")) {
-            FieldUtils.validateAllowedFields(discount, "multiplier", "filter");
-
-            final ValueSource multiplierSource = ValueResolver.resolveEvaluator(discount.get("multiplier"), environment);
-            final String filter = FieldUtils.getString(discount.get("filter"), "filter", "any");
-            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-
-            blueprint.appendDiscountSource(
-                new DiscountSource() {
-                    @Override
-                    public int getPotentialDiscount(DefaultActionContext<DefaultGame> actionContext) {
-                        return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
-                    }
-
-                    @Override
-                    public DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        final int multiplier = multiplierSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                        return new ExertCharactersDiscountEffect(action, actionContext.getSource(),
-                                actionContext.getPerformingPlayer(), multiplier, filterable) {
-
-                            @Override
-                            protected void discountPaidCallback(int paid) {
-                                actionContext.setValueToMemory(memory, String.valueOf(paid));
-                                actionContext.getSource().setWhileInZoneData(paid);
-                            }
-                        };
-                    }
-                });
-        }
-        else if (discountType.equalsIgnoreCase("perThreatRemoved")) {
-            //FieldUtils.validateAllowedFields(discount, "multiplier");
-
-            blueprint.appendDiscountSource(
-                new DiscountSource() {
-                    @Override
-                    public int getPotentialDiscount(DefaultActionContext<DefaultGame> actionContext) {
-                        return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
-                    }
-
-                    @Override
-                    public DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext) {
-                        //final int multiplier = multiplierSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                        return new RemoveThreatsToDiscountEffect(action) {
-
-                            @Override
-                            protected void discountPaidCallback(int paid) {
-                                actionContext.setValueToMemory(memory, String.valueOf(paid));
-                                actionContext.getSource().setWhileInZoneData(paid);
-                            }
-                        };
-                    }
-                });
-        }
         else if (discountType.equalsIgnoreCase("ifDiscardFromPlay")) {
             FieldUtils.validateAllowedFields(discount, "count", "filter");
 

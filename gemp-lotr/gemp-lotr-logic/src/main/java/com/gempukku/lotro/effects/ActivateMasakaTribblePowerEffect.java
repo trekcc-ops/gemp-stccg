@@ -2,11 +2,13 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.TribblesGame;
 
 public class ActivateMasakaTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateMasakaTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateMasakaTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 
@@ -18,8 +20,9 @@ public class ActivateMasakaTribblePowerEffect extends ActivateTribblePowerEffect
     protected FullEffectResult playEffectReturningResult(TribblesGame game) {
         SubAction subAction = new SubAction(_action);
         for (String player : game.getPlayers()) {
-            for (LotroPhysicalCard card : game.getGameState().getHand(player)) {
-                subAction.appendEffect(new PutCardFromHandOnBottomOfDeckEffect(false, card));
+            for (PhysicalCard card : game.getGameState().getHand(player)) {
+                subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(
+                        false, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
             }
             subAction.appendEffect(new DrawCardsEffect(_action, player, 3));
         }

@@ -79,76 +79,109 @@
     155_035: {
         title: Acquire Surplus Ships
         type: mission
+        quadrant: alpha
+        location: Klingon Salvage Yard
         image-url: https://www.trekcc.org/1e/cardimages/tng/35V.jpg
     }
     155_036: {
         title: Amnesty Talks
         type: mission
+        quadrant: alpha
+        location: Near Acamar system
         image-url: https://www.trekcc.org/1e/cardimages/tng/36V.jpg
     }
     155_037: {
         title: Avert Solar Implosion
         type: mission
+        quadrant: alpha
+        location: Veridian III
         image-url: https://www.trekcc.org/1e/cardimages/tng/37V.jpg
     }
     155_038: {
         title: Encounter at Farpoint
         type: mission
+        quadrant: alpha
+        location: Deneb IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/38V.jpg
     }
     155_039: {
         title: Host Metaphasic Shielding Test
         type: mission
+        quadrant: alpha
+        location: Veytan
         image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
     }
     155_040: {
         title: Intercept Sleeper Ship
         type: mission
+        quadrant: alpha
+        location: Near Boradis system
         image-url: https://www.trekcc.org/1e/cardimages/tng/40V.jpg
     }
     155_041: {
         title: Investigate Destruction
         type: mission
+        quadrant: alpha
+        region: Neutral Zone
+        location: Science Station Delta-05
         image-url: https://www.trekcc.org/1e/cardimages/tng/41V.jpg
     }
     155_042: {
         title: Raid Ancient Burial Site
         type: mission
+        quadrant: alpha
+        location: Calder II
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
     }
     155_043: {
         title: Revenge Plot
         type: mission
+        quadrant: alpha
+        location: Camor V
         image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
     }
     155_044: {
         title: Salvage Borg Ship
         type: mission
+        quadrant: alpha
+        region: Argolis Cluster
+        location: Small Moon
         image-url: https://www.trekcc.org/1e/cardimages/tng/44V.jpg
     }
     155_045: {
         title: Seize Freighter
         type: mission
+        quadrant: alpha
+        region: Neutral Zone
+        location: Near Talarian Shipping Lane
         image-url: https://www.trekcc.org/1e/cardimages/tng/45V.jpg
     }
     155_046: {
         title: Steal Technology
         type: mission
+        quadrant: alpha
+        location: Gamma Tauri IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/46V.jpg
     }
     155_047: {
         title: The Last Outpost
         type: mission
+        quadrant: alpha
+        location: Delphi Ardu IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/47V.jpg
     }
     155_048: {
         title: Treat Plague Ship
         type: mission
+        quadrant: alpha
+        location: Near Haven
         image-url: https://www.trekcc.org/1e/cardimages/tng/48V.jpg
     }
     155_049: {
         title: Visit Tranquil Colony
         type: mission
+        quadrant: alpha
+        location: Jouret IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/49V.jpg
     }
 }

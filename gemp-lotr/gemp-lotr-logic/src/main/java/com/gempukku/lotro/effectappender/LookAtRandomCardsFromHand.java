@@ -43,7 +43,7 @@ public class LookAtRandomCardsFromHand implements EffectAppenderProducer {
 
                 return new LookAtRandomCardsFromHandEffect(actionContext.getPerformingPlayer(), handPlayer, actionContext.getSource(), count) {
                     @Override
-                    protected void cardsSeen(List<LotroPhysicalCard> seenCards) {
+                    protected void cardsSeen(List<PhysicalCard> seenCards) {
                         actionContext.setCardMemory(memorized, seenCards);
                     }
                 };

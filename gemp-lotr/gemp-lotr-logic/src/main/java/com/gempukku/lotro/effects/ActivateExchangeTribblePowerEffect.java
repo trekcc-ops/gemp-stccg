@@ -2,14 +2,14 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndPutCardFromDiscardIntoHandEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.TribblesGame;
 
 public class ActivateExchangeTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateExchangeTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateExchangeTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 

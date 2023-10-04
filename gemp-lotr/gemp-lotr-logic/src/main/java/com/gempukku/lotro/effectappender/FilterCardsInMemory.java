@@ -6,7 +6,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
@@ -37,10 +37,10 @@ public class FilterCardsInMemory implements EffectAppenderProducer {
                     @Override
                     protected void doPlayEffect(DefaultGame game) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
-                        List<LotroPhysicalCard> matchingCards = new LinkedList<>();
-                        List<LotroPhysicalCard> notMatchingCards = new LinkedList<>();
-                        for (LotroPhysicalCard physicalCard : cardsFromMemory) {
+                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+                        List<PhysicalCard> matchingCards = new LinkedList<>();
+                        List<PhysicalCard> notMatchingCards = new LinkedList<>();
+                        for (PhysicalCard physicalCard : cardsFromMemory) {
                             if (Filters.and(filterable).accepts(game, physicalCard))
                                 matchingCards.add(physicalCard);
                             else

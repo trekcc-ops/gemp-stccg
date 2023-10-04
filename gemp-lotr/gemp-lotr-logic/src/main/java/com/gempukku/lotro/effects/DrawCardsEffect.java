@@ -39,7 +39,7 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return game.getGameState().getDeck(_playerId).size() >= _count.evaluateExpression(game, null);
+        return game.getGameState().getDrawDeck(_playerId).size() >= _count.evaluateExpression(game, null);
     }
 
     @Override

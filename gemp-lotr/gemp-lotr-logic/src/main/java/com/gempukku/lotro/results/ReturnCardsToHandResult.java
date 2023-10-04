@@ -1,17 +1,17 @@
 package com.gempukku.lotro.results;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.EffectResult;
 
 public class ReturnCardsToHandResult extends EffectResult {
-    private final LotroPhysicalCard _card;
+    private final PhysicalCard _card;
 
-    public ReturnCardsToHandResult(LotroPhysicalCard card) {
+    public ReturnCardsToHandResult(PhysicalCard card) {
         super(Type.FOR_EACH_RETURNED_TO_HAND);
         _card = card;
     }
 
-    public LotroPhysicalCard getReturnedCard() {
+    public PhysicalCard getReturnedCard() {
         return _card;
     }
 }

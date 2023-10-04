@@ -2,7 +2,9 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivatePoisonTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivatePoisonTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 
@@ -23,7 +25,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
         // Choose any opponent who still has card(s) in their draw deck.
         List<String> playersWithCards = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(game)) {
-            if ((game.getGameState().getDeck(player).size() > 0) && !Objects.equals(player, _activatingPlayer))
+            if ((game.getGameState().getDrawDeck(player).size() > 0) && !Objects.equals(player, _activatingPlayer))
                 playersWithCards.add(player);
         }
         String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);
@@ -44,12 +46,13 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
     private void playerChosen(String chosenPlayer, TribblesGame game) {
         // That opponent must discard the top card
         SubAction subAction = new SubAction(_action);
-        subAction.appendEffect(new DiscardTopCardFromDeckEffect(_source, chosenPlayer, 1, true) {
+        subAction.appendEffect(new DiscardCardsFromEndOfCardPileEffect(_source, Zone.DRAW_DECK, EndOfPile.TOP,
+                chosenPlayer, 1, true) {
             @Override
-            protected void cardsDiscardedCallback(Collection<LotroPhysicalCard> cards) {
+            protected void cardsDiscardedCallback(Collection<PhysicalCard> cards) {
 
                 // and you immediately score points equal to the number of tribbles on that card
-                LotroPhysicalCard card = Iterables.getOnlyElement(cards);
+                PhysicalCard card = Iterables.getOnlyElement(cards);
                 game.getGameState().addToPlayerScore(_activatingPlayer, card.getBlueprint().getTribbleValue());
             }
         });

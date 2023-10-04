@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.discount.DiscountEffect;
@@ -13,7 +13,7 @@ import com.gempukku.lotro.effects.Effect;
 import java.util.Collections;
 
 public class PlayEventAction extends AbstractCostToEffectAction {
-    private final LotroPhysicalCard _eventPlayed;
+    private final PhysicalCard _eventPlayed;
     private final boolean _requiresRanger;
 
     private boolean _cardRemoved;
@@ -28,11 +28,11 @@ public class PlayEventAction extends AbstractCostToEffectAction {
 
     private final Zone _playedFrom;
 
-    public PlayEventAction(LotroPhysicalCard card) {
+    public PlayEventAction(PhysicalCard card) {
         this(card, false);
     }
 
-    public PlayEventAction(LotroPhysicalCard card, boolean requiresRanger) {
+    public PlayEventAction(PhysicalCard card, boolean requiresRanger) {
         _eventPlayed = card;
         _requiresRanger = requiresRanger;
 
@@ -41,13 +41,13 @@ public class PlayEventAction extends AbstractCostToEffectAction {
         setText("Play " + GameUtils.getFullName(_eventPlayed));
     }
 
-    public LotroPhysicalCard getEventPlayed() {
+    public PhysicalCard getEventPlayed() {
         return _eventPlayed;
     }
 
     @Override
-    public Type getType() {
-        return Type.PLAY_CARD;
+    public ActionType getActionType() {
+        return ActionType.PLAY_CARD;
     }
 
     public boolean isRequiresRanger() {
@@ -55,12 +55,12 @@ public class PlayEventAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public LotroPhysicalCard getActionSource() {
+    public PhysicalCard getActionSource() {
         return _eventPlayed;
     }
 
     @Override
-    public LotroPhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getActionAttachedToCard() {
         return _eventPlayed;
     }
 
@@ -78,7 +78,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
             else
                 game.getGameState().addCardToZone(game, _eventPlayed, Zone.VOID);
 
-            if (playedFromZone == Zone.DECK) {
+            if (playedFromZone == Zone.DRAW_DECK) {
                 game.getGameState().sendMessage(_eventPlayed.getOwner() + " shuffles their deck");
                 game.getGameState().shuffleDeck(_eventPlayed.getOwner());
             }

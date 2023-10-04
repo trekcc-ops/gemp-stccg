@@ -8,7 +8,7 @@ import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.TimeResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.effects.AddUntilModifierEffect;
@@ -38,7 +38,7 @@ public class ModifyStrength implements EffectAppenderProducer {
                 new DelayedAppender<>() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         final Evaluator evaluator = amountSource.getEvaluator(actionContext);
                         final int amount = evaluator.evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         return new AddUntilModifierEffect(

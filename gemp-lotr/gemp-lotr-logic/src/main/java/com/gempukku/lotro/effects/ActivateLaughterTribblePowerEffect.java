@@ -2,7 +2,7 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndPutCardsFromHandBeneathDrawDeckEffect;
@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffect {
     private String _discardingPlayer;
-    public ActivateLaughterTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateLaughterTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 

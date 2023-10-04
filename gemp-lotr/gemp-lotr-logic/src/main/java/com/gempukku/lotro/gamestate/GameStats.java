@@ -26,8 +26,8 @@ public class GameStats {
             for (String player : playerOrder.getAllPlayers()) {
                 final HashMap<Zone, Integer> playerZoneSizes = new HashMap<>();
                 playerZoneSizes.put(Zone.HAND, game.getGameState().getHand(player).size());
-                playerZoneSizes.put(Zone.DECK, game.getGameState().getDeck(player).size());
-                playerZoneSizes.put(Zone.ADVENTURE_DECK, game.getGameState().getAdventureDeck(player).size());
+                playerZoneSizes.put(Zone.DRAW_DECK, game.getGameState().getDrawDeck(player).size());
+//                playerZoneSizes.put(Zone.ADVENTURE_DECK, game.getGameState().getAdventureDeck(player).size());
                 playerZoneSizes.put(Zone.DISCARD, game.getGameState().getDiscard(player).size());
                 playerZoneSizes.put(Zone.REMOVED, game.getGameState().getRemoved(player).size());
                 newZoneSizes.put(player, playerZoneSizes);

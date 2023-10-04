@@ -1,9 +1,10 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
+import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.results.PlayCardResult;
 import com.gempukku.lotro.rules.GameUtils;
 
@@ -11,16 +12,16 @@ import java.util.Collections;
 
 public class TribblesPlayCardEffect extends AbstractEffect<TribblesGame> {
     private final Zone _playedFrom;
-    private final LotroPhysicalCard _cardPlayed;
+    private final PhysicalCard _cardPlayed;
     private final Zone _zone;
 
-    public TribblesPlayCardEffect(Zone playedFrom, LotroPhysicalCard cardPlayed, Zone playedTo) {
+    public TribblesPlayCardEffect(Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo) {
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
         _zone = playedTo;
     }
 
-    public LotroPhysicalCard getPlayedCard() {
+    public PhysicalCard getPlayedCard() {
         return _cardPlayed;
     }
 
@@ -36,12 +37,19 @@ public class TribblesPlayCardEffect extends AbstractEffect<TribblesGame> {
 
     @Override
     protected FullEffectResult playEffectReturningResult(TribblesGame game) {
-        game.getGameState().removeCardsFromZone(_cardPlayed.getOwner(), Collections.singleton(_cardPlayed));
-        game.getGameState().addCardToZone(game, _cardPlayed, _zone);
+        TribblesGameState gameState = game.getGameState();
+        gameState.removeCardsFromZone(_cardPlayed.getOwner(), Collections.singleton(_cardPlayed));
+        gameState.addCardToZone(game, _cardPlayed, _zone);
 
-        // Defined by the game. For Tribbles, this is where the chain is advanced.
-        game.getGameState().playEffectReturningResult(_cardPlayed);
+        int tribbleValue = _cardPlayed.getBlueprint().getTribbleValue();
 
+        gameState.setLastTribblePlayed(tribbleValue);
+        if (tribbleValue == 100000) {
+            gameState.setNextTribbleInSequence(1);
+        } else {
+            gameState.setNextTribbleInSequence(tribbleValue * 10);
+        }
+        gameState.setChainBroken(false);
         game.getActionsEnvironment().emitEffectResult(new PlayCardResult(_playedFrom, _cardPlayed));
 
         return new FullEffectResult(true);

@@ -193,7 +193,7 @@ var Card = Class.extend({
     tengwar: null,
     hasWiki: null,
     horizontal: null,
-//    imageUrl: null,
+    locationIndex: null,
     zone: null,
     cardId: null,
     owner: null,
@@ -201,9 +201,10 @@ var Card = Class.extend({
     attachedCards: null,
     errata: null,
 
-    init: function (blueprintId, zone, cardId, owner, imageUrl) {
+    init: function (blueprintId, zone, cardId, owner, imageUrl, locationIndex) {
         this.blueprintId = blueprintId;
         this.imageUrl = imageUrl;
+
 
         var imageBlueprint = blueprintId;
         var len = imageBlueprint.length;
@@ -222,6 +223,9 @@ var Card = Class.extend({
         this.zone = zone;
         this.cardId = cardId;
         this.owner = owner;
+        if (locationIndex !== undefined) {
+            this.locationIndex = parseInt(locationIndex);
+        }
         this.attachedCards = new Array();
         if (imageBlueprint == "rules") {
             this.imageUrl = "/gemp-lotr/images/rules.png";

@@ -38,12 +38,23 @@ public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
         }
 
         _firstPlayer = diceResults.keySet().iterator().next();
+
+        List<String> playerOrder = new ArrayList<>();
+        playerOrder.add(0, _firstPlayer);
+        int playerOrderIndex = 1;
+        for (String player : _players) {
+            if (!Objects.equals(player, _firstPlayer)) {
+                playerOrder.add(playerOrderIndex, player);
+                playerOrderIndex++;
+            }
+        }
+
         game.getGameState().sendMessage(_firstPlayer + " will go first");
-        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(_players), _firstPlayer);
+        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), _firstPlayer);
     }
 
     @Override
     public GameProcess<ST1EGame> getNextProcess() {
-        return new ST1EDoorwaySeedPhaseProcess(_firstPlayer);
+        return new ST1EDoorwaySeedPhaseProcess();
     }
 }

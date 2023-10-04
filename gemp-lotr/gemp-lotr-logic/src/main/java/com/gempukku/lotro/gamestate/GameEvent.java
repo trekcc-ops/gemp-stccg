@@ -1,7 +1,7 @@
 package com.gempukku.lotro.gamestate;
 
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
@@ -45,6 +45,8 @@ public class GameEvent {
     private final Type _type;
     private Zone _zone;
     private String _participantId;
+    private Integer _locationIndex;
+    private String _quadrant;
     private String _controllerId;
     private List<String> _allParticipantIds;
     private Integer _index;
@@ -207,18 +209,22 @@ public class GameEvent {
         return this;
     }
 
-    public GameEvent card(LotroPhysicalCard physicalCard) {
+    public GameEvent card(PhysicalCard physicalCard) {
         GameEvent gameEvent = cardId(physicalCard.getCardId()).blueprintId(physicalCard.getBlueprintId()).participantId(physicalCard.getOwner()).zone(physicalCard.getZone()).imageUrl(physicalCard.getImageUrl());
         if (physicalCard.getCardController() != null)
             gameEvent = gameEvent.controllerId(physicalCard.getCardController());
-        LotroPhysicalCard attachedTo = physicalCard.getAttachedTo();
+        PhysicalCard attachedTo = physicalCard.getAttachedTo();
         if (attachedTo != null)
             gameEvent = gameEvent.targetCardId(attachedTo.getCardId());
-        LotroPhysicalCard stackedOn = physicalCard.getStackedOn();
+        PhysicalCard stackedOn = physicalCard.getStackedOn();
         if (stackedOn != null)
             gameEvent = gameEvent.targetCardId(stackedOn.getCardId());
         if (physicalCard.getBlueprint().getCardType() == CardType.SITE && physicalCard.getZone().isInPlay())
             gameEvent = gameEvent.index(physicalCard.getSiteNumber());
+        gameEvent = gameEvent.locationIndex(physicalCard.getLocationZoneIndex());
+        if (physicalCard.getBlueprint().getCardType() == CardType.MISSION) {
+            gameEvent = gameEvent.quadrant(physicalCard.getQuadrant().name());
+        }
         return gameEvent;
     }
 
@@ -282,5 +288,16 @@ public class GameEvent {
         return this;
     }
 
+    public String getQuadrant() { return _quadrant; }
+    public GameEvent quadrant(String quadrant) {
+        _quadrant = quadrant;
+        return this;
+    }
+
+    public Integer getLocationIndex() { return _locationIndex; }
+    public GameEvent locationIndex(int locationIndex) {
+        _locationIndex = locationIndex;
+        return this;
+    }
 
 }

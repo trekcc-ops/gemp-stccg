@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.filters.Filters;
@@ -11,12 +11,12 @@ import com.gempukku.lotro.evaluator.Evaluator;
 import java.util.Collection;
 
 public class SnapshotAndApplyStrengthModifierUntilStartOfPhaseEffect extends AbstractEffect {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final Filterable[] _filters;
     private final Evaluator _evaluator;
     private final Phase _phase;
 
-    public SnapshotAndApplyStrengthModifierUntilStartOfPhaseEffect(LotroPhysicalCard source, Evaluator evaluator, Phase phase, Filterable... filter) {
+    public SnapshotAndApplyStrengthModifierUntilStartOfPhaseEffect(PhysicalCard source, Evaluator evaluator, Phase phase, Filterable... filter) {
         _source = source;
         _evaluator = evaluator;
         _phase = phase;
@@ -30,8 +30,8 @@ public class SnapshotAndApplyStrengthModifierUntilStartOfPhaseEffect extends Abs
 
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
-        final Collection<LotroPhysicalCard> affectedCards = Filters.filterActive(game, _filters);
-        for (LotroPhysicalCard physicalCard : affectedCards) {
+        final Collection<PhysicalCard> affectedCards = Filters.filterActive(game, _filters);
+        for (PhysicalCard physicalCard : affectedCards) {
             final int modifier = _evaluator.evaluateExpression(game, physicalCard);
             if (modifier != 0)
                 game.getModifiersEnvironment().addUntilStartOfPhaseModifier(

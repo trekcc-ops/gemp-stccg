@@ -1,7 +1,7 @@
 package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -28,7 +28,7 @@ public class ActivateResponseAbilitiesRule {
                     @Override
                     public List<? extends Action> getOptionalBeforeActions(String playerId, DefaultGame game, Effect effect) {
                         List<Action> result = new LinkedList<>();
-                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getOptionalInPlayBeforeActions(playerId, game, effect, activatableCard);
                                 if (actions != null)
@@ -42,7 +42,7 @@ public class ActivateResponseAbilitiesRule {
                     @Override
                     public List<? extends Action> getOptionalAfterActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         List<Action> result = new LinkedList<>();
-                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getOptionalInPlayAfterActions(playerId, game, effectResult, activatableCard);
                                 if (actions != null)

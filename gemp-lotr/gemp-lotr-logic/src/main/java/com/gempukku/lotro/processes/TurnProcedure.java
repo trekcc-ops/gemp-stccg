@@ -5,7 +5,7 @@ import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.actions.SystemQueueAction;
 import com.gempukku.lotro.adventure.InvalidSoloAdventureException;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.ActionSelectionDecision;
 import com.gempukku.lotro.decisions.CardActionSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -164,10 +164,10 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
 
     protected class PlayoutRequiredBeforeResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
-        private final Set<LotroPhysicalCard> _cardTriggersUsed;
+        private final Set<PhysicalCard> _cardTriggersUsed;
         private final Effect _effect;
 
-        private PlayoutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<LotroPhysicalCard> cardTriggersUsed, Effect effect) {
+        private PlayoutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed, Effect effect) {
             _action = action;
             _cardTriggersUsed = cardTriggersUsed;
             _effect = effect;
@@ -202,12 +202,12 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
 
     protected class PlayoutOptionalBeforeResponsesEffect extends UnrespondableEffect {
         private final SystemQueueAction _action;
-        private final Set<LotroPhysicalCard> _cardTriggersUsed;
+        private final Set<PhysicalCard> _cardTriggersUsed;
         private final PlayOrder _playOrder;
         private final int _passCount;
         private final Effect _effect;
 
-        private PlayoutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<LotroPhysicalCard> cardTriggersUsed, PlayOrder playOrder, int passCount, Effect effect) {
+        private PlayoutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed, PlayOrder playOrder, int passCount, Effect effect) {
             _action = action;
             _cardTriggersUsed = cardTriggersUsed;
             _playOrder = playOrder;

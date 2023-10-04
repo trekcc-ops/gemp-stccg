@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 
@@ -15,7 +15,7 @@ public abstract class AbstractSubActionEffect implements Effect<DefaultGame> {
         game.getActionsEnvironment().addActionToStack(_subAction);
     }
 
-    protected final String getAppendedNames(Collection<? extends LotroPhysicalCard> cards) {
+    protected final String getAppendedNames(Collection<? extends PhysicalCard> cards) {
         return GameUtils.getAppendedNames(cards);
     }
 

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
@@ -12,9 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PutCardFromPlayOnTopOfDeckEffect extends AbstractEffect {
-    private final LotroPhysicalCard _physicalCard;
+    private final PhysicalCard _physicalCard;
 
-    public PutCardFromPlayOnTopOfDeckEffect(LotroPhysicalCard physicalCard) {
+    public PutCardFromPlayOnTopOfDeckEffect(PhysicalCard physicalCard) {
         _physicalCard = physicalCard;
     }
 
@@ -26,23 +26,23 @@ public class PutCardFromPlayOnTopOfDeckEffect extends AbstractEffect {
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (isPlayableInFull(game)) {
-            Set<LotroPhysicalCard> discardedCards = new HashSet<>();
-            Set<LotroPhysicalCard> toGoToDiscardCards = new HashSet<>();
+            Set<PhysicalCard> discardedCards = new HashSet<>();
+            Set<PhysicalCard> toGoToDiscardCards = new HashSet<>();
 
             DiscardUtils.cardsToChangeZones(game, Collections.singleton(_physicalCard), discardedCards, toGoToDiscardCards);
 
             GameState gameState = game.getGameState();
 
-            Set<LotroPhysicalCard> removeFromPlay = new HashSet<>(toGoToDiscardCards);
+            Set<PhysicalCard> removeFromPlay = new HashSet<>(toGoToDiscardCards);
             removeFromPlay.add(_physicalCard);
 
             gameState.removeCardsFromZone(_physicalCard.getOwner(), removeFromPlay);
 
             gameState.putCardOnTopOfDeck(_physicalCard);
-            for (LotroPhysicalCard discardedCard : discardedCards) {
+            for (PhysicalCard discardedCard : discardedCards) {
                 game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
             }
-            for (LotroPhysicalCard toGoToDiscardCard : toGoToDiscardCards)
+            for (PhysicalCard toGoToDiscardCard : toGoToDiscardCards)
                 gameState.addCardToZone(game, toGoToDiscardCard, Zone.DISCARD);
 
             gameState.sendMessage(_physicalCard.getOwner() + " puts " + GameUtils.getCardLink(_physicalCard) + " from play on the top of deck");

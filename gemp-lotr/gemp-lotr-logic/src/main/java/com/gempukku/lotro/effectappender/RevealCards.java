@@ -8,7 +8,7 @@ import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.RevealCardEffect;
 import org.json.simple.JSONObject;
@@ -33,7 +33,7 @@ public class RevealCards implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsToReveal = actionContext.getCardsFromMemory(memorize);
+                        final Collection<? extends PhysicalCard> cardsToReveal = actionContext.getCardsFromMemory(memorize);
                         return new RevealCardEffect(actionContext.getSource(), cardsToReveal);
                     }
                 });

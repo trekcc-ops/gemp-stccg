@@ -1,6 +1,6 @@
 package com.gempukku.lotro.processes;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.Action;
@@ -20,14 +20,14 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends DefaultGameProcess<Tri
 
     @Override
     public void process(final TribblesGame game) {
-        if (game.getGameState().getDeck(_playerId).size() == 0) {
+        if (game.getGameState().getDrawDeck(_playerId).size() == 0) {
             game.getGameState().sendMessage(_playerId + " can't draw a card");
             game.getGameState().setPlayerDecked(_playerId, true);
         } else {
             game.getGameState().playerDrawsCard(_playerId);
             game.getGameState().sendMessage(_playerId + " drew a card");
-            List<? extends LotroPhysicalCard> playerHand = game.getGameState().getHand(_playerId);
-            LotroPhysicalCard cardDrawn = playerHand.get(playerHand.size() - 1);
+            List<? extends PhysicalCard> playerHand = game.getGameState().getHand(_playerId);
+            PhysicalCard cardDrawn = playerHand.get(playerHand.size() - 1);
             final List<Action> playableActions = new LinkedList<>();
             if (game.checkPlayRequirements(cardDrawn)) {
                 TribblesPlayPermanentAction action = new TribblesPlayPermanentAction(cardDrawn, Zone.PLAY_PILE);

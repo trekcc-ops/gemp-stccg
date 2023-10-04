@@ -1,22 +1,22 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
 
 public class SystemQueueAction extends AbstractCostToEffectAction {
     @Override
-    public Type getType() {
-        return Type.OTHER;
+    public ActionType getActionType() {
+        return ActionType.OTHER;
     }
 
     @Override
-    public LotroPhysicalCard getActionSource() {
+    public PhysicalCard getActionSource() {
         return null;
     }
 
     @Override
-    public LotroPhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getActionAttachedToCard() {
         return null;
     }
 

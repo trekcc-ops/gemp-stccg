@@ -1,6 +1,6 @@
 package com.gempukku.lotro.rules;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -39,7 +39,7 @@ public class RuleUtils {
         if (skirmish == null)
             return 0;
 
-        LotroPhysicalCard fpChar = skirmish.getFellowshipCharacter();
+        PhysicalCard fpChar = skirmish.getFellowshipCharacter();
         if (fpChar == null)
             return 0;
 
@@ -61,7 +61,7 @@ public class RuleUtils {
 
         int total = 0;
         final Evaluator overrideEvaluator = skirmish.getShadowStrengthOverrideEvaluator();
-        for (LotroPhysicalCard minion : skirmish.getShadowCharacters()) {
+        for (PhysicalCard minion : skirmish.getShadowCharacters()) {
             final Evaluator modifierOverrideEvaluator = game.getModifiersQuerying().getShadowStrengthOverrideEvaluator(game, minion);
             if(modifierOverrideEvaluator != null) {
                 total += modifierOverrideEvaluator.evaluateExpression(game, minion);
@@ -81,7 +81,7 @@ public class RuleUtils {
         if (game.getGameState().getSkirmish() == null)
             return 0;
 
-        LotroPhysicalCard fpChar = game.getGameState().getSkirmish().getFellowshipCharacter();
+        PhysicalCard fpChar = game.getGameState().getSkirmish().getFellowshipCharacter();
         if (fpChar == null)
             return 0;
 
@@ -94,13 +94,13 @@ public class RuleUtils {
 
         int totalBonus = 0;
 
-        for (LotroPhysicalCard physicalCard : game.getGameState().getSkirmish().getShadowCharacters())
+        for (PhysicalCard physicalCard : game.getGameState().getSkirmish().getShadowCharacters())
             totalBonus += game.getModifiersQuerying().getKeywordCount(game, physicalCard, Keyword.DAMAGE);
 
         return totalBonus;
     }
 
-    public static Filter getFullValidTargetFilter(String playerId, final DefaultGame game, final LotroPhysicalCard self) {
+    public static Filter getFullValidTargetFilter(String playerId, final DefaultGame game, final PhysicalCard self) {
         final LotroCardBlueprint blueprint = self.getBlueprint();
         return Filters.and(blueprint.getValidTargetFilter(playerId, game, self),
                 (Filter) (game12, physicalCard) -> {
@@ -116,9 +116,9 @@ public class RuleUtils {
                     Set<PossessionClass> possessionClasses = blueprint.getPossessionClasses();
                     if (possessionClasses != null) {
                         for (PossessionClass possessionClass : possessionClasses) {
-                            List<LotroPhysicalCard> attachedCards = game1.getGameState().getAttachedCards(attachedTo);
+                            List<PhysicalCard> attachedCards = game1.getGameState().getAttachedCards(attachedTo);
 
-                            Collection<LotroPhysicalCard> matchingClassPossessions = Filters.filter(attachedCards, game1, Filters.or(CardType.POSSESSION, CardType.ARTIFACT), possessionClass);
+                            Collection<PhysicalCard> matchingClassPossessions = Filters.filter(attachedCards, game1, Filters.or(CardType.POSSESSION, CardType.ARTIFACT), possessionClass);
                             if (matchingClassPossessions.size() > 1)
                                 return false;
 
@@ -134,7 +134,7 @@ public class RuleUtils {
                 });
     }
 
-    public static boolean isAllyAtHome(LotroPhysicalCard ally, int siteNumber, SitesBlock siteBlock) {
+    public static boolean isAllyAtHome(PhysicalCard ally, int siteNumber, SitesBlock siteBlock) {
         final SitesBlock allySiteBlock = ally.getBlueprint().getAllyHomeSiteBlock();
         final int[] allyHomeSites = ally.getBlueprint().getAllyHomeSiteNumbers();
         if (allySiteBlock != siteBlock)
@@ -145,7 +145,7 @@ public class RuleUtils {
         return false;
     }
 
-    public static boolean isAllyInRegion(LotroPhysicalCard ally, int regionNumber, SitesBlock siteBlock) {
+    public static boolean isAllyInRegion(PhysicalCard ally, int regionNumber, SitesBlock siteBlock) {
         final SitesBlock allySiteBlock = ally.getBlueprint().getAllyHomeSiteBlock();
         ally.getBlueprint().getAllyHomeSiteNumbers();
         if (allySiteBlock != siteBlock)

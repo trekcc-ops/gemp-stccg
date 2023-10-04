@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -17,7 +17,7 @@ public class PreventCardEffect extends UnrespondableEffect {
 
     @Override
     protected void doPlayEffect(DefaultGame game) {
-        for (LotroPhysicalCard affectedCard : _effect.getAffectedCardsMinusPrevented(game)) {
+        for (PhysicalCard affectedCard : _effect.getAffectedCardsMinusPrevented(game)) {
             if (_filter.accepts(game, affectedCard))
                 _effect.preventEffect(game, affectedCard);
         }

@@ -36,7 +36,7 @@ var chat;
 					var horiz = false;
 					for(var i = 0; i < ids.length; i++) {
 						var bpid = ids[i];
-						var card = new Card(bpid, "SPECIAL", "hint", "");
+						var card = new Card(bpid, "SPECIAL", "hint", ""); // TODO - Card missing imageUrl and locationIndex
 						horiz = horiz || card.horizontal;
 						floatCardDiv.append(createFullCardDiv(card.imageUrl, card.foil, card.horizontal));
 					}

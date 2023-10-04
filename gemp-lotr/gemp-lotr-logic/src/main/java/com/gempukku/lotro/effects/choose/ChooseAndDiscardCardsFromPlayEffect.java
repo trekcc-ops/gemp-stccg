@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -31,11 +31,11 @@ public class ChooseAndDiscardCardsFromPlayEffect extends ChooseActiveCardsEffect
     }
 
     @Override
-    protected void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         _resultSubAction = new SubAction(_action);
         _resultSubAction.appendEffect(new DiscardCardsFromPlayEffect(_playerId, _action.getActionSource(), Filters.in(cards)) {
             @Override
-            protected void forEachDiscardedByEffectCallback(Collection<LotroPhysicalCard> discardedCards) {
+            protected void forEachDiscardedByEffectCallback(Collection<PhysicalCard> discardedCards) {
                 ChooseAndDiscardCardsFromPlayEffect.this.forEachDiscardedByEffectCallback(discardedCards);
             }
         });
@@ -43,11 +43,11 @@ public class ChooseAndDiscardCardsFromPlayEffect extends ChooseActiveCardsEffect
         cardsToBeDiscardedCallback(cards);
     }
 
-    protected void cardsToBeDiscardedCallback(Collection<LotroPhysicalCard> cards) {
+    protected void cardsToBeDiscardedCallback(Collection<PhysicalCard> cards) {
 
     }
 
-    protected void forEachDiscardedByEffectCallback(Collection<LotroPhysicalCard> cards) {
+    protected void forEachDiscardedByEffectCallback(Collection<PhysicalCard> cards) {
 
     }
 

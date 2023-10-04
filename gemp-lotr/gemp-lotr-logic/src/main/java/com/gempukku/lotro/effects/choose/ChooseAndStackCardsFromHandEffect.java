@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.CardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -19,10 +19,10 @@ public class ChooseAndStackCardsFromHandEffect extends AbstractEffect {
     private final String _playerId;
     private final int _minimum;
     private final int _maximum;
-    private final LotroPhysicalCard _stackOn;
+    private final PhysicalCard _stackOn;
     private final Filterable[] _filters;
 
-    public ChooseAndStackCardsFromHandEffect(Action action, String playerId, int minimum, int maximum, LotroPhysicalCard stackOn, Filterable... filters) {
+    public ChooseAndStackCardsFromHandEffect(Action action, String playerId, int minimum, int maximum, PhysicalCard stackOn, Filterable... filters) {
         _action = action;
         _playerId = playerId;
         _minimum = minimum;
@@ -43,14 +43,14 @@ public class ChooseAndStackCardsFromHandEffect extends AbstractEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
-        Collection<LotroPhysicalCard> hand = Filters.filter(game.getGameState().getHand(_playerId), game, _filters);
+        Collection<PhysicalCard> hand = Filters.filter(game.getGameState().getHand(_playerId), game, _filters);
         int maximum = Math.min(_maximum, hand.size());
 
         final boolean success = hand.size() >= _minimum;
 
         if (hand.size() <= _minimum) {
             SubAction subAction = new SubAction(_action);
-            for (LotroPhysicalCard card : hand)
+            for (PhysicalCard card : hand)
                 subAction.appendEffect(new StackCardFromHandEffect(card, _stackOn));
             game.getActionsEnvironment().addActionToStack(subAction);
             stackFromHandCallback(hand);
@@ -59,9 +59,9 @@ public class ChooseAndStackCardsFromHandEffect extends AbstractEffect {
                     new CardsSelectionDecision(1, "Choose cards to stack", hand, _minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Set<LotroPhysicalCard> cards = getSelectedCardsByResponse(result);
+                            Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
                             SubAction subAction = new SubAction(_action);
-                            for (LotroPhysicalCard card : cards)
+                            for (PhysicalCard card : cards)
                                 subAction.appendEffect(new StackCardFromHandEffect(card, _stackOn));
                             game.getActionsEnvironment().addActionToStack(subAction);
                             stackFromHandCallback(cards);
@@ -72,7 +72,7 @@ public class ChooseAndStackCardsFromHandEffect extends AbstractEffect {
         return new FullEffectResult(success);
     }
 
-    public void stackFromHandCallback(Collection<LotroPhysicalCard> cardsStacked) {
+    public void stackFromHandCallback(Collection<PhysicalCard> cardsStacked) {
 
     }
 }

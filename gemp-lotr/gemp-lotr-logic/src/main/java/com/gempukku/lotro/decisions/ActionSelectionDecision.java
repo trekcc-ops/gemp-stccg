@@ -2,7 +2,7 @@ package com.gempukku.lotro.decisions;
 
 import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     private String[] getBlueprintIds(List<? extends Action> actions) {
         String[] result = new String[actions.size()];
         for (int i = 0; i < result.length; i++) {
-            LotroPhysicalCard physicalCard = actions.get(i).getActionAttachedToCard();
+            PhysicalCard physicalCard = actions.get(i).getActionAttachedToCard();
             if (physicalCard != null)
                 result[i] = String.valueOf(physicalCard.getBlueprintId());
             else

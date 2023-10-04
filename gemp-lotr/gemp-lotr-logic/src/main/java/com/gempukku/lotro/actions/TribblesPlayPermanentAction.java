@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
@@ -10,15 +10,14 @@ import com.gempukku.lotro.rules.GameUtils;
 import java.util.Collections;
 
 public class TribblesPlayPermanentAction extends AbstractCostToEffectAction {
-    private final LotroPhysicalCard _permanentPlayed;
+    private final PhysicalCard _permanentPlayed;
     private boolean _cardRemoved;
-
     private Effect _playCardEffect;
     private boolean _cardPlayed;
     private final Zone _fromZone;
     private final Zone _toZone;
 
-    public TribblesPlayPermanentAction(LotroPhysicalCard card, Zone zone) {
+    public TribblesPlayPermanentAction(PhysicalCard card, Zone zone) {
         _permanentPlayed = card;
         setText("Play " + GameUtils.getFullName(_permanentPlayed));
         setPerformingPlayer(card.getOwner());
@@ -28,17 +27,17 @@ public class TribblesPlayPermanentAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Type getType() {
-        return Type.PLAY_CARD;
+    public ActionType getActionType() {
+        return ActionType.PLAY_CARD;
     }
 
     @Override
-    public LotroPhysicalCard getActionSource() {
+    public PhysicalCard getActionSource() {
         return _permanentPlayed;
     }
 
     @Override
-    public LotroPhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getActionAttachedToCard() {
         return _permanentPlayed;
     }
 
@@ -56,7 +55,7 @@ public class TribblesPlayPermanentAction extends AbstractCostToEffectAction {
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID_FROM_HAND);
             else
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID);
-            if (playedFromZone == Zone.DECK) {
+            if (playedFromZone == Zone.DRAW_DECK) {
                 game.getGameState().sendMessage(_permanentPlayed.getOwner() + " shuffles their deck");
                 game.getGameState().shuffleDeck(_permanentPlayed.getOwner());
             }

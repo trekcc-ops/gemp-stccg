@@ -2,9 +2,10 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.gamestate.GameState;
+import com.gempukku.lotro.gamestate.ST1EGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
@@ -26,7 +27,8 @@ public class LotroGame extends DefaultGame {
         new CharacterDeathRule(_actionsEnvironment).applyRule();
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new GameState(_allPlayers, decks, library, _format);
+            // Being deprecated
+        _gameState = new ST1EGameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, decks.keySet(), userFeedback, _actionsEnvironment,
                 _gameState::init);
     }
@@ -45,5 +47,5 @@ public class LotroGame extends DefaultGame {
     public TurnProcedure<DefaultGame> getTurnProcedure() { return _turnProcedure; }
 
     // Dummy function. LotroGame will eventually be deprecated.
-    public boolean checkPlayRequirements(LotroPhysicalCard card) { return true; }
+    public boolean checkPlayRequirements(PhysicalCard card) { return true; }
 }

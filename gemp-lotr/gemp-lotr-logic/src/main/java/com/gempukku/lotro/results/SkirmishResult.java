@@ -1,17 +1,17 @@
 package com.gempukku.lotro.results;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.EffectResult;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class SkirmishResult extends EffectResult {
-    private final Set<LotroPhysicalCard> _winners;
-    private final Set<LotroPhysicalCard> _inSkirmishlosers;
-    private final Set<LotroPhysicalCard> _losers;
+    private final Set<PhysicalCard> _winners;
+    private final Set<PhysicalCard> _inSkirmishlosers;
+    private final Set<PhysicalCard> _losers;
 
-    public SkirmishResult(EffectResult.Type type, Set<LotroPhysicalCard> winners, Set<LotroPhysicalCard> losers, Set<LotroPhysicalCard> removedFromSkirmish) {
+    public SkirmishResult(EffectResult.Type type, Set<PhysicalCard> winners, Set<PhysicalCard> losers, Set<PhysicalCard> removedFromSkirmish) {
         super(type);
         _winners = winners;
         _inSkirmishlosers = losers;
@@ -19,15 +19,15 @@ public abstract class SkirmishResult extends EffectResult {
         _losers.addAll(removedFromSkirmish);
     }
 
-    public Set<LotroPhysicalCard> getWinners() {
+    public Set<PhysicalCard> getWinners() {
         return _winners;
     }
 
-    public Set<LotroPhysicalCard> getInSkirmishLosers() {
+    public Set<PhysicalCard> getInSkirmishLosers() {
         return _inSkirmishlosers;
     }
 
-    public Set<LotroPhysicalCard> getLosers() {
+    public Set<PhysicalCard> getLosers() {
         return _losers;
     }
 }

@@ -30,13 +30,13 @@ public class ExtraCostToPlay implements ModifierSourceProducer {
 
             return new AbstractExtraPlayCostModifier(actionContext.getSource(), "Cost to play is modified", filterable, condition) {
                 @Override
-                public void appendExtraCosts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard card) {
+                public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
                     for (EffectAppender effectAppender : effectAppenders)
                         effectAppender.appendEffect(true, action, actionContext);
                 }
 
                 @Override
-                public boolean canPayExtraCostsToPlay(DefaultGame game, LotroPhysicalCard card) {
+                public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
                     for (EffectAppender effectAppender : effectAppenders) {
                         if (!effectAppender.isPlayableInFull(actionContext))
                             return false;

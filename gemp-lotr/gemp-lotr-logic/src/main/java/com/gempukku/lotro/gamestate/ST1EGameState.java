@@ -1,42 +1,33 @@
 package com.gempukku.lotro.gamestate;
 
-import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.common.Quadrant;
-import com.gempukku.lotro.common.Zone;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.common.*;
+import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.game.GameFormat;
-import com.gempukku.lotro.game.Player;
-import com.gempukku.lotro.game.PlayerOrder;
 
 import java.util.*;
 
 public class ST1EGameState extends GameState {
-    protected final Map<String, List<PhysicalCardImpl>> _drawDecks = new HashMap<>();
-    protected final Map<String, List<PhysicalCardImpl>> _seedDecks = new HashMap<>();
-    protected final Map<String, List<PhysicalCardImpl>> _missionPiles = new HashMap<>();
-    private Map<Quadrant, List<PhysicalCardImpl>> _spacelines = new HashMap<>();
+    private Map<String, List<PhysicalCard>> _seedDecks;
+    private Map<String, List<PhysicalCard>> _missionPiles;
+    private Map<Quadrant, List<PhysicalCard>> _spacelines;
 
     public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
         super(players, decks, library, format);
+        _format = format;
+        _seedDecks = new HashMap<>();
+        _missionPiles = new HashMap<>();
+        _spacelines = new HashMap<>();
+        _currentPhase = Phase.SEED_MISSION;
     }
 
     @Override
-    public void init(PlayerOrder playerOrder, String firstPlayer) {
-        _playerOrder = playerOrder;
-        setCurrentPlayerId(firstPlayer);
-        for (String player : playerOrder.getAllPlayers()) {
-            _players.put(player, new Player(player));
-        }
-        for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.initializeBoard(playerOrder.getAllPlayers(), _format.discardPileIsPublic());
-        }
-    }
-
-    @Override
-    public List<PhysicalCardImpl> getZoneCards(String playerId, Zone zone) {
-        if (zone == Zone.DECK)
-            return _decks.get(playerId);
-        else if (zone == Zone.ADVENTURE_DECK)
-            return _adventureDecks.get(playerId);
+    public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
+        if (zone == Zone.DRAW_DECK)
+            return this._drawDecks.get(playerId);
         else if (zone == Zone.DISCARD)
             return _discards.get(playerId);
         else if (zone == Zone.HAND)
@@ -50,45 +41,183 @@ public class ST1EGameState extends GameState {
     }
 
     @Override
-    protected void addPlayerCards(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library) throws CardNotFoundException {
+    public void createPhysicalCards() {
         int cardId = 1;
-        for (String playerId : players) {
-            for (Map.Entry<String,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
-                List<PhysicalCardImpl> subDeck = new LinkedList<>();
+        for (String playerId : _players.keySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecksWithEnum().entrySet()) {
+                List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
-                    subDeck.add(new PhysicalCardImpl(cardId, blueprintId, playerId, library.getLotroCardBlueprint(blueprintId)));
+                    try {
+                        subDeck.add(new PhysicalCard(cardId, blueprintId, playerId, _library.getLotroCardBlueprint(blueprintId)));
+                        cardId++;
+                    } catch (CardNotFoundException e) {
+                        throw new RuntimeException("Card blueprint not found");
+                    }
                 }
-                if (Objects.equals(entry.getKey(), "DRAW_DECK")) {
+                if (entry.getKey() == SubDeck.DRAW_DECK) {
                     _drawDecks.put(playerId, subDeck);
-                } else if (Objects.equals(entry.getKey(), "SEED_DECK")) {
+                    subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
+                } else if (entry.getKey() == SubDeck.SEED_DECK) {
                     _seedDecks.put(playerId, subDeck);
-                } else if (Objects.equals(entry.getKey(), "MISSIONS")) {
+                    subDeck.forEach(card -> card.setZone(Zone.SEED_DECK));
+                } else if (entry.getKey() == SubDeck.MISSIONS) {
                     _missionPiles.put(playerId, subDeck);
+                    subDeck.forEach(card -> card.setZone(Zone.MISSIONS_PILE));
                 }
             }
         }
     }
 
-    public List<LotroPhysicalCard> getMissionPile(String playerId) {
+    public List<PhysicalCard> getMissionPile(String playerId) {
         return Collections.unmodifiableList(_missionPiles.get(playerId));
     }
 
-    public List<LotroPhysicalCard> getSpaceline(Quadrant quadrant) {
+    public PhysicalCard getTopOfMissionPile(String playerId) {
+        return _missionPiles.get(playerId).get(0);
+    }
+
+    public List<PhysicalCard> getSpaceline(Quadrant quadrant) {
         return Collections.unmodifiableList(_spacelines.get(quadrant));
     }
 
     public void createNewSpaceline(Quadrant quadrant) {
+
         _spacelines.put(quadrant, new ArrayList<>());
+        refreshSpacelineIndices();
     }
 
-    public void addToSpaceline(LotroPhysicalCard newMission, Quadrant quadrant, int indexNumber) {
-        // TODO - define method
-//        _spacelines.get(quadrant).add(indexNumber, newMission);
+    public void addToSpaceline(PhysicalCard newMission, Quadrant quadrant, int indexNumber) {
+        _spacelines.get(quadrant).add(indexNumber, newMission);
+        refreshSpacelineIndices();
+    }
+
+    public void refreshSpacelineIndices() {
+        int i = 0;
+        if (spacelineExists(Quadrant.ALPHA)) {
+            for (PhysicalCard card : _spacelines.get(Quadrant.ALPHA)) {
+                card.setLocationZoneIndex(i);
+                i++;
+            }
+        }
+        if (spacelineExists(Quadrant.GAMMA)) {
+            for (PhysicalCard card : _spacelines.get(Quadrant.GAMMA)) {
+                card.setLocationZoneIndex(i);
+                i++;
+            }
+        }
+        if (spacelineExists(Quadrant.DELTA)) {
+            for (PhysicalCard card : _spacelines.get(Quadrant.DELTA)) {
+                card.setLocationZoneIndex(i);
+                i++;
+            }
+        }
+        if (spacelineExists(Quadrant.MIRROR)) {
+            for (PhysicalCard card : _spacelines.get(Quadrant.MIRROR)) {
+                card.setLocationZoneIndex(i);
+                i++;
+            }
+        }
+    }
+
+    public boolean spacelineHasLocation(String location, Quadrant quadrant) {
+        return _spacelines.get(quadrant).stream().anyMatch(card -> Objects.equals(card.getBlueprint().getLocation(), location));
+    }
+
+    public boolean spacelineHasRegion(Region region, Quadrant quadrant) {
+        return _spacelines.get(quadrant).stream().anyMatch(card -> Objects.equals(card.getBlueprint().getRegion(), region));
     }
 
     public boolean spacelineExists(Quadrant quadrant) { return _spacelines.containsKey(quadrant); }
 
+    public int indexOfLocation(String location, Quadrant quadrant) {
+        for (int i = 0; i < _spacelines.get(quadrant).size(); i++) {
+            if (Objects.equals(_spacelines.get(quadrant).get(i).getBlueprint().getLocation(), location))
+                return i;
+        }
+        return -1;
+    }
+
+    public PhysicalCard firstInRegion(Region region, Quadrant quadrant) {
+        for (int i = 0; i < _spacelines.get(quadrant).size(); i++) {
+            if (Objects.equals(_spacelines.get(quadrant).get(i).getBlueprint().getRegion(), region))
+                return _spacelines.get(quadrant).get(i);
+        }
+        return null;
+    }
+
+    public PhysicalCard lastInRegion(Region region, Quadrant quadrant) {
+        for (int i = _spacelines.get(quadrant).size() - 1; i >= 0; i--) {
+            if (Objects.equals(_spacelines.get(quadrant).get(i).getBlueprint().getRegion(), region))
+                return _spacelines.get(quadrant).get(i);
+        }
+        return null;
+    }
+
+    public int regionStartIndex(Region region, Quadrant quadrant) {
+        for (int i = 0; i < _spacelines.get(quadrant).size(); i++) {
+            if (Objects.equals(_spacelines.get(quadrant).get(i).getBlueprint().getRegion(), region))
+                return i;
+        }
+        return -1;
+    }
+
+    public int regionEndIndex(Region region, Quadrant quadrant) {
+        for (int i = _spacelines.get(quadrant).size() - 1; i >= 0; i--) {
+            if (Objects.equals(_spacelines.get(quadrant).get(i).getBlueprint().getRegion(), region))
+                return i;
+        }
+        return -1;
+    }
+
     @Override
-    public void playEffectReturningResult(LotroPhysicalCard cardPlayed) { }
+    public void playEffectReturningResult(PhysicalCard cardPlayed) { }
+
+    @Override
+    protected void sendStateToPlayer(String playerId, GameStateListener listener, GameStats gameStats) {
+        if (_playerOrder != null) {
+            listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
+            if (_currentPlayerId != null)
+                listener.setCurrentPlayerId(_currentPlayerId);
+            if (_currentPhase != null)
+                listener.setCurrentPhase(getPhaseString());
+
+            Set<PhysicalCard> cardsLeftToSent = new LinkedHashSet<>(_inPlay);
+            Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
+
+            int cardsToSendAtLoopStart;
+            do {
+                cardsToSendAtLoopStart = cardsLeftToSent.size();
+                Iterator<PhysicalCard> cardIterator = cardsLeftToSent.iterator();
+                while (cardIterator.hasNext()) {
+                    PhysicalCard physicalCard = cardIterator.next();
+                    PhysicalCard attachedTo = physicalCard.getAttachedTo();
+                    if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
+                        listener.cardCreated(physicalCard);
+                        sentCardsFromPlay.add(physicalCard);
+
+                        cardIterator.remove();
+                    }
+                }
+            } while (cardsToSendAtLoopStart != cardsLeftToSent.size() && cardsLeftToSent.size() > 0);
+
+            List<PhysicalCard> hand = _hands.get(playerId);
+            if (hand != null) hand.forEach(listener::cardCreated);
+
+            List<PhysicalCard> missionPile = _missionPiles.get(playerId);
+            if (missionPile != null) missionPile.forEach(listener::cardCreated);
+
+            List<PhysicalCard> discard = _discards.get(playerId);
+            if (discard != null) discard.forEach(listener::cardCreated);
+
+            listener.sendGameStats(gameStats);
+        }
+
+        for (String lastMessage : _lastMessages)
+            listener.sendMessage(lastMessage);
+
+        final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
+        if (awaitingDecision != null)
+            listener.decisionRequired(playerId, awaitingDecision);
+    }
 
 }

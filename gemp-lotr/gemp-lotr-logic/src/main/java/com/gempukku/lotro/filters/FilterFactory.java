@@ -50,7 +50,6 @@ public class FilterFactory {
 
                             return false;
                         }));
-        simpleFilters.put("infierceskirmish", (actionContext) -> Filters.inFierceSkirmish);
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
         simpleFilters.put("insameregion",
                 actionContext -> Filters.region(LotroGameUtils.getRegion(actionContext.getSource().getSiteNumber())));
@@ -114,7 +113,7 @@ public class FilterFactory {
         });
         parameterFilters.put("culturefrommemory", ((parameter, environment) -> actionContext -> {
             Set<Culture> cultures = new HashSet<>();
-            for (LotroPhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter)) {
+            for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter)) {
                 cultures.add(physicalCard.getBlueprint().getCulture());
             }
             return Filters.or(cultures.toArray(new Culture[0]));
@@ -184,7 +183,7 @@ public class FilterFactory {
                                         new SingleMemoryEvaluator(
                                                 (game, cardAffected) -> {
                                                     int minStrength = Integer.MAX_VALUE;
-                                                    for (LotroPhysicalCard card : Filters.filterActive(game, sourceFilterable))
+                                                    for (PhysicalCard card : Filters.filterActive(game, sourceFilterable))
                                                         minStrength = Math.min(minStrength, game.getModifiersQuerying().getStrength(game, card));
                                                     return minStrength;
                                                 }
@@ -247,7 +246,7 @@ public class FilterFactory {
         parameterFilters.put("namefrommemory",
                 (parameter, environment) -> actionContext -> {
                     Set<String> titles = new HashSet<>();
-                    for (LotroPhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter))
+                    for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter))
                         titles.add(physicalCard.getBlueprint().getTitle());
                     return (Filter) (game, physicalCard) -> titles.contains(physicalCard.getBlueprint().getTitle());
                 });
@@ -257,8 +256,8 @@ public class FilterFactory {
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return (Filter) (game, physicalCard) -> {
-                            for (LotroPhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
-                                for (LotroPhysicalCard stackedCard : game.getGameState().getStackedCards(cardWithStack)) {
+                            for (PhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
+                                for (PhysicalCard stackedCard : game.getGameState().getStackedCards(cardWithStack)) {
                                     if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))
                                         return true;
                                 }

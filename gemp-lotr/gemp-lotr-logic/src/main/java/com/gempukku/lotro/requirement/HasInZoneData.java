@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
@@ -21,7 +21,7 @@ public class HasInZoneData implements RequirementProducer {
 
         return (Requirement<DefaultGame>) actionContext -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);
-            for (LotroPhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
+            for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
                 if (physicalCard.getWhileInZoneData() != null)
                     return true;
             }

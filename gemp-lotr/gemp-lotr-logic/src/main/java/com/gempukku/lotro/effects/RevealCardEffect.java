@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -10,14 +10,14 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class RevealCardEffect extends AbstractSuccessfulEffect {
-    private final LotroPhysicalCard _source;
-    private final Collection<? extends LotroPhysicalCard> _cards;
+    private final PhysicalCard _source;
+    private final Collection<? extends PhysicalCard> _cards;
 
-    public RevealCardEffect(LotroPhysicalCard source, LotroPhysicalCard card) {
+    public RevealCardEffect(PhysicalCard source, PhysicalCard card) {
         this(source, Collections.singleton(card));
     }
 
-    public RevealCardEffect(LotroPhysicalCard source, Collection<? extends LotroPhysicalCard> cards) {
+    public RevealCardEffect(PhysicalCard source, Collection<? extends PhysicalCard> cards) {
         _source = source;
         _cards = cards;
     }

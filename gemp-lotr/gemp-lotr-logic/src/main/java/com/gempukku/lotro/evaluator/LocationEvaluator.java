@@ -1,6 +1,6 @@
 package com.gempukku.lotro.evaluator;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -18,7 +18,7 @@ public class LocationEvaluator implements Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
+    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         return locationFilter.accepts(game, game.getGameState().getCurrentSite()) ? locationValue : defaultValue;
     }
 }

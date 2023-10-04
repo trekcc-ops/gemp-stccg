@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -39,13 +39,13 @@ public abstract class ChooseCardsFromDiscardEffect extends AbstractEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        Collection<LotroPhysicalCard> cards = Filters.filter(game.getGameState().getDiscard(_targetPlayerDiscardId), game, _filter);
+        Collection<PhysicalCard> cards = Filters.filter(game.getGameState().getDiscard(_targetPlayerDiscardId), game, _filter);
         return cards.size() >= _minimum;
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
-        Collection<LotroPhysicalCard> cards = Filters.filter(game.getGameState().getDiscard(_targetPlayerDiscardId), game, _filter);
+        Collection<PhysicalCard> cards = Filters.filter(game.getGameState().getDiscard(_targetPlayerDiscardId), game, _filter);
 
         boolean success = cards.size() >= _minimum;
 
@@ -68,5 +68,5 @@ public abstract class ChooseCardsFromDiscardEffect extends AbstractEffect {
         return new FullEffectResult(success);
     }
 
-    protected abstract void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> cards);
+    protected abstract void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards);
 }

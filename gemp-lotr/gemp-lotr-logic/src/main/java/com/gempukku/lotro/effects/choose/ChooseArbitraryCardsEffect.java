@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -16,20 +16,20 @@ public abstract class ChooseArbitraryCardsEffect extends AbstractEffect {
     private final String _playerId;
     private final String _choiceText;
     private final boolean _showMatchingOnly;
-    private final Collection<LotroPhysicalCard> _cards;
+    private final Collection<PhysicalCard> _cards;
     private final Filterable _filter;
     private final int _minimum;
     private final int _maximum;
 
-    public ChooseArbitraryCardsEffect(String playerId, String choiceText, Collection<? extends LotroPhysicalCard> cards, int minimum, int maximum) {
+    public ChooseArbitraryCardsEffect(String playerId, String choiceText, Collection<? extends PhysicalCard> cards, int minimum, int maximum) {
         this(playerId, choiceText, cards, Filters.any, minimum, maximum);
     }
 
-    public ChooseArbitraryCardsEffect(String playerId, String choiceText, Collection<? extends LotroPhysicalCard> cards, Filterable filter, int minimum, int maximum) {
+    public ChooseArbitraryCardsEffect(String playerId, String choiceText, Collection<? extends PhysicalCard> cards, Filterable filter, int minimum, int maximum) {
         this(playerId, choiceText, cards, filter, minimum, maximum, false);
     }
 
-    public ChooseArbitraryCardsEffect(String playerId, String choiceText, Collection<? extends LotroPhysicalCard> cards, Filterable filter, int minimum, int maximum, boolean showMatchingOnly) {
+    public ChooseArbitraryCardsEffect(String playerId, String choiceText, Collection<? extends PhysicalCard> cards, Filterable filter, int minimum, int maximum, boolean showMatchingOnly) {
         _playerId = playerId;
         _choiceText = choiceText;
         _showMatchingOnly = showMatchingOnly;
@@ -46,7 +46,7 @@ public abstract class ChooseArbitraryCardsEffect extends AbstractEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
-        Collection<LotroPhysicalCard> possibleCards = Filters.filter(_cards, game, _filter);
+        Collection<PhysicalCard> possibleCards = Filters.filter(_cards, game, _filter);
 
         boolean success = possibleCards.size() >= _minimum;
 
@@ -60,7 +60,7 @@ public abstract class ChooseArbitraryCardsEffect extends AbstractEffect {
         } else if (possibleCards.size() == minimum) {
             cardsSelected(game, possibleCards);
         } else {
-            Collection<LotroPhysicalCard> toShow = _cards;
+            Collection<PhysicalCard> toShow = _cards;
             if (_showMatchingOnly)
                 toShow = possibleCards;
 
@@ -76,5 +76,5 @@ public abstract class ChooseArbitraryCardsEffect extends AbstractEffect {
         return new FullEffectResult(success);
     }
 
-    protected abstract void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> selectedCards);
+    protected abstract void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards);
 }

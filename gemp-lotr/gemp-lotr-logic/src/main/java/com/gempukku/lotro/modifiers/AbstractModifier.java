@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
@@ -16,17 +16,17 @@ import java.util.Set;
 
 public abstract class AbstractModifier implements Modifier {
     protected String _playerId;
-    protected final LotroPhysicalCard _physicalCard;
+    protected final PhysicalCard _physicalCard;
     private final String _text;
     protected final Filter _affectFilter;
     protected final Condition _condition;
     private final ModifierEffect _effect;
 
-    protected AbstractModifier(LotroPhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
+    protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
     }
 
-    protected AbstractModifier(LotroPhysicalCard source, String text, Filterable affectFilter,
+    protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
                                Condition condition, ModifierEffect effect) {
         _physicalCard = source;
         _text = text;
@@ -46,12 +46,12 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public LotroPhysicalCard getSource() {
+    public PhysicalCard getSource() {
         return _physicalCard;
     }
 
     @Override
-    public String getText(DefaultGame game, LotroPhysicalCard self) {
+    public String getText(DefaultGame game, PhysicalCard self) {
         return _text;
     }
 
@@ -61,120 +61,120 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean affectsCard(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public boolean affectsCard(DefaultGame game, PhysicalCard physicalCard) {
         return (_affectFilter != null && _affectFilter.accepts(game, physicalCard));
     }
 
     @Override
-    public boolean hasRemovedText(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard) {
         return false;
     }
 
     @Override
-    public boolean isKeywordRemoved(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
+    public boolean isKeywordRemoved(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
         return false;
     }
 
     @Override
-    public boolean hasKeyword(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
+    public boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
         return false;
     }
 
     @Override
-    public int getKeywordCountModifier(DefaultGame game, LotroPhysicalCard physicalCard, Keyword keyword) {
+    public int getKeywordCountModifier(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
         return 0;
     }
 
     @Override
-    public boolean appliesKeywordModifier(DefaultGame game, LotroPhysicalCard modifierSource, Keyword keyword) {
+    public boolean appliesKeywordModifier(DefaultGame game, PhysicalCard modifierSource, Keyword keyword) {
         return true;
     }
 
     @Override
-    public int getStrengthModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getStrengthModifier(DefaultGame game, PhysicalCard physicalCard) {
         return 0;
     }
 
     @Override
-    public boolean cancelsStrengthBonusModifier(DefaultGame game, LotroPhysicalCard modifierSource, LotroPhysicalCard modifierTarget) {
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget) {
         return false;
     }
 
     @Override
-    public int getVitalityModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getVitalityModifier(DefaultGame game, PhysicalCard physicalCard) {
         return 0;
     }
 
     @Override
-    public int getResistanceModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getResistanceModifier(DefaultGame game, PhysicalCard physicalCard) {
         return 0;
     }
 
     @Override
-    public int getMinionSiteNumberModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getMinionSiteNumberModifier(DefaultGame game, PhysicalCard physicalCard) {
         return 0;
     }
 
     @Override
-    public boolean isAdditionalCardTypeModifier(DefaultGame game, LotroPhysicalCard physicalCard, CardType cardType) {
+    public boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType) {
         return false;
     }
 
     @Override
-    public int getTwilightCostModifier(DefaultGame game, LotroPhysicalCard physicalCard, LotroPhysicalCard target, boolean ignoreRoamingPenalty) {
+    public int getTwilightCostModifier(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
         return 0;
     }
 
     @Override
-    public int getOverwhelmMultiplier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getOverwhelmMultiplier(DefaultGame game, PhysicalCard physicalCard) {
         return 0;
     }
 
     @Override
-    public boolean canCancelSkirmish(DefaultGame game, LotroPhysicalCard physicalCard) { return true; }
+    public boolean canCancelSkirmish(DefaultGame game, PhysicalCard physicalCard) { return true; }
 
     @Override
-    public boolean canTakeWounds(DefaultGame game, Collection<LotroPhysicalCard> woundSources, LotroPhysicalCard physicalCard, int woundsAlreadyTaken, int woundsToTake) {
+    public boolean canTakeWounds(DefaultGame game, Collection<PhysicalCard> woundSources, PhysicalCard physicalCard, int woundsAlreadyTaken, int woundsToTake) {
         return true;
     }
 
     @Override
-    public boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, LotroPhysicalCard physicalCard, Set<LotroPhysicalCard> winners) {
+    public boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, PhysicalCard physicalCard, Set<PhysicalCard> winners) {
         return true;
     }
 
     @Override
-    public boolean canTakeArcheryWound(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public boolean canTakeArcheryWound(DefaultGame game, PhysicalCard physicalCard) {
         return true;
     }
 
     @Override
-    public boolean canBeExerted(DefaultGame game, LotroPhysicalCard exertionSource, LotroPhysicalCard exertedCard) {
+    public boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard) {
         return true;
     }
 
     @Override
-    public boolean isAllyParticipateInArcheryFire(DefaultGame game, LotroPhysicalCard card) {
+    public boolean isAllyParticipateInArcheryFire(DefaultGame game, PhysicalCard card) {
         return false;
     }
 
     @Override
-    public boolean isAllyParticipateInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
+    public boolean isAllyParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
         return false;
     }
 
     @Override
-    public boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, LotroPhysicalCard card) {
+    public boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card) {
         return false;
     }
 
     @Override
-    public boolean isAllyPreventedFromParticipatingInArcheryFire(DefaultGame game, LotroPhysicalCard card) {
+    public boolean isAllyPreventedFromParticipatingInArcheryFire(DefaultGame game, PhysicalCard card) {
         return false;
     }
 
     @Override
-    public boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
+    public boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
         return false;
     }
 
@@ -189,12 +189,12 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean addsTwilightForCompanionMove(DefaultGame game, LotroPhysicalCard companion) {
+    public boolean addsTwilightForCompanionMove(DefaultGame game, PhysicalCard companion) {
         return true;
     }
 
     @Override
-    public boolean addsToArcheryTotal(DefaultGame game, LotroPhysicalCard card) {
+    public boolean addsToArcheryTotal(DefaultGame game, PhysicalCard card) {
         return true;
     }
 
@@ -204,42 +204,42 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean cantPlayCard(DefaultGame game, String performingPlayer, LotroPhysicalCard card) {
+    public boolean cantPlayCard(DefaultGame game, String performingPlayer, PhysicalCard card) {
         return false;
     }
 
     @Override
-    public List<? extends Action> getExtraPhaseAction(DefaultGame game, LotroPhysicalCard card) {
+    public List<? extends Action> getExtraPhaseAction(DefaultGame game, PhysicalCard card) {
         return null;
     }
 
     @Override
-    public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, LotroPhysicalCard card) {
+    public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card) {
         return null;
     }
 
     @Override
-    public boolean canPayExtraCostsToPlay(DefaultGame game, LotroPhysicalCard card) {
+    public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
         return true;
     }
 
     @Override
-    public void appendExtraCosts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard card) {
+    public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
 
     }
 
     @Override
-    public boolean canHavePlayedOn(DefaultGame game, LotroPhysicalCard playedCard, LotroPhysicalCard target) {
+    public boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target) {
         return true;
     }
 
     @Override
-    public boolean canHaveTransferredOn(DefaultGame game, LotroPhysicalCard playedCard, LotroPhysicalCard target) {
+    public boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target) {
         return true;
     }
 
     @Override
-    public boolean canBeTransferred(DefaultGame game, LotroPhysicalCard attachment) {
+    public boolean canBeTransferred(DefaultGame game, PhysicalCard attachment) {
         return true;
     }
 
@@ -249,47 +249,47 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, LotroPhysicalCard card) {
+    public boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, PhysicalCard card) {
         return false;
     }
 
     @Override
-    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, LotroPhysicalCard card, LotroPhysicalCard source) {
+    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source) {
         return true;
     }
 
     @Override
-    public boolean canBeLiberated(DefaultGame game, String performingPlayer, LotroPhysicalCard card, LotroPhysicalCard source) {
+    public boolean canBeLiberated(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source) {
         return true;
     }
 
     @Override
-    public boolean canBeReturnedToHand(DefaultGame game, LotroPhysicalCard card, LotroPhysicalCard source) {
+    public boolean canBeReturnedToHand(DefaultGame game, PhysicalCard card, PhysicalCard source) {
         return true;
     }
 
     @Override
-    public boolean canBeHealed(DefaultGame game, LotroPhysicalCard card) {
+    public boolean canBeHealed(DefaultGame game, PhysicalCard card) {
         return true;
     }
 
     @Override
-    public boolean canAddBurden(DefaultGame game, String performingPlayer, LotroPhysicalCard source) {
+    public boolean canAddBurden(DefaultGame game, String performingPlayer, PhysicalCard source) {
         return true;
     }
 
     @Override
-    public boolean canRemoveBurden(DefaultGame game, LotroPhysicalCard source) {
+    public boolean canRemoveBurden(DefaultGame game, PhysicalCard source) {
         return true;
     }
 
     @Override
-    public boolean canRemoveThreat(DefaultGame game, LotroPhysicalCard source) {
+    public boolean canRemoveThreat(DefaultGame game, PhysicalCard source) {
         return true;
     }
 
     @Override
-    public int getRoamingPenaltyModifier(DefaultGame game, LotroPhysicalCard physicalCard) {
+    public int getRoamingPenaltyModifier(DefaultGame game, PhysicalCard physicalCard) {
         return 0;
     }
 
@@ -299,13 +299,13 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canDiscardCardsFromHand(DefaultGame game, String playerId, LotroPhysicalCard source) {
+    public boolean canDiscardCardsFromHand(DefaultGame game, String playerId, PhysicalCard source) {
         return true;
     }
 
-    public boolean canPlayCardOutOfSequence(DefaultGame game, LotroPhysicalCard source) { return false; }
+    public boolean canPlayCardOutOfSequence(DefaultGame game, PhysicalCard source) { return false; }
     @Override
-    public boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, LotroPhysicalCard source) {
+    public boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, PhysicalCard source) {
         return true;
     }
 
@@ -345,17 +345,17 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean lostAllKeywords(LotroPhysicalCard card) {
+    public boolean lostAllKeywords(PhysicalCard card) {
         return false;
     }
 
     @Override
-    public Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard fpCharacter) {
+    public Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter) {
         return null;
     }
 
     @Override
-    public Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard shadowCharacter) { return null; }
+    public Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard shadowCharacter) { return null; }
 
     @Override
     public int getFPCulturesSpotCountModifier(DefaultGame game, String playerId) {
@@ -363,12 +363,12 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getPotentialDiscount(DefaultGame game, LotroPhysicalCard discountCard) {
+    public int getPotentialDiscount(DefaultGame game, PhysicalCard discountCard) {
         return 0;
     }
 
     @Override
-    public void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard card) {
+    public void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
 
     }
 

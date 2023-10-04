@@ -4,7 +4,7 @@ import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.rules.GameUtils;
@@ -15,16 +15,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DiscardCardsFromPlayEffect extends AbstractPreventableCardEffect {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final String _performingPlayer;
 
-    public DiscardCardsFromPlayEffect(String performingPlayer, LotroPhysicalCard source, Filterable... filters) {
+    public DiscardCardsFromPlayEffect(String performingPlayer, PhysicalCard source, Filterable... filters) {
         super(filters);
         _performingPlayer = performingPlayer;
         _source = source;
     }
 
-    public LotroPhysicalCard getSource() {
+    public PhysicalCard getSource() {
         return _source;
     }
 
@@ -47,19 +47,19 @@ public class DiscardCardsFromPlayEffect extends AbstractPreventableCardEffect {
 
     @Override
     public String getText(DefaultGame game) {
-        Collection<LotroPhysicalCard> cards = getAffectedCardsMinusPrevented(game);
+        Collection<PhysicalCard> cards = getAffectedCardsMinusPrevented(game);
         return "Discard " + getAppendedTextNames(cards);
     }
 
-    protected void forEachDiscardedByEffectCallback(Collection<LotroPhysicalCard> discardedCards) {
+    protected void forEachDiscardedByEffectCallback(Collection<PhysicalCard> discardedCards) {
 
     }
 
     @Override
-    protected void playOutEffectOn(DefaultGame game, Collection<LotroPhysicalCard> cards) {
-        Set<LotroPhysicalCard> discardedCards = new HashSet<>();
+    protected void playOutEffectOn(DefaultGame game, Collection<PhysicalCard> cards) {
+        Set<PhysicalCard> discardedCards = new HashSet<>();
 
-        Set<LotroPhysicalCard> toMoveFromZoneToDiscard = new HashSet<>();
+        Set<PhysicalCard> toMoveFromZoneToDiscard = new HashSet<>();
 
         GameState gameState = game.getGameState();
 
@@ -70,13 +70,13 @@ public class DiscardCardsFromPlayEffect extends AbstractPreventableCardEffect {
 
         gameState.removeCardsFromZone(_performingPlayer, toMoveFromZoneToDiscard);
 
-        for (LotroPhysicalCard card : toMoveFromZoneToDiscard)
+        for (PhysicalCard card : toMoveFromZoneToDiscard)
             gameState.addCardToZone(game, card, Zone.DISCARD);
 
         if (_source != null && discardedCards.size() > 0)
             game.getGameState().sendMessage(_performingPlayer + " discards " + getAppendedNames(discardedCards) + " from play using " + GameUtils.getCardLink(_source));
 
-        for (LotroPhysicalCard discardedCard : discardedCards)
+        for (PhysicalCard discardedCard : discardedCards)
             game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(_source, getPerformingPlayer(), discardedCard));
 
         forEachDiscardedByEffectCallback(cards);

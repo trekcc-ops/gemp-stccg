@@ -1,23 +1,23 @@
 package com.gempukku.lotro.processes;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 
 import java.util.Set;
 
 public class Assignment {
-    private final LotroPhysicalCard _fellowshipCharacter;
-    private final Set<LotroPhysicalCard> _shadowCharacters;
+    private final PhysicalCard _fellowshipCharacter;
+    private final Set<PhysicalCard> _shadowCharacters;
 
-    public Assignment(LotroPhysicalCard fellowshipCharacter, Set<LotroPhysicalCard> shadowCharacters) {
+    public Assignment(PhysicalCard fellowshipCharacter, Set<PhysicalCard> shadowCharacters) {
         _fellowshipCharacter = fellowshipCharacter;
         _shadowCharacters = shadowCharacters;
     }
 
-    public LotroPhysicalCard getFellowshipCharacter() {
+    public PhysicalCard getFellowshipCharacter() {
         return _fellowshipCharacter;
     }
 
-    public Set<LotroPhysicalCard> getShadowCharacters() {
+    public Set<PhysicalCard> getShadowCharacters() {
         return _shadowCharacters;
     }
 }

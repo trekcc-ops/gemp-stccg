@@ -3,7 +3,7 @@ package com.gempukku.lotro.condition;
 import com.gempukku.lotro.common.Culture;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 import java.util.HashSet;
@@ -21,7 +21,7 @@ public class SpotCulturesCondition implements Condition {
     @Override
     public boolean isFullfilled(DefaultGame game) {
         Set<Culture> cultures = new HashSet<>();
-        for (LotroPhysicalCard physicalCard : Filters.filterActive(game, _filters)) {
+        for (PhysicalCard physicalCard : Filters.filterActive(game, _filters)) {
             final Culture culture = physicalCard.getBlueprint().getCulture();
             if (cultures.add(culture))
                 if (cultures.size() >= _count)

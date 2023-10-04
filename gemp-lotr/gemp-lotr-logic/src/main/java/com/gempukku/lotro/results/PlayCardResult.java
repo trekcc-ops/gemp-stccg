@@ -1,16 +1,16 @@
 package com.gempukku.lotro.results;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.EffectResult;
 
 public class PlayCardResult extends EffectResult {
     private final Zone _playedFrom;
-    private final LotroPhysicalCard _playedCard;
-    private final LotroPhysicalCard _attachedTo;
-    private final LotroPhysicalCard _attachedOrStackedPlayedFrom;
+    private final PhysicalCard _playedCard;
+    private final PhysicalCard _attachedTo;
+    private final PhysicalCard _attachedOrStackedPlayedFrom;
 
-    public PlayCardResult(Zone playedFrom, LotroPhysicalCard playedCard) {
+    public PlayCardResult(Zone playedFrom, PhysicalCard playedCard) {
         super(EffectResult.Type.PLAY);
         _playedFrom = playedFrom;
         _playedCard = playedCard;
@@ -18,7 +18,7 @@ public class PlayCardResult extends EffectResult {
         _attachedOrStackedPlayedFrom = null;
     }
 
-    public PlayCardResult(Zone playedFrom, LotroPhysicalCard playedCard, LotroPhysicalCard attachedTo, LotroPhysicalCard attachedOrStackedPlayedFrom) {
+    public PlayCardResult(Zone playedFrom, PhysicalCard playedCard, PhysicalCard attachedTo, PhysicalCard attachedOrStackedPlayedFrom) {
         super(EffectResult.Type.PLAY);
         _playedFrom = playedFrom;
         _playedCard = playedCard;
@@ -26,15 +26,15 @@ public class PlayCardResult extends EffectResult {
         _attachedOrStackedPlayedFrom = attachedOrStackedPlayedFrom;
     }
 
-    public LotroPhysicalCard getPlayedCard() {
+    public PhysicalCard getPlayedCard() {
         return _playedCard;
     }
 
-    public LotroPhysicalCard getAttachedTo() {
+    public PhysicalCard getAttachedTo() {
         return _attachedTo;
     }
 
-    public LotroPhysicalCard getAttachedOrStackedPlayedFrom() {
+    public PhysicalCard getAttachedOrStackedPlayedFrom() {
         return _attachedOrStackedPlayedFrom;
     }
 

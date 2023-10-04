@@ -1,7 +1,7 @@
 package com.gempukku.lotro.evaluator;
 
 import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.LimitCounter;
 
@@ -14,11 +14,11 @@ public class CardAffectedPhaseLimitEvaluator implements Evaluator {
     private final String prefix;
     private final Evaluator evaluator;
 
-    private final LotroPhysicalCard source;
+    private final PhysicalCard source;
     private final Phase phase;
     private final int limit;
 
-    public CardAffectedPhaseLimitEvaluator(LotroPhysicalCard source, Phase phase, int limit, String prefix, Evaluator evaluator) {
+    public CardAffectedPhaseLimitEvaluator(PhysicalCard source, Phase phase, int limit, String prefix, Evaluator evaluator) {
         this.source = source;
         this.phase = phase;
         this.limit = limit;
@@ -26,14 +26,14 @@ public class CardAffectedPhaseLimitEvaluator implements Evaluator {
         this.evaluator = evaluator;
     }
 
-    private int evaluateOnce(DefaultGame game, LotroPhysicalCard cardAffected) {
+    private int evaluateOnce(DefaultGame game, PhysicalCard cardAffected) {
         LimitCounter limitCounter = game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(source, prefix + cardAffected.getCardId() + "_", phase);
         int internalResult = evaluator.evaluateExpression(game, cardAffected);
         return limitCounter.incrementToLimit(limit, internalResult);
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
+    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         Integer value = _evaluatedForCard.get(cardAffected.getCardId());
         if (value == null) {
             value = evaluateOnce(game, cardAffected);

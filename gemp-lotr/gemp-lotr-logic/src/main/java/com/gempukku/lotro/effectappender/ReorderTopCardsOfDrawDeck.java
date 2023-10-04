@@ -7,7 +7,7 @@ import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
 import com.gempukku.lotro.effects.Effect;
-import com.gempukku.lotro.effects.ReorderTopCardsOfDeckEffect;
+import com.gempukku.lotro.effects.choose.ReorderTopCardsOfDeckEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.evaluator.Evaluator;
 import org.json.simple.JSONObject;
@@ -27,7 +27,7 @@ public class ReorderTopCardsOfDrawDeck implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
                 final Evaluator count = valueSource.getEvaluator(actionContext);
-                return actionContext.getGame().getGameState().getDeck(deckSource.getPlayer(actionContext)).size() >= count.evaluateExpression(actionContext.getGame(), null);
+                return actionContext.getGame().getGameState().getDrawDeck(deckSource.getPlayer(actionContext)).size() >= count.evaluateExpression(actionContext.getGame(), null);
             }
 
             @Override

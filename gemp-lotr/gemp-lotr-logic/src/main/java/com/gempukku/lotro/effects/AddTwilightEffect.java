@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.gempukku.lotro.evaluator.ConstantEvaluator;
@@ -8,19 +8,19 @@ import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.game.Preventable;
 
 public class AddTwilightEffect extends AbstractEffect implements Preventable {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final Evaluator _twilight;
     private boolean _prevented;
     private String _sourceText;
 
-    public AddTwilightEffect(LotroPhysicalCard source, Evaluator twilight) {
+    public AddTwilightEffect(PhysicalCard source, Evaluator twilight) {
         _source = source;
         _twilight = twilight;
         if (source != null)
             _sourceText = GameUtils.getCardLink(source);
     }
 
-    public AddTwilightEffect(LotroPhysicalCard source, int twilight) {
+    public AddTwilightEffect(PhysicalCard source, int twilight) {
         this(source, new ConstantEvaluator(twilight));
     }
 
@@ -28,7 +28,7 @@ public class AddTwilightEffect extends AbstractEffect implements Preventable {
         _sourceText = sourceText;
     }
 
-    public LotroPhysicalCard getSource() {
+    public PhysicalCard getSource() {
         return _source;
     }
 

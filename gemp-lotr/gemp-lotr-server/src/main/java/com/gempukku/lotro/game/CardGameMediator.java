@@ -4,7 +4,7 @@ import com.gempukku.lotro.PrivateInformationException;
 import com.gempukku.lotro.SubscriptionConflictException;
 import com.gempukku.lotro.SubscriptionExpiredException;
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.gamestate.GameStateListener;
 import com.gempukku.lotro.filters.Filters;
@@ -135,7 +135,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
     public String produceCardInfo(User player, int cardId) {
         _readLock.lock();
         try {
-            LotroPhysicalCard card = getGame().getGameState().findCardById(cardId);
+            PhysicalCard card = getGame().getGameState().findCardById(cardId);
             if (card == null || card.getZone() == null)
                 return null;
 
@@ -152,7 +152,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
                         getGame().getModifiersQuerying().getModifiersAffecting(getGame(), card);
                 for (Modifier modifier : modifiers) {
                     String sourceText;
-                    LotroPhysicalCard source = modifier.getSource();
+                    PhysicalCard source = modifier.getSource();
                     if (source != null) {
                         sourceText = GameUtils.getCardLink(source);
                     } else {
@@ -176,7 +176,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
                     }
                 }
 
-                List<LotroPhysicalCard> stackedCards = getGame().getGameState().getStackedCards(card);
+                List<PhysicalCard> stackedCards = getGame().getGameState().getStackedCards(card);
                 if (stackedCards != null && stackedCards.size() > 0) {
                     sb.append("<br><b>Stacked cards:</b>");
                     sb.append("<br>").append(GameUtils.getAppendedNames(stackedCards));

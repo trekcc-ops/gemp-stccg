@@ -2,7 +2,7 @@ package com.gempukku.lotro.rules;
 
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.PlayEventAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.common.Side;
@@ -32,7 +32,7 @@ public class PlayResponseEventRule {
                     public List<? extends Action> getOptionalAfterActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         List<Action> result = new LinkedList<>();
                         final Side side = LotroGameUtils.getSide(game, playerId);
-                        for (LotroPhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game, side, CardType.EVENT, Keyword.RESPONSE)) {
+                        for (PhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game, side, CardType.EVENT, Keyword.RESPONSE)) {
                             if (LotroPlayUtils.checkPlayRequirements(game, responseEvent, Filters.any, 0, 0, false, false, false)) {
                                 final List<PlayEventAction> actions = responseEvent.getBlueprint().getPlayResponseEventAfterActions(playerId, game, effectResult, responseEvent);
                                 if (actions != null)
@@ -46,7 +46,7 @@ public class PlayResponseEventRule {
                     public List<? extends Action> getOptionalBeforeActions(String playerId, DefaultGame game, Effect effect) {
                         List<Action> result = new LinkedList<>();
                         final Side side = LotroGameUtils.getSide(game, playerId);
-                        for (LotroPhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game, side, CardType.EVENT, Keyword.RESPONSE)) {
+                        for (PhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game, side, CardType.EVENT, Keyword.RESPONSE)) {
                             if (LotroPlayUtils.checkPlayRequirements(game, responseEvent, Filters.any, 0, 0, false, false, false)) {
                                 final List<PlayEventAction> actions = responseEvent.getBlueprint().getPlayResponseEventBeforeActions(playerId, game, effect, responseEvent);
                                 if (actions != null)

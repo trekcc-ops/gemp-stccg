@@ -2,7 +2,7 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.GameProcess;
@@ -16,7 +16,6 @@ import java.util.Set;
 public class TribblesGame extends DefaultGame {
     private final TribblesGameState _gameState;
     private final TurnProcedure<TribblesGame> _turnProcedure;
-//    private final TribblesTurnProcedure _turnProcedure;
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
@@ -25,6 +24,7 @@ public class TribblesGame extends DefaultGame {
         new TribblesRuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
         _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
+        _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {
             @Override
@@ -33,8 +33,6 @@ public class TribblesGame extends DefaultGame {
                 return new TribblesPlayerOrderProcess(decks, _library, playerOrderFeedback);
             }
         };
-/*        _turnProcedure = new TribblesTurnProcedure(this, decks, userFeedback, _library, _actionsEnvironment,
-                (playerOrder, firstPlayer) -> _gameState.init(playerOrder, firstPlayer, _cards, _library, _format));*/
     }
 
     @Override
@@ -42,7 +40,7 @@ public class TribblesGame extends DefaultGame {
         return _gameState;
     }
     public TurnProcedure<TribblesGame> getTurnProcedure() { return _turnProcedure; }
-    public boolean checkPlayRequirements(LotroPhysicalCard card) {
+    public boolean checkPlayRequirements(PhysicalCard card) {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met
@@ -57,7 +55,7 @@ public class TribblesGame extends DefaultGame {
         return (isNextInSequence(card) || card.getBlueprint().canPlayOutOfSequence(this, card));
     }
 
-    public boolean isNextInSequence(LotroPhysicalCard card) {
+    public boolean isNextInSequence(PhysicalCard card) {
         final int cardValue = card.getBlueprint().getTribbleValue();
         if (_gameState.isChainBroken() && (cardValue == 1)) {
             return true;

@@ -1,6 +1,6 @@
 package com.gempukku.lotro.modifiers.lotronly;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.AbstractModifier;
@@ -12,17 +12,17 @@ public class ShadowSkirmishVitalityStrengthOverrideModifier extends AbstractModi
     private static final Evaluator _vitalityEvaluator =
             (game, cardAffected) -> game.getModifiersQuerying().getVitality(game, cardAffected);
 
-    public ShadowSkirmishVitalityStrengthOverrideModifier(LotroPhysicalCard source, Filterable affectFilter, Condition condition) {
+    public ShadowSkirmishVitalityStrengthOverrideModifier(PhysicalCard source, Filterable affectFilter, Condition condition) {
         super(source, null, affectFilter, condition, ModifierEffect.SKIRMISH_STRENGTH_EVALUATOR_MODIFIER);
     }
 
     @Override
-    public String getText(DefaultGame game, LotroPhysicalCard self) {
+    public String getText(DefaultGame game, PhysicalCard self) {
         return "Uses vitality instead of strength when resolving skirmish";
     }
 
     @Override
-    public Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, LotroPhysicalCard fpCharacter) {
+    public Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter) {
         return _vitalityEvaluator;
     }
 }

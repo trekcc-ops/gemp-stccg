@@ -7,7 +7,7 @@ import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.cards.CardNotFoundException;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.PhysicalCardImpl;
 import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -36,7 +36,7 @@ public class DiscardEffectAtTest extends AbstractAtTest {
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, hobbitSword, merry);
 
-        final Set<LotroPhysicalCard> discardedFromPlay = new HashSet<>();
+        final Set<PhysicalCard> discardedFromPlay = new HashSet<>();
 
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
@@ -79,7 +79,7 @@ public class DiscardEffectAtTest extends AbstractAtTest {
         _game.getGameState().attachCard(_game, alatar, merry);
         _game.getGameState().attachCard(_game, whisperInTheDark, alatar);
 
-        final Set<LotroPhysicalCard> discardedFromPlay = new HashSet<>();
+        final Set<PhysicalCard> discardedFromPlay = new HashSet<>();
 
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
@@ -122,7 +122,7 @@ public class DiscardEffectAtTest extends AbstractAtTest {
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().stackCard(_game, hobbitSword, merry);
 
-        final Set<LotroPhysicalCard> discardedFromPlay = new HashSet<>();
+        final Set<PhysicalCard> discardedFromPlay = new HashSet<>();
 
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {

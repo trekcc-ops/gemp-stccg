@@ -8,7 +8,7 @@ import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Culture;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.effects.Effect;
@@ -57,14 +57,14 @@ public class RemoveTokens implements EffectAppenderProducer {
 
                     @Override
                     protected List<Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
 
                         final int tokenCount = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                         final DefaultGame game = actionContext.getGame();
 
                         List<Effect> result = new LinkedList<>();
-                        for (LotroPhysicalCard card : cardsFromMemory) {
+                        for (PhysicalCard card : cardsFromMemory) {
                             if (token != null)
                                 result.add(new RemoveTokenEffect(actionContext.getSource(), card, token, tokenCount));
                             else {
@@ -79,7 +79,7 @@ public class RemoveTokens implements EffectAppenderProducer {
         return result;
     }
 
-    private Token getCultureTokenOnCard(DefaultGame game, LotroPhysicalCard card) {
+    private Token getCultureTokenOnCard(DefaultGame game, PhysicalCard card) {
         for (Token token : Token.values())
             if (token.getCulture() != null && game.getGameState().getTokenCount(card, token) > 0)
                 return token;

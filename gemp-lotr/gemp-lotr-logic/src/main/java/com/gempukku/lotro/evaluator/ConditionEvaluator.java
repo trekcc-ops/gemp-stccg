@@ -1,6 +1,6 @@
 package com.gempukku.lotro.evaluator;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.condition.Condition;
 
@@ -16,7 +16,7 @@ public class ConditionEvaluator implements Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, LotroPhysicalCard self) {
+    public int evaluateExpression(DefaultGame game, PhysicalCard self) {
         if (_condition.isFullfilled(game))
             return _conditionFullfilled;
         return _default;

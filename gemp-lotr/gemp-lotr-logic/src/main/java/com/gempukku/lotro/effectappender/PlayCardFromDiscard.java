@@ -72,7 +72,7 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
                 new DelayedAppender<>() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
+                        final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
                         if (cardsToPlay.size() == 1) {
                             final DefaultGame game = actionContext.getGame();
                             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());

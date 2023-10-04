@@ -490,6 +490,256 @@ var StackedCardGroup = CardGroup.extend({
     }
 });
 
+var TableCardGroup = CardGroup.extend({
+
+    /**
+     * Initializes variables
+     */
+     init:function (container, belongTest, createDiv, locationIndex, bottomPlayerId) {
+        this._super(container, belongTest, createDiv, locationIndex, bottomPlayerId);
+        this.heightPadding = 1;
+        this.widthPadding = 5;
+        this.columnWidthToAttachedHeightAboveRatio = 0.17;
+        this.cardScale = 350 / 490;
+    },
+
+   /**
+    * Performs laying out the cards in the group.
+    */
+    layoutCards:function () {
+        // Get the cards to layout
+        var cardsToLayout = this.getCardElems();
+        if (cardsToLayout.length == 0) {
+            return;
+        }
+
+        var columnCount = 0;
+        if (((this.width / this.height) / 1) > (this.maxCardWidth / this.maxCardHeight)) {
+            columns = Math.floor(cardsToLayout.length / 3);
+        }
+
+        // Attempt to layout the cards in as few columns as possible, until enough columns to layout cards nicely
+        var result = false;
+        do {
+            columnCount++;
+            result = this.layoutInColumnsIfPossible(cardsToLayout, columnCount);
+        } while (!result);
+    },
+
+   /**
+    * Get the total height the attached cards extend above (and below) the specified card.
+    * @param {Card} cardData the card
+    * @param {Number} columnWidth the column width
+    * @param {Number} totalHeightSoFar the combined height of the specified card and any attached cards looked at so far
+    * @return {Number} the total height of the attached cards
+    */
+    getAttachedCardsHeight:function (cardData, columnWidth, totalHeightNotAboveSoFar) {
+        var result = 0;
+        for (var i = 0; i < cardData.attachedCards.length; i++) {
+            var attachedCardData = cardData.attachedCards[i].data("card");
+            var attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
+            var attachedCardHeightAbove = Math.min(attachedCardHeight, (columnWidth * this.columnWidthToAttachedHeightAboveRatio));
+            result += attachedCardHeightAbove;
+            var attachedCardHeightBelow = Math.max(0, attachedCardHeight - attachedCardHeightAbove - totalHeightNotAboveSoFar);
+            result += attachedCardHeightBelow;
+            totalHeightNotAboveSoFar += attachedCardHeightBelow;
+            result += this.getAttachedCardsHeight(attachedCardData, columnWidth, totalHeightNotAboveSoFar);
+        }
+        return result;
+    },
+
+   /**
+    * Attempts to layout cards in the specified number of columns.
+    * @param {Array} cardsToLayout the cards to layout
+    * @param {Number} columnCount the number of columns in which to layout cards
+    * @return {Boolean} true if layout was performed, otherwise false
+    */
+    layoutInColumnsIfPossible:function (cardsToLayout, columnCount) {
+        // Determine column width if layout in multiple columns
+        var columnWidth = this.getWidthForLayoutInColumns(cardsToLayout, columnCount);
+
+        if (columnCount == 1) {
+            // If only one card, or column width is wide enough, then just layout in one column
+            if (cardsToLayout.length == 1 || (columnWidth * 2.5 > this.width)) {
+                var xOffset = Math.max(this.widthPadding, Math.floor((this.width - columnWidth) / 2));
+                this.layoutInColumn(cardsToLayout, columnWidth, xOffset);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // If same number of cards as columns, or cards can layout nicely, then layout cards
+            if (cardsToLayout.length == columnCount || (columnWidth * columnCount * 2.5 > this.width)) {
+                this.layoutInColumns(cardsToLayout, columnWidth, columnCount);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
+
+   /**
+    * Determine the layout using the specified number of columns is valid.
+    * @param {Array} cardsToLayout the cards to layout
+    * @param {Number} columnCount the number of columns in which to layout cards
+    * @return {Number} the column width, or 0 if not valid
+    */
+    getWidthForLayoutInColumns:function (cardsToLayout, columnCount) {
+        var columnWidth = Math.min(this.maxCardWidth, (this.width - (this.widthPadding * columnCount)) / columnCount);
+        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * this.cardScale);
+        var numColumnsRemainingToLayout = columnCount;
+        var numCardsRemainingToLayout = cardsToLayout.length;
+        var largestTotalCardHeight = 0;
+
+        var numCardsInColumn = 0;
+        var totalCardHeight = this.heightPadding;
+        var overlappedHeight = 0;
+
+        for (var cardIndex in cardsToLayout) {
+            totalCardHeight -= overlappedHeight;
+            var cardElem = cardsToLayout[cardIndex];
+            var cardData = cardElem.data("card");
+            var cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
+            var cardWidth = cardData.getWidthForHeight(cardHeight);
+            var attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
+            var cardHeightWithAttachments = cardHeight + attachmentHeights;
+            totalCardHeight += cardHeightWithAttachments;
+            overlappedHeight = (cardHeight / 2);
+            numCardsInColumn++;
+
+            var cardsToPutInColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
+
+            if (numCardsInColumn >= cardsToPutInColumn) {
+                largestTotalCardHeight = Math.max(largestTotalCardHeight, totalCardHeight);
+                numColumnsRemainingToLayout--;
+                numCardsRemainingToLayout -= numCardsInColumn;
+                numCardsInColumn = 0;
+                totalCardHeight = this.heightPadding;
+                overlappedHeight = 0;
+            }
+        }
+
+        if (largestTotalCardHeight > this.height) {
+            return Math.min(Math.floor(columnWidth / (largestTotalCardHeight / this.height)), this.maxCardWidth);
+        } else {
+            return Math.min(columnWidth, this.maxCardWidth);
+        }
+    },
+
+   /**
+    * Layout the cards in a single column.
+    * @param {Array} cardsToLayout the cards to layout
+    * @param {Number} the column width
+    * @param {Number} the x-offset for the column
+    */
+    layoutInColumn:function (cardsToLayout, columnWidth, xOffset) {
+        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * this.cardScale);
+        var totalCardHeight = this.heightPadding;
+        var overlappedHeight = 0;
+
+        // Determine the total height of the all the cards
+        for (var cardIndex in cardsToLayout) {
+            totalCardHeight -= overlappedHeight;
+            var cardElem = cardsToLayout[cardIndex];
+            var cardData = cardElem.data("card");
+            var cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
+            var cardWidth = cardData.getWidthForHeight(cardHeight);
+            var attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
+            var cardHeightWithAttachments = cardHeight + attachmentHeights;
+            totalCardHeight += cardHeightWithAttachments;
+            overlappedHeight = (cardHeight / 2);
+        }
+
+        // Initialize layout variables
+        var layoutVars = {};
+        layoutVars.index = 10;
+        layoutVars.x = xOffset;
+        layoutVars.y = Math.floor((this.height - (totalCardHeight)) / 2);
+
+        // Layout the cards
+        for (var cardIndex in cardsToLayout) {
+            var cardElem = cardsToLayout[cardIndex];
+            var cardData = cardElem.data("card");
+            var cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
+            var cardWidth = cardData.getWidthForHeight(cardHeight);
+            var attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
+            var cardHeightWithAttachments = cardHeight + attachmentHeights;
+
+            // Layout the card (and attached cards)
+            this.layoutAttached(cardData, maxVerticalCardWidth, layoutVars)
+            this.layoutCard(cardElem, this.x + layoutVars.x, this.y + layoutVars.y, cardWidth, cardHeight, layoutVars.index, cardData);
+            layoutVars.index++;
+
+            // Update layout variables
+            layoutVars.index++;
+            layoutVars.x += (maxVerticalCardWidth / 10);
+            layoutVars.y += (Math.floor(cardHeight) / 2);
+        }
+    },
+
+   /**
+    * Layout the attached cards.
+    * @param {Card} cardData the card
+    * @param {Number} the column width
+    * @param {Object} the layout variables
+    */
+    layoutAttached:function (cardData, columnWidth, layoutVars) {
+        for (var i = 0; i < cardData.attachedCards.length; i++) {
+            var attachedCardData = cardData.attachedCards[i].data("card");
+            var attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
+            var attachedCardWidth = attachedCardData.getWidthForHeight(attachedCardHeight);
+
+            // Layout cards attached to this card
+            this.layoutAttached(attachedCardData, columnWidth, layoutVars);
+
+            // Layout the card
+            this.layoutCard(cardData.attachedCards[i], this.x + layoutVars.x, this.y + layoutVars.y, attachedCardWidth, attachedCardHeight, layoutVars.index, attachedCardData);
+
+            // Update layout variables
+            layoutVars.index++;
+            layoutVars.y += Math.floor(columnWidth * this.columnWidthToAttachedHeightAboveRatio);
+        }
+    },
+
+   /**
+    * Layout the cards in a specified number of columns.
+    * @param {Array} cardsToLayout the cards to layout
+    * @param {Number} the column width
+    * @param {Number} columnCount the number of columns in which to layout cards
+    */
+    layoutInColumns:function (cardsToLayout, columnWidth, columnCount) {
+        var numCardsRemainingToLayout = cardsToLayout.length;
+        var numColumnsRemainingToLayout = columnCount;
+
+        var numCardsInColumn = 0;
+        var cardsToLayoutInColumn = new Array();
+        var maxCardsPerColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
+        var xOffset = Math.max(this.widthPadding, Math.floor((this.width - (columnWidth * columnCount) - (this.widthPadding * columnCount)) / 2));
+
+        for (var cardIndex in cardsToLayout) {
+            var cardElem = cardsToLayout[cardIndex];
+            cardsToLayoutInColumn.push(cardElem);
+            numCardsInColumn++;
+            var cardsToPutInColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
+
+            if (numCardsInColumn >= cardsToPutInColumn) {
+                // Layout the cards in a column
+                this.layoutInColumn(cardsToLayoutInColumn, columnWidth, xOffset);
+                xOffset += (columnWidth + this.widthPadding)
+                numColumnsRemainingToLayout--;
+                numCardsRemainingToLayout -= numCardsInColumn;
+                numCardsInColumn = 0;
+                cardsToLayoutInColumn = new Array();
+            }
+        }
+
+        if (cardsToLayoutInColumn.length > 0) {
+            xOffset += (columnWidth + this.widthPadding)
+            this.layoutInColumn(cardsToLayoutInColumn, columnWidth, xOffset);
+        }
+    }
+});
+
 
 function layoutCardElem(cardElem, x, y, width, height, index) {
     x = Math.floor(x);

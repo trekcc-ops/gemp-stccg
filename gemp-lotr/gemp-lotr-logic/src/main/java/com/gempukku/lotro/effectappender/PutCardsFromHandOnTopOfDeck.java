@@ -1,16 +1,18 @@
 package com.gempukku.lotro.effectappender;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.ValueSource;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.effects.Effect;
-import com.gempukku.lotro.effects.PutCardFromHandOnTopOfDeckEffect;
+import com.gempukku.lotro.effects.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -59,10 +61,10 @@ public class PutCardsFromHandOnTopOfDeck implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected List<Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
+                        final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
-                        for (LotroPhysicalCard card : cards) {
-                            result.add(new PutCardFromHandOnTopOfDeckEffect(card, reveal));
+                        for (PhysicalCard card : cards) {
+                            result.add(new PutCardsFromZoneOnEndOfPileEffect(reveal, Zone.HAND, Zone.DRAW_DECK, EndOfPile.TOP, card));
                         }
                         return result;
                     }

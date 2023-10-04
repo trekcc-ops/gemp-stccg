@@ -5,7 +5,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.results.ActivateCardResult;
 import com.gempukku.lotro.game.DefaultGame;
 import org.json.simple.JSONObject;
@@ -33,7 +33,7 @@ public class UsesSpecialAbility implements TriggerCheckerProducer {
                     ActivateCardResult activateCardResult = (ActivateCardResult) actionContext.getEffectResult();
 
                     if (memorize != null) {
-                        LotroPhysicalCard playedCard = activateCardResult.getSource();
+                        PhysicalCard playedCard = activateCardResult.getSource();
                         actionContext.setCardMemory(memorize, playedCard);
                     }
                 }

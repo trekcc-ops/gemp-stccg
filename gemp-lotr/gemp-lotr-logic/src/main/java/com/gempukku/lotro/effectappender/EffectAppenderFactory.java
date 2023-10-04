@@ -101,7 +101,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new PutCardsFromPlayOnBottomOfDeck());
         effectAppenderProducers.put("putplayedeventintohand", new PutPlayedEventIntoHand());
         effectAppenderProducers.put("putstackedcardsintohand", new PutStackedCardsIntoHand());
-        effectAppenderProducers.put("reconcilehand", new ReconcileHand());
         effectAppenderProducers.put("removekeyword", new RemoveKeyword());
         effectAppenderProducers.put("removetext", new RemoveText());
         effectAppenderProducers.put("resetwhileinzonedata", new ResetWhileInZoneData());

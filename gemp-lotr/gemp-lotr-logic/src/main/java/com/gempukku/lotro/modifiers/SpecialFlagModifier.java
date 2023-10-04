@@ -1,17 +1,17 @@
 package com.gempukku.lotro.modifiers;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.condition.Condition;
 
 public class SpecialFlagModifier extends AbstractModifier {
     private final ModifierFlag _modifierFlag;
 
-    public SpecialFlagModifier(LotroPhysicalCard source, ModifierFlag modifierFlag) {
+    public SpecialFlagModifier(PhysicalCard source, ModifierFlag modifierFlag) {
         this(source, null, modifierFlag);
     }
 
-    public SpecialFlagModifier(LotroPhysicalCard source, Condition condition, ModifierFlag modifierFlag) {
+    public SpecialFlagModifier(PhysicalCard source, Condition condition, ModifierFlag modifierFlag) {
         super(source, "Special flag set", null, condition, ModifierEffect.SPECIAL_FLAG_MODIFIER);
         _modifierFlag = modifierFlag;
     }

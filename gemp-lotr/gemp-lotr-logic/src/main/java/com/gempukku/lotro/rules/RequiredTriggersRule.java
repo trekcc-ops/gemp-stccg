@@ -5,7 +5,7 @@ import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.effects.Effect;
@@ -27,7 +27,7 @@ public class RequiredTriggersRule {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect) {
                         List<RequiredTriggerAction> result = new LinkedList<>();
-                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter())) {
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter())) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends RequiredTriggerAction> actions = activatableCard.getBlueprint().getRequiredBeforeTriggers(game, effect, activatableCard);
                                 if (actions != null)
@@ -41,7 +41,7 @@ public class RequiredTriggersRule {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
                         List<RequiredTriggerAction> result = new LinkedList<>();
-                        for (LotroPhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter())) {
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter())) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends RequiredTriggerAction> actions = activatableCard.getBlueprint().getRequiredAfterTriggers(game, effectResult, activatableCard);
                                 if (actions != null)

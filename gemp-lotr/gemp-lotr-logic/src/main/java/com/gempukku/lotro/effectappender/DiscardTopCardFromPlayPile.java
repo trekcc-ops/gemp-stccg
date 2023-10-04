@@ -3,11 +3,13 @@ package com.gempukku.lotro.effectappender;
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.EndOfPile;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.effects.DiscardTopCardFromPlayPileEffect;
+import com.gempukku.lotro.effects.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.TribblesGame;
 import org.json.simple.JSONObject;
 
@@ -39,9 +41,10 @@ public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                return new DiscardTopCardFromPlayPileEffect(actionContext.getSource(), deckId, count) {
+                return new DiscardCardsFromEndOfCardPileEffect(actionContext.getSource(), Zone.PLAY_PILE, EndOfPile.TOP,
+                        deckId, count, true) {
                     @Override
-                    protected void cardsDiscardedCallback(Collection<LotroPhysicalCard> cards) {
+                    protected void cardsDiscardedCallback(Collection<PhysicalCard> cards) {
                         if (memorize != null)
                             actionContext.setCardMemory(memorize, cards);
                     }

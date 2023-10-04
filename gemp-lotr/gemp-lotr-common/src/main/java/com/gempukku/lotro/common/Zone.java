@@ -1,6 +1,10 @@
 package com.gempukku.lotro.common;
 
 public enum Zone implements Filterable {
+    DRAW_DECK("draw deck", false, false, false),
+    MISSIONS_PILE("missions pile", false, false, false),
+    SEED_DECK("seed deck", false, true, false),
+
     // Public knowledge and in play
     FREE_CHARACTERS("play", true, true, true),
     SUPPORT("play", true, true, true),

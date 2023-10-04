@@ -7,7 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.UnrespondableEffect;
 import com.gempukku.lotro.game.DefaultGame;
@@ -35,9 +35,9 @@ public class ShufflePlayPileIntoDrawDeck implements EffectAppenderProducer {
                     @Override
                     protected void doPlayEffect(DefaultGame game) {
                         TribblesGameState gameState = actionContext.getGame().getGameState();
-                        List<LotroPhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(pileOwner));
+                        List<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(pileOwner));
                         gameState.removeCardsFromZone(actionContext.getPerformingPlayer(), playPile);
-                        for (LotroPhysicalCard physicalCard : playPile) {
+                        for (PhysicalCard physicalCard : playPile) {
                             gameState.putCardOnBottomOfDeck(physicalCard);
                         }
                         gameState.shuffleDeck(pileOwner);

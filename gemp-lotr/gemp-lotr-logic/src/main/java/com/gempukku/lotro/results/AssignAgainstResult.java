@@ -1,6 +1,6 @@
 package com.gempukku.lotro.results;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.EffectResult;
 
 import java.util.Collections;
@@ -8,17 +8,17 @@ import java.util.Set;
 
 public class AssignAgainstResult extends EffectResult {
     private final String _playerId;
-    private final LotroPhysicalCard _assignedCard;
-    private final Set<LotroPhysicalCard> _against;
+    private final PhysicalCard _assignedCard;
+    private final Set<PhysicalCard> _against;
 
-    public AssignAgainstResult(String playerId, LotroPhysicalCard assignedCard, LotroPhysicalCard against) {
+    public AssignAgainstResult(String playerId, PhysicalCard assignedCard, PhysicalCard against) {
         super(Type.ASSIGNED_AGAINST);
         _playerId = playerId;
         _assignedCard = assignedCard;
         _against = Collections.singleton(against);
     }
 
-    public AssignAgainstResult(String playerId, LotroPhysicalCard assignedCard, Set<LotroPhysicalCard> against) {
+    public AssignAgainstResult(String playerId, PhysicalCard assignedCard, Set<PhysicalCard> against) {
         super(Type.ASSIGNED_AGAINST);
         _playerId = playerId;
         _assignedCard = assignedCard;
@@ -29,11 +29,11 @@ public class AssignAgainstResult extends EffectResult {
         return _playerId;
     }
 
-    public Set<LotroPhysicalCard> getAgainst() {
+    public Set<PhysicalCard> getAgainst() {
         return _against;
     }
 
-    public LotroPhysicalCard getAssignedCard() {
+    public PhysicalCard getAssignedCard() {
         return _assignedCard;
     }
 }

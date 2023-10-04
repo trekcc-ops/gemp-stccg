@@ -1,6 +1,6 @@
 package com.gempukku.lotro.evaluator;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 public class NegativeEvaluator implements Evaluator {
@@ -11,7 +11,7 @@ public class NegativeEvaluator implements Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, LotroPhysicalCard self) {
+    public int evaluateExpression(DefaultGame game, PhysicalCard self) {
         return -_source.evaluateExpression(game, self);
     }
 }

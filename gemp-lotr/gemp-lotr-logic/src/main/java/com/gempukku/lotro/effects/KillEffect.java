@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
@@ -13,14 +13,14 @@ import com.gempukku.lotro.results.KilledResult;
 import java.util.*;
 
 public class KillEffect extends AbstractSuccessfulEffect {
-    private final Collection<? extends LotroPhysicalCard> _cards;
+    private final Collection<? extends PhysicalCard> _cards;
     private final Cause _cause;
 
     public enum Cause {
         WOUNDS, OVERWHELM, CARD_EFFECT
     }
 
-    public KillEffect(Collection<? extends LotroPhysicalCard> cards, Cause cause) {
+    public KillEffect(Collection<? extends PhysicalCard> cards, Cause cause) {
         _cards = cards;
         _cause = cause;
     }
@@ -34,9 +34,9 @@ public class KillEffect extends AbstractSuccessfulEffect {
         return Effect.Type.BEFORE_KILLED;
     }
 
-    public List<LotroPhysicalCard> getCharactersToBeKilled() {
-        List<LotroPhysicalCard> result = new LinkedList<>();
-        for (LotroPhysicalCard card : _cards) {
+    public List<PhysicalCard> getCharactersToBeKilled() {
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : _cards) {
             if (card.getZone() != null && card.getZone().isInPlay())
                 result.add(card);
         }
@@ -46,29 +46,29 @@ public class KillEffect extends AbstractSuccessfulEffect {
 
     @Override
     public String getText(DefaultGame game) {
-        List<LotroPhysicalCard> cards = getCharactersToBeKilled();
+        List<PhysicalCard> cards = getCharactersToBeKilled();
         return "Kill - " + getAppendedTextNames(cards);
     }
 
     @Override
     public void playEffect(DefaultGame game) {
-        List<LotroPhysicalCard> toBeKilled = getCharactersToBeKilled();
+        List<PhysicalCard> toBeKilled = getCharactersToBeKilled();
 
         GameState gameState = game.getGameState();
 
-        for (LotroPhysicalCard card : toBeKilled)
+        for (PhysicalCard card : toBeKilled)
             gameState.sendMessage(GameUtils.getCardLink(card) + " gets killed");
 
         // For result
-        Set<LotroPhysicalCard> discardedCards = new HashSet<>();
-        Set<LotroPhysicalCard> killedCards = new HashSet<>();
+        Set<PhysicalCard> discardedCards = new HashSet<>();
+        Set<PhysicalCard> killedCards = new HashSet<>();
 
         // Prepare the moves
-        Set<LotroPhysicalCard> toRemoveFromZone = new HashSet<>();
-        Set<LotroPhysicalCard> toAddToDeadPile = new HashSet<>();
-        Set<LotroPhysicalCard> toAddToDiscard = new HashSet<>();
+        Set<PhysicalCard> toRemoveFromZone = new HashSet<>();
+        Set<PhysicalCard> toAddToDeadPile = new HashSet<>();
+        Set<PhysicalCard> toAddToDiscard = new HashSet<>();
 
-        for (LotroPhysicalCard card : toBeKilled) {
+        for (PhysicalCard card : toBeKilled) {
             toRemoveFromZone.add(card);
 
             if (card.getBlueprint().getSide() == Side.FREE_PEOPLE) {
@@ -86,17 +86,17 @@ public class KillEffect extends AbstractSuccessfulEffect {
 
         gameState.removeCardsFromZone(null, toRemoveFromZone);
 
-        for (LotroPhysicalCard deadCard : toAddToDeadPile)
+        for (PhysicalCard deadCard : toAddToDeadPile)
             gameState.addCardToZone(game, deadCard, Zone.DEAD);
 
-        for (LotroPhysicalCard discardedCard : toAddToDiscard)
+        for (PhysicalCard discardedCard : toAddToDiscard)
             gameState.addCardToZone(game, discardedCard, Zone.DISCARD);
 
         if (killedCards.size() > 0)
             game.getActionsEnvironment().emitEffectResult(new KilledResult(killedCards, _cause));
-        for (LotroPhysicalCard killedCard : killedCards)
+        for (PhysicalCard killedCard : killedCards)
             game.getActionsEnvironment().emitEffectResult(new ForEachKilledResult(killedCard, _cause));
-        for (LotroPhysicalCard discardedCard : discardedCards)
+        for (PhysicalCard discardedCard : discardedCards)
             game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
 
     }

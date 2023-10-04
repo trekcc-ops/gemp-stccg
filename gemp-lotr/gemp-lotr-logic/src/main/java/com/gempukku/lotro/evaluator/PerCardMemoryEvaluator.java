@@ -1,6 +1,6 @@
 package com.gempukku.lotro.evaluator;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class PerCardMemoryEvaluator implements Evaluator {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, LotroPhysicalCard cardAffected) {
+    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         Integer value = _rememberedValue.get(cardAffected.getCardId());
         if (value == null) {
             value = _evaluator.evaluateExpression(game, cardAffected);

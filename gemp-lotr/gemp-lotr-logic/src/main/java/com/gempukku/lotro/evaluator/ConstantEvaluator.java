@@ -1,6 +1,6 @@
 package com.gempukku.lotro.evaluator;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 public class ConstantEvaluator<AbstractGame extends DefaultGame> implements Evaluator<AbstractGame> {
@@ -11,7 +11,7 @@ public class ConstantEvaluator<AbstractGame extends DefaultGame> implements Eval
     }
 
     @Override
-    public int evaluateExpression(AbstractGame game, LotroPhysicalCard self) {
+    public int evaluateExpression(AbstractGame game, PhysicalCard self) {
         return _value;
     }
 }

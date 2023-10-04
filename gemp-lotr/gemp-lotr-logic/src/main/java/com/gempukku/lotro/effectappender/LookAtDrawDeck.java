@@ -7,7 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.LookAtTopCardOfADeckEffect;
 import com.gempukku.lotro.effects.ShuffleDeckEffect;
@@ -32,11 +32,11 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
-                final int count = actionContext.getGame().getGameState().getDeck(deckId).size();
+                final int count = actionContext.getGame().getGameState().getDrawDeck(deckId).size();
 
                 return new LookAtTopCardOfADeckEffect(actionContext.getPerformingPlayer(), count, deckId) {
                     @Override
-                    protected void cardsLookedAt(List<? extends LotroPhysicalCard> cards) {
+                    protected void cardsLookedAt(List<? extends PhysicalCard> cards) {
                         if (memorize != null)
                             actionContext.setCardMemory(memorize, cards);
                     }

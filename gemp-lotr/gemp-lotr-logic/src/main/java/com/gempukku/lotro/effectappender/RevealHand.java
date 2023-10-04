@@ -7,7 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.RevealHandEffect;
 import com.gempukku.lotro.game.DefaultGame;
@@ -38,7 +38,7 @@ public class RevealHand implements EffectAppenderProducer {
                 final String revealingPlayer = playerSource.getPlayer(actionContext);
                 return new RevealHandEffect(actionContext.getSource(), actionContext.getPerformingPlayer(), revealingPlayer) {
                     @Override
-                    protected void cardsRevealed(Collection<? extends LotroPhysicalCard> cards) {
+                    protected void cardsRevealed(Collection<? extends PhysicalCard> cards) {
                         if (memorize != null)
                             actionContext.setCardMemory(memorize, cards);
                     }

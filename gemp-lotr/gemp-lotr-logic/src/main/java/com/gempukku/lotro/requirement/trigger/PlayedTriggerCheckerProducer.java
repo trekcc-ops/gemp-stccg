@@ -5,7 +5,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.results.PlayCardResult;
 import com.gempukku.lotro.results.PlayEventResult;
@@ -41,7 +41,7 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
                         return false;
 
                     if (memorize != null) {
-                        LotroPhysicalCard playedCard = playCardResult.getPlayedCard();
+                        PhysicalCard playedCard = playCardResult.getPlayedCard();
                         actionContext.setCardMemory(memorize, playedCard);
                     }
                 }

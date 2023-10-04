@@ -1,7 +1,7 @@
 package com.gempukku.lotro.effects.choose;
 
 import com.gempukku.lotro.common.Filterable;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.RemoveCardsFromTheGameEffect;
 import com.gempukku.lotro.actions.CostToEffectAction;
@@ -22,7 +22,7 @@ public class ChooseAndRemoveFromTheGameCardsInPlayEffect extends ChooseActiveCar
     }
 
     @Override
-    protected void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> cards) {
+    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         _resultSubAction = new SubAction(_action);
         _resultSubAction.appendEffect(new RemoveCardsFromTheGameEffect(_playerId, _action.getActionSource(), cards));
         game.getActionsEnvironment().addActionToStack(_resultSubAction);

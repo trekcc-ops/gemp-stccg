@@ -1,10 +1,10 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.effects.discount.DiscountEffect;
-import com.gempukku.lotro.actions.Action;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.effects.discount.DiscountEffect;
+import com.gempukku.lotro.game.DefaultGame;
 
-public interface CostToEffectAction extends Action {
+public interface CostToEffectAction<AbstractGame extends DefaultGame> extends Action<AbstractGame> {
     void appendPotentialDiscount(DiscountEffect cost);
 
     /**

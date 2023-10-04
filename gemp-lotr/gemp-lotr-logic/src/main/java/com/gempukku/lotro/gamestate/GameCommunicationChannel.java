@@ -1,6 +1,6 @@
 package com.gempukku.lotro.gamestate;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Token;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.AwaitingDecision;
@@ -63,10 +63,10 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         }
     }
 
-    private int[] getCardIds(Collection<LotroPhysicalCard> cards) {
+    private int[] getCardIds(Collection<PhysicalCard> cards) {
         int[] result = new int[cards.size()];
         int index = 0;
-        for (LotroPhysicalCard card : cards) {
+        for (PhysicalCard card : cards) {
             result[index] = card.getCardId();
             index++;
         }
@@ -74,17 +74,17 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void addAssignment(LotroPhysicalCard freePeople, Set<LotroPhysicalCard> minions) {
+    public void addAssignment(PhysicalCard freePeople, Set<PhysicalCard> minions) {
         appendEvent(new GameEvent(ADD_ASSIGNMENT).cardId(freePeople.getCardId()).otherCardIds(getCardIds(minions)));
     }
 
     @Override
-    public void removeAssignment(LotroPhysicalCard freePeople) {
+    public void removeAssignment(PhysicalCard freePeople) {
         appendEvent(new GameEvent(REMOVE_ASSIGNMENT).cardId(freePeople.getCardId()));
     }
 
     @Override
-    public void startSkirmish(LotroPhysicalCard freePeople, Set<LotroPhysicalCard> minions) {
+    public void startSkirmish(PhysicalCard freePeople, Set<PhysicalCard> minions) {
         GameEvent gameEvent = new GameEvent(START_SKIRMISH).otherCardIds(getCardIds(minions));
         if (freePeople != null)
             gameEvent.cardId(freePeople.getCardId());
@@ -92,12 +92,12 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void addToSkirmish(LotroPhysicalCard card) {
+    public void addToSkirmish(PhysicalCard card) {
         appendEvent(new GameEvent(ADD_TO_SKIRMISH).card(card));
     }
 
     @Override
-    public void removeFromSkirmish(LotroPhysicalCard card) {
+    public void removeFromSkirmish(PhysicalCard card) {
         appendEvent(new GameEvent(REMOVE_FROM_SKIRMISH).card(card));
     }
 
@@ -112,28 +112,28 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void cardCreated(LotroPhysicalCard card) {
+    public void cardCreated(PhysicalCard card) {
         boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
         if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwner().equals(_self)))
             appendEvent(new GameEvent(PUT_CARD_INTO_PLAY).card(card));
     }
 
     @Override
-    public void cardCreated(LotroPhysicalCard card, boolean overridePlayerVisibility) {
+    public void cardCreated(PhysicalCard card, boolean overridePlayerVisibility) {
         boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
         if (card.getZone().isPublic() || publicDiscard || ((overridePlayerVisibility || card.getZone().isVisibleByOwner()) && card.getOwner().equals(_self)))
             appendEvent(new GameEvent(PUT_CARD_INTO_PLAY).card(card));
     }
 
     @Override
-    public void cardMoved(LotroPhysicalCard card) {
+    public void cardMoved(PhysicalCard card) {
         appendEvent(new GameEvent(MOVE_CARD_IN_PLAY).card(card));
     }
 
     @Override
-    public void cardsRemoved(String playerPerforming, Collection<LotroPhysicalCard> cards) {
-        Set<LotroPhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
-        for (LotroPhysicalCard card : cards) {
+    public void cardsRemoved(String playerPerforming, Collection<PhysicalCard> cards) {
+        Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
+        for (PhysicalCard card : cards) {
             boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
             if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwner().equals(_self)))
                 removedCardsVisibleByPlayer.add(card);
@@ -173,12 +173,12 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void addTokens(LotroPhysicalCard card, Token token, int count) {
+    public void addTokens(PhysicalCard card, Token token, int count) {
         appendEvent(new GameEvent(ADD_TOKENS).card(card).token(token).count(count));
     }
 
     @Override
-    public void removeTokens(LotroPhysicalCard card, Token token, int count) {
+    public void removeTokens(PhysicalCard card, Token token, int count) {
         appendEvent(new GameEvent(REMOVE_TOKENS).card(card).token(token).count(count));
     }
 
@@ -188,7 +188,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void setSite(LotroPhysicalCard card) {
+    public void setSite(PhysicalCard card) {
         appendEvent(new GameEvent(PUT_CARD_INTO_PLAY).card(card).index(card.getSiteNumber()));
     }
 
@@ -198,17 +198,17 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void cardAffectedByCard(String playerPerforming, LotroPhysicalCard card, Collection<LotroPhysicalCard> affectedCards) {
+    public void cardAffectedByCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
         appendEvent(new GameEvent(CARD_AFFECTED_BY_CARD).card(card).participantId(playerPerforming).otherCardIds(getCardIds(affectedCards)));
     }
 
     @Override
-    public void eventPlayed(LotroPhysicalCard card) {
+    public void eventPlayed(PhysicalCard card) {
         appendEvent(new GameEvent(SHOW_CARD_ON_SCREEN).card(card));
     }
 
     @Override
-    public void cardActivated(String playerPerforming, LotroPhysicalCard card) {
+    public void cardActivated(String playerPerforming, PhysicalCard card) {
         appendEvent(new GameEvent(FLASH_CARD_IN_PLAY).card(card).participantId(playerPerforming));
     }
 

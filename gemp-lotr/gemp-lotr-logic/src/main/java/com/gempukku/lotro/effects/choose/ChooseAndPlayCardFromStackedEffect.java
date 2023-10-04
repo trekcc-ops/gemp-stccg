@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
@@ -48,9 +48,9 @@ public class ChooseAndPlayCardFromStackedEffect implements Effect {
         return null;
     }
 
-    private Collection<LotroPhysicalCard> getPlayableFromStacked(DefaultGame game) {
-        Set<LotroPhysicalCard> possibleCards = new HashSet<>();
-        for (LotroPhysicalCard stackedOnCard : Filters.filterActive(game, _stackedOn))
+    private Collection<PhysicalCard> getPlayableFromStacked(DefaultGame game) {
+        Set<PhysicalCard> possibleCards = new HashSet<>();
+        for (PhysicalCard stackedOnCard : Filters.filterActive(game, _stackedOn))
             possibleCards.addAll(Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, _filter, Filters.playable(game, _twilightModifier)));
 
         return possibleCards;
@@ -58,15 +58,15 @@ public class ChooseAndPlayCardFromStackedEffect implements Effect {
 
     @Override
     public void playEffect(final DefaultGame game) {
-        Collection<LotroPhysicalCard> playableFromStacked = getPlayableFromStacked(game);
+        Collection<PhysicalCard> playableFromStacked = getPlayableFromStacked(game);
         if (playableFromStacked.size() > 0) {
             game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new ArbitraryCardsSelectionDecision(1, "Choose a card to play", new LinkedList<>(playableFromStacked), 1, 1) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            List<LotroPhysicalCard> selectedCards = getSelectedCardsByResponse(result);
+                            List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             if (selectedCards.size() > 0) {
-                                final LotroPhysicalCard selectedCard = selectedCards.get(0);
+                                final PhysicalCard selectedCard = selectedCards.get(0);
                                 _playCardAction = PlayUtils.getPlayCardAction(game, selectedCard, _twilightModifier, Filters.any, false);
                                 _playCardAction.appendEffect(
                                         new UnrespondableEffect() {
@@ -82,7 +82,7 @@ public class ChooseAndPlayCardFromStackedEffect implements Effect {
         }
     }
 
-    protected void afterCardPlayed(LotroPhysicalCard cardPlayed) {
+    protected void afterCardPlayed(PhysicalCard cardPlayed) {
     }
 
     @Override

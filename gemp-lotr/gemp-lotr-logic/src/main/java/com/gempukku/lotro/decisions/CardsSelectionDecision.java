@@ -1,19 +1,19 @@
 package com.gempukku.lotro.decisions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 
 import java.util.*;
 
 public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
-    private final List<? extends LotroPhysicalCard> _physicalCards;
+    private final List<? extends PhysicalCard> _physicalCards;
     private final int _minimum;
     private final int _maximum;
 
-    public CardsSelectionDecision(int id, String text, Collection<? extends LotroPhysicalCard> physicalCard) {
+    public CardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCard) {
         this(id, text, physicalCard, 0, physicalCard.size());
     }
 
-    public CardsSelectionDecision(int id, String text, List<LotroPhysicalCard> physicalCards, int minimum, int maximum) {
+    public CardsSelectionDecision(int id, String text, List<PhysicalCard> physicalCards, int minimum, int maximum) {
         super(id, text, AwaitingDecisionType.CARD_SELECTION);
         _physicalCards = physicalCards;
         _minimum = minimum;
@@ -22,9 +22,9 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         setParam("max", String.valueOf(maximum));
         setParam("cardId", getCardIds(_physicalCards));
     }
-    public CardsSelectionDecision(int id, String text, Collection<? extends LotroPhysicalCard> physicalCards, int minimum, int maximum) {
+    public CardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards, int minimum, int maximum) {
         super(id, text, AwaitingDecisionType.CARD_SELECTION);
-        _physicalCards = new LinkedList<LotroPhysicalCard>(physicalCards);
+        _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
         setParam("min", String.valueOf(minimum));
@@ -32,14 +32,14 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         setParam("cardId", getCardIds(_physicalCards));
     }
 
-    private String[] getCardIds(List<? extends LotroPhysicalCard> physicalCards) {
+    private String[] getCardIds(List<? extends PhysicalCard> physicalCards) {
         String[] result = new String[physicalCards.size()];
         for (int i = 0; i < physicalCards.size(); i++)
             result[i] = String.valueOf(physicalCards.get(i).getCardId());
         return result;
     }
 
-    protected Set<LotroPhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
+    protected Set<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
         if (response.equals("")) {
             if (_minimum == 0)
                 return Collections.emptySet();
@@ -50,10 +50,10 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         if (cardIds.length < _minimum || cardIds.length > _maximum)
             throw new DecisionResultInvalidException();
 
-        Set<LotroPhysicalCard> result = new HashSet<>();
+        Set<PhysicalCard> result = new HashSet<>();
         try {
             for (String cardId : cardIds) {
-                LotroPhysicalCard card = getSelectedCardById(Integer.parseInt(cardId));
+                PhysicalCard card = getSelectedCardById(Integer.parseInt(cardId));
                 if (result.contains(card))
                     throw new DecisionResultInvalidException();
                 result.add(card);
@@ -65,8 +65,8 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         return result;
     }
 
-    private LotroPhysicalCard getSelectedCardById(int cardId) throws DecisionResultInvalidException {
-        for (LotroPhysicalCard physicalCard : _physicalCards)
+    private PhysicalCard getSelectedCardById(int cardId) throws DecisionResultInvalidException {
+        for (PhysicalCard physicalCard : _physicalCards)
             if (physicalCard.getCardId() == cardId)
                 return physicalCard;
 

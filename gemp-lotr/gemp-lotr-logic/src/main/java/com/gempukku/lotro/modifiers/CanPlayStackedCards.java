@@ -30,7 +30,7 @@ public class CanPlayStackedCards implements ModifierSourceProducer {
                 Filters.and(filterableSource.getFilterable(actionContext), Filters.stackedOn(onFilterableSource.getFilterable(actionContext))),
                 new RequirementCondition(requirements, actionContext), ModifierEffect.EXTRA_ACTION_MODIFIER) {
             @Override
-            public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, LotroPhysicalCard card) {
+            public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card) {
                 if (LotroPlayUtils.checkPlayRequirements(game, card, Filters.any, 0, 0, false, false, false))
                     return Collections.singletonList(
                             LotroPlayUtils.getPlayCardAction(game, card, 0, Filters.any, false));

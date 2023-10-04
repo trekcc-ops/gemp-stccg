@@ -2,13 +2,13 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.TribblesGame;
 
 public class ActivateEvolveTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateEvolveTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateEvolveTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 

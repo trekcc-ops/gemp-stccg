@@ -1,14 +1,15 @@
 package com.gempukku.lotro.effectappender;
 
 import com.gempukku.lotro.actioncontext.DefaultActionContext;
+import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.*;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.PlayerResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.effects.ShuffleCardsFromDiscardIntoDeckEffect;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.effects.ShuffleCardsIntoDrawDeckEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -39,11 +40,11 @@ public class ShuffleCardsFromDiscardIntoDrawDeck implements EffectAppenderProduc
                                 // Added
                         final String recyclePlayer = playerSource.getPlayer(actionContext);
 
-                        final Collection<? extends LotroPhysicalCard> cardsInDiscard = actionContext.getCardsFromMemory("_temp");
+                        final Collection<PhysicalCard> cardsInDiscard = actionContext.getCardsFromMemory("_temp");
 //                        return new ShuffleCardsFromDiscardIntoDeckEffect(actionContext.getSource(), actionContext.getPerformingPlayer(), cardsInDiscard);
 
                                 // Added
-                        return new ShuffleCardsFromDiscardIntoDeckEffect(actionContext.getSource(), recyclePlayer, cardsInDiscard);
+                        return new ShuffleCardsIntoDrawDeckEffect(actionContext.getSource(), Zone.DISCARD, recyclePlayer, cardsInDiscard);
                     }
                 });
 

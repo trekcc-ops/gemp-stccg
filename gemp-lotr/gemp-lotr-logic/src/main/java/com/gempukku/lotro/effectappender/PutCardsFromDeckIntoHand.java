@@ -1,17 +1,18 @@
 package com.gempukku.lotro.effectappender;
 
+import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
-import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.ValueSource;
-import com.gempukku.lotro.fieldprocessor.FieldUtils;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
 import com.gempukku.lotro.effects.Effect;
-import com.gempukku.lotro.effects.PutCardFromDeckIntoHandEffect;
+import com.gempukku.lotro.effects.PutCardFromZoneIntoHandEffect;
 import com.gempukku.lotro.effects.ShuffleDeckEffect;
+import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -36,11 +37,11 @@ public class PutCardsFromDeckIntoHand implements EffectAppenderProducer {
                 new DelayedAppender() {
                     @Override
                     protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
+                        final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
-                        for (LotroPhysicalCard card : cards) {
+                        for (PhysicalCard card : cards) {
                             result.add(
-                                    new PutCardFromDeckIntoHandEffect(card, reveal));
+                                    new PutCardFromZoneIntoHandEffect(card, Zone.DRAW_DECK, reveal));
                         }
 
                         return result;

@@ -2,14 +2,14 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.gamestate.GameStateListener;
 import com.gempukku.lotro.gamestate.ST1EGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.GameProcess;
 import com.gempukku.lotro.processes.ST1EPlayerOrderProcess;
 import com.gempukku.lotro.processes.TurnProcedure;
-import com.gempukku.lotro.rules.RuleSet;
+import com.gempukku.lotro.rules.ST1ERuleSet;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,9 +22,10 @@ public class ST1EGame extends DefaultGame {
                     final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
 
-        new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
+        new ST1ERuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
         _gameState = new ST1EGameState(_allPlayers, decks, library, _format);
+        _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {
             @Override
@@ -45,7 +46,7 @@ public class ST1EGame extends DefaultGame {
         getGameState().addGameStateListener(playerId, gameStateListener, _turnProcedure.getGameStats());
     }
 
-    public boolean checkPlayRequirements(LotroPhysicalCard card) {
+    public boolean checkPlayRequirements(PhysicalCard card) {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met

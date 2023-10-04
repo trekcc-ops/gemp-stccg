@@ -92,7 +92,7 @@ public abstract class AbstractAtTest {
         }
     }
 
-    protected String[] toCardIdArray(LotroPhysicalCard... cards) {
+    protected String[] toCardIdArray(PhysicalCard... cards) {
         String[] result = new String[cards.length];
         for (int i = 0; i < cards.length; i++)
             result[i] = String.valueOf(cards[i].getCardId());

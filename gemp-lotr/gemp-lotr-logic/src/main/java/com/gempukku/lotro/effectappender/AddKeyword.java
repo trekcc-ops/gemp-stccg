@@ -4,7 +4,7 @@ import com.gempukku.lotro.actioncontext.DefaultActionContext;
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.effectappender.resolver.CardResolver;
@@ -61,8 +61,8 @@ public class AddKeyword implements EffectAppenderProducer {
                     @Override
                     protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
                         List<Effect> result = new LinkedList<>();
-                        final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
-                        for (LotroPhysicalCard physicalCard : cardsFromMemory) {
+                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+                        for (PhysicalCard physicalCard : cardsFromMemory) {
                             final int keywordCount = amount.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), physicalCard);
                             result.add(new AddUntilModifierEffect(
                                     new KeywordModifier(actionContext.getSource(), physicalCard, keywordFunction.apply(actionContext), keywordCount), until));

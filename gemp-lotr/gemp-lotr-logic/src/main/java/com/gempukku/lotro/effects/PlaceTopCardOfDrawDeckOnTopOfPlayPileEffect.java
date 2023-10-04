@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.Preventable;
@@ -33,7 +33,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends AbstractEffect 
     }
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return game.getGameState().getDeck(_playerId).size() >= _count.evaluateExpression(game, null);
+        return game.getGameState().getDrawDeck(_playerId).size() >= _count.evaluateExpression(game, null);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends AbstractEffect 
         int drawn = 0;
         int totalDraw = _count.evaluateExpression(game, null);
 
-        while ((drawn < totalDraw) && (!_prevented) && (game.getGameState().getDeck(_playerId).size() > 0)) {
-            LotroPhysicalCard card = game.getGameState().getDeck(_playerId).get(0);
+        while ((drawn < totalDraw) && (!_prevented) && (game.getGameState().getDrawDeck(_playerId).size() > 0)) {
+            PhysicalCard card = game.getGameState().getDrawDeck(_playerId).get(0);
             game.getGameState().removeCardsFromZone(null, Collections.singleton(card));
             game.getGameState().addCardToZone(game, card, Zone.PLAY_PILE);
             game.getGameState().sendMessage(card.getOwner() + " puts " + GameUtils.getCardLink(card) + " from the top of their draw deck on top of their play pile");

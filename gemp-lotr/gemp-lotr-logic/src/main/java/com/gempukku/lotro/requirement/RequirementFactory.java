@@ -15,7 +15,6 @@ public class RequirementFactory {
     public RequirementFactory() {
         requirementProducers.put("not", new NotRequirementProducer());
         requirementProducers.put("or", new OrRequirementProducer());
-        requirementProducers.put("canmove", new CanMove());
         requirementProducers.put("cardsindeckcount", new CardsInDeckCount());
         requirementProducers.put("cardsinhandmorethan", new CardsInHandMoreThan());
         requirementProducers.put("hascardindiscard", new HasCardInDiscard());
@@ -33,7 +32,6 @@ public class RequirementFactory {
         requirementProducers.put("memoryis", new MemoryIs());
         requirementProducers.put("memorylike", new MemoryLike());
         requirementProducers.put("memorymatches", new MemoryMatches());
-        requirementProducers.put("movecountminimum", new MoveCountMinimum());
         requirementProducers.put("perphaselimit", new PerPhaseLimit());
         requirementProducers.put("perturnlimit", new PerTurnLimit());
         requirementProducers.put("phase", new PhaseRequirement());

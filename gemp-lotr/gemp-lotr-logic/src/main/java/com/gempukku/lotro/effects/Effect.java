@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 
 public interface Effect<AbstractGame extends DefaultGame> {
@@ -57,7 +57,7 @@ public interface Effect<AbstractGame extends DefaultGame> {
      */
     boolean wasCarriedOut();
 
-    default LotroPhysicalCard getSource() {
+    default PhysicalCard getSource() {
         return null;
     }
 

@@ -30,7 +30,7 @@ public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                return actionContext.getGame().getGameState().getDeck(deckId).size() >= count;
+                return actionContext.getGame().getGameState().getDrawDeck(deckId).size() >= count;
             }
 
             @Override
@@ -41,7 +41,7 @@ public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
 
                 return new RevealBottomCardsOfDrawDeckEffect(actionContext.getSource(), deckId, count) {
                     @Override
-                    protected void cardsRevealed(List<LotroPhysicalCard> revealedCards) {
+                    protected void cardsRevealed(List<PhysicalCard> revealedCards) {
                         if (memorize != null)
                             actionContext.setCardMemory(memorize, revealedCards);
                     }

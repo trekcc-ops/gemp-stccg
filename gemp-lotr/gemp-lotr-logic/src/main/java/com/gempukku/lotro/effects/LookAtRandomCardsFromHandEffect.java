@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -9,12 +9,12 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class LookAtRandomCardsFromHandEffect extends AbstractEffect {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final int _count;
     private final String _actingPlayer;
     private final String _playerHand;
 
-    public LookAtRandomCardsFromHandEffect(String actingPlayer, String handOfPlayer, LotroPhysicalCard source, int count) {
+    public LookAtRandomCardsFromHandEffect(String actingPlayer, String handOfPlayer, PhysicalCard source, int count) {
         _source = source;
         _count = count;
         _actingPlayer = actingPlayer;
@@ -36,7 +36,7 @@ public abstract class LookAtRandomCardsFromHandEffect extends AbstractEffect {
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         if (game.getModifiersQuerying().canLookOrRevealCardsInHand(game, _playerHand, _actingPlayer)) {
-            List<LotroPhysicalCard> randomCards = GameUtils.getRandomCards(game.getGameState().getHand(_playerHand), _count);
+            List<PhysicalCard> randomCards = GameUtils.getRandomCards(game.getGameState().getHand(_playerHand), _count);
 
             if (randomCards.size() > 0) {
                 game.getUserFeedback().sendAwaitingDecision(_actingPlayer,
@@ -59,5 +59,5 @@ public abstract class LookAtRandomCardsFromHandEffect extends AbstractEffect {
         return new FullEffectResult(false);
     }
 
-    protected abstract void cardsSeen(List<LotroPhysicalCard> revealedCards);
+    protected abstract void cardsSeen(List<PhysicalCard> revealedCards);
 }

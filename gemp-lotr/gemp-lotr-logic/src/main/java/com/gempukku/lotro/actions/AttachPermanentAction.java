@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.*;
@@ -12,8 +12,8 @@ import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collections;
 
-public class AttachPermanentAction extends AbstractCostToEffectAction {
-    private final LotroPhysicalCard _cardToAttach;
+public class AttachPermanentAction extends AbstractCostToEffectAction<DefaultGame> {
+    private final PhysicalCard _cardToAttach;
 
     private boolean _cardRemoved;
 
@@ -24,16 +24,14 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
 
     private boolean _cardDiscarded;
 
-    private boolean _exertTarget;
-
     private boolean _discountResolved;
     private boolean _discountApplied;
 
     private int _twilightModifier;
     private final Zone _playedFrom;
-    private LotroPhysicalCard _target;
+    private PhysicalCard _target;
 
-    public AttachPermanentAction(final DefaultGame game, final LotroPhysicalCard card, Filter filter, final int twilightModifier) {
+    public AttachPermanentAction(final DefaultGame game, final PhysicalCard card, Filter filter, final int twilightModifier) {
         _cardToAttach = card;
         setText("Play " + GameUtils.getFullName(_cardToAttach));
         _playedFrom = card.getZone();
@@ -42,38 +40,29 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         _chooseTargetEffect =
                 new ChooseActiveCardEffect(null, card.getOwner(), "Attach " + GameUtils.getFullName(card) + ". Choose target to attach to", filter) {
                     @Override
-                    protected void cardSelected(DefaultGame game, LotroPhysicalCard target) {
+                    protected void cardSelected(DefaultGame game, PhysicalCard target) {
                         _target = target;
-                        if (_exertTarget) {
-                            appendCost(
-                                    new ExertCharactersEffect(AttachPermanentAction.this, target, target));
-                        }
-
                         game.getGameState().sendMessage(card.getOwner() + " plays " + GameUtils.getCardLink(card) + " from " + _playedFrom.getHumanReadable() + " on " + GameUtils.getCardLink(target));
                     }
                 };
     }
 
     @Override
-    public Type getType() {
-        return Type.PLAY_CARD;
+    public ActionType getActionType() {
+        return ActionType.PLAY_CARD;
     }
 
-    public LotroPhysicalCard getTarget() {
+    public PhysicalCard getTarget() {
         return _target;
     }
 
-    public void setExertTarget(boolean exertTarget) {
-        _exertTarget = exertTarget;
-    }
-
     @Override
-    public LotroPhysicalCard getActionSource() {
+    public PhysicalCard getActionSource() {
         return _cardToAttach;
     }
 
     @Override
-    public LotroPhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getActionAttachedToCard() {
         return _cardToAttach;
     }
 
@@ -87,7 +76,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
                 game.getGameState().addCardToZone(game, _cardToAttach, Zone.VOID_FROM_HAND);
             else
                 game.getGameState().addCardToZone(game, _cardToAttach, Zone.VOID);
-            if (playedFromZone == Zone.DECK) {
+            if (playedFromZone == Zone.DRAW_DECK) {
                 game.getGameState().sendMessage(_cardToAttach.getOwner() + " shuffles their deck");
                 game.getGameState().shuffleDeck(_cardToAttach.getOwner());
             }

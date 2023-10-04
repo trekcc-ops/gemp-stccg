@@ -1,6 +1,6 @@
 package com.gempukku.lotro.processes;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.game.DefaultGame;
@@ -32,10 +32,10 @@ public class MulliganProcess implements GameProcess {
                             if (index == 1) {
                                 final GameState gameState = game.getGameState();
                                 gameState.sendMessage(nextPlayer + " mulligans");
-                                Set<LotroPhysicalCard> hand = new HashSet<>(gameState.getHand(nextPlayer));
+                                Set<PhysicalCard> hand = new HashSet<>(gameState.getHand(nextPlayer));
                                 gameState.removeCardsFromZone(nextPlayer, hand);
-                                for (LotroPhysicalCard card : hand)
-                                    gameState.addCardToZone(game, card, Zone.DECK);
+                                for (PhysicalCard card : hand)
+                                    gameState.addCardToZone(game, card, Zone.DRAW_DECK);
 
                                 gameState.shuffleDeck(nextPlayer);
                                 for (int i = 0; i < handSize - 2; i++)

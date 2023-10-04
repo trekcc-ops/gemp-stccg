@@ -37,6 +37,10 @@ public class EventSerializer {
             eventElem.setAttribute("targetCardId", gameEvent.getTargetCardId().toString());
         if (gameEvent.getZone() != null)
             eventElem.setAttribute("zone", gameEvent.getZone().name());
+        if (gameEvent.getQuadrant() != null)
+            eventElem.setAttribute("systemName", gameEvent.getQuadrant());
+        if (gameEvent.getLocationIndex() != null)
+            eventElem.setAttribute("locationIndex", gameEvent.getLocationIndex().toString());
         if (gameEvent.getToken() != null)
             eventElem.setAttribute("token", gameEvent.getToken().name());
         if (gameEvent.getCount() != null)

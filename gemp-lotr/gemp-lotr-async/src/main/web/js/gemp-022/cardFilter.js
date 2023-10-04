@@ -153,7 +153,7 @@ var CardFilter = Class.extend({
             + "<option value='vitality,name'>Vitality</option>"
             + "<option value='cardType,name'>Card type</option>"
             + "<option value='culture,name'>Culture</option>"*/
-//            + "<option value='tribbleValue,name'>Tribble Value</option>"
+            + "<option value='tribbleValue,name'>Tribble Value</option>"
             + "</select>");
         this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
             + "<option value=''>All Rarities</option>"
@@ -455,65 +455,65 @@ var CardFilter = Class.extend({
     },
 
     calculateNormalFilter: function () {
-        var cultures = new Array();
-        $("label", $("#culture-buttons")).each(
-            function () {
-                if ($(this).hasClass("ui-state-active"))
-                    cultures.push($(this).prop("id").substring(5));
-            });
+        var normalFilterArray = new Array("cardType", "culture", "keyword", "type", "race", "itemClass", "phase");
+        var filterString = "";
 
-        var cardType = $("#cardType option:selected").prop("value");
-        if (cardType == "")
-            cardType = "";
-        else
-            cardType = "cardType:" + cardType + " ";
-
-        var keyword = $("#keyword option:selected").prop("value");
-        if (keyword != "")
-            keyword = " keyword:" + keyword;
-
-        var type = $("#type option:selected").prop("value");
-        if (type != "")
-            type = " type:" + type;
-
-        var race = $("#race option:selected").prop("value");
-        if (race != "")
-            race = " race:" + race;
-
-        var itemClass = $("#itemClass option:selected").prop("value");
-        if (itemClass != "")
-            itemClass = " itemClass:" + itemClass
-
-        var phase = $("#phase option:selected").prop("value");
-        if (phase != "")
-            phase = " phase:" + phase;
-
-        if (cultures.length > 0)
-            return cardType + " culture:" + cultures + keyword + type + race + itemClass + phase;
-        else
-            return cardType + keyword + type + race + itemClass + phase;
+        for (var i = 0; i < normalFilterArray.length; i++) {
+            if (normalFilterArray[i] == "culture") {
+                var cultures = new Array();
+                $("label", $("#culture-buttons")).each(
+                    function () {
+                        if ($(this).hasClass("ui-state-active"))
+                            cultures.push($(this).prop("id").substring(5));
+                    });
+                if (cultures.length > 0)
+                    filterString = filterString + "|culture:" + cultures;
+            } else {
+                var filterResult = $("#" + normalFilterArray[i] + " option:selected").prop("value");
+                if (filterResult != "")
+                    filterString = filterString + "|" + normalFilterArray[i] + ":" + filterResult;
+            }
+        }
+        return filterString;
     },
 
     calculateFullFilterPostfix: function () {
+        var filterString = "";
+
         var setNo = $("option:selected", this.setSelect).prop("value");
         if (setNo != "")
-            setNo = " set:" + setNo;
+            filterString = filterString + "|set:" + setNo;
 
         var sort = $("option:selected", this.sortSelect).prop("value");
         if (sort != "")
-            sort = " sort:" + sort;
+            filterString = filterString + "|sort:" + sort;
 
-        var cardName = this.nameInput.val();
+/*        var cardName = this.nameInput.val();
         var cardNameElems = cardName.split(" ");
         cardName = "";
         for (var i = 0; i < cardNameElems.length; i++)
-            cardName += " name:" + cardNameElems[i];
+            filterString = filterString + "|name:" + cardNameElems[i];*/
+
+        var cardNameRegexp = /[^\s"]+|"([^"]*)"/gi;
+        var cardName = this.nameInput.val();
+        var cardNameArray = [];
+        do {
+            var match = cardNameRegexp.exec(cardName);
+            if (match != null)
+            {
+                cardNameArray.push(match[1] ? match[1] : match[0]);
+            }
+        } while (match != null);
+
+        for (var i = 0; i < cardNameArray.length; i++)
+            filterString = filterString + "|name:" + cardNameArray[i];
+
 
         var rarity = $("option:selected", this.raritySelect).prop("value");
         if (rarity != "")
-            rarity = " rarity:" + rarity;
+            filterString = filterString + "|rarity:" + rarity;
 
-        return setNo + sort + cardName + rarity;
+        return filterString;
     },
 
     getCollection: function () {

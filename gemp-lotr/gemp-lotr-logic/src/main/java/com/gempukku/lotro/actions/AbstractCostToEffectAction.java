@@ -8,7 +8,7 @@ import com.gempukku.lotro.effects.Effect;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public abstract class AbstractCostToEffectAction implements CostToEffectAction {
+public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGame> implements CostToEffectAction<AbstractGame> {
     private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
     private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
@@ -129,8 +129,8 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return cost;
     }
 
-    protected final Effect<DefaultGame> getNextEffect() {
-        final Effect<DefaultGame> effect = _effects.poll();
+    protected final Effect<AbstractGame> getNextEffect() {
+        final Effect<AbstractGame> effect = _effects.poll();
         if (effect != null)
             _processedEffects.add(effect);
         return effect;

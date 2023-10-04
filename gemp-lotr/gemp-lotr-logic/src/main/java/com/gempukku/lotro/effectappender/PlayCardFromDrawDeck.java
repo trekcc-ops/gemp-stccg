@@ -60,7 +60,7 @@ public class PlayCardFromDrawDeck implements EffectAppenderProducer {
                 new DelayedAppender<>() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                        final Collection<? extends LotroPhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
+                        final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
                         if (cardsToPlay.size() == 1) {
                             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
 

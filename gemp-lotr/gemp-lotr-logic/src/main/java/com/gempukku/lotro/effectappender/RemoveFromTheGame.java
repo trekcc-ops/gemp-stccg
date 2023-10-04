@@ -37,10 +37,10 @@ public class RemoveFromTheGame implements EffectAppenderProducer {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
                         final String removingPlayerId = discardingPlayer.getPlayer(actionContext);
-                        final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         if (stackedCardsMemory != null) {
-                            List<LotroPhysicalCard> stackedCards = new LinkedList<>();
-                            for (LotroPhysicalCard physicalCard : cardsFromMemory) {
+                            List<PhysicalCard> stackedCards = new LinkedList<>();
+                            for (PhysicalCard physicalCard : cardsFromMemory) {
                                 stackedCards.addAll(actionContext.getGame().getGameState().getStackedCards(physicalCard));
                             }
 

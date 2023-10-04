@@ -2,9 +2,10 @@ package com.gempukku.lotro.effects;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.choose.ChooseCardsFromHandEffect;
+import com.gempukku.lotro.effects.choose.PutCardsFromHandBeneathDrawDeckInChosenOrderEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
@@ -13,7 +14,7 @@ import com.gempukku.lotro.rules.GameUtils;
 import java.util.Collection;
 
 public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateKindnessTribblePowerEffect(CostToEffectAction action, LotroPhysicalCard source) {
+    public ActivateKindnessTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 
@@ -30,9 +31,9 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
             if (game.getGameState().getHand(player).size() >= 4) {
                 subAction.appendEffect(new ChooseCardsFromHandEffect(player, 1, 1) {
                     @Override
-                    protected void cardsSelected(DefaultGame game, Collection<LotroPhysicalCard> selectedCards) {
+                    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
                         game.getGameState().removeCardsFromZone(player, selectedCards);
-                        for (LotroPhysicalCard card : selectedCards) {
+                        for (PhysicalCard card : selectedCards) {
                             game.getGameState().sendMessage(player + " puts " + GameUtils.getCardLink(card) + " from hand on bottom of their play pile");
                             game.getGameState().addCardToZone(null, card, Zone.PLAY_PILE, false);
                         }
@@ -40,7 +41,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
                 });
             }
         }
-        subAction.appendEffect(new PutCardsFromHandBeneathDrawDeckEffect(_action, _activatingPlayer, false, Filters.any));
+        subAction.appendEffect(new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(_action, _activatingPlayer, false, Filters.any));
         return addActionAndReturnResult(game, subAction);
     }
 }

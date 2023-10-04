@@ -19,6 +19,7 @@ import java.util.*;
 
 public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private String title;
+    private String location;
     private String subtitle;
     private String imageUrl;
     private Uniqueness uniqueness = null;
@@ -26,6 +27,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private CardType cardType;
     private FacilityType facilityType;
     private Affiliation affiliation;
+    private Region region;
     private Quadrant quadrant;
     private Culture culture;
     private Race race;
@@ -280,6 +282,13 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     public void setQuadrant(Quadrant quadrant) {
         this.quadrant = quadrant;
     }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setRegion(Region region) { this.region = region; }
+    public Region getRegion() { return this.region; }
+
     public Quadrant getQuadrant() { return this.quadrant; }
 
     public void setCardType(CardType cardType) {
@@ -370,6 +379,9 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
+    public boolean isUniversal() { return this.uniqueness == Uniqueness.UNIVERSAL; }
+
+    @Override
     public String getTitle() {
         return title;
     }
@@ -400,6 +412,8 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     public int getResistance() {
         return resistance;
     }
+
+    public String getLocation() { return location; }
 
     @Override
     public TribblePower getTribblePower() {
@@ -455,7 +469,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public Filterable getValidTargetFilter(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public Filterable getValidTargetFilter(String playerId, DefaultGame game, PhysicalCard self) {
         if (targetFilters == null)
             return null;
 
@@ -469,19 +483,19 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getPhaseActionsFromDiscard(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends Action> getPhaseActionsFromDiscard(String playerId, DefaultGame game, PhysicalCard self) {
         return getActivatedActions(playerId, game, self, inDiscardPhaseActions);
     }
 
     @Override
-    public List<? extends ActivateCardAction> getPhaseActionsInPlay(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends ActivateCardAction> getPhaseActionsInPlay(String playerId, DefaultGame game, PhysicalCard self) {
         List<ActivateCardAction> activatedActions = getActivatedActions(playerId, game, self, inPlayPhaseActions);
         if (copiedFilters != null) {
             if (activatedActions == null)
                 activatedActions = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(activatedActions, firstActive.getBlueprint().getPhaseActionsInPlay(playerId, game, self));
             }
@@ -490,19 +504,19 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends ActivateCardAction> getPhaseActionsFromStacked(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends ActivateCardAction> getPhaseActionsFromStacked(String playerId, DefaultGame game, PhysicalCard self) {
         return getActivatedActions(playerId, game, self, fromStackedPhaseActions);
     }
 
     @Override
-    public List<? extends Modifier> getInPlayModifiers(DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends Modifier> getInPlayModifiers(DefaultGame game, PhysicalCard self) {
         List<Modifier> modifiers = getModifiers(game, self, inPlayModifiers);
         if (copiedFilters != null) {
             if (modifiers == null)
                 modifiers = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null) {
                     addAllNotNull(modifiers, firstActive.getBlueprint().getInPlayModifiers(game, self));
                 }
@@ -517,22 +531,22 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends Modifier> getStackedOnModifiers(DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends Modifier> getStackedOnModifiers(DefaultGame game, PhysicalCard self) {
         return getModifiers(game, self, stackedOnModifiers);
     }
 
     @Override
-    public List<? extends Modifier> getInDiscardModifiers(DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends Modifier> getInDiscardModifiers(DefaultGame game, PhysicalCard self) {
         return getModifiers(game, self, inDiscardModifiers);
     }
 
     @Override
-    public List<? extends Modifier> getControlledSiteModifiers(DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends Modifier> getControlledSiteModifiers(DefaultGame game, PhysicalCard self) {
         return getModifiers(game, self, controlledSiteModifiers);
     }
 
     @Override
-    public boolean playRequirementsNotMet(DefaultGame game, LotroPhysicalCard self) {
+    public boolean playRequirementsNotMet(DefaultGame game, PhysicalCard self) {
         DefaultActionContext dummy = new DefaultActionContext(self.getOwner(), game, self, null, null);
 
         if (requirements != null) {
@@ -543,7 +557,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public int getTwilightCostModifier(DefaultGame game, LotroPhysicalCard self, LotroPhysicalCard target) {
+    public int getTwilightCostModifier(DefaultGame game, PhysicalCard self, PhysicalCard target) {
         if (twilightCostModifiers == null)
             return 0;
 
@@ -557,7 +571,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public PlayEventAction getPlayEventCardAction(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public PlayEventAction getPlayEventCardAction(String playerId, DefaultGame game, PhysicalCard self) {
         DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
         PlayEventAction action = new PlayEventAction(self, playEventAction.requiresRanger());
         playEventAction.createAction(action, actionContext);
@@ -565,7 +579,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect, LotroPhysicalCard self) {
+    public List<RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect, PhysicalCard self) {
         List<RequiredTriggerAction> result = null;
 
         if (requiredBeforeTriggers != null) {
@@ -585,7 +599,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, effect);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getRequiredBeforeTriggers(game, effect, self));
             }
@@ -595,7 +609,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult, LotroPhysicalCard self) {
+    public List<RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult, PhysicalCard self) {
         List<RequiredTriggerAction> result = null;
 
         if (requiredAfterTriggers != null) {
@@ -615,7 +629,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, effectResult, null);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getRequiredAfterTriggers(game, effectResult, self));
             }
@@ -625,7 +639,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect, LotroPhysicalCard self) {
+    public List<OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect, PhysicalCard self) {
         List<OptionalTriggerAction> result = null;
 
         if (optionalBeforeTriggers != null) {
@@ -645,7 +659,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, effect);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, self));
             }
@@ -659,7 +673,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends ActivateCardAction> getOptionalInPlayBeforeActions(String playerId, DefaultGame game, Effect effect, LotroPhysicalCard self) {
+    public List<? extends ActivateCardAction> getOptionalInPlayBeforeActions(String playerId, DefaultGame game, Effect effect, PhysicalCard self) {
         List<ActivateCardAction> result = null;
 
         if (beforeActivatedTriggers != null) {
@@ -679,7 +693,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, effect);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getOptionalInPlayBeforeActions(playerId, game, effect, self));
             }
@@ -689,7 +703,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends ActivateCardAction> getOptionalInPlayAfterActions(String playerId, DefaultGame game, EffectResult effectResult, LotroPhysicalCard self) {
+    public List<? extends ActivateCardAction> getOptionalInPlayAfterActions(String playerId, DefaultGame game, EffectResult effectResult, PhysicalCard self) {
         List<ActivateCardAction> result = null;
 
         if (afterActivatedTriggers != null) {
@@ -709,7 +723,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, effectResult, null);
-                final LotroPhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
+                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getOptionalInPlayAfterActions(playerId, game, effectResult, self));
             }
@@ -719,7 +733,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<PlayEventAction> getPlayResponseEventBeforeActions(String playerId, DefaultGame game, Effect effect, LotroPhysicalCard self) {
+    public List<PlayEventAction> getPlayResponseEventBeforeActions(String playerId, DefaultGame game, Effect effect, PhysicalCard self) {
         if (optionalInHandBeforeActions == null)
             return null;
 
@@ -737,7 +751,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<PlayEventAction> getPlayResponseEventAfterActions(String playerId, DefaultGame game, EffectResult effectResult, LotroPhysicalCard self) {
+    public List<PlayEventAction> getPlayResponseEventAfterActions(String playerId, DefaultGame game, EffectResult effectResult, PhysicalCard self) {
         if (optionalInHandAfterActions == null)
             return null;
 
@@ -755,7 +769,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<OptionalTriggerAction> getOptionalInHandAfterTriggers(String playerId, DefaultGame game, EffectResult effectResult, LotroPhysicalCard self) {
+    public List<OptionalTriggerAction> getOptionalInHandAfterTriggers(String playerId, DefaultGame game, EffectResult effectResult, PhysicalCard self) {
         if (optionalInHandAfterTriggers == null)
             return null;
 
@@ -773,7 +787,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game, PhysicalCard self) {
         if (extraPlayCosts == null)
             return null;
 
@@ -788,7 +802,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getPhaseActionsInHand(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public List<? extends Action> getPhaseActionsInHand(String playerId, DefaultGame game, PhysicalCard self) {
         if (playInOtherPhaseConditions == null)
             return null;
         DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
@@ -812,7 +826,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     // Default implementations - not needed (for now)
 
     @Override
-    public int getPotentialDiscount(DefaultGame game, String playerId, LotroPhysicalCard self) {
+    public int getPotentialDiscount(DefaultGame game, String playerId, PhysicalCard self) {
         if (discountSources == null)
             return 0;
 
@@ -825,7 +839,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public void appendPotentialDiscountEffects(DefaultGame game, CostToEffectAction action, String playerId, LotroPhysicalCard self) {
+    public void appendPotentialDiscountEffects(DefaultGame game, CostToEffectAction action, String playerId, PhysicalCard self) {
         if (discountSources != null) {
             DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
             for (DiscountSource discountSource : discountSources) {
@@ -836,7 +850,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public RequiredTriggerAction getDiscardedFromPlayRequiredTrigger(DefaultGame game, LotroPhysicalCard self) {
+    public RequiredTriggerAction getDiscardedFromPlayRequiredTrigger(DefaultGame game, PhysicalCard self) {
         if (discardedFromPlayRequiredTriggerAction == null)
             return null;
 
@@ -850,7 +864,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public OptionalTriggerAction getDiscardedFromPlayOptionalTrigger(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public OptionalTriggerAction getDiscardedFromPlayOptionalTrigger(String playerId, DefaultGame game, PhysicalCard self) {
         if (discardedFromPlayOptionalTriggerAction == null)
             return null;
 
@@ -864,7 +878,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public RequiredTriggerAction getKilledRequiredTrigger(DefaultGame game, LotroPhysicalCard self) {
+    public RequiredTriggerAction getKilledRequiredTrigger(DefaultGame game, PhysicalCard self) {
         if (killedRequiredTriggerAction == null)
             return null;
 
@@ -878,7 +892,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public OptionalTriggerAction getKilledOptionalTrigger(String playerId, DefaultGame game, LotroPhysicalCard self) {
+    public OptionalTriggerAction getKilledOptionalTrigger(String playerId, DefaultGame game, PhysicalCard self) {
         if (killedOptionalTriggerAction == null)
             return null;
 
@@ -892,12 +906,12 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public String getDisplayableInformation(LotroPhysicalCard self) {
+    public String getDisplayableInformation(PhysicalCard self) {
         return null;
     }
 
     @Override
-    public boolean canPayAidCost(DefaultGame game, LotroPhysicalCard self) {
+    public boolean canPayAidCost(DefaultGame game, PhysicalCard self) {
         if (aidCostSource == null)
             return false;
 
@@ -906,7 +920,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public void appendAidCosts(DefaultGame game, CostToEffectAction action, LotroPhysicalCard self) {
+    public void appendAidCosts(DefaultGame game, CostToEffectAction action, PhysicalCard self) {
         if (aidCostSource != null) {
             DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
             aidCostSource.appendAidCost(action, actionContext);
@@ -915,7 +929,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
 
     // Helper methods
 
-    private List<Modifier> getModifiers(DefaultGame game, LotroPhysicalCard self, List<ModifierSource> sources) {
+    private List<Modifier> getModifiers(DefaultGame game, PhysicalCard self, List<ModifierSource> sources) {
         if (sources == null)
             return null;
 
@@ -927,7 +941,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         return result;
     }
 
-    private List<ActivateCardAction> getActivatedActions(String playerId, DefaultGame game, LotroPhysicalCard self, List<ActionSource> sources) {
+    private List<ActivateCardAction> getActivatedActions(String playerId, DefaultGame game, PhysicalCard self, List<ActionSource> sources) {
         if (sources == null)
             return null;
 
@@ -991,10 +1005,11 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         return copiedFilters;
     }
 
-    public boolean canPlayOutOfSequence(TribblesGame game, LotroPhysicalCard self) {
+    public boolean canPlayOutOfSequence(TribblesGame game, PhysicalCard self) {
         if (playOutOfSequenceConditions == null) return false;
         DefaultActionContext<TribblesGame> actionContext =
                 new DefaultActionContext<>(self.getOwner(), game, self, null, null);
         return playOutOfSequenceConditions.stream().anyMatch(requirement -> requirement.accepts(actionContext));
     }
+
 }

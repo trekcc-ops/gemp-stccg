@@ -24,11 +24,11 @@ public class DrawOneCardEffect extends AbstractEffect<DefaultGame> implements Pr
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        return game.getGameState().getDeck(_playerId).size() >= 1;
+        return game.getGameState().getDrawDeck(_playerId).size() >= 1;
     }
 
     public boolean canDrawCard(DefaultGame game) {
-        return (!_prevented && game.getGameState().getDeck(_playerId).size() > 0) && game.getModifiersQuerying().canDrawCardNoIncrement(game, _playerId);
+        return (!_prevented && game.getGameState().getDrawDeck(_playerId).size() > 0) && game.getModifiersQuerying().canDrawCardNoIncrement(game, _playerId);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class DrawOneCardEffect extends AbstractEffect<DefaultGame> implements Pr
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
         int drawn = 0;
-        if (!_prevented && game.getGameState().getDeck(_playerId).size() > 0 &&
+        if (!_prevented && game.getGameState().getDrawDeck(_playerId).size() > 0 &&
                 (game.getFormat().doesNotHaveRuleOfFour() || game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(game, _playerId))) {
             game.getGameState().playerDrawsCard(_playerId);
             drawn++;

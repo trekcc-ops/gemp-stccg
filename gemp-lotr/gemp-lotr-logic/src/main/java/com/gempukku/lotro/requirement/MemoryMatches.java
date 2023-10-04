@@ -4,7 +4,7 @@ import com.gempukku.lotro.cards.CardGenerationEnvironment;
 import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.filters.Filters;
 import org.json.simple.JSONObject;
@@ -22,7 +22,7 @@ public class MemoryMatches implements RequirementProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
         return (actionContext) -> {
-            final Collection<? extends LotroPhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+            final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
             final Filterable filterable = filterableSource.getFilterable(actionContext);
             return Filters.filter(cardsFromMemory, actionContext.getGame(), filterable).size() > 0;
         };

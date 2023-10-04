@@ -3,7 +3,7 @@ package com.gempukku.lotro.rules;
 import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.OptionalTriggerAction;
 import com.gempukku.lotro.actions.RequiredTriggerAction;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.DefaultActionsEnvironment;
 import com.gempukku.lotro.results.DiscardCardsFromPlayResult;
@@ -26,7 +26,7 @@ public class DiscardedCardRule {
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
                         if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
-                            final LotroPhysicalCard discardedCard = discardResult.getDiscardedCard();
+                            final PhysicalCard discardedCard = discardResult.getDiscardedCard();
                             RequiredTriggerAction trigger = discardedCard.getBlueprint().getDiscardedFromPlayRequiredTrigger(game, discardedCard);
                             if (trigger != null)
                                 return Collections.singletonList(trigger);
@@ -38,7 +38,7 @@ public class DiscardedCardRule {
                     public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
-                            final LotroPhysicalCard discardedCard = discardResult.getDiscardedCard();
+                            final PhysicalCard discardedCard = discardResult.getDiscardedCard();
                             if (discardedCard.getOwner().equals(playerId)) {
                                 OptionalTriggerAction trigger = discardedCard.getBlueprint().getDiscardedFromPlayOptionalTrigger(playerId, game, discardedCard);
                                 if (trigger != null) {

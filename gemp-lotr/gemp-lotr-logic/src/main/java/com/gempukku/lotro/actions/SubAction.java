@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
@@ -13,17 +13,17 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Type getType() {
-        return _action.getType();
+    public ActionType getActionType() {
+        return _action.getActionType();
     }
 
     @Override
-    public LotroPhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getActionAttachedToCard() {
         return _action.getActionAttachedToCard();
     }
 
     @Override
-    public LotroPhysicalCard getActionSource() {
+    public PhysicalCard getActionSource() {
         return _action.getActionSource();
     }
 

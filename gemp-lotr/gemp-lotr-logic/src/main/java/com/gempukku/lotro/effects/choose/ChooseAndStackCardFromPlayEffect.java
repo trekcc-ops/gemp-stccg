@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects.choose;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.StackCardFromPlayEffect;
@@ -43,11 +43,11 @@ public class ChooseAndStackCardFromPlayEffect extends AbstractSubActionEffect {
         subAction.appendEffect(
                 new ChooseActiveCardEffect(_action.getActionSource(), _playerId, "Choose card to stack", _cardFilter) {
                     @Override
-                    protected void cardSelected(DefaultGame game, final LotroPhysicalCard cardToStack) {
+                    protected void cardSelected(DefaultGame game, final PhysicalCard cardToStack) {
                         subAction.appendEffect(
                                 new ChooseActiveCardEffect(_action.getActionSource(), _playerId, "Choose card to stack on", _stackOnFilter) {
                                     @Override
-                                    protected void cardSelected(DefaultGame game, LotroPhysicalCard cardToStackOn) {
+                                    protected void cardSelected(DefaultGame game, PhysicalCard cardToStackOn) {
                                         subAction.appendEffect(
                                                 new StackCardFromPlayEffect(cardToStack, cardToStackOn));
                                     }

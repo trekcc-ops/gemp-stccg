@@ -1,6 +1,6 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.effects.discount.DiscountEffect;
@@ -13,7 +13,7 @@ import com.gempukku.lotro.effects.Effect;
 import java.util.Collections;
 
 public class PlayPermanentAction extends AbstractCostToEffectAction {
-    private final LotroPhysicalCard _permanentPlayed;
+    private final PhysicalCard _permanentPlayed;
     private int _twilightModifier;
     private final boolean _ignoreRoamingPenalty;
 
@@ -30,9 +30,9 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
     private boolean _skipShuffling;
     private final Zone _fromZone;
     private final Zone _toZone;
-    private LotroPhysicalCard _playedFromCard;
+    private PhysicalCard _playedFromCard;
 
-    public PlayPermanentAction(LotroPhysicalCard card, Zone zone, int twilightModifier, boolean ignoreRoamingPenalty) {
+    public PlayPermanentAction(PhysicalCard card, Zone zone, int twilightModifier, boolean ignoreRoamingPenalty) {
         _permanentPlayed = card;
         setText("Play " + GameUtils.getFullName(_permanentPlayed));
         setPerformingPlayer(card.getOwner());
@@ -53,17 +53,17 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Type getType() {
-        return Type.PLAY_CARD;
+    public ActionType getActionType() {
+        return ActionType.PLAY_CARD;
     }
 
     @Override
-    public LotroPhysicalCard getActionSource() {
+    public PhysicalCard getActionSource() {
         return _permanentPlayed;
     }
 
     @Override
-    public LotroPhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getActionAttachedToCard() {
         return _permanentPlayed;
     }
 
@@ -80,7 +80,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID_FROM_HAND);
             else
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID);
-            if (playedFromZone == Zone.DECK && !_skipShuffling) {
+            if (playedFromZone == Zone.DRAW_DECK && !_skipShuffling) {
                 game.getGameState().sendMessage(_permanentPlayed.getOwner() + " shuffles their deck");
                 game.getGameState().shuffleDeck(_permanentPlayed.getOwner());
             }

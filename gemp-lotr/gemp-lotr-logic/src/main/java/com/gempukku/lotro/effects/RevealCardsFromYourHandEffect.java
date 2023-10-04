@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.lotro.game.DefaultGame;
@@ -12,15 +12,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class RevealCardsFromYourHandEffect extends AbstractEffect {
-    private final LotroPhysicalCard _source;
+    private final PhysicalCard _source;
     private final String _handPlayerId;
-    private final Collection<? extends LotroPhysicalCard> _cards;
+    private final Collection<? extends PhysicalCard> _cards;
 
-    public RevealCardsFromYourHandEffect(LotroPhysicalCard source, String handPlayerId, LotroPhysicalCard card) {
+    public RevealCardsFromYourHandEffect(PhysicalCard source, String handPlayerId, PhysicalCard card) {
         this(source, handPlayerId, Collections.singleton(card));
     }
 
-    public RevealCardsFromYourHandEffect(LotroPhysicalCard source, String handPlayerId, Collection<? extends LotroPhysicalCard> cards) {
+    public RevealCardsFromYourHandEffect(PhysicalCard source, String handPlayerId, Collection<? extends PhysicalCard> cards) {
         _source = source;
         _handPlayerId = handPlayerId;
         _cards = cards;
@@ -33,7 +33,7 @@ public class RevealCardsFromYourHandEffect extends AbstractEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        for (LotroPhysicalCard card : _cards) {
+        for (PhysicalCard card : _cards) {
             if (card.getZone() != Zone.HAND)
                 return false;
         }
@@ -59,7 +59,7 @@ public class RevealCardsFromYourHandEffect extends AbstractEffect {
                     });
         }
 
-        for (LotroPhysicalCard card : _cards) {
+        for (PhysicalCard card : _cards) {
             game.getActionsEnvironment().emitEffectResult(new RevealCardFromHandResult(_source, _handPlayerId, card));
         }
 

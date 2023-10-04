@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.rules.GameUtils;
@@ -8,10 +8,10 @@ import com.gempukku.lotro.rules.GameUtils;
 import java.util.Collections;
 
 public class TransferPermanentNotFromPlayEffect extends AbstractEffect {
-    private final LotroPhysicalCard _physicalCard;
-    private final LotroPhysicalCard _targetCard;
+    private final PhysicalCard _physicalCard;
+    private final PhysicalCard _targetCard;
 
-    public TransferPermanentNotFromPlayEffect(LotroPhysicalCard physicalCard, LotroPhysicalCard targetCard) {
+    public TransferPermanentNotFromPlayEffect(PhysicalCard physicalCard, PhysicalCard targetCard) {
         _physicalCard = physicalCard;
         _targetCard = targetCard;
     }

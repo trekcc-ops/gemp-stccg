@@ -1,6 +1,6 @@
 package com.gempukku.lotro.results;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.actions.PlayEventAction;
 
@@ -9,7 +9,7 @@ public class PlayEventResult extends PlayCardResult {
     private final PlayEventAction _action;
     private final boolean _requiresRanger;
 
-    public PlayEventResult(PlayEventAction action, Zone playedFrom, LotroPhysicalCard playedCard, boolean requiresRanger) {
+    public PlayEventResult(PlayEventAction action, Zone playedFrom, PhysicalCard playedCard, boolean requiresRanger) {
         super(playedFrom, playedCard, null, null);
         _action = action;
         _requiresRanger = requiresRanger;

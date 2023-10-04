@@ -1,15 +1,15 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.Collections;
 
 public class PlacePlayedCardBeneathDrawDeckEFfect extends AbstractEffect {
-    private final LotroPhysicalCard card;
+    private final PhysicalCard card;
 
-    public PlacePlayedCardBeneathDrawDeckEFfect(LotroPhysicalCard card) {
+    public PlacePlayedCardBeneathDrawDeckEFfect(PhysicalCard card) {
         this.card = card;
     }
 

@@ -3,7 +3,7 @@ package com.gempukku.lotro.effectappender.resolver;
 import com.gempukku.lotro.actioncontext.ActionContext;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PlayerSource;
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 
 import java.util.Locale;
@@ -25,7 +25,7 @@ public class PlayerResolver {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
             if (type.toLowerCase(Locale.ROOT).startsWith("ownerfrommemory(") && type.endsWith(")")) {
                 return (actionContext) -> {
-                    final LotroPhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
+                    final PhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
                     if (cardFromMemory != null)
                         return cardFromMemory.getOwner();
                     else

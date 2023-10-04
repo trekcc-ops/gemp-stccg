@@ -1,6 +1,6 @@
 package com.gempukku.lotro.effects;
 
-import com.gempukku.lotro.cards.LotroPhysicalCard;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.GameUtils;
@@ -11,10 +11,10 @@ import java.util.Set;
 
 public class RemoveCardsFromTheGameEffect extends AbstractEffect {
     private final String _playerPerforming;
-    private final LotroPhysicalCard _source;
-    private final Collection<? extends LotroPhysicalCard> _cardsToRemove;
+    private final PhysicalCard _source;
+    private final Collection<? extends PhysicalCard> _cardsToRemove;
 
-    public RemoveCardsFromTheGameEffect(String playerPerforming, LotroPhysicalCard source, Collection<? extends LotroPhysicalCard> cardsToRemove) {
+    public RemoveCardsFromTheGameEffect(String playerPerforming, PhysicalCard source, Collection<? extends PhysicalCard> cardsToRemove) {
         _playerPerforming = playerPerforming;
         _source = source;
         _cardsToRemove = cardsToRemove;
@@ -22,7 +22,7 @@ public class RemoveCardsFromTheGameEffect extends AbstractEffect {
 
     @Override
     public boolean isPlayableInFull(DefaultGame game) {
-        for (LotroPhysicalCard physicalCard : _cardsToRemove) {
+        for (PhysicalCard physicalCard : _cardsToRemove) {
             if (!physicalCard.getZone().isInPlay())
                 return false;
         }
@@ -32,25 +32,25 @@ public class RemoveCardsFromTheGameEffect extends AbstractEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult(DefaultGame game) {
-        Set<LotroPhysicalCard> removedCards = new HashSet<>();
-        for (LotroPhysicalCard physicalCard : _cardsToRemove)
+        Set<PhysicalCard> removedCards = new HashSet<>();
+        for (PhysicalCard physicalCard : _cardsToRemove)
             if (physicalCard.getZone().isInPlay())
                 removedCards.add(physicalCard);
 
-        Set<LotroPhysicalCard> discardedCards = new HashSet<>();
+        Set<PhysicalCard> discardedCards = new HashSet<>();
 
-        Set<LotroPhysicalCard> toMoveFromZoneToDiscard = new HashSet<>();
+        Set<PhysicalCard> toMoveFromZoneToDiscard = new HashSet<>();
 
         DiscardUtils.cardsToChangeZones(game, removedCards, discardedCards, toMoveFromZoneToDiscard);
 
-        Set<LotroPhysicalCard> toRemoveFromZone = new HashSet<>();
+        Set<PhysicalCard> toRemoveFromZone = new HashSet<>();
         toRemoveFromZone.addAll(removedCards);
         toRemoveFromZone.addAll(toMoveFromZoneToDiscard);
 
         game.getGameState().removeCardsFromZone(_playerPerforming, toRemoveFromZone);
-        for (LotroPhysicalCard removedCard : removedCards)
+        for (PhysicalCard removedCard : removedCards)
             game.getGameState().addCardToZone(game, removedCard, Zone.REMOVED);
-        for (LotroPhysicalCard card : toMoveFromZoneToDiscard)
+        for (PhysicalCard card : toMoveFromZoneToDiscard)
             game.getGameState().addCardToZone(game, card, Zone.DISCARD);
 
         game.getGameState().sendMessage(_playerPerforming + " removed " + GameUtils.getAppendedNames(removedCards) + " from the game using " + GameUtils.getCardLink(_source));
