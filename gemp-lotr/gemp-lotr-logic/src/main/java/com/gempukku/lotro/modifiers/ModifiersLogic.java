@@ -120,11 +120,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     private List<Modifier> getKeywordModifiersAffectingCard(DefaultGame game, ModifierEffect modifierEffect,
                                                             Keyword keyword, PhysicalCard card) {
-        if (card != null) {
-            if (card.getTitle() == "10,000 Tribbles - Clone") {
-                game.getGameState().sendMessage("DEBUG: Calling ModifiersLogic.getKeywordModifiersAffectingCard for " + card.getTitle());
-            }
-        }
         List<Modifier> modifiers = _modifiers.get(modifierEffect);
         if (modifiers == null)
             return Collections.emptyList();

@@ -1,15 +1,15 @@
 package com.gempukku.lotro.game;
 
-import com.gempukku.lotro.adventure.Adventure;
 import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.common.SitesBlock;
+import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface GameFormat {
-    boolean isOrderedSites();
 
     boolean canCancelRingBearerSkirmish();
 
@@ -62,6 +62,6 @@ public interface GameFormat {
 
     int getHandSize();
 
-    Adventure getAdventure();
     JSONDefs.Format Serialize();
+    GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback);
 }

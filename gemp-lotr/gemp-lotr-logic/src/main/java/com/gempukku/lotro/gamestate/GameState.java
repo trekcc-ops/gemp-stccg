@@ -5,8 +5,6 @@ import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.game.*;
 import com.gempukku.lotro.modifiers.ModifierFlag;
-import com.gempukku.lotro.processes.Assignment;
-import com.gempukku.lotro.processes.Skirmish;
 import org.apache.log4j.Logger;
 
 import java.security.InvalidParameterException;
@@ -46,16 +44,12 @@ public abstract class GameState {
 
     protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
 
-    private final List<Assignment> _assignments = new LinkedList<>();
-    private Skirmish _skirmish = null;
-
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
     protected Map<String, CardDeck> _decks;
     protected CardBlueprintLibrary _library;
 
     private int _nextCardId = 0;
-    protected Map<String, List<String>> _cards;
 
     private int nextCardId() {
         return _nextCardId++;
@@ -192,9 +186,6 @@ public abstract class GameState {
                 discard.forEach(listener::cardCreated);
             }
 
-            for (Assignment assignment : _assignments)
-                listener.addAssignment(assignment.getFellowshipCharacter(), assignment.getShadowCharacters());
-
             for (Map.Entry<PhysicalCard, Map<Token, Integer>> physicalCardMapEntry : _cardTokens.entrySet()) {
                 PhysicalCard card = physicalCardMapEntry.getKey();
                 for (Map.Entry<Token, Integer> tokenIntegerEntry : physicalCardMapEntry.getValue().entrySet()) {
@@ -312,36 +303,6 @@ public abstract class GameState {
             return _stacked.get(playerId);
         else
             return _inPlay;
-    }
-
-    public void removeFromSkirmish(PhysicalCard card) {
-        removeFromSkirmish(card, true);
-    }
-
-    public void replaceInSkirmish(PhysicalCard card) {
-        _skirmish.setFellowshipCharacter(card);
-        for (GameStateListener gameStateListener : getAllGameStateListeners()) {
-            gameStateListener.finishSkirmish();
-            gameStateListener.startSkirmish(_skirmish.getFellowshipCharacter(), _skirmish.getShadowCharacters());
-        }
-    }
-
-    private void removeFromSkirmish(PhysicalCard card, boolean notify) {
-        if (_skirmish != null) {
-            if (_skirmish.getFellowshipCharacter() == card) {
-                _skirmish.setFellowshipCharacter(null);
-                _skirmish.addRemovedFromSkirmish(card);
-                if (notify)
-                    for (GameStateListener listener : getAllGameStateListeners())
-                        listener.removeFromSkirmish(card);
-            }
-            if (_skirmish.getShadowCharacters().remove(card)) {
-                _skirmish.addRemovedFromSkirmish(card);
-                if (notify)
-                    for (GameStateListener listener : getAllGameStateListeners())
-                        listener.removeFromSkirmish(card);
-            }
-        }
     }
 
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
@@ -739,57 +700,6 @@ public abstract class GameState {
 
     public void removeTwilight(int twilight) {
         setTwilight(_twilightPool - Math.min(Math.max(0, twilight), _twilightPool));
-    }
-
-    public void assignToSkirmishes(PhysicalCard fp, Set<PhysicalCard> minions) {
-        removeFromSkirmish(fp);
-        for (PhysicalCard minion : minions) {
-            removeFromSkirmish(minion);
-
-            for (Assignment assignment : new LinkedList<>(_assignments)) {
-                if (assignment.getShadowCharacters().remove(minion))
-                    if (assignment.getShadowCharacters().size() == 0)
-                        removeAssignment(assignment);
-            }
-        }
-
-        Assignment assignment = findAssignment(fp);
-        if (assignment != null)
-            assignment.getShadowCharacters().addAll(minions);
-        else
-            _assignments.add(new Assignment(fp, new HashSet<>(minions)));
-
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.addAssignment(fp, minions);
-    }
-
-    public void removeAssignment(Assignment assignment) {
-        _assignments.remove(assignment);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.removeAssignment(assignment.getFellowshipCharacter());
-    }
-
-    public List<Assignment> getAssignments() {
-        return _assignments;
-    }
-
-    private Assignment findAssignment(PhysicalCard fp) {
-        for (Assignment assignment : _assignments)
-            if (assignment.getFellowshipCharacter() == fp)
-                return assignment;
-        return null;
-    }
-
-    public Skirmish getSkirmish() {
-        return _skirmish;
-    }
-
-    public void finishSkirmish() {
-        if (_skirmish != null) {
-            _skirmish = null;
-            for (GameStateListener listener : getAllGameStateListeners())
-                listener.finishSkirmish();
-        }
     }
 
     public PhysicalCard removeCardFromEndOfPile(String player, Zone zone, EndOfPile endOfPile) {

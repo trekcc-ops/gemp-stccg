@@ -86,7 +86,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("addkeyword", new AddKeyword());
         effectAppenderProducers.put("addmodifier", new AddModifier());
         effectAppenderProducers.put("appendcardidstowhileinzone", new AppendCardIdsToWhileInZone());
-        effectAppenderProducers.put("cancelallassignments", new CancelAllAssignments());
         effectAppenderProducers.put("cancelevent", new CancelEvent());
         effectAppenderProducers.put("chooseakeyword", new ChooseAKeyword());
         effectAppenderProducers.put("conditional", new ConditionalEffect());

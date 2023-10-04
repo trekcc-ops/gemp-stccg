@@ -6,7 +6,6 @@ import com.gempukku.lotro.decisions.AwaitingDecision;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface GameStateListener {
     void cardCreated(PhysicalCard card);
@@ -30,18 +29,6 @@ public interface GameStateListener {
     void setCurrentPlayerId(String playerId);
 
     void setCurrentPhase(String currentPhase);
-
-    void addAssignment(PhysicalCard fp, Set<PhysicalCard> minions);
-
-    void removeAssignment(PhysicalCard fp);
-
-    void startSkirmish(PhysicalCard fp, Set<PhysicalCard> minions);
-
-    void addToSkirmish(PhysicalCard card);
-
-    void removeFromSkirmish(PhysicalCard card);
-
-    void finishSkirmish();
 
     void addTokens(PhysicalCard card, Token token, int count);
 

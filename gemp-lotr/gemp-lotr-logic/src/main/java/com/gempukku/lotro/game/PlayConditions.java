@@ -2,14 +2,15 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.cards.PhysicalCard;
-import com.gempukku.lotro.common.*;
+import com.gempukku.lotro.common.CardType;
+import com.gempukku.lotro.common.Filterable;
+import com.gempukku.lotro.common.Phase;
+import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.filters.Filter;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.modifiers.ModifierFlag;
-import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 
 import java.util.Collection;
-import java.util.List;
 
 public class PlayConditions {
     public static boolean canPayForShadowCard(DefaultGame game, PhysicalCard self, Filterable validTargetFilter, int withTwilightRemoved, int twilightModifier, boolean ignoreRoamingPenalty) {
@@ -127,19 +128,6 @@ public class PlayConditions {
                         && game1.getModifiersQuerying().canBeExerted(game1, source, physicalCard)) >= count;
     }
 
-    public static boolean canStackCardFromHand(PhysicalCard source, DefaultGame game, String playerId, int cardCount, Filterable onto, Filterable... card) {
-        Filter cardFilter = Filters.and(card);
-        List<? extends PhysicalCard> hand = game.getGameState().getHand(playerId);
-        int count = 0;
-        for (PhysicalCard cardInHand : hand) {
-            if (cardFilter.accepts(game, cardInHand))
-                count++;
-        }
-
-        return count >= cardCount
-                && canSpot(game, onto);
-    }
-
     public static boolean canStackDeckTopCards(PhysicalCard source, DefaultGame game, String deckId, int cardCount, Filterable... onto) {
         return game.getGameState().getDrawDeck(deckId).size() >= cardCount
                 && canSpot(game, onto);
@@ -163,19 +151,6 @@ public class PlayConditions {
 
     public static boolean canSpot(DefaultGame game, int count, Filterable... filters) {
         return Filters.canSpot(game, count, filters);
-    }
-
-    // "If you can spot X [elven] tokens on conditions..."
-    public static boolean canSpotCultureTokensOnCards(DefaultGame game, Token token, int count, Filterable... filters) {
-        return LotroGameUtils.getSpottableCultureTokensOfType(game, token, filters) >= count;
-    }
-
-    public static boolean hasInitiative(DefaultGame game, Side side) {
-        return game.getModifiersQuerying().hasInitiative(game) == side;
-    }
-
-    public static boolean canRemoveThreat(DefaultGame game, PhysicalCard card, int count) {
-        return game.getGameState().getThreats() >= count && game.getModifiersQuerying().canRemoveThreat(game, card);
     }
 
     public static boolean canPlayFromDeck(String playerId, DefaultGame game, Filterable... filters) {

@@ -91,8 +91,6 @@ public class FieldUtils {
     }
 
     public static JSONObject[] getObjectArray(Object value, String key) throws InvalidCardDefinitionException {
-/*        if (value != null)
-            LOG.debug(value.toString());*/
         if (value == null)
             return new JSONObject[0];
         else if (value instanceof JSONObject)

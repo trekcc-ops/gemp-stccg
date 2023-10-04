@@ -1,13 +1,17 @@
 package com.gempukku.lotro.formats;
 
-import com.gempukku.lotro.adventure.Adventure;
-import com.gempukku.lotro.adventure.AdventureLibrary;
-import com.gempukku.lotro.cards.*;
+import com.gempukku.lotro.cards.CardBlueprintLibrary;
+import com.gempukku.lotro.cards.CardDeck;
+import com.gempukku.lotro.cards.CardNotFoundException;
+import com.gempukku.lotro.cards.LotroCardBlueprint;
 import com.gempukku.lotro.common.CardType;
 import com.gempukku.lotro.common.JSONDefs;
 import com.gempukku.lotro.common.Side;
 import com.gempukku.lotro.common.SitesBlock;
 import com.gempukku.lotro.game.GameFormat;
+import com.gempukku.lotro.game.PlayerOrderFeedback;
+import com.gempukku.lotro.processes.BiddingGameProcess;
+import com.gempukku.lotro.processes.GameProcess;
 import com.gempukku.lotro.rules.GameUtils;
 
 import java.util.*;
@@ -16,7 +20,6 @@ import java.util.stream.Collectors;
 public class DefaultGameFormat implements GameFormat {
 
     public static final String CardRemovedError = "Deck contains card removed from the set";
-    private final Adventure _adventure;
     private final CardBlueprintLibrary _library;
     private final String _name;
     private final String _game;
@@ -46,8 +49,8 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
 
-    public DefaultGameFormat(AdventureLibrary adventureLibrary, CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
-        this(library, adventureLibrary.getAdventure(def.adventure), def.name, def.game, def.code, def.order, def.surveyUrl, SitesBlock.valueOf(def.sites),
+    public DefaultGameFormat(CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
+        this(library, def.name, def.game, def.code, def.order, def.surveyUrl, SitesBlock.valueOf(def.sites),
                 def.validateShadowFPCount, def.minimumDeckSize, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall);
 
@@ -75,12 +78,11 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     public DefaultGameFormat(CardBlueprintLibrary library,
-                             Adventure adventure, String name, String game, String code, int order, String surveyUrl,
+                             String name, String game, String code, int order, String surveyUrl,
                              SitesBlock siteBlock,
                              boolean validateShadowFPCount, int minimumDeckSize, int maximumSameName, boolean mulliganRule,
                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
                              boolean winOnControlling5Sites, boolean playtest, boolean hallVisible) {
-        _adventure = adventure;
         _library = library;
         _name = name;
         _game = game;
@@ -99,16 +101,6 @@ public class DefaultGameFormat implements GameFormat {
         _winOnControlling5Sites = winOnControlling5Sites;
         _isPlaytest = playtest;
         _hallVisible = hallVisible;
-    }
-
-    @Override
-    public Adventure getAdventure() {
-        return _adventure;
-    }
-
-    @Override
-    public final boolean isOrderedSites() {
-        return _siteBlock != SitesBlock.SHADOWS;
     }
 
     @Override
@@ -535,7 +527,6 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public JSONDefs.Format Serialize() {
         return new JSONDefs.Format() {{
-            adventure = null;
             code = _code;
             game = _game;
             name = _name;
@@ -564,4 +555,8 @@ public class DefaultGameFormat implements GameFormat {
             hall = _hallVisible;
         }};
     }
+    public GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
+        return new BiddingGameProcess(players, playerOrderFeedback);
+    }
+
 }

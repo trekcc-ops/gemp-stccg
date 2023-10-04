@@ -32,7 +32,6 @@ public class JSONDefs {
     }
 
     public static class Format {
-        public String adventure;
         public String game;
         public String code;
         public String name;

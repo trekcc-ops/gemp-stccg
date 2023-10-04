@@ -9,6 +9,7 @@ import com.gempukku.lotro.gamestate.ST1EGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
+import com.gempukku.lotro.rules.WinConditionRule;
 import com.gempukku.lotro.rules.lotronly.CharacterDeathRule;
 
 import java.util.Map;
@@ -23,9 +24,9 @@ public class LotroGame extends DefaultGame {
                      final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
 
-        _format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
-        new CharacterDeathRule(_actionsEnvironment).applyRule();
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
+        new WinConditionRule(_actionsEnvironment).applyRule();
+        new CharacterDeathRule(_actionsEnvironment).applyRule();
 
             // Being deprecated
         _gameState = new ST1EGameState(_allPlayers, decks, library, _format);

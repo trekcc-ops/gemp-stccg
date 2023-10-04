@@ -22,7 +22,6 @@ public class FormatLibrary {
 
     private final Map<String, SealedLeagueDefinition> _sealedTemplates = new LinkedHashMap<>();
 
-    private final AdventureLibrary _adventureLibrary;
     private final CardBlueprintLibrary _cardLibrary;
     private final File _formatPath;
     private final File _sealedPath;
@@ -36,7 +35,6 @@ public class FormatLibrary {
 
     public FormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary, File formatPath,
                          File sealedPath) {
-        _adventureLibrary = adventureLibrary;
         _cardLibrary = bpLibrary;
         _formatPath = formatPath;
         _sealedPath = sealedPath;
@@ -117,7 +115,7 @@ public class FormatLibrary {
                 if (def == null)
                     continue;
 
-                DefaultGameFormat format = new DefaultGameFormat(_adventureLibrary, _cardLibrary, def);
+                DefaultGameFormat format = new DefaultGameFormat(_cardLibrary, def);
 
                 _allFormats.put(format.getCode(), format);
                 if (format.hallVisible()) {

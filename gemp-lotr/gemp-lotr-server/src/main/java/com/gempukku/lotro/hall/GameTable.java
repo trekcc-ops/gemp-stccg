@@ -18,11 +18,7 @@ public class GameTable {
     public GameTable(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         String formatName = gameSettings.getLotroFormat().getName();
-        if (formatName.equals("Tribbles")) {
-            this.capacity = 2; // manually change Tribbles player limit
-        } else {
-            this.capacity = gameSettings.getLotroFormat().getAdventure().isSolo() ? 1 : 2;
-        }
+        this.capacity = 2; // manually change Tribbles player limit
         logger.debug("Capacity of game: " + this.capacity);
     }
 

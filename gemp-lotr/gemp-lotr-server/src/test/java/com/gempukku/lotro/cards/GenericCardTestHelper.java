@@ -4,16 +4,14 @@ import com.gempukku.lotro.actions.AbstractActionProxy;
 import com.gempukku.lotro.actions.ActionProxy;
 import com.gempukku.lotro.actions.RequiredTriggerAction;
 import com.gempukku.lotro.at.AbstractAtTest;
-import com.gempukku.lotro.filters.FilterFactory;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.effects.DiscardCardsFromPlayEffect;
 import com.gempukku.lotro.effects.EffectResult;
+import com.gempukku.lotro.filters.FilterFactory;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.Modifier;
-import com.gempukku.lotro.processes.Assignment;
-import com.gempukku.lotro.processes.Skirmish;
 import com.gempukku.lotro.rules.GameUtils;
 import org.junit.Assert;
 
@@ -22,30 +20,6 @@ import java.util.*;
 public class GenericCardTestHelper extends AbstractAtTest {
 
     private final int LastCardID = 100;
-
-    public static final HashMap<String, String> FellowshipSites = new HashMap<>() {{
-        put("site1", "1_319");
-        put("site2", "1_327");
-        put("site3", "1_337");
-        put("site4", "1_343");
-        put("site5", "1_349");
-        put("site6", "1_350");
-        put("site7", "1_353");
-        put("site8", "1_356");
-        put("site9", "1_360");
-    }};
-
-    public static final HashMap<String, String> KingSites = new HashMap<>() {{
-        put("site1", "7_330");
-        put("site2", "7_335");
-        put("site3", "8_117");
-        put("site4", "7_342");
-        put("site5", "7_345");
-        put("site6", "7_350");
-        put("site7", "8_120");
-        put("site8", "10_120");
-        put("site9", "7_360");
-    }};
 
     public static final String FOTRFrodo = "1_290";
     public static final String GimliRB = "9_4";
@@ -533,16 +507,9 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
     public int GetTwilight() { return _game.getGameState().getTwilightPool(); }
-    public void SetTwilight(int amount) { _game.getGameState().setTwilight(amount); }
-
-    public int GetMoveLimit() { return _game.getModifiersQuerying().getMoveLimit(_game, 2); }
 
     public PhysicalCardImpl GetCurrentSite() { return (PhysicalCardImpl)_game.getGameState().getCurrentSite(); }
 
-    public void SkipToAssignments() throws DecisionResultInvalidException {
-        SkipToPhase(Phase.ASSIGNMENT);
-        PassCurrentPhaseActions();
-    }
     public void SkipToPhase(Phase target) throws DecisionResultInvalidException {
         for(int attempts = 1; attempts <= 20; attempts++)
         {
@@ -746,19 +713,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
         playerDecided(player, String.join(",", ids));
     }
-
-    public boolean IsCharAssigned(PhysicalCardImpl card) {
-        List<Assignment> assigns = _game.getGameState().getAssignments();
-        return assigns.stream().anyMatch(x -> x.getFellowshipCharacter() == card || x.getShadowCharacters().contains(card));
-    }
-
-    public boolean IsCharSkirmishing(PhysicalCardImpl card) {
-        var skirmish = _game.getGameState().getSkirmish();
-        return skirmish.getFellowshipCharacter() == card ||
-                skirmish.getShadowCharacters().stream().anyMatch(x -> x == card);
-    }
-
-    public Skirmish GetActiveSkirmish() { return _game.getGameState().getSkirmish(); }
 
     public boolean IsAttachedTo(PhysicalCardImpl card, PhysicalCardImpl bearer) {
         if(card.getZone() != Zone.ATTACHED) {

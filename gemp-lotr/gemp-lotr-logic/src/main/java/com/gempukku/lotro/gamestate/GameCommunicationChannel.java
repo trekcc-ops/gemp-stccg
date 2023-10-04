@@ -74,39 +74,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void addAssignment(PhysicalCard freePeople, Set<PhysicalCard> minions) {
-        appendEvent(new GameEvent(ADD_ASSIGNMENT).cardId(freePeople.getCardId()).otherCardIds(getCardIds(minions)));
-    }
-
-    @Override
-    public void removeAssignment(PhysicalCard freePeople) {
-        appendEvent(new GameEvent(REMOVE_ASSIGNMENT).cardId(freePeople.getCardId()));
-    }
-
-    @Override
-    public void startSkirmish(PhysicalCard freePeople, Set<PhysicalCard> minions) {
-        GameEvent gameEvent = new GameEvent(START_SKIRMISH).otherCardIds(getCardIds(minions));
-        if (freePeople != null)
-            gameEvent.cardId(freePeople.getCardId());
-        appendEvent(gameEvent);
-    }
-
-    @Override
-    public void addToSkirmish(PhysicalCard card) {
-        appendEvent(new GameEvent(ADD_TO_SKIRMISH).card(card));
-    }
-
-    @Override
-    public void removeFromSkirmish(PhysicalCard card) {
-        appendEvent(new GameEvent(REMOVE_FROM_SKIRMISH).card(card));
-    }
-
-    @Override
-    public void finishSkirmish() {
-        appendEvent(new GameEvent(END_SKIRMISH));
-    }
-
-    @Override
     public void setCurrentPhase(String phase) {
         appendEvent(new GameEvent(GAME_PHASE_CHANGE).phase(phase));
     }

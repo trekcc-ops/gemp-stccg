@@ -15,7 +15,6 @@ public class RuleSet {
 
     public void applyRuleSet() {
         new EnduringRule(_modifiersLogic).applyRule();
-        new HunterRule(_modifiersLogic).applyRule();
 
         new DiscardedCardRule(_actionsEnvironment).applyRule();
 

@@ -1,17 +1,16 @@
 package com.gempukku.lotro.filters;
 
-import com.gempukku.lotro.cards.PhysicalCard;
-import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.cards.CompletePhysicalCardVisitor;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
+import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.cards.PhysicalCardVisitor;
-import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.processes.Skirmish;
-import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
-import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
+import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.condition.Condition;
 import com.gempukku.lotro.evaluator.Evaluator;
+import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.rules.RuleUtils;
+import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
+import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
 
 import java.util.*;
 
@@ -236,26 +235,9 @@ public class Filters {
     public static final Filter item = Filters.or(CardType.ARTIFACT, CardType.POSSESSION);
     public static final Filter character = Filters.or(CardType.ALLY, CardType.COMPANION, CardType.MINION);
 
-    public static final Filter inSkirmish = (game, physicalCard) -> {
-        Skirmish skirmish = game.getGameState().getSkirmish();
-        if (skirmish != null) {
-            return (skirmish.getFellowshipCharacter() == physicalCard)
-                    || skirmish.getShadowCharacters().contains(physicalCard);
-        }
-        return false;
-    };
-
     public static final Filter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();
 
     public static final Filter active = (game, physicalCard) -> game.getGameState().isCardInPlayActive(physicalCard);
-
-    public static Filter canTakeWounds(final PhysicalCard woundSource, final int count) {
-        return (game, physicalCard) -> game.getModifiersQuerying().canTakeWounds(game, (woundSource != null)?Collections.singleton(woundSource):Collections.emptySet(), physicalCard, count) && game.getModifiersQuerying().getVitality(game, physicalCard) >= count;
-    }
-
-    public static Filter canTakeWounds(final Collection<PhysicalCard> woundSources, final int count) {
-        return (game, physicalCard) -> game.getModifiersQuerying().canTakeWounds(game, woundSources, physicalCard, count) && game.getModifiersQuerying().getVitality(game, physicalCard) >= count;
-    }
 
     public static Filter canBeDiscarded(final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(game, source.getOwner(), physicalCard, source);
@@ -266,26 +248,6 @@ public class Filters {
     }
 
     public static final Filter exhausted = (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) == 1;
-
-    public static Filter inSkirmishAgainst(final Filterable... againstFilter) {
-        return (game, physicalCard) -> {
-            Skirmish skirmish = game.getGameState().getSkirmish();
-            if (skirmish != null && skirmish.getFellowshipCharacter() != null) {
-                return (skirmish.getFellowshipCharacter() == physicalCard && Filters.filter(skirmish.getShadowCharacters(), game, againstFilter).size() > 0)
-                        || (skirmish.getShadowCharacters().contains(physicalCard) && Filters.and(againstFilter).accepts(game, skirmish.getFellowshipCharacter()));
-            }
-            return false;
-        };
-    }
-
-    public static Filter canExert(final PhysicalCard source) {
-        return canExert(source, 1);
-    }
-
-    public static Filter canExert(final PhysicalCard source, final int count) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) > count
-                && game.getModifiersQuerying().canBeExerted(game, source, physicalCard);
-    }
 
     public static Filter playable(final DefaultGame game) {
         return playable(game, 0);

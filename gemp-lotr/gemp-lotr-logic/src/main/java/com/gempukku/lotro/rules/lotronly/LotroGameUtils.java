@@ -54,24 +54,9 @@ public class LotroGameUtils extends GameUtils {
         return shadowPlayers.toArray(new String[0]);
     }
 
-    public static String getFreePeoplePlayer(DefaultGame game) {
-        return game.getGameState().getCurrentPlayerId();
-    }
-
     public static String getDeluxeCardLink(String blueprintId, LotroCardBlueprint blueprint) {
         var culture = blueprint.getCulture();
-        var cultureString = "";
-        if(culture == null) {
-            if (blueprint.getTitle().equals("The One Ring")) {
-                cultureString = getCultureImage(culture, "one_ring");
-            }
-            else {
-                cultureString = getCultureImage(culture, "site");
-            }
-        }
-        else {
-            cultureString = getCultureImage(culture, null);
-        }
+        var cultureString = getCultureImage(culture, null);
         return "<div class='cardHint' value='" + blueprintId + "'>" + cultureString
                 + (blueprint.isUnique() ? "·" : "") + " " + LotroGameUtils.getFullName(blueprint) + "</div>";
     }
@@ -122,23 +107,6 @@ public class LotroGameUtils extends GameUtils {
         }
 
         return result;
-    }
-
-    // "If you can spot X [elven] tokens..."
-    public static int getSpottableTokensTotal(DefaultGame game, Token token) {
-        return getSpottableCultureTokensOfType(game, token, Filters.any);
-    }
-
-    // "If you can spot X [elven] tokens on conditions..."
-    public static int getSpottableCultureTokensOfType(DefaultGame game, Token token, Filterable... filters) {
-        int tokensTotal = 0;
-
-        final var cards = Filters.filterActive(game, Filters.and(filters, Filters.hasToken(token)));
-
-        for (PhysicalCard physicalCard : cards)
-            tokensTotal += game.getGameState().getTokenCount(physicalCard, token);
-
-        return tokensTotal;
     }
 
     public static int getSpottableCulturesCount(DefaultGame game, Filterable... filters) {

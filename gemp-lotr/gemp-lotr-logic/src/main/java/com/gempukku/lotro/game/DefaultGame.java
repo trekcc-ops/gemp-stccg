@@ -13,6 +13,7 @@ import com.gempukku.lotro.modifiers.ModifiersEnvironment;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.modifiers.ModifiersQuerying;
 import com.gempukku.lotro.processes.TurnProcedure;
+import com.gempukku.lotro.rules.WinConditionRule;
 
 import java.util.*;
 
@@ -45,7 +46,7 @@ public abstract class DefaultGame {
         _allPlayers = decks.keySet();
 
         _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
-        format.getAdventure().applyAdventureRules(this, _actionsEnvironment, _modifiersLogic);
+        new WinConditionRule(_actionsEnvironment).applyRule();
     }
 
     public abstract GameState getGameState();

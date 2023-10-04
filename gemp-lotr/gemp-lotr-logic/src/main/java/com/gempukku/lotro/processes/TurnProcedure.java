@@ -43,7 +43,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
     }
 
     protected GameProcess setFirstGameProcess(AbstractGame game, Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
-        return game.getFormat().getAdventure().getStartingGameProcess(players, playerOrderFeedback);
+        return game.getFormat().getStartingGameProcess(players, playerOrderFeedback);
     }
 
     public GameStats getGameStats() { return _gameStats; }

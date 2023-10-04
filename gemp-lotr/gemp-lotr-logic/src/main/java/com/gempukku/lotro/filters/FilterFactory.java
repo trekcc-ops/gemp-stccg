@@ -146,11 +146,6 @@ public class FilterFactory {
 
             return (actionContext) -> Filters.hasToken(token, count);
         });
-        parameterFilters.put("inskirmishagainst",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter, environment);
-                    return (actionContext) -> Filters.inSkirmishAgainst(filterableSource.getFilterable(actionContext));
-                });
         parameterFilters.put("loweststrength",
                 (parameter, environment) -> {
                     final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter, environment);
