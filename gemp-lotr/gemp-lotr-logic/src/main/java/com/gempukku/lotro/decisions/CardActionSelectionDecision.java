@@ -72,7 +72,7 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
     private String[] getActionTexts(List<? extends Action> actions) {
         String[] result = new String[actions.size()];
         for (int i = 0; i < result.length; i++)
-            result[i] = actions.get(i).getText(_game);
+            result[i] = actions.get(i).getText();
         return result;
     }
 

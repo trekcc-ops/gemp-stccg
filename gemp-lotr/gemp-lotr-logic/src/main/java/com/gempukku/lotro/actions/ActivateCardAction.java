@@ -55,7 +55,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction<DefaultGame> 
 
             if (!_activated) {
                 _activated = true;
-                _activateCardEffect = new ActivateCardEffect(_physicalCard, getActionTimeword());
+                _activateCardEffect = new ActivateCardEffect(_physicalCard);
                 return _activateCardEffect;
             }
 

@@ -10,16 +10,13 @@ var CardGroup = Class.extend({
     maxCardHeight:497,
     descDiv:null,
 
-    init:function (container, belongTest, createDiv) {
+    init:function (container, belongTest, divId) {
         this.container = container;
         this.belongTestFunc = belongTest;
 
-        if (createDiv === undefined || createDiv) {
-            this.descDiv = $("<div class='ui-widget-content'></div>");
-            this.descDiv.css({"border-radius":"7px"});
-
-            container.append(this.descDiv);
-        }
+        if (divId != undefined) divId = '';
+        this.descDiv = $("<div id='" + divId + "' class='ui-widget-content card-group'></div>");
+        container.append(this.descDiv);
     },
 
     getCardElems:function () {
@@ -49,7 +46,7 @@ var CardGroup = Class.extend({
     },
 
     layoutCards:function () {
-        alert("This should be overriden by the extending classes");
+        alert("This should be overridden by the extending classes");
     },
 
     layoutCard:function (cardElem, x, y, width, height, index) {
@@ -356,9 +353,9 @@ var StackedCardGroup = CardGroup.extend({
         // Stacked implementation
     init:function (container, player, belongTest, createDiv) {
         this._super(container, belongTest, createDiv);
+        this.player = player;
         this.overlap = 6;
         this.maxCardHeight = 150;
-        this.player = player;
     },
 
     cardBelongs:function (cardData) {
@@ -488,6 +485,25 @@ var StackedCardGroup = CardGroup.extend({
 
         return true;
     }
+});
+
+var NormalGameCardGroup = NormalCardGroup.extend({
+
+    player:null,
+
+    init:function (container, player, belongTest, createDiv) {
+        this._super(container, belongTest, createDiv);
+        this.player = player;
+    },
+
+    cardBelongs:function (cardData) {
+        if (cardData.owner != this.player) {
+            return false;
+        } else {
+            return this.belongTestFunc(cardData);
+        }
+    }
+
 });
 
 var TableCardGroup = CardGroup.extend({

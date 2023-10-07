@@ -1,21 +1,48 @@
 package com.gempukku.lotro.processes;
 
+import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.decisions.CardActionSelectionDecision;
+import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.game.ST1EGame;
 
-public class ST1EDoorwaySeedPhaseProcess implements GameProcess<ST1EGame> {
+import java.util.List;
+import java.util.Set;
 
-    public ST1EDoorwaySeedPhaseProcess() {
-        // TODO: Build code for the doorway phase
+public class ST1EDoorwaySeedPhaseProcess implements GameProcess<ST1EGame> {
+    private final Set<String> _players;
+    private final Set<String> _playersDone;
+
+    public ST1EDoorwaySeedPhaseProcess(Set<String> players, Set<String> playersDone) {
+        _players = players;
+        _playersDone = playersDone;
     }
 
     @Override
     public void process(ST1EGame game) {
-        // TODO: Build code for doorway phase
+        for (String _playerId : _players) {
+            final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_playerId);
+
+            if (playableActions.size() == 0) {
+                _playersDone.add(_playerId);
+            } else {
+                game.getUserFeedback().sendAwaitingDecision(_playerId,
+                        new CardActionSelectionDecision(game, 1, "Play " + game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+                            @Override
+                            public void decisionMade(String result) throws DecisionResultInvalidException {
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    game.getActionsEnvironment().addActionToStack(action);
+                                } else
+                                    _playersDone.add(_playerId);
+                            }
+                        });
+            }
+        }
     }
 
     @Override
     public GameProcess<ST1EGame> getNextProcess() {
-            // TODO - This will just loop indefinitely after the mission seed phase
-        return new ST1EMissionSeedPhaseProcess(0, new ST1EDoorwaySeedPhaseProcess());
+        if (_players.size() != _playersDone.size()) return new ST1EDoorwaySeedPhaseProcess(_players, _playersDone);
+        else return new ST1EStartOfMissionPhaseProcess();
     }
 }

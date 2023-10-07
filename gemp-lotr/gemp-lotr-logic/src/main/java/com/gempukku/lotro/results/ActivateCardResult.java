@@ -1,22 +1,15 @@
 package com.gempukku.lotro.results;
 
 import com.gempukku.lotro.cards.PhysicalCard;
-import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.effects.EffectResult;
 
 public class ActivateCardResult extends EffectResult {
     private final PhysicalCard _source;
-    private final Phase _actionTimeword;
     private boolean _effectCancelled;
 
-    public ActivateCardResult(PhysicalCard source, Phase actionTimeword) {
+    public ActivateCardResult(PhysicalCard source) {
         super(Type.ACTIVATE);
         _source = source;
-        _actionTimeword = actionTimeword;
-    }
-
-    public Phase getActionTimeword() {
-        return _actionTimeword;
     }
 
     public PhysicalCard getSource() {

@@ -31,7 +31,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("discardfromhand", new DiscardFromHand());
         effectAppenderProducers.put("discardtopcardsfromdeck", new DiscardTopCardFromDeck());
         effectAppenderProducers.put("drawcards", new DrawCards());
-        effectAppenderProducers.put("endphase", new EndPhase());
         effectAppenderProducers.put("scorepoints", new ScorePoints());
         effectAppenderProducers.put("filtercardsinmemory", new FilterCardsInMemory());
         effectAppenderProducers.put("foreachplayer", new ForEachPlayer());

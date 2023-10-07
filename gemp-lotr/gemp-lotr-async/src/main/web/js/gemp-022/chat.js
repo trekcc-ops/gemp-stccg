@@ -60,7 +60,7 @@ var ChatBoxUI = Class.extend({
 
         
         this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
-            that.appendMessage("Unknown chat problem occured (error=" + xhr.status + ")", "warningMessage");
+            that.appendMessage("Unknown chat problem occurred (error=" + xhr.status + ")", "warningMessage");
         });
         this.enableDiscord = allowDiscord;
 

@@ -69,9 +69,9 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
     
     private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String rawDecklist = getQueryParameterSafely(queryDecoder, "decklist");
+        String rawDeckList = getQueryParameterSafely(queryDecoder, "decklist");
 
-        List<CardCollection.Item> importResult = _importCards.process(rawDecklist, _library);
+        List<CardCollection.Item> importResult = _importCards.process(rawDeckList, _library);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();

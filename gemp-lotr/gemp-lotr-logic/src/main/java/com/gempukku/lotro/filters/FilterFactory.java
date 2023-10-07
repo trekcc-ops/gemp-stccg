@@ -56,13 +56,6 @@ public class FilterFactory {
         simpleFilters.put("wounded", (actionContext) -> Filters.wounded);
         simpleFilters.put("your", (actionContext) -> Filters.owner(actionContext.getPerformingPlayer()));
 
-        parameterFilters.put("allyhome",
-                (parameter, environment) -> {
-                    final String[] parameterSplit = parameter.split(",");
-                    final SitesBlock sitesBlock = SitesBlock.findBlock(parameterSplit[0]);
-                    int number = Integer.parseInt(parameterSplit[1]);
-                    return (actionContext) -> Filters.isAllyHome(number, sitesBlock);
-                });
         parameterFilters.put("and",
                 (parameter, environment) -> {
                     final String[] filters = splitIntoFilters(parameter);
@@ -319,24 +312,6 @@ public class FilterFactory {
 
             return (actionContext) -> side;
         });
-        parameterFilters.put("siteblock",
-                (parameter, environment) -> {
-                    final SitesBlock sitesBlock = SitesBlock.findBlock(parameter);
-                    return (actionContext) -> Filters.siteBlock(sitesBlock);
-                });
-        parameterFilters.put("sitenumber",
-                (parameter, environment) -> {
-                    int min, max;
-                    if (parameter.contains("-")) {
-                        final String[] split = parameter.split("-", 2);
-                        min = Integer.parseInt(split[0]);
-                        max = Integer.parseInt(split[1]);
-                    } else {
-                        min = max = Integer.parseInt(parameter);
-                    }
-
-                    return (actionContext) -> Filters.siteNumberBetweenInclusive(min, max);
-                });
         parameterFilters.put("strengthlessthan",
                 (parameter, environment) -> {
                     final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);

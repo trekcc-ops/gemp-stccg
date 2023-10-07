@@ -1,6 +1,5 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.effects.discount.DiscountEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
@@ -8,17 +7,16 @@ import com.gempukku.lotro.effects.Effect;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGame> implements CostToEffectAction<AbstractGame> {
+public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGame>
+        implements CostToEffectAction<AbstractGame> {
     private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
     private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
     private final LinkedList<Effect> _processedCosts = new LinkedList<>();
     private final LinkedList<Effect> _effects = new LinkedList<>();
     private final LinkedList<Effect> _processedEffects = new LinkedList<>();
-
     private String text;
 
-    private Phase _actionTimeword;
     private String _performingPlayer;
 
     private boolean _virtualCardAction = false;
@@ -41,16 +39,6 @@ public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGam
     @Override
     public boolean isVirtualCardAction() {
         return _virtualCardAction;
-    }
-
-    @Override
-    public Phase getActionTimeword() {
-        return _actionTimeword;
-    }
-
-    @Override
-    public void setActionTimeword(Phase phase) {
-        _actionTimeword = phase;
     }
 
     @Override
@@ -94,9 +82,7 @@ public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGam
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return text;
-    }
+    public String getText() { return text; }
 
     protected boolean isCostFailed() {
         for (Effect processedCost : _processedCosts) {
@@ -154,4 +140,5 @@ public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGam
 
         return true;
     }
+
 }

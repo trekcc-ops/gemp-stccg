@@ -114,17 +114,24 @@ var CardFilter = Class.extend({
         
         this.fullFilterDiv = $("<div id='filter-inputs' style='display:flex;flex-wrap:wrap;'></div>");
         this.setSelect = $("<select id='setSelect' style='width: 130px; font-size: 80%;'>"
-            + "<option value='101,103,155'>All 1E Sets</option>"
-            + "<option value='144,145,146,147,150,157,164,190,221'>All Tribbles Sets</option>"
+            + "<option value='101,103,105,116,135,155,159'>All 1E Sets</option>"
+            + "<option value='144,145,147,150,157,164,190,221'>All Tribbles Sets</option>"
             + "<option disabled>----------</option>"
+            + "<option value='101'>Premiere</option>"
+            + "<option value='103'>Alternate Universe</option>"
+            + "<option value='105'>Q Continuum</option>"
+            + "<option value='116'>Blaze of Glory</option>"
+            + "<option value='135'>Chain of Command</option>"
             + "<option value='146'>Tribbles</option>"
             + "<option value='144'>More Tribbles, More Troubles</option>"
             + "<option value='145'>No Tribble at All</option>"
             + "<option value='147'>Virtual Promos [Tribbles]</option>"
             + "<option value='150'>Trials and Tribble-ations</option>"
+            + "<option value='155'>The Next Generation</option>"
             + "<option value='157'>Nothing But Tribble</option>"
+            + "<option value='159'>Homefront III</option>"
             + "<option value='164'>Big Tribble in Little Qo'noS</option>"
-            + "<option value='190'>Star Trek 50</option>"
+            + "<option value='190'>Star Trek 50 [Tribbles]</option>"
             + "<option value='221'>A Tribble of a Different Color</option>"
              + "</select>");
                    // Below is LotR stuff to use as a template if needed
@@ -150,9 +157,8 @@ var CardFilter = Class.extend({
 /*            + "<option value='twilight,name'>Twilight</option>"
             + "<option value='siteNumber,name'>Site number</option>"
             + "<option value='strength,name'>Strength</option>"
-            + "<option value='vitality,name'>Vitality</option>"
-            + "<option value='cardType,name'>Card type</option>"
-            + "<option value='culture,name'>Culture</option>"*/
+            + "<option value='vitality,name'>Vitality</option>"*/
+            + "<option value='cardType,name'>Card Type</option>"
             + "<option value='tribbleValue,name'>Tribble Value</option>"
             + "</select>");
         this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
@@ -214,9 +220,12 @@ var CardFilter = Class.extend({
             + "<option value=''>All Card Types</option>"
             + "<option value='ARTIFACT'>Artifacts</option>"
             + "<option value='DILEMMA'>Dilemmas</option>"
+            + "<option value='DOORWAY'>Doorways</option>"
             + "<option value='EVENT'>Events</option>"
             + "<option value='FACILITY'>Facilities</option>"
+            + "<option value='INTERRUPT'>Interrupts</option>"
             + "<option value='MISSION'>Missions</option>"
+            + "<option value='PERSONNEL'>Personnel</option>"
             + "<option value='TRIBBLE'>Tribbles</option>"
             + "<option value='TROUBLE'>Troubles</option>"
             + "</select>");

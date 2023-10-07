@@ -9,7 +9,7 @@ public class GameSettings {
     private final CollectionType collectionType;
     private final GameFormat gameFormat;
     private final League league;
-    private final LeagueSeriesData leagueSerie;
+    private final LeagueSeriesData seriesData;
     private final boolean competitive;
     private final boolean privateGame;
     private final boolean hiddenGame;
@@ -17,13 +17,13 @@ public class GameSettings {
     private final String userDescription;
     private final boolean isInviteOnly;
 
-    public GameSettings(CollectionType collectionType, GameFormat gameFormat, League league, LeagueSeriesData leagueSerie,
+    public GameSettings(CollectionType collectionType, GameFormat gameFormat, League league, LeagueSeriesData seriesData,
                         boolean competitive, boolean privateGame, boolean isInviteOnly, boolean hiddenGame,
                         GameTimer timer, String description) {
         this.collectionType = collectionType;
         this.gameFormat = gameFormat;
         this.league = league;
-        this.leagueSerie = leagueSerie;
+        this.seriesData = seriesData;
         this.competitive = competitive;
         this.privateGame = privateGame;
         this.hiddenGame = hiddenGame;
@@ -44,8 +44,8 @@ public class GameSettings {
         return league;
     }
 
-    public LeagueSeriesData getLeagueSerie() {
-        return leagueSerie;
+    public LeagueSeriesData getSeriesData() {
+        return seriesData;
     }
 
     public boolean isCompetitive() {

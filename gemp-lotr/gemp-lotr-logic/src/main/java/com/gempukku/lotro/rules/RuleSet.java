@@ -18,10 +18,6 @@ public class RuleSet {
 
         new DiscardedCardRule(_actionsEnvironment).applyRule();
 
-        new KilledCardRule(_actionsEnvironment).applyRule();
-
-        new TransferItemRule(_actionsEnvironment).applyRule();
-
         new StatModifiersRule(_modifiersLogic).applyRule();
 
         new FollowerRule(_actionsEnvironment).applyRule();
@@ -32,8 +28,6 @@ public class RuleSet {
         new ActivateResponseAbilitiesRule(_actionsEnvironment).applyRule();
         new ActivatePhaseActionsRule(_actionsEnvironment).applyRule();
         new ActivatePhaseActionsFromHandRule(_actionsEnvironment).applyRule();
-        new ActivatePhaseActionsFromDiscardRule(_actionsEnvironment).applyRule();
-        new ActivatePhaseActionsFromStackedRule(_actionsEnvironment).applyRule();
 
         new RequiredTriggersRule(_actionsEnvironment).applyRule();
         new OptionalTriggersRule(_actionsEnvironment).applyRule();

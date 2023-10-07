@@ -19,7 +19,7 @@ public class PlayedCardThisPhase implements RequirementProducer {
 
         return (actionContext) -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);
-            return new CardPlayedInCurrentPhaseCondition(filterable).isFullfilled(actionContext.getGame());
+            return new CardPlayedInCurrentPhaseCondition(filterable).isFulfilled(actionContext.getGame());
         };
     }
 }

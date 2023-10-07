@@ -5,7 +5,7 @@ import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.gamestate.GameState;
 import com.gempukku.lotro.gamestate.GameStateListener;
-import com.gempukku.lotro.gamestate.ST1EGameState;
+import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
@@ -23,7 +23,7 @@ public class ST2EGame extends DefaultGame {
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
             // TODO: Will likely need its own game state class
-        _gameState = new ST1EGameState(_allPlayers, decks, library, _format);
+        _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init);
     }

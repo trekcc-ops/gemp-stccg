@@ -4,10 +4,7 @@ import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.CardNotFoundException;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.common.CardType;
-import com.gempukku.lotro.common.JSONDefs;
-import com.gempukku.lotro.common.Side;
-import com.gempukku.lotro.common.SitesBlock;
+import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.game.GameFormat;
 import com.gempukku.lotro.game.PlayerOrderFeedback;
 import com.gempukku.lotro.processes.BiddingGameProcess;
@@ -26,7 +23,6 @@ public class DefaultGameFormat implements GameFormat {
     private final String _code;
     private final int _order;
     private final boolean _hallVisible;
-    private final SitesBlock _siteBlock;
     private final boolean _validateShadowFPCount;
     private final int _maximumSameName;
     private final boolean _mulliganRule;
@@ -35,7 +31,9 @@ public class DefaultGameFormat implements GameFormat {
     private final boolean _winAtEndOfRegroup;
     private final boolean _discardPileIsPublic;
     private final boolean _winOnControlling5Sites;
-    private final int _minimumDeckSize;
+    private final int _minimumDrawDeckSize;
+    private final int _maximumSeedDeckSize;
+    private final int _missions;
     private final List<String> _bannedCards = new ArrayList<>();
     private final List<String> _restrictedCards = new ArrayList<>();
     private final List<String> _validCards = new ArrayList<>();
@@ -50,8 +48,8 @@ public class DefaultGameFormat implements GameFormat {
     private final Map<String,String> _errataCardMap = new TreeMap<>();
 
     public DefaultGameFormat(CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
-        this(library, def.name, def.game, def.code, def.order, def.surveyUrl, SitesBlock.valueOf(def.sites),
-                def.validateShadowFPCount, def.minimumDeckSize, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
+        this(library, def.name, def.game, def.code, def.order, def.surveyUrl,
+                def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall);
 
         if(def.set != null)
@@ -79,8 +77,7 @@ public class DefaultGameFormat implements GameFormat {
 
     public DefaultGameFormat(CardBlueprintLibrary library,
                              String name, String game, String code, int order, String surveyUrl,
-                             SitesBlock siteBlock,
-                             boolean validateShadowFPCount, int minimumDeckSize, int maximumSameName, boolean mulliganRule,
+                             boolean validateShadowFPCount, int minimumDrawDeckSize, int maximumSeedDeckSize, int missions, int maximumSameName, boolean mulliganRule,
                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
                              boolean winOnControlling5Sites, boolean playtest, boolean hallVisible) {
         _library = library;
@@ -89,9 +86,8 @@ public class DefaultGameFormat implements GameFormat {
         _code = code;
         _order = order;
         _surveyUrl = surveyUrl;
-        _siteBlock = siteBlock;
         _validateShadowFPCount = validateShadowFPCount;
-        _minimumDeckSize = minimumDeckSize;
+        _minimumDrawDeckSize = minimumDrawDeckSize;
         _maximumSameName = maximumSameName;
         _mulliganRule = mulliganRule;
         _canCancelRingBearerSkirmish = canCancelRingBearerSkirmish;
@@ -101,6 +97,8 @@ public class DefaultGameFormat implements GameFormat {
         _winOnControlling5Sites = winOnControlling5Sites;
         _isPlaytest = playtest;
         _hallVisible = hallVisible;
+        _missions = missions;
+        _maximumSeedDeckSize = maximumSeedDeckSize;
     }
 
     @Override
@@ -192,11 +190,6 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public Map<String,String> getErrataCardMap() {
         return Collections.unmodifiableMap(_errataCardMap);
-    }
-
-    @Override
-    public SitesBlock getSiteBlock() {
-        return _siteBlock;
     }
 
     @Override
@@ -368,11 +361,6 @@ public class DefaultGameFormat implements GameFormat {
             }
         }
 
-        if(!valid.isEmpty()) {
-            result.add(valid);
-        }
-
-
         // Card count in deck and Ring-bearer
         Map<String, Integer> cardCountByName = new HashMap<>();
         Map<String, Integer> cardCountByBaseBlueprintId = new HashMap<>();
@@ -476,34 +464,22 @@ public class DefaultGameFormat implements GameFormat {
 
     private String validateDeckStructure(CardDeck deck) {
         StringBuilder result = new StringBuilder();
-        if (deck.getAllDeckCards().size() < _minimumDeckSize) {
-            result.append("Deck contains below minimum number of cards: ")
-                    .append(deck.getAllDeckCards().size()).append("<").append(_minimumDeckSize).append(".\n");
+        int drawDeckSize = deck.getSubDeck(SubDeck.DRAW_DECK).size();
+        if (drawDeckSize < _minimumDrawDeckSize) {
+            result.append("Draw deck contains below minimum number of cards: ")
+                    .append(drawDeckSize).append("<").append(_minimumDrawDeckSize).append(".\n");
         }
-        if (_validateShadowFPCount) {
-            int shadow = 0;
-            int fp = 0;
-            for (String blueprintId : deck.getDrawDeckCards()) {
-                try {
-                    LotroCardBlueprint card = _library.getLotroCardBlueprint(blueprintId);
-                    if (card.getSide() == Side.SHADOW)
-                        shadow++;
-                    else if (card.getSide() == Side.FREE_PEOPLE)
-                        fp++;
-                    else
-                        result.append("Deck contains non-Shadow, non-Free-Peoples card: ")
-                                .append(GameUtils.getFullName(card)).append(".\n");
-                }
-                catch(CardNotFoundException exception)
-                {
-                    result.append(CardRemovedError + ": ").append(blueprintId).append(".\n");
-                }
+        if (Objects.equals(_game, "st1e")) {
+            int seedDeckSize = deck.getSubDeck(SubDeck.SEED_DECK).size();
+            if (seedDeckSize > _maximumSeedDeckSize) {
+                result.append("Seed deck contains more than maximum number of cards: ")
+                        .append(seedDeckSize).append(">").append(".\n");
             }
-            if (fp != shadow) {
-                result.append("Deck contains different number of Shadow and Free peoples cards.\n");
+            int missions = deck.getSubDeck(SubDeck.MISSIONS).size();
+            if (missions != _missions) {
+                result.append("Deck must contain exactly ").append(_missions).append(" missions").append(".\n");
             }
         }
-
         return result.toString();
     }
 
@@ -532,7 +508,6 @@ public class DefaultGameFormat implements GameFormat {
             name = _name;
             order = _order;
             surveyUrl = _surveyUrl;
-            sites = _siteBlock.getHumanReadable();
             cancelRingBearerSkirmish = _canCancelRingBearerSkirmish;
             ruleOfFour = _hasRuleOfFour;
             winAtEndOfRegroup = _winAtEndOfRegroup;
@@ -540,7 +515,7 @@ public class DefaultGameFormat implements GameFormat {
             winOnControlling5Sites = _winOnControlling5Sites;
             playtest = _isPlaytest;
             validateShadowFPCount = _validateShadowFPCount;
-            minimumDeckSize = _minimumDeckSize;
+            minimumDrawDeckSize = _minimumDrawDeckSize;
             maximumSameName = _maximumSameName;
             mulliganRule = _mulliganRule;
             set = null;

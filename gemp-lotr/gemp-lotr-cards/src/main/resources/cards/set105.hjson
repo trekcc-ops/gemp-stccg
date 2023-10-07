@@ -1,0 +1,28 @@
+// Set 105: Q-Continuum
+
+{
+    105_001: {
+        title: Blade of Tkon
+        type: artifact
+        seedPhase: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/qc/bladeoftkon.gif
+    }
+    105_002: {
+        title: Canar
+        type: artifact
+        seedPhase: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/qc/canar.gif
+    }
+    105_003: {
+        title: Mona Lisa
+        type: artifact
+        seedPhase: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/qc/monalisa.gif
+    }
+    105_015: {
+        title: Q-Flash
+        type: doorway
+        seedPhase: doorway
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg
+    }
+}

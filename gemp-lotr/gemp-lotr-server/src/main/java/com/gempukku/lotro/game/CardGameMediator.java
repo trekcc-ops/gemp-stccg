@@ -189,21 +189,11 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
                 }
 
                 sb.append("<br><br><b>Effective stats:</b>");
-                try {
-                    int tribbleValue = card.getBlueprint().getTribbleValue();
-                    sb.append("<br><b>Tribble value:</b> ").append(tribbleValue);
-                } catch (UnsupportedOperationException ignored) {
-                }
-                try {
-                    String tribblePower = card.getBlueprint().getTribblePower().getHumanReadable();
-                    sb.append("<br><b>Tribble power:</b> ").append(tribblePower);
-                } catch (UnsupportedOperationException ignored) {
-                }
-                try {
+/*                try {
                     String imageUrl = card.getBlueprint().getImageUrl();
                     sb.append("<br><b>Image URL:</b> ").append(imageUrl);
                 } catch (UnsupportedOperationException ignored) {
-                }
+                }*/
 
                 StringBuilder keywords = new StringBuilder();
                 for (Keyword keyword : Keyword.values()) {

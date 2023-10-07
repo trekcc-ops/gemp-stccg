@@ -55,6 +55,6 @@ public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
 
     @Override
     public GameProcess<ST1EGame> getNextProcess() {
-        return new ST1EDoorwaySeedPhaseProcess();
+        return new ST1EStartOfGameProcess();
     }
 }

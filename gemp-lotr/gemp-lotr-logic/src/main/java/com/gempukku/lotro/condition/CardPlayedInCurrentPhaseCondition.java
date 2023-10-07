@@ -15,7 +15,7 @@ public class CardPlayedInCurrentPhaseCondition implements Condition {
     }
 
     @Override
-    public boolean isFullfilled(DefaultGame game) {
+    public boolean isFulfilled(DefaultGame game) {
         for (EffectResult effectResult : game.getActionsEnvironment().getPhaseEffectResults()) {
             if (effectResult instanceof PlayCardResult playResult) {
                 if (filter.accepts(game, playResult.getPlayedCard()))

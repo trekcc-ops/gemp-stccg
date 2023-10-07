@@ -98,8 +98,8 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
 
         @Override
-        public String getText(DefaultGame game) {
-            return _effect.getText(game);
+        public String getText() {
+            return _effect.getText(_game);
         }
 
         @Override

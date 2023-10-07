@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ConstructedLeagueData implements LeagueData {
     private final LeaguePrizes _leaguePrizes;
-    private final List<LeagueSeriesData> _series = new ArrayList<>();
+    private final List<LeagueSeriesData> _allSeries = new ArrayList<>();
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final CollectionType _collectionType;
 
@@ -40,7 +40,7 @@ public class ConstructedLeagueData implements LeagueData {
             DefaultLeagueSeriesData data = new DefaultLeagueSeriesData(_leaguePrizes, false, "Week " + (i + 1),
                     DateUtils.offsetDate(start, i * days), DateUtils.offsetDate(start, ((i + 1) * days) - 1),
                     matchCount, format, _collectionType);
-            _series.add(data);
+            _allSeries.add(data);
         }
     }
 
@@ -56,7 +56,7 @@ public class ConstructedLeagueData implements LeagueData {
 
     @Override
     public List<LeagueSeriesData> getSeries() {
-        return _series;
+        return _allSeries;
     }
 
     @Override
@@ -68,12 +68,12 @@ public class ConstructedLeagueData implements LeagueData {
         int status = oldStatus;
         if (status == 0) {
             int maxGamesCount = 0;
-            for (LeagueSeriesData sery : _series) {
-                maxGamesCount+=sery.getMaxMatches();
+            for (LeagueSeriesData seriesData : _allSeries) {
+                maxGamesCount+=seriesData.getMaxMatches();
             }
 
-            LeagueSeriesData lastSerie = _series.get(_series.size() - 1);
-            if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
+            LeagueSeriesData lastSeries = _allSeries.get(_allSeries.size() - 1);
+            if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesCount, _collectionType);
                     if (leaguePrize != null)

@@ -29,10 +29,11 @@ public class LotroCardBlueprintBuilder implements CardGenerationEnvironment {
         fieldProcessors.put("image-url", new ImageUrlFieldProcessor());
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
-        fieldProcessors.put("unique", new UniquenessFieldProcessor());
+        fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
         fieldProcessors.put("side", new SideFieldProcessor());
         fieldProcessors.put("culture", new CultureFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
+        fieldProcessors.put("seedphase", new SeedPhaseProcessor());
 
         fieldProcessors.put("quadrant", new QuadrantFieldProcessor());
         fieldProcessors.put("region", new RegionFieldProcessor());

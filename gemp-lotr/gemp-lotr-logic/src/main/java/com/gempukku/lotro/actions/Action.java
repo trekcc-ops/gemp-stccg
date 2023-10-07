@@ -1,9 +1,8 @@
 package com.gempukku.lotro.actions;
 
-import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.cards.PhysicalCard;
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.game.DefaultGame;
 
 public interface Action<AbstractGame extends DefaultGame> {
     enum ActionType {
@@ -15,8 +14,6 @@ public interface Action<AbstractGame extends DefaultGame> {
 
     PhysicalCard getActionSource();
 
-    void setActionTimeword(Phase phase);
-
     PhysicalCard getActionAttachedToCard();
 
     void setVirtualCardAction(boolean virtualCardAction);
@@ -27,9 +24,7 @@ public interface Action<AbstractGame extends DefaultGame> {
 
     String getPerformingPlayer();
 
-    Phase getActionTimeword();
-
-    String getText(DefaultGame game);
+    String getText();
 
     Effect<AbstractGame> nextEffect(AbstractGame game);
 }

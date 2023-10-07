@@ -37,17 +37,19 @@ public class JSONDefs {
         public String name;
         public int order = 1000;
         public String surveyUrl;
-        public String sites;
+        public String sites = "Fellowship";
         public boolean cancelRingBearerSkirmish = false;
-        public boolean ruleOfFour = false; // Changed from default "true" in original
+        public boolean ruleOfFour = false;
         public boolean winAtEndOfRegroup = false;
         public boolean discardPileIsPublic = false;
         public boolean winOnControlling5Sites = false;
         public boolean playtest = false;
         public boolean validateShadowFPCount = true;
-        public int minimumDeckSize = 60;
-        public int maximumSameName = 4;
-        public boolean mulliganRule = true;
+        public int minimumDrawDeckSize = 60;
+        public int maximumSeedDeckSize = 30;
+        public int missions = 6;
+        public int maximumSameName = 9999;
+        public boolean mulliganRule = false;
         public ArrayList<Integer> set;
         public ArrayList<String> banned = new ArrayList<>();
         public ArrayList<String> restricted = new ArrayList<>();

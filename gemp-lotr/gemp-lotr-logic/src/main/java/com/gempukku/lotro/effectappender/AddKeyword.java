@@ -15,7 +15,7 @@ import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.evaluator.ConstantEvaluator;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.modifiers.lotronly.KeywordModifier;
+import com.gempukku.lotro.modifiers.KeywordModifier;
 import com.gempukku.lotro.rules.GameUtils;
 import org.json.simple.JSONObject;
 

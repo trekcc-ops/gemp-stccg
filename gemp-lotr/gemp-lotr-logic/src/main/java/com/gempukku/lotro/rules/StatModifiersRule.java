@@ -7,9 +7,9 @@ import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.modifiers.ModifiersLogic;
 import com.gempukku.lotro.modifiers.StrengthModifier;
-import com.gempukku.lotro.modifiers.lotronly.MinionSiteNumberModifier;
-import com.gempukku.lotro.modifiers.lotronly.ResistanceModifier;
-import com.gempukku.lotro.modifiers.lotronly.VitalityModifier;
+import com.gempukku.lotro.modifiers.MinionSiteNumberModifier;
+import com.gempukku.lotro.modifiers.ResistanceModifier;
+import com.gempukku.lotro.modifiers.VitalityModifier;
 
 public class StatModifiersRule {
     private final ModifiersLogic modifiersLogic;

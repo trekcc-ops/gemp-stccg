@@ -6,7 +6,6 @@ import com.gempukku.lotro.effectappender.EffectAppender;
 import com.gempukku.lotro.common.Filterable;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.actions.CostToEffectAction;
-import com.gempukku.lotro.modifiers.cost.AbstractExtraPlayCostModifier;
 import com.gempukku.lotro.requirement.Requirement;
 import org.json.simple.JSONObject;
 

@@ -37,15 +37,13 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     private int resistance;
     private int tribbleValue;
     private TribblePower tribblePower;
-    private SitesBlock siteBlock;
     private int siteNumber;
     private Set<PossessionClass> possessionClasses;
     private Direction direction;
-    private SitesBlock allyHomeBlock;
-    private int[] allyHomeSites = new int[0];
 
     private List<Requirement> requirements;
     private List<FilterableSource> targetFilters;
+    private List<Phase> seedPhases;
 
     private List<ActionSource> requiredBeforeTriggers;
     private List<ActionSource> requiredAfterTriggers;
@@ -90,11 +88,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     // Building methods
-
-    public void setAllyHomeSites(SitesBlock block, int[] numbers) {
-        this.allyHomeBlock = block;
-        this.allyHomeSites = numbers;
-    }
 
     public void appendCopiedFilter(FilterableSource filterableSource) {
         if (copiedFilters == null)
@@ -334,10 +327,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
         this.tribblePower = tribblePower;
     }
 
-    public void setSiteBlock(SitesBlock siteBlock) {
-        this.siteBlock = siteBlock;
-    }
-
     public void setSiteNumber(int siteNumber) {
         this.siteNumber = siteNumber;
     }
@@ -425,23 +414,8 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public SitesBlock getSiteBlock() {
-        return siteBlock;
-    }
-
-    @Override
     public int getSiteNumber() {
         return siteNumber;
-    }
-
-    @Override
-    public int[] getAllyHomeSiteNumbers() {
-        return allyHomeSites;
-    }
-
-    @Override
-    public SitesBlock getAllyHomeSiteBlock() {
-        return allyHomeBlock;
     }
 
     @Override
@@ -965,7 +939,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 && cardType != CardType.SITE
                 && cardType != CardType.MINION)
             throw new InvalidCardDefinitionException("Only minions and sites have a site number, use siteHome for allies");
-        if (cardType == CardType.EVENT) {
+/*        if (cardType == CardType.EVENT) {
             List<Keyword> requiredKeywords = Arrays.asList(
                     Keyword.RESPONSE, Keyword.FELLOWSHIP, Keyword.SHADOW, Keyword.MANEUVER, Keyword.ARCHERY, Keyword.ASSIGNMENT,
                     Keyword.SKIRMISH, Keyword.REGROUP);
@@ -979,7 +953,7 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 if (playEventAction == null)
                     throw new InvalidCardDefinitionException("Events have to have an event type effect");
             }
-        }
+        }*/
         if (cardType != CardType.EVENT && playEventAction != null)
             throw new InvalidCardDefinitionException("Only events should have an event type effect");
         if (Arrays.asList(CardType.MINION, CardType.COMPANION, CardType.ALLY).contains(cardType)) {
@@ -988,10 +962,6 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
             if (strength == 0)
                 throw new InvalidCardDefinitionException("Character has 0 strength");
         }
-        if (cardType == CardType.SITE && siteBlock == null)
-            throw new InvalidCardDefinitionException("Site has to have a block defined");
-        if (siteBlock != null && cardType != CardType.SITE)
-            throw new InvalidCardDefinitionException("Block defined for card, that is not site");
         if (targetFilters != null && keywords != null) {
             if (keywords.size() > 1 && keywords.containsKey(Keyword.TALE))
                 throw new InvalidCardDefinitionException("Attachment should not have keywords");
@@ -1010,5 +980,9 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
                 new DefaultActionContext<>(self.getOwner(), game, self, null, null);
         return playOutOfSequenceConditions.stream().anyMatch(requirement -> requirement.accepts(actionContext));
     }
+
+    public void setSeedPhase(List<Phase> seedPhases) { this.seedPhases = seedPhases; }
+
+    public boolean canSeedDuringPhase(Phase phase) { return this.seedPhases.contains(phase); }
 
 }

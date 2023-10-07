@@ -7,6 +7,7 @@ import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.decisions.AwaitingDecision;
 import com.gempukku.lotro.game.GameFormat;
+import com.gempukku.lotro.game.ST1EGame;
 
 import java.util.*;
 
@@ -14,14 +15,21 @@ public class ST1EGameState extends GameState {
     private Map<String, List<PhysicalCard>> _seedDecks;
     private Map<String, List<PhysicalCard>> _missionPiles;
     private Map<Quadrant, List<PhysicalCard>> _spacelines;
+    private Map<String, List<PhysicalCard>> _tableCards;
+    private ST1EGame _game;
 
-    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
+    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST1EGame game) {
         super(players, decks, library, format);
         _format = format;
+        _game = game;
         _seedDecks = new HashMap<>();
         _missionPiles = new HashMap<>();
         _spacelines = new HashMap<>();
-        _currentPhase = Phase.SEED_MISSION;
+        _tableCards = new HashMap<>();
+        for (String player : players) {
+            _tableCards.put(player, new LinkedList<>());
+        }
+        _currentPhase = Phase.SEED_DOORWAY;
     }
 
     @Override
@@ -36,20 +44,23 @@ public class ST1EGameState extends GameState {
             return _removed.get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);
+        else if (zone == Zone.MISSIONS_PILE)
+            return _missionPiles.get(playerId);
+        else if (zone == Zone.TABLE)
+            return _tableCards.get(playerId);
         else // This should never be accessed
             return _inPlay;
     }
 
     @Override
     public void createPhysicalCards() {
-        int cardId = 1;
         for (String playerId : _players.keySet()) {
             for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecksWithEnum().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(new PhysicalCard(cardId, blueprintId, playerId, _library.getLotroCardBlueprint(blueprintId)));
-                        cardId++;
+                        subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, _library.getLotroCardBlueprint(blueprintId)));
+                        _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");
                     }
@@ -72,6 +83,9 @@ public class ST1EGameState extends GameState {
         return Collections.unmodifiableList(_missionPiles.get(playerId));
     }
 
+    public List<PhysicalCard> getSeedDeck(String playerId) {
+        return Collections.unmodifiableList(_seedDecks.get(playerId));
+    }
     public PhysicalCard getTopOfMissionPile(String playerId) {
         return _missionPiles.get(playerId).get(0);
     }
@@ -87,8 +101,15 @@ public class ST1EGameState extends GameState {
     }
 
     public void addToSpaceline(PhysicalCard newMission, Quadrant quadrant, int indexNumber) {
+        // TODO - Connect this to the server. See SWCCG code for GameState.addLocationToTable
+        assignNewCardId(newMission);
         _spacelines.get(quadrant).add(indexNumber, newMission);
-        refreshSpacelineIndices();
+                // The function below is the meat of what happens here
+        refreshSpacelineIndices(); // Check this against SW LocationsLayout.refreshLocationIndexes
+        addCardToZone(_game, newMission, Zone.SPACELINE);
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.cardCreated(newMission);
+        newMission.startAffectingGame(_game);
     }
 
     public void refreshSpacelineIndices() {
@@ -124,7 +145,11 @@ public class ST1EGameState extends GameState {
     }
 
     public boolean spacelineHasRegion(Region region, Quadrant quadrant) {
-        return _spacelines.get(quadrant).stream().anyMatch(card -> Objects.equals(card.getBlueprint().getRegion(), region));
+        if (region == null)
+            return false;
+        else return _spacelines.get(quadrant).stream().anyMatch(
+                card -> Objects.equals(card.getBlueprint().getRegion(), region)
+        );
     }
 
     public boolean spacelineExists(Quadrant quadrant) { return _spacelines.containsKey(quadrant); }

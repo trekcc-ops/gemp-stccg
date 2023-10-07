@@ -8,7 +8,6 @@ import com.gempukku.lotro.common.*;
 import com.gempukku.lotro.condition.Condition;
 import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.game.DefaultGame;
-import com.gempukku.lotro.rules.RuleUtils;
 import com.gempukku.lotro.rules.lotronly.LotroGameUtils;
 import com.gempukku.lotro.rules.lotronly.LotroPlayUtils;
 
@@ -106,7 +105,7 @@ public class Filters {
         final Filter filter1 = changeToFilter(defaultFilters);
         final Filter filter2 = changeToFilter(conditionMetFilter);
         return (game, physicalCard) -> {
-            if (condition.isFullfilled(game))
+            if (condition.isFulfilled(game))
                 return filter2.accepts(game, physicalCard);
             else
                 return filter1.accepts(game, physicalCard);
@@ -211,13 +210,6 @@ public class Filters {
         };
     }
 
-    public static Filter siteBlock(final SitesBlock block) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getSiteBlock() == block;
-    }
-
-    public static final Filter saruman = Filters.name("Saruman");
-    public static final Filter balrog = Filters.name("The Balrog");
-
     public static final Filter gollum = Filters.name("Gollum");
     public static final Filter smeagol = Filters.name("Smeagol");
     public static final Filter gollumOrSmeagol = Filters.or(gollum, smeagol);
@@ -303,34 +295,6 @@ public class Filters {
 
     public static Filter owner(final String playerId) {
         return (game, physicalCard) -> physicalCard.getOwner() != null && physicalCard.getOwner().equals(playerId);
-    }
-
-    public static Filter isAllyHome(final int siteNumber, final SitesBlock siteBlock) {
-        return Filters.and(
-                CardType.ALLY,
-                (Filter) (game, physicalCard) -> RuleUtils.isAllyAtHome(physicalCard, siteNumber, siteBlock));
-    }
-
-    public static final Filter allyAtHome = Filters.and(
-            CardType.ALLY,
-            (Filter) (game, physicalCard) -> RuleUtils.isAllyAtHome(physicalCard, game.getGameState().getCurrentSiteNumber(), game.getGameState().getCurrentSiteBlock()));
-
-    public static Filter allyWithSameHome(final PhysicalCard card) {
-        return Filters.and(
-                CardType.ALLY,
-                (Filter) (game, physicalCard) -> {
-                    LotroCardBlueprint blueprint = card.getBlueprint();
-                    if (blueprint.getCardType() == CardType.ALLY) {
-                        SitesBlock homeBlock = blueprint.getAllyHomeSiteBlock();
-                        int[] homeSites = blueprint.getAllyHomeSiteNumbers();
-                        for (int homeSite : homeSites) {
-                            if (RuleUtils.isAllyAtHome(physicalCard, homeSite, homeBlock)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                });
     }
 
     public static final Filter currentSite = (game, physicalCard) -> game.getGameState().getCurrentSite() == physicalCard;

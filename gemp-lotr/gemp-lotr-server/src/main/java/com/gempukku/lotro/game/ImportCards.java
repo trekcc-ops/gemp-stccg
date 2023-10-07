@@ -2,26 +2,18 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardBlueprintLibrary;
 import com.gempukku.lotro.cards.LotroCardBlueprint;
-import com.gempukku.lotro.common.CardType;
-import com.gempukku.lotro.common.SitesBlock;
 import com.gempukku.lotro.rules.GameUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ImportCards {
-    //For a deck to be legal in a Pre-shadows format, it must contain one of these sites
-    private final Set<String> fellowshipSiteCheck = new HashSet<>(Arrays.asList("council courtyard",
-            "ford of bruinen", "frodo's bedroom", "rivendell terrace", "rivendell valley", "rivendell waterfall",
-            "house of elrond", "rivendell gateway"));
-    private final Set<String> towersSiteCheck = new HashSet<>(Arrays.asList("derndingle", "eastfold",
-            "fangorn forest", "plains of rohan camp", "rohirrim village", "uruk camp", "wold of rohan"));
-    private final Set<String> kingSiteCheck = new HashSet<>(Arrays.asList("king's tent", "rohirrim camp", "west road"));
 
     public List<CardCollection.Item> process(String rawDecklist, CardBlueprintLibrary cardLibrary) {
         List<CardCount> decklist = getDecklist(rawDecklist);
-        SitesBlock sitesBlock = determineBlock(decklist);
 
         List<CardCollection.Item> result = new ArrayList<>();
         for (CardCount cardCount : decklist) {
@@ -29,35 +21,15 @@ public class ImportCards {
                 String id = cardBlueprint.getKey();
                 if (isFromSupportedSet(id)) {
                     LotroCardBlueprint blueprint = cardBlueprint.getValue();
-                    if (isNotSiteOrSiteFromBlock(blueprint, sitesBlock)) {
-                        if (exactNameMatch(blueprint, cardCount.name())) {
-                            result.add(CardCollection.Item.createItem(id, cardCount.count()));
-                            break;
-                        }
+                    if (exactNameMatch(blueprint, cardCount.name())) {
+                        result.add(CardCollection.Item.createItem(id, cardCount.count()));
+                        break;
                     }
                 }
             }
         }
 
         return result;
-    }
-
-    private boolean isNotSiteOrSiteFromBlock(LotroCardBlueprint blueprint, SitesBlock sitesBlock) {
-        return blueprint.getCardType() != CardType.SITE || blueprint.getSiteBlock() == sitesBlock;
-    }
-
-    private SitesBlock determineBlock(List<CardCount> decklist) {
-        for (CardCount card : decklist) {
-            String name = card.name();
-            if (fellowshipSiteCheck.contains(name))
-                return SitesBlock.FELLOWSHIP;
-            if (towersSiteCheck.contains(name))
-                return SitesBlock.TWO_TOWERS;
-            if (kingSiteCheck.contains(name))
-                return SitesBlock.KING;
-        }
-
-        return SitesBlock.SHADOWS;
     }
 
     private boolean exactNameMatch(LotroCardBlueprint blueprint, String title) {

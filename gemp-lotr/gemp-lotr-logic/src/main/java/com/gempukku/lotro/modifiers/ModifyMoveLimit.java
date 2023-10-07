@@ -6,7 +6,6 @@ import com.gempukku.lotro.cards.ModifierSource;
 import com.gempukku.lotro.cards.ValueSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.modifiers.lotronly.MoveLimitModifier;
 import com.gempukku.lotro.evaluator.Evaluator;
 import org.json.simple.JSONObject;
 

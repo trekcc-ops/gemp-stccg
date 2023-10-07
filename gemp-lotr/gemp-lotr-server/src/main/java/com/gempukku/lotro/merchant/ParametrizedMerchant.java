@@ -101,7 +101,7 @@ public class ParametrizedMerchant implements Merchant {
             return BOOSTER_PRICE / 3;
         if (cardRarity.equals("C"))
             return BOOSTER_PRICE / 7;
-        throw new RuntimeException("Unkown rarity for priced card: " + cardRarity);
+        throw new RuntimeException("Unknown rarity for priced card: " + cardRarity);
     }
 
     @Override

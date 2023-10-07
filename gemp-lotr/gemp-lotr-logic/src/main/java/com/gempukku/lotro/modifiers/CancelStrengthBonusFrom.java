@@ -2,7 +2,6 @@ package com.gempukku.lotro.modifiers;
 
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.modifiers.lotronly.CancelStrengthBonusSourceModifier;
 import com.gempukku.lotro.requirement.Requirement;
 import org.json.simple.JSONObject;
 

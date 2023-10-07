@@ -16,7 +16,7 @@ public class RequirementCondition implements Condition {
     }
 
     @Override
-    public boolean isFullfilled(DefaultGame game) {
+    public boolean isFulfilled(DefaultGame game) {
         return RequirementUtils.acceptsAllRequirements(requirements, actionContext);
     }
 }

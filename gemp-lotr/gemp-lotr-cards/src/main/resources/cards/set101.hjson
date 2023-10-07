@@ -4,16 +4,25 @@
     101_001: {
         title: Betazoid Gift Box
         type: artifact
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/premiere/betazoidgiftbox.gif
     },
     101_002: {
         title: "Horga'hn"
         type: artifact
+        seedPhase: dilemma
         image-url: http://trekcc.org/1e/cardimages/premiere/horgahn95.jpg
+    }
+    101_005: {
+        title: Thought Maker
+        type: artifact
+        seedPhase: dilemma
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/thoughtmakerSB.jpg
     }
     101_104: {
         title: Federation Outpost
         type: facility
+        seedPhase: facility
         facility-type: outpost
         affiliation: federation
         image-url: https://www.trekcc.org/1e/cardimages/errata/Federation-Outpost.jpg
@@ -21,6 +30,7 @@
     101_105: {
         title: Klingon Outpost
         type: facility
+        seedPhase: facility
         facility-type: outpost
         affiliation: klingon
         image-url: https://www.trekcc.org/1e/cardimages/errata/Klingon-Outpost.jpg
@@ -28,6 +38,7 @@
     101_106: {
         title: Romulan Outpost
         type: facility
+        seedPhase: facility
         facility-type: outpost
         affiliation: romulan
         image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg

@@ -177,20 +177,7 @@ public class SortAndFilterCards {
                     return false;
 
                 final LotroCardBlueprint blueprint = cardBlueprint.get(blueprintId);
-                if (blueprint.getCardType() == CardType.SITE) {
-                    if (blueprint.getSiteBlock() == SitesBlock.FELLOWSHIP) {
-                        return "fotr_block,pc_fotr_block,test_pc_fotr_block".contains(set);
-                    }
-                    if (blueprint.getSiteBlock() == SitesBlock.TWO_TOWERS) {
-                        return "towers_standard,ttt_block".contains(set);
-                    }
-                    if (blueprint.getSiteBlock() == SitesBlock.KING) {
-                        return "king_block,rotk_sta,movie,pc_movie_block,test_pc_movie_block".contains(set);
-                    }
-                    return true;
-                } else {
-                    return true;
-                }
+                return true;
             } else {
                 if (set.contains("-")) {
                     final String[] split = set.split("-", 2);

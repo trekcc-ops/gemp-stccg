@@ -3,7 +3,6 @@ package com.gempukku.lotro.modifiers;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.effectappender.resolver.ValueResolver;
-import com.gempukku.lotro.modifiers.lotronly.ResistanceModifier;
 import com.gempukku.lotro.evaluator.Evaluator;
 import com.gempukku.lotro.requirement.Requirement;
 import org.json.simple.JSONObject;

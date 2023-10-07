@@ -6,6 +6,36 @@
     needsLoading: false
   }
   {
+    setId: "103"
+    setName: Alternate Universe
+    rarityFile: "/set103-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "105"
+    setName: Q Continuum
+    rarityFile: "/set105-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "116"
+    setName: Blaze of Glory
+    rarityFile: "/set116-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "128"
+    setName: Enterprise Collection
+    rarityFile: "/set128-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "135"
+    setName: Chain of Command
+    rarityFile: "/set135-rarity.txt"
+    needsLoading: false
+  }
+  {
     setId: "144"
     setName: "More Tribbles, More Troubles"
     rarityFile: "/set144-rarity.txt"
@@ -33,6 +63,12 @@
     setId: "157"
     setName: Nothing But Tribble
     rarityFile: "/set157-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "159"
+    setName: Homefront III
+    rarityFile: "/set159-rarity.txt"
     needsLoading: false
   }
   {

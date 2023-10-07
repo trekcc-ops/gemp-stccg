@@ -688,7 +688,7 @@ public class HallServer extends AbstractServer {
     private String getTournamentName(GameTable table) {
         final League league = table.getGameSettings().getLeague();
         if (league != null)
-            return league.getName() + " - " + table.getGameSettings().getLeagueSerie().getName();
+            return league.getName() + " - " + table.getGameSettings().getSeriesData().getName();
         else
             return "Casual - " + table.getGameSettings().getTimeSettings().name();
     }
@@ -697,7 +697,7 @@ public class HallServer extends AbstractServer {
         Set<GameParticipant> players = gameTable.getPlayers();
         GameParticipant[] participants = players.toArray(new GameParticipant[0]);
         final League league = gameTable.getGameSettings().getLeague();
-        final LeagueSeriesData leagueSerie = gameTable.getGameSettings().getLeagueSerie();
+        final LeagueSeriesData leagueSerie = gameTable.getGameSettings().getSeriesData();
 
         GameResultListener listener = null;
         if (league != null) {

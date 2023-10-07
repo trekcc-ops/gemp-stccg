@@ -46,7 +46,7 @@ public class TableHolder {
             if (!leagueService.isPlayerInLeague(league, player))
                 throw new HallException("You're not in that league");
 
-            if (!leagueService.canPlayRankedGame(league, gameSettings.getLeagueSerie(), player.getName()))
+            if (!leagueService.canPlayRankedGame(league, gameSettings.getSeriesData(), player.getName()))
                 throw new HallException("You have already played max games in league");
         }
 
@@ -78,7 +78,7 @@ public class TableHolder {
             if (!leagueService.isPlayerInLeague(league, player))
                 throw new HallException("You're not in that league");
 
-            LeagueSeriesData leagueSerie = awaitingTable.getGameSettings().getLeagueSerie();
+            LeagueSeriesData leagueSerie = awaitingTable.getGameSettings().getSeriesData();
             if (!leagueService.canPlayRankedGame(league, leagueSerie, player.getName()))
                 throw new HallException("You have already played max games in league");
             if (awaitingTable.getPlayerNames().size() != 0 && !leagueService.canPlayRankedGameAgainst(league, leagueSerie, awaitingTable.getPlayerNames().iterator().next(), player.getName()))
@@ -267,7 +267,7 @@ public class TableHolder {
     private String getTournamentName(GameTable table) {
         final League league = table.getGameSettings().getLeague();
         if (league != null)
-            return league.getName() + " - " + table.getGameSettings().getLeagueSerie().getName();
+            return league.getName() + " - " + table.getGameSettings().getSeriesData().getName();
         else
             return "Casual - " + table.getGameSettings().getTimeSettings().name();
     }

@@ -2,14 +2,6 @@ body {
     font-size: 12px;
 }
 
-.borderOverlay {
-    border: 0px solid #000000;
-}
-
-.foilOverlay {
-    opacity: 0.2;
-}
-
 .selectableCard > .borderOverlay {
     border: 2px solid #00ff00;
     cursor: pointer;

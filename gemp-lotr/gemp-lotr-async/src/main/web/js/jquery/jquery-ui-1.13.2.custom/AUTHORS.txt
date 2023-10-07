@@ -370,3 +370,4 @@ dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
 Adam Lidén Hällgren <adamlh92@gmail.com>
 James Hinderks <hinderks@gmail.com>
 Denny Septian Panggabean <97607754+ddevsr@users.noreply.github.com>
+Christopher Lund <christopher.lund@mac.com>

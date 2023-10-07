@@ -18,7 +18,7 @@ public class GameHasCondition implements Condition {
     }
 
     @Override
-    public boolean isFullfilled(DefaultGame game) {
+    public boolean isFulfilled(DefaultGame game) {
         return Filters.countActive(game, _filter)>=_count;
     }
 }

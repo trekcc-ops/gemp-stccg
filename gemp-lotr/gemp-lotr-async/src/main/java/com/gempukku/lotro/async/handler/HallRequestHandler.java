@@ -310,7 +310,6 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         for (Integer integer : gameFormat.getValidSets())
             result.append(integer).append(", ");
         result.append("</li>");
-        result.append("<li>sites from block: ").append(gameFormat.getSiteBlock().getHumanReadable()).append("</li>");
         result.append("<li>Ring-bearer skirmish can be cancelled: ");
         result.append(gameFormat.canCancelRingBearerSkirmish() ? "yes" : "no").append("</li>");
         if (gameFormat.getBannedCards().size() > 0) {

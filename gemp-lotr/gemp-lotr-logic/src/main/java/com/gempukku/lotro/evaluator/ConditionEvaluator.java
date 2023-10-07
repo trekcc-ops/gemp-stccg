@@ -6,19 +6,19 @@ import com.gempukku.lotro.condition.Condition;
 
 public class ConditionEvaluator implements Evaluator {
     private final int _default;
-    private final int _conditionFullfilled;
+    private final int _conditionFulfilled;
     private final Condition _condition;
 
-    public ConditionEvaluator(int aDefault, int conditionFullfilled, Condition condition) {
+    public ConditionEvaluator(int aDefault, int conditionFulfilled, Condition condition) {
         _default = aDefault;
-        _conditionFullfilled = conditionFullfilled;
+        _conditionFulfilled = conditionFulfilled;
         _condition = condition;
     }
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        if (_condition.isFullfilled(game))
-            return _conditionFullfilled;
+        if (_condition.isFulfilled(game))
+            return _conditionFulfilled;
         return _default;
     }
 }

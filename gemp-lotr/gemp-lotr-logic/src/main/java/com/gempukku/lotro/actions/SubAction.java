@@ -1,9 +1,8 @@
 package com.gempukku.lotro.actions;
 
 import com.gempukku.lotro.cards.PhysicalCard;
-import com.gempukku.lotro.common.Phase;
-import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.effects.Effect;
+import com.gempukku.lotro.game.DefaultGame;
 
 public class SubAction extends AbstractCostToEffectAction {
     private final Action _action;
@@ -28,18 +27,8 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Phase getActionTimeword() {
-        return _action.getActionTimeword();
-    }
-
-    @Override
     public String getPerformingPlayer() {
         return _action.getPerformingPlayer();
-    }
-
-    @Override
-    public void setActionTimeword(Phase phase) {
-        _action.setActionTimeword(phase);
     }
 
     @Override
@@ -48,8 +37,8 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return _action.getText(game);
+    public String getText() {
+        return _action.getText();
     }
 
     @Override

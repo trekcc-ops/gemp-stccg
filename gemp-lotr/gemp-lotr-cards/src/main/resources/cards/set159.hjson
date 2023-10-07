@@ -1,0 +1,80 @@
+// Set 159: Homefront III
+
+{
+    159_004: {
+        title: El-Aurian Phaser
+        type: equipment
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/4V.jpg
+    }
+    159_005: {
+        title: Mr. Tricorder
+        type: equipment
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/5V.jpg
+    }
+    159_006: {
+        title: Trilithium Weapon Control PADD
+        type: equipment
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/6V.jpg
+    }
+    159_015: {
+        title: Reaching Out
+        type: objective
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/15V.jpg
+    }
+    159_020: {
+        title: "T'Lara"
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/20V.jpg
+    }
+    159_021: {
+        title: Wesley Crusher
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/21V.jpg
+    }
+    159_026: {
+        title: Jaglom Shrek
+        type: personnel
+        affiliation: non-aligned
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/26V.jpg
+    }
+    159_028: {
+        title: Persis
+        type: personnel
+        affiliation: non-aligned
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/28V.jpg
+    }
+    159_029: {
+        title: Sabrun
+        type: personnel
+        affiliation: romulan
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/29V.jpg
+    }
+    159_030: {
+        title: The Viceroy
+        type: personnel
+        affiliation: romulan
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/30V.jpg
+    }
+    159_031: {
+        title: Tomalak
+        type: personnel
+        affiliation: romulan
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/31V.jpg
+    }
+    159_032: {
+        title: Jonathan Archer
+        type: personnel
+        affiliation: starfleet
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/homefront3/32V.jpg
+    }
+}

@@ -4,6 +4,8 @@ public enum Zone implements Filterable {
     DRAW_DECK("draw deck", false, false, false),
     MISSIONS_PILE("missions pile", false, false, false),
     SEED_DECK("seed deck", false, true, false),
+    TABLE("table", true, true, true),
+    SPACELINE("spaceline", true, true, true),
 
     // Public knowledge and in play
     FREE_CHARACTERS("play", true, true, true),

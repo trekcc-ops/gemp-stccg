@@ -2,6 +2,11 @@ body {
     font-size: 12px;
 }
 
+ul {
+    list-style-type: none;
+    margin-top: 0;
+}
+
 .deckSize {
     display: table-cell;
     text-align: center;
@@ -83,16 +88,8 @@ body {
     display: table-cell;
 }
 
-.borderOverlay {
-    border: solid #000000;
-}
-
 .highlightBorderOverlay {
     border: solid #ffffff;
-}
-
-.foilOverlay {
-    opacity: 0.2;
 }
 
 .cardHint {
@@ -144,45 +141,6 @@ body {
     padding: 2px;
 }
 
-/*.fpArchery {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    background-image: url('/gemp-lotr/images/fpArchery.png');
-    background-repeat: no-repeat;
-    color: #007777;
-    font-size: 200%;
-    font-weight: bolder;
-    width: 30px;
-    height: 30px;
-}
-
-.shadowArchery {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    background-image: url('/gemp-lotr/images/shadowArchery.png');
-    background-repeat: no-repeat;
-    color: #007777;
-    font-size: 200%;
-    font-weight: bolder;
-    width: 30px;
-    height: 30px;
-}
-
-.move {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    background-image: url('/gemp-lotr/images/move.png');
-    background-repeat: no-repeat;
-    color: #007777;
-    font-size: 200%;
-    font-weight: bolder;
-    width: 30px;
-    height: 30px;
-}*/
-
 .player {
     color: #ffffff;
     position: relative;
@@ -220,36 +178,26 @@ body {
     text-align: left;
 }
 
-.skirmish {
-}
-
-.fpDamageBonus, .shadowDamageBonus {
+.fpDamageBonus, .shadowDamageBonus, .fpStrength, .shadowStrength, .fpStrength.overwhelmed {
     border-radius: 6px;
     text-align: center;
     vertical-align: middle;
-    background-color: #cccccc;
     opacity: 0.7;
     color: #000000;
+}
+
+.fpDamageBonus, .shadowDamageBonus {
+    background-color: #cccccc;
     font-size: 180%;
 }
 
 .fpStrength, .shadowStrength {
-    border-radius: 6px;
-    text-align: center;
-    vertical-align: middle;
     background-color: #ffffff;
-    opacity: 0.7;
-    color: #000000;
     font-size: 300%;
 }
 
 .fpStrength.overwhelmed {
-    border-radius: 6px;
-    text-align: center;
-    vertical-align: middle;
     background-color: #ff3333;
-    opacity: 0.7;
-    color: #000000;
     font-size: 300%;
 }
 
@@ -379,4 +327,49 @@ body {
     display: flex;
     gap: 4px;
     margin: 1px;
+}
+
+#main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    overflow: hidden;
+}
+
+#alertText {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    scroll: auto;
+}
+
+#alertButtons {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 100%;
+    height: 30px;
+    scroll: auto;
+}
+
+.rounded {
+    border-radius: 7px;
+}
+
+#foilPresentation {
+    font-size: 80%;
+}
+
+#replay {
+    position: absolute;
+    z-index: 1000;
+}
+
+#bottomLeftTabs {
+    position: absolute;
 }

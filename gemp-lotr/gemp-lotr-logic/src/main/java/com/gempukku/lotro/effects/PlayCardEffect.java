@@ -15,6 +15,12 @@ public class PlayCardEffect extends AbstractEffect {
     private final Zone _zone;
     private final PhysicalCard _attachedOrStackedPlayedFrom;
 
+    public PlayCardEffect(Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo) {
+        _playedFrom = playedFrom;
+        _cardPlayed = cardPlayed;
+        _zone = playedTo;
+        _attachedOrStackedPlayedFrom = null;
+    }
     public PlayCardEffect(Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo, PhysicalCard attachedOrStackedPlayedFrom) {
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;

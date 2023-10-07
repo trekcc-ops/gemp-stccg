@@ -1,0 +1,46 @@
+// Set 128: Enterprise Collection
+
+{
+    128_001: {
+        title: Starfleet Phaser Pistol
+        type: equipment
+        image-url: https://www.trekcc.org/1e/cardimages/ecr/1V.jpg
+    }
+    128_002: {
+        title: Revisionist History
+        type: event
+        image-url: https://www.trekcc.org/1e/cardimages/ecr/2V.jpg
+    }
+    128_004: {
+        title: Seat of Starfleet
+        type: facility
+        affiliation: starfleet
+        image-url: https://www.trekcc.org/1e/cardimages/ecr/4V.jpg
+    }
+    128_009: {
+        title: Hoshi Sato
+        type: personnel
+        affiliation: starfleet
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/ecr/9V.jpg
+    }
+    128_014: {
+        title: Phlox
+        type: personnel
+        affiliation: starfleet
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/ecr/14V.jpg
+    }
+    128_017: {
+        title: Enterprise
+        type: ship
+        affiliation: starfleet
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Enterprise_EC.jpg
+    }
+    128_018: {
+        title: "T'Pol/Soong Maneuver"
+        type: tactic
+        image-url: https://www.trekcc.org/1e/cardimages/errata/TPolSoongManeuverEC.jpg
+    }
+}

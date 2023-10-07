@@ -78,7 +78,7 @@ public class CollectionSerializer {
         } else if (version == 4) {
             return deserializeCollectionVer4(new BufferedInputStream(inputStream));
         } else {
-            throw new IllegalStateException("Unkown version of serialized collection: " + version);
+            throw new IllegalStateException("Unknown version of serialized collection: " + version);
         }
     }
 

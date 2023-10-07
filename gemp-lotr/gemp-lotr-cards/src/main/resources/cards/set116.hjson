@@ -1,0 +1,10 @@
+// Set 116: Blaze of Glory
+
+{
+    116_011: {
+        title: Battle Bridge Door
+        type: doorway
+        seedPhase: doorway
+        image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
+    }
+}

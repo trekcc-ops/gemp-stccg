@@ -115,6 +115,7 @@ var GameTableUI = Class.extend({
         this.miscPileDialogs = {};
         this.miscPileGroups = {};
         this.playPiles = {};
+        this.onTableAreas = {};
         this.locationDivs = new Array();
         this.locationCardGroups = new Array();
 
@@ -131,6 +132,11 @@ var GameTableUI = Class.extend({
         }
 
         for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+            if (cardGroup.cardBelongs(cardData)) {
+                return cardGroup;
+            }
+        }
+        for ([playerId, cardGroup] of Object.entries(this.onTableAreas)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
@@ -171,7 +177,16 @@ var GameTableUI = Class.extend({
                 this.allPlayerIds[i],
                 function (card) {
                     return (card.zone == "PLAY_PILE");
-                }
+                },
+                "playPileDiv_" + this.allPlayerIds[i]
+            );
+            this.onTableAreas[this.allPlayerIds[i]] = new NormalGameCardGroup(
+                $("#main"),
+                this.allPlayerIds[i],
+                function (card) {
+                    return (card.zone == "TABLE");
+                },
+                "tableAreaDiv_" + this.allPlayerIds[i]
             );
         }
 
@@ -2039,6 +2054,9 @@ var TribblesGameTableUI = GameTableUI.extend({
 });
 
 var ST1EGameTableUI = GameTableUI.extend({
+
+    topPlayerId: null,
+
     init: function (url, replayMode) {
         this._super(url, replayMode);
     },
@@ -2122,7 +2140,7 @@ var ST1EGameTableUI = GameTableUI.extend({
 
         // Defines the sizes of other items in the UI.
         var LEFT_SIDE = 0;
-        var GAME_STATE_AND_CHAT_WIDTH = 425;
+        var GAME_STATE_AND_CHAT_WIDTH = 300;
         var CARD_PILE_AND_ACTION_AREA_LEFT = GAME_STATE_AND_CHAT_WIDTH + BORDER_PADDING - 1;
         var CARD_PILE_AND_ACTION_AREA_WIDTH = 141;
         var CARD_PILE_LEFT_1 = CARD_PILE_AND_ACTION_AREA_LEFT;
@@ -2138,6 +2156,17 @@ var ST1EGameTableUI = GameTableUI.extend({
         var TAB_PANE_WIDTH_PADDING = 4;
         var CHAT_HEIGHT = PLAYER_AREA_HEIGHT - BORDER_PADDING + 1;
         var CHAT_WIDTH = GAME_STATE_AND_CHAT_WIDTH;
+
+        // Sets the hand and side of table left and width
+        var HAND_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        var HAND_WIDTH = (width - HAND_LEFT) - BORDER_PADDING;
+        var SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        var SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
+
+        $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
+        this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
+        this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
+            CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
 
         // Old LotR gemp code for heightScales
         var heightScales;
@@ -2174,46 +2203,22 @@ var ST1EGameTableUI = GameTableUI.extend({
                 height: 30
             });
 
-            var playPilesLeft = advPathWidth + specialUiWidth + (padding * 2);
-            var playPilesRight = width - padding;
-            var playPilesHorizCenter = playPilesLeft + (playPilesRight - playPilesLeft) / 2;
-            var playPilesTop = padding + yScales[0] * heightPerScale;
-            var playPilesBottom = padding * 5 + yScales[5] * heightPerScale;
-
-            var playerCount = this.allPlayerIds.length;
-            var playerSeatOffset = this.getPlayerIndex(this.bottomPlayerId);
-
-            var playPileXs = new Array();
-            var playPileYs = new Array();
-            var playPileWidth = null;
-            var playPileHeight = null;
-
-            // Array is built with 0 at the bottom player position, and all others proceeding clockwise
-            if (playerCount == 2) {
-                playPileXs = [playPilesLeft, playPilesLeft];
-                playPileYs = [playPilesTop + (playPilesBottom - playPilesTop) / 2, playPilesTop];
-                playPileWidth = playPilesRight - playPilesLeft;
-                playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
-            } else if (playerCount == 3) {
-                playPileWidth = (playPilesRight - playPilesLeft) / 2 - padding;
-                playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
-                playPileXs = [
-                    playPilesHorizCenter - playPileWidth / 2,
-                    playPilesLeft,
-                    playPilesRight - playPileWidth
-                ];
-                playPileYs = [
-                    playPilesTop + playPileHeight + padding,
-                    playPilesTop,
-                    playPilesTop
-                ];
+            for (var i = 0; i < 2; i++) {
+                var playerId = this.allPlayerIds[i];
+                if (playerId == this.bottomPlayerId) {
+                    var top = PLAYER_AREA_TOP;
+                    var height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
+                } else {
+                    var top = OPPONENT_AREA_TOP;
+                    var height = OPPONENT_AREA_HEIGHT;
+                }
+                this.onTableAreas[playerId].setBounds(SIDE_OF_TABLE_LEFT, top, SIDE_OF_TABLE_WIDTH, height);
+                this.onTableAreas[playerId].layoutCards();
             }
-
-            for (var i = 0; i < playerCount; i++) {
-                var playerIndex = (i + playerSeatOffset) % playerCount;
-                this.playPiles[this.allPlayerIds[playerIndex]].setBounds(
-                    playPileXs[i], playPileYs[i], playPileWidth, playPileHeight
-                );
+            if (!this.spectatorMode) {
+                this.hand.setBounds(HAND_LEFT, PLAYER_ACTION_AREA_AND_HAND_TOP, HAND_WIDTH,
+                    PLAYER_ACTION_AREA_AND_HAND_HEIGHT);
+                this.hand.layoutCards();
             }
 
                 // LOCATION CODE FROM SWCCG GEMP
@@ -2269,14 +2274,6 @@ var ST1EGameTableUI = GameTableUI.extend({
             }
                     // END OF SWCCG GEMP LOCATION CODE
 
-            if (!this.spectatorMode)
-                this.hand.setBounds(
-                    advPathWidth + specialUiWidth + (padding * 2),
-                    padding * 6 + yScales[5] * heightPerScale,
-                    width - (advPathWidth + specialUiWidth + padding * 3),
-                    heightScales[5] * heightPerScale
-                );
-
             this.gameStateElem.css({
                 position: "absolute",
                 left: padding * 2, // + advPathWidth,
@@ -2309,14 +2306,6 @@ var ST1EGameTableUI = GameTableUI.extend({
                 if (this.miscPileGroups.hasOwnProperty(playerId))
                     this.miscPileGroups[playerId].layoutCards();
         }
-        this.tabPane.css({
-            position: "absolute",
-            left: padding,
-            top: height - padding - chatHeight,
-            width: specialUiWidth + advPathWidth - padding,
-            height: chatHeight - padding
-        });
-        this.chatBox.setBounds(4, 4 + 25, specialUiWidth + advPathWidth - 8, chatHeight - 8 - 25);
 
         if (this.replayMode) {
             $(".replay").css({

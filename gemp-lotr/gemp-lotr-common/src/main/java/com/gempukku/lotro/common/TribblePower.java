@@ -40,7 +40,7 @@ public enum TribblePower implements Filterable {
     SCAN("Scan", true), SCORE("Score", true),
     SHIFT("Shift",true), SKIP("Skip", true),
     STAMPEDE("Stampede", true), TALLY("Tally", false),
-    TIMEWARP("Time Warp", false), TOXIN("Toxin", true),
+    TIME_WARP("Time Warp", false), TOXIN("Toxin", true),
     TRICK("Trick", false), UTILIZE("Utilize", true);
 
     private final boolean _isActive;

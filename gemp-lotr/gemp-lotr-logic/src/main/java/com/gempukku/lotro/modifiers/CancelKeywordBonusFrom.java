@@ -3,7 +3,6 @@ package com.gempukku.lotro.modifiers;
 import com.gempukku.lotro.cards.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import com.gempukku.lotro.common.Keyword;
-import com.gempukku.lotro.modifiers.lotronly.CancelKeywordBonusTargetModifier;
 import com.gempukku.lotro.requirement.Requirement;
 import org.json.simple.JSONObject;
 

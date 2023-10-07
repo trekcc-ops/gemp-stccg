@@ -11,7 +11,7 @@ public class PhaseCondition implements Condition {
     }
 
     @Override
-    public boolean isFullfilled(DefaultGame game) {
+    public boolean isFulfilled(DefaultGame game) {
         return _phase == null || game.getGameState().getCurrentPhase() == _phase;
     }
 }

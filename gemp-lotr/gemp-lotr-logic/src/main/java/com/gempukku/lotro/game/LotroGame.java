@@ -5,7 +5,7 @@ import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Phase;
 import com.gempukku.lotro.gamestate.GameState;
-import com.gempukku.lotro.gamestate.ST1EGameState;
+import com.gempukku.lotro.gamestate.TribblesGameState;
 import com.gempukku.lotro.gamestate.UserFeedback;
 import com.gempukku.lotro.processes.TurnProcedure;
 import com.gempukku.lotro.rules.RuleSet;
@@ -29,7 +29,7 @@ public class LotroGame extends DefaultGame {
         new CharacterDeathRule(_actionsEnvironment).applyRule();
 
             // Being deprecated
-        _gameState = new ST1EGameState(_allPlayers, decks, library, _format);
+        _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
         _turnProcedure = new TurnProcedure<>(this, decks.keySet(), userFeedback, _actionsEnvironment,
                 _gameState::init);
     }

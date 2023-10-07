@@ -77,6 +77,10 @@ public class CardDeck {
         return subDecksWithEnum;
     }
 
+    public List<String> getSubDeck(SubDeck subDeck) {
+        return _subDecks.get(subDeck.name());
+    }
+
     public void setSubDecks(Map<String, List<String>> subDecks) { _subDecks = subDecks; }
     public String getTargetFormat() { return _targetFormat; }
     public CardBlueprintLibrary getLibrary() { return _library; }

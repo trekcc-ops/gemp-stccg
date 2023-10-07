@@ -5,7 +5,6 @@ import com.gempukku.lotro.cards.FilterableSource;
 import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.ModifierSource;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
-import com.gempukku.lotro.modifiers.lotronly.CancelStrengthBonusTargetModifier;
 import org.json.simple.JSONObject;
 
 public class CancelStrengthBonusTo implements ModifierSourceProducer {

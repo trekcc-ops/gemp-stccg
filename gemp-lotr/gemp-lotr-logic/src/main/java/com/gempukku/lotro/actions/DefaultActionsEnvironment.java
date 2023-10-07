@@ -216,13 +216,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public List<Action> getPhaseActions(String playerId) {
         List<Action> result = new LinkedList<>();
 
-        final Phase currentPhase = _lotroGame.getGameState().getCurrentPhase();
         for (ActionProxy actionProxy : _actionProxies) {
             List<? extends Action> actions = actionProxy.getPhaseActions(playerId, _lotroGame);
             if (actions != null) {
                 for (Action action : actions) {
                     action.setPerformingPlayer(playerId);
-                    action.setActionTimeword(currentPhase);
                     if (_lotroGame.getModifiersQuerying().canPlayAction(_lotroGame, playerId, action))
                         result.add(action);
                 }

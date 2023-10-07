@@ -7,45 +7,34 @@ import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.effects.PlayMissionEffect;
+import com.gempukku.lotro.effects.PlayoutDecisionEffect;
 import com.gempukku.lotro.game.ST1EGame;
 import com.gempukku.lotro.gamestate.ST1EGameState;
 import com.gempukku.lotro.rules.GameUtils;
 
-import java.util.Collections;
 import java.util.Objects;
 
-public class PlayMissionAction extends AbstractCostToEffectAction<ST1EGame> {
-    private final PhysicalCard _missionPlayed;
-    private boolean _cardRemoved;
+public class PlayMissionAction extends AbstractPlayCardAction {
     private Effect _playCardEffect;
     private boolean _cardPlayed;
     private int _locationZoneIndex;
     private final Zone _fromZone;
+    private boolean _placementChosen;
 
     public PlayMissionAction(PhysicalCard missionPlayed) {
-        _missionPlayed = missionPlayed;
-        setText("Play " + GameUtils.getFullName(_missionPlayed));
-        setPerformingPlayer(_missionPlayed.getOwner());
-        _fromZone = _missionPlayed.getZone();
+        super(missionPlayed, missionPlayed);
+        setText("Play " + GameUtils.getFullName(_cardToPlay));
+        setPerformingPlayer(_cardToPlay.getOwner());
+        _fromZone = _cardToPlay.getZone();
     }
     
-    @Override
-    public PhysicalCard getActionSource() {
-        return _missionPlayed;
-    }
-
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
     
     @Override
-    public PhysicalCard getActionAttachedToCard() {
-        return _missionPlayed;
-    }
-
-    @Override
     public Effect<ST1EGame> nextEffect(ST1EGame game) {
-        Quadrant quadrant = _missionPlayed.getBlueprint().getQuadrant();
-        String missionLocation = _missionPlayed.getBlueprint().getLocation();
-        Region region = _missionPlayed.getBlueprint().getRegion();
+        Quadrant quadrant = _cardToPlay.getBlueprint().getQuadrant();
+        String missionLocation = _cardToPlay.getBlueprint().getLocation();
+        Region region = _cardToPlay.getBlueprint().getRegion();
         String playerId = getPerformingPlayer();
         ST1EGameState gameState = game.getGameState();
 
@@ -54,72 +43,61 @@ public class PlayMissionAction extends AbstractCostToEffectAction<ST1EGame> {
         }
 
         boolean sharedMission = game.getGameState().spacelineHasLocation(missionLocation, quadrant) &&
-                _missionPlayed.getBlueprint().isUniversal();
+                !_cardToPlay.getBlueprint().isUniversal();
 
-        if (gameState.getSpaceline(quadrant).size() == 0) {
-            _locationZoneIndex = 0;
-            indexSelected(game,false);
-        } else if (sharedMission) {
-            _locationZoneIndex = gameState.indexOfLocation(missionLocation, quadrant);
-            indexSelected(game,true);
-        } else if (gameState.spacelineHasRegion(region, quadrant)) {
-            String[] directions = {"LEFT", "RIGHT"};
-            game.getUserFeedback().sendAwaitingDecision(playerId,
-                new MultipleChoiceAwaitingDecision(1, "Insert on which end of the region?", directions) {
-                    @Override
-                    protected void validDecisionMade(int index, String result) {
-                        PhysicalCard firstRegionMission = gameState.firstInRegion(region, quadrant);
-                        PhysicalCard lastRegionMission = gameState.lastInRegion(region, quadrant);
-                        if (Objects.equals(result, "LEFT")) {
-                            _locationZoneIndex = firstRegionMission.getLocationZoneIndex();
-                        } else {
-                            _locationZoneIndex = lastRegionMission.getLocationZoneIndex() + 1;
-                        }
-                        indexSelected(game,false);
-                    }
-                });
-        } else if (_missionPlayed.canInsertIntoSpaceline() && gameState.getSpaceline(quadrant).size() >= 2) {
-            // TODO: canInsertIntoSpaceline method not defined
-        } else {
-            String[] directions = {"LEFT", "RIGHT"};
-            game.getUserFeedback().sendAwaitingDecision(playerId,
-                    new MultipleChoiceAwaitingDecision(1, "Insert on which end of the quadrant?", directions) {
-                        @Override
-                        protected void validDecisionMade(int index, String result) {
-                            if (Objects.equals(result, "LEFT")) {
-                                _locationZoneIndex = 0;
-                            } else {
-                                _locationZoneIndex = gameState.getSpaceline(quadrant).size();
+        if (!_placementChosen) {
+            if (gameState.getSpaceline(quadrant).size() == 0) {
+                _locationZoneIndex = 0;
+                _placementChosen = true;
+            } else if (sharedMission) {
+                _locationZoneIndex = gameState.indexOfLocation(missionLocation, quadrant);
+                _placementChosen = true;
+            } else if (gameState.spacelineHasRegion(region, quadrant)) {
+                String[] directions = {"LEFT", "RIGHT"};
+                appendCost(new PlayoutDecisionEffect(playerId,
+                        new MultipleChoiceAwaitingDecision(1, "Insert on which end of the region?", directions) {
+                            @Override
+                            protected void validDecisionMade(int index, String result) {
+                                _placementChosen = true;
+                                PhysicalCard firstRegionMission = gameState.firstInRegion(region, quadrant);
+                                PhysicalCard lastRegionMission = gameState.lastInRegion(region, quadrant);
+                                if (Objects.equals(result, "LEFT")) {
+                                    _locationZoneIndex = firstRegionMission.getLocationZoneIndex();
+                                } else {
+                                    _locationZoneIndex = lastRegionMission.getLocationZoneIndex() + 1;
+                                }
                             }
-                            indexSelected(game,false);
-                        }
-                    });
+                        }));
+                return getNextCost();
+            } else if (_cardToPlay.canInsertIntoSpaceline() && gameState.getSpaceline(quadrant).size() >= 2) {
+                // TODO: canInsertIntoSpaceline method not defined
+            } else {
+                String[] directions = {"LEFT", "RIGHT"};
+                appendCost(new PlayoutDecisionEffect(getPerformingPlayer(),
+                        new MultipleChoiceAwaitingDecision(1, "Insert on which end of the quadrant?", directions) {
+                            @Override
+                            protected void validDecisionMade(int index, String result) {
+                                _placementChosen = true;
+                                if (Objects.equals(result, "LEFT")) {
+                                    _locationZoneIndex = 0;
+                                } else {
+                                    _locationZoneIndex = gameState.getSpaceline(quadrant).size();
+                                }
+                            }
+                        }));
+                return getNextCost();
+            }
         }
-        return getNextEffect();
-    }
-
-    public void indexSelected(ST1EGame game, boolean sharedMission) {
-        if (!_cardRemoved) {
-            _cardRemoved = true;
-            final Zone playedFromZone = _missionPlayed.getZone();
-            game.getGameState().sendMessage(_missionPlayed.getOwner() + " plays " +
-                    GameUtils.getCardLink(_missionPlayed) +  " from " + playedFromZone.getHumanReadable());
-            game.getGameState().removeCardsFromZone(_missionPlayed.getOwner(),
-                    Collections.singleton(_missionPlayed));
-            game.getGameState().addCardToZone(game, _missionPlayed, Zone.VOID);
-        }
-
         if (!_cardPlayed) {
             _cardPlayed = true;
-            Quadrant quadrant = _missionPlayed.getQuadrant();
-            _playCardEffect = new PlayMissionEffect(_fromZone, _missionPlayed, quadrant, _locationZoneIndex);
-//            return _playCardEffect;
+            _playCardEffect = new PlayMissionEffect(_fromZone, _cardToPlay, quadrant, _locationZoneIndex);
+            return _playCardEffect;
         }
-
+        return null;
     }
 
     public boolean wasCarriedOut() {
-        return _cardPlayed && _playCardEffect != null && _playCardEffect.wasCarriedOut();
+        return _cardPlayed && _playCardEffect.wasCarriedOut();
     }
 }
 

@@ -1,0 +1,39 @@
+// Set 135: Chain of Command
+
+{
+    135_003: {
+        title: Captain Kirk
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/captainkirk.jpg
+    }
+    135_005: {
+        title: Kathryn Janeway
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/kathrynjaneway.jpg
+    }
+    135_009: {
+        title: Starship Enterprise
+        type: ship
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/starshipenterprise.jpg
+    }
+    135_010: {
+        title: U.S.S. Defiant
+        type: ship
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/ussdefiant.jpg
+    }
+    135_012: {
+        title: U.S.S. Enterprise-E
+        type: ship
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/ussenterprisee.jpg
+    }
+}

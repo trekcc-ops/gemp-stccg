@@ -2,7 +2,6 @@ package com.gempukku.lotro.game;
 
 import com.gempukku.lotro.cards.CardDeck;
 import com.gempukku.lotro.common.JSONDefs;
-import com.gempukku.lotro.common.SitesBlock;
 import com.gempukku.lotro.processes.GameProcess;
 
 import java.util.List;
@@ -57,8 +56,6 @@ public interface GameFormat {
     String applyErrata(String bpID);
 
     List<String> findBaseCards(String bpID);
-
-    SitesBlock getSiteBlock();
 
     int getHandSize();
 

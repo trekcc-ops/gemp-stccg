@@ -10,7 +10,6 @@ import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.gamestate.LoggingThreadLocal;
-import com.gempukku.lotro.modifiers.lotronly.KeywordAffectingModifier;
 
 import java.util.*;
 
@@ -130,7 +129,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                     if (!_skipSet.contains(modifier)) {
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFullfilled(game))
+                        if (condition == null || condition.isFulfilled(game))
                             if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
                                     modifier.isNonCardTextModifier() ||
                                     !hasTextRemoved(game, modifier.getSource())) {
@@ -239,7 +238,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         for (List<Modifier> modifiers : _modifiers.values()) {
             for (Modifier modifier : modifiers) {
                 Condition condition = modifier.getCondition();
-                if (condition == null || condition.isFullfilled(game))
+                if (condition == null || condition.isFulfilled(game))
                     if (affectsCardWithSkipSet(game, card, modifier) && (!foundCumulativeConflict(result, modifier)))
                         result.add(modifier);
             }
@@ -726,7 +725,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
-                if ((condition == null || condition.isFullfilled(game)) && !playCost.canPayExtraCostsToPlay(game, target))
+                if ((condition == null || condition.isFulfilled(game)) && !playCost.canPayExtraCostsToPlay(game, target))
                     return false;
             }
 
@@ -744,7 +743,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
-                if (condition == null || condition.isFullfilled(game))
+                if (condition == null || condition.isFulfilled(game))
                     playCost.appendExtraCosts(game, action, target);
             }
 

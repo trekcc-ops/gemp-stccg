@@ -247,13 +247,11 @@ var GameAnimations = Class.extend({
                 next();
             });
 
-        if (animate) {
-            $("#main").queue(
-                function (next) {
-                    that.game.layoutGroupWithCard(cardId);
-                    next();
-                });
-        }
+        $("#main").queue(
+            function (next) {
+                that.game.layoutGroupWithCard(cardId);
+                next();
+            });
 
         if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))
             && zone != "DISCARD" && zone != "HAND" && zone != "ADVENTURE_DECK" && zone != "DECK") {

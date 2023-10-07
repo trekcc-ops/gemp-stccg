@@ -24,7 +24,7 @@ public class ST1EGame extends DefaultGame {
 
         new ST1ERuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
-        _gameState = new ST1EGameState(_allPlayers, decks, library, _format);
+        _gameState = new ST1EGameState(_allPlayers, decks, library, _format, this);
         _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {

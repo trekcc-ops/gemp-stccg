@@ -7,6 +7,7 @@ import com.gempukku.lotro.cards.InvalidCardDefinitionException;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.TribblePower;
 import com.gempukku.lotro.effects.*;
+import com.gempukku.lotro.effects.tribblepowers.*;
 import com.gempukku.lotro.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 

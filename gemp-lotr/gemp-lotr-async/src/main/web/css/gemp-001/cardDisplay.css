@@ -1,0 +1,54 @@
+
+.card, .borderOverlay, .card_img, .fullCardImgHorizontal, .fullCardImgVertical {
+    border-radius: 3.5%;
+}
+
+.borderOverlay {
+    border: 0px solid #000000;
+}
+
+.foilOverlay {
+    opacity: 0.2;
+}
+
+.fullCardDivHorizontal, .fullCardDivVertical {
+    border-radius: 3.5%;
+    position: relative;
+}
+
+.noBorderOverlayHorizontal, .noBorderOverlayVertical, .borderOverlayHorizontal, .borderOverlayVertical, .foilOverlayHorizontal, .foilOverlayVertical, .fullCardWrapper {
+    border-radius: 3.5%;
+    position: absolute;
+}
+
+.noBorderOverlayHorizontal, .noBorderOverlayVertical {
+    border-width: 0px;
+}
+
+.borderOverlayHorizontal, .borderOverlayVertical {
+    border-width: 16px;
+}
+
+.noBorderOverlayHorizontal, .foilOverlayHorizontal, .fullCardDivHorizontal, .fullCardImgHorizontal {
+    width: 497px;
+    height: 357px;
+}
+
+.noBorderOverlayVertical, .foilOverlayVertical, .fullCardDivVertical, .fullCardImgVertical {
+    width: 357px;
+    height: 497px;
+}
+
+.borderOverlayHorizontal {
+    width: 465px;
+    height: 325px;
+}
+
+.borderOverlayVertical {
+    width: 325px;
+    height: 465px;
+}
+
+.card-group {
+    border-radius: 7px;
+}

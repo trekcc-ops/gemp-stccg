@@ -4,81 +4,112 @@
     155_001: {
         title: A Good Day to Lie
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/1V.jpg
     }
     155_002: {
         title: All Available Personnel
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/2V.jpg
     }
     155_003: {
         title: Diplomatic Intervention
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/3V.jpg
     }
     155_004: {
         title: Divided Loyalties
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/4V.jpg
     }
     155_005: {
         title: Ferengi Ambush
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/5V.jpg
     }
     155_006: {
         title: "I'm Not Going to Fight You"
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/6V.jpg
     }
     155_007: {
         title: Local Trouble
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/7V.jpg
     }
     155_008: {
         title: Magnetic Field Disruptions
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/8V.jpg
     }
     155_009: {
         title: Microbrain
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
     }
     155_010: {
         title: Pinned Down
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/10V.jpg
     }
     155_011: {
         title: Temptation
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/11V.jpg
     }
     155_012: {
         title: Tense Negotiations
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/12V.jpg
     }
     155_013: {
         title: Triage
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/13V.jpg
     }
     155_014: {
         title: War Games
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/14V.jpg
     }
     155_015: {
         title: Warp Bubble Mishap
         type: dilemma
+        seedPhase: dilemma
         image-url: https://www.trekcc.org/1e/cardimages/tng/15V.jpg
+    }
+    155_016: {
+        title: Cowboy Diplomacy
+        type: event
+        image-url: https://www.trekcc.org/1e/cardimages/tng/16V.jpg
+    }
+    155_018: {
+        title: Heart of Glory
+        type: event
+        image-url: https://www.trekcc.org/1e/cardimages/tng/18V.jpg
+    }
+    155_019: {
+        title: "Let's See What's Out There"
+        type: event
+        image-url: https://www.trekcc.org/1e/cardimages/tng/19V.jpg
     }
     155_035: {
         title: Acquire Surplus Ships
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Klingon Salvage Yard
         image-url: https://www.trekcc.org/1e/cardimages/tng/35V.jpg
@@ -86,6 +117,7 @@
     155_036: {
         title: Amnesty Talks
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Near Acamar system
         image-url: https://www.trekcc.org/1e/cardimages/tng/36V.jpg
@@ -93,6 +125,7 @@
     155_037: {
         title: Avert Solar Implosion
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Veridian III
         image-url: https://www.trekcc.org/1e/cardimages/tng/37V.jpg
@@ -100,6 +133,7 @@
     155_038: {
         title: Encounter at Farpoint
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Deneb IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/38V.jpg
@@ -107,6 +141,7 @@
     155_039: {
         title: Host Metaphasic Shielding Test
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Veytan
         image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
@@ -114,6 +149,7 @@
     155_040: {
         title: Intercept Sleeper Ship
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Near Boradis system
         image-url: https://www.trekcc.org/1e/cardimages/tng/40V.jpg
@@ -121,6 +157,7 @@
     155_041: {
         title: Investigate Destruction
         type: mission
+        seedPhase: mission
         quadrant: alpha
         region: Neutral Zone
         location: Science Station Delta-05
@@ -129,6 +166,7 @@
     155_042: {
         title: Raid Ancient Burial Site
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Calder II
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
@@ -136,6 +174,7 @@
     155_043: {
         title: Revenge Plot
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Camor V
         image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
@@ -143,6 +182,7 @@
     155_044: {
         title: Salvage Borg Ship
         type: mission
+        seedPhase: mission
         quadrant: alpha
         region: Argolis Cluster
         location: Small Moon
@@ -151,6 +191,7 @@
     155_045: {
         title: Seize Freighter
         type: mission
+        seedPhase: mission
         quadrant: alpha
         region: Neutral Zone
         location: Near Talarian Shipping Lane
@@ -159,6 +200,7 @@
     155_046: {
         title: Steal Technology
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Gamma Tauri IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/46V.jpg
@@ -166,6 +208,7 @@
     155_047: {
         title: The Last Outpost
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Delphi Ardu IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/47V.jpg
@@ -173,6 +216,7 @@
     155_048: {
         title: Treat Plague Ship
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Near Haven
         image-url: https://www.trekcc.org/1e/cardimages/tng/48V.jpg
@@ -180,8 +224,93 @@
     155_049: {
         title: Visit Tranquil Colony
         type: mission
+        seedPhase: mission
         quadrant: alpha
         location: Jouret IV
         image-url: https://www.trekcc.org/1e/cardimages/tng/49V.jpg
+    }
+    155_053: {
+        title: Barron
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/tng/53V.jpg
+    }
+    155_054: {
+        title: Beverly
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/54V.jpg
+    }
+    155_055: {
+        title: Daniel Kwan
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/tng/55V.jpg
+    }
+    155_056: {
+        title: Data
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/56V.jpg
+    }
+    155_057: {
+        title: Davies
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/tng/57V.jpg
+    }
+    155_058: {
+        title: Deanna Troi
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/58V.jpg
+    }
+    155_059: {
+        title: Dr. Christopher
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/59V.jpg
+    }
+    155_060: {
+        title: Geordi La Forge
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/60V.jpg
+    }
+    155_061: {
+        title: Kosinski
+        type: personnel
+        affiliation: federation
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/61V.jpg
+    }
+    155_067: {
+        title: Jean-Luc Picard
+        type: personnel
+        affiliation: ferengi
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/67V.jpg
+    }
+    155_094: {
+        title: Vash
+        type: personnel
+        affiliation: non-aligned
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/94V.jpg
+    }
+    155_099: {
+        title: I.K.S. Pagh
+        type: ship
+        affiliation: klingon
+        uniqueness: unique
+        image-url: https://www.trekcc.org/1e/cardimages/tng/99V.jpg
     }
 }

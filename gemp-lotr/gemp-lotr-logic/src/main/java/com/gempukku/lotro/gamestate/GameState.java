@@ -49,7 +49,7 @@ public abstract class GameState {
     protected Map<String, CardDeck> _decks;
     protected CardBlueprintLibrary _library;
 
-    private int _nextCardId = 0;
+    protected int _nextCardId = 0;
 
     private int nextCardId() {
         return _nextCardId++;
@@ -303,6 +303,10 @@ public abstract class GameState {
             return _stacked.get(playerId);
         else
             return _inPlay;
+    }
+
+    public void removeCardFromZone(PhysicalCard card) {
+        removeCardsFromZone(card.getOwner(), Collections.singleton(card));
     }
 
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
@@ -688,10 +692,6 @@ public abstract class GameState {
 
     public PhysicalCard getCurrentSite() {
         return getSite(getCurrentSiteNumber());
-    }
-
-    public SitesBlock getCurrentSiteBlock() {
-        return getCurrentSite().getBlueprint().getSiteBlock();
     }
 
     public void addTwilight(int twilight) {

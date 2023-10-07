@@ -10,7 +10,7 @@ public class NotCondition implements Condition {
     }
 
     @Override
-    public boolean isFullfilled(DefaultGame game) {
-        return !_condition.isFullfilled(game);
+    public boolean isFulfilled(DefaultGame game) {
+        return !_condition.isFulfilled(game);
     }
 }

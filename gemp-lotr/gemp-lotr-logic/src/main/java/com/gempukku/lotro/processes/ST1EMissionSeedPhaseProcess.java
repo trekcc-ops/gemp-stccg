@@ -1,6 +1,8 @@
 package com.gempukku.lotro.processes;
 
 import com.gempukku.lotro.actions.Action;
+import com.gempukku.lotro.decisions.CardActionSelectionDecision;
+import com.gempukku.lotro.decisions.DecisionResultInvalidException;
 import com.gempukku.lotro.game.PlayerOrder;
 import com.gempukku.lotro.game.ST1EGame;
 
@@ -20,11 +22,10 @@ public class ST1EMissionSeedPhaseProcess implements GameProcess<ST1EGame> {
     public void process(ST1EGame game) {
         _playOrder = game.getGameState().getPlayerOrder();
         String _currentPlayer = _playOrder.getCurrentPlayer();
-        // TODO: Set the phase
 
         final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         game.getActionsEnvironment().addActionToStack(playableActions.get(0));
-/*        if (playableActions.size() == 0 && game.shouldAutoPass(_currentPlayer, game.getGameState().getCurrentPhase())) {
+        if (playableActions.size() == 0 && game.shouldAutoPass(_currentPlayer, game.getGameState().getCurrentPhase())) {
             playerPassed();
         } else {
             game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
@@ -40,7 +41,7 @@ public class ST1EMissionSeedPhaseProcess implements GameProcess<ST1EGame> {
                             }
                         }
                     });
-        }*/
+        }
     }
 
     private void playerPassed() {

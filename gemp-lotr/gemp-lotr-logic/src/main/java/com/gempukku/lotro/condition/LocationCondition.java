@@ -13,7 +13,7 @@ public class LocationCondition implements Condition {
     }
 
     @Override
-    public boolean isFullfilled(DefaultGame game) {
+    public boolean isFulfilled(DefaultGame game) {
         return _filter.accepts(game, game.getGameState().getCurrentSite());
     }
 }

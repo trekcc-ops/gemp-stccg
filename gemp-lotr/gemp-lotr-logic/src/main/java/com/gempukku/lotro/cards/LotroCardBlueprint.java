@@ -57,11 +57,8 @@ public interface LotroCardBlueprint {
 
     int getResistance();
 
-    int[] getAllyHomeSiteNumbers();
     int getTribbleValue();
     TribblePower getTribblePower();
-
-    SitesBlock getAllyHomeSiteBlock();
 
     PlayEventAction getPlayEventCardAction(String playerId, DefaultGame game, PhysicalCard self);
 
@@ -116,8 +113,6 @@ public interface LotroCardBlueprint {
     RequiredTriggerAction getKilledRequiredTrigger(DefaultGame game, PhysicalCard self);
 
     OptionalTriggerAction getKilledOptionalTrigger(String playerId, DefaultGame game, PhysicalCard self);
-
-    SitesBlock getSiteBlock();
 
     int getSiteNumber();
 

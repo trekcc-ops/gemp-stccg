@@ -14,7 +14,7 @@ import com.gempukku.lotro.common.Keyword;
 import com.gempukku.lotro.effects.AddUntilModifierEffect;
 import com.gempukku.lotro.effects.Effect;
 import com.gempukku.lotro.filters.Filters;
-import com.gempukku.lotro.modifiers.lotronly.RemoveKeywordModifier;
+import com.gempukku.lotro.modifiers.RemoveKeywordModifier;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
