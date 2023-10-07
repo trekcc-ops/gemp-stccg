@@ -1,8 +1,10 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.DrawCardsEffect;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
 
@@ -14,7 +16,7 @@ public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         String[] players = GameUtils.getAllPlayers(game);
         if (players.length == 1)
             playerChosen(players[0], game);
@@ -27,7 +29,7 @@ public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
                         }
                     });
         game.getActionsEnvironment().emitEffectResult(_result);
-        return new FullEffectResult(true);
+        return new AbstractEffect.FullEffectResult(true);
     }
 
     private void playerChosen(String playerId, TribblesGame game) {

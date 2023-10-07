@@ -1,8 +1,9 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.effects.AllPlayersDiscardFromHandEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.game.TribblesGame;
 

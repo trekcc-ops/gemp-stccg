@@ -1,9 +1,11 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.ShuffleCardsIntoDrawDeckEffect;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
 
@@ -16,7 +18,7 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         // Choose a player to shuffle his or her discard pile into his or her draw deck
         List<String> playersWithCards = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(game)) {
@@ -35,7 +37,7 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
                         }
                     });
         game.getActionsEnvironment().emitEffectResult(_result);
-        return new FullEffectResult(true);
+        return new AbstractEffect.FullEffectResult(true);
     }
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {

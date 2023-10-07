@@ -1,9 +1,10 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.TribblePower;
+import com.gempukku.lotro.effects.AbstractEffect;
 import com.gempukku.lotro.game.DefaultGame;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.results.ActivateTribblePowerResult;

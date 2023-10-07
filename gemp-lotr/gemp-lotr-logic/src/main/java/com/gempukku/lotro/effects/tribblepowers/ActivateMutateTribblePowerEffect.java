@@ -1,8 +1,10 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.gamestate.TribblesGameState;
 
@@ -15,7 +17,7 @@ public class ActivateMutateTribblePowerEffect extends ActivateTribblePowerEffect
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         SubAction subAction = new SubAction(_action);
         TribblesGameState gameState = game.getGameState();
         List<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(_activatingPlayer));

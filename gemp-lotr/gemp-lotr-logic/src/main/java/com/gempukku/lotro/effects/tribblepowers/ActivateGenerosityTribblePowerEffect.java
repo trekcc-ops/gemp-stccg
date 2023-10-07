@@ -1,8 +1,10 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.DrawCardsEffect;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
 
@@ -16,7 +18,7 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         // You and one other player (your choice) each score 25,000 points.
         List<String> opponents = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(game)) {
@@ -35,7 +37,7 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
                         }
                     });
         game.getActionsEnvironment().emitEffectResult(_result);
-        return new FullEffectResult(true);
+        return new AbstractEffect.FullEffectResult(true);
     }
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {

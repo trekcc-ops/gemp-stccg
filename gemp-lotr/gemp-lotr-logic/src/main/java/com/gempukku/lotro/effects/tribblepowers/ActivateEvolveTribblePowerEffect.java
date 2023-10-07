@@ -1,8 +1,10 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.DrawCardsEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.TribblesGame;
@@ -13,7 +15,7 @@ public class ActivateEvolveTribblePowerEffect extends ActivateTribblePowerEffect
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         SubAction subAction = new SubAction(_action);
 
         // Count the number of cards in your hand

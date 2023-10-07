@@ -1,9 +1,11 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.ScorePointsEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndPutCardsFromHandBeneathDrawDeckEffect;
 import com.gempukku.lotro.filters.Filters;
@@ -34,9 +36,9 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         if (!isPlayableInFull(game))
-            return new FullEffectResult(false);
+            return new AbstractEffect.FullEffectResult(false);
         else {
             List<String> players = Arrays.asList(GameUtils.getAllPlayers(game));
             players.removeIf(player -> game.getGameState().getHand(player).size() == 0);
@@ -48,7 +50,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
                         }
                     });
             game.getActionsEnvironment().emitEffectResult(_result);
-            return new FullEffectResult(true);
+            return new AbstractEffect.FullEffectResult(true);
         }
     }
 

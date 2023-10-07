@@ -1,7 +1,8 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.effects.AbstractEffect;
 import com.gempukku.lotro.game.TribblesGame;
 
 public class ActivateReverseTribblePowerEffect extends ActivateTribblePowerEffect {
@@ -10,9 +11,9 @@ public class ActivateReverseTribblePowerEffect extends ActivateTribblePowerEffec
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         game.getGameState().getPlayerOrder().reversePlayerOrder();
         game.getActionsEnvironment().emitEffectResult(_result);
-        return new FullEffectResult(true);
+        return new AbstractEffect.FullEffectResult(true);
     }
 }

@@ -1,8 +1,10 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
 import com.gempukku.lotro.cards.PhysicalCard;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.DrawCardsEffect;
 import com.gempukku.lotro.effects.choose.ChooseAndPutCardsFromHandBeneathDrawDeckEffect;
 import com.gempukku.lotro.filters.Filters;
 import com.gempukku.lotro.game.TribblesGame;
@@ -13,7 +15,7 @@ public class ActivateCycleTribblePowerEffect extends ActivateTribblePowerEffect 
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         SubAction subAction = new SubAction(_action);
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
                 _action, _activatingPlayer, 1, false, Filters.any));

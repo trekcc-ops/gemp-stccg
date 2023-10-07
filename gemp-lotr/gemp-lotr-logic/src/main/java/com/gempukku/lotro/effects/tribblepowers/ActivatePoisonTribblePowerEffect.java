@@ -1,4 +1,4 @@
-package com.gempukku.lotro.effects;
+package com.gempukku.lotro.effects.tribblepowers;
 
 import com.gempukku.lotro.actions.CostToEffectAction;
 import com.gempukku.lotro.actions.SubAction;
@@ -6,6 +6,8 @@ import com.gempukku.lotro.cards.PhysicalCard;
 import com.gempukku.lotro.common.EndOfPile;
 import com.gempukku.lotro.common.Zone;
 import com.gempukku.lotro.decisions.MultipleChoiceAwaitingDecision;
+import com.gempukku.lotro.effects.AbstractEffect;
+import com.gempukku.lotro.effects.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.lotro.game.TribblesGame;
 import com.gempukku.lotro.rules.GameUtils;
 import com.google.common.collect.Iterables;
@@ -21,7 +23,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
         // Choose any opponent who still has card(s) in their draw deck.
         List<String> playersWithCards = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(game)) {
@@ -40,7 +42,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
                         }
                     });
         game.getActionsEnvironment().emitEffectResult(_result);
-        return new FullEffectResult(true);
+        return new AbstractEffect.FullEffectResult(true);
     }
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
