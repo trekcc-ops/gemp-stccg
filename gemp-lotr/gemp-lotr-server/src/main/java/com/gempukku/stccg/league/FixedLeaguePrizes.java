@@ -1,8 +1,8 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.DefaultCardCollection;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.SetDefinition;
 

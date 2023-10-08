@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.Zone;
-import com.gempukku.stccg.game.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.text.DecimalFormat;

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.merchant;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.db.MerchantDAO;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class StorageBasedMerchantTest extends AbstractAtTest {
+public class StorageBasedMerchantTest extends AbstractServerTest {
     private StorageBasedMerchant _merchant;
     private static final long DAY = 1000 * 60 * 60 * 24;
     private MockMerchantDAO _merchantDao;

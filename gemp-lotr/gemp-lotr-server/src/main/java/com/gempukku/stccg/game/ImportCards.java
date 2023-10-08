@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.rules.GameUtils;
 import org.apache.commons.lang.StringUtils;

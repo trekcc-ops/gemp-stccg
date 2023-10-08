@@ -5,9 +5,9 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.draft2.SoloDraft;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.GameFormat;
+import com.gempukku.stccg.draft.SoloDraft;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 

@@ -417,7 +417,7 @@ public class CardBlueprintLibrary {
 
     private LotroCardBlueprint tryLoadingFromPackage(String packageName, String setNumber, String cardNumber) throws IllegalAccessException, InstantiationException, NoSuchMethodException {
         try {
-            Class clazz = Class.forName("com.gempukku.lotro.cards.set" + setNumber + packageName + ".Card" + setNumber + "_" + normalizeId(cardNumber));
+            Class clazz = Class.forName("com.gempukku.stccg.cards.set" + setNumber + packageName + ".Card" + setNumber + "_" + normalizeId(cardNumber));
             return (LotroCardBlueprint) clazz.getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException | InvocationTargetException e) {
             // Ignore

@@ -1,8 +1,8 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.collection.TransferDAO;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.DefaultCardCollection;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

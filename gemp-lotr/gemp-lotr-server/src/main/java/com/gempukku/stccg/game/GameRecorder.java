@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.DBDefs;
 import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.EventSerializer;
 import com.gempukku.stccg.gamestate.GameCommunicationChannel;
 import com.gempukku.stccg.gamestate.GameEvent;

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.at;
 
+import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
@@ -9,24 +10,16 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.game.DefaultUserFeedback;
-import com.gempukku.stccg.game.GameFormat;
-import com.gempukku.stccg.game.LotroGame;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.DefaultUserFeedback;
+import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.LotroGame;
 
 import java.util.*;
 
 import static org.junit.Assert.fail;
 
-public abstract class AbstractAtTest {
-    protected static final CardBlueprintLibrary _cardLibrary;
-    protected static final FormatLibrary _formatLibrary;
-    private final int cardId = 100;
-
-    static {
-        _cardLibrary = new CardBlueprintLibrary();
-        _formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
-    }
+public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected LotroGame _game;
     protected DefaultUserFeedback _userFeedback;

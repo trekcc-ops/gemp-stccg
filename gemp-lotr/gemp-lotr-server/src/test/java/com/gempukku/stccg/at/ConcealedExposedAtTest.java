@@ -1,6 +1,6 @@
 package com.gempukku.stccg.at;
 
-import com.gempukku.stccg.cards.GenericCardTestHelper;
+import com.gempukku.stccg.GenericCardTestHelper;
 import com.gempukku.stccg.cards.PhysicalCardImpl;
 import com.gempukku.stccg.common.CardType;
 import com.gempukku.stccg.common.Keyword;

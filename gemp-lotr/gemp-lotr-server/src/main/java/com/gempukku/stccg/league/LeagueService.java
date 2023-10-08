@@ -11,8 +11,8 @@ import com.gempukku.stccg.db.LeagueParticipationDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
-import com.gempukku.stccg.draft2.SoloDraftDefinitions;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.draft.SoloDraftDefinitions;
+import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 

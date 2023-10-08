@@ -1,6 +1,6 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.LotroDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
@@ -14,7 +14,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
-public class DefaultTournamentTest extends AbstractAtTest {
+public class DefaultTournamentTest extends AbstractServerTest {
 
     @Test
     public void testTournament() throws InterruptedException {

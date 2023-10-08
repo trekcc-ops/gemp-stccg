@@ -1,11 +1,11 @@
 package com.gempukku.stccg.library;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.packs.ProductLibrary;
 import org.junit.Test;
 
 
-public class PackTests extends AbstractAtTest {
+public class PackTests extends AbstractServerTest {
 
     protected static final ProductLibrary _productLib = new ProductLibrary(_cardLibrary);
 

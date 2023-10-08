@@ -2,9 +2,9 @@ package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.DefaultCardCollection;
-import com.gempukku.stccg.game.MutableCardCollection;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.collection.MutableCardCollection;
 import org.json.simple.JSONObject;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;

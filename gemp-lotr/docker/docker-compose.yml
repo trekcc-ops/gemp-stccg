@@ -24,13 +24,13 @@ services:
         published: 8052
     volumes:
        - type: bind
-         source: ../gemp-lotr-async/src/main/web
+         source: ../gemp-stccg-client/src/main/web
          target: /etc/gemp-lotr/web
        - type: bind
          source: ../../gemp-lotr
          target: /etc/gemp-lotr
        - type: bind
-         source: ../gemp-lotr-async/src/main/web
+         source: ../gemp-stccg-client/src/main/web
          target: /var/www/localhost/htdocs/gemp-lotr #/etc/apache2/htdocs/gemp-lotr
        - type: bind
          source: ../../logs
@@ -48,7 +48,7 @@ services:
       gemp_net_1:
         ipv4_address: ${APP_IP}
     tty: true
-    command: nohup java -jar /etc/gemp-lotr/gemp-lotr-async/target/web.jar &
+    command: nohup java -jar /etc/gemp-lotr/gemp-stccg-client/target/web.jar &
 
 
   db:

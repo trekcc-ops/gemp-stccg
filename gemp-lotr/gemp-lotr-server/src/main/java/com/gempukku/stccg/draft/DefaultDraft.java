@@ -4,9 +4,9 @@ import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.DefaultCardCollection;
-import com.gempukku.stccg.game.MutableCardCollection;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.tournament.TournamentCallback;
 

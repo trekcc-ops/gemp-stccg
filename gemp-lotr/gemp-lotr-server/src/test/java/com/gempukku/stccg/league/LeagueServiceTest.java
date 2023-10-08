@@ -1,6 +1,6 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.LeagueDAO;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
-public class LeagueServiceTest extends AbstractAtTest {
+public class LeagueServiceTest extends AbstractServerTest {
 
     @Test
     public void testJoiningLeagueAfterMaxGamesPlayed() throws Exception {

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 
 import java.util.Map;
 

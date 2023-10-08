@@ -1,7 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 
 import java.io.IOException;
 import java.sql.SQLException;

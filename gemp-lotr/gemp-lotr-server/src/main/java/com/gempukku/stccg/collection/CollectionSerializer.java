@@ -1,9 +1,7 @@
 package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.DefaultCardCollection;
-import com.gempukku.stccg.game.MutableCardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

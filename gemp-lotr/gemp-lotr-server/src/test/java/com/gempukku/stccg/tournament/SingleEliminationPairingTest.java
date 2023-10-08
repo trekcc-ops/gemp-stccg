@@ -1,13 +1,13 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import org.junit.Test;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class SingleEliminationPairingTest extends AbstractAtTest {
+public class SingleEliminationPairingTest extends AbstractServerTest {
     private final SingleEliminationPairing _pairing = new SingleEliminationPairing("singleElimination");
 
     @Test

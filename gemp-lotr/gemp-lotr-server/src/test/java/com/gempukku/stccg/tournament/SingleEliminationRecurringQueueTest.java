@@ -1,6 +1,6 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.game.User;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
-public class SingleEliminationRecurringQueueTest extends AbstractAtTest {
+public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test
     public void joiningQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);

@@ -6,7 +6,7 @@ import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.*;
-import com.gempukku.stccg.draft2.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.adventure.AdventureLibrary;
 import com.gempukku.stccg.adventure.DefaultAdventureLibrary;

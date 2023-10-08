@@ -1,13 +1,13 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
+import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
-import com.gempukku.stccg.game.DefaultCardCollection;
-import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.game.User;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -18,7 +18,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
-public class SealedLeagueDataTest extends AbstractAtTest {
+public class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(
             new DefaultAdventureLibrary(), _cardLibrary

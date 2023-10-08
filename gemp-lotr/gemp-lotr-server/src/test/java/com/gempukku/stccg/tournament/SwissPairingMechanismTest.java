@@ -1,6 +1,6 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import org.apache.commons.lang.StringUtils;
@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.*;
 
-public class SwissPairingMechanismTest extends AbstractAtTest {
+public class SwissPairingMechanismTest extends AbstractServerTest {
 
     @Test
     public void testPairingSmallTournament() {

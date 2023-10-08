@@ -8,7 +8,7 @@ import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.DefaultDraft;
 import com.gempukku.stccg.draft.Draft;
 import com.gempukku.stccg.draft.DraftPack;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.packs.ProductLibrary;
 import org.apache.commons.lang.StringUtils;
 

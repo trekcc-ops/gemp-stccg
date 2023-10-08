@@ -1,7 +1,7 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 
 public interface LeaguePrizes {
     CardCollection getPrizeForLeagueMatchWinner(int winCountThisSerie, int totalGamesPlayedThisSerie);

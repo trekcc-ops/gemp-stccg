@@ -3,7 +3,7 @@ package com.gempukku.stccg.collection;
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.common.DBDefs;
 import com.gempukku.stccg.db.CollectionDAO;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 import org.apache.commons.collections.map.LRUMap;
 
 import java.io.IOException;

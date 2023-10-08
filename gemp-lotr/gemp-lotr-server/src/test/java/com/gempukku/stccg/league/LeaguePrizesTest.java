@@ -1,11 +1,11 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 import org.junit.Test;
 
-public class LeaguePrizesTest extends AbstractAtTest {
+public class LeaguePrizesTest extends AbstractServerTest {
     @Test
     public void test() {
         LeaguePrizes leaguePrizes = new FixedLeaguePrizes(_cardLibrary);

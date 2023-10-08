@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.game.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.*;

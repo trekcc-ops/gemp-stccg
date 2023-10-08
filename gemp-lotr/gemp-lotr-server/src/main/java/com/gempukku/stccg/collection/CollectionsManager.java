@@ -1,6 +1,6 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.db.CollectionDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.vo.CollectionType;

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db.vo;
 
-import com.gempukku.stccg.draft2.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.*;

@@ -1,7 +1,8 @@
 package com.gempukku.stccg.packs;
 
+import com.gempukku.stccg.cards.PackBox;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.game.CardCollection;
+import com.gempukku.stccg.cards.CardCollection;
 
 import java.io.BufferedReader;
 import java.io.IOException;

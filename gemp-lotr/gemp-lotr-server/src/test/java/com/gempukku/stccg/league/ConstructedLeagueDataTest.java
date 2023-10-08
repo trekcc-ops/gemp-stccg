@@ -1,13 +1,13 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.at.AbstractAtTest;
+import com.gempukku.stccg.AbstractServerTest;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConstructedLeagueDataTest extends AbstractAtTest {
+public class ConstructedLeagueDataTest extends AbstractServerTest {
     @Test
     public void testParameters() {
         ConstructedLeagueData leagueData = new ConstructedLeagueData(_cardLibrary, _formatLibrary, "20120312,fotr_block,0.7,default,All cards,7,10,3,fotr1_block,fotr_block,fotr2_block,fotr_block,fotr_block,fotr_block");

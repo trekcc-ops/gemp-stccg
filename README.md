@@ -14,10 +14,10 @@ GEMP is a server written for Java 18, using MariaDB for a MySQL database instanc
 
 GEMP is divided into several modules which each handle a different aspect of the game, albeit for now they cannot be hosted separately (tho this is a future improvement we would like to make)
 
-## gemp-lotr-async
-This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-lotr-async.  From there the action could go anywhere depending on context.
+## gemp-stccg-client
+This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-lotr/gemp-lotr-async/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-lotr/gemp-lotr-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-lotr-async.  From there the action could go anywhere depending on context.
 
-gemp-lotr-async is also the home for the web portion of the project; everything in [/src/main/web/](gemp-lotr/gemp-lotr-async/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](gemp-lotr/gemp-lotr-async/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
+gemp-stccg-client is also the home for the web portion of the project; everything in [/src/main/web/](./gemp-lotr/gemp-lotr-async/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](./gemp-lotr/gemp-lotr-async/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
 
 ## gemp-lotr-cards
 

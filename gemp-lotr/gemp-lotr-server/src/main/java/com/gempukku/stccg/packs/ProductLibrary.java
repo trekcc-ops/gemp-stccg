@@ -1,5 +1,7 @@
 package com.gempukku.stccg.packs;
 
+import com.gempukku.stccg.cards.PackBox;
+import com.gempukku.stccg.cards.RarityPackBox;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;

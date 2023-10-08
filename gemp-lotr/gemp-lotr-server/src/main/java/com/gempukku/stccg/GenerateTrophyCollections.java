@@ -5,8 +5,8 @@ import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.db.DbAccess;
 import com.gempukku.stccg.db.DbCollectionDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.CardCollection;
-import com.gempukku.stccg.game.DefaultCardCollection;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.SetDefinition;
 
 import java.io.IOException;

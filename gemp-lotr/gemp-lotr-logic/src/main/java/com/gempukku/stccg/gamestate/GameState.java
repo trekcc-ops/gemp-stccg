@@ -1,8 +1,10 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import org.apache.log4j.Logger;

@@ -2,11 +2,14 @@ package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.draft2.SoloDraft;
-import com.gempukku.stccg.draft2.SoloDraftDefinitions;
+import com.gempukku.stccg.draft.SoloDraft;
+import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 

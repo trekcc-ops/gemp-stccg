@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameTimer;
 
 public class ST1EGameMediator extends CardGameMediator<ST1EGame> {

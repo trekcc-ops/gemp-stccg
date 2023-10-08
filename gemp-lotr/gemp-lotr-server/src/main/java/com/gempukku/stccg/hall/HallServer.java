@@ -2,6 +2,7 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.DeckInvalidException;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
@@ -11,6 +12,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.LeagueSeriesData;

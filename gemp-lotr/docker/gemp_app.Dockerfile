@@ -51,6 +51,6 @@ RUN apk add --no-cache openrc; \
 	
 RUN touch /nohup.out
 	
-#RUN nohup java -jar /etc/gemp-lotr/gemp-lotr-async/target/web.jar &
+#RUN nohup java -jar /etc/gemp-lotr/gemp-stccg-client/target/web.jar &
 
 
