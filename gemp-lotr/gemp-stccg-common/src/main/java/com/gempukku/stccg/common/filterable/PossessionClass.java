@@ -1,4 +1,4 @@
-package com.gempukku.stccg.common;
+package com.gempukku.stccg.common.filterable;
 
 public enum PossessionClass implements Filterable {
     HAND_WEAPON("Hand Weapon"), ARMOR("Armor"), HELM("Helm"), MOUNT("Mount"), RANGED_WEAPON("Ranged Weapon"),

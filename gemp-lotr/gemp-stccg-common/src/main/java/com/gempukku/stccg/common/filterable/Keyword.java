@@ -1,4 +1,4 @@
-package com.gempukku.stccg.common;
+package com.gempukku.stccg.common.filterable;
 
 public enum Keyword implements Filterable {
     SUPPORT_AREA("Support Area", true),
@@ -38,7 +38,6 @@ public enum Keyword implements Filterable {
     private final String _humanReadable;
     private final boolean _infoDisplayable;
     private final boolean _multiples;
-    private final boolean _terrain;
 
     Keyword(String humanReadable) {
         this(humanReadable, false);
@@ -56,7 +55,6 @@ public enum Keyword implements Filterable {
         _humanReadable = humanReadable;
         _infoDisplayable = infoDisplayable;
         _multiples = multiples;
-        _terrain = terrain;
     }
 
     public String getHumanReadable() {
@@ -78,7 +76,4 @@ public enum Keyword implements Filterable {
         return _multiples;
     }
 
-    public boolean isTerrain() {
-        return _terrain;
-    }
 }

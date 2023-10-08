@@ -17,7 +17,7 @@ public class AppConfig {
         if (_properties == null) {
             Properties props = new Properties();
             try {
-                props.load(AppConfig.class.getResourceAsStream("/gemp-lotr.properties"));
+                props.load(AppConfig.class.getResourceAsStream("/gemp-stccg.properties"));
                 String gempPropertiesOverride = System.getProperty("gemp-lotr.override");
                 if (gempPropertiesOverride != null)
                     props.load(AppConfig.class.getResourceAsStream(gempPropertiesOverride));
