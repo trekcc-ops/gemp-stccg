@@ -6,6 +6,7 @@ var GameTableUI = Class.extend({
     bottomPlayerId: null,
     allPlayerIds: null,
 
+    gameUiInitialized:false,
     cardActionDialog: null,
     smallDialog: null,
     gameStateElem: null,
@@ -14,8 +15,7 @@ var GameTableUI = Class.extend({
     alertButtons: null,
     infoDialog: null,
 
-    advPathGroup: null,
-    playPiles: null,
+//    playPiles: null,
     hand: null,
     specialGroup: null,
 
@@ -49,6 +49,11 @@ var GameTableUI = Class.extend({
 
         log("ui initialized");
         var that = this;
+        this.alertBox = $("#alertBox");
+        this.alertText = $("#alertText");
+        this.alertButtons = $("#alertButtons");
+        this.gameStateElem = $("#gameStateElem");
+        this.statsDiv = $("#statsDiv");
 
         this.animations = new GameAnimations(this);
         this.gameSettings = new Map();
@@ -130,7 +135,6 @@ var GameTableUI = Class.extend({
                 return this.locationCardGroups[i];
             }
         }
-
         for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
@@ -141,12 +145,10 @@ var GameTableUI = Class.extend({
                 return cardGroup;
             }
         }
-
         if (this.hand != null)
             if (this.hand.cardBelongs(cardData)) {
                 return this.hand;
             }
-
         return null;
     },
 
@@ -163,45 +165,10 @@ var GameTableUI = Class.extend({
     initializeGameUI: function (discardPublic) {
         var that = this;
 
-        this.alertBox = $("#alertBox");
-        this.alertText = $("#alertText");
-        this.alertButtons = $("#alertButtons");
-        this.gameStateElem = $("#gameStateElem");
-        this.statsDiv = $("#statsDiv");
-
-        this.advPathGroup = new AdvPathCardGroup($("#main"));
+//        this.advPathGroup = new AdvPathCardGroup($("#main"));
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
-            this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup(
-                $("#main"),
-                this.allPlayerIds[i],
-                function (card) {
-                    return (card.zone == "PLAY_PILE");
-                },
-                "playPileDiv_" + this.allPlayerIds[i]
-            );
-            this.onTableAreas[this.allPlayerIds[i]] = new NormalGameCardGroup(
-                $("#main"),
-                this.allPlayerIds[i],
-                function (card) {
-                    return (card.zone == "TABLE");
-                },
-                "tableAreaDiv_" + this.allPlayerIds[i]
-            );
-        }
 
-        if (!this.spectatorMode) {
-            this.hand = new NormalCardGroup($("#main"), function (card) {
-                return (card.zone == "HAND") || (card.zone == "EXTRA");
-            });
-        }
-
-        this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
-            return (card.zone == "SPECIAL");
-        }, false);
-        this.specialGroup.setBounds(this.padding, this.padding, 580 - 2 * (this.padding), 250 - 2 * (this.padding));
-
-        for (var i = 0; i < this.allPlayerIds.length; i++) {
             this.gameStateElem.append(
                 "<div class='player'>" + (i + 1) + ". " + this.allPlayerIds[i] +
                 "<div id='clock" + i + "' class='clock'></div>" +
@@ -211,11 +178,7 @@ var GameTableUI = Class.extend({
                     "<div id='discard" + i + "' class='discardSize'></div>" +
                     "<div id='score" + i + "' class='playerScore'></div>" +
                 "</div></div></div>");
-        }
 
-        this.gameStateElem.append("<div class='tribbleSequence'>1</div>");
-
-        for (var i = 0; i < this.allPlayerIds.length; i++) {
             var showBut = $("<div class='slimButton'>+</div>").button().click(
                 (function (playerIndex) {
                     return function () {
@@ -237,34 +200,25 @@ var GameTableUI = Class.extend({
                 })(i));
 
             $("#showStats" + i).append(showBut);
-        }
 
-        if (!this.spectatorMode) {
-            if(!discardPublic) {
-                $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                    (function (index) {
-                        return function () {
-                            var dialog = that.discardPileDialogs[index];
-                            var group = that.discardPileGroups[index];
-                            openSizeDialog(dialog);
-                            that.dialogResize(dialog, group);
-                            group.layoutCards();
-                        };
-                    })(that.bottomPlayerId));
-            }
-            $("#adventureDeck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                (function (index) {
-                    return function () {
-                        var dialog = that.adventureDeckDialogs[index];
-                        var group = that.adventureDeckGroups[index];
-                        openSizeDialog(dialog);
-                        that.dialogResize(dialog, group);
-                        group.layoutCards();
-                    };
-                })(that.bottomPlayerId));
-        }
+            this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup(
+                $("#main"),
+                this.allPlayerIds[i],
+                function (card) {
+                    return (card.zone == "PLAY_PILE");
+                },
+                "playPileDiv_" + this.allPlayerIds[i]
+            );
 
-        for (var i = 0; i < this.allPlayerIds.length; i++) {
+            this.onTableAreas[this.allPlayerIds[i]] = new NormalGameCardGroup(
+                $("#main"),
+                this.allPlayerIds[i],
+                function (card) {
+                    return (card.zone == "TABLE");
+                },
+                "tableAreaDiv_" + this.allPlayerIds[i]
+            );
+
             $("#removedPile" + i).addClass("clickable").click(
                 (function (index) {
                     return function () {
@@ -288,6 +242,41 @@ var GameTableUI = Class.extend({
                         };
                     })(i));
             }
+        }
+
+        this.statsDiv.append("<div class='tribbleSequence'>1</div>");
+
+        this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
+            return (card.zone == "SPECIAL");
+        }, false);
+        this.specialGroup.setBounds(this.padding, this.padding, 580 - 2 * (this.padding), 250 - 2 * (this.padding))
+
+        if (!this.spectatorMode) {
+            this.hand = new NormalCardGroup($("#main"), function (card) {
+                return (card.zone == "HAND") || (card.zone == "EXTRA");
+            });
+            if(!discardPublic) {
+                $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
+                    (function (index) {
+                        return function () {
+                            var dialog = that.discardPileDialogs[index];
+                            var group = that.discardPileGroups[index];
+                            openSizeDialog(dialog);
+                            that.dialogResize(dialog, group);
+                            group.layoutCards();
+                        };
+                    })(that.bottomPlayerId));
+            }
+            $("#adventureDeck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
+                (function (index) {
+                    return function () {
+                        var dialog = that.adventureDeckDialogs[index];
+                        var group = that.adventureDeckGroups[index];
+                        openSizeDialog(dialog);
+                        that.dialogResize(dialog, group);
+                        group.layoutCards();
+                    };
+                })(that.bottomPlayerId));
         }
 
         var dragFunc = function (event) {
@@ -318,6 +307,8 @@ var GameTableUI = Class.extend({
                 $("body").unbind("mousemove", dragFunc);
                 return that.dragStopCardFunction(event);
             });
+
+        this.gameUiInitialized = true;
 
     },
 
@@ -873,7 +864,9 @@ var GameTableUI = Class.extend({
     processGameEvent: function (gameEvent, animate) {
         var eventType = gameEvent.getAttribute("type");
         if (eventType == "PCIP") {
-            this.animations.putCardInPlay(gameEvent, animate);
+            this.animations.putCardIntoPlay(gameEvent, animate, eventType);
+        } else if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
+            this.animations.putCardIntoPlay(gameEvent, animate, eventType);
         } else if (eventType == "MCIP") {
             this.animations.moveCardInPlay(gameEvent, animate);
         } else if (eventType == "P") {
@@ -1008,7 +1001,7 @@ var GameTableUI = Class.extend({
     },
 
     layoutZones: function () {
-        this.advPathGroup.layoutCards();
+//        this.advPathGroup.layoutCards();
         for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
@@ -1036,7 +1029,6 @@ var GameTableUI = Class.extend({
                 this.createPile(participantId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
             }
 
-            this.createPile(participantId, "Adventure Deck", "adventureDeckDialogs", "adventureDeckGroups");
             this.createPile(participantId, "Draw Deck", "miscPileDialogs", "miscPileGroups");
         }
 
@@ -1913,6 +1905,97 @@ var TribblesGameTableUI = GameTableUI.extend({
             height = this.windowHeight;
         }
 
+        var BORDER_PADDING = 2;
+        var LOCATION_BORDER_PADDING = 4;
+
+        // Defines the relative height of the opponent/player/table areas of the UI.
+        var OPPONENT_AREA_HEIGHT_SCALE = 0.15;
+        var PLAYER_AREA_HEIGHT_SCALE = 0.3;
+
+        // Defines the minimum/maximum height of the opponent/player/table areas of the UI. No max for table area.
+        var MIN_OPPONENT_AREA_HEIGHT = 114;
+        var MAX_OPPONENT_AREA_HEIGHT = 140;
+        var MIN_PLAYER_AREA_HEIGHT = MIN_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
+        var MAX_PLAYER_AREA_HEIGHT = MAX_OPPONENT_AREA_HEIGHT * Math.floor(PLAYER_AREA_HEIGHT_SCALE / OPPONENT_AREA_HEIGHT_SCALE);
+
+        // Sets the top and height of the opponent/player/table areas of the UI.
+        var OPPONENT_AREA_TOP = 0;
+        var OPPONENT_AREA_HEIGHT = Math.min(MAX_OPPONENT_AREA_HEIGHT, Math.max(MIN_OPPONENT_AREA_HEIGHT, Math.floor(height * OPPONENT_AREA_HEIGHT_SCALE)));
+        var OPPONENT_CARD_PILE_TOP_1 = OPPONENT_AREA_TOP;
+        var OPPONENT_CARD_PILE_HEIGHT_1 = Math.floor(OPPONENT_AREA_HEIGHT / 2);
+        var OPPONENT_CARD_PILE_TOP_2 = OPPONENT_AREA_TOP + OPPONENT_CARD_PILE_HEIGHT_1 + BORDER_PADDING - 1;
+        var OPPONENT_CARD_PILE_HEIGHT_2 = OPPONENT_AREA_HEIGHT - OPPONENT_CARD_PILE_HEIGHT_1 - BORDER_PADDING + 1;
+        var PLAYER_AREA_HEIGHT = Math.min(MAX_PLAYER_AREA_HEIGHT, Math.max(MIN_PLAYER_AREA_HEIGHT, Math.floor(height * PLAYER_AREA_HEIGHT_SCALE)));
+        var PLAYER_AREA_TOP = height - BORDER_PADDING - PLAYER_AREA_HEIGHT;
+        var PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT = Math.floor(PLAYER_AREA_HEIGHT / 2);
+        var PLAYER_CARD_PILE_TOP_1 = PLAYER_AREA_TOP;
+        var PLAYER_CARD_PILE_HEIGHT_1 = Math.floor(PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT / 2);
+        var PLAYER_CARD_PILE_TOP_2 = PLAYER_CARD_PILE_TOP_1 + PLAYER_CARD_PILE_HEIGHT_1 + BORDER_PADDING - 1;
+        var PLAYER_CARD_PILE_HEIGHT_2 = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - PLAYER_CARD_PILE_HEIGHT_1 - BORDER_PADDING + 1;
+        var PLAYER_ACTION_AREA_AND_HAND_TOP = PLAYER_AREA_TOP + PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT + BORDER_PADDING - 1;
+        var PLAYER_ACTION_AREA_AND_HAND_HEIGHT = PLAYER_AREA_HEIGHT - PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT - BORDER_PADDING;
+        var TABLE_AREA_TOP = OPPONENT_AREA_HEIGHT + BORDER_PADDING;
+        var TABLE_AREA_HEIGHT = Math.max(0, PLAYER_AREA_TOP - LOCATION_BORDER_PADDING - TABLE_AREA_TOP);
+
+        // Defines the sizes of other items in the UI.
+        var LEFT_SIDE = 0;
+        var GAME_STATE_AND_CHAT_WIDTH = 400;
+        var CARD_PILE_AND_ACTION_AREA_LEFT = GAME_STATE_AND_CHAT_WIDTH + BORDER_PADDING - 1;
+        var CARD_PILE_AND_ACTION_AREA_WIDTH = 141;
+        var CARD_PILE_LEFT_1 = CARD_PILE_AND_ACTION_AREA_LEFT;
+        var CARD_PILE_WIDTH_1 = Math.floor(CARD_PILE_AND_ACTION_AREA_WIDTH / 3);
+        var CARD_PILE_LEFT_2 = CARD_PILE_AND_ACTION_AREA_LEFT + CARD_PILE_WIDTH_1 + BORDER_PADDING - 1;
+        var CARD_PILE_WIDTH_2 = CARD_PILE_WIDTH_1;
+        var CARD_PILE_LEFT_3 = CARD_PILE_LEFT_2 + CARD_PILE_WIDTH_2 + BORDER_PADDING - 1;
+        var CARD_PILE_WIDTH_3 = CARD_PILE_AND_ACTION_AREA_WIDTH - CARD_PILE_WIDTH_1 - CARD_PILE_WIDTH_2;
+        var STAT_BOX_HEIGHT = 50;
+        var LARGE_STAT_BOX_SIZE = 25;
+        var SMALL_STAT_BOX_SIZE = 20;
+        var STAT_BOX_PADDING = 2;
+        var TAB_PANE_HEIGHT = 25;
+        var TAB_PANE_WIDTH_PADDING = 4;
+        var CHAT_HEIGHT = PLAYER_AREA_HEIGHT - BORDER_PADDING + 1;
+        var CHAT_WIDTH = GAME_STATE_AND_CHAT_WIDTH;
+
+        // Sets the hand and side of table left and width
+        var HAND_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        var HAND_WIDTH = (width - HAND_LEFT) - BORDER_PADDING;
+        var HAND_HEIGHT = CHAT_HEIGHT * .6;
+        var HAND_TOP = height - HAND_HEIGHT - BORDER_PADDING;
+        var SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
+        var SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
+
+        var STATS_TOP = PLAYER_AREA_TOP - STAT_BOX_HEIGHT - BORDER_PADDING - 6;
+
+        $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
+        this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
+        this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
+            CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
+
+        this.gameStateElem.css({
+            position: "absolute",
+            left: BORDER_PADDING,
+            top: BORDER_PADDING,
+            width: CHAT_WIDTH,
+            height: STATS_TOP - BORDER_PADDING * 2
+        });
+
+        this.statsDiv.css({
+            position: "absolute",
+            left: BORDER_PADDING,
+            top: STATS_TOP,
+            width: CHAT_WIDTH,
+            height: STAT_BOX_HEIGHT
+        });
+        this.alertBox.css({
+            position: "absolute",
+            left: CHAT_WIDTH + BORDER_PADDING * 5,
+            top: HAND_TOP,
+            width: HAND_LEFT - CHAT_WIDTH - BORDER_PADDING * 8,
+            height: HAND_HEIGHT
+        });
+
+
         var heightScales;
         if (this.spectatorMode)
             heightScales = [6, 10, 10, 10, 6];
@@ -1938,107 +2021,62 @@ var TribblesGameTableUI = GameTableUI.extend({
 
         var currentPlayerTurn = (this.currentPlayerId == this.bottomPlayerId);
 
-        if (this.advPathGroup != null) {
-            this.statsDiv.css({
-                position: "absolute",
-                left: padding + "px",
-                top: height - (padding * 2) - chatHeight - 34 + "px",
-                width: advPathWidth - 4,
-                height: 30
-            });
-
-            var playPilesLeft = advPathWidth + specialUiWidth + (padding * 2);
-            var playPilesRight = width - padding;
-            var playPilesHorizCenter = playPilesLeft + (playPilesRight - playPilesLeft) / 2;
-            var playPilesTop = padding + yScales[0] * heightPerScale;
-            var playPilesBottom = padding * 5 + yScales[5] * heightPerScale;
-
-            var playerCount = this.allPlayerIds.length;
-            var playerSeatOffset = this.getPlayerIndex(this.bottomPlayerId);
-
-            var playPileXs = new Array();
-            var playPileYs = new Array();
-            var playPileWidth = null;
-            var playPileHeight = null;
-
-            // Array is built with 0 at the bottom player position, and all others proceeding clockwise
-            if (playerCount == 2) {
-                playPileXs = [playPilesLeft, playPilesLeft];
-                playPileYs = [playPilesTop + (playPilesBottom - playPilesTop) / 2, playPilesTop];
-                playPileWidth = playPilesRight - playPilesLeft;
-                playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
-            } else if (playerCount == 3) {
-                playPileWidth = (playPilesRight - playPilesLeft) / 2 - padding;
-                playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
-                playPileXs = [
-                    playPilesHorizCenter - playPileWidth / 2,
-                    playPilesLeft,
-                    playPilesRight - playPileWidth
-                ];
-                playPileYs = [
-                    playPilesTop + playPileHeight + padding,
-                    playPilesTop,
-                    playPilesTop
-                ];
-            }
-
-            for (var i = 0; i < playerCount; i++) {
-                var playerIndex = (i + playerSeatOffset) % playerCount;
-                this.playPiles[this.allPlayerIds[playerIndex]].setBounds(
-                    playPileXs[i], playPileYs[i], playPileWidth, playPileHeight
-                );
-            }
-
-            var i = 0; // I don't think this is used, but not deleting it for now to avoid breaking anything
-
-            if (!this.spectatorMode)
-                this.hand.setBounds(
-                    advPathWidth + specialUiWidth + (padding * 2),
-                    padding * 6 + yScales[5] * heightPerScale,
-                    width - (advPathWidth + specialUiWidth + padding * 3),
-                    heightScales[5] * heightPerScale
-                );
-
-            this.gameStateElem.css({
-                position: "absolute",
-                left: padding * 2, // + advPathWidth,
-                top: padding,
-                width: specialUiWidth - padding + 75,
-                height: height - padding * 4 - alertHeight - chatHeight
-            });
-            this.alertBox.css({
-                position: "absolute",
-                left: padding * 2 + advPathWidth,
-                top: height - (padding * 2) - alertHeight - chatHeight,
-                width: specialUiWidth - padding,
-                height: alertHeight
-            });
-
-
-            for (var playerId in this.discardPileGroups)
-                if (this.discardPileGroups.hasOwnProperty(playerId))
-                    this.discardPileGroups[playerId].layoutCards();
-
-            for (var playerId in this.adventureDeckGroups)
-                if (this.adventureDeckGroups.hasOwnProperty(playerId))
-                    this.adventureDeckGroups[playerId].layoutCards();
-
-            for (var playerId in this.removedPileGroups)
-                if (this.removedPileGroups.hasOwnProperty(playerId))
-                    this.removedPileGroups[playerId].layoutCards();
-
-            for (var playerId in this.miscPileGroups)
-                if (this.miscPileGroups.hasOwnProperty(playerId))
-                    this.miscPileGroups[playerId].layoutCards();
+        if (!this.gameUiInitialized) {
+            return;
         }
-        this.tabPane.css({
-            position: "absolute",
-            left: padding,
-            top: height - padding - chatHeight,
-            width: specialUiWidth + advPathWidth - padding,
-            height: chatHeight - padding
-        });
-        this.chatBox.setBounds(4, 4 + 25, specialUiWidth + advPathWidth - 8, chatHeight - 8 - 25);
+
+        var playPilesLeft = HAND_LEFT;
+        var playPilesRight = width - padding;
+        var playPilesHorizCenter = playPilesLeft + (playPilesRight - playPilesLeft) / 2;
+        var playPilesTop = BORDER_PADDING;
+        var playPilesBottom = HAND_TOP - BORDER_PADDING;
+
+        var playerCount = this.allPlayerIds.length;
+        var playerSeatOffset = this.getPlayerIndex(this.bottomPlayerId);
+
+        var playPileXs = new Array();
+        var playPileYs = new Array();
+        var playPileWidth = null;
+        var playPileHeight = null;
+
+        // Array is built with 0 at the bottom player position, and all others proceeding clockwise
+        if (playerCount == 2) {
+            playPileXs = [playPilesLeft, playPilesLeft];
+            playPileYs = [playPilesTop + (playPilesBottom - playPilesTop) / 2, playPilesTop];
+            playPileWidth = playPilesRight - playPilesLeft;
+            playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
+        } else if (playerCount == 3) {
+            playPileWidth = (playPilesRight - playPilesLeft) / 2 - padding;
+            playPileHeight = (playPilesBottom - playPilesTop) / 2 - padding;
+            playPileXs = [
+                playPilesHorizCenter - playPileWidth / 2,
+                playPilesLeft,
+                playPilesRight - playPileWidth
+            ];
+            playPileYs = [
+                playPilesTop + playPileHeight + padding,
+                playPilesTop,
+                playPilesTop
+            ];
+        }
+
+        for (var i = 0; i < playerCount; i++) {
+            var playerIndex = (i + playerSeatOffset) % playerCount;
+            this.playPiles[this.allPlayerIds[playerIndex]].setBounds(
+                playPileXs[i], playPileYs[i], playPileWidth, playPileHeight
+            );
+        }
+
+        var i = 0; // I don't think this is used, but not deleting it for now to avoid breaking anything
+
+        if (!this.spectatorMode)
+            this.hand.setBounds(HAND_LEFT, HAND_TOP, HAND_WIDTH, HAND_HEIGHT);
+
+
+
+        for (var playerId in this.discardPileGroups)
+            if (this.discardPileGroups.hasOwnProperty(playerId))
+                this.discardPileGroups[playerId].layoutCards();
 
         if (this.replayMode) {
             $(".replay").css({
@@ -2059,6 +2097,10 @@ var ST1EGameTableUI = GameTableUI.extend({
 
     init: function (url, replayMode) {
         this._super(url, replayMode);
+    },
+
+    addSharedMission:function (index, quadrant) {
+        // TODO - no code here yet
     },
 
     addLocationDiv:function (index, quadrant) {
@@ -2194,118 +2236,120 @@ var ST1EGameTableUI = GameTableUI.extend({
 
         var currentPlayerTurn = (this.currentPlayerId == this.bottomPlayerId);
 
-        if (this.advPathGroup != null) {
-            this.statsDiv.css({
-                position: "absolute",
-                left: padding + "px",
-                top: height - (padding * 2) - chatHeight - 34 + "px",
-                width: advPathWidth - 4,
-                height: 30
-            });
+        if (!this.gameUiInitialized) {
+            return;
+        }
 
-            for (var i = 0; i < 2; i++) {
-                var playerId = this.allPlayerIds[i];
-                if (playerId == this.bottomPlayerId) {
-                    var top = PLAYER_AREA_TOP;
-                    var height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
-                } else {
-                    var top = OPPONENT_AREA_TOP;
-                    var height = OPPONENT_AREA_HEIGHT;
-                }
-                this.onTableAreas[playerId].setBounds(SIDE_OF_TABLE_LEFT, top, SIDE_OF_TABLE_WIDTH, height);
-                this.onTableAreas[playerId].layoutCards();
+        this.statsDiv.css({
+            position: "absolute",
+            left: padding + "px",
+            top: height - (padding * 2) - chatHeight - 50 + "px",
+            width: advPathWidth - 4,
+            height: 30
+        });
+
+        for (var i = 0; i < 2; i++) {
+            var playerId = this.allPlayerIds[i];
+            if (playerId == this.bottomPlayerId) {
+                var top = PLAYER_AREA_TOP;
+                var height = PLAYER_CARD_PILES_AND_SIDE_OF_TABLE_HEIGHT;
+            } else {
+                var top = OPPONENT_AREA_TOP;
+                var height = OPPONENT_AREA_HEIGHT;
             }
-            if (!this.spectatorMode) {
-                this.hand.setBounds(HAND_LEFT, PLAYER_ACTION_AREA_AND_HAND_TOP, HAND_WIDTH,
-                    PLAYER_ACTION_AREA_AND_HAND_HEIGHT);
-                this.hand.layoutCards();
-            }
+            this.onTableAreas[playerId].setBounds(SIDE_OF_TABLE_LEFT, top, SIDE_OF_TABLE_WIDTH, height);
+            this.onTableAreas[playerId].layoutCards();
+        }
+        if (!this.spectatorMode) {
+            this.hand.setBounds(HAND_LEFT, PLAYER_ACTION_AREA_AND_HAND_TOP, HAND_WIDTH,
+                PLAYER_ACTION_AREA_AND_HAND_HEIGHT);
+            this.hand.layoutCards();
+        }
 
-                // LOCATION CODE FROM SWCCG GEMP
-            var locationsCount = this.locationDivs.length;
+            // LOCATION CODE FROM SWCCG GEMP
+        var locationsCount = this.locationDivs.length;
 
-            var zoomedInLocationDivWidth = (width / Math.min(3.25, locationsCount)) - (LOCATION_BORDER_PADDING / 2);
-            var otherLocationDivWidth = zoomedInLocationDivWidth;
+        var zoomedInLocationDivWidth = (width / Math.min(3.25, locationsCount)) - (LOCATION_BORDER_PADDING / 2);
+        var otherLocationDivWidth = zoomedInLocationDivWidth;
+        var locationDivWidth = (width / locationsCount) - (LOCATION_BORDER_PADDING / 2);
 
-            var x = 0;
-            var y = TABLE_AREA_TOP;
-            var locationDivWidth = otherLocationDivWidth;
-            var locationDivHeight = TABLE_AREA_HEIGHT;
+        var x = 0;
+        var y = TABLE_AREA_TOP;
+        var locationDivHeight = TABLE_AREA_HEIGHT;
 
-            for (var locationIndex = 0; locationIndex < locationsCount; locationIndex++) {
-                if (locationIndex == (locationsCount - 1)) {
-                    locationDivWidth = (width - x) - LOCATION_BORDER_PADDING;
-                } else {
-                    locationDivWidth = otherLocationDivWidth;
-                }
-                this.locationDivs[locationIndex].css({left:x, top:y, width:locationDivWidth, height:locationDivHeight, position:"absolute"});
+        for (var locationIndex = 0; locationIndex < locationsCount; locationIndex++) {
+/*                if (locationIndex == (locationsCount - 1)) {
+                locationDivWidth = (width - x) - LOCATION_BORDER_PADDING;
+            } else {
+                locationDivWidth = otherLocationDivWidth;
+            }*/
+            this.locationDivs[locationIndex].css({left:x, top:y, width:locationDivWidth, height:locationDivHeight, position:"absolute"});
 
-                var currQuadrant = this.locationDivs[locationIndex].data("quadrant");
-                if (locationIndex > 0) {
-                    var prevQuadrant = this.locationDivs[locationIndex - 1].data("quadrant");
-                    if (currQuadrant == prevQuadrant) {
-                        this.locationDivs[locationIndex].css({"border-left-color":"#111111"});
-                    }
-                    else {
-                        this.locationDivs[locationIndex].css({"border-left-color":"#666666"});
-                    }
+            var currQuadrant = this.locationDivs[locationIndex].data("quadrant");
+            if (locationIndex > 0) {
+                var prevQuadrant = this.locationDivs[locationIndex - 1].data("quadrant");
+                if (currQuadrant == prevQuadrant) {
+                    this.locationDivs[locationIndex].css({"border-left-color":"#111111"});
                 }
                 else {
                     this.locationDivs[locationIndex].css({"border-left-color":"#666666"});
                 }
+            }
+            else {
+                this.locationDivs[locationIndex].css({"border-left-color":"#666666"});
+            }
 
-                if (locationIndex < (locationsCount - 1)) {
-                    var nextQuadrant = this.locationDivs[locationIndex + 1].data("quadrant");
-                    if (currQuadrant == nextQuadrant) {
-                        this.locationDivs[locationIndex].css({"border-right-color":"#111111"});
-                    }
-                    else {
-                        this.locationDivs[locationIndex].css({"border-right-color":"#666666"});
-                    }
+            if (locationIndex < (locationsCount - 1)) {
+                var nextQuadrant = this.locationDivs[locationIndex + 1].data("quadrant");
+                if (currQuadrant == nextQuadrant) {
+                    this.locationDivs[locationIndex].css({"border-right-color":"#111111"});
                 }
                 else {
                     this.locationDivs[locationIndex].css({"border-right-color":"#666666"});
                 }
-
-                this.locationCardGroups[locationIndex].setBounds(x, y + 2*locationDivHeight/5, locationDivWidth, locationDivHeight/5);
-                this.locationCardGroups[locationIndex].layoutCards();
-
-                x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
             }
-                    // END OF SWCCG GEMP LOCATION CODE
+            else {
+                this.locationDivs[locationIndex].css({"border-right-color":"#666666"});
+            }
 
-            this.gameStateElem.css({
-                position: "absolute",
-                left: padding * 2, // + advPathWidth,
-                top: padding,
-                width: specialUiWidth - padding + 75,
-                height: height - padding * 4 - alertHeight - chatHeight
-            });
-            this.alertBox.css({
-                position: "absolute",
-                left: padding * 2 + advPathWidth,
-                top: height - (padding * 2) - alertHeight - chatHeight,
-                width: specialUiWidth - padding,
-                height: alertHeight
-            });
+            this.locationCardGroups[locationIndex].setBounds(x, y + 2*locationDivHeight/5, locationDivWidth, locationDivHeight/5);
+            this.locationCardGroups[locationIndex].layoutCards();
 
-
-            for (var playerId in this.discardPileGroups)
-                if (this.discardPileGroups.hasOwnProperty(playerId))
-                    this.discardPileGroups[playerId].layoutCards();
-
-            for (var playerId in this.adventureDeckGroups)
-                if (this.adventureDeckGroups.hasOwnProperty(playerId))
-                    this.adventureDeckGroups[playerId].layoutCards();
-
-            for (var playerId in this.removedPileGroups)
-                if (this.removedPileGroups.hasOwnProperty(playerId))
-                    this.removedPileGroups[playerId].layoutCards();
-
-            for (var playerId in this.miscPileGroups)
-                if (this.miscPileGroups.hasOwnProperty(playerId))
-                    this.miscPileGroups[playerId].layoutCards();
+            x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }
+                // END OF SWCCG GEMP LOCATION CODE
+
+        this.gameStateElem.css({
+            position: "absolute",
+            left: padding * 2, // + advPathWidth,
+            top: padding,
+            width: specialUiWidth - padding + 75,
+            height: height - padding * 4 - alertHeight - chatHeight
+        });
+        this.alertBox.css({
+            position: "absolute",
+            left: padding * 2 + advPathWidth,
+            top: height - (padding * 2) - alertHeight - chatHeight,
+            width: specialUiWidth - padding,
+            height: alertHeight
+        });
+
+
+        for (var playerId in this.discardPileGroups)
+            if (this.discardPileGroups.hasOwnProperty(playerId))
+                this.discardPileGroups[playerId].layoutCards();
+
+        for (var playerId in this.adventureDeckGroups)
+            if (this.adventureDeckGroups.hasOwnProperty(playerId))
+                this.adventureDeckGroups[playerId].layoutCards();
+
+        for (var playerId in this.removedPileGroups)
+            if (this.removedPileGroups.hasOwnProperty(playerId))
+                this.removedPileGroups[playerId].layoutCards();
+
+        for (var playerId in this.miscPileGroups)
+            if (this.miscPileGroups.hasOwnProperty(playerId))
+                this.miscPileGroups[playerId].layoutCards();
 
         if (this.replayMode) {
             $(".replay").css({

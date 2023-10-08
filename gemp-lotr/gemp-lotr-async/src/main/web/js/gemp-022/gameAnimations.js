@@ -200,7 +200,7 @@ var GameAnimations = Class.extend({
         }
     },
 
-    putCardInPlay:function (element, animate) {
+    putCardIntoPlay:function (element, animate, eventType) {
         var participantId = element.getAttribute("participantId");
         var cardId = element.getAttribute("cardId");
         var zone = element.getAttribute("zone");
@@ -217,7 +217,11 @@ var GameAnimations = Class.extend({
                 var controllerId = element.getAttribute("controllerId");
 
                 if (zone == "SPACELINE") {
-                    that.game.addLocationDiv(locationIndex, quadrant);
+                    if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
+                        that.game.addSharedMission(locationIndex, quadrant);
+                    } else {
+                        that.game.addLocationDiv(locationIndex, quadrant);
+                    }
                 }
 
                 if (controllerId != null)
@@ -453,9 +457,7 @@ var GameAnimations = Class.extend({
         $("#main").queue(
             function (next) {
                 var phase = element.getAttribute("phase");
-
                 $(".phase").text(phase);
-
                 next();
             });
     },
@@ -465,7 +467,7 @@ var GameAnimations = Class.extend({
         $("#main").queue(
             function (next) {
                 var message = element.getAttribute("message");
-                $(".tribbleSequence").html("<p>Next Tribble in sequence:</p><b>" + message + "</b>");
+                $(".tribbleSequence").html("Next Tribble in sequence:<b>" + message + "</b>");
                 next();
             });
     },
@@ -476,23 +478,20 @@ var GameAnimations = Class.extend({
             function (next) {
                 var playerId = element.getAttribute("participantId");
                 var playerIndex = that.game.getPlayerIndex(playerId);
-
                 that.game.currentPlayerId = playerId;
-
                 $(".player").each(function (index) {
                     if (index == playerIndex)
                         $(this).addClass("current");
                     else
                         $(this).removeClass("current");
                 });
-                that.game.advPathGroup.setCurrentPlayerIndex(playerIndex);
-
+//                that.game.advPathGroup.setCurrentPlayerIndex(playerIndex);
                 next();
             });
         if (animate) {
             $("#main").queue(
                 function (next) {
-                    that.game.advPathGroup.layoutCards();
+//                    that.game.advPathGroup.layoutCards();
                     next();
                 });
         }
@@ -556,22 +555,6 @@ var GameAnimations = Class.extend({
                         }
                     }
                 }
-
-                var fellowshipArchery = element.getAttribute("fellowshipArchery");
-                var shadowArchery = element.getAttribute("shadowArchery");
-                var moveCount = element.getAttribute("moveCount");
-                var moveLimit = element.getAttribute("moveLimit");
-
-                if (fellowshipArchery == "null")
-                    $(".fpArchery").html("");
-                else if (fellowshipArchery != null)
-                    $(".fpArchery").html(fellowshipArchery);
-                if (shadowArchery == "null")
-                    $(".shadowArchery").html("");
-                else if (shadowArchery != null)
-                    $(".shadowArchery").html(shadowArchery);
-
-                $(".move").html(moveCount + "/" + moveLimit);
 
                 var playerZones = element.getElementsByTagName("playerZones");
                 for (var i = 0; i < playerZones.length; i++) {

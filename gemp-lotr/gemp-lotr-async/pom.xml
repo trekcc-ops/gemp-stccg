@@ -60,7 +60,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.gempukku.lotro.async.LotroAsyncServer</mainClass>
+                                <mainClass>com.gempukku.stccg.async.GempServer</mainClass>
                             </manifest>
                         </archive>
                         <descriptorRefs>
@@ -89,7 +89,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.gempukku.lotro.async.LotroAsyncServer</mainClass>
+                            <mainClass>com.gempukku.stccg.async.GempServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -434,6 +434,13 @@ var Card = Class.extend({
         return null;
     },
 
+    getHeightForColumnWidth:function (columnWidth) {
+        if (this.horizontal)
+            return columnWidth;
+        else
+            return Math.floor(columnWidth / cardScale);
+    },
+
     getHeightForWidth: function (width) {
         if (this.horizontal)
             return Math.floor(width * cardScale);

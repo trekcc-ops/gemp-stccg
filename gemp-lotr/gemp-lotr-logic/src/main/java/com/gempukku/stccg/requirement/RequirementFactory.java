@@ -1,0 +1,63 @@
+package com.gempukku.stccg.requirement;
+
+import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.game.DefaultGame;
+import org.json.simple.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class RequirementFactory {
+    private final Map<String, RequirementProducer> requirementProducers = new HashMap<>();
+
+    public RequirementFactory() {
+        requirementProducers.put("not", new NotRequirementProducer());
+        requirementProducers.put("or", new OrRequirementProducer());
+        requirementProducers.put("cardsindeckcount", new CardsInDeckCount());
+        requirementProducers.put("cardsinhandmorethan", new CardsInHandMoreThan());
+        requirementProducers.put("hascardindiscard", new HasCardInDiscard());
+        requirementProducers.put("hascardinhand", new HasCardInHand());
+        requirementProducers.put("hasinzonedata", new HasInZoneData());
+        requirementProducers.put("isequal", new IsEqual());
+        requirementProducers.put("isgreaterthan", new IsGreaterThan());
+        requirementProducers.put("isgreaterthanorequal", new IsGreaterThanOrEqual());
+        requirementProducers.put("islessthan", new IsLessThan());
+        requirementProducers.put("islessthanorequal", new IsLessThanOrEqual());
+        requirementProducers.put("isnotequal", new IsNotEqual());
+        requirementProducers.put("isowner", new IsOwnerRequirementProducer());
+        requirementProducers.put("isside", new IsSideRequirementProducer());
+        requirementProducers.put("location", new Location());
+        requirementProducers.put("memoryis", new MemoryIs());
+        requirementProducers.put("memorylike", new MemoryLike());
+        requirementProducers.put("memorymatches", new MemoryMatches());
+        requirementProducers.put("perphaselimit", new PerPhaseLimit());
+        requirementProducers.put("perturnlimit", new PerTurnLimit());
+        requirementProducers.put("phase", new PhaseRequirement());
+        requirementProducers.put("playedcardthisphase", new PlayedCardThisPhase());
+        requirementProducers.put("playerisnotself", new PlayerIsNotSelf());
+            // Tribbles specific
+        requirementProducers.put("hascardinplaypile", new HasCardInPlayPile());
+        requirementProducers.put("lasttribbleplayed", new LastTribblePlayedProducer());
+        requirementProducers.put("nexttribbleinsequence", new NextTribbleInSequenceRequirement());
+        requirementProducers.put("tribblesequencebroken", new TribbleSequenceBroken());
+    }
+
+    public <AbstractGame extends DefaultGame> Requirement<AbstractGame> getRequirement(
+            JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        final String type = FieldUtils.getString(object.get("type"), "type");
+        final RequirementProducer requirementProducer = requirementProducers.get(type.toLowerCase());
+        if (requirementProducer == null)
+            throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
+        return requirementProducer.getPlayRequirement(object, environment);
+    }
+
+    public <AbstractGame extends DefaultGame> Requirement<AbstractGame>[] getRequirements(
+            JSONObject[] object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        Requirement<AbstractGame>[] result = new Requirement[object.length];
+        for (int i = 0; i < object.length; i++)
+            result[i] = getRequirement(object[i], environment);
+        return result;
+    }
+}

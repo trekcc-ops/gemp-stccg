@@ -8,6 +8,7 @@ var CardGroup = Class.extend({
     padding:5,
     containerPadding:3,
     maxCardHeight:497,
+    maxCardWidth:357,
     descDiv:null,
 
     init:function (container, belongTest, divId) {
@@ -508,11 +509,15 @@ var NormalGameCardGroup = NormalCardGroup.extend({
 
 var TableCardGroup = CardGroup.extend({
 
+    locationIndex:null,
+    bottomPlayerId:null,
     /**
      * Initializes variables
      */
      init:function (container, belongTest, createDiv, locationIndex, bottomPlayerId) {
-        this._super(container, belongTest, createDiv, locationIndex, bottomPlayerId);
+        this._super(container, belongTest, createDiv);
+        this.locationIndex = locationIndex;
+        this.bottomPlayerId = bottomPlayerId;
         this.heightPadding = 1;
         this.widthPadding = 5;
         this.columnWidthToAttachedHeightAboveRatio = 0.17;
