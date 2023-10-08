@@ -1,8 +1,8 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Filterable;
-import com.gempukku.stccg.common.Side;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Side;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 

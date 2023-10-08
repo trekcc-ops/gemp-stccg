@@ -1,20 +1,22 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.modifiers.ModifierFlag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class GameState {
-    private static final Logger _log = Logger.getLogger(GameState.class);
+    private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     protected PlayerOrder _playerOrder;
     protected GameFormat _format;
@@ -313,7 +315,7 @@ public abstract class GameState {
         for (PhysicalCard card : cards) {
             List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), card.getZone());
             if (!zoneCards.contains(card))
-                _log.error("Card was not found in the expected zone");
+                LOGGER.error("Card was not found in the expected zone");
         }
 
         for (PhysicalCard card : cards) {
@@ -381,7 +383,7 @@ public abstract class GameState {
             zoneCards.add(0, card);
 
         if (card.getZone() != null)
-            _log.error("Card was in " + card.getZone() + " when tried to add to zone: " + zone);
+            LOGGER.error("Card was in " + card.getZone() + " when tried to add to zone: " + zone);
 
         card.setZone(zone);
 

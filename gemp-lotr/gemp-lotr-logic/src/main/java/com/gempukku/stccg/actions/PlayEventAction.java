@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Side;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Side;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.discount.DiscountEffect;
 import com.gempukku.stccg.effects.PayTwilightCostEffect;
 import com.gempukku.stccg.effects.PlayEventEffect;

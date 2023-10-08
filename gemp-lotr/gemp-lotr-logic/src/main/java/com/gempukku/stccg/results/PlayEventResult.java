@@ -1,7 +1,7 @@
 package com.gempukku.stccg.results;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.PlayEventAction;
 
 public class PlayEventResult extends PlayCardResult {

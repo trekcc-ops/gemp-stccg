@@ -1,16 +1,13 @@
 package com.gempukku.stccg.fieldprocessor;
 
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.Side;
-import org.apache.log4j.Logger;
+import com.gempukku.stccg.common.filterable.Side;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.Set;
 
 public class FieldUtils {
-
-    final static Logger LOG = Logger.getLogger(FieldUtils.class);
 
     public static int getInteger(Object value, String key) throws InvalidCardDefinitionException {
         return getInteger(value, key, 0);

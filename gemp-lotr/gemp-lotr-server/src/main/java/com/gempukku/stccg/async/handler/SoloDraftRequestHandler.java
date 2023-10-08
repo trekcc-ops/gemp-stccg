@@ -4,16 +4,16 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.league.SoloDraftLeagueData;
@@ -21,7 +21,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -36,8 +35,6 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
     private final CardBlueprintLibrary _cardLibrary;
     private final FormatLibrary _formatLibrary;
     private final LeagueService _leagueService;
-
-    private static final Logger _log = Logger.getLogger(SoloDraftRequestHandler.class);
 
     public SoloDraftRequestHandler(Map<Type, Object> context) {
         super(context);

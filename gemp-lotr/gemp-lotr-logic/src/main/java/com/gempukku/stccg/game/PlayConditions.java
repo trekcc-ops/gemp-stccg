@@ -2,10 +2,10 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.CardType;
-import com.gempukku.stccg.common.Filterable;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.ModifierFlag;

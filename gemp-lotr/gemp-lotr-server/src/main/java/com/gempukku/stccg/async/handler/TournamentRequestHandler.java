@@ -4,14 +4,13 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,8 +25,6 @@ public class TournamentRequestHandler extends LotroServerRequestHandler implemen
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
     private final SortAndFilterCards _sortAndFilterCards;
-
-    private static final Logger _log = Logger.getLogger(TournamentRequestHandler.class);
 
     public TournamentRequestHandler(Map<Type, Object> context) {
         super(context);

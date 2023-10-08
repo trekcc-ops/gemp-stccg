@@ -2,8 +2,8 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.ST1EGame;
 

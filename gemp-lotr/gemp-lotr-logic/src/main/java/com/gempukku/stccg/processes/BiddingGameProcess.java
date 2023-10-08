@@ -2,14 +2,12 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
-import org.apache.log4j.Logger;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class BiddingGameProcess implements GameProcess {
-    private static final Logger logger = Logger.getLogger(BiddingGameProcess.class);
     private final Set<String> _players;
     private final PlayerOrderFeedback _playerOrderFeedback;
     private final Map<String, Integer> _bids = new LinkedHashMap<>();
@@ -21,9 +19,6 @@ public class BiddingGameProcess implements GameProcess {
 
     @Override
     public void process(DefaultGame game) {
-        for (String player: _players) {
-            logger.debug(player);
-        }
         for (String player : _players) {
             playerPlacedBid(player, 0);
         }

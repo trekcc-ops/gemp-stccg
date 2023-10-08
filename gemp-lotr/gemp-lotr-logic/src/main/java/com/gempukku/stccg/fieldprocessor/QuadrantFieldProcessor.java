@@ -3,7 +3,7 @@ package com.gempukku.stccg.fieldprocessor;
 import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.Quadrant;
+import com.gempukku.stccg.common.filterable.Quadrant;
 
 public class QuadrantFieldProcessor implements FieldProcessor {
     @Override

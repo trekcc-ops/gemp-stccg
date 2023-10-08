@@ -1,7 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

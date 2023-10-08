@@ -9,7 +9,8 @@ import com.gempukku.stccg.game.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ import java.util.TimeZone;
 public class ServerStatsRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
     private final GameHistoryService _gameHistoryService;
 
-    private static final Logger _log = Logger.getLogger(ServerStatsRequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerStatsRequestHandler.class);
 
     public ServerStatsRequestHandler(Map<Type, Object> context) {
         super(context);
@@ -66,7 +67,7 @@ public class ServerStatsRequestHandler extends LotroServerRequestHandler impleme
 
                 responseWriter.writeJsonResponse(JSON.toJSONString(stats));
             } catch (Exception exp) {
-                logHttpError(_log, 400, request.uri(), exp);
+                logHttpError(LOGGER, 400, request.uri(), exp);
                 throw new HttpProcessingException(400);
             }
         } else {

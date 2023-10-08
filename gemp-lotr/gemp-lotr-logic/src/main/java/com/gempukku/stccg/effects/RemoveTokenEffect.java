@@ -1,7 +1,7 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Token;
+import com.gempukku.stccg.common.filterable.Token;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.modifiers.ModifierFlag;

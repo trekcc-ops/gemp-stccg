@@ -1,12 +1,12 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Token;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.polling.LongPollableResource;
-import com.gempukku.polling.WaitingRequest;
+import com.gempukku.stccg.common.LongPollableResource;
+import com.gempukku.stccg.common.WaitingRequest;
 
 import java.util.*;
 

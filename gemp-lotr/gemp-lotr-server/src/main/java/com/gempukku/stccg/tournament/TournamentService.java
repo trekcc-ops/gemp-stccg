@@ -6,13 +6,14 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.packs.DraftPackStorage;
 import com.gempukku.stccg.packs.ProductLibrary;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 
 public class TournamentService implements ITournamentService {
-    private static final Logger logger = Logger.getLogger(ITournamentService.class);
+    private static final Logger LOGGER = LogManager.getLogger(TournamentService.class);
     private final ProductLibrary _productLibrary;
     private final DraftPackStorage _draftPackStorage;
     private final PairingMechanismRegistry _pairingMechanismRegistry;
@@ -126,13 +127,13 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public List<Tournament> getLiveTournaments() {
-        logger.debug("Calling getLiveTournaments function");
+        LOGGER.debug("Calling getLiveTournaments function");
         List<Tournament> result = new ArrayList<>();
-        logger.debug("Created result object");
+        LOGGER.debug("Created result object");
         for (TournamentInfo tournamentInfo : _tournamentDao.getUnfinishedTournaments()) {
-            logger.debug("Entered for loop");
+            LOGGER.debug("Entered for loop");
             Tournament tournament = _tournamentById.get(tournamentInfo.getTournamentId());
-            logger.debug("Adding tournament " + tournament);
+            LOGGER.debug("Adding tournament " + tournament);
             if (tournament == null)
                 tournament = createTournamentAndStoreInCache(tournamentInfo.getTournamentId(), tournamentInfo);
             result.add(tournament);

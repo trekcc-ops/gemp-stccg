@@ -1,8 +1,8 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collections;

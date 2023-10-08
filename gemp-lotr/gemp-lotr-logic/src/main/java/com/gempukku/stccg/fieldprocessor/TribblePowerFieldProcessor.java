@@ -3,9 +3,8 @@ package com.gempukku.stccg.fieldprocessor;
 import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.TribblePower;
+import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.effectprocessor.TriggerEffectProcessor;
-import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -14,8 +13,6 @@ public class TribblePowerFieldProcessor implements FieldProcessor {
     @Override
     public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint,
                              CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final Logger LOG = Logger.getLogger(TribblePowerFieldProcessor.class);
-//        LOG.debug("Processing TribblePower field. " + value.toString());
         TribblePower tribblePower = FieldUtils.getEnum(TribblePower.class, value, key);
         blueprint.setTribblePower(tribblePower);
 

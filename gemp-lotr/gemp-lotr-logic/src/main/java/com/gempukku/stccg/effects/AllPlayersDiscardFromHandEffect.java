@@ -2,7 +2,7 @@ package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filters;

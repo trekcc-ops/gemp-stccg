@@ -3,7 +3,7 @@ package com.gempukku.stccg.fieldprocessor;
 import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.PlayOrder;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;

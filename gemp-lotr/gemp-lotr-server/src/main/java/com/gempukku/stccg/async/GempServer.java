@@ -4,13 +4,9 @@ import com.gempukku.stccg.async.handler.RootUriRequestHandler;
 import com.gempukku.stccg.builder.DaoBuilder;
 import com.gempukku.stccg.builder.ServerBuilder;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.polling.LongPollingSystem;
+import com.gempukku.stccg.common.LongPollingSystem;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -19,7 +15,8 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -27,26 +24,26 @@ import java.util.Map;
 
 public class GempServer {
 
+    private static final Logger LOGGER = LogManager.getLogger(GempServer.class);
+
     public static void main(String[] server) throws InterruptedException {
         int httpPort = Integer.parseInt(AppConfig.getProperty("port"));
 
         Map<Type, Object> objects = new HashMap<>();
 
-        var logger = Logger.getLogger(GempServer.class);
-
         Thread.sleep(2_000); // sleep for 2 sec to allow time to create database
 
         //Libraries and other important prereq managers that are used by lots of other managers
-        logger.info("GempukkuServer loading prerequisites...");
+        LOGGER.info("GempukkuServer loading prerequisites...");
         ServerBuilder.CreatePrerequisites(objects);
         //Now bulk initialize various managers
-        logger.info("GempukkuServer loading DAOs...");
+        LOGGER.info("GempukkuServer loading DAOs...");
         DaoBuilder.CreateDatabaseAccessObjects(objects);
-        logger.info("GempukkuServer loading services...");
+        LOGGER.info("GempukkuServer loading services...");
         ServerBuilder.CreateServices(objects);
-        logger.info("GempukkuServer starting servers...");
+        LOGGER.info("GempukkuServer starting servers...");
         ServerBuilder.StartServers(objects);
-        logger.info("GempukkuServer startup complete.");
+        LOGGER.info("GempukkuServer startup complete.");
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

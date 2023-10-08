@@ -1,6 +1,6 @@
 package com.gempukku.stccg.effects;
 
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;

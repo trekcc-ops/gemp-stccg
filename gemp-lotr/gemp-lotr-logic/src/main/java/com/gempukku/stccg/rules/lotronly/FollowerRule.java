@@ -2,8 +2,8 @@ package com.gempukku.stccg.rules.lotronly;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.OptionalTriggerAction;
-import com.gempukku.stccg.common.CardType;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.choose.ChooseActiveCardEffect;
 import com.gempukku.stccg.effects.TransferPermanentEffect;
 import com.gempukku.stccg.filters.Filter;

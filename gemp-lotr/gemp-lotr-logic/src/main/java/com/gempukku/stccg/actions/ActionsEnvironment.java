@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.EffectResult;
 

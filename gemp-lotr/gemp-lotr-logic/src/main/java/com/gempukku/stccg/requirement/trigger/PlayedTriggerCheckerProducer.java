@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.results.PlayCardResult;
 import com.gempukku.stccg.results.PlayEventResult;
 import com.gempukku.stccg.game.DefaultGame;

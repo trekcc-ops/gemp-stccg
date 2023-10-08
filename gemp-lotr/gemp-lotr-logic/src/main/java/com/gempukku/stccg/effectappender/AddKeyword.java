@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.common.Keyword;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;

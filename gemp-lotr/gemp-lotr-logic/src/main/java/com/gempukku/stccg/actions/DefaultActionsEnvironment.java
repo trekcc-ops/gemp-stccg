@@ -1,15 +1,13 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class DefaultActionsEnvironment implements ActionsEnvironment {
-    private static final Logger LOG = Logger.getLogger(DefaultActionsEnvironment.class);
     private final DefaultGame _lotroGame;
     private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();

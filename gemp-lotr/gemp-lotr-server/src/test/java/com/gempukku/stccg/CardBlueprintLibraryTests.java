@@ -2,7 +2,7 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.LotroCardBlueprint;
-import com.gempukku.stccg.common.CardType;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.rules.GameUtils;
 import org.junit.Test;
 

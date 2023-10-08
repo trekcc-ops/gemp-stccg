@@ -10,7 +10,7 @@ import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Keyword;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.effects.AddUntilModifierEffect;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.filters.Filters;

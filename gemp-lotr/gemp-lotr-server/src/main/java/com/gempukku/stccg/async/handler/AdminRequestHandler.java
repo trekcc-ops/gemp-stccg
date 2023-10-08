@@ -5,6 +5,7 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cache.CacheManager;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.LeagueDAO;
@@ -12,7 +13,6 @@ import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.*;
@@ -22,7 +22,8 @@ import com.gempukku.stccg.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -49,7 +50,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
     private final AdminService _adminService;
     private final ChatServer _chatServer;
 
-    private static final Logger _log = Logger.getLogger(AdminRequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(AdminRequestHandler.class);
 
     public AdminRequestHandler(Map<Type, Object> context) {
         super(context);
@@ -431,7 +432,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             parameterMap.put("serializedParams", serializedParams);
             return parameterMap;
         } catch (RuntimeException ex) {
-            logHttpError(_log, 500, request.uri(), ex);
+            logHttpError(LOGGER, 500, request.uri(), ex);
             throw new HttpProcessingException(500);
         } finally {
             postDecoder.destroy();
@@ -477,7 +478,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
             return parameterMap;
 
         } catch (RuntimeException ex) {
-            logHttpError(_log, 500, request.uri(), ex);
+            logHttpError(LOGGER, 500, request.uri(), ex);
             throw new HttpProcessingException(500);
         } finally {
             postDecoder.destroy();
@@ -552,7 +553,7 @@ public class AdminRequestHandler extends LotroServerRequestHandler implements Ur
 
             responseWriter.writeHtmlResponse("OK");
         } catch (Exception e) {
-            _log.error("Error response for " + request.uri(), e);
+            LOGGER.error("Error response for " + request.uri(), e);
             responseWriter.writeHtmlResponse("Error handling request");
         } finally {
             postDecoder.destroy();

@@ -2,7 +2,7 @@ package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;

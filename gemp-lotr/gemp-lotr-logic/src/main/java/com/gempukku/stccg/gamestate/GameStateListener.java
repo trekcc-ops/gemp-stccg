@@ -1,7 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Token;
+import com.gempukku.stccg.common.filterable.Token;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 
 import java.util.Collection;

@@ -8,14 +8,16 @@ import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.SortAndFilterCards;
+import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.merchant.MerchantService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,7 +34,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
     private final CardBlueprintLibrary _library;
     private final FormatLibrary _formatLibrary;
 
-    private static final Logger _log = Logger.getLogger(MerchantRequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(MerchantRequestHandler.class);
 
     public MerchantRequestHandler(Map<Type, Object> context) {
         super(context);
@@ -71,7 +73,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
                 _merchantService.tradeForFoil(resourceOwner, blueprintId);
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
-                _log.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for " + request.uri(), exp);
                 responseWriter.writeXmlResponse(marshalException(exp));
             }
         } finally {
@@ -96,7 +98,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
                 _merchantService.merchantBuysCard(resourceOwner, blueprintId, price);
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
-                _log.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for " + request.uri(), exp);
                 responseWriter.writeXmlResponse(marshalException(exp));
             }
         } finally {
@@ -122,7 +124,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
                 _merchantService.merchantSellsCard(resourceOwner, blueprintId, price);
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
-                _log.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for " + request.uri(), exp);
                 responseWriter.writeXmlResponse(marshalException(exp));
             }
         } finally {

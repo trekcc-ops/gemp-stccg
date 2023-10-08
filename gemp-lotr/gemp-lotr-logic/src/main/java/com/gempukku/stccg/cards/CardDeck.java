@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.common.SubDeck;
+import com.gempukku.stccg.common.filterable.SubDeck;
 
 import java.util.ArrayList;
 import java.util.HashMap;

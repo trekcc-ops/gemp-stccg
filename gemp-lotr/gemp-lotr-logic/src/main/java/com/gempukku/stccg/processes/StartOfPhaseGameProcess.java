@@ -1,6 +1,6 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.effects.AbstractSuccessfulEffect;

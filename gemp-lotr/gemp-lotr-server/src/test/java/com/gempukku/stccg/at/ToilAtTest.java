@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at;
 
-import com.gempukku.stccg.common.Token;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.cards.PhysicalCardImpl;

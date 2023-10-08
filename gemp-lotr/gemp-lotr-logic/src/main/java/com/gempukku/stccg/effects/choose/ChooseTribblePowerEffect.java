@@ -1,6 +1,6 @@
 package com.gempukku.stccg.effects.choose;
 
-import com.gempukku.stccg.common.TribblePower;
+import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.effects.UnrespondableEffect;
 import com.gempukku.stccg.game.DefaultGame;

@@ -8,15 +8,16 @@ import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatMessage;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.common.LongPollingResource;
+import com.gempukku.stccg.common.LongPollingSystem;
 import com.gempukku.stccg.game.ChatCommunicationChannel;
 import com.gempukku.stccg.game.User;
-import com.gempukku.polling.LongPollingResource;
-import com.gempukku.polling.LongPollingSystem;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -46,7 +47,7 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
     private final Parser _markdownParser;
     private final HtmlRenderer _markdownRenderer;
 
-    private static final Logger _log = Logger.getLogger(ChatRequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(ChatRequestHandler.class);
 
     public ChatRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
         super(context);
@@ -119,13 +120,13 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
                     longPollingSystem.processLongPollingResource(polledResource, pollableResource);
                 }
             } catch (SubscriptionExpiredException exp) {
-                logHttpError(_log, 410, request.uri(), exp);
+                logHttpError(LOGGER, 410, request.uri(), exp);
                 throw new HttpProcessingException(410);
             } catch (PrivateInformationException exp) {
-                logHttpError(_log, 403, request.uri(), exp);
+                logHttpError(LOGGER, 403, request.uri(), exp);
                 throw new HttpProcessingException(403);
             } catch (ChatCommandErrorException exp) {
-                logHttpError(_log, 400, request.uri(), exp);
+                logHttpError(LOGGER, 400, request.uri(), exp);
                 throw new HttpProcessingException(400);
             }
         } finally {
@@ -222,10 +223,10 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
 
                     responseWriter.writeXmlResponse(doc);
                 } catch (SubscriptionExpiredException exp) {
-                    logHttpError(_log, 410, "chat poller", exp);
+                    logHttpError(LOGGER, 410, "chat poller", exp);
                     responseWriter.writeError(410);
                 } catch (Exception exp) {
-                    logHttpError(_log, 500, "chat poller", exp);
+                    logHttpError(LOGGER, 500, "chat poller", exp);
                     responseWriter.writeError(500);
                 }
                 processed = true;
@@ -256,7 +257,7 @@ public class ChatRequestHandler extends LotroServerRequestHandler implements Uri
 
             responseWriter.writeXmlResponse(doc);
         } catch (PrivateInformationException exp) {
-            logHttpError(_log, 403, request.uri(), exp);
+            logHttpError(LOGGER, 403, request.uri(), exp);
             throw new HttpProcessingException(403);
         }
     }

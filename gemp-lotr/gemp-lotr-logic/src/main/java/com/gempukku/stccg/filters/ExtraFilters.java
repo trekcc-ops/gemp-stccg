@@ -1,6 +1,6 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.lotronly.LotroPlayUtils;
 

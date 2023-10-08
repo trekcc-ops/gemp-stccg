@@ -2,9 +2,9 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.CardType;
-import com.gempukku.stccg.common.Token;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 
 import java.time.ZoneOffset;

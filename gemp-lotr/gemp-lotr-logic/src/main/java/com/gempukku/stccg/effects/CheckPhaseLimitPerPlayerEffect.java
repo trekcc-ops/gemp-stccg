@@ -1,7 +1,7 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.Action;

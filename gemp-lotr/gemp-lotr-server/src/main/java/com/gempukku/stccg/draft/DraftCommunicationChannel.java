@@ -1,8 +1,8 @@
 package com.gempukku.stccg.draft;
 
 import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.polling.LongPollableResource;
-import com.gempukku.polling.WaitingRequest;
+import com.gempukku.stccg.common.LongPollableResource;
+import com.gempukku.stccg.common.WaitingRequest;
 
 public class DraftCommunicationChannel implements LongPollableResource {
     private final int _channelNumber;

@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.TribblePower;
+import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.effects.*;
 import com.gempukku.stccg.effects.tribblepowers.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;

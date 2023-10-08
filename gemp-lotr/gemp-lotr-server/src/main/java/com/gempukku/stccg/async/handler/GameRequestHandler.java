@@ -5,7 +5,9 @@ import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.LongPollingResource;
+import com.gempukku.stccg.common.LongPollingSystem;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.LotroServer;
 import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
@@ -13,8 +15,6 @@ import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.gamestate.EventSerializer;
 import com.gempukku.stccg.gamestate.GameCommunicationChannel;
 import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.polling.LongPollingResource;
-import com.gempukku.polling.LongPollingSystem;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -22,7 +22,8 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,7 +41,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
     private final LongPollingSystem longPollingSystem;
     private final Set<Phase> _autoPassDefault = new HashSet<>();
 
-    private static final Logger _log = Logger.getLogger(GameRequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(GameRequestHandler.class);
 
     public GameRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
         super(context);
@@ -146,7 +147,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
 
                     _responseWriter.writeXmlResponse(doc);
                 } catch (Exception e) {
-                    logHttpError(_log, 500, "game update poller", e);
+                    logHttpError(LOGGER, 500, "game update poller", e);
                     _responseWriter.writeError(500);
                 }
                 _processed = true;

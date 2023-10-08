@@ -3,7 +3,7 @@ package com.gempukku.stccg.fieldprocessor;
 import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.Region;
+import com.gempukku.stccg.common.filterable.Region;
 
 public class RegionFieldProcessor implements FieldProcessor {
     @Override

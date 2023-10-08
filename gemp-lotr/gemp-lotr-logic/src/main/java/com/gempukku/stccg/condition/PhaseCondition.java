@@ -1,6 +1,6 @@
 package com.gempukku.stccg.condition;
 
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PhaseCondition implements Condition {

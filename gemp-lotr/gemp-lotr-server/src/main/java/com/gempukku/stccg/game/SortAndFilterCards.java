@@ -1,11 +1,11 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.rules.GameUtils;
-import com.gempukku.util.MultipleComparator;
+import com.gempukku.stccg.common.MultipleComparator;
 
 import java.text.Normalizer;
 import java.util.*;

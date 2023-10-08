@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
-import com.gempukku.stccg.common.CardType;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

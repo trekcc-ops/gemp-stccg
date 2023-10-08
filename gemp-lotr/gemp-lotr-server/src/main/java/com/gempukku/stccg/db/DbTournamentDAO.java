@@ -5,7 +5,8 @@ import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentDAO;
 import com.gempukku.stccg.tournament.TournamentInfo;
 import com.gempukku.stccg.tournament.TournamentQueueInfo;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +18,7 @@ import java.util.List;
 
 
 public class DbTournamentDAO implements TournamentDAO {
-    private static final Logger logger = Logger.getLogger(DbTournamentDAO.class);
+    private static final Logger LOGGER = LogManager.getLogger(DbTournamentDAO.class);
     private final DbAccess _dbAccess;
 
     public DbTournamentDAO(DbAccess dbAccess) {
@@ -72,12 +73,12 @@ public class DbTournamentDAO implements TournamentDAO {
 
     @Override
     public List<TournamentInfo> getUnfinishedTournaments() {
-        logger.debug("Called getUnfinishedTournaments function");
-        logger.debug("getUnfinishedTournaments function - attempting connection to " + _dbAccess.getDataSource());
+        LOGGER.debug("Called getUnfinishedTournaments function");
+        LOGGER.debug("getUnfinishedTournaments function - attempting connection to " + _dbAccess.getDataSource());
         try {
             Connection connection = _dbAccess.getDataSource().getConnection();
         } catch(SQLException exp) {
-            logger.debug("Unable to connect to data source");
+            LOGGER.debug("Unable to connect to data source");
             throw new RuntimeException(exp);
         }
 

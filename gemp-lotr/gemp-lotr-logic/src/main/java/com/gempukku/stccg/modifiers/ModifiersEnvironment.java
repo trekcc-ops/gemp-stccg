@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 
 public interface ModifiersEnvironment {
     ModifierHook addAlwaysOnModifier(Modifier modifier);

@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.DefaultActionSource;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.IncrementPhaseLimitEffect;
 import com.gempukku.stccg.effects.IncrementTurnLimitEffect;

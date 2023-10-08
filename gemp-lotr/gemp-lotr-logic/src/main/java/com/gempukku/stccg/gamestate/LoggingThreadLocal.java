@@ -1,9 +1,10 @@
 package com.gempukku.stccg.gamestate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LoggingThreadLocal {
-    private static final Logger LOG = Logger.getLogger(LoggingThreadLocal.class);
+    private static final Logger LOGGER = LogManager.getLogger(LoggingThreadLocal.class);
 
     public static void start() {
     }

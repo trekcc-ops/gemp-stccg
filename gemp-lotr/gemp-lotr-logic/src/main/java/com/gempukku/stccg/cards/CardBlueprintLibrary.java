@@ -2,11 +2,12 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.game.ICallback;
 import com.gempukku.stccg.rules.GameUtils;
-import com.gempukku.util.JsonUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hjson.JsonValue;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,7 +21,7 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class CardBlueprintLibrary {
-    private static final Logger logger = Logger.getLogger(CardBlueprintLibrary.class);
+    private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
 
     private final String[] _packageNames =
             new String[]{
@@ -52,10 +53,10 @@ public class CardBlueprintLibrary {
         _cardPath = cardsPath;
         _mappingsPath = mappingsPath;
         _setDefsPath = setDefinitionPath;
-        logger.info("Locking blueprint library in constructor");
+        LOGGER.info("Locking blueprint library in constructor");
         //This will be released after the library has been init'd; until then all functional uses should block
         collectionReady.acquireUninterruptibly();
-        logger.info("Unlocking blueprint library in constructor");
+        LOGGER.info("Unlocking blueprint library in constructor");
 
         loadSets();
         loadMappings();
@@ -208,32 +209,32 @@ public class CardBlueprintLibrary {
                 String blueprint = cardEntry.getKey();
                 if (validateNew)
                     if (_blueprints.containsKey(blueprint))
-                        logger.error(blueprint + " - Replacing existing card definition!");
+                        LOGGER.error(blueprint + " - Replacing existing card definition!");
                 final JSONObject cardDefinition = cardEntry.getValue();
                 try {
                     final LotroCardBlueprint lotroCardBlueprint = cardBlueprintBuilder.buildFromJson(cardDefinition);
                     _blueprints.put(blueprint, lotroCardBlueprint);
                 } catch (InvalidCardDefinitionException exp) {
-                    logger.error("Unable to load card " + blueprint, exp);
+                    LOGGER.error("Unable to load card " + blueprint, exp);
                 }
             }
         } catch (FileNotFoundException exp) {
-            logger.error("Failed to find file " + file.getAbsolutePath(), exp);
+            LOGGER.error("Failed to find file " + file.getAbsolutePath(), exp);
         } catch (IOException exp) {
-            logger.error("Error while loading file " + file.getAbsolutePath(), exp);
+            LOGGER.error("Error while loading file " + file.getAbsolutePath(), exp);
         } catch (ParseException exp) {
-            logger.error("Failed to parse file " + file.getAbsolutePath(), exp);
+            LOGGER.error("Failed to parse file " + file.getAbsolutePath(), exp);
         }
         catch (Exception exp) {
-            logger.error("Unexpected error while parsing file " + file.getAbsolutePath(), exp);
+            LOGGER.error("Unexpected error while parsing file " + file.getAbsolutePath(), exp);
         }
-        logger.debug("Loaded JSON card file " + file.getName());
+        LOGGER.debug("Loaded JSON card file " + file.getName());
     }
 
     private void cacheAllJavaBlueprints() {
         for (SetDefinition setDefinition : _allSets.values()) {
             if (setDefinition.hasFlag("needsLoading")) {
-                logger.debug("Loading Java cards for set " + setDefinition.getSetId());
+                LOGGER.debug("Loading Java cards for set " + setDefinition.getSetId());
                 final Set<String> allCards = setDefinition.getAllCards();
                 for (String blueprintId : allCards) {
                     if (getBaseBlueprintId(blueprintId).equals(blueprintId)) {
@@ -249,7 +250,7 @@ public class CardBlueprintLibrary {
                     }
                 }
             }
-            logger.debug("Java cards for set " + setDefinition.getSetId() + " successfully loaded");
+            LOGGER.debug("Java cards for set " + setDefinition.getSetId() + " successfully loaded");
         }
     }
 

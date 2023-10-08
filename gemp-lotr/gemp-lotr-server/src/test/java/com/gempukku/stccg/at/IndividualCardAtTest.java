@@ -1,9 +1,9 @@
 package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Token;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.adventure.DefaultAdventureLibrary;

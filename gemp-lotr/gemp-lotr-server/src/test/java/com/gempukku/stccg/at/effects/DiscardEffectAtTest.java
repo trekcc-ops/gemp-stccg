@@ -3,7 +3,7 @@ package com.gempukku.stccg.at.effects;
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.trigger.TriggerConditions;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.CardNotFoundException;

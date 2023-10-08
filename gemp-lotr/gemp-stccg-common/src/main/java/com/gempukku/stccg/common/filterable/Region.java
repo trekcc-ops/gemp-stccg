@@ -1,0 +1,8 @@
+package com.gempukku.stccg.common.filterable;
+
+import com.gempukku.stccg.common.filterable.Filterable;
+
+public enum Region implements Filterable {
+    ARGOLIS_CLUSTER, BADLANDS, BAJOR, BRIAR_PATCH, CARDASSIA, CETI_ALPHA, CHIN_TOKA, DELPHIC_EXPANSE, DEMILITARIZED_ZONE,
+    GREAT_BARRIER, MURASAKI, MUTARA, NEKRIT_EXPANSE, NEUTRAL_ZONE, NORTHWEST_PASSAGE, ROMULUS, SECTOR_001, TELLUN, VALO;
+}

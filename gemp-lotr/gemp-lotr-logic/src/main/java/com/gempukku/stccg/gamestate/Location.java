@@ -1,8 +1,8 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Quadrant;
-import com.gempukku.stccg.common.Region;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Region;
 
 import java.util.HashSet;
 import java.util.Set;

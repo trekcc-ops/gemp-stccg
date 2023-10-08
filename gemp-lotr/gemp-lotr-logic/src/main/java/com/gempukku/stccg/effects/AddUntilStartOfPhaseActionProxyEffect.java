@@ -1,7 +1,7 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.actions.ActionProxy;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class AddUntilStartOfPhaseActionProxyEffect extends UnrespondableEffect {

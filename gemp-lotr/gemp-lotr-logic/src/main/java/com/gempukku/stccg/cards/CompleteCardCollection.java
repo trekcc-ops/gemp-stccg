@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.common.CardType;
+import com.gempukku.stccg.common.filterable.CardType;
 
 import java.util.Collections;
 import java.util.Map;

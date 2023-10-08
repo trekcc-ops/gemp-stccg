@@ -3,7 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.evaluator.Evaluator;

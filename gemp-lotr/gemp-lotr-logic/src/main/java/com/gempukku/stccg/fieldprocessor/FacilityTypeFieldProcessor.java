@@ -3,7 +3,7 @@ package com.gempukku.stccg.fieldprocessor;
 import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.FacilityType;
+import com.gempukku.stccg.common.filterable.FacilityType;
 
 public class FacilityTypeFieldProcessor implements FieldProcessor {
     @Override

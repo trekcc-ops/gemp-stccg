@@ -2,9 +2,9 @@ package com.gempukku.stccg.rules.lotronly;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.RequiredTriggerAction;
-import com.gempukku.stccg.common.CardType;
-import com.gempukku.stccg.common.Keyword;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.RemoveTwilightEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

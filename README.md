@@ -15,9 +15,9 @@ GEMP is a server written for Java 18, using MariaDB for a MySQL database instanc
 GEMP is divided into several modules which each handle a different aspect of the game, albeit for now they cannot be hosted separately (tho this is a future improvement we would like to make)
 
 ## gemp-stccg-client
-This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-lotr/gemp-lotr-async/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-lotr/gemp-lotr-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-lotr-async.  From there the action could go anywhere depending on context.
+This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-lotr/gemp-lotr-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-lotr-server.  From there the action could go anywhere depending on context.
 
-gemp-stccg-client is also the home for the web portion of the project; everything in [/src/main/web/](./gemp-lotr/gemp-lotr-async/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](./gemp-lotr/gemp-lotr-async/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
+gemp-stccg-client is also the home for the web portion of the project; everything in [/src/main/web/](./gemp-lotr/gemp-stccg-client/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
 
 ## gemp-lotr-cards
 
@@ -44,7 +44,7 @@ When developing JSON cards, refer to the [JSON Card Specification documentation]
 Other data definitions besides cards are also stored in this module, including booster pack definitions, formats, sets, and sealed definitions.
 
 
-## gemp-lotr-common
+## gemp-stccg-common
 
 This module contains definitions used throughout the project, including enums for card types, cultures, zones, and the like.  It also contains certain low-level classes for HTTP responses.
 

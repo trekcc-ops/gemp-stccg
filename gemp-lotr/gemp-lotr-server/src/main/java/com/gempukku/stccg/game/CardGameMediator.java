@@ -4,25 +4,26 @@ import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.*;
-import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.gamestate.GameCommunicationChannel;
 import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.rules.GameUtils;
+import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.hall.GameTimer;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.cards.CardDeck;
-import org.apache.log4j.Logger;
+import com.gempukku.stccg.rules.GameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
-    protected static final Logger LOG = Logger.getLogger(CardGameMediator.class);
+    protected static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     protected final Map<String, GameCommunicationChannel> _communicationChannels = Collections.synchronizedMap(new HashMap<>());
     protected final DefaultUserFeedback _userFeedback;
     protected final Map<String, CardDeck> _playerDecks = new HashMap<>();
@@ -321,7 +322,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
                                 getGame().getGameState().sendWarning(playerName, decisionResultInvalidException.getWarningMessage());
                                 _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
                             } catch (RuntimeException runtimeException) {
-                                LOG.error("Error processing game decision", runtimeException);
+                                LOGGER.error("Error processing game decision", runtimeException);
                                 getGame().cancelGame();
                             }
                         }

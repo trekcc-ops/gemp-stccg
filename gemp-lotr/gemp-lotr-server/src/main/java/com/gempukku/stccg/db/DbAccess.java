@@ -6,7 +6,8 @@ import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbAccess {
-    private static final Logger logger = Logger.getLogger(DbAccess.class);
+    private static final Logger LOGGER = LogManager.getLogger(DbAccess.class);
     private final DataSource _dataSource;
 
     public DbAccess() {
@@ -22,7 +23,7 @@ public class DbAccess {
     }
 
     public DbAccess(String url, String user, String pass, boolean batch) {
-        logger.debug("Creating DbAccess for " + url);
+        LOGGER.debug("Creating DbAccess for " + url);
         try {
             Class.forName(AppConfig.getProperty("db.connection.class"));
         } catch (ClassNotFoundException e) {
@@ -30,7 +31,7 @@ public class DbAccess {
         }
 
         _dataSource = setupDataSource(url, user, pass, batch);
-        logger.debug("DbAccess - _dataSource created for " + url);
+        LOGGER.debug("DbAccess - _dataSource created for " + url);
     }
 
     public DataSource getDataSource() {
@@ -82,9 +83,9 @@ public class DbAccess {
 
         try {
             Connection connection = new PoolingDataSource(connectionPool).getConnection();
-            logger.debug("setupDataSource - connection successfully created");
+            LOGGER.debug("setupDataSource - connection successfully created");
         } catch(SQLException exp) {
-            logger.debug("setupDataSource - unable to connect");
+            LOGGER.debug("setupDataSource - unable to connect");
 //            throw new RuntimeException(exp);
         }
 

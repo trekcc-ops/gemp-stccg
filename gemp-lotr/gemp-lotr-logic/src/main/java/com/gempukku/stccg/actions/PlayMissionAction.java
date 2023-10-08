@@ -1,9 +1,9 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Quadrant;
-import com.gempukku.stccg.common.Region;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Region;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.PlayMissionEffect;

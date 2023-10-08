@@ -1,7 +1,7 @@
 package com.gempukku.stccg.competitive;
 
-import com.gempukku.util.DescComparator;
-import com.gempukku.util.MultipleComparator;
+import com.gempukku.stccg.common.DescComparator;
+import com.gempukku.stccg.common.MultipleComparator;
 
 import java.util.ArrayList;
 import java.util.Collection;

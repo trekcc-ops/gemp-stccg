@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.UnrespondableEffect;
 import com.gempukku.stccg.filters.Filter;

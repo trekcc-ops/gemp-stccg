@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.ActionProxy;
 import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.effects.DiscardCardsFromPlayEffect;

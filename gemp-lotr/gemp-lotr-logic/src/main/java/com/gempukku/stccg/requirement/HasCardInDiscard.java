@@ -3,7 +3,7 @@ package com.gempukku.stccg.requirement;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 

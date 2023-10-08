@@ -8,23 +8,24 @@ import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.LongPollingResource;
+import com.gempukku.stccg.common.LongPollingSystem;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.LotroServer;
 import com.gempukku.stccg.game.User;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.hall.*;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.rules.GameUtils;
-import com.gempukku.polling.LongPollingResource;
-import com.gempukku.polling.LongPollingSystem;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -36,15 +37,13 @@ import java.util.*;
 
 
 public class HallRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
-    private static final Logger logger = Logger.getLogger(HallRequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(HallRequestHandler.class);
     private final CollectionsManager _collectionManager;
     private final FormatLibrary _formatLibrary;
     private final HallServer _hallServer;
     private final LeagueService _leagueService;
     private final CardBlueprintLibrary _library;
     private final LongPollingSystem longPollingSystem;
-
-    private static final Logger _log = Logger.getLogger(HallRequestHandler.class);
 
     public HallRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
         super(context);
@@ -96,7 +95,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
         String deckName = getFormParameterSafely(postDecoder, "deckName");
-        logger.debug("HallRequestHandler - calling joinTableAsPlayer function from JoinTable");
+        LOGGER.debug("HallRequestHandler - calling joinTableAsPlayer function from JoinTable");
 
         try {
             _hallServer.joinTableAsPlayer(tableId, resourceOwner, deckName);
@@ -110,11 +109,11 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
                 return;
             } catch (HallException ex) {
                 if(doNotIgnoreError(ex)) {
-                    _log.error("Error response for " + request.uri(), ex);
+                    LOGGER.error("Error response for " + request.uri(), ex);
                 }
             }
             catch (Exception ex) {
-                _log.error("Additional error response for " + request.uri(), ex);
+                LOGGER.error("Additional error response for " + request.uri(), ex);
                 throw ex;
             }
             responseWriter.writeXmlResponse(marshalException(e));
@@ -204,7 +203,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         {
             //This is a worthless error that doesn't need to be spammed into the log
             if(doNotIgnoreError(ex)) {
-                _log.error("Error response for " + request.uri(), ex);
+                LOGGER.error("Error response for " + request.uri(), ex);
             }
             responseWriter.writeXmlResponse(marshalException(new HallException("Failed to create table. Please try again later.")));
         }
@@ -250,7 +249,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
             responseWriter.writeXmlResponse(null);
         } catch (HallException e) {
             if(doNotIgnoreError(e)) {
-                _log.error("Error response for " + request.uri(), e);
+                LOGGER.error("Error response for " + request.uri(), e);
             }
             responseWriter.writeXmlResponse(marshalException(e));
         }
@@ -419,10 +418,10 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
 
             responseWriter.writeXmlResponse(doc);
         } catch (HttpProcessingException exp) {
-            logHttpError(_log, exp.getStatus(), request.uri(), exp);
+            logHttpError(LOGGER, exp.getStatus(), request.uri(), exp);
             responseWriter.writeError(exp.getStatus());
         } catch (Exception exp) {
-            _log.error("Error response for " + request.uri(), exp);
+            LOGGER.error("Error response for " + request.uri(), exp);
             responseWriter.writeError(500);
         }
     }
@@ -442,11 +441,11 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
                 longPollingSystem.processLongPollingResource(polledResource, pollableResource);
             }
             catch (SubscriptionExpiredException exp) {
-                logHttpError(_log, 410, request.uri(), exp);
+                logHttpError(LOGGER, 410, request.uri(), exp);
                 responseWriter.writeError(410);
             }
             catch (SubscriptionConflictException exp) {
-                logHttpError(_log, 409, request.uri(), exp);
+                logHttpError(LOGGER, 409, request.uri(), exp);
                 responseWriter.writeError(409);
             }
         } finally {
@@ -493,7 +492,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
 
                     _responseWriter.writeXmlResponse(doc, headers);
                 } catch (Exception exp) {
-                    logHttpError(_log, 500, _request.uri(), exp);
+                    logHttpError(LOGGER, 500, _request.uri(), exp);
                     _responseWriter.writeError(500);
                 }
                 _processed = true;

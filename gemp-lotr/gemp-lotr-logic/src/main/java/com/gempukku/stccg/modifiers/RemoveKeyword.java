@@ -2,7 +2,7 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.common.Keyword;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.requirement.Requirement;
 import org.json.simple.JSONObject;
 

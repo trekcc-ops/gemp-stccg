@@ -2,7 +2,7 @@ package com.gempukku.stccg.effects.tribblepowers;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.effects.AbstractEffect;
 import com.gempukku.stccg.effects.ShuffleCardsIntoDrawDeckEffect;

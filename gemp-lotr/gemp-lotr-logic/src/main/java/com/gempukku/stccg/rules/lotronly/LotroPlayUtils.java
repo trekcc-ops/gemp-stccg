@@ -2,7 +2,7 @@ package com.gempukku.stccg.rules.lotronly;
 
 import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

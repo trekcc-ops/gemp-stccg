@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.DefaultActionSource;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.effectprocessor.EffectUtils;
 import com.gempukku.stccg.effects.Effect;

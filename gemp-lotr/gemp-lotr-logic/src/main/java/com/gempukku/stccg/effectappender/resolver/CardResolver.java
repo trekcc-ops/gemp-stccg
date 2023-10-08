@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.effectappender.DelayedAppender;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;

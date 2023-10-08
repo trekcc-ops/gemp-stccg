@@ -1,8 +1,8 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Quadrant;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;

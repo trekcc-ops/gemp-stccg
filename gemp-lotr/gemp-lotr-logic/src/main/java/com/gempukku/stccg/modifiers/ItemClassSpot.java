@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.common.PossessionClass;
+import com.gempukku.stccg.common.filterable.PossessionClass;
 import org.json.simple.JSONObject;
 
 public class ItemClassSpot implements ModifierSourceProducer {

@@ -1,9 +1,9 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.Filterable;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

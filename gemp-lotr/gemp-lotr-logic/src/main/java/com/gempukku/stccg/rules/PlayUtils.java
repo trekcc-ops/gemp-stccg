@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.PlayEventAction;
 import com.gempukku.stccg.actions.PlayPermanentAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.cards.LotroCardBlueprint;

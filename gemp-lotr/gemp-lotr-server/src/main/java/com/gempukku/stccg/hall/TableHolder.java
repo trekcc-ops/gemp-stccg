@@ -8,12 +8,13 @@ import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class TableHolder {
-    private static final Logger logger = Logger.getLogger(TableHolder.class);
+    private static final Logger LOGGER = LogManager.getLogger(TableHolder.class);
     private final LeagueService leagueService;
     private final IgnoreDAO ignoreDAO;
 
@@ -36,7 +37,7 @@ public class TableHolder {
     }
 
     public GameTable createTable(User player, GameSettings gameSettings, CardDeck lotroDeck) throws HallException {
-        logger.debug("TableHolder - createTable function called");
+        LOGGER.debug("TableHolder - createTable function called");
         String tableId = String.valueOf(_nextTableId++);
 
         final League league = gameSettings.getLeague();

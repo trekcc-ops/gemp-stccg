@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.EffectResult;
 import com.gempukku.stccg.effects.discount.DiscountEffect;

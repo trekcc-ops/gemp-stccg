@@ -30,7 +30,7 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	1. Note all the relative paths under each volume/source: these are all paths on your host system.  If you want e.g. the database to be in a different location than what's listed, alter these relative paths to something else on your host system.
 	2. In the Docker [.env](./.env) file note all the username/password fields.  If you are hosting this for something other than personal development, be sure to change all of these to something else.
 	3. Note the two "published" ports: 17001 for the app, and 35001 for the db.  These are the ports that you will be accessing the site with (and the db if you connect with a database manager). If you are hosting this for something other than personal development, consider changing these to something else.  **DO NOT** change the "target" ports, these targets are the ports that are used internally by Docker networking.
-5. If you changed SQL credentials in step 4.2, navigate to [gemp-lotr.properties](../gemp-lotr-common/src/main/resources/gemp-lotr.properties):
+5. If you changed SQL credentials in step 4.2, navigate to [gemp-lotr.properties](../gemp-stccg-common/src/main/resources/gemp-lotr.properties):
    1. **DO NOT CHANGE** the ports here.  These ports listed are the "target" ports in step 4.3, which you didn't edit because you followed the big "DO NOT" imperative.
    2. edit the db.connection.username and db.connection.password items to match the credentials you set in step 4.2.
    3. note the origin.allowed.pattern.  It is set to allow all connections, but if you are hosting this for something other than personal development, consider changing this to match your DNS hostname exactly.

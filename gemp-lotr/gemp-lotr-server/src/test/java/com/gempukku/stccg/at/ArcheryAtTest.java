@@ -1,8 +1,8 @@
 package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.PhysicalCardImpl;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.AwaitingDecisionType;

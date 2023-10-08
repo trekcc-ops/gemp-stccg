@@ -1,12 +1,13 @@
 package com.gempukku.stccg.packs;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.PackBox;
 import com.gempukku.stccg.cards.RarityPackBox;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
-import com.gempukku.util.JsonUtils;
-import org.apache.log4j.Logger;
+import com.gempukku.stccg.common.JsonUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
@@ -16,13 +17,10 @@ import java.util.concurrent.Semaphore;
 
 
 public class ProductLibrary {
-    public static class OuterPackDef {
-
-    }
     private final Map<String, PackBox> _products = new HashMap<>();
     private final CardBlueprintLibrary _cardLibrary;
     private final File _packDirectory;
-    private static final Logger logger = Logger.getLogger(ProductLibrary.class);
+    private static final Logger LOGGER = LogManager.getLogger(ProductLibrary.class);
 
     private final Semaphore collectionReady = new Semaphore(1);
 
@@ -81,7 +79,7 @@ public class ProductLibrary {
             }
 
             for (var def : defs) {
-                logger.debug("Loading pack definitions for " + def.Name);
+                LOGGER.debug("Loading pack definitions for " + def.Name);
 
                 PackBox result = null;
                 String[] rarities;

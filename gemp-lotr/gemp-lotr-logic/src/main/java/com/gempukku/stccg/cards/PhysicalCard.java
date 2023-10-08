@@ -2,9 +2,9 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.ActionSource;
 import com.gempukku.stccg.actions.OptionalTriggerAction;
-import com.gempukku.stccg.common.Filterable;
-import com.gempukku.stccg.common.Quadrant;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.EffectResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

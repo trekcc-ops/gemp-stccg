@@ -1,7 +1,7 @@
 package com.gempukku.stccg.effectappender.resolver;
 
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 
 public class TimeResolver {
     public static Time resolveTime(Object value, String defaultValue) throws InvalidCardDefinitionException {

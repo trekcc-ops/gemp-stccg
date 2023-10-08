@@ -3,19 +3,15 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.PlayerLock;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.game.User;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;
@@ -26,7 +22,6 @@ import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -44,8 +39,6 @@ public class LotroServerRequestHandler {
     protected final LoggedUserHolder _loggedUserHolder;
     private final TransferDAO _transferDAO;
     private final CollectionsManager _collectionManager;
-
-    private static final Logger _log = Logger.getLogger(LotroServerRequestHandler.class);
 
     public LotroServerRequestHandler(Map<Type, Object> context) {
         _playerDao = extractObject(context, PlayerDAO.class);

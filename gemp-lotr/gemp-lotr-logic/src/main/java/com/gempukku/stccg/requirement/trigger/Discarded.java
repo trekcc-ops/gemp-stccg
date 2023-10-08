@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.results.DiscardCardsFromPlayResult;
 import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;

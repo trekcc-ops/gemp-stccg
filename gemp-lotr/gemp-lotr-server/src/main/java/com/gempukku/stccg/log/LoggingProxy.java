@@ -1,12 +1,13 @@
 package com.gempukku.stccg.log;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
 public class LoggingProxy {
-    private static final Logger logger = Logger.getLogger(LoggingProxy.class);
+    private static final Logger LOGGER = LogManager.getLogger(LoggingProxy.class);
     private static final long ERROR_LEVEL = 3000;
     private static final long WARN_LEVEL = 1000;
     private static final long INFO_LEVEL = 500;
@@ -25,15 +26,15 @@ public class LoggingProxy {
                         long time = System.currentTimeMillis() - start;
                         String name = method.getName();
                         if (time >= ERROR_LEVEL)
-                            logger.error(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.error(simpleName + "::" + name + "(...) " + time + "ms");
                         else if (time >= WARN_LEVEL)
-                            logger.warn(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.warn(simpleName + "::" + name + "(...) " + time + "ms");
                         else if (time >= INFO_LEVEL)
-                            logger.info(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.info(simpleName + "::" + name + "(...) " + time + "ms");
                         else if (time >= DEBUG_LEVEL)
-                            logger.debug(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.debug(simpleName + "::" + name + "(...) " + time + "ms");
                         else
-                            logger.trace(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.trace(simpleName + "::" + name + "(...) " + time + "ms");
                     }
                 });
     }

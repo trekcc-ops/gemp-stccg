@@ -3,7 +3,7 @@ package com.gempukku.stccg.effects.tribblepowers;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.TribblePower;
+import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.effects.AbstractEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;

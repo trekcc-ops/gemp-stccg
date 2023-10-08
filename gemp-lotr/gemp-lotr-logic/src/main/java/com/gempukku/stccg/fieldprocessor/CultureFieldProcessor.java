@@ -3,8 +3,8 @@ package com.gempukku.stccg.fieldprocessor;
 import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.Culture;
-import com.gempukku.stccg.common.Side;
+import com.gempukku.stccg.common.filterable.Culture;
+import com.gempukku.stccg.common.filterable.Side;
 
 public class CultureFieldProcessor implements FieldProcessor {
     @Override

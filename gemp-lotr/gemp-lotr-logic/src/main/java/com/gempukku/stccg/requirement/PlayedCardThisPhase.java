@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.common.Filterable;
+import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.CardPlayedInCurrentPhaseCondition;
 import org.json.simple.JSONObject;
 

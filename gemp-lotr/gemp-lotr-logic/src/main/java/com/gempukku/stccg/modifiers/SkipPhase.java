@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import org.json.simple.JSONObject;
 
 public class SkipPhase implements ModifierSourceProducer {

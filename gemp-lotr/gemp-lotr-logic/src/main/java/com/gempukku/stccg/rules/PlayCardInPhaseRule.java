@@ -2,10 +2,10 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.CardType;
-import com.gempukku.stccg.common.Keyword;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Side;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Side;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;

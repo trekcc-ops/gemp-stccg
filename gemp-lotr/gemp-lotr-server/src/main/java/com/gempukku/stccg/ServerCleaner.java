@@ -1,18 +1,19 @@
 package com.gempukku.stccg;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ServerCleaner {
-    private static final Logger LOG = Logger.getLogger(ServerCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerCleaner.class);
     private final Set<AbstractServer> _servers = Collections.synchronizedSet(new HashSet<>());
     private CleaningThread _thr;
 
     public synchronized void addServer(AbstractServer server) {
-        LOG.debug("Adding server: " + server.getClass());
+        LOGGER.debug("Adding server: " + server.getClass());
         _servers.add(server);
         if (_thr == null) {
             _thr = new CleaningThread();
@@ -40,7 +41,7 @@ public class ServerCleaner {
                                 server.cleanup();
                             } catch (Exception exp) {
                                 // We can't do much about it
-                                LOG.error("Error while cleaning up a server", exp);
+                                LOGGER.error("Error while cleaning up a server", exp);
                             }
                         }
                     }

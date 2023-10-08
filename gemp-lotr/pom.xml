@@ -13,7 +13,7 @@
     <modules>
         <module>gemp-lotr-server</module>
         <module>gemp-lotr-logic</module>
-        <module>gemp-lotr-common</module>
+        <module>gemp-stccg-common</module>
         <module>gemp-lotr-cards</module>
         <module>gemp-stccg-client</module>
         <module>gemp-lotr-images</module>

@@ -1,8 +1,8 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.EndOfPile;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.EndOfPile;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class StackTopCardsFromDeckEffect extends AbstractEffect {

@@ -2,7 +2,7 @@ package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.PhysicalCardImpl;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecisionType;
 import org.junit.Test;
 

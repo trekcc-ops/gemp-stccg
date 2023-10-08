@@ -5,6 +5,8 @@ import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.processes.BiddingGameProcess;
 import com.gempukku.stccg.processes.GameProcess;

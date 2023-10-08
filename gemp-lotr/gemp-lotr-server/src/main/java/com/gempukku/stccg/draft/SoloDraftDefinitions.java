@@ -5,7 +5,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.draft.builder.*;
 import com.gempukku.stccg.formats.FormatLibrary;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,7 +20,6 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class SoloDraftDefinitions {
-    private static final Logger _logger = Logger.getLogger(SoloDraftDefinitions.class);
     private final Map<String, SoloDraft> _draftTypes = new HashMap<>();
     private final DraftChoiceBuilder _draftChoiceBuilder;
     private final File _draftDefinitionPath;

@@ -1,8 +1,8 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.game.User;
-import com.gempukku.polling.LongPollableResource;
-import com.gempukku.polling.WaitingRequest;
+import com.gempukku.stccg.common.LongPollableResource;
+import com.gempukku.stccg.common.WaitingRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableObject;
 

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrder;
 

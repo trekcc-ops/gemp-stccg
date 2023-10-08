@@ -1,8 +1,8 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.common.Phase;
-import com.gempukku.stccg.common.Zone;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.cards.CardDeck;
 import com.mysql.cj.util.StringUtils;

@@ -2,8 +2,8 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.GenericCardTestHelper;
 import com.gempukku.stccg.cards.PhysicalCardImpl;
-import com.gempukku.stccg.common.CardType;
-import com.gempukku.stccg.common.Keyword;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.modifiers.KeywordModifier;

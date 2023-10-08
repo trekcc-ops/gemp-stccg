@@ -12,14 +12,15 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.tournament.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class HallServer extends AbstractServer {
 
-    private static final Logger logger = Logger.getLogger(HallServer.class);
+    private static final Logger LOGGER = LogManager.getLogger(HallServer.class);
 
     private static final int _playerTableInactivityPeriod = 1000 * 20 ; // 20 seconds
 
@@ -68,8 +69,6 @@ public class HallServer extends AbstractServer {
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final ChatRoomMediator _hallChat;
     private final GameResultListener _notifyHallListeners = new NotifyHallListenersGameResultListener();
-
-    private static final Logger _log = Logger.getLogger(HallServer.class);
 
     public HallServer(IgnoreDAO ignoreDAO, LotroServer lotroServer, ChatServer chatServer, LeagueService leagueService, TournamentService tournamentService, CardBlueprintLibrary library,
                       FormatLibrary formatLibrary, CollectionsManager collectionsManager,
@@ -421,7 +420,7 @@ public class HallServer extends AbstractServer {
      *
      */
     public void joinTableAsPlayer(String tableId, User player, String deckName) throws HallException {
-        logger.debug("HallServer - joinTableAsPlayer function called");
+        LOGGER.debug("HallServer - joinTableAsPlayer function called");
         if (_shutdown)
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
@@ -584,10 +583,10 @@ public class HallServer extends AbstractServer {
     }
 
     private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName, CollectionType collectionType) throws HallException {
-        logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deckName);
+        LOGGER.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deckName);
         CardDeck lotroDeck = _lotroServer.getParticipantDeck(player, deckName);
         if (lotroDeck == null) {
-            _log.debug("Player '" + player.getName() + "' attempting to use deck '" + deckName + "' but failed.");
+            LOGGER.debug("Player '" + player.getName() + "' attempting to use deck '" + deckName + "' but failed.");
             throw new HallException("You don't have a deck registered yet");
         }
 
@@ -602,7 +601,7 @@ public class HallServer extends AbstractServer {
 
     private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck deck) throws HallException, DeckInvalidException {
         // TODO - Removing this functionality since it seems closely related to the collections feature which will not be implemented in ST:CCG. Review to make sure it is not needed.
-/*        logger.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deck);
+/*        LOGGER.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deck);
         String validation = format.validateDeckForHall(deck);
         if(validation == null || !validation.isEmpty())
         {

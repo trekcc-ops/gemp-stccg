@@ -5,7 +5,8 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.game.ChatCommunicationChannel;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -15,7 +16,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class ChatRoomMediator {
     private final IgnoreDAO ignoreDAO;
     private final PlayerDAO playerDAO;
-    private final Logger _logger;
+    private static final Logger LOGGER = LogManager.getLogger(ChatRoomMediator.class);
     private final ChatRoom _chatRoom;
 
     private final Map<String, ChatCommunicationChannel> _listeners = new HashMap<>();
@@ -37,7 +38,6 @@ public class ChatRoomMediator {
                             boolean allowIncognito) {
         this.ignoreDAO = ignoreDAO;
         this.playerDAO = playerDAO;
-        _logger = Logger.getLogger("chat."+roomName);
         _allowedPlayers = allowedPlayers;
         _channelInactivityTimeoutPeriod = 1000 * secondsTimeoutPeriod;
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
@@ -100,7 +100,7 @@ public class ChatRoomMediator {
             if (!admin && _allowedPlayers != null && !_allowedPlayers.contains(playerId))
                 throw new PrivateInformationException();
 
-            _logger.trace(playerId+": "+message);
+            LOGGER.trace(playerId+": "+message);
             _chatRoom.postMessage(playerId, message, true, admin);
         } finally {
             _lock.writeLock().unlock();

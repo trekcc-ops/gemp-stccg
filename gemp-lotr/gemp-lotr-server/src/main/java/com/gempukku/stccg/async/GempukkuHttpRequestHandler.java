@@ -10,7 +10,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
@@ -32,8 +33,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final static long SIX_MONTHS = 1000L * 60L * 60L * 24L * 30L * 6L;
-    private static final Logger _log = Logger.getLogger(GempukkuHttpRequestHandler.class);
-    private static final Logger _accesslog = Logger.getLogger("access");
+    private static final Logger LOGGER = LogManager.getLogger(GempukkuHttpRequestHandler.class);
     private final Map<String, byte[]> _fileCache = Collections.synchronizedMap(new HashMap<>());
 
     private final Map<Type, Object> _objects;
@@ -74,7 +74,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         try {
             if (isBanned(requestInformation.remoteIp)) {
                 responseSender.writeError(401);
-                _log.info("Denying entry to user from banned IP " + requestInformation.remoteIp);
+                LOGGER.info("Denying entry to user from banned IP " + requestInformation.remoteIp);
             }
             else {
                 _uriRequestHandler.handleRequest(uri, httpRequest, _objects, responseSender, requestInformation.remoteIp);
@@ -84,16 +84,16 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             //401, 403, 404, and other 400 errors should just do minimal logging,
             // but 400 itself should error out
             if(code % 400 < 100 && code != 400) {
-                _log.debug("HTTP " + code + " response for " + requestInformation.remoteIp + ": " + requestInformation.uri);
+                LOGGER.debug("HTTP " + code + " response for " + requestInformation.remoteIp + ": " + requestInformation.uri);
             }
             // record an HTTP 400
             else if(code == 400 || code % 500 < 100) {
-                _log.error("HTTP code " + code + " response for " + requestInformation.remoteIp + ": " + requestInformation.uri, exp);
+                LOGGER.error("HTTP code " + code + " response for " + requestInformation.remoteIp + ": " + requestInformation.uri, exp);
             }
 
             responseSender.writeError(exp.getStatus());
         } catch (Exception exp) {
-            _log.error("Error response for " + uri, exp);
+            LOGGER.error("Error response for " + uri, exp);
             responseSender.writeError(500);
         }
     }
@@ -196,7 +196,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (!(cause instanceof IOException) && !(cause instanceof IllegalArgumentException))
-            _log.error("Error while processing request", cause);
+            LOGGER.error("Error while processing request", cause);
         ctx.close();
     }
 
@@ -258,7 +258,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             } catch (Exception exp) {
                 byte[] content = new byte[0];
                 // Build the response object.
-                _log.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for " + request.uri(), exp);
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, Unpooled.wrappedBuffer(content), null, EmptyHttpHeaders.INSTANCE);
                 sendResponse(ctx, request, response);
             }
@@ -336,7 +336,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             } catch (IOException exp) {
                 byte[] content = new byte[0];
                 // Build the response object.
-                _log.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for " + request.uri(), exp);
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(500), Unpooled.wrappedBuffer(content), convertToHeaders(null), EmptyHttpHeaders.INSTANCE);
                 sendResponse(ctx, request, response);
             }

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.results;
 
-import com.gempukku.stccg.common.Phase;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.EffectResult;
 
 public class EndOfPhaseResult extends EffectResult {

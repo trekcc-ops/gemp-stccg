@@ -1,6 +1,6 @@
 package com.gempukku.stccg.rules.lotronly;
 
-import com.gempukku.stccg.common.Keyword;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.StrengthModifier;

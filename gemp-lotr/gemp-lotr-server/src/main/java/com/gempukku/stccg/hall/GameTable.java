@@ -2,12 +2,13 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class GameTable {
-    private static final Logger logger = Logger.getLogger(GameTable.class);
+    private static final Logger LOGGER = LogManager.getLogger(GameTable.class);
 
     private final GameSettings gameSettings;
     private final Map<String, GameParticipant> players = new HashMap<>();
@@ -19,11 +20,11 @@ public class GameTable {
         this.gameSettings = gameSettings;
         String formatName = gameSettings.getLotroFormat().getName();
         this.capacity = 2; // manually change Tribbles player limit
-        logger.debug("Capacity of game: " + this.capacity);
+        LOGGER.debug("Capacity of game: " + this.capacity);
     }
 
     public void startGame(CardGameMediator cardGameMediator) {
-        logger.debug("GameTable - startGame function called;");
+        LOGGER.debug("GameTable - startGame function called;");
         this.cardGameMediator = cardGameMediator;
     }
 

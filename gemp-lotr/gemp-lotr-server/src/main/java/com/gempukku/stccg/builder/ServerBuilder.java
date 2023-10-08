@@ -1,5 +1,7 @@
 package com.gempukku.stccg.builder;
 
+import com.gempukku.stccg.adventure.AdventureLibrary;
+import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionSerializer;
@@ -7,10 +9,10 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.*;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.adventure.AdventureLibrary;
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.GameHistoryService;
+import com.gempukku.stccg.game.GameRecorder;
+import com.gempukku.stccg.game.LotroServer;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.merchant.MerchantService;
@@ -19,16 +21,17 @@ import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import com.gempukku.stccg.tournament.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import org.apache.log4j.Logger;
 
 
 public class ServerBuilder {
-    private static final Logger logger = Logger.getLogger(ServerBuilder.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerBuilder.class);
     public static void CreatePrerequisites(Map<Type, Object> objectMap) {
-        logger.debug("Calling CreatePrerequisites function");
+        LOGGER.debug("Calling CreatePrerequisites function");
         final CardBlueprintLibrary library = new CardBlueprintLibrary();
         objectMap.put(CardBlueprintLibrary.class, library);
         objectMap.put(ProductLibrary.class, new ProductLibrary(library));
@@ -39,11 +42,11 @@ public class ServerBuilder {
 
         CollectionSerializer collectionSerializer = new CollectionSerializer();
         objectMap.put(CollectionSerializer.class, collectionSerializer);
-        logger.debug("Ending CreatePrerequisites function");
+        LOGGER.debug("Ending CreatePrerequisites function");
     }
 
     public static void CreateServices(Map<Type, Object> objectMap) {
-        logger.debug("Calling CreateServices function");
+        LOGGER.debug("Calling CreateServices function");
         objectMap.put(AdventureLibrary.class,
                 new DefaultAdventureLibrary());
 
@@ -136,7 +139,7 @@ public class ServerBuilder {
                         tournamentPrizeSchemeRegistry,
                         pairingMechanismRegistry
                 ));
-        logger.debug("Ending CreateServices function");
+        LOGGER.debug("Ending CreateServices function");
     }
 
     private static <T> T extract(Map<Type, Object> objectMap, Class<T> clazz) {
@@ -147,11 +150,11 @@ public class ServerBuilder {
     }
 
     public static void StartServers(Map<Type, Object> objectMap) {
-        logger.debug("Function StartServers - starting HallServer");
+        LOGGER.debug("Function StartServers - starting HallServer");
         extract(objectMap, HallServer.class).startServer();
-        logger.debug("Function StartServers - starting LotroServer");
+        LOGGER.debug("Function StartServers - starting LotroServer");
         extract(objectMap, LotroServer.class).startServer();
-        logger.debug("Function StartServers - starting ChatServer");
+        LOGGER.debug("Function StartServers - starting ChatServer");
         extract(objectMap, ChatServer.class).startServer();
     }
 
