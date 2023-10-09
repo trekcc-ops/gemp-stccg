@@ -16,7 +16,6 @@
         <module>gemp-stccg-common</module>
         <module>gemp-stccg-cards</module>
         <module>gemp-stccg-client</module>
-        <module>gemp-lotr-images</module>
     </modules>
 
     <properties>

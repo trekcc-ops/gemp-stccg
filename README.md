@@ -21,21 +21,7 @@ gemp-stccg-client is also the home for the web portion of the project; everythin
 
 ## gemp-stccg-cards
 
-This module contains the card definitions of both styles.  Originally, cards were each written in Java, one class per card, and the majority of LOTR-TCG cards are still implemented in that format here, in [/src/main/java/com/gempukku/lotro/cards](gemp-lotr/gemp-stccg-cards/src/main/java/com/gempukku/lotro/cards).  
-
-However, in August 2019 work was underway to implement a "Second Edition" fan set, and requiring a server restart for every balance update and addition was proving to be too obnoxious, so the engine was extended to permit definitions of cards in JSON, which, as data, could simply be reloaded with an admin command rather than requiring a recompile.  To date, all the following card sets are implemented in JSON and not Java:
-
-* 0 (Promotional)
-* 1 (The Fellowship of the Ring)
-* 9 (Reflections)
-* 14 (Expanded Middle-earth)
-* 16 (The Wraith Collection)
-* 19 (Age's End)
-* 30-33 (The Hobbit Draft Game)
-* V1 (PC, Shadow of the Past)
-* All PC Errata
-
-Bug fixes nowadays will also take the opportunity to convert a card to JSON, so there are a smattering of cards from various other sets that have also been implemented.
+This module contains the card definitions in HJSON format.  
 
 In 2022, all JSON definition files were [converted to HJSON](https://hjson.github.io/), which is a mutually-convertable dialect of JSON that includes support for comments and does not require redundant quotes in strings or commas in field definitions.  Consult [this list of editor extensions](https://hjson.github.io/users.html) to get syntax highlighting support for your editor of choice.
 
@@ -47,11 +33,6 @@ Other data definitions besides cards are also stored in this module, including b
 ## gemp-stccg-common
 
 This module contains definitions used throughout the project, including enums for card types, cultures, zones, and the like.  It also contains certain low-level classes for HTTP responses.
-
-
-## gemp-lotr-images
-
-A currently unused package intended to be used to generate new card images.  (The PC independently developed its own spreadsheet-based generator using nanDECK, which [can be found here](https://github.com/PlayersCouncil/LotR-TCG_card_generator)).
 
 
 ## gemp-stccg-logic
