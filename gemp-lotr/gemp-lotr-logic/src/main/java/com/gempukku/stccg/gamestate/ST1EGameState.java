@@ -16,7 +16,7 @@ public class ST1EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _missionPiles;
     private final List<Location> _spacelineLocations = new ArrayList<>();
     private final Map<String, List<PhysicalCard>> _tableCards;
-    private ST1EGame _game;
+    private final ST1EGame _game;
 
     public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST1EGame game) {
         super(players, decks, library, format);

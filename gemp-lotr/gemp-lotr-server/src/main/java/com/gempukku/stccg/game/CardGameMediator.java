@@ -126,7 +126,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
         final Phase currentPhase = getGame().getGameState().getCurrentPhase();
         if (currentPhase == Phase.PLAY_STARTING_FELLOWSHIP || currentPhase == Phase.PUT_RING_BEARER)
             return "Preparation";
-        return "At sites: " + getPlayerPositions();
+        return "Playing";
     }
 
     public boolean isFinished() {
@@ -167,15 +167,6 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
 
                 if (card.getZone().isInPlay() && card.getBlueprint().getCardType() == CardType.SITE)
                     sb.append("<br><b>Owner:</b> ").append(card.getOwner());
-
-                Map<Token, Integer> map = getGame().getGameState().getTokens(card);
-                if (map != null && map.size() > 0) {
-                    sb.append("<br><b>Tokens:</b>");
-                    for (Map.Entry<Token, Integer> tokenIntegerEntry : map.entrySet()) {
-                        sb.append("<br>").append(tokenIntegerEntry.getKey().toString()).append(": ");
-                        sb.append(tokenIntegerEntry.getValue());
-                    }
-                }
 
                 List<PhysicalCard> stackedCards = getGame().getGameState().getStackedCards(card);
                 if (stackedCards != null && stackedCards.size() > 0) {
@@ -439,14 +430,4 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
 
     public Map<String, Integer> getPlayerClocks() { return Collections.unmodifiableMap(_playerClocks); }
 
-    public String getPlayerPositions() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String player : _playersPlaying) {
-            stringBuilder.append(getGame().getGameState().getPlayerPosition(player)).append(", ");
-        }
-        if (stringBuilder.length() > 0)
-            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-
-        return stringBuilder.toString();
-    }
 }

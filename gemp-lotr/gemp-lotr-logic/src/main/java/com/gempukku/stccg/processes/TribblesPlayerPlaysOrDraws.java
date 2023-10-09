@@ -30,7 +30,7 @@ public class TribblesPlayerPlaysOrDraws implements GameProcess {
                 userMessage = "Select Tribble to play or click 'Pass' to draw a card.";
             }
             game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardActionSelectionDecision(game, 1, userMessage, playableActions) {
+                    new CardActionSelectionDecision(1, userMessage, playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

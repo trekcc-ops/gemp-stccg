@@ -85,8 +85,8 @@ public class GameRecorder {
 
                 tournament = tournamentName;
 
-                winner_site = lotroGame.getGame().getGameState().getPlayerPosition(winner);
-                loser_site = lotroGame.getGame().getGameState().getPlayerPosition(winner);
+                winner_site = 0;
+                loser_site = 0;
 
                 game_length_type = time.name();
                 max_game_time = time.maxSecondsPerPlayer();

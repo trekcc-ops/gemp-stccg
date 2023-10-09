@@ -27,7 +27,7 @@ public class TribblesOptionalTriggersRule {
                     @Override
                     public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(), game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends OptionalTriggerAction> actions = activatableCard.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, activatableCard);
                                 if (actions != null)
@@ -43,7 +43,7 @@ public class TribblesOptionalTriggersRule {
                                                                                                 DefaultGame game,
                                                                                                 EffectResult effectResult) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getInPlay(),
+                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(),
                                 game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends OptionalTriggerAction> actions =

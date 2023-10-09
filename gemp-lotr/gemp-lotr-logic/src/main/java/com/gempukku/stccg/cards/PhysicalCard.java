@@ -13,6 +13,7 @@ import com.gempukku.stccg.modifiers.ModifierHook;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class PhysicalCard implements Filterable {
     protected Zone _zone;
@@ -24,8 +25,7 @@ public class PhysicalCard implements Filterable {
     protected PhysicalCard _attachedTo;
     protected PhysicalCard _stackedOn;
     protected List<ModifierHook> _modifierHooks;
-    protected List<ModifierHook> _modifierHooksStacked;
-    protected List<ModifierHook> _modifierHooksInDiscard;
+    protected Map<Zone, List<ModifierHook>> _modifierHooksInZone; // modifier hooks specific to stacked and discard
     protected List<ModifierHook> _modifierHooksControlledSite;
     protected Object _whileInZoneData;
     protected Integer _siteNumber;
@@ -78,37 +78,17 @@ public class PhysicalCard implements Filterable {
         }
     }
 
-    public void startAffectingGameStacked(DefaultGame game) {
-        List<? extends Modifier> modifiers = _blueprint.getStackedOnModifiers(game, this);
+    public void startAffectingGameInZone(DefaultGame game, Zone zone) {
+        List<? extends Modifier> modifiers = null;
+        if (zone == Zone.STACKED) {
+            modifiers = _blueprint.getStackedOnModifiers(game, this);
+        } else if (zone == Zone.DISCARD) {
+            modifiers = _blueprint.getInDiscardModifiers(game, this);
+        }
         if (modifiers != null) {
-            _modifierHooksStacked = new LinkedList<>();
+            _modifierHooksInZone.put(zone, new LinkedList<>());
             for (Modifier modifier : modifiers)
-                _modifierHooksStacked.add(game.getModifiersEnvironment().addAlwaysOnModifier(modifier));
-        }
-    }
-
-    public void stopAffectingGameStacked() {
-        if (_modifierHooksStacked != null) {
-            for (ModifierHook modifierHook : _modifierHooksStacked)
-                modifierHook.stop();
-            _modifierHooksStacked = null;
-        }
-    }
-
-    public void startAffectingGameInDiscard(DefaultGame game) {
-        List<? extends Modifier> modifiers = _blueprint.getInDiscardModifiers(game, this);
-        if (modifiers != null) {
-            _modifierHooksInDiscard = new LinkedList<>();
-            for (Modifier modifier : modifiers)
-                _modifierHooksInDiscard.add(game.getModifiersEnvironment().addAlwaysOnModifier(modifier));
-        }
-    }
-
-    public void stopAffectingGameInDiscard() {
-        if (_modifierHooksInDiscard != null) {
-            for (ModifierHook modifierHook : _modifierHooksInDiscard)
-                modifierHook.stop();
-            _modifierHooksInDiscard = null;
+                _modifierHooksInZone.get(zone).add(game.getModifiersEnvironment().addAlwaysOnModifier(modifier));
         }
     }
 
@@ -118,6 +98,14 @@ public class PhysicalCard implements Filterable {
             _modifierHooksControlledSite = new LinkedList<>();
             for (Modifier modifier : modifiers)
                 _modifierHooksControlledSite.add(game.getModifiersEnvironment().addAlwaysOnModifier(modifier));
+        }
+    }
+
+    public void stopAffectingGameInZone(Zone zone) {
+        if (_modifierHooksInZone.get(zone) != null) {
+            for (ModifierHook modifierHook : _modifierHooksInZone.get(zone))
+                modifierHook.stop();
+            _modifierHooksInZone.remove(zone);
         }
     }
 

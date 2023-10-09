@@ -1,6 +1,5 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.ActionSource;
 import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.CostToEffectAction;

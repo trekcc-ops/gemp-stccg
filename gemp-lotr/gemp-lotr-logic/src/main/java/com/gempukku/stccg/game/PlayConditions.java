@@ -2,7 +2,6 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -33,17 +32,6 @@ public class PlayConditions {
                 return true;
         }
         return false;
-    }
-
-    public static boolean isAhead(DefaultGame game) {
-        String currentPlayer = game.getGameState().getCurrentPlayerId();
-        int currentPosition = game.getGameState().getCurrentSiteNumber();
-        for (String player : game.getGameState().getPlayerOrder().getAllPlayers()) {
-            if (!player.equals(currentPlayer))
-                if (game.getGameState().getPlayerPosition(player) >= currentPosition)
-                    return false;
-        }
-        return true;
     }
 
 
@@ -91,10 +79,6 @@ public class PlayConditions {
         return (game.getGameState().getCurrentPhase() == phase);
     }
 
-    public static boolean location(DefaultGame game, Filterable... filters) {
-        return Filters.and(filters).accepts(game, game.getGameState().getCurrentSite());
-    }
-
     public static boolean stackedOn(PhysicalCard card, DefaultGame game, Filterable... filters) {
         return Filters.and(filters).accepts(game, card.getStackedOn());
     }
@@ -107,25 +91,6 @@ public class PlayConditions {
         final int activeCount = Filters.countActive(game, Filters.name(blueprint.getTitle()));
         return activeCount == 0
                 && (ignoreCheckingDeadPile || (Filters.filter(game.getGameState().getDeadPile(self.getOwner()), game, Filters.name(blueprint.getTitle())).size() == 0));
-    }
-
-    private static int getTotalCompanions(String playerId, DefaultGame game) {
-        return Filters.countActive(game, CardType.COMPANION)
-                + Filters.filter(game.getGameState().getDeadPile(playerId), game, CardType.COMPANION).size();
-    }
-
-    public static boolean checkRuleOfNine(DefaultGame game, PhysicalCard self) {
-        if (self.getZone() == Zone.DEAD)
-            return (getTotalCompanions(self.getOwner(), game) <= 9);
-        else
-            return (getTotalCompanions(self.getOwner(), game) < 9);
-    }
-
-    public static boolean canExert(final PhysicalCard source, final DefaultGame game, final int times, final int count, Filterable... filters) {
-        final Filter filter = Filters.and(filters, Filters.character);
-        return Filters.countActive(game, filter,
-                (Filter) (game1, physicalCard) -> (game1.getModifiersQuerying().getVitality(game1, physicalCard) > times)
-                        && game1.getModifiersQuerying().canBeExerted(game1, source, physicalCard)) >= count;
     }
 
     public static boolean canStackDeckTopCards(PhysicalCard source, DefaultGame game, String deckId, int cardCount, Filterable... onto) {
@@ -175,10 +140,6 @@ public class PlayConditions {
 
     public static boolean canPlayFromHand(String playerId, DefaultGame game, int withTwilightRemoved, int twilightModifier, boolean ignoreRoamingPenalty, boolean ignoreCheckingDeadPile, Filterable... filters) {
         return Filters.filter(game.getGameState().getHand(playerId), game, Filters.and(filters, Filters.playable(game, withTwilightRemoved, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false))).size() > 0;
-    }
-
-    public static boolean canPlayFromDeadPile(String playerId, DefaultGame game, Filterable... filters) {
-        return Filters.filter(game.getGameState().getDeadPile(playerId), game, Filters.and(filters, Filters.playable(game, 0, false, true))).size() > 0;
     }
 
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, Filterable stackedOn, Filterable... filters) {

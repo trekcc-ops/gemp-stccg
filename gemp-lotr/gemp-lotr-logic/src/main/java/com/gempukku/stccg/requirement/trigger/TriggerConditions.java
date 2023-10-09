@@ -191,16 +191,6 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean movesTo(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        return effectResult.getType() == EffectResult.Type.WHEN_MOVE_TO
-                && Filters.and(filters).accepts(game, game.getGameState().getCurrentSite());
-    }
-
-    public static boolean isMovingTo(Effect effect, DefaultGame game, Filterable... filters) {
-        return effect.getType() == Effect.Type.BEFORE_MOVE_TO
-                && Filters.and(filters).accepts(game, game.getGameState().getCurrentSite());
-    }
-
     public static boolean movesFrom(DefaultGame game, EffectResult effectResult, Filterable... filters) {
         return effectResult.getType() == EffectResult.Type.WHEN_MOVE_FROM
                 && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getSite());

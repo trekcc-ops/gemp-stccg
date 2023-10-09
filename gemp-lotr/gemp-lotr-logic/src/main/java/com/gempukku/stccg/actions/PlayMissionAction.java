@@ -20,7 +20,6 @@ public class PlayMissionAction extends AbstractPlayCardAction {
     private int _locationZoneIndex;
     private final Zone _fromZone;
     private boolean _placementChosen;
-    private boolean _sharedMission;
 
     public PlayMissionAction(PhysicalCard missionPlayed) {
         super(missionPlayed, missionPlayed);
@@ -39,7 +38,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
         String playerId = getPerformingPlayer();
         ST1EGameState gameState = game.getGameState();
 
-        _sharedMission = gameState.indexOfLocation(missionLocation, quadrant) != null &&
+        boolean _sharedMission = gameState.indexOfLocation(missionLocation, quadrant) != null &&
                 !_cardToPlay.getBlueprint().isUniversal();
         String[] directions = {"LEFT", "RIGHT"};
 
@@ -95,7 +94,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
         }
         if (!_cardPlayed) {
             _cardPlayed = true;
-            _playCardEffect = new PlayMissionEffect(_fromZone, _cardToPlay, quadrant, _locationZoneIndex, _sharedMission);
+            _playCardEffect = new PlayMissionEffect(_fromZone, _cardToPlay, _locationZoneIndex, _sharedMission);
             return _playCardEffect;
         }
         return null;

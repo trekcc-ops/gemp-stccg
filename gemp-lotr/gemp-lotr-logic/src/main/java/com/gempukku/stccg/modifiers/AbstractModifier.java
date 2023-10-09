@@ -6,7 +6,6 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Action;
 
@@ -154,22 +153,12 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean isAllyParticipateInArcheryFire(DefaultGame game, PhysicalCard card) {
-        return false;
-    }
-
-    @Override
     public boolean isAllyParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
         return false;
     }
 
     @Override
     public boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card) {
-        return false;
-    }
-
-    @Override
-    public boolean isAllyPreventedFromParticipatingInArcheryFire(DefaultGame game, PhysicalCard card) {
         return false;
     }
 
@@ -348,14 +337,6 @@ public abstract class AbstractModifier implements Modifier {
     public boolean lostAllKeywords(PhysicalCard card) {
         return false;
     }
-
-    @Override
-    public Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter) {
-        return null;
-    }
-
-    @Override
-    public Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard shadowCharacter) { return null; }
 
     @Override
     public int getFPCulturesSpotCountModifier(DefaultGame game, String playerId) {

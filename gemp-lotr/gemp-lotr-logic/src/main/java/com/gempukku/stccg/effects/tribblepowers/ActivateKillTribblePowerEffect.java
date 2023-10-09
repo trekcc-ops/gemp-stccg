@@ -11,7 +11,7 @@ import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.rules.GameUtils;
 
 public class ActivateKillTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateKillTribblePowerEffect(CostToEffectAction<TribblesGame> action, PhysicalCard source) {
+    public ActivateKillTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
         super(action, source);
     }
 

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;

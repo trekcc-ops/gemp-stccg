@@ -414,18 +414,8 @@ public class BuiltLotroCardBlueprint implements LotroCardBlueprint {
     }
 
     @Override
-    public int getSiteNumber() {
-        return siteNumber;
-    }
-
-    @Override
     public Set<PossessionClass> getPossessionClasses() {
         return possessionClasses;
-    }
-
-    @Override
-    public Direction getSiteDirection() {
-        return direction;
     }
 
     @Override

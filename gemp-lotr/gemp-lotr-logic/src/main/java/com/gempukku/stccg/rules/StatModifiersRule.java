@@ -1,14 +1,12 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.modifiers.StrengthModifier;
-import com.gempukku.stccg.modifiers.MinionSiteNumberModifier;
 import com.gempukku.stccg.modifiers.ResistanceModifier;
+import com.gempukku.stccg.modifiers.StrengthModifier;
 import com.gempukku.stccg.modifiers.VitalityModifier;
 
 public class StatModifiersRule {
@@ -52,15 +50,6 @@ public class StatModifiersRule {
                             int sum = 0;
                             for (PhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected))
                                 sum += attachedCard.getBlueprint().getResistance();
-
-                            return sum;
-                        }, true));
-        modifiersLogic.addAlwaysOnModifier(
-                new MinionSiteNumberModifier(null, Filters.and(Filters.inPlay, CardType.MINION, Filters.hasAttached(Filters.any)), null,
-                        (game, cardAffected) -> {
-                            int sum = 0;
-                            for (PhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected))
-                                sum += attachedCard.getBlueprint().getSiteNumber();
 
                             return sum;
                         }, true));

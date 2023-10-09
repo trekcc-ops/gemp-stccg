@@ -14,14 +14,12 @@ import java.util.Set;
 
 public class AllPlayersDiscardFromHandEffect extends AbstractEffect<DefaultGame> {
     private final CostToEffectAction _action;
-    private final PhysicalCard _source;
     private final boolean _allPlayersMustBeAble;
     private final boolean _forced;
 
-    public AllPlayersDiscardFromHandEffect(CostToEffectAction action, PhysicalCard source,
+    public AllPlayersDiscardFromHandEffect(CostToEffectAction action,
                                            boolean allPlayersMustBeAble, boolean forced) {
         _action = action;
-        _source = source;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;
     }

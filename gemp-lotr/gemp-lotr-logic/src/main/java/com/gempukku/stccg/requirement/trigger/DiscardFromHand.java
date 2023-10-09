@@ -1,6 +1,5 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;

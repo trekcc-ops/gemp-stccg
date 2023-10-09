@@ -60,10 +60,6 @@ public class SortAndFilterCards {
         MultipleComparator<CardItem> comparators = new MultipleComparator<>();
         for (String oneSort : sortSplit) {
             switch (oneSort) {
-                case "twilight" ->
-                        comparators.addComparator(new PacksFirstComparator(new TwilightComparator(cardBlueprintMap)));
-                case "siteNumber" ->
-                        comparators.addComparator(new PacksFirstComparator(new SiteNumberComparator(cardBlueprintMap)));
                 case "strength" ->
                         comparators.addComparator(new PacksFirstComparator(new StrengthComparator(cardBlueprintMap)));
                 case "vitality" ->
@@ -316,32 +312,6 @@ public class SortAndFilterCards {
                 return 1;
             else
                 return _cardComparator.compare(o1, o2);
-        }
-    }
-
-    private static class SiteNumberComparator implements Comparator<CardItem> {
-        private final Map<String, LotroCardBlueprint> _cardBlueprintMap;
-
-        private SiteNumberComparator(Map<String, LotroCardBlueprint> cardBlueprintMap) {
-            _cardBlueprintMap = cardBlueprintMap;
-        }
-
-        @Override
-        public int compare(CardItem o1, CardItem o2) {
-            int siteNumberOne;
-            try {
-                siteNumberOne = _cardBlueprintMap.get(o1.getBlueprintId()).getSiteNumber();
-            } catch (UnsupportedOperationException exp) {
-                siteNumberOne = 10;
-            }
-            int siteNumberTwo;
-            try {
-                siteNumberTwo = _cardBlueprintMap.get(o2.getBlueprintId()).getSiteNumber();
-            } catch (UnsupportedOperationException exp) {
-                siteNumberTwo = 10;
-            }
-
-            return siteNumberOne - siteNumberTwo;
         }
     }
 

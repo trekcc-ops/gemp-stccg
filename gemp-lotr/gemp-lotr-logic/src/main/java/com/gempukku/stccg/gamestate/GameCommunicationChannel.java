@@ -149,11 +149,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void removeTokens(PhysicalCard card, Token token, int count) {
-        appendEvent(new GameEvent(REMOVE_TOKENS).card(card).token(token).count(count));
-    }
-
-    @Override
     public void sendMessage(String message) {
         appendEvent(new GameEvent(SEND_MESSAGE).message(message));
     }

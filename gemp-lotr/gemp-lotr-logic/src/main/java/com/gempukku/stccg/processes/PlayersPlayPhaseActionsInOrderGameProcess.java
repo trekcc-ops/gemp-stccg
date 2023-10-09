@@ -36,7 +36,7 @@ public class PlayersPlayPhaseActionsInOrderGameProcess implements GameProcess {
             playerPassed();
         } else {
             game.getUserFeedback().sendAwaitingDecision(playerId,
-                    new CardActionSelectionDecision(game, 1, "Play " + game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+                    new CardActionSelectionDecision(1, "Play " + game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

@@ -15,7 +15,6 @@ public class TriggerCheckerFactory {
     public TriggerCheckerFactory() {
         triggerCheckers.put("abouttobekilled", new AboutToBeKilled());
         triggerCheckers.put("abouttodiscard", new AboutToDiscardFromPlay());
-        triggerCheckers.put("abouttomoveto", new AboutToMoveTo());
         triggerCheckers.put("requires", new ConditionTrigger());
         triggerCheckers.put("discarded", new Discarded());
         triggerCheckers.put("discardfromdeck", new DiscardFromDeck());
@@ -26,7 +25,6 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("killed", new Killed());
         triggerCheckers.put("moves", new Moves());
         triggerCheckers.put("movesfrom", new MovesFrom());
-        triggerCheckers.put("movesto", new MovesTo());
         triggerCheckers.put("played", new PlayedTriggerCheckerProducer());
         triggerCheckers.put("playedfromstacked", new PlayedFromStacked());
         triggerCheckers.put("playergoesout", new PlayerGoesOut());

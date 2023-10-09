@@ -65,7 +65,7 @@ public class DiscardCardsFromZoneEffect extends AbstractEffect<DefaultGame> {
                 gameState.addCardToZone(game, card, Zone.DISCARD);
                 if (_fromZone == Zone.HAND) {
                     game.getActionsEnvironment().emitEffectResult(
-                            new DiscardCardFromHandResult(_source, card, _playerId, _forced)
+                            new DiscardCardFromHandResult(_source, card, _forced)
                     );
                 }
             }

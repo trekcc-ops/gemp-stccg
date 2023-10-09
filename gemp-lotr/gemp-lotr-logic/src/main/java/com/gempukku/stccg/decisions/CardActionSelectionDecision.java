@@ -1,18 +1,15 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.Action;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public abstract class CardActionSelectionDecision extends AbstractAwaitingDecision {
-    private final DefaultGame _game;
     private final List<Action> _actions;
 
-    public CardActionSelectionDecision(DefaultGame game, int decisionId, String text, List<? extends Action> actions) {
+    public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions) {
         super(decisionId, text, AwaitingDecisionType.CARD_ACTION_CHOICE);
-        _game = game;
         _actions = new LinkedList<>(actions);
 
         setParam("actionId", getActionIds(actions));

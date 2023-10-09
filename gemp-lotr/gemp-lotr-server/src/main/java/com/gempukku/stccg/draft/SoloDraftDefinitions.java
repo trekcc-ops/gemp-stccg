@@ -5,7 +5,6 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.draft.builder.*;
 import com.gempukku.stccg.formats.FormatLibrary;
-import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

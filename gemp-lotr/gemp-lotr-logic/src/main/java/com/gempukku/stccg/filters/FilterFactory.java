@@ -1,6 +1,5 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
@@ -28,7 +27,6 @@ public class FilterFactory {
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
         simpleFilters.put("character", (actionContext) -> Filters.character);
-        simpleFilters.put("exhausted", (actionContext) -> Filters.exhausted);
         simpleFilters.put("idinstored",
                 (actionContext ->
                         (Filter) (game, physicalCard) -> {
@@ -47,13 +45,10 @@ public class FilterFactory {
                 actionContext -> Filters.region(LotroGameUtils.getRegion(actionContext.getSource().getSiteNumber())));
         simpleFilters.put("item", (actionContext) -> Filters.item);
         simpleFilters.put("self", ActionContext::getSource);
-        simpleFilters.put("siteincurrentregion",
-                (actionContext) -> Filters.siteInCurrentRegion);
         simpleFilters.put("unbound",
                 (actionContext) -> Filters.unboundCompanion);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
         simpleFilters.put("weapon", (actionContext) -> Filters.weapon);
-        simpleFilters.put("wounded", (actionContext) -> Filters.wounded);
         simpleFilters.put("your", (actionContext) -> Filters.owner(actionContext.getPerformingPlayer()));
 
         parameterFilters.put("and",
@@ -113,32 +108,6 @@ public class FilterFactory {
                     final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameterSplit[1], environment);
                     return (actionContext) -> Filters.hasStacked(count, filterableSource.getFilterable(actionContext));
                 });
-        parameterFilters.put("hasanytokens", (parameter, environment) -> {
-            int count = Integer.parseInt(parameter != null ? parameter : "1");
-            return (actionContext) -> Filters.hasAnyCultureTokens(count);
-        });
-        parameterFilters.put("hastoken", (parameter, environment) -> {
-            final Culture culture = Culture.findCulture(parameter);
-            if (culture == null)
-                throw new InvalidCardDefinitionException("Unable to find culture for: " + parameter);
-            final Token token = Token.findTokenForCulture(culture);
-            if (token == null)
-                throw new InvalidCardDefinitionException("Unable to find token for culture: " + parameter);
-
-            return (actionContext) -> Filters.hasToken(token);
-        });
-        parameterFilters.put("hastokencount", (parameter, environment) -> {
-            String[] parameterSplit = parameter.split(",", 2);
-            int count = Integer.parseInt(parameterSplit[0]);
-            final Culture culture = Culture.findCulture(parameterSplit[1]);
-            if (culture == null)
-                throw new InvalidCardDefinitionException("Unable to find culture for: " + parameter);
-            final Token token = Token.findTokenForCulture(culture);
-            if (token == null)
-                throw new InvalidCardDefinitionException("Unable to find token for culture: " + parameter);
-
-            return (actionContext) -> Filters.hasToken(token, count);
-        });
         parameterFilters.put("loweststrength",
                 (parameter, environment) -> {
                     final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter, environment);
@@ -331,22 +300,6 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("title",parameterFilters.get("name"));
-        parameterFilters.put("vitalitylessthan",
-                (parameter, environment) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
-                    return (actionContext) -> {
-                        int amount = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                        return Filters.lessVitalityThan(amount);
-                    };
-                });
-        parameterFilters.put("vitalitymorethan",
-                (parameter, environment) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
-                    return (actionContext) -> {
-                        int amount = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                        return Filters.moreVitalityThan(amount);
-                    };
-                });
         parameterFilters.put("zone",
                 (parameter, environment) -> {
                     final Zone zone = FieldUtils.getEnum(Zone.class, parameter, "parameter");

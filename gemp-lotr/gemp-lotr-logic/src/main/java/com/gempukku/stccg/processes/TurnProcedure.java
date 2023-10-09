@@ -230,7 +230,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
 
             if (possibleActions.size() > 0) {
                 _game.getUserFeedback().sendAwaitingDecision(activePlayer,
-                        new CardActionSelectionDecision(game, 1, _effect.getText(game) + " - Optional \"is about to\" responses", possibleActions) {
+                        new CardActionSelectionDecision(1, _effect.getText(game) + " - Optional \"is about to\" responses", possibleActions) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
@@ -280,7 +280,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
 
             if (possibleActions.size() > 0) {
                 _game.getUserFeedback().sendAwaitingDecision(activePlayer,
-                        new CardActionSelectionDecision(game, 1, "Optional responses", possibleActions) {
+                        new CardActionSelectionDecision(1, "Optional responses", possibleActions) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);

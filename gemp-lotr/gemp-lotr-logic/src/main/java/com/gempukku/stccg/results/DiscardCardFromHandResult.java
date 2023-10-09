@@ -6,14 +6,12 @@ import com.gempukku.stccg.effects.EffectResult;
 public class DiscardCardFromHandResult extends EffectResult {
     private final PhysicalCard _source;
     private final PhysicalCard _card;
-    private final String _handPlayerId;
     private final boolean _forced;
 
-    public DiscardCardFromHandResult(PhysicalCard source, PhysicalCard card, String handPlayerId, boolean forced) {
+    public DiscardCardFromHandResult(PhysicalCard source, PhysicalCard card, boolean forced) {
         super(Type.FOR_EACH_DISCARDED_FROM_HAND);
         _source = source;
         _card = card;
-        _handPlayerId = handPlayerId;
         _forced = forced;
     }
 

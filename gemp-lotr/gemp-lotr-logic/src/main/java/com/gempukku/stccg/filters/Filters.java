@@ -112,28 +112,12 @@ public class Filters {
         };
     }
 
-    public static Filter canSpotCompanionWithStrengthAtLeast(final int strength) {
-        return (game, physicalCard) -> Filters.canSpot(game, CardType.COMPANION, Filters.not(Filters.lessStrengthThan(strength)));
-    }
-
-    public static Filter lessVitalityThan(final int vitality) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) < vitality;
-    }
-
-    public static Filter moreVitalityThan(final int vitality) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) > vitality;
-    }
-
     public static Filter maxResistance(final int resistance) {
         return (game, physicalCard) -> game.getModifiersQuerying().getResistance(game, physicalCard) <= resistance;
     }
 
     public static Filter minResistance(final int resistance) {
         return (game, physicalCard) -> game.getModifiersQuerying().getResistance(game, physicalCard) >= resistance;
-    }
-
-    public static Filter minVitality(final int vitality) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) >= vitality;
     }
 
     public static Filter strengthEqual(final Evaluator evaluator) {
@@ -160,40 +144,12 @@ public class Filters {
         };
     }
 
-    public static Filter hasAnyCultureTokens() {
-        return hasAnyCultureTokens(1);
-    }
-
-    public static Filter hasAnyCultureTokens(final int count) {
-        return (game, physicalCard) -> {
-            Map<Token, Integer> tokens = game.getGameState().getTokens(physicalCard);
-            for (Map.Entry<Token, Integer> tokenCount : tokens.entrySet()) {
-                if (tokenCount.getKey().getCulture() != null)
-                    if (tokenCount.getValue() >= count)
-                        return true;
-            }
-            return false;
-        };
-    }
-
-    public static Filter printedTwilightCost(final int printedTwilightCost) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getTwilightCost() == printedTwilightCost;
-    }
-
     public static Filter maxPrintedTwilightCost(final int printedTwilightCost) {
         return (game, physicalCard) -> physicalCard.getBlueprint().getTwilightCost() <= printedTwilightCost;
     }
 
     public static Filter minPrintedTwilightCost(final int printedTwilightCost) {
         return (game, physicalCard) -> physicalCard.getBlueprint().getTwilightCost() >= printedTwilightCost;
-    }
-
-    public static Filter hasToken(final Token token) {
-        return hasToken(token, 1);
-    }
-
-    public static Filter hasToken(final Token token, final int count) {
-        return (game, physicalCard) -> game.getGameState().getTokenCount(physicalCard, token) >= count;
     }
 
     public static Filter notPreventedByEffectToAssign(final Side assignedBySide, final PhysicalCard againstCard) {
@@ -238,8 +194,6 @@ public class Filters {
     public static Filter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(game, performingPlayer, physicalCard, source);
     }
-
-    public static final Filter exhausted = (game, physicalCard) -> game.getModifiersQuerying().getVitality(game, physicalCard) == 1;
 
     public static Filter playable(final DefaultGame game) {
         return playable(game, 0);
@@ -296,39 +250,6 @@ public class Filters {
     public static Filter owner(final String playerId) {
         return (game, physicalCard) -> physicalCard.getOwner() != null && physicalCard.getOwner().equals(playerId);
     }
-
-    public static final Filter currentSite = (game, physicalCard) -> game.getGameState().getCurrentSite() == physicalCard;
-
-    public static final Filter currentRegion = (game, physicalCard) -> LotroGameUtils.getRegion(game) == LotroGameUtils.getRegion(physicalCard.getSiteNumber());
-
-    public static Filter siteNumber(final int siteNumber) {
-        return siteNumberBetweenInclusive(siteNumber, siteNumber);
-    }
-    public static final Filter siteHasSiteNumber = Filters.and(CardType.SITE,
-            (Filter) (game, physicalCard) -> {
-                int bpNumber = physicalCard.getBlueprint().getSiteNumber();
-                Integer siteNumber = physicalCard.getSiteNumber();
-                return Objects.requireNonNullElse(siteNumber, bpNumber) != 0;
-            });
-
-    public static Filter siteNumberBetweenInclusive(final int minSiteNumber, final int maxSiteNumber) {
-        return (game, physicalCard) -> {
-            if(physicalCard.getBlueprint().getCardType() == CardType.MINION)
-            {
-                int sitenum = game.getModifiersQuerying().getMinionSiteNumber(game, physicalCard);
-                return sitenum >= minSiteNumber && sitenum <= maxSiteNumber;
-            }
-
-            return (physicalCard.getSiteNumber()!=null)
-                    && (physicalCard.getSiteNumber()>=minSiteNumber) && (physicalCard.getSiteNumber()<=maxSiteNumber);
-        };
-    }
-
-    public static final Filter siteInCurrentRegion = Filters.and(CardType.SITE,
-            (Filter) (game, physicalCard) -> {
-                int siteNumber = physicalCard.getSiteNumber();
-                return LotroGameUtils.getRegion(game) == LotroGameUtils.getRegion(siteNumber);
-            });
 
     public static Filter region(final int region) { return regionNumberBetweenInclusive(region, region); }
 
@@ -388,14 +309,6 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.getZone() == zone;
     }
 
-    public static Filter hasWounds(final int wounds) {
-        return (game, physicalCard) -> game.getGameState().getWounds(physicalCard) >= wounds;
-    }
-
-    public static final Filter unwounded = (game, physicalCard) -> game.getGameState().getWounds(physicalCard) == 0;
-
-    public static final Filter wounded = Filters.hasWounds(1);
-
     public static Filter name(final String name) {
         return (game, physicalCard) -> name != null && physicalCard.getBlueprint().getTitle() != null && physicalCard.getBlueprint().getTitle().equals(name);
     }
@@ -412,18 +325,6 @@ public class Filters {
     public static Filter stackedOn(final Filterable... filters) {
         return (game, physicalCard) -> physicalCard.getStackedOn() != null && Filters.and(filters).accepts(game, physicalCard.getStackedOn());
     }
-
-    public static Filter siteControlledByShadowPlayer(final String fellowshipPlayer) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getCardType() == CardType.SITE && physicalCard.getCardController() != null && !physicalCard.getCardController().equals(fellowshipPlayer);
-    }
-
-    public static Filter siteControlledByAnyPlayer = (game, physicalCard) -> physicalCard.getBlueprint().getCardType() == CardType.SITE && physicalCard.getCardController() != null;
-
-    public static Filter siteControlled(final String playerId) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getCardType() == CardType.SITE && playerId.equals(physicalCard.getCardController());
-    }
-
-    public static Filter uncontrolledSite = (game, physicalCard) -> physicalCard.getBlueprint().getCardType() == CardType.SITE && physicalCard.getCardController() == null;
 
 
     private static Filter culture(final Culture culture) {

@@ -42,7 +42,6 @@ public abstract class GameState {
     private boolean _consecutiveAction;
 
     private final Map<String, Integer> _playerPosition = new HashMap<>();
-    private final Map<String, Integer> _playerThreats = new HashMap<>();
 
     private final Map<PhysicalCard, Map<Token, Integer>> _cardTokens = new HashMap<>();
 
@@ -145,57 +144,33 @@ public abstract class GameState {
     protected void sendStateToPlayer(String playerId, GameStateListener listener, GameStats gameStats) {
         if (_playerOrder != null) {
             listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
-            if (_currentPlayerId != null)
-                listener.setCurrentPlayerId(_currentPlayerId);
-            if (_currentPhase != null)
-                listener.setCurrentPhase(getPhaseString());
+            if (_currentPlayerId != null) listener.setCurrentPlayerId(_currentPlayerId);
+            if (_currentPhase != null) listener.setCurrentPhase(getPhaseString());
             listener.setTwilight(_twilightPool);
             for (Map.Entry<String, Integer> stringIntegerEntry : _playerPosition.entrySet())
                 listener.setPlayerPosition(stringIntegerEntry.getKey(), stringIntegerEntry.getValue());
 
-            Set<PhysicalCard> cardsLeftToSent = new LinkedHashSet<>(_inPlay);
+            Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
             Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
-            int cardsToSendAtLoopStart;
             do {
-                cardsToSendAtLoopStart = cardsLeftToSent.size();
-                Iterator<PhysicalCard> cardIterator = cardsLeftToSent.iterator();
+                Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
                 while (cardIterator.hasNext()) {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
                     if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        listener.cardCreated(physicalCard, GameEvent.Type.PUT_CARD_INTO_PLAY);
+                        listener.putCardIntoPlay(physicalCard);
                         sentCardsFromPlay.add(physicalCard);
-
                         cardIterator.remove();
                     }
                 }
-            } while (cardsToSendAtLoopStart != cardsLeftToSent.size() && cardsLeftToSent.size() > 0);
+            } while (cardsLeftToSend.size() > 0);
 
-            // Finally the stacked ones
-            for (List<PhysicalCard> physicalCards : _stacked.values())
-                for (PhysicalCard physicalCard : physicalCards)
-                    listener.cardCreated(physicalCard, GameEvent.Type.PUT_CARD_INTO_PLAY);
-
-            List<PhysicalCard> hand = _hands.get(playerId);
-            if (hand != null) {
-                for (PhysicalCard physicalCard : hand)
-                    listener.cardCreated(physicalCard, GameEvent.Type.PUT_CARD_INTO_PLAY);
-            }
-
-            List<PhysicalCard> discard = _discards.get(playerId);
-            if (discard != null) {
-                discard.forEach(listener::putCardIntoPlay);
-            }
-
-            for (Map.Entry<PhysicalCard, Map<Token, Integer>> physicalCardMapEntry : _cardTokens.entrySet()) {
-                PhysicalCard card = physicalCardMapEntry.getKey();
-                for (Map.Entry<Token, Integer> tokenIntegerEntry : physicalCardMapEntry.getValue().entrySet()) {
-                    Integer count = tokenIntegerEntry.getValue();
-                    if (count != null && count > 0)
-                        listener.addTokens(card, tokenIntegerEntry.getKey(), count);
-                }
-            }
+            List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
+            _stacked.values().forEach(cardsPutIntoPlay::addAll);
+            cardsPutIntoPlay.addAll(_hands.get(playerId));
+            cardsPutIntoPlay.addAll(_discards.get(playerId));
+            cardsPutIntoPlay.forEach(listener::putCardIntoPlay);
 
             listener.sendGameStats(gameStats);
         }
@@ -235,22 +210,6 @@ public abstract class GameState {
             listener.cardMoved(card);
     }
 
-    public void takeControlOfCard(String playerId, DefaultGame game, PhysicalCard card, Zone zone) {
-        card.setCardController(playerId);
-        card.setZone(zone);
-        if (card.getBlueprint().getCardType() == CardType.SITE)
-            card.startAffectingGameControlledSite(game);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardMoved(card);
-    }
-
-    public void loseControlOfCard(PhysicalCard card, Zone zone) {
-        card.setCardController(null);
-        card.setZone(zone);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardMoved(card);
-    }
-
     public void attachCard(DefaultGame game, PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
         if(card == attachTo)
             throw new InvalidParameterException("Cannot attach card to itself!");
@@ -280,10 +239,6 @@ public abstract class GameState {
     public void activatedCard(String playerPerforming, PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.cardActivated(playerPerforming, card);
-    }
-
-    public PhysicalCard getRingBearer(String playerId) {
-        return null;
     }
 
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
@@ -321,18 +276,11 @@ public abstract class GameState {
         for (PhysicalCard card : cards) {
             Zone zone = card.getZone();
 
-            if (zone.isInPlay())
-                if (card.getBlueprint().getCardType() != CardType.SITE ||
-                        (getCurrentPhase() != Phase.PLAY_STARTING_FELLOWSHIP && getCurrentSite() == card))
-                    card.stopAffectingGame();
+            if (zone.isInPlay()) card.stopAffectingGame();
+            if (zone == Zone.STACKED || zone == Zone.DISCARD)
+                if (isCardAffectingGame(card)) card.stopAffectingGameInZone(zone);
 
-            if (zone == Zone.STACKED)
-                stopAffectingStacked(card);
-            else if (zone == Zone.DISCARD)
-                stopAffectingInDiscard(card);
-
-            List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), zone);
-            zoneCards.remove(card);
+            getZoneCards(card.getOwner(), zone).remove(card);
 
             if (zone.isInPlay())
                 _inPlay.remove(card);
@@ -398,11 +346,8 @@ public abstract class GameState {
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
             card.startAffectingGame(game);
-
-        if (zone == Zone.STACKED)
-            startAffectingStacked(game, card);
-        else if (zone == Zone.DISCARD)
-            startAffectingInDiscard(game, card);
+        if ((zone == Zone.STACKED || zone == Zone.DISCARD) && isCardAffectingGame(card))
+            card.startAffectingGameInZone(game, zone);
     }
 
     void assignNewCardId(PhysicalCard card) {
@@ -445,41 +390,17 @@ public abstract class GameState {
         return _allCards.get(cardId);
     }
 
-    public Iterable<? extends PhysicalCard> getAllCards() {
-        return Collections.unmodifiableCollection(_allCards.values());
-    }
-
-    public List<? extends PhysicalCard> getHand(String playerId) {
-        return Collections.unmodifiableList(_hands.get(playerId));
-    }
-
-    public List<? extends PhysicalCard> getVoidFromHand(String playerId) {
-        return Collections.unmodifiableList(_voidsFromHand.get(playerId));
-    }
-
-    public List<? extends PhysicalCard> getRemoved(String playerId) {
-        return Collections.unmodifiableList(_removed.get(playerId));
-    }
-
-    public List<? extends PhysicalCard> getDrawDeck(String playerId) {
-        return Collections.unmodifiableList(_drawDecks.get(playerId));
-    }
-
-    public List<PhysicalCard> getDiscard(String playerId) {
-        return Collections.unmodifiableList(_discards.get(playerId));
-    }
-
-    public List<? extends PhysicalCard> getDeadPile(String playerId) {
-        return Collections.unmodifiableList(_deadPiles.get(playerId));
-    }
-
-    public List<? extends PhysicalCard> getInPlay() {
+    public Iterable<PhysicalCard> getAllCardsInGame() { return Collections.unmodifiableCollection(_allCards.values()); }
+    public List<PhysicalCard> getAllCardsInPlay() {
         return Collections.unmodifiableList(_inPlay);
     }
-
-    public List<? extends PhysicalCard> getStacked(String playerId) {
-        return Collections.unmodifiableList(_stacked.get(playerId));
-    }
+    public List<PhysicalCard> getHand(String playerId) { return Collections.unmodifiableList(_hands.get(playerId)); }
+    public List<PhysicalCard> getVoidFromHand(String playerId) { return Collections.unmodifiableList(_voidsFromHand.get(playerId)); }
+    public List<PhysicalCard> getRemoved(String playerId) { return Collections.unmodifiableList(_removed.get(playerId)); }
+    public List<PhysicalCard> getDrawDeck(String playerId) { return Collections.unmodifiableList(_drawDecks.get(playerId)); }
+    public List<PhysicalCard> getDiscard(String playerId) { return Collections.unmodifiableList(_discards.get(playerId)); }
+    public List<PhysicalCard> getDeadPile(String playerId) { return Collections.unmodifiableList(_deadPiles.get(playerId)); }
+    public List<PhysicalCard> getStacked(String playerId) { return Collections.unmodifiableList(_stacked.get(playerId)); }
 
     public String getCurrentPlayerId() {
         return _playerOrder.getCurrentPlayer();
@@ -487,37 +408,6 @@ public abstract class GameState {
 
     public void setCurrentPlayerId(String playerId) {
         _playerOrder.setCurrentPlayer(playerId);
-    }
-
-    public int getCurrentSiteNumber() {
-        return _playerPosition.getOrDefault(_currentPlayerId, 0);
-    }
-
-    public void removeThreats(String playerId, int count) {
-        final int oldThreats = _playerThreats.get(playerId);
-        count = Math.min(count, oldThreats);
-        _playerThreats.put(playerId, oldThreats - count);
-    }
-
-    public int getPlayerPosition(String playerId) {
-        return _playerPosition.getOrDefault(playerId, 0);
-    }
-
-    public Map<Token, Integer> getTokens(PhysicalCard card) {
-        Map<Token, Integer> map = _cardTokens.get(card);
-        if (map == null)
-            return Collections.emptyMap();
-        return Collections.unmodifiableMap(map);
-    }
-
-    public int getTokenCount(PhysicalCard physicalCard, Token token) {
-        Map<Token, Integer> tokens = _cardTokens.get(physicalCard);
-        if (tokens == null)
-            return 0;
-        Integer count = tokens.get(token);
-        if (count == null)
-            return 0;
-        return count;
     }
 
     public List<PhysicalCard> getAttachedCards(PhysicalCard card) {
@@ -540,52 +430,9 @@ public abstract class GameState {
         return result;
     }
 
-    public int getWounds(PhysicalCard physicalCard) {
-        return getTokenCount(physicalCard, Token.WOUND);
-    }
-
-    public int getBurdens() {
-        return 0;
-    }
-
-    public int getThreats() {
-        return _playerThreats.get(getCurrentPlayerId());
-    }
-
-    public void addWound(PhysicalCard card) {
-        addTokens(card, Token.WOUND, 1);
-    }
-
-    public void removeWound(PhysicalCard card) {
-        removeTokens(card, Token.WOUND, 1);
-    }
-
-    public void addTokens(PhysicalCard card, Token token, int count) {
-        Map<Token, Integer> tokens = _cardTokens.computeIfAbsent(card, k -> new HashMap<>());
-        tokens.merge(token, count, Integer::sum);
-
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.addTokens(card, token, count);
-    }
-
-    public void removeTokens(PhysicalCard card, Token token, int count) {
-        Map<Token, Integer> tokens = _cardTokens.computeIfAbsent(card, k -> new HashMap<>());
-        Integer currentCount = tokens.get(token);
-        if (currentCount != null) {
-            if (currentCount < count)
-                count = currentCount;
-
-            tokens.put(token, currentCount - count);
-
-            for (GameStateListener listener : getAllGameStateListeners())
-                listener.removeTokens(card, token, count);
-        }
-    }
-
     public void setTwilight(int twilight) {
         _twilightPool = twilight;
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setTwilight(_twilightPool);
+        getAllGameStateListeners().forEach(listener -> listener.setTwilight(_twilightPool));
     }
 
     public int getTwilightPool() {
@@ -594,87 +441,47 @@ public abstract class GameState {
 
     public void startPlayerTurn(String playerId) {
         _playerOrder.setCurrentPlayer(playerId);
-
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.setCurrentPlayerId(playerId);
+        getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(playerId));
     }
 
     public boolean isCardInPlayActive(PhysicalCard card) {
-        // Either it's not attached or attached to active card
-        // AND is a site or fp/ring of current player or shadow of any other player
-        if (card.getAttachedTo() != null)
-            return isCardInPlayActive(card.getAttachedTo());
-
-        return true;
+        if (card.getAttachedTo() != null) return isCardInPlayActive(card.getAttachedTo());
+        else return true;
     }
 
     public void startAffectingCardsForCurrentPlayer(DefaultGame game) {
         // Active non-sites are affecting
-        for (PhysicalCard physicalCard : _inPlay) {
-            if (isCardInPlayActive(physicalCard) && physicalCard.getBlueprint().getCardType() != CardType.SITE)
-                physicalCard.startAffectingGame(game);
-            else if (physicalCard.getBlueprint().getCardType() == CardType.SITE &&
-                    physicalCard.getCardController() != null) {
-                startAffectingControlledSite(game, physicalCard);
-            }
-        }
+        for (PhysicalCard physicalCard : _inPlay)
+            if (isCardInPlayActive(physicalCard)) physicalCard.startAffectingGame(game);
 
         // Stacked cards on active cards are stack-affecting
         for (List<PhysicalCard> stackedCards : _stacked.values())
             for (PhysicalCard stackedCard : stackedCards)
-                if (isCardInPlayActive(stackedCard.getStackedOn()))
-                    startAffectingStacked(game, stackedCard);
+                if ((isCardInPlayActive(stackedCard.getStackedOn()) && isCardAffectingGame(stackedCard)))
+                    stackedCard.startAffectingGameInZone(game, Zone.STACKED);
 
         for (List<PhysicalCard> discardedCards : _discards.values())
             for (PhysicalCard discardedCard : discardedCards)
-                startAffectingInDiscard(game, discardedCard);
-    }
-
-    void startAffectingControlledSite(DefaultGame game, PhysicalCard physicalCard) {
-        physicalCard.startAffectingGameControlledSite(game);
+                if (isCardAffectingGame(discardedCard))
+                    discardedCard.startAffectingGameInZone(game, Zone.DISCARD);
     }
 
     public void stopAffectingCardsForCurrentPlayer() {
-        _inPlay.forEach(PhysicalCard::stopAffectingGame);
+        for (PhysicalCard physicalCard : _inPlay)
+            physicalCard.stopAffectingGame();
 
         for (List<PhysicalCard> stackedCards : _stacked.values())
             for (PhysicalCard stackedCard : stackedCards)
                 if (isCardInPlayActive(stackedCard.getStackedOn()))
-                    stopAffectingStacked(stackedCard);
+                    if (isCardAffectingGame(stackedCard)) stackedCard.stopAffectingGameInZone(Zone.STACKED);
 
         for (List<PhysicalCard> discardedCards : _discards.values())
             for (PhysicalCard discardedCard : discardedCards)
-                stopAffectingInDiscard(discardedCard);
-    }
-
-    void startAffectingStacked(DefaultGame game, PhysicalCard card) {
-        if (isCardAffectingGame(card))
-            card.startAffectingGameStacked(game);
-    }
-
-    void stopAffectingStacked(PhysicalCard card) {
-        if (isCardAffectingGame(card))
-            card.stopAffectingGameStacked();
-    }
-
-    void startAffectingInDiscard(DefaultGame game, PhysicalCard card) {
-        if (isCardAffectingGame(card))
-            card.startAffectingGameInDiscard(game);
-    }
-
-    void stopAffectingInDiscard(PhysicalCard card) {
-        if (isCardAffectingGame(card))
-            card.stopAffectingGameInDiscard();
+                if (isCardAffectingGame(discardedCard)) discardedCard.stopAffectingGameInZone(Zone.DISCARD);
     }
 
     private boolean isCardAffectingGame(PhysicalCard card) {
-        final Side side = card.getBlueprint().getSide();
-        if (side == Side.SHADOW)
-            return !getCurrentPlayerId().equals(card.getOwner());
-        else if (side == Side.FREE_PEOPLE)
-            return getCurrentPlayerId().equals(card.getOwner());
-        else
-            return false;
+        return getCurrentPlayerId().equals(card.getOwner());
     }
 
     public void setCurrentPhase(Phase phase) {
@@ -694,10 +501,6 @@ public abstract class GameState {
                 return physicalCard;
         }
         return null;
-    }
-
-    public PhysicalCard getCurrentSite() {
-        return getSite(getCurrentSiteNumber());
     }
 
     public void addTwilight(int twilight) {
@@ -743,8 +546,6 @@ public abstract class GameState {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendWarning(player, warning);
     }
-
-    public void playerPassEffect() {}
 
     public void addToPlayerScore(String player, int points) {
         _players.get(player).scorePoints(points);

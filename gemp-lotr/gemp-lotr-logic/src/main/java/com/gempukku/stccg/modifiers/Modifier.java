@@ -4,9 +4,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,13 +65,9 @@ public interface Modifier {
 
     boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
 
-    boolean isAllyParticipateInArcheryFire(DefaultGame game, PhysicalCard card);
-
     boolean isAllyParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card);
 
     boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card);
-
-    boolean isAllyPreventedFromParticipatingInArcheryFire(DefaultGame game, PhysicalCard card);
 
     boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card);
 
@@ -142,9 +137,6 @@ public interface Modifier {
     int getInitiativeHandSizeModifier(DefaultGame game);
 
     boolean lostAllKeywords(PhysicalCard card);
-
-    Evaluator getFpSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter);
-    Evaluator getShadowSkirmishStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter);
 
     int getFPCulturesSpotCountModifier(DefaultGame game, String playerId);
 

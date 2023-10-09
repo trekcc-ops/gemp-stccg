@@ -11,7 +11,7 @@ import java.util.List;
 public class ST1EMissionSeedPhaseProcess implements GameProcess<ST1EGame> {
     private PlayerOrder _playOrder;
     private int _consecutivePasses;
-    private GameProcess<ST1EGame> _followingGameProcess;
+    private final GameProcess<ST1EGame> _followingGameProcess;
 
     public ST1EMissionSeedPhaseProcess(int consecutivePasses, GameProcess<ST1EGame> followingGameProcess) {
         _followingGameProcess = followingGameProcess;
@@ -28,7 +28,7 @@ public class ST1EMissionSeedPhaseProcess implements GameProcess<ST1EGame> {
             playerPassed();
         } else {
             game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
-                    new CardActionSelectionDecision(game, 1, "Play " +
+                    new CardActionSelectionDecision(1, "Play " +
                             game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

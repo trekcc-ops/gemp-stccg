@@ -114,11 +114,7 @@ public interface LotroCardBlueprint {
 
     OptionalTriggerAction getKilledOptionalTrigger(String playerId, DefaultGame game, PhysicalCard self);
 
-    int getSiteNumber();
-
     Set<PossessionClass> getPossessionClasses();
-
-    Direction getSiteDirection();
 
     String getDisplayableInformation(PhysicalCard self);
 

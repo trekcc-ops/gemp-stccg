@@ -1,10 +1,9 @@
 package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.PhysicalCardImpl;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Token;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecisionType;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
@@ -14,47 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class NewCardsAtTest extends AbstractAtTest {
-    @Test
-    public void exertAsCost() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
-
-        PhysicalCardImpl gimli = new PhysicalCardImpl(100, "1_13", P1, _cardLibrary.getLotroCardBlueprint("1_13"));
-        PhysicalCardImpl inquisitor = new PhysicalCardImpl(100, "1_268", P2, _cardLibrary.getLotroCardBlueprint("1_268"));
-
-        _game.getGameState().addCardToZone(_game, gimli, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, inquisitor, Zone.SHADOW_CHARACTERS);
-
-        _game.getGameState().addTokens(gimli, Token.WOUND, 2);
-
-        skipMulligans();
-
-        // Pass in fellowship
-        playerDecided(P1, "");
-
-        // Play inquisitor
-        playerDecided(P2, "0");
-        playerDecided(P2, "");
-
-        // Pass in maneuver
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        // Pass in archery
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        // Pass in assignment
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        // Assign minion to Frodo
-        playerDecided(P1, gimli.getCardId() + " " + inquisitor.getCardId());
-
-        // Start skirmish
-        playerDecided(P1, String.valueOf(gimli.getCardId()));
-
-        assertEquals(0, _userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("actionId").length);
-    }
 
     @Test
     public void reduceArcheryTotal() throws DecisionResultInvalidException, CardNotFoundException {
@@ -108,7 +66,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         // Pass in shadow
         playerDecided(P2, "0");
 
-        assertEquals(1, _game.getGameState().getWounds(nazgul));
+        assertEquals(1, 0); // Should be some valid logic here instead
     }
 
     @Test
@@ -155,7 +113,6 @@ public class NewCardsAtTest extends AbstractAtTest {
 
         // We're in Fierce skirmishes
         assertEquals(Phase.ASSIGNMENT, _game.getGameState().getCurrentPhase());
-        assertEquals(0, _game.getGameState().getWounds(merry));
         assertEquals(Zone.FREE_CHARACTERS, merry.getZone());
     }
 
@@ -169,7 +126,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         _game.getGameState().addCardToZone(_game, getOutOfTheShire, Zone.HAND);
         _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
 
-        final PhysicalCard frodo = _game.getGameState().getRingBearer(P1);
+        final PhysicalCard frodo = null;
 
         skipMulligans();
 
@@ -278,7 +235,7 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P1, "0");
 
         assertEquals(Zone.DISCARD, celebornInDeck.getZone());
-        assertEquals(1, _game.getGameState().getWounds(nazgul));
+        assertEquals(1, 0); //Should be something real
     }
 
     @Test
@@ -311,7 +268,6 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P1, "1");
 
         assertEquals(Zone.DRAW_DECK, celebornInDeck.getZone());
-        assertEquals(0, _game.getGameState().getWounds(nazgul));
     }
 
     @Test
@@ -588,21 +544,4 @@ public class NewCardsAtTest extends AbstractAtTest {
         assertEquals("2", _userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("max")[0]);
     }
 
-    @Test
-    public void removeBurdens() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
-
-        final PhysicalCardImpl samsPipe = createCard(P1, "40_269");
-        final PhysicalCardImpl pipeweed = createCard(P1, "40_255");
-
-        _game.getGameState().addCardToZone(_game, pipeweed, Zone.SUPPORT);
-        _game.getGameState().attachCard(_game, samsPipe, _game.getGameState().getRingBearer(P1));
-
-        skipMulligans();
-
-        playerDecided(P1, getCardActionId(P1, "Use Sam's Pipe"));
-        playerDecided(P1, "1");
-
-        assertEquals(0, _game.getGameState().getBurdens());
-    }
 }

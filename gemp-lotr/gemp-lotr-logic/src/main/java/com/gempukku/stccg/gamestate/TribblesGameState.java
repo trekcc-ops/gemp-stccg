@@ -125,11 +125,6 @@ public class TribblesGameState extends GameState {
         return _chainBroken;
     }
 
-    @Override
-    public void playerPassEffect() {
-        this.breakChain();
-    }
-
     public void playerWentOut(String player) {
         // TODO
     }

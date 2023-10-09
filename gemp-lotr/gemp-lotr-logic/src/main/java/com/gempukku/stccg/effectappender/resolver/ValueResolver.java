@@ -1,8 +1,9 @@
 package com.gempukku.stccg.effectappender.resolver;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.common.filterable.Race;
 import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
@@ -10,7 +11,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
-import com.gempukku.stccg.rules.lotronly.LotroGameUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -92,18 +92,10 @@ public class ValueResolver {
                     }
                 };
 
-            } else if (type.equalsIgnoreCase("currentSiteNumber")) {
-                return actionContext -> (game, cardAffected) -> game.getGameState().getCurrentSiteNumber();
-            } else if (type.equalsIgnoreCase("nextSiteNumber")) {
-                return actionContext -> (game, cardAffected) -> game.getGameState().getCurrentSiteNumber() + 1;
-            } else if (type.equalsIgnoreCase("siteNumberAfterNext")) {
-                return actionContext -> (game, cardAffected) -> game.getGameState().getCurrentSiteNumber() + 2;
             } else if (type.equalsIgnoreCase("siteNumberInMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
                 return actionContext -> (game, cardAffected) -> actionContext.getCardFromMemory(memory).getSiteNumber();
-            } else if (type.equalsIgnoreCase("regionNumber")) {
-                return (actionContext) -> (game, cardAffected) -> LotroGameUtils.getRegion(actionContext.getGame());
             } else if (type.equalsIgnoreCase("forEachInMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory", "limit");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
@@ -122,32 +114,6 @@ public class ValueResolver {
                     final int count = Filters.filter(actionContext.getCardsFromMemory(memory), actionContext.getGame(),
                             filterableSource.getFilterable(actionContext)).size();
                     return new ConstantEvaluator(Math.min(limit, count));
-                };
-            } else if (type.equalsIgnoreCase("forEachThreat")) {
-                FieldUtils.validateAllowedFields(object, "multiplier");
-                final int multiplier = FieldUtils.getInteger(object.get("multiplier"), "multiplier", 1);
-                return actionContext -> new MultiplyEvaluator(multiplier, new ForEachThreatEvaluator());
-            } else if (type.equalsIgnoreCase("forEachWound")) {
-                FieldUtils.validateAllowedFields(object, "filter", "multiplier");
-                final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
-                final int multiplier = FieldUtils.getInteger(object.get("multiplier"), "multiplier", 1);
-                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return (actionContext) -> {
-                    if (filter.equals("any")) {
-                        return new MultiplyEvaluator(multiplier,
-                            (game, cardAffected) -> actionContext.getGame().getGameState().getWounds(cardAffected));
-                    } else {
-                        return new MultiplyEvaluator(multiplier,
-                            (game, cardAffected) -> {
-                                final Filterable filterable = filterableSource.getFilterable(actionContext);
-                                int wounds = 0;
-                                for (PhysicalCard physicalCard : Filters.filterActive(game, filterable)) {
-                                    wounds += actionContext.getGame().getGameState().getWounds(physicalCard);
-                                }
-
-                                return wounds;
-                            });
-                    }
                 };
             } else if (type.equalsIgnoreCase("forEachKeyword")) {
                 FieldUtils.validateAllowedFields(object, "filter", "keyword");
@@ -222,46 +188,6 @@ public class ValueResolver {
                         return Math.min(limit, count);
                     }
                 });
-            } else if (type.equalsIgnoreCase("forEachCulture")) {
-                FieldUtils.validateAllowedFields(object, "over", "filter");
-                final int over = FieldUtils.getInteger(object.get("over"), "over", 0);
-                final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
-                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> {
-                    int spottable = LotroGameUtils.getSpottableCulturesCount(actionContext.getGame(), filterableSource.getFilterable(actionContext));
-                    int result = Math.max(0, spottable - over);
-                    return new ConstantEvaluator(result);
-                };
-            } else if (type.equalsIgnoreCase("forEachRace")) {
-                FieldUtils.validateAllowedFields(object, "over", "filter");
-                final int over = FieldUtils.getInteger(object.get("over"), "over", 0);
-                final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
-                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> {
-                    int spottable = LotroGameUtils.getSpottableRacesCount(actionContext.getGame(), filterableSource.getFilterable(actionContext));
-                    int result = Math.max(0, spottable - over);
-                    return new ConstantEvaluator(result);
-                };
-            } else if (type.equalsIgnoreCase("forEachFPCulture")) {
-                FieldUtils.validateAllowedFields(object, "limit", "over");
-                final int limit = FieldUtils.getInteger(object.get("limit"), "limit", Integer.MAX_VALUE);
-                final int over = FieldUtils.getInteger(object.get("over"), "over", 0);
-                return actionContext -> {
-                    int spottable = LotroGameUtils.getSpottableFPCulturesCount(actionContext.getGame(), actionContext.getPerformingPlayer());
-                    int result = Math.max(0, spottable - over);
-                    result = Math.min(limit, result);
-                    return new ConstantEvaluator(result);
-                };
-            } else if (type.equalsIgnoreCase("forEachShadowCulture")) {
-                FieldUtils.validateAllowedFields(object, "limit", "over");
-                final int limit = FieldUtils.getInteger(object.get("limit"), "limit", Integer.MAX_VALUE);
-                final int over = FieldUtils.getInteger(object.get("over"), "over", 0);
-                return actionContext -> {
-                    int spottable = LotroGameUtils.getSpottableShadowCulturesCount(actionContext.getGame(), actionContext.getPerformingPlayer());
-                    int result = Math.max(0, spottable - over);
-                    result = Math.min(limit, result);
-                    return new ConstantEvaluator(result);
-                };
             } else if (type.equalsIgnoreCase("forEachInHand")) {
                 FieldUtils.validateAllowedFields(object, "filter", "hand");
                 final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
@@ -339,31 +265,6 @@ public class ValueResolver {
                                     }
 
                                     return Math.max(0, strength - over);
-                                });
-                    }
-                };
-            } else if (type.equalsIgnoreCase("forEachVitality")) {
-                FieldUtils.validateAllowedFields(object, "multiplier", "over", "filter");
-                final int multiplier = FieldUtils.getInteger(object.get("multiplier"), "multiplier", 1);
-                final int over = FieldUtils.getInteger(object.get("over"), "over", 0);
-                final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
-
-                final FilterableSource vitalitySource = environment.getFilterFactory().generateFilter(filter, environment);
-
-                return (actionContext) -> {
-                    if (filter.equals("any")) {
-                        return new MultiplyEvaluator(multiplier,
-                                (game, cardAffected) -> Math.max(0, game.getModifiersQuerying().getVitality(game, cardAffected) - over));
-                    } else {
-                        return new MultiplyEvaluator(multiplier,
-                                (game, cardAffected) -> {
-                                    final Filterable filterable = vitalitySource.getFilterable(actionContext);
-                                    int vitality = 0;
-                                    for (PhysicalCard physicalCard : Filters.filterActive(game, filterable)) {
-                                        vitality += game.getModifiersQuerying().getVitality(game, physicalCard);
-                                    }
-
-                                    return Math.max(0, vitality - over);
                                 });
                     }
                 };
@@ -475,24 +376,6 @@ public class ValueResolver {
                                 first.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null),
                                 second.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null)
                         );
-            } else if (type.equalsIgnoreCase("forEachToken")) {
-                FieldUtils.validateAllowedFields(object, "filter", "culture");
-
-                final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
-                final Culture culture = FieldUtils.getEnum(Culture.class, object.get("culture"), "culture");
-                final Token tokenForCulture = Token.findTokenForCulture(culture);
-
-                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-
-                return actionContext -> (game, cardAffected) -> {
-                    int result = 0;
-                    final Filterable filterable = filterableSource.getFilterable(actionContext);
-                    for (PhysicalCard physicalCard : Filters.filterActive(game, filterable)) {
-                        result += game.getGameState().getTokenCount(physicalCard, tokenForCulture);
-                    }
-
-                    return result;
-                };
             }
             throw new InvalidCardDefinitionException("Unrecognized type of an evaluator " + type);
         }

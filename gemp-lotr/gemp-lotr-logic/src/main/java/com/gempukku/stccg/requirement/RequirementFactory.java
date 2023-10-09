@@ -27,8 +27,6 @@ public class RequirementFactory {
         requirementProducers.put("islessthanorequal", new IsLessThanOrEqual());
         requirementProducers.put("isnotequal", new IsNotEqual());
         requirementProducers.put("isowner", new IsOwnerRequirementProducer());
-        requirementProducers.put("isside", new IsSideRequirementProducer());
-        requirementProducers.put("location", new Location());
         requirementProducers.put("memoryis", new MemoryIs());
         requirementProducers.put("memorylike", new MemoryLike());
         requirementProducers.put("memorymatches", new MemoryMatches());

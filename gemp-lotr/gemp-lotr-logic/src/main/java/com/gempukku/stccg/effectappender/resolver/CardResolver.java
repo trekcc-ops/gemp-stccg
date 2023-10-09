@@ -1,6 +1,5 @@
 package com.gempukku.stccg.effectappender.resolver;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.effectappender.DelayedAppender;
@@ -40,7 +39,7 @@ public class CardResolver {
                                                      String memory, String choicePlayer, String choiceText, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         Function<DefaultActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
             final Filterable stackedOnFilter = stackedOn.getFilterable(actionContext);
-            return Filters.filter(actionContext.getGame().getGameState().getAllCards(), actionContext.getGame(), Filters.stackedOn(stackedOnFilter));
+            return Filters.filter(actionContext.getGame().getGameState().getAllCardsInGame(), actionContext.getGame(), Filters.stackedOn(stackedOnFilter));
         };
 
         if (type.startsWith("memory(") && type.endsWith(")")) {

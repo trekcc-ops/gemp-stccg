@@ -9,7 +9,6 @@ import java.util.*;
 public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
     private final PlayerOrderFeedback _playerOrderFeedback;
     private final Set<String> _players;
-    private String _firstPlayer;
 
     public ST1EPlayerOrderProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
         _players = players;
@@ -37,20 +36,20 @@ public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
             }
         }
 
-        _firstPlayer = diceResults.keySet().iterator().next();
+        String firstPlayer = diceResults.keySet().iterator().next();
 
         List<String> playerOrder = new ArrayList<>();
-        playerOrder.add(0, _firstPlayer);
+        playerOrder.add(0, firstPlayer);
         int playerOrderIndex = 1;
         for (String player : _players) {
-            if (!Objects.equals(player, _firstPlayer)) {
+            if (!Objects.equals(player, firstPlayer)) {
                 playerOrder.add(playerOrderIndex, player);
                 playerOrderIndex++;
             }
         }
 
-        game.getGameState().sendMessage(_firstPlayer + " will go first");
-        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), _firstPlayer);
+        game.getGameState().sendMessage(firstPlayer + " will go first");
+        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
     }
 
     @Override

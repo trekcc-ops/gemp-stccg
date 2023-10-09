@@ -17,7 +17,7 @@ public class ActivateAcquireTribblePowerEffect extends ActivateTribblePowerEffec
 
         if (isPlayableInFull(game)) {
             SubAction subAction = new SubAction(_action);
-            subAction.appendEffect(new AllPlayersDiscardFromHandEffect(_action, _source, false, true));
+            subAction.appendEffect(new AllPlayersDiscardFromHandEffect(_action, false, true));
             subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(
                     _action, _activatingPlayer,false,1));
             return addActionAndReturnResult(game, subAction);

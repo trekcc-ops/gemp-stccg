@@ -1,7 +1,6 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -13,15 +12,13 @@ public class PlayMissionEffect extends AbstractEffect<ST1EGame> {
     private final Zone _playedFrom;
     private final PhysicalCard _cardPlayed;
     private final int _spacelineIndex;
-    private final Quadrant _quadrant;
     private final boolean _sharedMission;
 
-    public PlayMissionEffect(Zone playedFrom, PhysicalCard cardPlayed, Quadrant quadrant,
+    public PlayMissionEffect(Zone playedFrom, PhysicalCard cardPlayed,
                              int spacelineIndex, boolean sharedMission) {
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
         _spacelineIndex = spacelineIndex;
-        _quadrant = quadrant;
         _sharedMission = sharedMission;
     }
 

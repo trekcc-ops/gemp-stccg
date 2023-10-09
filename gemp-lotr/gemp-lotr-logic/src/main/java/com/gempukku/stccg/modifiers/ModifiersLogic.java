@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
@@ -246,26 +245,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
         return result;
     }
 
-    @Override
-    public Evaluator getFPStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter) {
-        for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.SKIRMISH_STRENGTH_EVALUATOR_MODIFIER, fpCharacter)) {
-            Evaluator evaluator = modifier.getFpSkirmishStrengthOverrideEvaluator(game, fpCharacter);
-            if (evaluator != null)
-                return evaluator;
-        }
-        return null;
-    }
-
-    @Override
-    public Evaluator getShadowStrengthOverrideEvaluator(DefaultGame game, PhysicalCard shadowCharacter) {
-        for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.SKIRMISH_STRENGTH_EVALUATOR_MODIFIER, shadowCharacter)) {
-            Evaluator evaluator = modifier.getShadowSkirmishStrengthOverrideEvaluator(game, shadowCharacter);
-            if (evaluator != null)
-                return evaluator;
-        }
-        return null;
-    }
-
     private boolean affectsCardWithSkipSet(DefaultGame game, PhysicalCard physicalCard, Modifier modifier) {
         if (!_skipSet.contains(modifier) && physicalCard != null) {
             _skipSet.add(modifier);
@@ -416,40 +395,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public int getVitality(DefaultGame game, PhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            int result = physicalCard.getBlueprint().getVitality() - game.getGameState().getWounds(physicalCard);
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.VITALITY_MODIFIER, physicalCard)) {
-                result += modifier.getVitalityModifier(game, physicalCard);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
     public int getResistance(DefaultGame game, PhysicalCard physicalCard) {
         LoggingThreadLocal.logMethodStart();
         try {
             int result = physicalCard.getBlueprint().getResistance();
             for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.RESISTANCE_MODIFIER, physicalCard)) {
                 result += modifier.getResistanceModifier(game, physicalCard);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public int getMinionSiteNumber(DefaultGame game, PhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            int result = physicalCard.getBlueprint().getSiteNumber();
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.SITE_NUMBER_MODIFIER, physicalCard)) {
-                result += modifier.getMinionSiteNumberModifier(game, physicalCard);
             }
             return Math.max(0, result);
         } finally {
@@ -554,20 +505,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public boolean canTakeArcheryWound(DefaultGame game, PhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.WOUND_MODIFIER, card)) {
-                if (!modifier.canTakeArcheryWound(game, card))
-                    return false;
-            }
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
     public boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard) {
         LoggingThreadLocal.logMethodStart();
         try {
@@ -575,62 +512,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
                 if (!modifier.canBeExerted(game, exertionSource, exertedCard))
                     return false;
             }
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
-                if (modifier.isUnhastyCompanionAllowedToParticipateInSkirmishes(game, card))
-                    return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean isAllyAllowedToParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
-                if (modifier.isAllyParticipateInSkirmishes(game, sidePlayer, card))
-                    return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PRESENCE_MODIFIER, card)) {
-                if (modifier.isAllyPreventedFromParticipatingInSkirmishes(game, sidePlayer, card))
-                    return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean addsToArcheryTotal(DefaultGame game, PhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.ARCHERY_MODIFIER, card))
-                if (!modifier.addsToArcheryTotal(game, card))
-                    return false;
-
             return true;
         } finally {
             LoggingThreadLocal.logMethodEnd();

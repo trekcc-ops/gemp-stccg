@@ -14,8 +14,6 @@ public class RuleSet {
     }
 
     public void applyRuleSet() {
-        new EnduringRule(_modifiersLogic).applyRule();
-
         new DiscardedCardRule(_actionsEnvironment).applyRule();
 
         new StatModifiersRule(_modifiersLogic).applyRule();
@@ -32,7 +30,5 @@ public class RuleSet {
         new RequiredTriggersRule(_actionsEnvironment).applyRule();
         new OptionalTriggersRule(_actionsEnvironment).applyRule();
         new OptionalTriggersFromHandRule(_actionsEnvironment).applyRule();
-
-        new ConcealedRule(_actionsEnvironment).applyRule();
     }
 }

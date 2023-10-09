@@ -14,7 +14,6 @@ import com.gempukku.stccg.filters.FilterFactory;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.rules.GameUtils;
-import org.junit.Assert;
 
 import java.util.*;
 
@@ -220,16 +219,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void FreepsPlayCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P1, getCardActionId(P1, "Play " + GameUtils.getFullName(card))); }
     public void ShadowPlayCard(String name) throws DecisionResultInvalidException { ShadowPlayCard(GetShadowCard(name)); }
     public void ShadowPlayCard(PhysicalCardImpl card) throws DecisionResultInvalidException { playerDecided(P2, getCardActionId(P2, "Play " + GameUtils.getFullName(card))); }
-
-    public int FreepsGetWoundsOn(String cardName) { return GetWoundsOn(GetFreepsCard(cardName)); }
-    public int ShadowGetWoundsOn(String cardName) { return GetWoundsOn(GetShadowCard(cardName)); }
-    public int GetWoundsOn(PhysicalCardImpl card) { return _game.getGameState().getWounds(card); }
-
-    public int FreepsGetCultureTokensOn(String cardName) { return GetCultureTokensOn(GetFreepsCard(cardName)); }
-    public int ShadowGetCultureTokensOn(String cardName) { return GetCultureTokensOn(GetShadowCard(cardName)); }
-    public int GetCultureTokensOn(PhysicalCardImpl card) { return _game.getGameState().getTokenCount(card, Token.findTokenForCulture(card.getBlueprint().getCulture())); }
-
-    public int GetBurdens() { return _game.getGameState().getBurdens(); }
 
     public List<? extends PhysicalCard> GetFreepsHand() { return GetPlayerHand(P1); }
     public List<? extends PhysicalCard> GetShadowHand() { return GetPlayerHand(P2); }
@@ -484,32 +473,8 @@ public class GenericCardTestHelper extends AbstractAtTest {
         _game.getGameState().addCardToZone(_game, card, zone);
     }
 
-    public void FreepsAddWoundsToChar(String cardName, int count) { AddWoundsToChar(GetFreepsCard(cardName), count); }
-    public void ShadowAddWoundsToChar(String cardName, int count) { AddWoundsToChar(GetShadowCard(cardName), count); }
-    public void AddWoundsToChar(PhysicalCardImpl card, int count) {
-        for(int i = 0; i < count; i++)
-        {
-            _game.getGameState().addWound(card);
-        }
-    }
-
-    public void AddTokensToCard(PhysicalCardImpl card, int count) {
-        _game.getGameState().addTokens(card, Token.findTokenForCulture(card.getBlueprint().getCulture()), count);
-    }
-
-
-    public void FreepsRemoveWoundsFromChar(String cardName, int count) { RemoveWoundsFromChar(GetFreepsCard(cardName), count); }
-    public void ShadowRemoveWoundsFromChar(String cardName, int count) { RemoveWoundsFromChar(GetShadowCard(cardName), count); }
-    public void RemoveWoundsFromChar(PhysicalCardImpl card, int count) {
-        for(int i = 0; i < count; i++)
-        {
-            _game.getGameState().removeWound(card);
-        }
-    }
 
     public int GetTwilight() { return _game.getGameState().getTwilightPool(); }
-
-    public PhysicalCardImpl GetCurrentSite() { return (PhysicalCardImpl)_game.getGameState().getCurrentSite(); }
 
     public void SkipToPhase(Phase target) throws DecisionResultInvalidException {
         for(int attempts = 1; attempts <= 20; attempts++)
@@ -724,23 +689,9 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
 
-    public int FreepsGetStrength(String name) { return GetStrength(GetFreepsCard(name)); }
-    public int ShadowGetStrength(String name) { return GetStrength(GetShadowCard(name)); }
     public int GetStrength(PhysicalCardImpl card)
     {
         return _game.getModifiersQuerying().getStrength(_game, card);
-    }
-    public int GetVitality(PhysicalCardImpl card) { return _game.getModifiersQuerying().getVitality(_game, card); }
-    public int GetResistance(PhysicalCardImpl card) { return _game.getModifiersQuerying().getResistance(_game, card); }
-    public int GetMinionSiteNumber(PhysicalCardImpl card) { return _game.getModifiersQuerying().getMinionSiteNumber(_game, card); }
-    public int GetGeneralSiteNumber(PhysicalCardImpl card)
-    {
-        int bpNumber = card.getBlueprint().getSiteNumber();
-        Integer siteNumber = card.getSiteNumber();
-        if(siteNumber == null)
-            return bpNumber;
-
-        return siteNumber;
     }
 
     public boolean HasKeyword(PhysicalCardImpl card, Keyword keyword)
@@ -883,66 +834,4 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
     }
 
-    public void SkipToSite(int siteNum) throws DecisionResultInvalidException {
-        for(int i = GetCurrentSite().getSiteNumber(); i < siteNum; i++)
-        {
-            SkipCurrentSite();
-        }
-    }
-
-    public void SkipCurrentSite() throws DecisionResultInvalidException {
-        SkipToPhase(Phase.REGROUP);
-        PhysicalCardImpl site = GetCurrentSite();
-        if(site.getSiteNumber() == 9)
-            return; // Game finished
-        PassCurrentPhaseActions();
-        if(ShadowDecisionAvailable("reconcile"))
-        {
-            ShadowDeclineReconciliation();
-        }
-        if(ShadowDecisionAvailable("discard down"))
-        {
-            ShadowChooseCard((PhysicalCardImpl) GetShadowHand().get(0));
-        }
-        if(FreepsDecisionAvailable("another move"))
-        {
-            FreepsChooseToStay();
-        }
-        if(FreepsDecisionAvailable("reconcile"))
-        {
-            FreepsDeclineReconciliation();
-        }
-        if(FreepsDecisionAvailable("discard down"))
-        {
-            FreepsChooseCard((PhysicalCardImpl) GetFreepsHand().get(0));
-        }
-
-        //Shadow player
-        SkipToPhaseInverted(Phase.REGROUP);
-        ShadowPassCurrentPhaseAction(); // actually freeps with the swap
-        FreepsPassCurrentPhaseAction(); // actually shadow with the swap
-        if(FreepsDecisionAvailable("reconcile"))
-        {
-            FreepsDeclineReconciliation();
-        }
-        if(FreepsDecisionAvailable("discard down"))
-        {
-            FreepsChooseCard((PhysicalCardImpl) GetFreepsHand().get(0));
-        }
-        if(ShadowDecisionAvailable("another move"))
-        {
-            ShadowChoose("1"); // Choose to stay
-        }
-        if(ShadowDecisionAvailable("reconcile"))
-        {
-            ShadowDeclineReconciliation();
-        }
-        if(ShadowDecisionAvailable("discard down"))
-        {
-            ShadowChooseCard((PhysicalCardImpl) GetShadowHand().get(0));
-        }
-
-        Assert.assertTrue(GetCurrentPhase() == Phase.BETWEEN_TURNS
-                || GetCurrentPhase() == Phase.FELLOWSHIP);
-    }
 }

@@ -33,8 +33,6 @@ public interface GameStateListener {
 
     void addTokens(PhysicalCard card, Token token, int count);
 
-    void removeTokens(PhysicalCard card, Token token, int count);
-
     void sendMessage(String message);
 
     void setSite(PhysicalCard card);

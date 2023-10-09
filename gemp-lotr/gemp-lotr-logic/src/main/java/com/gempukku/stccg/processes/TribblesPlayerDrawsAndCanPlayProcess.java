@@ -1,10 +1,9 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TribblesPlayPermanentAction;
+import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.game.TribblesGame;
@@ -44,7 +43,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends DefaultGameProcess<Tri
                     userMessage = "Play card that was just drawn or click 'Pass' to end your turn.";
                 }
                 game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new CardActionSelectionDecision(game, 1, userMessage, playableActions) {
+                        new CardActionSelectionDecision(1, userMessage, playableActions) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
@@ -58,8 +57,8 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends DefaultGameProcess<Tri
         }
     }
 
-    private void playerPassed(DefaultGame game) {
-        game.getGameState().playerPassEffect();
+    private void playerPassed(TribblesGame game) {
+        game.getGameState().breakChain();
     }
 
     @Override

@@ -27,9 +27,6 @@ public interface ModifiersQuerying {
 
     Collection<Modifier> getModifiersAffecting(DefaultGame game, PhysicalCard card);
 
-    Evaluator getFPStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter);
-    Evaluator getShadowStrengthOverrideEvaluator(DefaultGame game, PhysicalCard fpCharacter);
-
     boolean hasTextRemoved(DefaultGame game, PhysicalCard card);
 
     // Keywords
@@ -39,8 +36,6 @@ public interface ModifiersQuerying {
 
     // Archery
     int getArcheryTotal(DefaultGame game, Side side, int baseArcheryTotal);
-
-    boolean addsToArcheryTotal(DefaultGame game, PhysicalCard card);
 
     // Movement
     int getMoveLimit(DefaultGame game, int baseMoveLimit);
@@ -57,11 +52,7 @@ public interface ModifiersQuerying {
 
     boolean appliesStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget);
 
-    int getVitality(DefaultGame game, PhysicalCard physicalCard);
-
     int getResistance(DefaultGame game, PhysicalCard physicalCard);
-
-    int getMinionSiteNumber(DefaultGame game, PhysicalCard physicalCard);
 
     int getOverwhelmMultiplier(DefaultGame game, PhysicalCard card);
 
@@ -71,8 +62,6 @@ public interface ModifiersQuerying {
     boolean canTakeWounds(DefaultGame game, Collection<PhysicalCard> woundSources, PhysicalCard card, int woundsToTake);
 
     boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, PhysicalCard card, Set<PhysicalCard> winners);
-
-    boolean canTakeArcheryWound(DefaultGame game, PhysicalCard card);
 
     boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
 
@@ -88,12 +77,6 @@ public interface ModifiersQuerying {
     boolean canBeAssignedToSkirmish(DefaultGame game, Side playerSide, PhysicalCard card);
 
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);
-
-    boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card);
-
-    boolean isAllyAllowedToParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card);
-
-    boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card);
 
     boolean isValidAssignments(DefaultGame game, Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments);
 
