@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gempukku.stccg</groupId>
-    <artifactId>gemp-lotr-logic</artifactId>
+    <artifactId>gemp-stccg-logic</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>

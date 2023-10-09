@@ -120,7 +120,7 @@ var TournamentResultsUI = Class.extend({
 
             var playerStr;
             if (tournamentStage == "Finished")
-                playerStr = "<a target='_blank' href='/gemp-lotr-server/tournament/" + tournamentId + "/deck/" + player + "/html'>" + player + "</a>";
+                playerStr = "<a target='_blank' href='/gemp-stccg-server/tournament/" + tournamentId + "/deck/" + player + "/html'>" + player + "</a>";
             else
                 playerStr = player;
 
@@ -137,7 +137,7 @@ var TournamentResultsUI = Class.extend({
 
             var playerStr;
             if (tournamentStage == "Finished")
-                playerStr = "<a target='_blank' href='/gemp-lotr-server/tournament/" + tournamentId + "/deck/" + player + "/html'>" + player + "</a>";
+                playerStr = "<a target='_blank' href='/gemp-stccg-server/tournament/" + tournamentId + "/deck/" + player + "/html'>" + player + "</a>";
             else
                 playerStr = player;
 

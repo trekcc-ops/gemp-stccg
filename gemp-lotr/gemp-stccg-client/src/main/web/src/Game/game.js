@@ -7,11 +7,11 @@ $(document).ready(
         var gameType = getUrlParam("gameType");
 
         if (gameType == "tribbles") {
-            ui = new TribblesGameTableUI("/gemp-lotr-server", replay != null);
+            ui = new TribblesGameTableUI("/gemp-stccg-server", replay != null);
         } else if (gameType == "st1e") {
-            ui = new ST1EGameTableUI("/gemp-lotr-server", replay != null);
+            ui = new ST1EGameTableUI("/gemp-stccg-server", replay != null);
         } else {
-            ui = new GameTableUI("/gemp-lotr-server", replay != null);
+            ui = new GameTableUI("/gemp-stccg-server", replay != null);
         }
 
         $(window).resize(function () {

@@ -11,10 +11,10 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>gemp-lotr-server</module>
-        <module>gemp-lotr-logic</module>
+        <module>gemp-stccg-server</module>
+        <module>gemp-stccg-logic</module>
         <module>gemp-stccg-common</module>
-        <module>gemp-lotr-cards</module>
+        <module>gemp-stccg-cards</module>
         <module>gemp-stccg-client</module>
         <module>gemp-lotr-images</module>
     </modules>

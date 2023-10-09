@@ -16,7 +16,7 @@ var GempLotrSoloDraftUI = Class.extend({
     init:function () {
         var that = this;
 
-        this.comm = new GempClientCommunication("/gemp-lotr-server", that.processError);
+        this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
         this.leagueType = getUrlParam("leagueType");
 

@@ -21,8 +21,8 @@ var GempLotrDeckBuildingUI = Class.extend({
     init:function () {
         var that = this;
 
-        // TODO - Look into replacing the "gemp-lotr-server" path
-        this.comm = new GempClientCommunication("/gemp-lotr-server", that.processError);
+        // TODO - Look into replacing the "gemp-stccg-server" path
+        this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
                 function (filter, start, count, callback) {
@@ -538,7 +538,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                     deckListBut.click(
                             (function (i) {
                                 return function () {
-                                    window.open('/gemp-lotr-server/deck/libraryHtml?deckName=' + encodeURIComponent(deckNames[i]), "_blank");
+                                    window.open('/gemp-stccg-server/deck/libraryHtml?deckName=' + encodeURIComponent(deckNames[i]), "_blank");
                                 };
                             })(i));
                 }

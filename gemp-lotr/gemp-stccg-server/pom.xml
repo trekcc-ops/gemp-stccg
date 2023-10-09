@@ -7,7 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>gemp-lotr-server</artifactId>
+    <artifactId>gemp-stccg-server</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gemp-lotr-logic</artifactId>
+            <artifactId>gemp-stccg-logic</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

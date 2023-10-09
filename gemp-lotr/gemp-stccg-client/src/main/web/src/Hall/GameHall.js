@@ -7,10 +7,10 @@ var chat;
 		//Hiding the Users tab until that feature is ready (CL - removed this in the STCCG code)
 //		$("#tabs > ul :nth-child(5)").hide();
 		
-		chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-lotr-server", true, null, false, null, true);
+		chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-stccg-server", true, null, false, null, true);
 		chat.showTimestamps = true;
 		
-		hall = new GempLotrHallUI("/gemp-lotr-server", chat);
+		hall = new GempLotrHallUI("/gemp-stccg-server", chat);
 
 
 		var infoDialog = $("<div></div>")

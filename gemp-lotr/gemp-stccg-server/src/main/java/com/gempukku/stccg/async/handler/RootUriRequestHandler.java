@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class RootUriRequestHandler implements UriRequestHandler {
     final Map<String, UriRequestHandler> requestHandlers = new HashMap<>();
-    final String _serverContextPath = "/gemp-lotr-server/";
+    final String _serverContextPath = "/gemp-stccg-server/";
     final String _webContextPath = "/gemp-lotr/";
     private final WebRequestHandler _webRequestHandler;
     private final StatusRequestHandler _statusRequestHandler;

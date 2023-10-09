@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gemp-lotr-server</artifactId>
+            <artifactId>gemp-stccg-server</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

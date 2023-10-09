@@ -15,13 +15,13 @@ GEMP is a server written for Java 18, using MariaDB for a MySQL database instanc
 GEMP is divided into several modules which each handle a different aspect of the game, albeit for now they cannot be hosted separately (tho this is a future improvement we would like to make)
 
 ## gemp-stccg-client
-This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-lotr/gemp-lotr-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-lotr-server.  From there the action could go anywhere depending on context.
+This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-lotr/gemp-stccg-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-stccg-server.  From there the action could go anywhere depending on context.
 
 gemp-stccg-client is also the home for the web portion of the project; everything in [/src/main/web/](./gemp-lotr/gemp-stccg-client/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
 
-## gemp-lotr-cards
+## gemp-stccg-cards
 
-This module contains the card definitions of both styles.  Originally, cards were each written in Java, one class per card, and the majority of LOTR-TCG cards are still implemented in that format here, in [/src/main/java/com/gempukku/lotro/cards](gemp-lotr/gemp-lotr-cards/src/main/java/com/gempukku/lotro/cards).  
+This module contains the card definitions of both styles.  Originally, cards were each written in Java, one class per card, and the majority of LOTR-TCG cards are still implemented in that format here, in [/src/main/java/com/gempukku/lotro/cards](gemp-lotr/gemp-stccg-cards/src/main/java/com/gempukku/lotro/cards).  
 
 However, in August 2019 work was underway to implement a "Second Edition" fan set, and requiring a server restart for every balance update and addition was proving to be too obnoxious, so the engine was extended to permit definitions of cards in JSON, which, as data, could simply be reloaded with an admin command rather than requiring a recompile.  To date, all the following card sets are implemented in JSON and not Java:
 
@@ -54,16 +54,16 @@ This module contains definitions used throughout the project, including enums fo
 A currently unused package intended to be used to generate new card images.  (The PC independently developed its own spreadsheet-based generator using nanDECK, which [can be found here](https://github.com/PlayersCouncil/LotR-TCG_card_generator)).
 
 
-## gemp-lotr-logic
+## gemp-stccg-logic
 
 The home for classes used in executing game rules and also in generating card objects from JSON card definitions.
 
 
-## gemp-lotr-server
+## gemp-stccg-server
 
 The entry point for the server and the home for all database interaction, hall management, game running, chat, tournaments, and other services.  
 
-This is also the home for the unit tests for the server, which will fail compilation if they do not pass: [/src/test/java/com/gempukku/lotro](gemp-lotr/gemp-lotr-server/src/test/java/com/gempukku/stccg).  Besides various service tests, there is a cards subfolder which contains a place to put unit tests for new cards (including errata).  All PC V-cards and errata have a class for holding tests for that card, which are initially generated from the same spreadsheet that is used for generating the images and manually expanded as needed (see ketura for help on that). 
+This is also the home for the unit tests for the server, which will fail compilation if they do not pass: [/src/test/java/com/gempukku/lotro](gemp-lotr/gemp-stccg-server/src/test/java/com/gempukku/stccg).  Besides various service tests, there is a cards subfolder which contains a place to put unit tests for new cards (including errata).  All PC V-cards and errata have a class for holding tests for that card, which are initially generated from the same spreadsheet that is used for generating the images and manually expanded as needed (see ketura for help on that). 
 
 Old card unit tests were scattershot and stored in the /at subfolder as needed.  Do not add to this subfolder; instead use the cards subfolder mentioned above.
 
