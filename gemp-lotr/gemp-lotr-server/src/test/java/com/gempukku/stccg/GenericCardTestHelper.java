@@ -259,11 +259,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         var deck = _game.getGameState().getDrawDeck(player);
         return (PhysicalCardImpl) deck.get(index - 1);
     }
-    public int GetFreepsDiscardCount() { return GetPlayerDiscardCount(P1); }
-    public int GetShadowDiscardCount() { return GetPlayerDiscardCount(P2); }
-    public int GetPlayerDiscardCount(String player) { return _game.getGameState().getDiscard(player).size(); }
-
-    public int GetFreepsDeadCount() { return _game.getGameState().getDeadPile(P1).size(); }
 
     public Phase GetCurrentPhase() { return _game.getGameState().getCurrentPhase(); }
 

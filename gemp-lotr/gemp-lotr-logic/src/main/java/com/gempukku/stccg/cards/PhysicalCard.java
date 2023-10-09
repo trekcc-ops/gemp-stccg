@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.EffectResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierHook;
 
@@ -26,7 +27,6 @@ public class PhysicalCard implements Filterable {
     protected PhysicalCard _stackedOn;
     protected List<ModifierHook> _modifierHooks;
     protected Map<Zone, List<ModifierHook>> _modifierHooksInZone; // modifier hooks specific to stacked and discard
-    protected List<ModifierHook> _modifierHooksControlledSite;
     protected Object _whileInZoneData;
     protected Integer _siteNumber;
     private int _locationZoneIndex;
@@ -57,10 +57,6 @@ public class PhysicalCard implements Filterable {
         return _owner;
     }
 
-    public void setCardController(String siteController) {
-        _cardController = siteController;
-    }
-
     public void startAffectingGame(DefaultGame game) {
         List<? extends Modifier> modifiers = _blueprint.getInPlayModifiers(game, this);
         if (modifiers != null) {
@@ -89,15 +85,6 @@ public class PhysicalCard implements Filterable {
             _modifierHooksInZone.put(zone, new LinkedList<>());
             for (Modifier modifier : modifiers)
                 _modifierHooksInZone.get(zone).add(game.getModifiersEnvironment().addAlwaysOnModifier(modifier));
-        }
-    }
-
-    public void startAffectingGameControlledSite(DefaultGame game) {
-        List<? extends Modifier> modifiers = _blueprint.getControlledSiteModifiers(game, this);
-        if (modifiers != null) {
-            _modifierHooksControlledSite = new LinkedList<>();
-            for (Modifier modifier : modifiers)
-                _modifierHooksControlledSite.add(game.getModifiersEnvironment().addAlwaysOnModifier(modifier));
         }
     }
 
@@ -205,5 +192,9 @@ public class PhysicalCard implements Filterable {
     public int getLocationZoneIndex() { return _locationZoneIndex;  }
 
     public Quadrant getQuadrant() { return _blueprint.getQuadrant(); }
+
+    public boolean isAffectingGame(GameState gameState) {
+        return gameState.getCurrentPlayerId().equals(_owner);
+    }
 
 }

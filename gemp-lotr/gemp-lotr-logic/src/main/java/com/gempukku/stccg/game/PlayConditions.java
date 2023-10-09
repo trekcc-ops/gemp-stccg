@@ -89,8 +89,7 @@ public class PlayConditions {
             return true;
 
         final int activeCount = Filters.countActive(game, Filters.name(blueprint.getTitle()));
-        return activeCount == 0
-                && (ignoreCheckingDeadPile || (Filters.filter(game.getGameState().getDeadPile(self.getOwner()), game, Filters.name(blueprint.getTitle())).size() == 0));
+        return activeCount == 0;
     }
 
     public static boolean canStackDeckTopCards(PhysicalCard source, DefaultGame game, String deckId, int cardCount, Filterable... onto) {

@@ -24,7 +24,6 @@ public abstract class GameState {
     protected final Map<String, List<PhysicalCard>> _drawDecks = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _hands = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _discards = new HashMap<>();
-    private final Map<String, List<PhysicalCard>> _deadPiles = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
 
     private final Map<String, List<PhysicalCard>> _voids = new HashMap<>();
@@ -40,10 +39,6 @@ public abstract class GameState {
     private int _twilightPool;
 
     private boolean _consecutiveAction;
-
-    private final Map<String, Integer> _playerPosition = new HashMap<>();
-
-    private final Map<PhysicalCard, Map<Token, Integer>> _cardTokens = new HashMap<>();
 
     protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
 
@@ -147,8 +142,6 @@ public abstract class GameState {
             if (_currentPlayerId != null) listener.setCurrentPlayerId(_currentPlayerId);
             if (_currentPhase != null) listener.setCurrentPhase(getPhaseString());
             listener.setTwilight(_twilightPool);
-            for (Map.Entry<String, Integer> stringIntegerEntry : _playerPosition.entrySet())
-                listener.setPlayerPosition(stringIntegerEntry.getKey(), stringIntegerEntry.getValue());
 
             Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
             Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
@@ -246,8 +239,6 @@ public abstract class GameState {
             return _drawDecks.get(playerId);
         else if (zone == Zone.DISCARD)
             return _discards.get(playerId);
-        else if (zone == Zone.DEAD)
-            return _deadPiles.get(playerId);
         else if (zone == Zone.HAND)
             return _hands.get(playerId);
         else if (zone == Zone.VOID)
@@ -278,7 +269,7 @@ public abstract class GameState {
 
             if (zone.isInPlay()) card.stopAffectingGame();
             if (zone == Zone.STACKED || zone == Zone.DISCARD)
-                if (isCardAffectingGame(card)) card.stopAffectingGameInZone(zone);
+                if (card.isAffectingGame(this)) card.stopAffectingGameInZone(zone);
 
             getZoneCards(card.getOwner(), zone).remove(card);
 
@@ -346,7 +337,7 @@ public abstract class GameState {
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
             card.startAffectingGame(game);
-        if ((zone == Zone.STACKED || zone == Zone.DISCARD) && isCardAffectingGame(card))
+        if ((zone == Zone.STACKED || zone == Zone.DISCARD) && card.isAffectingGame(this))
             card.startAffectingGameInZone(game, zone);
     }
 
@@ -399,7 +390,6 @@ public abstract class GameState {
     public List<PhysicalCard> getRemoved(String playerId) { return Collections.unmodifiableList(_removed.get(playerId)); }
     public List<PhysicalCard> getDrawDeck(String playerId) { return Collections.unmodifiableList(_drawDecks.get(playerId)); }
     public List<PhysicalCard> getDiscard(String playerId) { return Collections.unmodifiableList(_discards.get(playerId)); }
-    public List<PhysicalCard> getDeadPile(String playerId) { return Collections.unmodifiableList(_deadPiles.get(playerId)); }
     public List<PhysicalCard> getStacked(String playerId) { return Collections.unmodifiableList(_stacked.get(playerId)); }
 
     public String getCurrentPlayerId() {
@@ -457,12 +447,12 @@ public abstract class GameState {
         // Stacked cards on active cards are stack-affecting
         for (List<PhysicalCard> stackedCards : _stacked.values())
             for (PhysicalCard stackedCard : stackedCards)
-                if ((isCardInPlayActive(stackedCard.getStackedOn()) && isCardAffectingGame(stackedCard)))
+                if ((isCardInPlayActive(stackedCard.getStackedOn()) && stackedCard.isAffectingGame(this)))
                     stackedCard.startAffectingGameInZone(game, Zone.STACKED);
 
         for (List<PhysicalCard> discardedCards : _discards.values())
             for (PhysicalCard discardedCard : discardedCards)
-                if (isCardAffectingGame(discardedCard))
+                if (discardedCard.isAffectingGame(this))
                     discardedCard.startAffectingGameInZone(game, Zone.DISCARD);
     }
 
@@ -473,15 +463,11 @@ public abstract class GameState {
         for (List<PhysicalCard> stackedCards : _stacked.values())
             for (PhysicalCard stackedCard : stackedCards)
                 if (isCardInPlayActive(stackedCard.getStackedOn()))
-                    if (isCardAffectingGame(stackedCard)) stackedCard.stopAffectingGameInZone(Zone.STACKED);
+                    if (stackedCard.isAffectingGame(this)) stackedCard.stopAffectingGameInZone(Zone.STACKED);
 
         for (List<PhysicalCard> discardedCards : _discards.values())
             for (PhysicalCard discardedCard : discardedCards)
-                if (isCardAffectingGame(discardedCard)) discardedCard.stopAffectingGameInZone(Zone.DISCARD);
-    }
-
-    private boolean isCardAffectingGame(PhysicalCard card) {
-        return getCurrentPlayerId().equals(card.getOwner());
+                if (discardedCard.isAffectingGame(this)) discardedCard.stopAffectingGameInZone(Zone.DISCARD);
     }
 
     public void setCurrentPhase(Phase phase) {
