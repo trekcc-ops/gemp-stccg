@@ -44,8 +44,8 @@ public abstract class GameState {
 
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
-    protected Map<String, CardDeck> _decks;
-    protected CardBlueprintLibrary _library;
+    protected final Map<String, CardDeck> _decks;
+    protected final CardBlueprintLibrary _library;
 
     protected int _nextCardId = 0;
 

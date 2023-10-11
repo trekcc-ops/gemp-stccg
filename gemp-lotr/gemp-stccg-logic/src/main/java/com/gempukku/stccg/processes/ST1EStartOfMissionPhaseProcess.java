@@ -17,9 +17,7 @@ public class ST1EStartOfMissionPhaseProcess implements GameProcess<ST1EGame> {
         game.getGameState().setCurrentPhase(Phase.SEED_MISSION);
         for (String player : game.getPlayers()) {
             List<PhysicalCard> missionSeeds = new LinkedList<>();
-            for (PhysicalCard mission : game.getGameState().getMissionPile(player)) {
-                    missionSeeds.add(mission);
-            }
+            missionSeeds.addAll(game.getGameState().getMissionPile(player));
             for (PhysicalCard card : missionSeeds) {
                 game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
                 game.getGameState().addCardToZone(game, card, Zone.HAND);

@@ -20,15 +20,14 @@ public class ChooseCardAndMoveBetweenZonesEffect extends ChooseCardsFromZoneEffe
         super(game, fromZone, playerId, playerId, minimum, maximum, filters);
         _action = action;
         _toZone = toZone;
-        if (_fromZone == Zone.DISCARD) _reveal = false;
-        else _reveal = true;
+        _reveal = _fromZone != Zone.DISCARD;
     }
 
     @Override
     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         // ChooseAndPutCardsFromDeckIntoHandEffect
         // ChooseAndPutCardFromDiscardIntoHandEffect
-        if (cards.size() > 0) {
+        if (cards.size() > 0 && _toZone == Zone.HAND) {
             SubAction subAction = new SubAction(_action);
             for (PhysicalCard card : cards)
                 subAction.appendEffect(new PutCardFromZoneIntoHandEffect(game, card, _fromZone, _reveal));

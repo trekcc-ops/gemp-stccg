@@ -7,9 +7,9 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction {
 
-    protected PhysicalCard _actionSource;
-    protected PhysicalCard _cardToPlay;
-    protected Zone _playedFromZone;
+    protected final PhysicalCard _actionSource;
+    protected final PhysicalCard _cardToPlay;
+    protected final Zone _playedFromZone;
     protected boolean _reshuffle;
     protected boolean _placeOutOfPlay;
     protected String _text;

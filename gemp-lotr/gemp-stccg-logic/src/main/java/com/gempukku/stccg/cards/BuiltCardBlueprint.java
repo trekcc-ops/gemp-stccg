@@ -79,8 +79,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
     private ActionSource discardedFromPlayRequiredTriggerAction;
     private ActionSource discardedFromPlayOptionalTriggerAction;
 
-    private AidCostSource aidCostSource;
-
     public BuiltCardBlueprint() {
     }
 
@@ -226,10 +224,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     public void setPlayEventAction(ActionSource playEventAction) {
         this.playEventAction = playEventAction;
-    }
-
-    public void setAidCostSource(AidCostSource aidCostSource) {
-        this.aidCostSource = aidCostSource;
     }
 
     public void setKilledRequiredTriggerAction(ActionSource killedRequiredTriggerAction) {
@@ -860,23 +854,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
         return null;
     }
 
-    @Override
-    public boolean canPayAidCost(DefaultGame game, PhysicalCard self) {
-        if (aidCostSource == null)
-            return false;
-
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
-        return aidCostSource.canPayAidCost(actionContext);
-    }
-
-    @Override
-    public void appendAidCosts(DefaultGame game, CostToEffectAction action, PhysicalCard self) {
-        if (aidCostSource != null) {
-            DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
-            aidCostSource.appendAidCost(action, actionContext);
-        }
-    }
-
     // Helper methods
 
     private List<Modifier> getModifiers(DefaultGame game, PhysicalCard self, List<ModifierSource> sources) {
@@ -928,8 +905,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
             if (keywords.size() > 1 && keywords.containsKey(Keyword.TALE))
                 throw new InvalidCardDefinitionException("Attachment should not have keywords");
         }
-        if (cardType == CardType.FOLLOWER && aidCostSource == null)
-            throw new InvalidCardDefinitionException("Follower requires an aid cost");
     }
 
     public List<FilterableSource> getCopiedFilters() {
@@ -944,5 +919,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     public void setSeedPhase(List<Phase> seedPhases) { this.seedPhases = seedPhases; }
+    public List<Phase> getSeedPhases() { return this.seedPhases; }
 
 }

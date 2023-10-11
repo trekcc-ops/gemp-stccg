@@ -13,7 +13,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     protected boolean _sentMessage;
     protected boolean _activated;
     protected boolean _prevented;
-    protected DefaultGame _game;
+    protected final DefaultGame _game;
 
     public ActivateCardAction(DefaultGame game, PhysicalCard physicalCard) {
         _physicalCard = physicalCard;

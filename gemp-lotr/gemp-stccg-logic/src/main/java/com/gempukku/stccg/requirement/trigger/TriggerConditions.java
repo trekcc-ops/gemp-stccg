@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.*;
 import com.gempukku.stccg.effects.defaulteffect.DrawOneCardEffect;
-import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

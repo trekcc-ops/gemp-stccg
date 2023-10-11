@@ -20,7 +20,7 @@ public class HasInZoneData extends RequirementProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return (Requirement) actionContext -> {
+        return actionContext -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);
             for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
                 if (physicalCard.getWhileInZoneData() != null)

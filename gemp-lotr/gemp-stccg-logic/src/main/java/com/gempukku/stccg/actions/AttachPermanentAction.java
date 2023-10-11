@@ -5,7 +5,6 @@ import com.gempukku.stccg.common.filterable.Side;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.*;
 import com.gempukku.stccg.effects.choose.ChooseActiveCardEffect;
-import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.effects.defaulteffect.PayPlayOnTwilightCostEffect;
 import com.gempukku.stccg.effects.defaulteffect.PlayCardEffect;
 import com.gempukku.stccg.filters.Filter;

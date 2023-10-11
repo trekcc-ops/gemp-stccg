@@ -20,10 +20,10 @@ import java.util.*;
 
 public abstract class DefaultGame {
     // Game parameters
-    protected GameFormat _format;
-    protected CardBlueprintLibrary _library;
+    protected final GameFormat _format;
+    protected final CardBlueprintLibrary _library;
     // IRL game mechanics
-    protected Set<String> _allPlayers;
+    protected final Set<String> _allPlayers;
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
     protected boolean _cancelled;
@@ -34,8 +34,8 @@ public abstract class DefaultGame {
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
     protected final ModifiersLogic _modifiersLogic = new ModifiersLogic();
-    protected DefaultActionsEnvironment _actionsEnvironment;
-    protected UserFeedback _userFeedback;
+    protected final DefaultActionsEnvironment _actionsEnvironment;
+    protected final UserFeedback _userFeedback;
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
@@ -113,7 +113,7 @@ public abstract class DefaultGame {
 
             if (getGameState() != null) {
                 getGameState().sendMessage("Game was cancelled due to an error, the error was logged and will be fixed soon.");
-                getGameState().sendMessage("Please post the replay game link and description of what happened on the TLHH forum.");
+                getGameState().sendMessage("Please post the replay game link and description of what happened on the tech support forum.");
             }
 
             for (GameResultListener gameResultListener : _gameResultListeners)

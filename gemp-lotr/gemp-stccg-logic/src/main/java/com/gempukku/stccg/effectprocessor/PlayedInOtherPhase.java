@@ -20,7 +20,7 @@ public class PlayedInOtherPhase implements EffectProcessor {
         final Requirement[] conditions = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
         blueprint.appendPlayInOtherPhaseCondition(
-                (Requirement) actionContext -> {
+                actionContext -> {
                     if (actionContext.getGame().getGameState().getCurrentPhase() != phase)
                         return false;
 

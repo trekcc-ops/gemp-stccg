@@ -16,7 +16,7 @@ public class Location {
         _quadrant = mission.getQuadrant();
         _region = mission.getBlueprint().getRegion();
         _locationName = mission.getBlueprint().getLocation();
-        _missionCards = new HashSet<PhysicalCard>();
+        _missionCards = new HashSet<>();
         _missionCards.add(mission);
     }
 

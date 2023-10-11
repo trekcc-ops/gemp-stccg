@@ -61,12 +61,12 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSerie, int totalGamesPlayedThisSerie) {
-        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSerie, totalGamesPlayedThisSerie);
+    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries, int totalGamesPlayedThisSeries) {
+        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries, totalGamesPlayedThisSeries);
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchLoser(int winCountThisSerie, int totalGamesPlayedThisSerie) {
-        return _leaguePrizes.getPrizeForLeagueMatchLoser(winCountThisSerie, totalGamesPlayedThisSerie);
+    public CardCollection getPrizeForLeagueMatchLoser(int winCountThisSeries, int totalGamesPlayedThisSeries) {
+        return _leaguePrizes.getPrizeForLeagueMatchLoser(winCountThisSeries, totalGamesPlayedThisSeries);
     }
 }

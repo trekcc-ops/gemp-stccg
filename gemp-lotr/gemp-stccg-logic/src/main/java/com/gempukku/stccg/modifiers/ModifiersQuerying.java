@@ -3,7 +3,6 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Action;
 

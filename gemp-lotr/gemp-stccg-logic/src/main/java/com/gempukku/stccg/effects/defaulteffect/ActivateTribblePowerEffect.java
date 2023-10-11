@@ -12,12 +12,12 @@ import com.gempukku.stccg.results.ActivateTribblePowerResult;
 import com.gempukku.stccg.rules.GameUtils;
 
 public abstract class ActivateTribblePowerEffect extends DefaultEffect {
-    protected PhysicalCard _source;
-    protected String _activatingPlayer;
-    protected TribblePower _tribblePower;
-    protected ActivateTribblePowerResult _result;
-    protected CostToEffectAction _action;
-    protected TribblesGame _game;
+    protected final PhysicalCard _source;
+    protected final String _activatingPlayer;
+    protected final TribblePower _tribblePower;
+    protected final ActivateTribblePowerResult _result;
+    protected final CostToEffectAction _action;
+    protected final TribblesGame _game;
     public ActivateTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
         _source = actionContext.getSource();
         _activatingPlayer = actionContext.getSource().getOwner();

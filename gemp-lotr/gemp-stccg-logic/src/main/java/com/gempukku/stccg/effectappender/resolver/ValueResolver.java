@@ -273,14 +273,12 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "memory");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
 
-                return actionContext -> {
-                    return (Evaluator) (game, cardAffected) -> {
-                        int result = 0;
-                        for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                            result += game.getModifiersQuerying().getStrength(game, physicalCard);
-                        }
-                        return result;
-                    };
+                return actionContext -> (Evaluator) (game, cardAffected) -> {
+                    int result = 0;
+                    for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
+                        result += game.getModifiersQuerying().getStrength(game, physicalCard);
+                    }
+                    return result;
                 };
             } else if (type.equalsIgnoreCase("tribbleValueFromMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory");

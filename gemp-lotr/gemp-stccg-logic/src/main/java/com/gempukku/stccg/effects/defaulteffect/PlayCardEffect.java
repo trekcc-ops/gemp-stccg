@@ -15,7 +15,7 @@ public class PlayCardEffect extends DefaultEffect {
     private PhysicalCard _attachedToCard;
     private final Zone _zone;
     private final PhysicalCard _attachedOrStackedPlayedFrom;
-    protected DefaultGame _game;
+    protected final DefaultGame _game;
 
     public PlayCardEffect(DefaultGame game, Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo) {
         _playedFrom = playedFrom;

@@ -25,7 +25,7 @@ public class ChooseAndRemoveFromTheGameCardsInDiscardEffect extends AbstractSubA
     private final int _maximum;
     private final Filterable[] _filters;
     private boolean _success;
-    private DefaultGame _game;
+    private final DefaultGame _game;
 
     public ChooseAndRemoveFromTheGameCardsInDiscardEffect(DefaultGame game, Action action, PhysicalCard source, String playerId, int minimum, int maximum, Filterable... filters) {
         _action = action;

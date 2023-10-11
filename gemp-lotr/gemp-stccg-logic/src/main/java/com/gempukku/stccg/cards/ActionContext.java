@@ -10,18 +10,18 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface ActionContext {
-    public Map<String, String> getValueMemory();
-    public Multimap<String, PhysicalCard> getCardMemory();
-    public DefaultGame getGame();
-    public void setValueToMemory(String memory, String value);
-    public String getValueFromMemory(String memory);
-    public void setCardMemory(String memory, PhysicalCard card);
-    public void setCardMemory(String memory, Collection<? extends PhysicalCard> cards);
-    public Collection<PhysicalCard> getCardsFromMemory(String memory);
-    public PhysicalCard getCardFromMemory(String memory);
-    public String getPerformingPlayer();
-    public PhysicalCard getSource();
-    public EffectResult getEffectResult();
-    public Effect getEffect();
-    public Filterable getFilterable(FilterableSource filterableSource);
+    Map<String, String> getValueMemory();
+    Multimap<String, PhysicalCard> getCardMemory();
+    DefaultGame getGame();
+    void setValueToMemory(String memory, String value);
+    String getValueFromMemory(String memory);
+    void setCardMemory(String memory, PhysicalCard card);
+    void setCardMemory(String memory, Collection<? extends PhysicalCard> cards);
+    Collection<PhysicalCard> getCardsFromMemory(String memory);
+    PhysicalCard getCardFromMemory(String memory);
+    String getPerformingPlayer();
+    PhysicalCard getSource();
+    EffectResult getEffectResult();
+    Effect getEffect();
+    Filterable getFilterable(FilterableSource filterableSource);
 }

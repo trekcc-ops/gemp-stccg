@@ -13,7 +13,7 @@ public class PlayMissionEffect extends DefaultEffect {
     private final PhysicalCard _cardPlayed;
     private final int _spacelineIndex;
     private final boolean _sharedMission;
-    private ST1EGame _game;
+    private final ST1EGame _game;
 
     public PlayMissionEffect(ST1EGame game, Zone playedFrom, PhysicalCard cardPlayed,
                              int spacelineIndex, boolean sharedMission) {

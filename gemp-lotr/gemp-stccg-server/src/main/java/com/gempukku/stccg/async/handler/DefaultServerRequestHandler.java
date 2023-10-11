@@ -62,7 +62,7 @@ public class DefaultServerRequestHandler {
                 Integer lastReward = player.getLastLoginReward();
                 if (lastReward == null) {
                     _playerDao.setLastReward(player, latestMonday);
-                    _collectionManager.addCurrencyToPlayerCollection(true, "Singup reward", player, CollectionType.MY_CARDS, 20000);
+                    _collectionManager.addCurrencyToPlayerCollection(true, "Signup reward", player, CollectionType.MY_CARDS, 20000);
                 } else {
                     if (latestMonday != lastReward) {
                         if (_playerDao.updateLastReward(player, lastReward, latestMonday))
@@ -162,11 +162,11 @@ public class DefaultServerRequestHandler {
     }
 
     protected List<String> getFormParametersSafely(HttpPostRequestDecoder postRequestDecoder) throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
-        List<InterfaceHttpData> datas = postRequestDecoder.getBodyHttpDatas("login[]");
-        if (datas == null)
+        List<InterfaceHttpData> httpData = postRequestDecoder.getBodyHttpDatas("login[]");
+        if (httpData == null)
             return null;
         List<String> result = new LinkedList<>();
-        for (InterfaceHttpData data : datas) {
+        for (InterfaceHttpData data : httpData) {
             if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
                 Attribute attribute = (Attribute) data;
                 result.add(attribute.getValue());
@@ -187,31 +187,31 @@ public class DefaultServerRequestHandler {
         return Collections.singletonMap(SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
 
-    protected String generateCardTooltip(CardBlueprint bp, String bpid) {
-        String[] parts = bpid.split("_");
-        int setnum = Integer.parseInt(parts[0]);
-        String set = String.format("%02d", setnum);
+    protected String generateCardTooltip(CardBlueprint bp, String blueprintId) {
+        String[] parts = blueprintId.split("_");
+        int setNum = Integer.parseInt(parts[0]);
+        String set = String.format("%02d", setNum);
         String subset = "S";
         int version = 0;
-        if(setnum >= 50 && setnum <= 69) {
-            setnum -= 50;
-            set = String.format("%02d", setnum);
+        if(setNum >= 50 && setNum <= 69) {
+            setNum -= 50;
+            set = String.format("%02d", setNum);
             subset = "E";
             version = 1;
         }
-        else if(setnum >= 70 && setnum <= 89) {
-            setnum -= 70;
-            set = String.format("%02d", setnum);
+        else if(setNum >= 70 && setNum <= 89) {
+            setNum -= 70;
+            set = String.format("%02d", setNum);
             subset = "E";
             version = 1;
         }
-        else if(setnum >= 100 && setnum <= 149) {
-            setnum -= 100;
-            set = "V" + setnum;
+        else if(setNum >= 100 && setNum <= 149) {
+            setNum -= 100;
+            set = "V" + setNum;
         }
-        int cardnum = Integer.parseInt(parts[1].replace("*", "").replace("T", ""));
+        int cardNum = Integer.parseInt(parts[1].replace("*", "").replace("T", ""));
 
-        String id = "LOTR-EN" + set + subset + String.format("%03d", cardnum) + "." + String.format("%01d", version);
+        String id = "LOTR-EN" + set + subset + String.format("%03d", cardNum) + "." + String.format("%01d", version);
 
         return "<span class=\"tooltip\">" + GameUtils.getFullName(bp)
                 + "<span><img class=\"ttimage\" src=\"https://wiki.lotrtcgpc.net/images/" + id + "_card.jpg\" ></span></span>";

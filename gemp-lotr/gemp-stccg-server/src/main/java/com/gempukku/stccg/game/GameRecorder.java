@@ -122,7 +122,7 @@ public class GameRecorder {
 
     private File getRecordingFileVersion1(String playerId, String gameId, ZonedDateTime startDate) {
         var gameReplayFolder = new File(AppConfig.getProperty("application.root"), "replay");
-        //This dumbass formatting output is because anything that otherwise interacts with the
+        //This dumb-ass formatting output is because anything that otherwise interacts with the
         // year subfield appears to trigger a JVM segfault in the guts of the java ecosystem.
         // Super-dumb.  Don't touch these two lines.
         var year = startDate.format(DateTimeFormatter.ofPattern("yyyy"));

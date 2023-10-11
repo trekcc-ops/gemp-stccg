@@ -301,7 +301,7 @@ public class DefaultGameFormat implements GameFormat {
             for (String originalBlueprintId : _errataCardMap.keySet()) {
                 if (originalBlueprintId.equals(blueprintId) ||
                         (allAlternates != null && allAlternates.contains(originalBlueprintId)))
-                    return "Deck contains non-errata of an errata'd card: " +
+                    return "Deck contains cards that have been replaced with errata: " +
                             GameUtils.getFullName(_library.getCardBlueprint(originalBlueprintId));
             }
 

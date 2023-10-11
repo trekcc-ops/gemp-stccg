@@ -119,10 +119,6 @@ public interface CardBlueprint {
 
     void appendPotentialDiscountEffects(DefaultGame game, CostToEffectAction action, String playerId, PhysicalCard self);
 
-    boolean canPayAidCost(DefaultGame game, PhysicalCard self);
-
-    void appendAidCosts(DefaultGame game, CostToEffectAction action, PhysicalCard self);
-
     List<FilterableSource> getCopiedFilters();
 
     boolean canPlayOutOfSequence(TribblesGame game, PhysicalCard self);

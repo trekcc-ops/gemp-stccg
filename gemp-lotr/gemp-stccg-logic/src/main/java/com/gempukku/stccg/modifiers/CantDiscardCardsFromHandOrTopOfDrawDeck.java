@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import org.json.simple.JSONObject;
 
