@@ -9,8 +9,8 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.effectprocessor.EffectUtils;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.IncrementPhaseLimitEffect;
-import com.gempukku.stccg.effects.IncrementTurnLimitEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.IncrementPhaseLimitEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.IncrementTurnLimitEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayConditions;
@@ -29,7 +29,7 @@ public class AddActivated implements ModifierSourceProducer {
         final String[] phaseArray = FieldUtils.getStringArray(object.get("phase"), "phase");
         final int limitPerPhase = FieldUtils.getInteger(object.get("limitPerPhase"), "limitPerPhase", 0);
         final int limitPerTurn = FieldUtils.getInteger(object.get("limitPerTurn"), "limitPerTurn", 0);
-        final FilterableSource<DefaultGame> filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
         if (phaseArray.length == 0)
             throw new InvalidCardDefinitionException("Unable to find phase for an activated effect");
@@ -47,10 +47,10 @@ public class AddActivated implements ModifierSourceProducer {
                                 actionContext.getGame(), actionContext.getSource(), phase, limitPerPhase
                         ));
                 actionSource.addCost(
-                        new AbstractEffectAppender<>() {
+                        new AbstractEffectAppender() {
                             @Override
-                            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext<DefaultGame> actionContext) {
-                                return new IncrementPhaseLimitEffect(actionContext.getSource(), phase, limitPerPhase);
+                            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                                return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
                             }
                         });
             }
@@ -58,10 +58,10 @@ public class AddActivated implements ModifierSourceProducer {
                 actionSource.addPlayRequirement(
                         (actionContext) -> PlayConditions.checkTurnLimit(actionContext.getGame(), actionContext.getSource(), limitPerTurn));
                 actionSource.addCost(
-                        new AbstractEffectAppender<>() {
+                        new AbstractEffectAppender() {
                             @Override
-                            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext<DefaultGame> actionContext) {
-                                return new IncrementTurnLimitEffect(actionContext.getSource(), limitPerTurn);
+                            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                                return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
                             }
                         });
             }
@@ -79,7 +79,7 @@ public class AddActivated implements ModifierSourceProducer {
                 for (ActionSource inPlayPhaseAction : actionSources) {
                     DefaultActionContext actionContext = new DefaultActionContext(card.getOwner(), game, card, null, null);
                     if (inPlayPhaseAction.isValid(actionContext)) {
-                        ActivateCardAction action = new ActivateCardAction(card);
+                        ActivateCardAction action = new ActivateCardAction(game, card);
                         inPlayPhaseAction.createAction(action, actionContext);
                         result.add(action);
                     }

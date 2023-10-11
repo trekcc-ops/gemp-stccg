@@ -1,10 +1,9 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.discount.DiscountEffect;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.effects.DiscountEffect;
 
-public interface CostToEffectAction<AbstractGame extends DefaultGame> extends Action<AbstractGame> {
+public interface CostToEffectAction extends Action {
     void appendPotentialDiscount(DiscountEffect cost);
 
     /**
@@ -12,7 +11,7 @@ public interface CostToEffectAction<AbstractGame extends DefaultGame> extends Ac
      *
      * @param cost
      */
-    void insertCost(Effect... cost);
+    void insertCost(Effect cost);
 
     /**
      * Appends the specified cost to the list of the costs. It will be executed after all the other costs currently in
@@ -27,7 +26,7 @@ public interface CostToEffectAction<AbstractGame extends DefaultGame> extends Ac
      *
      * @param effect
      */
-    void insertEffect(Effect... effect);
+    void insertEffect(Effect effect);
 
     /**
      * Appends the specified effect to the list of the effects. It will be executed after all the other effects currently
@@ -38,8 +37,6 @@ public interface CostToEffectAction<AbstractGame extends DefaultGame> extends Ac
     void appendEffect(Effect effect);
 
     void setText(String text);
-
-    void setPaidToil(boolean toilPaid);
 
     boolean wasCarriedOut();
 }

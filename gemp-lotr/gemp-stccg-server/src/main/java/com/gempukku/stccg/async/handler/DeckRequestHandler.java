@@ -9,7 +9,7 @@ import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.db.DeckDAO;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.LotroServer;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -32,19 +32,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DeckRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class DeckRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final DeckDAO _deckDao;
     private final SortAndFilterCards _sortAndFilterCards;
     private final FormatLibrary _formatLibrary;
     private final SoloDraftDefinitions _draftLibrary;
-    private final LotroServer _lotroServer;
+    private final GameServer _gameServer;
 
     public DeckRequestHandler(Map<Type, Object> context) {
         super(context);
         _deckDao = extractObject(context, DeckDAO.class);
         _sortAndFilterCards = new SortAndFilterCards();
         _formatLibrary = extractObject(context, FormatLibrary.class);
-        _lotroServer = extractObject(context, LotroServer.class);
+        _gameServer = extractObject(context, GameServer.class);
         _draftLibrary = extractObject(context, SoloDraftDefinitions.class);
     }
 
@@ -130,7 +130,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
             //check for valid access
             getResourceOwnerSafely(request, participantId);
 
-            CardDeck deck = _lotroServer.createDeckWithValidate("tempDeck", contents, targetFormat, "");
+            CardDeck deck = _gameServer.createDeckWithValidate("tempDeck", contents, targetFormat, "");
             if (deck == null)
                 throw new HttpProcessingException(400);
 
@@ -224,11 +224,11 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
 
             GameFormat validatedFormat = validateFormat(targetFormat);
 
-            CardDeck lotroDeck = _lotroServer.createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
-            if (lotroDeck == null)
+            CardDeck deck = _gameServer.createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
+            if (deck == null)
                 throw new HttpProcessingException(400);
 
-            _deckDao.saveDeckForPlayer(resourceOwner, deckName, validatedFormat.getName(), notes, lotroDeck);
+            _deckDao.saveDeckForPlayer(resourceOwner, deckName, validatedFormat.getName(), notes, deck);
 
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -503,7 +503,7 @@ public class DeckRequestHandler extends LotroServerRequestHandler implements Uri
                 cardElement.setAttribute("blueprintId", card);
                 cardElement.setAttribute("subDeck", subDeck);
                 try {
-                    cardElement.setAttribute("imageUrl", deck.getLibrary().getLotroCardBlueprint(card).getImageUrl());
+                    cardElement.setAttribute("imageUrl", deck.getLibrary().getCardBlueprint(card).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprints not found: " + card);
                 }

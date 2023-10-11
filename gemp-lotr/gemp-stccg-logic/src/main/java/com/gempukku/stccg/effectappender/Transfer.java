@@ -1,15 +1,15 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.TransferPermanentEffect;
+import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.rules.RuleUtils;
@@ -52,9 +52,9 @@ public class Transfer implements EffectAppenderProducer {
                         }, actionContext -> Filters.any,
                         ValueResolver.resolveEvaluator(1, environment), memorizeTarget, "you", "Choose cards to transfer to", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> transferCard = actionContext.getCardsFromMemory(memorizeTransferred);
                         if (transferCard.isEmpty())
                             return null;
@@ -63,7 +63,7 @@ public class Transfer implements EffectAppenderProducer {
                         if (transferredToCard.isEmpty())
                             return null;
 
-                        return Collections.singletonList(new TransferPermanentEffect(transferCard.iterator().next(), transferredToCard.iterator().next()));
+                        return Collections.singletonList(new TransferPermanentEffect(actionContext.getGame(), transferCard.iterator().next(), transferredToCard.iterator().next()));
                     }
                 });
 

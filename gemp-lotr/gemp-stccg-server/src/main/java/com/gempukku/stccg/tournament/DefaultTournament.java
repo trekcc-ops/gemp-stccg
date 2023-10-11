@@ -168,7 +168,7 @@ public class DefaultTournament implements Tournament {
     }
 
     @Override
-    public void playerSummittedDeck(String player, CardDeck deck) {
+    public void playerSubmittedDeck(String player, CardDeck deck) {
         _lock.writeLock().lock();
         try {
             if (_tournamentStage == Stage.DECK_BUILDING && _players.contains(player)) {

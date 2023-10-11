@@ -3,5 +3,5 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.game.DefaultGame;
 
 public interface TwilightCostModifierSource {
-    int getTwilightCostModifier(DefaultActionContext<DefaultGame> actionContext, PhysicalCard target);
+    int getTwilightCostModifier(ActionContext actionContext, PhysicalCard target);
 }

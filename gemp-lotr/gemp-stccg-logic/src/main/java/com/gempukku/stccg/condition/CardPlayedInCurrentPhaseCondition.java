@@ -4,7 +4,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.results.PlayCardResult;
 
 public class CardPlayedInCurrentPhaseCondition implements Condition {

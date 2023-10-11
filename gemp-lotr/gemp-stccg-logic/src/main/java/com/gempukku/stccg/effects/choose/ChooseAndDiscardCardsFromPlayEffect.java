@@ -5,7 +5,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.DiscardCardsFromPlayEffect;
+import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.Action;
@@ -17,8 +17,8 @@ public class ChooseAndDiscardCardsFromPlayEffect extends ChooseActiveCardsEffect
     private final String _playerId;
     private CostToEffectAction _resultSubAction;
 
-    public ChooseAndDiscardCardsFromPlayEffect(Action action, String playerId, int minimum, int maximum, Filterable... filters) {
-        super(action.getActionSource(), playerId, "Choose cards to discard", minimum, maximum, filters);
+    public ChooseAndDiscardCardsFromPlayEffect(DefaultGame game, Action action, String playerId, int minimum, int maximum, Filterable... filters) {
+        super(game, action.getActionSource(), playerId, "Choose cards to discard", minimum, maximum, filters);
         _action = action;
         _playerId = playerId;
     }
@@ -33,7 +33,7 @@ public class ChooseAndDiscardCardsFromPlayEffect extends ChooseActiveCardsEffect
     @Override
     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         _resultSubAction = new SubAction(_action);
-        _resultSubAction.appendEffect(new DiscardCardsFromPlayEffect(_playerId, _action.getActionSource(), Filters.in(cards)) {
+        _resultSubAction.appendEffect(new DiscardCardsFromPlayEffect(game, _playerId, _action.getActionSource(), Filters.in(cards)) {
             @Override
             protected void forEachDiscardedByEffectCallback(Collection<PhysicalCard> discardedCards) {
                 ChooseAndDiscardCardsFromPlayEffect.this.forEachDiscardedByEffectCallback(discardedCards);

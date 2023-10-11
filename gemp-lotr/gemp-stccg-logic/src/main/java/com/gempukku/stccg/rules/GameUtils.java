@@ -1,14 +1,13 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.adventure.InvalidSoloAdventureException;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
-import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayOrder;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.rules.lotronly.LotroGameUtils;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,11 +18,11 @@ public class GameUtils {
     }
 
     public static String getFullName(PhysicalCard card) {
-        LotroCardBlueprint blueprint = card.getBlueprint();
+        CardBlueprint blueprint = card.getBlueprint();
         return getFullName(blueprint);
     }
 
-    public static String getFullName(LotroCardBlueprint blueprint) {
+    public static String getFullName(CardBlueprint blueprint) {
         if (blueprint.getSubtitle() != null)
             return blueprint.getTitle() + ", " + blueprint.getSubtitle();
         return blueprint.getTitle();
@@ -65,6 +64,20 @@ public class GameUtils {
         return "";
     }
 
+    public static String s(int count) {
+        if (count > 1)
+            return "s";
+        return "";
+    }
+
+    public static String plural(int count, String noun) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(count).append(" ").append(noun);
+        if (count != 1)
+            sb.append("s");
+        return sb.toString();
+    }
+
     public static String be(Collection<PhysicalCard> cards) {
         if (cards.size() > 1)
             return "are";
@@ -72,11 +85,11 @@ public class GameUtils {
     }
 
     public static String getCardLink(PhysicalCard card) {
-        LotroCardBlueprint blueprint = card.getBlueprint();
+        CardBlueprint blueprint = card.getBlueprint();
         return getCardLink(card.getBlueprintId(), blueprint);
     }
 
-    public static String getCardLink(String blueprintId, LotroCardBlueprint blueprint) {
+    public static String getCardLink(String blueprintId, CardBlueprint blueprint) {
         return "<div class='cardHint' value='" + blueprintId + "'>" + (blueprint.isUnique() ? "·" : "") + GameUtils.getFullName(blueprint) + "</div>";
     }
 
@@ -109,12 +122,8 @@ public class GameUtils {
         else
             return String.valueOf(effective);
     }
-    public static String SubstituteText(String text)
-    {
-        return SubstituteText(text, null);
-    }
 
-    public static String SubstituteText(String text, DefaultActionContext context)
+    public static String SubstituteText(String text, ActionContext context)
     {
         String result = text;
         while (result.contains("{")) {
@@ -122,7 +131,7 @@ public class GameUtils {
             int endIndex = result.indexOf("}");
             String memory = result.substring(startIndex + 1, endIndex);
             if(context != null){
-                String cardNames = LotroGameUtils.getAppendedNames(context.getCardsFromMemory(memory));
+                String cardNames = getAppendedNames(context.getCardsFromMemory(memory));
                 if(cardNames.equalsIgnoreCase("none")) {
                     try {
                         cardNames = context.getValueFromMemory(memory);
@@ -138,11 +147,11 @@ public class GameUtils {
         return result;
     }
 
-    // As of 7/12/23, this function likely doesn't work (except in the inherited LotrGameUtils class)
-    public static String getDeluxeCardLink(String blueprintId, LotroCardBlueprint blueprint) {
+    // TODO - This method probably isn't doing what it should since the LotR elements were stripped out
+    public static String getDeluxeCardLink(String blueprintId, CardBlueprint blueprint) {
         var cultureString = "";
         return "<div class='cardHint' value='" + blueprintId + "'>" + cultureString
-                + (blueprint.isUnique() ? "·" : "") + " " + LotroGameUtils.getFullName(blueprint) + "</div>";
+                + (blueprint.isUnique() ? "·" : "") + " " + getFullName(blueprint) + "</div>";
     }
 
 }

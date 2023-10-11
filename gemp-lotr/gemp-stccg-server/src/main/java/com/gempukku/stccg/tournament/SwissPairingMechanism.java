@@ -71,7 +71,8 @@ public class SwissPairingMechanism implements PairingMechanism {
 
             for (int index = 0; index < playersInBracket.size(); index++) {
                 String player = playersInBracket.remove(index);
-                if (!previouslyPaired.get(firstCarryOver).contains(player)) {
+                if (!previouslyPaired.get(firstCarryOver).contains(player)) //noinspection SpellCheckingInspection
+                {
                     // This might be a good pairing
                     pairingsResult.put(firstCarryOver, player);
                     // Let's give it a try
@@ -94,7 +95,8 @@ public class SwissPairingMechanism implements PairingMechanism {
                 String firstPlayer = playersInBracket.remove(index);
                 for (int index2 = index; index2 < playersInBracket.size(); index2++) {
                     String secondPlayer = playersInBracket.remove(index2);
-                    if (!previouslyPaired.get(firstPlayer).contains(secondPlayer)) {
+                    if (!previouslyPaired.get(firstPlayer).contains(secondPlayer)) //noinspection SpellCheckingInspection
+                    {
                         // This pairing might work
                         pairingsResult.put(firstPlayer, secondPlayer);
                         // Let's give it a try

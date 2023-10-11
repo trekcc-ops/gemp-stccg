@@ -1,34 +1,37 @@
 package com.gempukku.stccg.effects;
 
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
 
 public class StackActionEffect implements Effect {
     private final CostToEffectAction _action;
+    private final DefaultGame _game;
 
-    public StackActionEffect(CostToEffectAction action) {
+    public StackActionEffect(DefaultGame game, CostToEffectAction action) {
+        _game = game;
         _action = action;
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText() {
         return null;
     }
 
     @Override
-    public Type getType() {
+    public EffectType getType() {
         return null;
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
+    public boolean isPlayableInFull() {
         return true;
     }
 
     @Override
-    public void playEffect(DefaultGame game) {
-        game.getActionsEnvironment().addActionToStack(_action);
+    public void playEffect() {
+        _game.getActionsEnvironment().addActionToStack(_action);
     }
 
     @Override

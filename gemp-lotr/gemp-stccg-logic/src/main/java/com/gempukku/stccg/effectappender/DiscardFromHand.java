@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.DiscardCardsFromZoneEffect;
+import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromZoneEffect;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.game.DefaultGame;
@@ -34,15 +34,15 @@ public class DiscardFromHand implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCardsInHand(filter, countSource, memorize, player, hand, "Choose cards from hand to discard", true, environment));
         result.addEffectAppender(
-                new DelayedAppender<>() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<PhysicalCard> cardsToDiscard = actionContext.getCardsFromMemory(memorize);
-                        return new DiscardCardsFromZoneEffect(actionContext.getSource(), Zone.HAND, handSource.getPlayer(actionContext), cardsToDiscard, forced);
+                        return new DiscardCardsFromZoneEffect(actionContext, Zone.HAND, handSource.getPlayer(actionContext), cardsToDiscard, forced);
                     }
 
                     @Override
-                    public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+                    public boolean isPlayableInFull(ActionContext actionContext) {
                         final DefaultGame game = actionContext.getGame();
 
                         final String handPlayer = handSource.getPlayer(actionContext);

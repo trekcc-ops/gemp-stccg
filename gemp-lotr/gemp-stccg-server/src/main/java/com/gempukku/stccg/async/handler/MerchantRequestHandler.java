@@ -27,7 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class MerchantRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class MerchantRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final CollectionsManager _collectionsManager;
     private final SortAndFilterCards _sortAndFilterCards;
     private final MerchantService _merchantService;
@@ -192,7 +192,7 @@ public class MerchantRequestHandler extends LotroServerRequestHandler implements
             if (blueprintId.contains("_") && !blueprintId.endsWith("*") && collection.getItemCount(blueprintId) >= 4)
                 elem.setAttribute("tradeFoil", "true");
             elem.setAttribute("blueprintId", blueprintId);
-            elem.setAttribute("imageUrl", _library.getLotroCardBlueprint(blueprintId).getImageUrl());
+            elem.setAttribute("imageUrl", _library.getCardBlueprint(blueprintId).getImageUrl());
             Integer buyPrice = buyPrices.get(blueprintId);
             if (buyPrice != null && collection.getItemCount(blueprintId) > 0)
                 elem.setAttribute("buyPrice", buyPrice.toString());

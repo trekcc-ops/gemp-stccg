@@ -10,8 +10,8 @@ import com.gempukku.stccg.effects.PreventableCardEffect;
 public class ChooseAndPreventCardEffect extends ChooseActiveCardEffect {
     private final PreventableCardEffect _effect;
 
-    public ChooseAndPreventCardEffect(PhysicalCard source, PreventableCardEffect effect, String playerId, String choiceText, Filterable... filters) {
-        super(source, playerId, choiceText, filters);
+    public ChooseAndPreventCardEffect(DefaultGame game, PhysicalCard source, PreventableCardEffect effect, String playerId, String choiceText, Filterable... filters) {
+        super(game, source, playerId, choiceText, filters);
         _effect = effect;
     }
 

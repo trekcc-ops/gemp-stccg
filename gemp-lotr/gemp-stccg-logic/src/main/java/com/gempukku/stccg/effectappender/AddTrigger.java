@@ -1,12 +1,16 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.DelegateActionContext;
 import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effects.*;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilEndOfPhaseActionProxyEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilEndOfTurnActionProxyEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilStartOfPhaseActionProxyEffect;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
@@ -34,26 +38,26 @@ public class AddTrigger implements EffectAppenderProducer {
         final EffectAppender[] costs = environment.getEffectAppenderFactory().getEffectAppenders(costArray, environment);
         final EffectAppender[] effects = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 ActionProxy actionProxy = createActionProxy(actionContext, optional, trigger, requirements, costs, effects);
 
                 if (until.isEndOfTurn()) {
-                    return new AddUntilEndOfTurnActionProxyEffect(actionProxy);
+                    return new AddUntilEndOfTurnActionProxyEffect(actionContext.getGame(), actionProxy);
                 } else if (until.isStart()) {
-                    return new AddUntilStartOfPhaseActionProxyEffect(actionProxy, until.getPhase());
+                    return new AddUntilStartOfPhaseActionProxyEffect(actionContext.getGame(), actionProxy, until.getPhase());
                 } else {
-                    return new AddUntilEndOfPhaseActionProxyEffect(actionProxy, until.getPhase());
+                    return new AddUntilEndOfPhaseActionProxyEffect(actionContext.getGame(), actionProxy, until.getPhase());
                 }
             }
         };
     }
 
-    private ActionProxy createActionProxy(DefaultActionContext actionContext, boolean optional, TriggerChecker trigger,
+    private ActionProxy createActionProxy(ActionContext actionContext, boolean optional, TriggerChecker trigger,
                                           Requirement[] requirements, EffectAppender[] costs, EffectAppender[] effects) {
         return new AbstractActionProxy() {
-            private boolean checkRequirements(DefaultActionContext<DefaultGame> actionContext) {
+            private boolean checkRequirements(ActionContext actionContext) {
                 if (!RequirementUtils.acceptsAllRequirements(requirements, actionContext))
                     return true;
 
@@ -74,14 +78,14 @@ public class AddTrigger implements EffectAppenderProducer {
 
             @Override
             public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect) {
-                DelegateActionContext delegate = new DelegateActionContext(actionContext, actionContext.getPerformingPlayer(),
+                DefaultActionContext delegateContext = new DefaultActionContext(actionContext, actionContext.getPerformingPlayer(),
                         game, actionContext.getSource(), null, effect);
-                if (trigger.isBefore() && !optional && trigger.accepts(delegate)) {
-                    if (checkRequirements(delegate))
+                if (trigger.isBefore() && !optional && trigger.accepts(delegateContext)) {
+                    if (checkRequirements(delegateContext))
                         return null;
 
-                    RequiredTriggerAction result = new RequiredTriggerAction(delegate.getSource());
-                    customizeTriggerAction(result, delegate);
+                    RequiredTriggerAction result = new RequiredTriggerAction(delegateContext.getSource());
+                    customizeTriggerAction(result, delegateContext);
 
                     return Collections.singletonList(result);
                 }
@@ -89,15 +93,15 @@ public class AddTrigger implements EffectAppenderProducer {
             }
 
             @Override
-            public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame lotroGame, Effect effect) {
-                DelegateActionContext delegate = new DelegateActionContext(actionContext, actionContext.getPerformingPlayer(),
-                        lotroGame, actionContext.getSource(), null, effect);
-                if (trigger.isBefore() && optional && trigger.accepts(delegate)) {
-                    if (checkRequirements(delegate))
+            public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect) {
+                DefaultActionContext delegateContext = new DefaultActionContext(actionContext, actionContext.getPerformingPlayer(),
+                        game, actionContext.getSource(), null, effect);
+                if (trigger.isBefore() && optional && trigger.accepts(delegateContext)) {
+                    if (checkRequirements(delegateContext))
                         return null;
 
-                    OptionalTriggerAction result = new OptionalTriggerAction(delegate.getSource());
-                    customizeTriggerAction(result, delegate);
+                    OptionalTriggerAction result = new OptionalTriggerAction(delegateContext.getSource());
+                    customizeTriggerAction(result, delegateContext);
 
                     return Collections.singletonList(result);
                 }
@@ -105,9 +109,9 @@ public class AddTrigger implements EffectAppenderProducer {
             }
 
             @Override
-            public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame lotroGame, EffectResult effectResult) {
-                DelegateActionContext delegate = new DelegateActionContext(actionContext, actionContext.getPerformingPlayer(),
-                        lotroGame, actionContext.getSource(), effectResult, null);
+            public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+                DefaultActionContext delegate = new DefaultActionContext(actionContext, actionContext.getPerformingPlayer(),
+                        game, actionContext.getSource(), effectResult, null);
                 if (!trigger.isBefore() && !optional && trigger.accepts(delegate)) {
                     if (checkRequirements(delegate))
                         return null;
@@ -121,9 +125,9 @@ public class AddTrigger implements EffectAppenderProducer {
             }
 
             @Override
-            public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame lotroGame, EffectResult effectResult) {
-                DelegateActionContext delegate = new DelegateActionContext(actionContext, actionContext.getPerformingPlayer(),
-                        lotroGame, actionContext.getSource(), effectResult, null);
+            public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
+                DefaultActionContext delegate = new DefaultActionContext(actionContext, actionContext.getPerformingPlayer(),
+                        game, actionContext.getSource(), effectResult, null);
                 if (!trigger.isBefore() && optional && trigger.accepts(delegate)) {
                     if (checkRequirements(delegate))
                         return null;

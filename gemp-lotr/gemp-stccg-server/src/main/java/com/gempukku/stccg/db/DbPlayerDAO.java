@@ -289,7 +289,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public synchronized boolean registerUser(String login, String password, String remoteAddr) throws SQLException, LoginInvalidException {
+    public synchronized boolean registerUser(String login, String password, String remoteAddress) throws SQLException, LoginInvalidException {
         if (!validLoginName(login))
             return false;
 
@@ -333,7 +333,7 @@ public class DbPlayerDAO implements PlayerDAO {
                         .addParameter("login", login)
                         .addParameter("password", encodePassword(password))
                         .addParameter("type", User.Type.USER.toString())
-                        .addParameter("create_ip", remoteAddr)
+                        .addParameter("create_ip", remoteAddress)
                         .executeUpdate();
 
                 conn.commit();
@@ -453,10 +453,10 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public void updateLastLoginIp(String login, String remoteAddr) throws SQLException {
+    public void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
             try (PreparedStatement statement = conn.prepareStatement("update player set last_ip=? where name=?")) {
-                statement.setString(1, remoteAddr);
+                statement.setString(1, remoteAddress);
                 statement.setString(2, login);
                 statement.execute();
             }

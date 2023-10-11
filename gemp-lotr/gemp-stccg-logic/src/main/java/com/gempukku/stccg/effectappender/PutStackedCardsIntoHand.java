@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PutCardFromZoneIntoHandEffect;
+import com.gempukku.stccg.effects.defaulteffect.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
@@ -28,13 +28,13 @@ public class PutStackedCardsIntoHand implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveStackedCards(filter, valueSource, onFilterSource, "_temp", "you", "Choose cards to take into hand", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToPutToHand = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard physicalCard : cardsToPutToHand)
-                            result.add(new PutCardFromZoneIntoHandEffect(physicalCard, Zone.STACKED, true));
+                            result.add(new PutCardFromZoneIntoHandEffect(actionContext.getGame(), physicalCard, Zone.STACKED, true));
 
                         return result;
                     }

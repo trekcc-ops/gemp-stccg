@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class SoloDraftRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class SoloDraftRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final CollectionsManager _collectionsManager;
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final CardBlueprintLibrary _cardLibrary;
@@ -193,7 +193,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
             Element pickedCard = doc.createElement("pickedCard");
             pickedCard.setAttribute("blueprintId", item.getBlueprintId());
             pickedCard.setAttribute("count", String.valueOf(item.getCount()));
-            pickedCard.setAttribute("imageUrl", _library.getLotroCardBlueprint(item.getBlueprintId()).getImageUrl());
+            pickedCard.setAttribute("imageUrl", _library.getCardBlueprint(item.getBlueprintId()).getImageUrl());
             pickResultElem.appendChild(pickedCard);
         }
 
@@ -218,7 +218,7 @@ public class SoloDraftRequestHandler extends LotroServerRequestHandler implement
             if (blueprintId != null) {
                 availablePick.setAttribute("blueprintId", blueprintId);
                 try {
-                    availablePick.setAttribute("imageUrl", _library.getLotroCardBlueprint(blueprintId).getImageUrl());
+                    availablePick.setAttribute("imageUrl", _library.getCardBlueprint(blueprintId).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprint " + blueprintId + " not found in library");
                 }

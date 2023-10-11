@@ -1,7 +1,6 @@
 package com.gempukku.stccg.results;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.EffectResult;
 
 public class DiscardCardFromHandResult extends EffectResult {
     private final PhysicalCard _source;

@@ -3,7 +3,6 @@ package com.gempukku.stccg.requirement.trigger;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -13,35 +12,47 @@ public class TriggerCheckerFactory {
     private final Map<String, TriggerCheckerProducer> triggerCheckers = new HashMap<>();
 
     public TriggerCheckerFactory() {
-        triggerCheckers.put("abouttobekilled", new AboutToBeKilled());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("abouttodiscard", new AboutToDiscardFromPlay());
         triggerCheckers.put("requires", new ConditionTrigger());
         triggerCheckers.put("discarded", new Discarded());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("discardfromdeck", new DiscardFromDeck());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("discardfromhand", new DiscardFromHand());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("discardfromhandby", new DiscardFromHandBy());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("endofphase", new EndOfPhase());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("endofturn", new EndOfTurn());
-        triggerCheckers.put("killed", new Killed());
         triggerCheckers.put("moves", new Moves());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("movesfrom", new MovesFrom());
         triggerCheckers.put("played", new PlayedTriggerCheckerProducer());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("playedfromstacked", new PlayedFromStacked());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("playergoesout", new PlayerGoesOut());
         triggerCheckers.put("reconciles", new Reconciles());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("removedfromplay", new RemovedFromPlay());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("revealscardfromtopofdrawdeck", new RevealsCardFromTopOfDrawDeck());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("startofphase", new StartOfPhase());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("startofturn", new StartOfTurn());
         triggerCheckers.put("transferred", new Transferred());
+        //noinspection SpellCheckingInspection
         triggerCheckers.put("usesspecialability", new UsesSpecialAbility());
     }
 
-    public TriggerChecker<DefaultGame> getTriggerChecker(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public TriggerChecker getTriggerChecker(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final String triggerType = FieldUtils.getString(object.get("type"), "type");
         if (triggerType == null)
             throw new InvalidCardDefinitionException("Trigger type not defined");
-        final TriggerCheckerProducer<DefaultGame> triggerCheckerProducer = triggerCheckers.get(triggerType.toLowerCase());
+        final TriggerCheckerProducer triggerCheckerProducer = triggerCheckers.get(triggerType.toLowerCase());
         if (triggerCheckerProducer == null)
             throw new InvalidCardDefinitionException("Unable to find trigger of type: " + triggerType);
         return triggerCheckerProducer.getTriggerChecker(object, environment);

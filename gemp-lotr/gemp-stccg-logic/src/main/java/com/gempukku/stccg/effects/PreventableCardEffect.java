@@ -9,4 +9,6 @@ public interface PreventableCardEffect {
     Collection<PhysicalCard> getAffectedCardsMinusPrevented(DefaultGame game);
 
     void preventEffect(DefaultGame game, PhysicalCard affectedCard);
+    default PhysicalCard getSource() { return null; }
+
 }

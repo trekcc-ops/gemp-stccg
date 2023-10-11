@@ -12,7 +12,7 @@ import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.GameRecorder;
-import com.gempukku.stccg.game.LotroServer;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.merchant.MerchantService;
@@ -118,8 +118,8 @@ public class ServerBuilder {
                 extract(objectMap, IgnoreDAO.class),
                 extract(objectMap, PlayerDAO.class)));
 
-        objectMap.put(LotroServer.class,
-                new LotroServer(
+        objectMap.put(GameServer.class,
+                new GameServer(
                         extract(objectMap, DeckDAO.class),
                         extract(objectMap, CardBlueprintLibrary.class),
                         extract(objectMap, ChatServer.class),
@@ -128,7 +128,7 @@ public class ServerBuilder {
         objectMap.put(HallServer.class,
                 new HallServer(
                         extract(objectMap, IgnoreDAO.class),
-                        extract(objectMap, LotroServer.class),
+                        extract(objectMap, GameServer.class),
                         extract(objectMap, ChatServer.class),
                         extract(objectMap, LeagueService.class),
                         extract(objectMap, TournamentService.class),
@@ -152,15 +152,15 @@ public class ServerBuilder {
     public static void StartServers(Map<Type, Object> objectMap) {
         LOGGER.debug("Function StartServers - starting HallServer");
         extract(objectMap, HallServer.class).startServer();
-        LOGGER.debug("Function StartServers - starting LotroServer");
-        extract(objectMap, LotroServer.class).startServer();
+        LOGGER.debug("Function StartServers - starting GameServer");
+        extract(objectMap, GameServer.class).startServer();
         LOGGER.debug("Function StartServers - starting ChatServer");
         extract(objectMap, ChatServer.class).startServer();
     }
 
     public static void StopServers(Map<Type, Object> objectMap) {
         extract(objectMap, HallServer.class).stopServer();
-        extract(objectMap, LotroServer.class).stopServer();
+        extract(objectMap, GameServer.class).stopServer();
         extract(objectMap, ChatServer.class).stopServer();
     }
 }

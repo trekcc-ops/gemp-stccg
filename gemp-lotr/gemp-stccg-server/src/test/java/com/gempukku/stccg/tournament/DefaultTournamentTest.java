@@ -2,7 +2,6 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.LotroDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import org.junit.Test;
@@ -22,14 +21,14 @@ public class DefaultTournamentTest extends AbstractServerTest {
         String tournamentId = "t1";
         Map<String, CardDeck> playerDecks = new HashMap<>();
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"));
-        playerDecks.put("p1", new LotroDeck("p1"));
-        playerDecks.put("p2", new LotroDeck("p2"));
-        playerDecks.put("p3", new LotroDeck("p3"));
-        playerDecks.put("p4", new LotroDeck("p4"));
-        playerDecks.put("p5", new LotroDeck("p5"));
-        playerDecks.put("p6", new LotroDeck("p6"));
-        playerDecks.put("p7", new LotroDeck("p7"));
-        playerDecks.put("p8", new LotroDeck("p8"));
+        playerDecks.put("p1", new CardDeck("p1"));
+        playerDecks.put("p2", new CardDeck("p2"));
+        playerDecks.put("p3", new CardDeck("p3"));
+        playerDecks.put("p4", new CardDeck("p4"));
+        playerDecks.put("p5", new CardDeck("p5"));
+        playerDecks.put("p6", new CardDeck("p6"));
+        playerDecks.put("p7", new CardDeck("p7"));
+        playerDecks.put("p8", new CardDeck("p8"));
 
         Set<String> droppedAfterRoundOne = new HashSet<>(Arrays.asList("p2", "p4", "p6", "p8"));
         Set<String> droppedAfterRoundTwo = new HashSet<>(Arrays.asList("p2", "p3", "p4", "p6", "p7", "p8"));

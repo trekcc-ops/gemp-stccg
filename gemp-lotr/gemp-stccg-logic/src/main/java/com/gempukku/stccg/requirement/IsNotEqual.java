@@ -7,7 +7,7 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import org.json.simple.JSONObject;
 
-public class IsNotEqual implements RequirementProducer {
+public class IsNotEqual extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "firstNumber", "secondNumber");

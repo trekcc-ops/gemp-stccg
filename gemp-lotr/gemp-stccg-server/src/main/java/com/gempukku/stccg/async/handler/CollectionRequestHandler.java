@@ -2,9 +2,9 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Keyword;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CollectionRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class CollectionRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final LeagueService _leagueService;
     private final CollectionsManager _collectionsManager;
     private final ProductLibrary _productLibrary;
@@ -88,7 +88,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
                 Element card = doc.createElement("card");
                 card.setAttribute("count", String.valueOf(item.getCount()));
                 card.setAttribute("blueprintId", blueprintId);
-                LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(blueprintId);
+                CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
                 appendCardSide(card, blueprint);
                 appendCardGroup(card, blueprint);
                 card.setAttribute("imageUrl", blueprint.getImageUrl());
@@ -136,7 +136,7 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
                     Element card = doc.createElement("card");
                     card.setAttribute("count", String.valueOf(item.getCount()));
                     card.setAttribute("blueprintId", blueprintId);
-                    LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(blueprintId);
+                    CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
                     card.setAttribute("imageUrl", blueprint.getImageUrl());
                     appendCardSide(card, blueprint);
                     appendCardGroup(card, blueprint);
@@ -197,8 +197,8 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
                 Element card = doc.createElement("card");
                 card.setAttribute("count", String.valueOf(item.getCount()));
                 card.setAttribute("blueprintId", blueprintId);
-                appendCardSide(card, _library.getLotroCardBlueprint(blueprintId));
-                card.setAttribute("imageUrl", _library.getLotroCardBlueprint(blueprintId).getImageUrl());
+                appendCardSide(card, _library.getCardBlueprint(blueprintId));
+                card.setAttribute("imageUrl", _library.getCardBlueprint(blueprintId).getImageUrl());
                 collectionElem.appendChild(card);
             } else {
                 Element pack = doc.createElement("pack");
@@ -251,13 +251,13 @@ public class CollectionRequestHandler extends LotroServerRequestHandler implemen
         return _leagueService.getCollectionTypeByCode(collectionType);
     }
 
-    private void appendCardSide(Element card, LotroCardBlueprint blueprint) {
+    private void appendCardSide(Element card, CardBlueprint blueprint) {
         Side side = blueprint.getSide();
         if (side != null)
             card.setAttribute("side", side.toString());
     }
 
-    private void appendCardGroup(Element card, LotroCardBlueprint blueprint) {
+    private void appendCardGroup(Element card, CardBlueprint blueprint) {
         String group;
         if (blueprint.getCardType() == CardType.THE_ONE_RING)
             group = "ring";

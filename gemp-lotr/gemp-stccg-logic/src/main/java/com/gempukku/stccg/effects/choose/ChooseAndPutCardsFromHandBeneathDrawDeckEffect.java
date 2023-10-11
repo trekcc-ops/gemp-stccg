@@ -8,7 +8,8 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.AbstractSubActionEffect;
-import com.gempukku.stccg.effects.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.stccg.effects.defaulteffect.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -21,37 +22,39 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
     private final Filterable[] _filters;
 
     private final boolean _reveal;
+    private final DefaultGame _game;
 
-    public ChooseAndPutCardsFromHandBeneathDrawDeckEffect(Action action, String playerId, int count, boolean reveal, Filterable... filters) {
+    public ChooseAndPutCardsFromHandBeneathDrawDeckEffect(DefaultGame game, Action action, String playerId, int count, boolean reveal, Filterable... filters) {
         _action = action;
         _playerId = playerId;
         _count = count;
         _filters = filters;
         _reveal = reveal;
+        _game = game;
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText() {
         return null;
     }
 
     @Override
-    public Type getType() {
+    public EffectType getType() {
         return null;
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
-        return Filters.filter(game.getGameState().getHand(_playerId), game, _filters).size() >= _count;
+    public boolean isPlayableInFull() {
+        return Filters.filter(_game.getGameState().getHand(_playerId), _game, _filters).size() >= _count;
     }
 
     @Override
-    public void playEffect(DefaultGame game) {
-        final Collection<PhysicalCard> cards = Filters.filter(game.getGameState().getHand(_playerId), game, _filters);
+    public void playEffect() {
+        final Collection<PhysicalCard> cards = Filters.filter(_game.getGameState().getHand(_playerId), _game, _filters);
         SubAction subAction = new SubAction(_action);
         subAction.appendEffect(
                 new ChooseAndPutNextCardFromHandOnBottomOfLibrary(subAction, Math.min(_count, cards.size()), cards));
-        processSubAction(game, subAction);
+        processSubAction(_game, subAction);
     }
 
     private class ChooseAndPutNextCardFromHandOnBottomOfLibrary extends ChooseArbitraryCardsEffect {
@@ -60,7 +63,7 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
         private final int _remainingCount;
 
         public ChooseAndPutNextCardFromHandOnBottomOfLibrary(CostToEffectAction subAction, int remainingCount, Collection<PhysicalCard> remainingCards) {
-            super(_playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
+            super(_game, _playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
             _subAction = subAction;
             _remainingCount = remainingCount;
             _remainingCards = remainingCards;
@@ -70,7 +73,7 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
         protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
             for (PhysicalCard selectedCard : selectedCards) {
                 _subAction.appendEffect(
-                        new PutCardsFromZoneOnEndOfPileEffect(_reveal,  Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, selectedCard));
+                        new PutCardsFromZoneOnEndOfPileEffect(_game, _reveal,  Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, selectedCard));
                 _remainingCards.remove(selectedCard);
                 if (_remainingCount - 1 > 0)
                     _subAction.appendEffect(

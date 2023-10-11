@@ -3,7 +3,7 @@ package com.gempukku.stccg.evaluator;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ConstantEvaluator<AbstractGame extends DefaultGame> implements Evaluator<AbstractGame> {
+public class ConstantEvaluator implements Evaluator {
     private final int _value;
 
     public ConstantEvaluator(int value) {
@@ -11,7 +11,7 @@ public class ConstantEvaluator<AbstractGame extends DefaultGame> implements Eval
     }
 
     @Override
-    public int evaluateExpression(AbstractGame game, PhysicalCard self) {
+    public int evaluateExpression(DefaultGame game, PhysicalCard self) {
         return _value;
     }
 }

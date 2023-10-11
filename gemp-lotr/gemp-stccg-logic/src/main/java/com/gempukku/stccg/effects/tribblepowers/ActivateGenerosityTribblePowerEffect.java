@@ -1,10 +1,10 @@
 package com.gempukku.stccg.effects.tribblepowers;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.effects.AbstractEffect;
-import com.gempukku.stccg.effects.DrawCardsEffect;
+import com.gempukku.stccg.effects.abstractsubaction.DrawCardsEffect;
+import com.gempukku.stccg.effects.defaulteffect.ActivateTribblePowerEffect;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.rules.GameUtils;
 
@@ -13,31 +13,31 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
-        super(action, source);
+    public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+        super(action, actionContext);
     }
 
     @Override
-    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
+    protected FullEffectResult playEffectReturningResult() {
         // You and one other player (your choice) each score 25,000 points.
         List<String> opponents = new ArrayList<>();
-        for (String player : GameUtils.getAllPlayers(game)) {
+        for (String player : GameUtils.getAllPlayers(_game)) {
             if (!Objects.equals(player, _activatingPlayer))
                 opponents.add(player);
         }
         String[] opponentsArray = opponents.toArray(new String[0]);
         if (opponentsArray.length == 1)
-            playerChosen(opponentsArray[0], game);
+            playerChosen(opponentsArray[0], _game);
         else
-            game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
+            _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision(1, "Choose a player to score 25,000 points", opponentsArray) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, game);
+                            playerChosen(result, _game);
                         }
                     });
-        game.getActionsEnvironment().emitEffectResult(_result);
-        return new AbstractEffect.FullEffectResult(true);
+        _game.getActionsEnvironment().emitEffectResult(_result);
+        return new FullEffectResult(true);
     }
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
@@ -46,6 +46,6 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
         game.getGameState().addToPlayerScore(chosenPlayer, 25000);
 
         // Draw a card.
-        new DrawCardsEffect(_action, _activatingPlayer, 1).playEffect(game);
+        new DrawCardsEffect(game, _action, _activatingPlayer, 1).playEffect();
     }
 }

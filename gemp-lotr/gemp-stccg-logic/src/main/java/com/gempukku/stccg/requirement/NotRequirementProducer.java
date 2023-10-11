@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
-public class NotRequirementProducer implements RequirementProducer {
+public class NotRequirementProducer extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "requires");

@@ -1,14 +1,13 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.effects.discount.DiscountEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
-public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGame>
-        implements CostToEffectAction<AbstractGame> {
+public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
     private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
@@ -20,16 +19,6 @@ public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGam
     private String _performingPlayer;
 
     private boolean _virtualCardAction = false;
-    private boolean _paidToil = false;
-
-    public boolean isPaidToil() {
-        return _paidToil;
-    }
-
-    @Override
-    public void setPaidToil(boolean paidToil) {
-        _paidToil = paidToil;
-    }
 
     @Override
     public void setVirtualCardAction(boolean virtualCardAction) {
@@ -67,13 +56,13 @@ public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGam
     }
 
     @Override
-    public final void insertCost(Effect... cost) {
-        _costs.addAll(0, Arrays.asList(cost));
+    public final void insertCost(Effect cost) {
+        _costs.addAll(0, Collections.singletonList(cost));
     }
 
     @Override
-    public final void insertEffect(Effect... effect) {
-        _effects.addAll(0, Arrays.asList(effect));
+    public final void insertEffect(Effect effect) {
+        _effects.addAll(0, Collections.singletonList(effect));
     }
 
     @Override
@@ -115,8 +104,8 @@ public abstract class AbstractCostToEffectAction<AbstractGame extends DefaultGam
         return cost;
     }
 
-    protected final Effect<AbstractGame> getNextEffect() {
-        final Effect<AbstractGame> effect = _effects.poll();
+    protected final Effect getNextEffect() {
+        final Effect effect = _effects.poll();
         if (effect != null)
             _processedEffects.add(effect);
         return effect;

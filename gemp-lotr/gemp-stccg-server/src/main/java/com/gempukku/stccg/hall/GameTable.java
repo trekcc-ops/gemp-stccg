@@ -18,7 +18,7 @@ public class GameTable {
 
     public GameTable(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
-        String formatName = gameSettings.getLotroFormat().getName();
+        String formatName = gameSettings.getGameFormat().getName();
         this.capacity = 2; // manually change Tribbles player limit
         LOGGER.debug("Capacity of game: " + this.capacity);
     }
@@ -28,7 +28,7 @@ public class GameTable {
         this.cardGameMediator = cardGameMediator;
     }
 
-    public CardGameMediator getLotroGameMediator() {
+    public CardGameMediator getMediator() {
         return cardGameMediator;
     }
 

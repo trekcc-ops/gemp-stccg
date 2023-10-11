@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.game.DefaultGame;
 
 public interface AidCostSource {
-    boolean canPayAidCost(DefaultActionContext<DefaultGame> actionContext);
+    boolean canPayAidCost(ActionContext actionContext);
 
-    void appendAidCost(CostToEffectAction action, DefaultActionContext<DefaultGame> actionContext);
+    void appendAidCost(CostToEffectAction action, ActionContext actionContext);
 }

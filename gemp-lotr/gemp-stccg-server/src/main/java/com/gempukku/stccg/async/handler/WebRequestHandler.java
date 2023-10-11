@@ -42,12 +42,12 @@ public class WebRequestHandler implements UriRequestHandler {
         if (!file.exists())
             throw new HttpProcessingException(404);
 
-        final String etag = "\""+file.lastModified()+"\"";
+        final String eTag = "\""+file.lastModified()+"\"";
 
-        if (clientHasCurrentVersion(request, etag))
+        if (clientHasCurrentVersion(request, eTag))
             throw new HttpProcessingException(304);
 
-        responseWriter.writeFile(file, Collections.singletonMap(HttpHeaderNames.ETAG.toString(), etag));
+        responseWriter.writeFile(file, Collections.singletonMap(HttpHeaderNames.ETAG.toString(), eTag));
     }
 
     private boolean clientHasCurrentVersion(HttpRequest request, String etag) {

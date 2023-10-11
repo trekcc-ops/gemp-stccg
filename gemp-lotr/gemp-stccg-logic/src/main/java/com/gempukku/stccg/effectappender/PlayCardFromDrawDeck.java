@@ -52,13 +52,13 @@ public class PlayCardFromDrawDeck implements EffectAppenderProducer {
                                 final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
                                 return Filters.and(Filters.playable(game, costModifier), ExtraFilters.attachableTo(game, onFilterable));
                             }
-                            return Filters.playable(actionContext.getGame(), costModifier, false, false, true);
+                            return Filters.playable(costModifier, false, false, true);
                         },
                         countSource, memorize, "you", "you", "Choose card to play", environment));
         result.addEffectAppender(
-                new DelayedAppender<>() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
                         if (cardsToPlay.size() == 1) {
                             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
@@ -66,14 +66,14 @@ public class PlayCardFromDrawDeck implements EffectAppenderProducer {
                             Filterable onFilterable = (onFilterableSource != null) ? onFilterableSource.getFilterable(actionContext) : Filters.any;
 
                             final CostToEffectAction playCardAction = PlayUtils.getPlayCardAction(actionContext.getGame(), cardsToPlay.iterator().next(), costModifier, onFilterable, false);
-                            return new StackActionEffect(playCardAction);
+                            return new StackActionEffect(actionContext.getGame(), playCardAction);
                         } else {
                             return null;
                         }
                     }
 
                     @Override
-                    public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+                    public boolean isPlayableInFull(ActionContext actionContext) {
                         final DefaultGame game = actionContext.getGame();
                         return !game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
                     }

@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.effectappender.EffectAppender;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
 import com.gempukku.stccg.rules.GameUtils;
@@ -45,12 +44,12 @@ public class DefaultActionSource implements ActionSource {
     }
 
     @Override
-    public boolean isValid(DefaultActionContext<DefaultGame> actionContext) {
+    public boolean isValid(ActionContext actionContext) {
         return RequirementUtils.acceptsAllRequirements(requirements, actionContext);
     }
 
     @Override
-    public void createAction(CostToEffectAction action, DefaultActionContext actionContext) {
+    public void createAction(CostToEffectAction action, ActionContext actionContext) {
         if (text != null)
             action.setText(GameUtils.SubstituteText(text, actionContext));
 

@@ -36,7 +36,7 @@ public class GameSettings {
         return collectionType;
     }
 
-    public GameFormat getLotroFormat() {
+    public GameFormat getGameFormat() {
         return gameFormat;
     }
 

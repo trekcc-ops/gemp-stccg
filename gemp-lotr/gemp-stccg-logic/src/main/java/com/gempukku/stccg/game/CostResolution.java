@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 
 public class CostResolution {
     private final EffectResult[] _effectResults;

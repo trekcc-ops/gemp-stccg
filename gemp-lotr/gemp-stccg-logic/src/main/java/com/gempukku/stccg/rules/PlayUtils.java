@@ -4,11 +4,11 @@ import com.gempukku.stccg.actions.AttachPermanentAction;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.PlayEventAction;
 import com.gempukku.stccg.actions.PlayPermanentAction;
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.ImmutableMap;
 
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayUtils {
-    private static Zone getPlayToZone(PhysicalCard card) {
+    protected static Zone getPlayToZone(PhysicalCard card) {
         final CardType cardType = card.getBlueprint().getCardType();
         return switch (cardType) {
             case COMPANION -> Zone.FREE_CHARACTERS;
@@ -35,7 +35,7 @@ public class PlayUtils {
         put(Phase.REGROUP, Keyword.REGROUP);
     }});
 
-    private static Filter getFullAttachValidTargetFilter(final DefaultGame game, final PhysicalCard card,
+    protected static Filter getFullAttachValidTargetFilter(final DefaultGame game, final PhysicalCard card,
                                                          int twilightModifier) {
         return Filters.and(RuleUtils.getFullValidTargetFilter(card.getOwner(), game, card),
                 (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canHavePlayedOn(game1, card, physicalCard),
@@ -53,7 +53,7 @@ public class PlayUtils {
 
 
     public static CostToEffectAction getPlayCardAction(DefaultGame game, PhysicalCard card, int twilightModifier, Filterable additionalAttachmentFilter, boolean ignoreRoamingPenalty) {
-        final LotroCardBlueprint blueprint = card.getBlueprint();
+        final CardBlueprint blueprint = card.getBlueprint();
 
         if (blueprint.getCardType() != CardType.EVENT) {
             final Filterable validTargetFilter = blueprint.getValidTargetFilter(card.getOwner(), game, card);

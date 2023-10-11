@@ -1,8 +1,8 @@
 package com.gempukku.stccg.game;
 
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.rules.GameUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -18,10 +18,10 @@ public class ImportCards {
 
         List<CardCollection.Item> result = new ArrayList<>();
         for (CardCount cardCount : decklist) {
-            for (Map.Entry<String, LotroCardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
+            for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
                 String id = cardBlueprint.getKey();
                 if (isFromSupportedSet(id)) {
-                    LotroCardBlueprint blueprint = cardBlueprint.getValue();
+                    CardBlueprint blueprint = cardBlueprint.getValue();
                     if (exactNameMatch(blueprint, cardCount.name())) {
                         result.add(CardCollection.Item.createItem(id, cardCount.count()));
                         break;
@@ -33,7 +33,7 @@ public class ImportCards {
         return result;
     }
 
-    private boolean exactNameMatch(LotroCardBlueprint blueprint, String title) {
+    private boolean exactNameMatch(CardBlueprint blueprint, String title) {
         return blueprint != null
                 && SortAndFilterCards.replaceSpecialCharacters(GameUtils.getFullName(blueprint).toLowerCase()).equals(title);
     }

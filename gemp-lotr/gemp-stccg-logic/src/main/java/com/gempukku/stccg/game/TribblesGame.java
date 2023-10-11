@@ -22,7 +22,7 @@ public class TribblesGame extends DefaultGame {
                         final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
 
-        new TribblesRuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
+        new TribblesRuleSet(_actionsEnvironment, _modifiersLogic, this).applyRuleSet();
 
         _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
         _gameState.createPhysicalCards();

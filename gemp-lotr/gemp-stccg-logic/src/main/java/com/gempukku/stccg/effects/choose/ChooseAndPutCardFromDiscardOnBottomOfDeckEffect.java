@@ -6,16 +6,16 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effects.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.stccg.effects.defaulteffect.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
-public class ChooseAndPutCardFromDiscardOnBottomOfDeckEffect extends ChooseCardsFromDiscardEffect {
+public class ChooseAndPutCardFromDiscardOnBottomOfDeckEffect extends ChooseCardsFromZoneEffect {
     private final Action _action;
 
-    public ChooseAndPutCardFromDiscardOnBottomOfDeckEffect(Action action, String playerId, int minimum, int maximum, Filterable... filters) {
-        super(playerId, minimum, maximum, filters);
+    public ChooseAndPutCardFromDiscardOnBottomOfDeckEffect(DefaultGame game, Action action, String playerId, int minimum, int maximum, Filterable... filters) {
+        super(game, Zone.DISCARD, playerId, minimum, maximum, filters);
         _action = action;
     }
 
@@ -24,7 +24,7 @@ public class ChooseAndPutCardFromDiscardOnBottomOfDeckEffect extends ChooseCards
         if (cards.size() > 0) {
             SubAction subAction = new SubAction(_action);
             for (PhysicalCard card : cards)
-                subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(true, Zone.DISCARD, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
+                subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(game,true, Zone.DISCARD, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
             game.getActionsEnvironment().addActionToStack(subAction);
         }
     }

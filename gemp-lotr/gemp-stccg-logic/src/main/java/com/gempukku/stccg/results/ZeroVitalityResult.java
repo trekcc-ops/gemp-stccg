@@ -1,7 +1,6 @@
 package com.gempukku.stccg.results;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.EffectResult;
 
 import java.util.Set;
 

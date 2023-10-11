@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Map;
 
-public class StatusRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class StatusRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final HallServer _hallServer;
     private final GameHistoryService _gameHistoryService;
     private final ChatServer _chatServer;

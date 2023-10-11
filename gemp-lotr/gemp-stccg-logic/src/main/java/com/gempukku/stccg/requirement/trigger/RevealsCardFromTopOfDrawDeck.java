@@ -1,15 +1,10 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.results.RevealCardFromTopOfDeckResult;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.results.RevealCardFromTopOfDeckResult;
 import org.json.simple.JSONObject;
 
 public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
@@ -21,14 +16,14 @@ public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker<>() {
+        return new TriggerChecker() {
             @Override
             public boolean isBefore() {
                 return false;
             }
 
             @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean accepts(ActionContext actionContext) {
                 if (TriggerConditions.revealedCardsFromTopOfDeck(actionContext.getEffectResult(), actionContext.getPerformingPlayer())) {
                     RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) actionContext.getEffectResult();
                     final Filterable filterable = filterableSource.getFilterable(actionContext);

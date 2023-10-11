@@ -1,19 +1,18 @@
 package com.gempukku.stccg.effects.tribblepowers;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.AbstractEffect;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.effects.defaulteffect.ActivateTribblePowerEffect;
 
 public class ActivateFamineTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateFamineTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
-        super(action, source);
+    public ActivateFamineTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+        super(action, actionContext);
     }
 
     @Override
-    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
-        game.getGameState().setNextTribbleInSequence(1);
-        game.getActionsEnvironment().emitEffectResult(_result);
-        return new AbstractEffect.FullEffectResult(true);
+    protected FullEffectResult playEffectReturningResult() {
+        _game.getGameState().setNextTribbleInSequence(1);
+        _game.getActionsEnvironment().emitEffectResult(_result);
+        return new FullEffectResult(true);
     }
 }

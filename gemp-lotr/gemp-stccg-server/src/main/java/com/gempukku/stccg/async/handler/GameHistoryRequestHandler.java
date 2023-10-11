@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-public class GameHistoryRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class GameHistoryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final GameHistoryService _gameHistoryService;
 
     public GameHistoryRequestHandler(Map<Type, Object> context) {

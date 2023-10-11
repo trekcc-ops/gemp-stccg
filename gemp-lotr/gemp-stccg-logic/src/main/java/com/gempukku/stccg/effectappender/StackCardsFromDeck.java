@@ -1,17 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.ShuffleDeckEffect;
-import com.gempukku.stccg.effects.StackCardFromDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.StackCardFromDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.ShuffleDeckEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -35,16 +31,16 @@ public class StackCardsFromDeck implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCardsInDeck(filter, valueSource, "_temp2", "you", "Choose cards to stack", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
             @Override
-            protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final PhysicalCard card = actionContext.getCardFromMemory("_temp1");
                 if (card != null) {
                     final Collection<? extends PhysicalCard> cardsInDeck = actionContext.getCardsFromMemory("_temp2");
 
                     List<Effect> result = new LinkedList<>();
                     for (PhysicalCard physicalCard : cardsInDeck) {
-                        result.add(new StackCardFromDeckEffect(physicalCard, card));
+                        result.add(new StackCardFromDeckEffect(actionContext.getGame(), physicalCard, card));
                     }
 
                     return result;
@@ -54,10 +50,10 @@ public class StackCardsFromDeck implements EffectAppenderProducer {
         });
         if (shuffle)
             result.addEffectAppender(
-                    new DelayedAppender() {
+                    new DefaultDelayedAppender() {
                 @Override
-                protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                    return new ShuffleDeckEffect(actionContext.getPerformingPlayer());
+                protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                    return new ShuffleDeckEffect(actionContext.getGame(), actionContext.getPerformingPlayer());
                 }
             });
 

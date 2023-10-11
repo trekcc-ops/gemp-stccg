@@ -1,8 +1,10 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.game.DefaultGame;
 
-public interface TriggerChecker<AbstractGame extends DefaultGame> extends Requirement<AbstractGame> {
+public interface TriggerChecker<AbstractContext extends ActionContext> extends Requirement<AbstractContext> {
     boolean isBefore();
+
+    boolean accepts(AbstractContext actionContext);
 }

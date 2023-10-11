@@ -1,7 +1,6 @@
 package com.gempukku.stccg.results;
 
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.effects.EffectResult;
 
 public class ActivateTribblePowerResult extends EffectResult {
     private boolean _effectCancelled;

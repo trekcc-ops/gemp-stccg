@@ -1,16 +1,12 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.LookAtTopCardOfADeckEffect;
-import com.gempukku.stccg.effects.ShuffleDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.LookAtTopCardOfADeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.ShuffleDeckEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.List;
@@ -27,14 +23,14 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(new DelayedAppender<>() {
+        result.addEffectAppender(new DefaultDelayedAppender() {
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = actionContext.getGame().getGameState().getDrawDeck(deckId).size();
 
-                return new LookAtTopCardOfADeckEffect(actionContext.getPerformingPlayer(), count, deckId) {
+                return new LookAtTopCardOfADeckEffect(actionContext, count, deckId) {
                     @Override
                     protected void cardsLookedAt(List<? extends PhysicalCard> cards) {
                         if (memorize != null)
@@ -43,10 +39,10 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
                 };
             }
         });
-        result.addEffectAppender(new DelayedAppender() {
+        result.addEffectAppender(new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                return new ShuffleDeckEffect(playerSource.getPlayer(actionContext));
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                return new ShuffleDeckEffect(actionContext.getGame(), playerSource.getPlayer(actionContext));
             }
         });
 

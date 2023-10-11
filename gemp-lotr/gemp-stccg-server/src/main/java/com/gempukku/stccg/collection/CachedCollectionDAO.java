@@ -4,7 +4,7 @@ import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.common.DBDefs;
 import com.gempukku.stccg.db.CollectionDAO;
 import com.gempukku.stccg.cards.CardCollection;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class CachedCollectionDAO implements CollectionDAO, Cached {
     private final CollectionDAO _delegate;
-    private final Map<String, CardCollection> _playerCollections = Collections.synchronizedMap(new LRUMap(100));
+    private final Map<String, CardCollection> _playerCollections = Collections.synchronizedMap(new LRUMap<>(100));
 
     public CachedCollectionDAO(CollectionDAO delegate) {
         _delegate = delegate;

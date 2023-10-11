@@ -8,10 +8,10 @@ import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
-import com.gempukku.stccg.effects.DrawCardsEffect;
-import com.gempukku.stccg.effects.PreventEffect;
+import com.gempukku.stccg.effects.abstractsubaction.DrawCardsEffect;
+import com.gempukku.stccg.effects.defaulteffect.PreventEffect;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.Preventable;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
 
@@ -48,7 +48,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DrawCardsEffect drawEffect = new DrawCardsEffect(null, P1, 1);
+        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 1);
 
         carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
 
@@ -66,7 +66,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
 
@@ -86,7 +86,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DrawCardsEffect drawEffect = new DrawCardsEffect(null, P1, 2);
+        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 2);
 
         carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
 
@@ -104,8 +104,8 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
-        final PhysicalCardImpl merry2 = new PhysicalCardImpl(102, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardImpl merry2 = new PhysicalCardImpl(102, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
         _game.getGameState().putCardOnTopOfDeck(merry2);
@@ -126,7 +126,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DrawCardsEffect drawEffect = new DrawCardsEffect(null, P1, 2);
+        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 2);
 
         carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
 
@@ -145,7 +145,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getLotroCardBlueprint("1_303"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
 
@@ -170,7 +170,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                         if (TriggerConditions.isDrawingACard(effect, game, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(
-                                    new PreventEffect((Preventable) effect));
+                                    new PreventEffect(game, (Preventable) effect));
                             action.appendEffect(
                                     new IncrementEffect(preventCount));
                             return Collections.singletonList(action);
@@ -179,7 +179,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DrawCardsEffect drawEffect = new DrawCardsEffect(null, P1, 1);
+        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 1);
 
         carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
 

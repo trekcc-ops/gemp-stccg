@@ -1,11 +1,14 @@
 package com.gempukku.stccg.effects.discount;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.YesNoDecision;
+import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
@@ -19,23 +22,26 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
     private final PhysicalCard _source;
     private final String _playerId;
     private final int _count;
-    private final int discount;
+    private final int _discount;
     private final Filterable _cardFilter;
 
     private boolean _paid;
     private boolean _required;
+    private final ActionContext _actionContext;
 
-    public RemoveCardsFromDiscardDiscountEffect(PhysicalCard source, String playerId, int count, int discount, Filterable cardFilter) {
-        _source = source;
-        _playerId = playerId;
+    public RemoveCardsFromDiscardDiscountEffect(ActionContext actionContext, int count, int discount,
+                                                Filterable cardFilter) {
+        _source = actionContext.getSource();
+        _playerId = actionContext.getPerformingPlayer();
         _count = count;
-        this.discount = discount;
+        _discount = discount;
         _cardFilter = cardFilter;
+        _actionContext = actionContext;
     }
 
     @Override
     public int getDiscountPaidFor() {
-        return _paid ? discount : 0;
+        return _paid ? _discount : 0;
     }
 
     @Override
@@ -44,18 +50,20 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText() {
         return null;
     }
 
     @Override
-    public Type getType() {
+    public EffectType getType() {
         return null;
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
-        return Filters.filter(game.getGameState().getDiscard(_playerId), game, _cardFilter).size() >= _count;
+    public boolean isPlayableInFull() {
+        return Filters.filter(
+                _actionContext.getGame().getGameState().getDiscard(_playerId), _actionContext.getGame(), _cardFilter
+        ).size() >= _count;
     }
 
     @Override
@@ -64,18 +72,18 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
     }
 
     @Override
-    public void playEffect(final DefaultGame game) {
-        if (isPlayableInFull(game)) {
+    public void playEffect() {
+        if (isPlayableInFull()) {
             if (!_required) {
-                game.getUserFeedback().sendAwaitingDecision(_playerId,
+                _actionContext.getGame().getUserFeedback().sendAwaitingDecision(_playerId,
                         new YesNoDecision("Do you want to remove cards from discard instead of paying twilight cost?") {
                             @Override
                             protected void yes() {
-                                proceedDiscount(game);
+                                proceedDiscount(_actionContext.getGame());
                             }
                         });
             } else {
-                proceedDiscount(game);
+                proceedDiscount(_actionContext.getGame());
             }
         }
     }

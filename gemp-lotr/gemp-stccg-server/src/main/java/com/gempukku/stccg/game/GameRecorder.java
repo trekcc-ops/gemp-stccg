@@ -34,9 +34,6 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 public class GameRecorder {
-    private static final String _possibleChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    private static final int _charsCount = _possibleChars.length();
-
     private final GameHistoryService _gameHistoryService;
     private final PlayerDAO _playerDAO;
 
@@ -46,23 +43,23 @@ public class GameRecorder {
     }
 
 
-    public GameRecordingInProgress recordGame(CardGameMediator<DefaultGame> lotroGame, GameFormat format,
+    public GameRecordingInProgress recordGame(CardGameMediator<DefaultGame> game, GameFormat format,
                                               final String tournamentName, final Map<String, CardDeck> decks) {
         final ZonedDateTime startDate = ZonedDateTime.now(ZoneOffset.UTC);
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();
-        for (String playerId : lotroGame.getPlayersPlaying()) {
+        for (String playerId : game.getPlayersPlaying()) {
             var recordChannel = new GameCommunicationChannel(playerId, 0, format);
-            lotroGame.addGameStateListener(playerId, recordChannel);
+            game.addGameStateListener(playerId, recordChannel);
             recordingChannels.put(playerId, recordChannel);
         }
 
         return (winnerName, winReason, loserName, loseReason) -> {
             final ZonedDateTime endDate = ZonedDateTime.now(ZoneOffset.UTC);
 
-            var time = lotroGame.getTimeSettings();
-            var clocks = lotroGame.getPlayerClocks();
+            var time = game.getTimeSettings();
+            var clocks = game.getPlayerClocks();
             var gameInfo = new DBDefs.GameHistory() {{
-                gameId = lotroGame.getGameId();
+                gameId = game.getGameId();
 
                 winner = winnerName;
                 winnerId = _playerDAO.getPlayer(winnerName).getId();
@@ -107,7 +104,7 @@ public class GameRecorder {
                 String winnerURL = "https://play.lotrtcgpc.net/gemp-lotr/game.html%3FreplayId%3D" + winnerName + "$" + playerRecordingId.get(winnerName);
                 String loserURL = "https://play.lotrtcgpc.net/gemp-lotr/game.html%3FreplayId%3D" + loserName + "$" + playerRecordingId.get(loserName);
                 url += winnerURL + "%20" + loserURL;
-                lotroGame.sendMessageToPlayers("Thank you for playtesting!  If you have any feedback, bugs, or other issues to report about this match, <a href= '" + url + "'>please do so using this form.</a>");
+                game.sendMessageToPlayers("Thank you for playtesting!  If you have any feedback, bugs, or other issues to report about this match, <a href= '" + url + "'>please do so using this form.</a>");
             }
 
         };
@@ -233,20 +230,16 @@ public class GameRecorder {
         return result;
     }
 
-    private String randomUid() {
-        int length = 16;
-        char[] chars = new char[length];
-        Random rnd = ThreadLocalRandom.current();
-        for (int i = 0; i < length; i++)
-            chars[i] = _possibleChars.charAt(rnd.nextInt(_charsCount));
-
-        return new String(chars);
-    }
-
     private String getNewRecordingID() {
         String id;
         do {
-            id = randomUid();
+            StringBuilder sb = new StringBuilder();
+            final String POSSIBLE_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+            int idLength = 16;
+            Random rnd = ThreadLocalRandom.current();
+            for (int i = 0; i < idLength; i++)
+                sb.append(POSSIBLE_CHARS.charAt(rnd.nextInt(POSSIBLE_CHARS.length())));
+            id = sb.toString();
         } while (_gameHistoryService.doesReplayIDExist(id));
         return id;
     }

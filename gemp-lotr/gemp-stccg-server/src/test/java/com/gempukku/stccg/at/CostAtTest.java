@@ -1,10 +1,10 @@
 package com.gempukku.stccg.at;
 
+import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCardImpl;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
-import com.gempukku.stccg.cards.LotroDeck;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -15,11 +15,9 @@ import static org.junit.Assert.assertEquals;
 public class CostAtTest extends AbstractAtTest {
     @Test
     public void playOnCostReduction() throws DecisionResultInvalidException, CardNotFoundException {
-        Map<String, LotroDeck> decks = new HashMap<>();
+        Map<String, CardDeck> decks = new HashMap<>();
 
-        LotroDeck deck = createSimplestDeck();
-        // Frodo, Reluctant Adventurer
-        deck.setRingBearer("2_102");
+        CardDeck deck = createSimplestDeck();
         decks.put(P1, deck);
         addPlayerDeck(P2, decks, null);
 

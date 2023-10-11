@@ -3,7 +3,7 @@ package com.gempukku.stccg.db;
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.game.User;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class CachedDeckDAO implements DeckDAO, Cached {
     private final DeckDAO _delegate;
-    private final Map<String, Set<Map.Entry<String, String>>> _playerDeckNames = Collections.synchronizedMap(new LRUMap(100));
-    private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap(100));
+    private final Map<String, Set<Map.Entry<String, String>>> _playerDeckNames = Collections.synchronizedMap(new LRUMap<>(100));
+    private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap<>(100));
 
     public CachedDeckDAO(DeckDAO delegate) {
         _delegate = delegate;

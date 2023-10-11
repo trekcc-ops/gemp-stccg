@@ -11,7 +11,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class PlayerInfoRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class PlayerInfoRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     public PlayerInfoRequestHandler(Map<Type, Object> context) {
         super(context);

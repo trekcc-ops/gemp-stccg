@@ -2,7 +2,6 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.rules.lotronly.*;
 
 public class RuleSet {
     private final DefaultActionsEnvironment _actionsEnvironment;
@@ -18,10 +17,7 @@ public class RuleSet {
 
         new StatModifiersRule(_modifiersLogic).applyRule();
 
-        new FollowerRule(_actionsEnvironment).applyRule();
-
         new PlayCardInPhaseRule(_actionsEnvironment).applyRule();
-        new PlayResponseEventRule(_actionsEnvironment).applyRule();
 
         new ActivateResponseAbilitiesRule(_actionsEnvironment).applyRule();
         new ActivatePhaseActionsRule(_actionsEnvironment).applyRule();

@@ -41,16 +41,16 @@ public class PlayCardFromStacked implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveStackedCards(filter,
                         actionContext -> Filters.playable(actionContext.getGame()),
-                        actionContext -> Filters.playable(actionContext.getGame(), removedTwilight, 0, false, false, true),
+                        actionContext -> Filters.playable(removedTwilight, 0, false, false, true),
                         countSource, onFilterableSource, "_temp", "you", "Choose card to play", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory("_temp");
                         if (cardsToPlay.size() == 1) {
                             final CostToEffectAction playCardAction = PlayUtils.getPlayCardAction(actionContext.getGame(), cardsToPlay.iterator().next(), 0, Filters.any, false);
-                            return new StackActionEffect(playCardAction);
+                            return new StackActionEffect(actionContext.getGame(), playCardAction);
                         } else {
                             return null;
                         }

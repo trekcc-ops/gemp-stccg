@@ -35,7 +35,7 @@ public class ST1EPlayCardInPhaseRule {
                         } else if (phase == Phase.SEED_MISSION && game.getGameState().getHand(playerId).size() > 0) {
                             if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
                                 List<Action> actionList = new LinkedList<>();
-                                actionList.add(new PlayMissionAction(game.getGameState().getHand(playerId).get(0)));
+                                actionList.add(new PlayMissionAction(game, game.getGameState().getHand(playerId).get(0)));
                                 return actionList;
                             }
 //                        else if (phase == Phase.SEED_DOORWAY && game.getGameState().get)

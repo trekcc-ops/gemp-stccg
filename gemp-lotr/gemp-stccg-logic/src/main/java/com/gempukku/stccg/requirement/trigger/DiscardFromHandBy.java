@@ -1,10 +1,9 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.results.DiscardCardFromHandResult;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class DiscardFromHandBy implements TriggerCheckerProducer {
@@ -21,14 +20,14 @@ public class DiscardFromHandBy implements TriggerCheckerProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         final FilterableSource byFilterableSource = environment.getFilterFactory().generateFilter(byFilter, environment);
 
-        return new TriggerChecker<>() {
+        return new TriggerChecker() {
             @Override
             public boolean isBefore() {
                 return false;
             }
 
             @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean accepts(ActionContext actionContext) {
                 boolean result = TriggerConditions.forEachDiscardedFromHandBy(actionContext.getGame(), actionContext.getEffectResult(),
                         byFilterableSource.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
                 if (result && playerSource != null) {

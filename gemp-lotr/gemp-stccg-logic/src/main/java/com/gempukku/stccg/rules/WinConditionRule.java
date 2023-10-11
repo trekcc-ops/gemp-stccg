@@ -3,7 +3,7 @@ package com.gempukku.stccg.rules;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.RequiredTriggerAction;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;

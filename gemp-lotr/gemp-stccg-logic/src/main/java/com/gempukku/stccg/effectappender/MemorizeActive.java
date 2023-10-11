@@ -1,17 +1,12 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.UnrespondableEffect;
+import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -26,14 +21,14 @@ public class MemorizeActive implements EffectAppenderProducer {
 
         final FilterableSource filterSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 return new UnrespondableEffect() {
                     @Override
-                    protected void doPlayEffect(DefaultGame game) {
+                    protected void doPlayEffect() {
                         final Filterable filterable = filterSource.getFilterable(actionContext);
-                        final Collection<PhysicalCard> physicalCards = Filters.filterActive(game, filterable);
+                        final Collection<PhysicalCard> physicalCards = Filters.filterActive(actionContext.getGame(), filterable);
                         actionContext.setCardMemory(memory, physicalCards);
                     }
                 };

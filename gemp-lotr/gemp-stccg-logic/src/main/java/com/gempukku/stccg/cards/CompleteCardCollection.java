@@ -32,7 +32,7 @@ public class CompleteCardCollection implements CardCollection {
         final String baseBlueprintId = _library.getBaseBlueprintId(blueprintId);
         if (baseBlueprintId.equals(blueprintId)) {
             try {
-                return getCount(_library.getLotroCardBlueprint(blueprintId));
+                return getCount(_library.getCardBlueprint(blueprintId));
             } catch (CardNotFoundException exp) {
                 return 0;
             }
@@ -40,7 +40,7 @@ public class CompleteCardCollection implements CardCollection {
         return 0;
     }
 
-    private int getCount(LotroCardBlueprint blueprint) {
+    private int getCount(CardBlueprint blueprint) {
         final CardType cardType = blueprint.getCardType();
         if (cardType == CardType.SITE || cardType == CardType.THE_ONE_RING)
             return 1;

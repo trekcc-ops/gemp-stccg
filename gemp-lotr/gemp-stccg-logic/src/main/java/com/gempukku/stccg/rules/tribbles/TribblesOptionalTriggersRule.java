@@ -8,7 +8,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 
 import java.util.LinkedList;
 import java.util.List;

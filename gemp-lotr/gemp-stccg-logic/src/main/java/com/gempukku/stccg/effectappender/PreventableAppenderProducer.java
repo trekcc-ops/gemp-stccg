@@ -1,17 +1,16 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.effects.PlayoutDecisionEffect;
-import com.gempukku.stccg.effects.StackActionEffect;
+import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.UnrespondableEffect;
+import com.gempukku.stccg.effects.PlayOutDecisionEffect;
+import com.gempukku.stccg.effects.StackActionEffect;
+import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.rules.GameUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Arrays;
@@ -35,21 +34,21 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
         final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
         final EffectAppender[] costAppenders = environment.getEffectAppenderFactory().getEffectAppenders(costArray, environment);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 if (areCostsPlayable(actionContext)) {
                     final String preventingPlayer = preventingPlayerSource.getPlayer(actionContext);
 
-                    String textToUse = GameUtils.SubstituteText(text, actionContext);
+                    String textToUse = GameUtils.SubstituteText(_text, actionContext);
 
                     SubAction subAction = new SubAction(action);
                     subAction.appendEffect(
-                            new PlayoutDecisionEffect(preventingPlayer,
+                            new PlayOutDecisionEffect(actionContext.getGame(), preventingPlayer,
                                     new YesNoDecision(textToUse) {
                                         @Override
                                         protected void yes() {
-                                            DelegateActionContext delegate = new DelegateActionContext(actionContext,
+                                            DefaultActionContext delegate = new DefaultActionContext(actionContext,
                                                     preventingPlayer, actionContext.getGame(), actionContext.getSource(), actionContext.getEffectResult(),
                                                     actionContext.getEffect());
                                             for (EffectAppender costAppender : costAppenders)
@@ -58,7 +57,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                             subAction.appendEffect(
                                                     new UnrespondableEffect() {
                                                         @Override
-                                                        protected void doPlayEffect(DefaultGame game) {
+                                                        protected void doPlayEffect() {
                                                             // If the prevention was not carried out, need to do the original action anyway
                                                             if (!subAction.wasCarriedOut()) {
                                                                 for (EffectAppender effectAppender : effectAppenders)
@@ -83,21 +82,21 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                                 effectAppender.appendEffect(false, subAction, actionContext);
                                         }
                                     }));
-                    return new StackActionEffect(subAction);
+                    return new StackActionEffect(actionContext.getGame(), subAction);
                 } else {
                     SubAction subAction = new SubAction(action);
                     for (EffectAppender effectAppender : effectAppenders)
                         effectAppender.appendEffect(false, subAction, actionContext);
-                    return new StackActionEffect(subAction);
+                    return new StackActionEffect(actionContext.getGame(), subAction);
                 }
             }
 
-            private boolean areCostsPlayable(DefaultActionContext<DefaultGame> actionContext) {
+            private boolean areCostsPlayable(ActionContext actionContext) {
                 return Arrays.stream(costAppenders).allMatch(costAppender -> costAppender.isPlayableInFull(actionContext));
             }
 
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 return Arrays.stream(effectAppenders).allMatch(effectAppender -> effectAppender.isPlayableInFull(actionContext));
             }
         };

@@ -1,16 +1,12 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.StackCardFromPlayEffect;
+import com.gempukku.stccg.effects.defaulteffect.StackCardFromPlayEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -37,16 +33,16 @@ public class StackCardsFromPlay implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCards(filter, valueSource, "_temp2", "you", "Choose cards to stack", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final PhysicalCard card = actionContext.getCardFromMemory("_temp1");
                         if (card != null) {
                             final Collection<? extends PhysicalCard> cardsInHand = actionContext.getCardsFromMemory("_temp2");
 
                             List<Effect> result = new LinkedList<>();
                             for (PhysicalCard physicalCard : cardsInHand) {
-                                result.add(new StackCardFromPlayEffect(physicalCard, card));
+                                result.add(new StackCardFromPlayEffect(actionContext.getGame(), physicalCard, card));
                             }
 
                             return result;

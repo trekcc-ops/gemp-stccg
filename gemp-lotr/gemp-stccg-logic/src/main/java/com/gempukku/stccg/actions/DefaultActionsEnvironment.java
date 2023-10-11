@@ -2,13 +2,13 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
 
 public class DefaultActionsEnvironment implements ActionsEnvironment {
-    private final DefaultGame _lotroGame;
+    private final DefaultGame _game;
     private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final Map<Phase, List<ActionProxy>> _untilStartOfPhaseActionProxies = new HashMap<>();
@@ -20,8 +20,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final List<EffectResult> turnEffectResults = new LinkedList<>();
     private final List<EffectResult> phaseEffectResults = new LinkedList<>();
 
-    public DefaultActionsEnvironment(DefaultGame lotroGame, Stack<Action> actionStack) {
-        _lotroGame = lotroGame;
+    public DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack) {
+        _game = game;
         _actionStack = actionStack;
     }
 
@@ -104,7 +104,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> gatheredActions = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredBeforeTriggers(_lotroGame, effect);
+            List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredBeforeTriggers(_game, effect);
             if (actions != null) {
                 gatheredActions.addAll(actions);
             }
@@ -118,7 +118,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalBeforeTriggers(playerId, _lotroGame, effect);
+            List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalBeforeTriggers(playerId, _game, effect);
             if (actions != null) {
                 for (OptionalTriggerAction action : actions) {
                     action.setPerformingPlayer(playerId);
@@ -135,11 +135,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, _lotroGame, effect);
+            List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, _game, effect);
             if (actions != null) {
                 for (Action action : actions) {
                     action.setPerformingPlayer(playerId);
-                    if (_lotroGame.getModifiersQuerying().canPlayAction(_lotroGame, playerId, action))
+                    if (_game.getModifiersQuerying().canPlayAction(_game, playerId, action))
                         result.add(action);
                 }
             }
@@ -155,7 +155,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
-                    List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredAfterTriggers(_lotroGame, effectResult);
+                    List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredAfterTriggers(_game, effectResult);
                     if (actions != null)
                         gatheredActions.addAll(actions);
                 }
@@ -172,7 +172,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
-                    List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalAfterTriggerActions(playerId, _lotroGame, effectResult);
+                    List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalAfterTriggerActions(playerId, _game, effectResult);
                     if (actions != null) {
                         for (OptionalTriggerAction action : actions) {
                             if (!effectResult.wasOptionalTriggerUsed(action)) {
@@ -195,11 +195,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, _lotroGame, effectResult);
+                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, _game, effectResult);
                     if (actions != null) {
                         for (Action action : actions) {
                             action.setPerformingPlayer(playerId);
-                            if (_lotroGame.getModifiersQuerying().canPlayAction(_lotroGame, playerId, action))
+                            if (_game.getModifiersQuerying().canPlayAction(_game, playerId, action))
                                 result.add(action);
                         }
                     }
@@ -215,11 +215,11 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getPhaseActions(playerId, _lotroGame);
+            List<? extends Action> actions = actionProxy.getPhaseActions(playerId, _game);
             if (actions != null) {
                 for (Action action : actions) {
                     action.setPerformingPlayer(playerId);
-                    if (_lotroGame.getModifiersQuerying().canPlayAction(_lotroGame, playerId, action))
+                    if (_game.getModifiersQuerying().canPlayAction(_game, playerId, action))
                         result.add(action);
                 }
             }

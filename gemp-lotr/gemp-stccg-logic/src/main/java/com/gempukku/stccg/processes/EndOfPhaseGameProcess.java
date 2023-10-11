@@ -1,13 +1,14 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.effects.AbstractSuccessfulEffect;
-import com.gempukku.stccg.results.EndOfPhaseResult;
 import com.gempukku.stccg.actions.SystemQueueAction;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.TriggeringResultEffect;
+import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
+import com.gempukku.stccg.results.EndOfPhaseResult;
 
 public class EndOfPhaseGameProcess implements GameProcess {
     private final Phase _phase;
@@ -26,19 +27,28 @@ public class EndOfPhaseGameProcess implements GameProcess {
         action.appendEffect(
                 new TriggeringResultEffect(null, new EndOfPhaseResult(_phase), "End of " + _phase + " phase"));
         action.appendEffect(
-                new AbstractSuccessfulEffect() {
+                new Effect() {
                     @Override
-                    public String getText(DefaultGame game) {
+                    public String getText() {
+                        return null;
+                    }
+                    @Override
+                    public boolean isPlayableInFull() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean wasCarriedOut() {
+                        return true;
+                    }
+
+                    @Override
+                    public EffectType getType() {
                         return null;
                     }
 
                     @Override
-                    public Type getType() {
-                        return null;
-                    }
-
-                    @Override
-                    public void playEffect(DefaultGame game) {
+                    public void playEffect() {
                         ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfPhase(_phase);
                         ((DefaultActionsEnvironment) game.getActionsEnvironment()).signalEndOfPhase(_phase);
                         game.getGameState().sendMessage("End of " + _phase + " phase.");

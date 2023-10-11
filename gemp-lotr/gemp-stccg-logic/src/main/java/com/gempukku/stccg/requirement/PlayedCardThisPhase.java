@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.CardPlayedInCurrentPhaseCondition;
 import org.json.simple.JSONObject;
 
-public class PlayedCardThisPhase implements RequirementProducer {
+public class PlayedCardThisPhase extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "filter");
@@ -17,7 +17,7 @@ public class PlayedCardThisPhase implements RequirementProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return (actionContext) -> {
+        return actionContext -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);
             return new CardPlayedInCurrentPhaseCondition(filterable).isFulfilled(actionContext.getGame());
         };

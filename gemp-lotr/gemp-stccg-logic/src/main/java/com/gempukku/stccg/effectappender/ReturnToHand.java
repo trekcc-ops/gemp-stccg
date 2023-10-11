@@ -1,16 +1,12 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.ReturnCardsToHandEffect;
+import com.gempukku.stccg.effects.defaulteffect.ReturnCardsToHandEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import org.json.simple.JSONObject;
@@ -33,11 +29,11 @@ public class ReturnToHand implements EffectAppenderProducer {
                         actionContext -> (Filter) (game, physicalCard) -> game.getModifiersQuerying().canBeReturnedToHand(game, physicalCard, actionContext.getSource()),
                         valueSource, "_temp", player, "Choose cards to return to hand", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory("_temp");
-                        return new ReturnCardsToHandEffect(actionContext.getSource(), Filters.in(cardsFromMemory));
+                        return new ReturnCardsToHandEffect(actionContext.getGame(), actionContext.getSource(), Filters.in(cardsFromMemory));
                     }
                 });
 

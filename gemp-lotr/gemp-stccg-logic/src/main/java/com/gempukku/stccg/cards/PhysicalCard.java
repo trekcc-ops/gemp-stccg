@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class PhysicalCard implements Filterable {
     protected Zone _zone;
     protected final String _blueprintId;
-    protected final LotroCardBlueprint _blueprint;
+    protected final CardBlueprint _blueprint;
     protected final String _owner;
     protected String _cardController;
     protected int _cardId;
@@ -31,7 +31,7 @@ public class PhysicalCard implements Filterable {
     protected Integer _siteNumber;
     private int _locationZoneIndex;
 
-    public PhysicalCard(int cardId, String blueprintId, String owner, LotroCardBlueprint blueprint) {
+    public PhysicalCard(int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _blueprintId = blueprintId;
         _owner = owner;
@@ -96,7 +96,7 @@ public class PhysicalCard implements Filterable {
         }
     }
 
-    public LotroCardBlueprint getBlueprint() {
+    public CardBlueprint getBlueprint() {
         return _blueprint;
     }
 
@@ -145,7 +145,7 @@ public class PhysicalCard implements Filterable {
         if (_blueprint.getOptionalAfterTriggers() != null) {
             result = new LinkedList<>();
             for (ActionSource optionalAfterTrigger : _blueprint.getOptionalAfterTriggers()) {
-                DefaultActionContext<DefaultGame> actionContext = new DefaultActionContext<>(
+                ActionContext actionContext = new DefaultActionContext(
                         playerId, game, self, effectResult,null);
                 if (optionalAfterTrigger.isValid(actionContext)) {
                     OptionalTriggerAction action = new OptionalTriggerAction(self);
@@ -160,7 +160,7 @@ public class PhysicalCard implements Filterable {
             if (result == null)
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : _blueprint.getCopiedFilters()) {
-                DefaultActionContext<DefaultGame> actionContext = new DefaultActionContext<>(
+                ActionContext actionContext = new DefaultActionContext(
                         playerId, game, self, effectResult,null);
                 final PhysicalCard firstActive = Filters.findFirstActive(
                         game, copiedFilter.getFilterable(actionContext)

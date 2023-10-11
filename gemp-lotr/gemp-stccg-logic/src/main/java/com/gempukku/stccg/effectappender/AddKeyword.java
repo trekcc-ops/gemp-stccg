@@ -1,20 +1,15 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.AddUntilModifierEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilModifierEffect;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.KeywordModifier;
 import com.gempukku.stccg.rules.GameUtils;
 import org.json.simple.JSONObject;
@@ -29,13 +24,13 @@ public class AddKeyword implements EffectAppenderProducer {
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(effectObject, "count", "filter", "memorize", "keyword", "amount", "until");
 
-        final ValueSource<DefaultGame> valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
         final String memory = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
         final String keywordString = FieldUtils.getString(effectObject.get("keyword"), "keyword");
         final TimeResolver.Time until = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
 
-        Function<DefaultActionContext, Keyword> keywordFunction;
+        Function<ActionContext, Keyword> keywordFunction;
         ValueSource amount;
         if (keywordString.startsWith("fromMemory(") && keywordString.endsWith(")")) {
             String keywordMemory = keywordString.substring(keywordString.indexOf("(") + 1, keywordString.lastIndexOf(")"));
@@ -57,14 +52,14 @@ public class AddKeyword implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCards(filter, valueSource, memory, "you", "Choose cards to add keyword to", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         List<Effect> result = new LinkedList<>();
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         for (PhysicalCard physicalCard : cardsFromMemory) {
                             final int keywordCount = amount.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), physicalCard);
-                            result.add(new AddUntilModifierEffect(
+                            result.add(new AddUntilModifierEffect(actionContext.getGame(),
                                     new KeywordModifier(actionContext.getSource(), physicalCard, keywordFunction.apply(actionContext), keywordCount), until));
                         }
 

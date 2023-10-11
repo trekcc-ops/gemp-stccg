@@ -5,14 +5,16 @@ import com.gempukku.stccg.common.filterable.Side;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.*;
 import com.gempukku.stccg.effects.choose.ChooseActiveCardEffect;
-import com.gempukku.stccg.effects.discount.DiscountEffect;
+import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.effects.defaulteffect.PayPlayOnTwilightCostEffect;
+import com.gempukku.stccg.effects.defaulteffect.PlayCardEffect;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
 
-public class AttachPermanentAction extends AbstractCostToEffectAction<DefaultGame> {
+public class AttachPermanentAction extends AbstractCostToEffectAction {
     private final PhysicalCard _cardToAttach;
 
     private boolean _cardRemoved;
@@ -30,22 +32,25 @@ public class AttachPermanentAction extends AbstractCostToEffectAction<DefaultGam
     private int _twilightModifier;
     private final Zone _playedFrom;
     private PhysicalCard _target;
+    private final DefaultGame _game;
 
-    public AttachPermanentAction(final DefaultGame game, final PhysicalCard card, Filter filter, final int twilightModifier) {
+    public AttachPermanentAction(DefaultGame game, final PhysicalCard card, Filter filter, final int twilightModifier) {
+        _game = game;
         _cardToAttach = card;
         setText("Play " + GameUtils.getFullName(_cardToAttach));
         _playedFrom = card.getZone();
         _twilightModifier = twilightModifier;
 
         _chooseTargetEffect =
-                new ChooseActiveCardEffect(null, card.getOwner(), "Attach " + GameUtils.getFullName(card) + ". Choose target to attach to", filter) {
+                new ChooseActiveCardEffect(_game,null, card.getOwner(), "Attach " + GameUtils.getFullName(card) + ". Choose target to attach to", filter) {
                     @Override
                     protected void cardSelected(DefaultGame game, PhysicalCard target) {
                         _target = target;
-                        game.getGameState().sendMessage(card.getOwner() + " plays " + GameUtils.getCardLink(card) + " from " + _playedFrom.getHumanReadable() + " on " + GameUtils.getCardLink(target));
+                        _game.getGameState().sendMessage(card.getOwner() + " plays " + GameUtils.getCardLink(card) + " from " + _playedFrom.getHumanReadable() + " on " + GameUtils.getCardLink(target));
                     }
                 };
     }
+
 
     @Override
     public ActionType getActionType() {
@@ -104,7 +109,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction<DefaultGam
         if (!_discountApplied) {
             _discountApplied = true;
             _twilightModifier -= getProcessedDiscount();
-            insertCost(new PayPlayOnTwilightCostEffect(_cardToAttach, _target, _twilightModifier));
+            insertCost(new PayPlayOnTwilightCostEffect(game, _cardToAttach, _target, _twilightModifier));
         }
 
         if ((_target != null) && (!isCostFailed())) {
@@ -115,7 +120,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction<DefaultGam
             if (!_cardPlayed) {
                 _cardPlayed = true;
 
-                return new PlayCardEffect(_playedFrom, _cardToAttach, _target, null);
+                return new PlayCardEffect(_game, _playedFrom, _cardToAttach, _target, null);
             }
 
             return getNextEffect();

@@ -1,17 +1,12 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.ActionProxy;
-import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
-import com.gempukku.stccg.effects.DiscardCardsFromPlayEffect;
-import com.gempukku.stccg.effects.EffectResult;
 import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.rules.GameUtils;
 
@@ -31,9 +26,9 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public static final String GreatRing = "19_1";
 
     private final FilterFactory FilterFactory = new FilterFactory();
-    private final CardGenerationEnvironment Environment = new LotroCardBlueprintBuilder();
-    private final DefaultActionContext FreepsFilterContext = new DefaultActionContext<DefaultGame>(P1, _game, null, null, null);
-    private final DefaultActionContext ShadowFilterContext = new DefaultActionContext<DefaultGame>(P2, _game, null, null, null);
+    private final CardGenerationEnvironment Environment = new CardBlueprintFactory();
+    private final DefaultActionContext FreepsFilterContext = new DefaultActionContext(P1, _game, null, null, null);
+    private final DefaultActionContext ShadowFilterContext = new DefaultActionContext(P2, _game, null, null, null);
 
 
     // Player key, then name/card
@@ -43,35 +38,10 @@ public class GenericCardTestHelper extends AbstractAtTest {
         this(cardIDs, null, null, null, "multipath");
     }
 
-    public GenericCardTestHelper(HashMap<String, String> cardIDs, HashMap<String, String> siteIDs, String ringBearerID, String ringID) throws CardNotFoundException, DecisionResultInvalidException {
-        this(cardIDs, siteIDs, ringBearerID, ringID, "multipath");
-    }
-
     public GenericCardTestHelper(HashMap<String, String> cardIDs, HashMap<String, String> siteIDs, String ringBearerID, String ringID, String path) throws CardNotFoundException, DecisionResultInvalidException {
         super();
 
-        if(siteIDs == null || ringBearerID == null || ringID == null) {
-            initializeSimplestGame();
-        }
-        else {
-            Map<String, LotroDeck> decks = new HashMap<>();
-            decks.put(P1, new LotroDeck(P1));
-            decks.put(P2, new LotroDeck(P2));
-
-            for(String name : siteIDs.keySet()) {
-                String id = siteIDs.get(name);
-                decks.get(P1).addSite(id);
-                decks.get(P2).addSite(id);
-            }
-
-            decks.get(P1).setRingBearer(ringBearerID);
-            decks.get(P2).setRingBearer(ringBearerID);
-
-            decks.get(P1).setRing(ringID);
-            decks.get(P2).setRing(ringID);
-
-            initializeGameWithDecks(decks, path);
-        }
+        initializeSimplestGame();
 
         Cards.put(P1, new HashMap<>());
         Cards.put(P2, new HashMap<>());
@@ -773,41 +743,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
     public void FreepsResolveActionOrder(String option) throws DecisionResultInvalidException { ChooseAction(P1, "actionText", option); }
-
-    public Filterable GenerateFreepsFilter(String filter) throws InvalidCardDefinitionException {
-        return FilterFactory.generateFilter(filter, Environment).getFilterable(FreepsFilterContext);
-    }
-    public Filterable GenerateShadowFilter(String filter) throws InvalidCardDefinitionException {
-        return FilterFactory.generateFilter(filter, Environment).getFilterable(ShadowFilterContext);
-    }
-
-    public void ApplyAdHocFreepsAutoDiscard(String filter)  {
-        try{
-            ApplyAdHocAutoDiscard(GenerateFreepsFilter(filter));
-        }
-        catch(InvalidCardDefinitionException ex) {}
-
-    }
-
-    public void ApplyAdHocShadowAutoDiscard(String filter)  {
-        try {
-            ApplyAdHocAutoDiscard(GenerateShadowFilter(filter));
-        }
-        catch(InvalidCardDefinitionException ex) {}
-    }
-
-    private void ApplyAdHocAutoDiscard(Filterable...filterables)  {
-
-        ApplyAdHocAction(new AbstractActionProxy() {
-            @Override
-            public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult)  {
-                RequiredTriggerAction action = new RequiredTriggerAction(null);
-                action.appendEffect(
-                        new DiscardCardsFromPlayEffect(P2, null, filterables));
-                return Collections.singletonList(action);
-            }
-        });
-    }
 
     public void AcknowledgeReveal() throws DecisionResultInvalidException
     {

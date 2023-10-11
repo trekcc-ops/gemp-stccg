@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
 
-public class LoginRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class LoginRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     public LoginRequestHandler(Map<Type, Object> context) {
         super(context);

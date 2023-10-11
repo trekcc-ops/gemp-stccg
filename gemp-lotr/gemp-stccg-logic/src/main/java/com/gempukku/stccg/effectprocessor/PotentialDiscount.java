@@ -2,16 +2,16 @@ package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effects.discount.*;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class PotentialDiscount implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value, "max", "discount", "memorize");
 
         final ValueSource maxSource = ValueResolver.resolveEvaluator(value.get("max"), 1000, environment);
@@ -28,14 +28,14 @@ public class PotentialDiscount implements EffectProcessor {
             blueprint.appendDiscountSource(
                 new DiscountSource() {
                     @Override
-                    public int getPotentialDiscount(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getPotentialDiscount(ActionContext actionContext) {
                         return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                     }
 
                     @Override
                     public DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        return new DiscardCardFromHandDiscountEffect(action, actionContext.getPerformingPlayer(), filterable) {
+                        return new DiscardCardFromHandDiscountEffect(actionContext, action, filterable) {
                             @Override
                             protected void discountPaidCallback(int paid) {
                                 actionContext.setValueToMemory(memory, String.valueOf(paid));
@@ -55,7 +55,7 @@ public class PotentialDiscount implements EffectProcessor {
             blueprint.appendDiscountSource(
                 new DiscountSource() {
                     @Override
-                    public int getPotentialDiscount(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getPotentialDiscount(ActionContext actionContext) {
                         return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                     }
 
@@ -65,7 +65,7 @@ public class PotentialDiscount implements EffectProcessor {
                         final int max = maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         final int discardCount = discardCountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         actionContext.setValueToMemory(memory, "No");
-                        return new OptionalDiscardDiscountEffect(action, max, actionContext.getPerformingPlayer(), discardCount, filterable) {
+                        return new OptionalDiscardDiscountEffect(actionContext, action, max, discardCount, filterable) {
                             @Override
                             protected void discountPaidCallback(int paid) {
                                 actionContext.setValueToMemory(memory, "Yes");
@@ -85,7 +85,7 @@ public class PotentialDiscount implements EffectProcessor {
             blueprint.appendDiscountSource(
                 new DiscountSource() {
                     @Override
-                    public int getPotentialDiscount(DefaultActionContext<DefaultGame> actionContext) {
+                    public int getPotentialDiscount(ActionContext actionContext) {
                         return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                     }
 
@@ -95,7 +95,7 @@ public class PotentialDiscount implements EffectProcessor {
                         final int max = maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         final int removeCount = removeCountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         actionContext.setValueToMemory(memory, "No");
-                        return new RemoveCardsFromDiscardDiscountEffect(actionContext.getSource(), actionContext.getPerformingPlayer(), removeCount, max, filterable) {
+                        return new RemoveCardsFromDiscardDiscountEffect(actionContext, removeCount, max, filterable) {
                             @Override
                             protected void discountPaidCallback(int paid) {
                                 actionContext.setValueToMemory(memory, "Yes");

@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class ServerStatsRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class ServerStatsRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final GameHistoryService _gameHistoryService;
 
     private static final Logger LOGGER = LogManager.getLogger(ServerStatsRequestHandler.class);

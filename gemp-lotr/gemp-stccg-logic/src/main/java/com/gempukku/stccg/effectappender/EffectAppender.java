@@ -1,14 +1,11 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.cards.ActionContext;
 
-public interface EffectAppender<AbstractGame extends DefaultGame> {
-    void appendEffect(boolean cost, CostToEffectAction action, DefaultActionContext<AbstractGame> actionContext);
-
-    boolean isPlayableInFull(DefaultActionContext<AbstractGame> actionContext);
-
+public interface EffectAppender<AbstractContext extends ActionContext> {
+    void appendEffect(boolean cost, CostToEffectAction action, AbstractContext actionContext);
+    boolean isPlayableInFull(AbstractContext actionContext);
     default boolean isPlayabilityCheckedForEffect() {
         return false;
     }

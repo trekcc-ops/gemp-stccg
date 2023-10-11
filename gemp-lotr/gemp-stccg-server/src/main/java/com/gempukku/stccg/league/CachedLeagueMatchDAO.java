@@ -3,7 +3,7 @@ package com.gempukku.stccg.league;
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +16,7 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     private final LeagueMatchDAO _leagueMatchDAO;
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
-    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches = Collections.synchronizedMap(new LRUMap(5));
+    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches = Collections.synchronizedMap(new LRUMap<>(5));
 
     public CachedLeagueMatchDAO(LeagueMatchDAO leagueMatchDAO) {
         _leagueMatchDAO = leagueMatchDAO;

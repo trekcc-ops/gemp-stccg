@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class ChatRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class ChatRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final ChatServer _chatServer;
     private final LongPollingSystem longPollingSystem;
     private final Parser _markdownParser;

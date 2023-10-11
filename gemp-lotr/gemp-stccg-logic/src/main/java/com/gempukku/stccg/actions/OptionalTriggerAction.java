@@ -5,7 +5,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
 
-public class OptionalTriggerAction extends AbstractCostToEffectAction<DefaultGame> {
+public class OptionalTriggerAction extends AbstractCostToEffectAction {
     private PhysicalCard _physicalCard;
     private final PhysicalCard _actionAttachedToCard;
 

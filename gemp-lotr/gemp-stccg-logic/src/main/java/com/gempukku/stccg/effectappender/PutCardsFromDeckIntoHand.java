@@ -1,17 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PutCardFromZoneIntoHandEffect;
-import com.gempukku.stccg.effects.ShuffleDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.PutCardFromZoneIntoHandEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.ShuffleDeckEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
@@ -34,14 +30,14 @@ public class PutCardsFromDeckIntoHand implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCardsInDeck(filter, valueSource, "_temp", "you", "Choose cards from deck", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard card : cards) {
                             result.add(
-                                    new PutCardFromZoneIntoHandEffect(card, Zone.DRAW_DECK, reveal));
+                                    new PutCardFromZoneIntoHandEffect(actionContext.getGame(), card, Zone.DRAW_DECK, reveal));
                         }
 
                         return result;
@@ -49,10 +45,10 @@ public class PutCardsFromDeckIntoHand implements EffectAppenderProducer {
                 });
         if (shuffle)
             result.addEffectAppender(
-                    new DelayedAppender() {
+                    new DefaultDelayedAppender() {
                 @Override
-                protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                    return new ShuffleDeckEffect(actionContext.getPerformingPlayer());
+                protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                    return new ShuffleDeckEffect(actionContext.getGame(), actionContext.getPerformingPlayer());
                 }
             });
 

@@ -35,7 +35,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class AdminRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class AdminRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final CardBlueprintLibrary _cardLibrary;
     private final ProductLibrary _productLibrary;
     private final SoloDraftDefinitions _soloDraftDefinitions;

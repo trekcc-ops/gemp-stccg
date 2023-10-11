@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 

@@ -1,20 +1,16 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.AddUntilModifierEffect;
-import com.gempukku.stccg.modifiers.StrengthModifier;
-import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilModifierEffect;
+import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.modifiers.StrengthModifier;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -35,13 +31,13 @@ public class ModifyStrength implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCards(filter, valueSource, memory, "you", "Choose cards to modify strength of", environment));
         result.addEffectAppender(
-                new DelayedAppender<>() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         final Evaluator evaluator = amountSource.getEvaluator(actionContext);
                         final int amount = evaluator.evaluateExpression(actionContext.getGame(), actionContext.getSource());
-                        return new AddUntilModifierEffect(
+                        return new AddUntilModifierEffect(actionContext.getGame(),
                                 new StrengthModifier(actionContext.getSource(), Filters.in(cardsFromMemory), amount), time);
                     }
                 });

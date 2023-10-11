@@ -26,5 +26,5 @@ public interface Action<AbstractGame extends DefaultGame> {
 
     String getText();
 
-    Effect<AbstractGame> nextEffect(AbstractGame game);
+    Effect nextEffect(DefaultGame game);
 }

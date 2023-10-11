@@ -7,9 +7,8 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PlayoutDecisionEffect;
+import com.gempukku.stccg.effects.PlayOutDecisionEffect;
 import com.gempukku.stccg.effects.StackActionEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
@@ -32,11 +31,11 @@ public class Choice implements EffectAppenderProducer {
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayer(actionContext);
-                DefaultActionContext delegateActionContext = new DelegateActionContext(actionContext,
+                DefaultActionContext delegateActionContext = new DefaultActionContext(actionContext,
                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                         actionContext.getEffectResult(), actionContext.getEffect());
 
@@ -60,12 +59,12 @@ public class Choice implements EffectAppenderProducer {
                     SubAction subAction = new SubAction(action);
                     playableEffectAppenders.get(0).appendEffect(cost, subAction, delegateActionContext);
                     actionContext.setValueToMemory(memorize, textArray[0]);
-                    return new StackActionEffect(subAction);
+                    return new StackActionEffect(actionContext.getGame(), subAction);
                 }
 
                 SubAction subAction = new SubAction(action);
                 subAction.appendCost(
-                        new PlayoutDecisionEffect(choosingPlayer,
+                        new PlayOutDecisionEffect(actionContext.getGame(), choosingPlayer,
                                 new MultipleChoiceAwaitingDecision(1, "Choose action to perform", effectTexts.toArray(new String[0])) {
                                     @Override
                                     protected void validDecisionMade(int index, String result) {
@@ -73,13 +72,13 @@ public class Choice implements EffectAppenderProducer {
                                         actionContext.setValueToMemory(memorize, result);
                                     }
                                 }));
-                return new StackActionEffect(subAction);
+                return new StackActionEffect(actionContext.getGame(), subAction);
             }
 
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayer(actionContext);
-                DefaultActionContext delegateActionContext = new DelegateActionContext(actionContext,
+                DefaultActionContext delegateActionContext = new DefaultActionContext(actionContext,
                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                         actionContext.getEffectResult(), actionContext.getEffect());
 

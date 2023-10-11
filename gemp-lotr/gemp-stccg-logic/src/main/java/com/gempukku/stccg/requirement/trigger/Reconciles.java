@@ -1,12 +1,11 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 public class Reconciles implements TriggerCheckerProducer {
@@ -18,9 +17,9 @@ public class Reconciles implements TriggerCheckerProducer {
 
         PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player) : null;
 
-        return new TriggerChecker<>() {
+        return new TriggerChecker() {
             @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean accepts(ActionContext actionContext) {
                 if (playerSource != null)
                     return TriggerConditions.reconciles(actionContext.getEffectResult(),
                             playerSource.getPlayer(actionContext));

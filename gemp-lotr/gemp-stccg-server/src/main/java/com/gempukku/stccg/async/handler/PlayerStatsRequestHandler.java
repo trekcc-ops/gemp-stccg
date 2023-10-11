@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerStatsRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class PlayerStatsRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final GameHistoryService _gameHistoryService;
 
     public PlayerStatsRequestHandler(Map<Type, Object> context) {

@@ -6,7 +6,7 @@ import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.RemoveCardsFromTheGameEffect;
+import com.gempukku.stccg.effects.defaulteffect.RemoveCardsFromTheGameEffect;
 import com.gempukku.stccg.effects.Effect;
 import org.json.simple.JSONObject;
 
@@ -32,9 +32,9 @@ public class RemoveFromTheGame implements EffectAppenderProducer {
                 CardResolver.resolveCards(filter,
                         valueSource, memory, player, "Choose cards to remove from the game", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final String removingPlayerId = discardingPlayer.getPlayer(actionContext);
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         if (stackedCardsMemory != null) {
@@ -45,7 +45,7 @@ public class RemoveFromTheGame implements EffectAppenderProducer {
 
                             actionContext.setCardMemory(stackedCardsMemory, stackedCards);
                         }
-                        return new RemoveCardsFromTheGameEffect(removingPlayerId, actionContext.getSource(), cardsFromMemory);
+                        return new RemoveCardsFromTheGameEffect(actionContext.getGame(), removingPlayerId, actionContext.getSource(), cardsFromMemory);
                     }
                 });
 

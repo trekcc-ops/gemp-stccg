@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.results.DiscardCardsFromPlayResult;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 
 import java.util.Collections;
 import java.util.List;

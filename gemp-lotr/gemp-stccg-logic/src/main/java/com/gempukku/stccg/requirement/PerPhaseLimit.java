@@ -6,7 +6,7 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
-public class PerPhaseLimit implements RequirementProducer {
+public class PerPhaseLimit extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "limit", "perPlayer");

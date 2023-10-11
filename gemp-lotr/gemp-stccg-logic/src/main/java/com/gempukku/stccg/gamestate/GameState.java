@@ -97,7 +97,7 @@ public abstract class GameState {
 
     public PhysicalCard createPhysicalCard(String playerId, CardBlueprintLibrary library, String blueprintId)
             throws CardNotFoundException {
-        LotroCardBlueprint card = library.getLotroCardBlueprint(blueprintId);
+        CardBlueprint card = library.getCardBlueprint(blueprintId);
 
         int cardId = nextCardId();
         PhysicalCard result = new PhysicalCard(cardId, blueprintId, playerId, card);
@@ -482,7 +482,7 @@ public abstract class GameState {
 
     public PhysicalCard getSite(int siteNumber) {
         for (PhysicalCard physicalCard : _inPlay) {
-            LotroCardBlueprint blueprint = physicalCard.getBlueprint();
+            CardBlueprint blueprint = physicalCard.getBlueprint();
             if (blueprint.getCardType() == CardType.SITE && physicalCard.getSiteNumber() == siteNumber)
                 return physicalCard;
         }

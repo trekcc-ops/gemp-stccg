@@ -9,7 +9,7 @@ import com.gempukku.stccg.common.LongPollingResource;
 import com.gempukku.stccg.common.LongPollingSystem;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.LotroServer;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.gamestate.EventSerializer;
@@ -36,8 +36,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class GameRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
-    private final LotroServer _lotroServer;
+public class GameRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
+    private final GameServer _gameServer;
     private final LongPollingSystem longPollingSystem;
     private final Set<Phase> _autoPassDefault = new HashSet<>();
 
@@ -45,7 +45,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
 
     public GameRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
         super(context);
-        _lotroServer = extractObject(context, LotroServer.class);
+        _gameServer = extractObject(context, GameServer.class);
         this.longPollingSystem = longPollingSystem;
 
         _autoPassDefault.add(Phase.FELLOWSHIP);
@@ -85,7 +85,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        CardGameMediator gameMediator = _lotroServer.getGameById(gameId);
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
         if (gameMediator == null)
             throw new HttpProcessingException(404);
 
@@ -162,7 +162,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        CardGameMediator gameMediator = _lotroServer.getGameById(gameId);
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
         if (gameMediator == null)
             throw new HttpProcessingException(404);
 
@@ -181,7 +181,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        CardGameMediator gameMediator = _lotroServer.getGameById(gameId);
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
         if (gameMediator == null)
             throw new HttpProcessingException(404);
 
@@ -204,7 +204,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-            CardGameMediator gameMediator = _lotroServer.getGameById(gameId);
+            CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             if (gameMediator == null)
                 throw new HttpProcessingException(404);
 
@@ -218,7 +218,7 @@ public class GameRequestHandler extends LotroServerRequestHandler implements Uri
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        CardGameMediator gameMediator = _lotroServer.getGameById(gameId);
+        CardGameMediator gameMediator = _gameServer.getGameById(gameId);
 
         if (gameMediator == null)
             throw new HttpProcessingException(404);

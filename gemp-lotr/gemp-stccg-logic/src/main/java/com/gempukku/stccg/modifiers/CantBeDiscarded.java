@@ -16,11 +16,11 @@ public class CantBeDiscarded implements ModifierSourceProducer {
         final String filter = FieldUtils.getString(object.get("filter"), "filter");
         final String byFilter = FieldUtils.getString(object.get("by"), "by", "any");
 
-        final FilterableSource<DefaultGame> filterableSource =
+        final FilterableSource filterableSource =
                 environment.getFilterFactory().generateFilter(filter, environment);
-        final FilterableSource<DefaultGame> byFilterableSource =
+        final FilterableSource byFilterableSource =
                 environment.getFilterFactory().generateFilter(byFilter, environment);
-        final Requirement<DefaultGame>[] requirements =
+        final Requirement[] requirements =
                 environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
         return (actionContext) -> new CantDiscardFromPlayModifier(actionContext.getSource(),

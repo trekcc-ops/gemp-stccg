@@ -1,7 +1,7 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.DefaultActionSource;
-import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
+import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class TriggerEffectProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value, "trigger", "optional", "requires", "cost", "effect", "text");
 
         final String text = FieldUtils.getString(value.get("text"), "text", "");

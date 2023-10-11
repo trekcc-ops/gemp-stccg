@@ -1,7 +1,5 @@
 package com.gempukku.stccg.results;
 
-import com.gempukku.stccg.effects.EffectResult;
-
 public class ReconcileResult extends EffectResult {
     private final String _playerId;
 

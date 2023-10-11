@@ -5,14 +5,12 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.lotronly.LotroGameUtils;
 
 import java.util.*;
 
 public class FilterFactory {
-    private final Map<String, FilterableSource<DefaultGame>> simpleFilters = new HashMap<>();
-    private final Map<String, FilterableSourceProducer<DefaultGame>> parameterFilters = new HashMap<>();
+    private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
+    private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
 
     public FilterFactory() {
         for (CardType value : CardType.values())
@@ -41,8 +39,6 @@ public class FilterFactory {
                             return false;
                         }));
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
-        simpleFilters.put("insameregion",
-                actionContext -> Filters.region(LotroGameUtils.getRegion(actionContext.getSource().getSiteNumber())));
         simpleFilters.put("item", (actionContext) -> Filters.item);
         simpleFilters.put("self", ActionContext::getSource);
         simpleFilters.put("unbound",
@@ -241,39 +237,6 @@ public class FilterFactory {
                     throw new InvalidCardDefinitionException("Unknown race definition in filter: " + parameter
                             + ".  Do not use race() for races; instead just list the race by itself.");
                 });
-        parameterFilters.put("regionnumber",
-                (parameter, environment) -> {
-                    int min, max;
-                    if (parameter.contains("-")) {
-                        final String[] split = parameter.split("-", 2);
-                        min = Integer.parseInt(split[0]);
-                        max = Integer.parseInt(split[1]);
-                    } else {
-                        min = max = Integer.parseInt(parameter);
-                    }
-
-                    if(min < 0 || max > 3 || max < min)
-                        throw new InvalidCardDefinitionException("Region number definition is invalid: " + parameter);
-
-                    return (actionContext) -> Filters.regionNumberBetweenInclusive(min, max);
-                });
-        parameterFilters.put("resistancelessthan",
-                (parameter, environment) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
-
-                    return (actionContext) -> {
-                        int amount = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                        return Filters.maxResistance(amount - 1);
-                    };
-                });
-        parameterFilters.put("resistancemorethan",
-                (parameter, environment) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
-                    return (actionContext) -> {
-                        int amount = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                        return Filters.minResistance(amount + 1);
-                    };
-                });
         parameterFilters.put("side", (parameter, environment) -> {
             final Side side = Side.Parse(parameter);
             if (side == null)
@@ -317,7 +280,7 @@ public class FilterFactory {
             simpleFilters.put(optionalFilterName, (actionContext -> value));
     }
 
-    public <AbstractGame extends DefaultGame> FilterableSource<AbstractGame> generateFilter(String value, CardGenerationEnvironment environment) throws
+    public FilterableSource generateFilter(String value, CardGenerationEnvironment environment) throws
             InvalidCardDefinitionException {
         if (value == null)
             throw new InvalidCardDefinitionException("Filter not specified");

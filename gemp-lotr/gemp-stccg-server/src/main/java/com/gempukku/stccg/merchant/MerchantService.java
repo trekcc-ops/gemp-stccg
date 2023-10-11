@@ -7,7 +7,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.cards.SetDefinition;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MerchantService {
     private final Merchant _merchant;
     private final long _priceGuaranteeExpire = 1000 * 60 * 5;
-    private final Map<String, PriceGuarantee> _priceGuarantees = Collections.synchronizedMap(new LRUMap(100));
+    private final Map<String, PriceGuarantee> _priceGuarantees = Collections.synchronizedMap(new LRUMap<>(100));
 
     private final ReadWriteLock _lock = new ReentrantReadWriteLock(true);
     private final Set<BasicCardItem> _merchantableItems = new HashSet<>();

@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PlayCardEffect;
+import com.gempukku.stccg.effects.defaulteffect.PlayCardEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 
@@ -12,7 +12,7 @@ import java.util.Collections;
 public class PlayPermanentForFreeAction extends AbstractCostToEffectAction {
     private final PhysicalCard _permanentPlayed;
     private boolean _cardRemoved;
-    private Effect _playCardEffect;
+    private PlayCardEffect _playCardEffect;
     private boolean _cardPlayed;
     private final Zone _fromZone;
     private final Zone _toZone;
@@ -63,7 +63,7 @@ public class PlayPermanentForFreeAction extends AbstractCostToEffectAction {
 
         if (!_cardPlayed) {
             _cardPlayed = true;
-            _playCardEffect = new PlayCardEffect(_fromZone, _permanentPlayed, _toZone);
+            _playCardEffect = new PlayCardEffect(game, _fromZone, _permanentPlayed, _toZone);
             return _playCardEffect;
         }
 

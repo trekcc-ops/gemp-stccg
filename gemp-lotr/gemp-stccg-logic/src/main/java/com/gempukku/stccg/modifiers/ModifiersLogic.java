@@ -784,15 +784,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     public boolean canPlayOutOfSequence(TribblesGame game, PhysicalCard source) {
-/*        game.getGameState().sendMessage(
-                "DEBUG: Calling ModifiersLogic.canPlayOutOfSequence for " + source.getBlueprint().getTitle()
-        );*/
         for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.PLAY_OUT_OF_SEQUENCE, source))
             if (modifier.canPlayCardOutOfSequence(game, source)) {
-//                game.getGameState().sendMessage("Returning true for canPlayOutOfSequence");
                 return true;
             }
-//        game.getGameState().sendMessage("Returning false for canPlayOutOfSequence");
         return false;
     }
 

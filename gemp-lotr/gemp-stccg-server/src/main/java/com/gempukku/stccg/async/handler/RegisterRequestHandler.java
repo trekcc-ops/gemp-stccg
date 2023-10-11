@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class RegisterRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class RegisterRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(RegisterRequestHandler.class);
     public RegisterRequestHandler(Map<Type, Object> context) {

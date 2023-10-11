@@ -1,6 +1,6 @@
 package com.gempukku.stccg.effectprocessor;
 
-import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
+import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 
 public class ExtraCost implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value, "cost");
 
         final EffectAppender costAppender = environment.getEffectAppenderFactory().getEffectAppender((JSONObject) value.get("cost"), environment);

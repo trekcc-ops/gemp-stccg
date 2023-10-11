@@ -5,7 +5,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.ReturnCardsToHandEffect;
+import com.gempukku.stccg.effects.defaulteffect.ReturnCardsToHandEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.Action;
 
@@ -14,8 +14,8 @@ import java.util.Collection;
 public class ChooseAndReturnCardsToHandEffect extends ChooseActiveCardsEffect {
     private final Action _action;
 
-    public ChooseAndReturnCardsToHandEffect(Action action, String playerId, int minimum, int maximum, Filterable... filters) {
-        super(action.getActionSource(), playerId, "Choose cards to return to hand", minimum, maximum, filters);
+    public ChooseAndReturnCardsToHandEffect(DefaultGame game, Action action, String playerId, int minimum, int maximum, Filterable... filters) {
+        super(game, action.getActionSource(), playerId, "Choose cards to return to hand", minimum, maximum, filters);
         _action = action;
     }
 
@@ -27,7 +27,7 @@ public class ChooseAndReturnCardsToHandEffect extends ChooseActiveCardsEffect {
     @Override
     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         SubAction subAction = new SubAction(_action);
-        subAction.appendEffect(new ReturnCardsToHandEffect(_action.getActionSource(), Filters.in(cards)));
+        subAction.appendEffect(new ReturnCardsToHandEffect(game, _action.getActionSource(), Filters.in(cards)));
         game.getActionsEnvironment().addActionToStack(subAction);
     }
 }

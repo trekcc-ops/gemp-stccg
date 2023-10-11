@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class DeliveryRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class DeliveryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final TransferDAO _transferDAO;
 
     public DeliveryRequestHandler(Map<Type, Object> context) {

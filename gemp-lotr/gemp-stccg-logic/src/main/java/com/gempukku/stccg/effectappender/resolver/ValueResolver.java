@@ -4,11 +4,11 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.common.filterable.Race;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONArray;
@@ -17,17 +17,17 @@ import org.json.simple.JSONObject;
 import java.util.Collection;
 
 public class ValueResolver {
-    public static <AbstractGame extends DefaultGame> ValueSource<AbstractGame> resolveEvaluator(Object value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public static ValueSource resolveEvaluator(Object value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         return resolveEvaluator(value, null, environment);
     }
 
-    public static <AbstractGame extends DefaultGame> ValueSource<AbstractGame> resolveEvaluator(Object value, Integer defaultValue, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public static ValueSource resolveEvaluator(Object value, Integer defaultValue, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         if (value == null && defaultValue == null)
             throw new InvalidCardDefinitionException("Value not defined");
         if (value == null)
-            return new ConstantEvaluator<>(defaultValue);
+            return new ConstantEvaluator(defaultValue);
         if (value instanceof Number)
-            return new ConstantEvaluator<>(((Number) value).intValue());
+            return new ConstantEvaluator(((Number) value).intValue());
         if (value instanceof String stringValue) {
             if (stringValue.contains("-")) {
                 final String[] split = stringValue.split("-", 2);
@@ -35,25 +35,25 @@ public class ValueResolver {
                 final int max = Integer.parseInt(split[1]);
                 if (min > max || min < 0 || max < 1)
                     throw new InvalidCardDefinitionException("Unable to resolve count: " + value);
-                return new ValueSource<>() {
+                return new ValueSource() {
                     @Override
-                    public Evaluator<AbstractGame> getEvaluator(DefaultActionContext<AbstractGame> actionContext) {
+                    public Evaluator getEvaluator(ActionContext actionContext) {
                         throw new RuntimeException("Evaluator has resolved to range");
                     }
 
                     @Override
-                    public int getMinimum(DefaultActionContext<AbstractGame> actionContext) {
+                    public int getMinimum(ActionContext actionContext) {
                         return min;
                     }
 
                     @Override
-                    public int getMaximum(DefaultActionContext<AbstractGame> actionContext) {
+                    public int getMaximum(ActionContext actionContext) {
                         return max;
                     }
                 };
             } else {
                 int v = Integer.parseInt(stringValue);
-                return new ConstantEvaluator<>(v);
+                return new ConstantEvaluator(v);
             }
         }
         if (value instanceof JSONObject object) {
@@ -62,19 +62,19 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "from", "to");
                 ValueSource fromValue = resolveEvaluator(object.get("from"), environment);
                 ValueSource toValue = resolveEvaluator(object.get("to"), environment);
-                return new ValueSource<>() {
+                return new ValueSource() {
                     @Override
-                    public Evaluator getEvaluator(DefaultActionContext<AbstractGame> actionContext) {
+                    public Evaluator getEvaluator(ActionContext actionContext) {
                         throw new RuntimeException("Evaluator has resolved to range");
                     }
 
                     @Override
-                    public int getMinimum(DefaultActionContext<AbstractGame> actionContext) {
+                    public int getMinimum(ActionContext actionContext) {
                         return fromValue.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
                     }
 
                     @Override
-                    public int getMaximum(DefaultActionContext<AbstractGame> actionContext) {
+                    public int getMaximum(ActionContext actionContext) {
                         return toValue.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
                     }
                 };
@@ -194,24 +194,22 @@ public class ValueResolver {
                 final String hand = FieldUtils.getString(object.get("hand"), "hand", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(hand);
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext ->
-                        (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayer(actionContext)),
-                                game, filterableSource.getFilterable(actionContext)).size();
+                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayer(actionContext)),
+                        game, filterableSource.getFilterable(actionContext)).size();
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
                 FieldUtils.validateAllowedFields(object, "filter", "owner");
                 final String filter = FieldUtils.getString(object.get("filter"), "filter", "any");
                 final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(owner);
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> (Evaluator<TribblesGame>) (game, cardAffected) ->
-                        Filters.filter(game.getGameState().getPlayPile(player.getPlayer(actionContext)),
-                                game, filterableSource.getFilterable(actionContext)).size();
+                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getZoneCards(player.getPlayer(actionContext), Zone.PLAY_PILE),
+                        game, filterableSource.getFilterable(actionContext)).size();
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
                 FieldUtils.validateAllowedFields(object, "owner");
                 final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(owner);
-                return actionContext -> (Evaluator<TribblesGame>) (game, cardAffected)
-                        -> game.getGameState().getPlayPile(player.getPlayer(actionContext)).size();
+                return actionContext -> (Evaluator) (game, cardAffected)
+                        -> game.getGameState().getZoneCards(player.getPlayer(actionContext), Zone.PLAY_PILE).size();
             } else if (type.equalsIgnoreCase("fromMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory", "multiplier", "limit");
                 String memory = FieldUtils.getString(object.get("memory"), "memory");
@@ -264,7 +262,7 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "memory");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
 
-                return actionContext -> (Evaluator<DefaultGame>) (game, cardAffected) -> {
+                return actionContext -> (Evaluator) (game, cardAffected) -> {
                     int result = 0;
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                         result += physicalCard.getBlueprint().getStrength();
@@ -275,18 +273,20 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "memory");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
 
-                return actionContext -> (Evaluator<DefaultGame>) (game, cardAffected) -> {
-                    int result = 0;
-                    for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                        result += game.getModifiersQuerying().getStrength(game, physicalCard);
-                    }
-                    return result;
+                return actionContext -> {
+                    return (Evaluator) (game, cardAffected) -> {
+                        int result = 0;
+                        for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
+                            result += game.getModifiersQuerying().getStrength(game, physicalCard);
+                        }
+                        return result;
+                    };
                 };
             } else if (type.equalsIgnoreCase("tribbleValueFromMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
 
-                return actionContext -> (Evaluator<DefaultGame>) (game, cardAffected) -> {
+                return actionContext -> (Evaluator) (game, cardAffected) -> {
                     int result = 0;
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                         result += physicalCard.getBlueprint().getTribbleValue();
@@ -327,7 +327,7 @@ public class ValueResolver {
                 FieldUtils.validateAllowedFields(object, "multiplier", "memory");
                 final int multiplier = FieldUtils.getInteger(object.get("multiplier"), "multiplier", 1);
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");
-                return actionContext -> (Evaluator<DefaultGame>) (game, cardAffected) -> {
+                return actionContext -> (Evaluator) (game, cardAffected) -> {
                     int total = 0;
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
                         total += physicalCard.getBlueprint().getTwilightCost();

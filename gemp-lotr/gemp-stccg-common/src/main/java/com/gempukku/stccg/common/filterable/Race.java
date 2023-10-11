@@ -1,16 +1,10 @@
 package com.gempukku.stccg.common.filterable;
 
 public enum Race implements Filterable {
-    BALROG("Balrog"), CREATURE("Creature"), WRAITH("Wraith"),
-    ELF("Elf"), HOBBIT("Hobbit"), DWARF("Dwarf"), MAN("Man"), WIZARD("Wizard"), TREE("Tree"),
-    URUK_HAI("Uruk-Hai"), NAZGUL("Nazgul"), ORC("Orc"), TROLL("Troll"), HALF_TROLL("Half-troll"), ENT("Ent"), SPIDER("Spider"), MAIA("Maia"),
-    GOBLIN("Goblin"),
-	
-	//Additional Hobbit Draft races
+    ORC("Orc"), TROLL("Troll"), HALF_TROLL("Half-troll"), ENT("Ent"),
+    SPIDER("Spider"), MAIA("Maia"), GOBLIN("Goblin"),
     DRAGON("Dragon"), EAGLE("Eagle"), BIRD("Bird"), GIANT("Giant"),
-
-    //PC Races
-    CROW("Crow"), WARG("Warg");
+    CROW("Crow");
 
     private final String _humanReadable;
 
@@ -22,11 +16,4 @@ public enum Race implements Filterable {
         return _humanReadable;
     }
 
-    public static Race findRaceByHumanReadable(String humanReadable) {
-        for (Race race : values()) {
-            if (race.getHumanReadable().equals(humanReadable))
-                return race;
-        }
-        return null;
-    }
 }

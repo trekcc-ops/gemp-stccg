@@ -44,7 +44,7 @@ The home for classes used in executing game rules and also in generating card ob
 
 The entry point for the server and the home for all database interaction, hall management, game running, chat, tournaments, and other services.  
 
-This is also the home for the unit tests for the server, which will fail compilation if they do not pass: [/src/test/java/com/gempukku/lotro](gemp-lotr/gemp-stccg-server/src/test/java/com/gempukku/stccg).  Besides various service tests, there is a cards subfolder which contains a place to put unit tests for new cards (including errata).  All PC V-cards and errata have a class for holding tests for that card, which are initially generated from the same spreadsheet that is used for generating the images and manually expanded as needed (see ketura for help on that). 
+This is also the home for the unit tests for the server, which will fail compilation if they do not pass: [/src/test/java/com/gempukku/stccg](gemp-lotr/gemp-stccg-server/src/test/java/com/gempukku/stccg).  Besides various service tests, there is a cards subfolder which contains a place to put unit tests for new cards (including errata).  All PC V-cards and errata have a class for holding tests for that card, which are initially generated from the same spreadsheet that is used for generating the images and manually expanded as needed (see ketura for help on that). 
 
 Old card unit tests were scattershot and stored in the /at subfolder as needed.  Do not add to this subfolder; instead use the cards subfolder mentioned above.
 

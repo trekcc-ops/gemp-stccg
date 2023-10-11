@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
-public class MemoryMatches implements RequirementProducer {
+public class MemoryMatches extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "memory", "filter");

@@ -7,7 +7,7 @@ import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collection;
 
-public abstract class AbstractSubActionEffect implements Effect<DefaultGame> {
+public abstract class AbstractSubActionEffect implements Effect {
     private CostToEffectAction _subAction;
 
     protected void processSubAction(DefaultGame game, CostToEffectAction subAction) {

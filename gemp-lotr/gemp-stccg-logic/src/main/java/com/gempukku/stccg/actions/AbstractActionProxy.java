@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.EffectResult;
+import com.gempukku.stccg.results.EffectResult;
 
 import java.util.List;
 

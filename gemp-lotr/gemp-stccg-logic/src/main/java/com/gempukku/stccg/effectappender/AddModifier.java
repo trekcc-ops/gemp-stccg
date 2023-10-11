@@ -1,14 +1,14 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
-import com.gempukku.stccg.effects.AddUntilModifierEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilModifierEffect;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.modifiers.Modifier;
 import org.json.simple.JSONObject;
 
@@ -22,11 +22,11 @@ public class AddModifier implements EffectAppenderProducer {
 
         ModifierSource modifierSource = environment.getModifierSourceFactory().getModifier(modifierObj, environment);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final Modifier modifier = modifierSource.getModifier(actionContext);
-                return new AddUntilModifierEffect(modifier, until);
+                return new AddUntilModifierEffect(actionContext.getGame(), modifier, until);
             }
         };
     }

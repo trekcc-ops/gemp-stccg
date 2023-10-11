@@ -7,9 +7,8 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PlayoutDecisionEffect;
+import com.gempukku.stccg.effects.PlayOutDecisionEffect;
 import com.gempukku.stccg.effects.StackActionEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 import org.json.simple.JSONObject;
 
@@ -28,17 +27,17 @@ public class Optional implements EffectAppenderProducer {
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
         final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayer(actionContext);
                 SubAction subAction = new SubAction(action);
                 subAction.appendCost(
-                        new PlayoutDecisionEffect(choosingPlayer,
-                        new YesNoDecision(GameUtils.SubstituteText(text, actionContext)) {
+                        new PlayOutDecisionEffect(actionContext.getGame(), choosingPlayer,
+                        new YesNoDecision(GameUtils.SubstituteText(_text, actionContext)) {
                             @Override
                             protected void yes() {
-                                DefaultActionContext delegate = new DelegateActionContext(actionContext,
+                                DefaultActionContext delegate = new DefaultActionContext(actionContext,
                                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                                         actionContext.getEffectResult(), actionContext.getEffect());
                                 for (EffectAppender effectAppender : effectAppenders) {
@@ -46,13 +45,13 @@ public class Optional implements EffectAppenderProducer {
                                 }
                             }
                         }));
-                return new StackActionEffect(subAction);
+                return new StackActionEffect(actionContext.getGame(), subAction);
             }
 
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayer(actionContext);
-                DefaultActionContext delegate = new DelegateActionContext(actionContext,
+                DefaultActionContext delegate = new DefaultActionContext(actionContext,
                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                         actionContext.getEffectResult(), actionContext.getEffect());
                 for (EffectAppender effectAppender : effectAppenders) {

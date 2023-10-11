@@ -8,7 +8,7 @@ import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
-import com.gempukku.stccg.effects.PlayoutDecisionEffect;
+import com.gempukku.stccg.effects.PlayOutDecisionEffect;
 import com.gempukku.stccg.effects.Effect;
 import org.json.simple.JSONObject;
 
@@ -29,10 +29,10 @@ public class ChooseANumber implements EffectAppenderProducer {
         if (memorize == null)
             throw new InvalidCardDefinitionException("ChooseANumber requires a field to memorize the value");
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                return new PlayoutDecisionEffect(actionContext.getPerformingPlayer(),
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                return new PlayOutDecisionEffect(actionContext.getGame(), actionContext.getPerformingPlayer(),
                     new IntegerAwaitingDecision(1, GameUtils.SubstituteText(displayText, actionContext),
                         fromSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null),
                         toSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null))

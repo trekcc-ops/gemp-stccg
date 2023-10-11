@@ -1,7 +1,5 @@
 package com.gempukku.stccg.results;
 
-import com.gempukku.stccg.effects.EffectResult;
-
 public class DrawCardOrPutIntoHandResult extends EffectResult {
     private final String _playerId;
     private final boolean _draw;

@@ -1,10 +1,11 @@
 package com.gempukku.stccg.effects.choose;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
-import com.gempukku.stccg.effects.AbstractEffect;
+import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -13,18 +14,29 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public abstract class ChooseActiveCardsEffect extends AbstractEffect {
+public abstract class ChooseActiveCardsEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final String _playerId;
     private String _choiceText;
     private final int _minimum;
     private final int _maximum;
     private final Filterable[] _filters;
-
+    private final DefaultGame _game;
     private boolean _shortcut = true;
 
-    public ChooseActiveCardsEffect(PhysicalCard source, String playerId, String choiceText, int minimum, int maximum, Filterable... filters) {
+    public ChooseActiveCardsEffect(DefaultGame game, PhysicalCard source, String playerId, String choiceText, int minimum, int maximum, Filterable... filters) {
         _source = source;
+        _playerId = playerId;
+        _choiceText = choiceText;
+        _minimum = minimum;
+        _maximum = maximum;
+        _filters = filters;
+        _game = game;
+    }
+
+    public ChooseActiveCardsEffect(ActionContext actionContext, String playerId, String choiceText, int minimum, int maximum, Filterable... filters) {
+        _source = actionContext.getSource();
+        _game = actionContext.getGame();
         _playerId = playerId;
         _choiceText = choiceText;
         _minimum = minimum;
@@ -49,18 +61,20 @@ public abstract class ChooseActiveCardsEffect extends AbstractEffect {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
-        return Filters.countActive(game, Filters.and(_filters, getExtraFilterForPlayabilityCheck(game))) >= _minimum;
+    public boolean isPlayableInFull() {
+        return Filters.countActive(_game, Filters.and(
+                _filters, getExtraFilterForPlayabilityCheck(_game))) >= _minimum;
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText() {
         return _choiceText;
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
-        final Collection<PhysicalCard> matchingCards = Filters.filterActive(game, Filters.and(_filters, getExtraFilterForPlaying(game)));
+    protected FullEffectResult playEffectReturningResult() {
+        final Collection<PhysicalCard> matchingCards = Filters.filterActive(_game, Filters.and(_filters,
+                getExtraFilterForPlaying(_game)));
         // Let's get the count realistic
         int maximum = Math.min(_maximum, matchingCards.size());
 
@@ -69,20 +83,20 @@ public abstract class ChooseActiveCardsEffect extends AbstractEffect {
             minimum = matchingCards.size();
 
         if (_shortcut && maximum == 0) {
-            cardsSelected(game, Collections.emptySet());
+            cardsSelected(_game, Collections.emptySet());
         } else if (_shortcut && matchingCards.size() == minimum) {
             if (_source != null && matchingCards.size() > 0)
-                game.getGameState().cardAffectsCard(_playerId, _source, matchingCards);
-            cardsSelected(game, matchingCards);
+                _game.getGameState().cardAffectsCard(_playerId, _source, matchingCards);
+            cardsSelected(_game, matchingCards);
         } else {
-            game.getUserFeedback().sendAwaitingDecision(_playerId,
+            _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardsSelectionDecision(1, _choiceText, matchingCards, minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             if (_source != null && selectedCards.size() > 0)
-                                game.getGameState().cardAffectsCard(_playerId, _source, selectedCards);
-                            cardsSelected(game, selectedCards);
+                                _game.getGameState().cardAffectsCard(_playerId, _source, selectedCards);
+                            cardsSelected(_game, selectedCards);
                         }
                     });
         }

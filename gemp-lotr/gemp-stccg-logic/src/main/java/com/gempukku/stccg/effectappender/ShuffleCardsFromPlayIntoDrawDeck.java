@@ -6,7 +6,7 @@ import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.ShuffleCardsFromPlayIntoDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.ShuffleCardsFromPlayIntoDeckEffect;
 import com.gempukku.stccg.effects.Effect;
 import org.json.simple.JSONObject;
 
@@ -28,12 +28,12 @@ public class ShuffleCardsFromPlayIntoDrawDeck implements EffectAppenderProducer 
         result.addEffectAppender(
                 CardResolver.resolveCards(filter, valueSource, memorize, player, "Choose cards to shuffle into your deck", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsInPlay = actionContext.getCardsFromMemory(memorize);
 
-                        return new ShuffleCardsFromPlayIntoDeckEffect(actionContext.getSource(), playerSource.getPlayer(actionContext), cardsInPlay);
+                        return new ShuffleCardsFromPlayIntoDeckEffect(actionContext, playerSource.getPlayer(actionContext), cardsInPlay);
                     }
                 });
 

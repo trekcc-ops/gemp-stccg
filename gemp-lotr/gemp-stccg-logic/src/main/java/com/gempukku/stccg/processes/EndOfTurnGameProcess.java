@@ -1,12 +1,13 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.SystemQueueAction;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.TriggeringResultEffect;
+import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.effects.AbstractSuccessfulEffect;
 import com.gempukku.stccg.results.EndOfTurnResult;
 
 public class EndOfTurnGameProcess implements GameProcess {
@@ -18,19 +19,28 @@ public class EndOfTurnGameProcess implements GameProcess {
         action.appendEffect(
                 new TriggeringResultEffect(null, new EndOfTurnResult(), "End of turn"));
         action.appendEffect(
-                new AbstractSuccessfulEffect() {
+                new Effect() {
                     @Override
-                    public String getText(DefaultGame game) {
+                    public String getText() {
                         return null;
                     }
 
                     @Override
-                    public Type getType() {
+                    public EffectType getType() {
                         return null;
+                    }
+                    @Override
+                    public boolean isPlayableInFull() {
+                        return true;
                     }
 
                     @Override
-                    public void playEffect(DefaultGame game) {
+                    public boolean wasCarriedOut() {
+                        return true;
+                    }
+
+                    @Override
+                    public void playEffect() {
                         ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfTurn();
                         ((DefaultActionsEnvironment) game.getActionsEnvironment()).signalEndOfTurn();
                         game.getGameState().stopAffectingCardsForCurrentPlayer();

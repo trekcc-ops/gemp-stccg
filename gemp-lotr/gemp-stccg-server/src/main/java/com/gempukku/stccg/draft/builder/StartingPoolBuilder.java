@@ -70,9 +70,6 @@ public class StartingPoolBuilder {
     }
 
     private static Iterable<String> getCyclingIterable(List<String> list, int start, int length) {
-/*        Stream<String> cycleList = Stream.generate(() -> list).flatMap(List::stream);
-        Stream<String> skipList = cycleList.skip(start);
-        Stream<String> limitList = skipList.limit(length); */
         return Iterables.limit(Iterables.skip(Iterables.cycle(list), start), length);
     }
 }

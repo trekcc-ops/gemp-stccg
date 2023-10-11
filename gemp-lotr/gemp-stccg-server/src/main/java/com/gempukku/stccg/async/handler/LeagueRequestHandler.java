@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class LeagueRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class LeagueRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final LeagueService _leagueService;
     private final FormatLibrary _formatLibrary;

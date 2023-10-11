@@ -4,16 +4,20 @@ import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.PhysicalCardImpl;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.DefaultUserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.LotroGame;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.DefaultUserFeedback;
+import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.*;
 
@@ -21,7 +25,7 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractAtTest extends AbstractLogicTest {
 
-    protected LotroGame _game;
+    protected DefaultGame _game;
     protected DefaultUserFeedback _userFeedback;
     public static final String P1 = "player1";
     public static final String P2 = "player2";
@@ -35,29 +39,29 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void initializeSimplestGame(Map<String, Collection<String>> additionalCardsInDeck) throws DecisionResultInvalidException {
-        Map<String, LotroDeck> decks = new HashMap<>();
+        Map<String, CardDeck> decks = new HashMap<>();
         addPlayerDeck(P1, decks, additionalCardsInDeck);
         addPlayerDeck(P2, decks, additionalCardsInDeck);
 
         initializeGameWithDecks(decks);
     }
 
-    protected void initializeGameWithDecks(Map<String, LotroDeck> decks) throws DecisionResultInvalidException {
+    protected void initializeGameWithDecks(Map<String, CardDeck> decks) throws DecisionResultInvalidException {
         initializeGameWithDecks(decks, "multipath");
     }
 
-    protected void initializeGameWithDecks(Map<String, LotroDeck> decks, String formatName) throws DecisionResultInvalidException {
+    protected void initializeGameWithDecks(Map<String, CardDeck> decks, String formatName) throws DecisionResultInvalidException {
         _userFeedback = new DefaultUserFeedback();
 
         FormatLibrary formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
         GameFormat format = formatLibrary.getFormat(formatName);
 
         Map<String, CardDeck> genericDecks = new HashMap<>();
-        for (Map.Entry<String, LotroDeck> entry : decks.entrySet()) {
+        for (Map.Entry<String, CardDeck> entry : decks.entrySet()) {
             genericDecks.put(entry.getKey(), entry.getValue());
         }
 
-        _game = new LotroGame(format, genericDecks, _userFeedback, _cardLibrary);
+        _game = new TribblesGame(format, genericDecks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
         _game.startGame();
 
@@ -128,8 +132,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         return null;
     }
 
-    protected void addPlayerDeck(String player, Map<String, LotroDeck> decks, Map<String, Collection<String>> additionalCardsInDeck) {
-        LotroDeck deck = createSimplestDeck();
+    protected void addPlayerDeck(String player, Map<String, CardDeck> decks, Map<String, Collection<String>> additionalCardsInDeck) {
+        CardDeck deck = createSimplestDeck();
         if (additionalCardsInDeck != null) {
             Collection<String> extraCards = additionalCardsInDeck.get(player);
             if (extraCards != null)
@@ -168,21 +172,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         playerDecided(playerId, "0");
     }
 
-    protected LotroDeck createSimplestDeck() {
-        LotroDeck lotroDeck = new LotroDeck("Some deck");
-        // 10_121,1_2
-        lotroDeck.setRingBearer("10_121");
-        lotroDeck.setRing("1_2");
-        // 7_330,7_336,8_117,7_342,7_345,7_350,8_120,10_120,7_360
-        lotroDeck.addSite("7_330");
-        lotroDeck.addSite("7_335");
-        lotroDeck.addSite("8_117");
-        lotroDeck.addSite("7_342");
-        lotroDeck.addSite("7_345");
-        lotroDeck.addSite("7_350");
-        lotroDeck.addSite("8_120");
-        lotroDeck.addSite("10_120");
-        lotroDeck.addSite("7_360");
-        return lotroDeck;
+    protected CardDeck createSimplestDeck() {
+        CardDeck CardDeck = new CardDeck("Some deck");
+        return CardDeck;
     }
 }

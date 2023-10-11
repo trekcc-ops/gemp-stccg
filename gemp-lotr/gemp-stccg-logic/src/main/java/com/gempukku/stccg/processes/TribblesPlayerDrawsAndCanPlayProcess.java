@@ -29,7 +29,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends DefaultGameProcess<Tri
             PhysicalCard cardDrawn = playerHand.get(playerHand.size() - 1);
             final List<Action> playableActions = new LinkedList<>();
             if (game.checkPlayRequirements(cardDrawn)) {
-                TribblesPlayPermanentAction action = new TribblesPlayPermanentAction(cardDrawn, Zone.PLAY_PILE);
+                TribblesPlayPermanentAction action = new TribblesPlayPermanentAction(game, cardDrawn, Zone.PLAY_PILE);
                 playableActions.add(action);
             }
 

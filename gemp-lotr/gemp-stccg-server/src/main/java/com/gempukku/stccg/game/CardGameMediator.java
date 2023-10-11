@@ -181,11 +181,6 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
                 }
 
                 sb.append("<br><br><b>Effective stats:</b>");
-/*                try {
-                    String imageUrl = card.getBlueprint().getImageUrl();
-                    sb.append("<br><b>Image URL:</b> ").append(imageUrl);
-                } catch (UnsupportedOperationException ignored) {
-                }*/
 
                 StringBuilder keywords = new StringBuilder();
                 for (Keyword keyword : Keyword.values()) {

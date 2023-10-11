@@ -2,9 +2,10 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.TribblesPlayCardEffect;
+import com.gempukku.stccg.effects.defaulteffect.TribblesPlayCardEffect;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
@@ -16,14 +17,16 @@ public class TribblesPlayPermanentAction extends AbstractCostToEffectAction {
     private boolean _cardPlayed;
     private final Zone _fromZone;
     private final Zone _toZone;
+    private final TribblesGame _game;
 
-    public TribblesPlayPermanentAction(PhysicalCard card, Zone zone) {
+    public TribblesPlayPermanentAction(TribblesGame game, PhysicalCard card, Zone zone) {
         _permanentPlayed = card;
         setText("Play " + GameUtils.getFullName(_permanentPlayed));
         setPerformingPlayer(card.getOwner());
 
         _fromZone = card.getZone();
         _toZone = zone;
+        _game = game;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class TribblesPlayPermanentAction extends AbstractCostToEffectAction {
 
         if (!_cardPlayed) {
             _cardPlayed = true;
-            _playCardEffect = new TribblesPlayCardEffect(_fromZone, _permanentPlayed, _toZone);
+            _playCardEffect = new TribblesPlayCardEffect(_game, _fromZone, _permanentPlayed, _toZone);
             return _playCardEffect;
         }
 

@@ -3,7 +3,7 @@ package com.gempukku.stccg.requirement;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.producers.*;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import java.util.Map;
 public class RequirementFactory {
     private final Map<String, RequirementProducer> requirementProducers = new HashMap<>();
 
+    @SuppressWarnings("SpellCheckingInspection")
     public RequirementFactory() {
         requirementProducers.put("not", new NotRequirementProducer());
         requirementProducers.put("or", new OrRequirementProducer());
@@ -42,7 +43,7 @@ public class RequirementFactory {
         requirementProducers.put("tribblesequencebroken", new TribbleSequenceBroken());
     }
 
-    public <AbstractGame extends DefaultGame> Requirement<AbstractGame> getRequirement(
+    public Requirement getRequirement(
             JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final String type = FieldUtils.getString(object.get("type"), "type");
         final RequirementProducer requirementProducer = requirementProducers.get(type.toLowerCase());
@@ -51,9 +52,9 @@ public class RequirementFactory {
         return requirementProducer.getPlayRequirement(object, environment);
     }
 
-    public <AbstractGame extends DefaultGame> Requirement<AbstractGame>[] getRequirements(
+    public Requirement[] getRequirements(
             JSONObject[] object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        Requirement<AbstractGame>[] result = new Requirement[object.length];
+        Requirement[] result = new Requirement[object.length];
         for (int i = 0; i < object.length; i++)
             result[i] = getRequirement(object[i], environment);
         return result;

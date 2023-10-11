@@ -1,7 +1,7 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.effects.Effect;
@@ -17,10 +17,10 @@ public class ChoosePlayerWithCardsInDeck implements EffectAppenderProducer {
 
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                return new ChoosePlayerWithCardsInDeckEffect(actionContext.getPerformingPlayer()) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                return new ChoosePlayerWithCardsInDeckEffect(actionContext) {
                     @Override
                     protected void playerChosen(String playerId) {
                         actionContext.setValueToMemory(memorize, playerId);

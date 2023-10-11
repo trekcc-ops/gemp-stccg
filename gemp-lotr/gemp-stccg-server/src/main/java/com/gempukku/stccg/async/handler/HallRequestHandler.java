@@ -14,7 +14,7 @@ import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.LotroServer;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.hall.*;
 import com.gempukku.stccg.league.LeagueSeriesData;
@@ -36,7 +36,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 
-public class HallRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class HallRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(HallRequestHandler.class);
     private final CollectionsManager _collectionManager;
     private final FormatLibrary _formatLibrary;
@@ -52,7 +52,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
         _hallServer = extractObject(context, HallServer.class);
         _leagueService = extractObject(context, LeagueService.class);
         _library = extractObject(context, CardBlueprintLibrary.class);
-        extractObject(context, LotroServer.class);
+        extractObject(context, GameServer.class);
         this.longPollingSystem = longPollingSystem;
     }
 
@@ -361,7 +361,7 @@ public class HallRequestHandler extends LotroServerRequestHandler implements Uri
     private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
         if (additionalValidCards.size() > 0) {
             for (String blueprintId : additionalValidCards)
-                result.append(GameUtils.getCardLink(blueprintId, _library.getLotroCardBlueprint(blueprintId))).append(", ");
+                result.append(GameUtils.getCardLink(blueprintId, _library.getCardBlueprint(blueprintId))).append(", ");
             if (additionalValidCards.size() == 0)
                 result.append("none,");
         }

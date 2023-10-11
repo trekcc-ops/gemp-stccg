@@ -1,13 +1,12 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.game.DefaultGame;
 
-public abstract class AbstractEffectAppender<AbstractGame extends DefaultGame> implements EffectAppender<AbstractGame> {
+public abstract class AbstractEffectAppender implements EffectAppender {
     @Override
-    public final void appendEffect(boolean cost, CostToEffectAction action, DefaultActionContext<AbstractGame> actionContext) {
+    public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         if (cost)
             action.appendCost(createEffect(true, action, actionContext));
         else
@@ -15,10 +14,10 @@ public abstract class AbstractEffectAppender<AbstractGame extends DefaultGame> i
     }
 
     protected abstract Effect createEffect(boolean cost, CostToEffectAction action,
-                                           DefaultActionContext<AbstractGame> actionContext);
+                                           ActionContext actionContext);
 
     @Override
-    public boolean isPlayableInFull(DefaultActionContext<AbstractGame> actionContext) {
+    public boolean isPlayableInFull(ActionContext actionContext) {
         return true;
     }
 }

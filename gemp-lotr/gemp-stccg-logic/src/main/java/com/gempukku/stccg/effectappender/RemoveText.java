@@ -1,17 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.AddUntilModifierEffect;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilModifierEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.RemoveGameTextModifier;
 import org.json.simple.JSONObject;
@@ -33,11 +29,11 @@ public class RemoveText implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCards(filter, valueSource, memory, "you", "Choose cards to remove text from", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
-                        return new AddUntilModifierEffect(
+                        return new AddUntilModifierEffect(actionContext.getGame(),
                                 new RemoveGameTextModifier(actionContext.getSource(), Filters.in(cardsFromMemory)), time);
                     }
                 });

@@ -2,13 +2,12 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.choose.ReorderTopCardsOfDeckEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 public class ReorderTopCardsOfDrawDeck implements EffectAppenderProducer {
@@ -22,17 +21,17 @@ public class ReorderTopCardsOfDrawDeck implements EffectAppenderProducer {
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
         final PlayerSource deckSource = PlayerResolver.resolvePlayer(deck);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 final Evaluator count = valueSource.getEvaluator(actionContext);
                 return actionContext.getGame().getGameState().getDrawDeck(deckSource.getPlayer(actionContext)).size() >= count.evaluateExpression(actionContext.getGame(), null);
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                return new ReorderTopCardsOfDeckEffect(action, playerSource.getPlayer(actionContext), deckSource.getPlayer(actionContext), count);
+                return new ReorderTopCardsOfDeckEffect(actionContext.getGame(), action, playerSource.getPlayer(actionContext), deckSource.getPlayer(actionContext), count);
             }
         };
     }

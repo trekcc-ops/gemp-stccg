@@ -2,7 +2,7 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
@@ -44,7 +44,7 @@ public class TribblesPlayerOrderProcess implements GameProcess {
                 List<String> playerDeckCards = _decks.get(player).getDrawDeckCards();
                 String randomCard = playerDeckCards.get(new Random().nextInt(playerDeckCards.size()));
                 try {
-                    LotroCardBlueprint randomBlueprint = _library.getLotroCardBlueprint(randomCard);
+                    CardBlueprint randomBlueprint = _library.getCardBlueprint(randomCard);
                     game.getGameState().sendMessage(player + " drew " + randomBlueprint.getTitle());
                     int randomTribbleCount = randomBlueprint.getTribbleValue();
                     _startingTribbles.put(player, randomTribbleCount);
@@ -88,7 +88,7 @@ public class TribblesPlayerOrderProcess implements GameProcess {
         ArrayList<Integer> uniqueValues = new ArrayList<>();
         for (String card : _decks.get(playerId).getDrawDeckCards()) {
             try {
-                Integer value = _library.getLotroCardBlueprint(card).getTribbleValue();
+                Integer value = _library.getCardBlueprint(card).getTribbleValue();
                 if (!uniqueValues.contains(value))
                     uniqueValues.add(value);
             } catch (CardNotFoundException e) {

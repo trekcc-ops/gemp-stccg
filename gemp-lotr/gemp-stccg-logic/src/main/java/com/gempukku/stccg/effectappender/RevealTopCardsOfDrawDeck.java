@@ -6,8 +6,7 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.RevealTopCardsOfDrawDeckEffect;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.effects.defaulteffect.RevealTopCardsOfDrawDeckEffect;
 import org.json.simple.JSONObject;
 
 import java.util.List;
@@ -23,9 +22,9 @@ public class RevealTopCardsOfDrawDeck implements EffectAppenderProducer {
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
@@ -33,11 +32,11 @@ public class RevealTopCardsOfDrawDeck implements EffectAppenderProducer {
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                return new RevealTopCardsOfDrawDeckEffect(actionContext.getSource(), deckId, count) {
+                return new RevealTopCardsOfDrawDeckEffect(actionContext, deckId, count) {
                     @Override
                     protected void cardsRevealed(List<PhysicalCard> revealedCards) {
                         if (memorize != null)

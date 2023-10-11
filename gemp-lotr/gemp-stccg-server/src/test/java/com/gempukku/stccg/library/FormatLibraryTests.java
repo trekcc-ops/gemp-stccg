@@ -17,7 +17,7 @@ public class FormatLibraryTests extends AbstractServerTest {
     protected static final FormatLibrary _formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
     protected static final SealedLeagueProduct _sealedLeagueProduct = new SealedLeagueProduct();
 
-    @ParameterizedTest(name = "{0} in LotroFormatLibrary matches SealedLeagueProduct.")
+    @ParameterizedTest(name = "{0} in FormatLibrary matches SealedLeagueProduct.")
     @CsvSource(value = {
             "fotr_block_sealed,fotr_block",
             "ttt_block_sealed,ttt_block",

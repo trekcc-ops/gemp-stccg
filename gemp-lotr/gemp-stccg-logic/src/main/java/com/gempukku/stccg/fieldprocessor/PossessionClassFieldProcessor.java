@@ -1,6 +1,6 @@
 package com.gempukku.stccg.fieldprocessor;
 
-import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
+import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.PossessionClass;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class PossessionClassFieldProcessor implements FieldProcessor {
     @Override
-    public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processField(String key, Object value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final String[] stringArray = FieldUtils.getStringArray(value, key);
         blueprint.setPossessionClasses(convertPossessionClasses(stringArray, key));
     }

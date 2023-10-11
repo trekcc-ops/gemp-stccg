@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 
-public class ReplayRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class ReplayRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final GameRecorder _gameRecorder;
 
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
@@ -43,7 +43,7 @@ public class ReplayRequestHandler extends LotroServerRequestHandler implements U
             if (split.length != 2)
                 throw new HttpProcessingException(404);
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             final InputStream recordedGame = _gameRecorder.getRecordedGame(split[0], split[1]);
             try (recordedGame) {
@@ -52,7 +52,7 @@ public class ReplayRequestHandler extends LotroServerRequestHandler implements U
                 byte[] bytes = new byte[1024];
                 int count;
                 while ((count = recordedGame.read(bytes)) != -1)
-                    baos.write(bytes, 0, count);
+                    outputStream.write(bytes, 0, count);
             } catch (IOException exp) {
                 LOGGER.error("Error 404 response for " + request.uri(), exp);
                 throw new HttpProcessingException(404);
@@ -61,7 +61,7 @@ public class ReplayRequestHandler extends LotroServerRequestHandler implements U
             Map<AsciiString, String> headers = new HashMap<>();
             headers.put(CONTENT_TYPE, "application/html; charset=UTF-8");
 
-            responseWriter.writeByteResponse(baos.toByteArray(), headers);
+            responseWriter.writeByteResponse(outputStream.toByteArray(), headers);
         } else {
             throw new HttpProcessingException(404);
         }

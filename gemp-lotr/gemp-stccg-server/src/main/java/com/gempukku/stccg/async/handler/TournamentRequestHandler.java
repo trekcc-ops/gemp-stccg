@@ -21,7 +21,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
-public class TournamentRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class TournamentRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
     private final SortAndFilterCards _sortAndFilterCards;

@@ -50,15 +50,15 @@ public class PlayCardFromHand implements EffectAppenderProducer {
                             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
                             if (onFilterableSource != null) {
                                 final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
-                                return Filters.and(Filters.playable(game, costModifier, false, ignoreInDeadPile), ExtraFilters.attachableTo(game, onFilterable));
+                                return Filters.and(Filters.playable(costModifier, false, ignoreInDeadPile), ExtraFilters.attachableTo(game, onFilterable));
                             }
-                            return Filters.playable(game, costModifier, false, ignoreInDeadPile);
+                            return Filters.playable(costModifier, false, ignoreInDeadPile);
                         },
                         countSource, memorize, "you", "you", "Choose card to play from hand", false, environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
                         if (cardsToPlay.size() == 1) {
                             final DefaultGame game = actionContext.getGame();
@@ -67,7 +67,7 @@ public class PlayCardFromHand implements EffectAppenderProducer {
                             Filterable onFilterable = (onFilterableSource != null) ? onFilterableSource.getFilterable(actionContext) : Filters.any;
 
                             final CostToEffectAction playCardAction = PlayUtils.getPlayCardAction(game, cardsToPlay.iterator().next(), costModifier, onFilterable, false);
-                            return new StackActionEffect(playCardAction);
+                            return new StackActionEffect(game,playCardAction);
                         } else {
                             return null;
                         }

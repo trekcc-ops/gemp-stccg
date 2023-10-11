@@ -1,23 +1,20 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.actions.DefaultActionSource;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.IncrementPhaseLimitEffect;
-import com.gempukku.stccg.effects.IncrementTurnLimitEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.IncrementPhaseLimitEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.IncrementTurnLimitEffect;
 import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
 public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value, "phase", "requires", "cost", "effect", "limitPerPhase", "limitPerTurn", "text");
 
         final String text = FieldUtils.getString(value.get("text"), "text");
@@ -39,8 +36,8 @@ public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
                 actionSource.addCost(
                         new AbstractEffectAppender() {
                             @Override
-                            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                                return new IncrementPhaseLimitEffect(actionContext.getSource(), phase, limitPerPhase);
+                            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                                return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
                             }
                         });
             }
@@ -50,8 +47,8 @@ public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
                 actionSource.addCost(
                         new AbstractEffectAppender() {
                             @Override
-                            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                                return new IncrementTurnLimitEffect(actionContext.getSource(), limitPerTurn);
+                            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                                return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
                             }
                         });
             }

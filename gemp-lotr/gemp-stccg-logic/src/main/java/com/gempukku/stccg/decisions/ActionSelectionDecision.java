@@ -50,7 +50,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
                 images[i] = "rules";
             } else {
                 try {
-                    images[i] = _game.getBlueprintLibrary().getLotroCardBlueprint(blueprints[i]).getImageUrl();
+                    images[i] = _game.getBlueprintLibrary().getCardBlueprint(blueprints[i]).getImageUrl();
                 } catch (CardNotFoundException exp) {
                     throw new RuntimeException("ActionSelectionDecision unable to find image URLs for all card blueprints", exp);
                 }

@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class SealedLeagueData implements LeagueData {
     private final String _format;
-    private final List<LeagueSeriesData> _series;
+    private final List<LeagueSeriesData> _allSeries;
     private final CollectionType _collectionType;
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final LeaguePrizes _leaguePrizes;
@@ -37,9 +37,9 @@ public class SealedLeagueData implements LeagueData {
         int seriesDuration = 7;
         int maxMatches = 10;
 
-        _series = new LinkedList<>();
+        _allSeries = new LinkedList<>();
         for (int i = 0; i < 4; i++) {
-            _series.add(
+            _allSeries.add(
                     new DefaultLeagueSeriesData(_leaguePrizes, true, "Week " + (i + 1),
                             DateUtils.offsetDate(start, i * seriesDuration), DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
                             formatLibrary.getFormatByName(_format), _collectionType));
@@ -58,15 +58,15 @@ public class SealedLeagueData implements LeagueData {
 
     @Override
     public List<LeagueSeriesData> getSeries() {
-        return Collections.unmodifiableList(_series);
+        return Collections.unmodifiableList(_allSeries);
     }
 
     @Override
     public void joinLeague(CollectionsManager collectionManager, User player, int currentTime) {
         MutableCardCollection startingCollection = new DefaultCardCollection();
-        for (int i = 0; i < _series.size(); i++) {
-            LeagueSeriesData serie = _series.get(i);
-            if (currentTime >= serie.getStart()) {
+        for (int i = 0; i < _allSeries.size(); i++) {
+            LeagueSeriesData seriesData = _allSeries.get(i);
+            if (currentTime >= seriesData.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_format);
                 var leagueProduct = sealedLeague.GetProductForSerie(i);
 
@@ -81,9 +81,9 @@ public class SealedLeagueData implements LeagueData {
     public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
         int status = oldStatus;
 
-        for (int i = status; i < _series.size(); i++) {
-            LeagueSeriesData serie = _series.get(i);
-            if (currentTime >= serie.getStart()) {
+        for (int i = status; i < _allSeries.size(); i++) {
+            LeagueSeriesData seriesData = _allSeries.get(i);
+            if (currentTime >= seriesData.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_format);
                 var leagueProduct = sealedLeague.GetProductForSerie(i);
 
@@ -95,14 +95,14 @@ public class SealedLeagueData implements LeagueData {
             }
         }
 
-        if (status == _series.size()) {
+        if (status == _allSeries.size()) {
             int maxGamesPlayed = 0;
-            for (LeagueSeriesData sery : _series) {
-                maxGamesPlayed+=sery.getMaxMatches();
+            for (LeagueSeriesData seriesData : _allSeries) {
+                maxGamesPlayed+=seriesData.getMaxMatches();
             }
 
-            LeagueSeriesData lastSerie = _series.get(_series.size() - 1);
-            if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
+            LeagueSeriesData lastSeries = _allSeries.get(_allSeries.size() - 1);
+            if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesPlayed, _collectionType);
                     if (leaguePrize != null)

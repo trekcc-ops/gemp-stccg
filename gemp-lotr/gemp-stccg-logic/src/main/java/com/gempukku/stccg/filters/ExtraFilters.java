@@ -2,7 +2,6 @@ package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.lotronly.LotroPlayUtils;
 
 public class ExtraFilters {
     public static Filter attachableTo(final DefaultGame game, final Filterable... filters) {
@@ -14,7 +13,7 @@ public class ExtraFilters {
                 (Filter) (game1, physicalCard) -> {
                     if (physicalCard.getBlueprint().getValidTargetFilter(physicalCard.getOwner(), game1, physicalCard) == null)
                         return false;
-                    return LotroPlayUtils.checkPlayRequirements(game1, physicalCard, Filters.and(filters), 0, twilightModifier, false, false, true);
+                    return game1.checkPlayRequirements(physicalCard);
                 });
     }
 }

@@ -7,7 +7,7 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import org.json.simple.JSONObject;
 
-public class PlayerIsNotSelf implements RequirementProducer {
+public class PlayerIsNotSelf extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "memory");

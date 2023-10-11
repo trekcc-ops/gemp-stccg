@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 
 public class ModifyOwnCost implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value, "amount", "requires", "on");
 
         final String onFilter = FieldUtils.getString(value.get("on"), "on", "any");

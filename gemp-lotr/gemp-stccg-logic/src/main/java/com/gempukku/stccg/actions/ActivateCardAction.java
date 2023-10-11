@@ -1,21 +1,23 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.ActivateCardEffect;
+import com.gempukku.stccg.effects.defaulteffect.ActivateCardEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
 
-public class ActivateCardAction extends AbstractCostToEffectAction<DefaultGame> {
+public class ActivateCardAction extends AbstractCostToEffectAction {
 
     protected final PhysicalCard _physicalCard;
     protected ActivateCardEffect _activateCardEffect;
     protected boolean _sentMessage;
     protected boolean _activated;
     protected boolean _prevented;
+    protected DefaultGame _game;
 
-    public ActivateCardAction(PhysicalCard physicalCard) {
+    public ActivateCardAction(DefaultGame game, PhysicalCard physicalCard) {
         _physicalCard = physicalCard;
+        _game = game;
         setText("Use " + GameUtils.getFullName(_physicalCard));
     }
 
@@ -55,7 +57,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction<DefaultGame> 
 
             if (!_activated) {
                 _activated = true;
-                _activateCardEffect = new ActivateCardEffect(_physicalCard);
+                _activateCardEffect = new ActivateCardEffect(game, _physicalCard);
                 return _activateCardEffect;
             }
 

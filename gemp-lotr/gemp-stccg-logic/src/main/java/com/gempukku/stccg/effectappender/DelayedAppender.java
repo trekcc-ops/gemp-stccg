@@ -1,30 +1,28 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.UnrespondableEffect;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class DelayedAppender<AbstractGame extends DefaultGame> implements EffectAppender<AbstractGame> {
-    private String text;
+public abstract class DelayedAppender<AbstractContext extends ActionContext> implements EffectAppender<AbstractContext> {
+    protected String _text;
 
     public DelayedAppender() {
-
     }
 
     public DelayedAppender(String text) {
-        this.text = text;
+        this._text = text;
     }
 
     @Override
-    public final void appendEffect(boolean cost, CostToEffectAction action, DefaultActionContext<AbstractGame> actionContext) {
+    public final void appendEffect(boolean cost, CostToEffectAction action, AbstractContext actionContext) {
         final UnrespondableEffect effect = new UnrespondableEffect() {
             @Override
-            protected void doPlayEffect(DefaultGame game) {
+            protected void doPlayEffect() {
                 // Need to insert them, but in the reverse order
                 final List<? extends Effect> effects = createEffects(cost, action, actionContext);
                 if (effects != null) {
@@ -38,8 +36,8 @@ public abstract class DelayedAppender<AbstractGame extends DefaultGame> implemen
             }
 
             @Override
-            public String getText(DefaultGame game) {
-                return text;
+            public String getText() {
+                return _text;
             }
         };
 
@@ -50,12 +48,12 @@ public abstract class DelayedAppender<AbstractGame extends DefaultGame> implemen
         }
     }
 
-    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext<AbstractGame> actionContext) {
+    protected Effect createEffect(boolean cost, CostToEffectAction action, AbstractContext actionContext) {
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 
-    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction<AbstractGame> action,
-                                                   DefaultActionContext<AbstractGame> actionContext) {
+    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action,
+                                                   AbstractContext actionContext) {
         final Effect effect = createEffect(cost, action, actionContext);
         if (effect == null)
             return null;
@@ -63,7 +61,7 @@ public abstract class DelayedAppender<AbstractGame extends DefaultGame> implemen
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultActionContext<AbstractGame> actionContext) {
+    public boolean isPlayableInFull(AbstractContext actionContext) {
         return true;
     }
 }

@@ -7,34 +7,36 @@ import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.TransferPermanentEffect;
+import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.effects.AbstractEffect;
+import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.rules.RuleUtils;
 
 import java.util.Collection;
 import java.util.Set;
 
-public class ChooseAndTransferAttachableEffect extends AbstractEffect {
+public class ChooseAndTransferAttachableEffect extends DefaultEffect {
     private final Action _action;
     private final String _playerId;
     private final Filterable _attachedTo;
     private final Filterable _attachedCard;
     private final Filterable _transferTo;
     private final boolean _skipOriginalTargetCheck;
+    private final DefaultGame _game;
 
-    public ChooseAndTransferAttachableEffect(Action action, String playerId, Filterable attachedCard, Filterable attachedTo, Filterable transferTo) {
-        this(action, playerId, false, attachedCard, attachedTo, transferTo);
+    public ChooseAndTransferAttachableEffect(DefaultGame game, Action action, String playerId, Filterable attachedCard, Filterable attachedTo, Filterable transferTo) {
+        this(game, action, playerId, false, attachedCard, attachedTo, transferTo);
     }
 
-    public ChooseAndTransferAttachableEffect(Action action, String playerId, boolean skipOriginalTargetCheck, Filterable attachedCard, Filterable attachedTo, Filterable transferTo) {
+    public ChooseAndTransferAttachableEffect(DefaultGame game, Action action, String playerId, boolean skipOriginalTargetCheck, Filterable attachedCard, Filterable attachedTo, Filterable transferTo) {
         _action = action;
         _playerId = playerId;
         _skipOriginalTargetCheck = skipOriginalTargetCheck;
         _attachedCard = attachedCard;
         _attachedTo = attachedTo;
         _transferTo = transferTo;
+        _game = game;
     }
 
     private Filterable getValidTargetFilter(DefaultGame game, final PhysicalCard attachment) {
@@ -68,15 +70,15 @@ public class ChooseAndTransferAttachableEffect extends AbstractEffect {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
-        return getPossibleAttachmentsToTransfer(game).size() > 0;
+    public boolean isPlayableInFull() {
+        return getPossibleAttachmentsToTransfer(_game).size() > 0;
     }
 
     @Override
-    protected FullEffectResult playEffectReturningResult(final DefaultGame game) {
-        final Collection<PhysicalCard> possibleAttachmentsToTransfer = getPossibleAttachmentsToTransfer(game);
+    protected FullEffectResult playEffectReturningResult() {
+        final Collection<PhysicalCard> possibleAttachmentsToTransfer = getPossibleAttachmentsToTransfer(_game);
         if (possibleAttachmentsToTransfer.size() > 0) {
-            game.getUserFeedback().sendAwaitingDecision(_playerId,
+            _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardsSelectionDecision(1, "Choose card to transfer", possibleAttachmentsToTransfer, 1, 1) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -84,8 +86,8 @@ public class ChooseAndTransferAttachableEffect extends AbstractEffect {
                             if (selectedAttachments.size() == 1) {
                                 final PhysicalCard attachment = selectedAttachments.iterator().next();
                                 final PhysicalCard transferredFrom = attachment.getAttachedTo();
-                                final Collection<PhysicalCard> validTargets = Filters.filterActive(game, getValidTargetFilter(game, attachment));
-                                game.getUserFeedback().sendAwaitingDecision(
+                                final Collection<PhysicalCard> validTargets = Filters.filterActive(_game, getValidTargetFilter(_game, attachment));
+                                _game.getUserFeedback().sendAwaitingDecision(
                                         _playerId,
                                         new CardsSelectionDecision(1, "Choose transfer target", validTargets, 1, 1) {
                                             @Override
@@ -95,13 +97,13 @@ public class ChooseAndTransferAttachableEffect extends AbstractEffect {
                                                     final PhysicalCard selectedTarget = selectedTargets.iterator().next();
                                                     SubAction subAction = new SubAction(_action);
                                                     subAction.appendEffect(
-                                                            new TransferPermanentEffect(attachment, selectedTarget) {
+                                                            new TransferPermanentEffect(_game, attachment, selectedTarget) {
                                                                 @Override
                                                                 protected void afterTransferredCallback() {
                                                                     afterTransferCallback(attachment, transferredFrom, selectedTarget);
                                                                 }
                                                             });
-                                                    game.getActionsEnvironment().addActionToStack(subAction);
+                                                    _game.getActionsEnvironment().addActionToStack(subAction);
                                                 }
                                             }
                                         }

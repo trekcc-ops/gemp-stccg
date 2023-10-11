@@ -1,14 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.StackActionEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
@@ -26,9 +25,9 @@ public class CostToEffect implements EffectAppenderProducer {
         final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
         final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
 
                 if(requirementsNotMet(actionContext))
                     return null;
@@ -40,15 +39,15 @@ public class CostToEffect implements EffectAppenderProducer {
                 for (EffectAppender effectAppender : effectAppenders)
                     effectAppender.appendEffect(false, subAction, actionContext);
 
-                return new StackActionEffect(subAction);
+                return new StackActionEffect(actionContext.getGame(), subAction);
             }
 
-            private boolean requirementsNotMet(DefaultActionContext<DefaultGame> actionContext) {
+            private boolean requirementsNotMet(ActionContext actionContext) {
                 return (!RequirementUtils.acceptsAllRequirements(requirements, actionContext));
             }
 
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
 
                 if(requirementsNotMet(actionContext))
                     return false;

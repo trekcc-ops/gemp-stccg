@@ -54,7 +54,7 @@ public class TribblesGameState extends GameState {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(new PhysicalCard(cardId, blueprintId, playerId, _library.getLotroCardBlueprint(blueprintId)));
+                        subDeck.add(new PhysicalCard(cardId, blueprintId, playerId, _library.getCardBlueprint(blueprintId)));
                         cardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");

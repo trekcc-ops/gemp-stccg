@@ -1,18 +1,18 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.TransferPermanentNotFromPlayEffect;
+import com.gempukku.stccg.effects.defaulteffect.TransferPermanentNotFromPlayEffect;
+import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -45,9 +45,9 @@ public class TransferFromDiscard implements EffectAppenderProducer {
                         }, actionContext -> Filters.any,
                         ValueResolver.resolveEvaluator(1, environment), "_temp2", "you", "Choose cards to transfer to", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> transferCard = actionContext.getCardsFromMemory("_temp1");
                         if (transferCard.isEmpty())
                             return null;
@@ -56,7 +56,7 @@ public class TransferFromDiscard implements EffectAppenderProducer {
                         if (transferredToCard.isEmpty())
                             return null;
 
-                        return Collections.singletonList(new TransferPermanentNotFromPlayEffect(transferCard.iterator().next(), transferredToCard.iterator().next()));
+                        return Collections.singletonList(new TransferPermanentNotFromPlayEffect(actionContext.getGame(), transferCard.iterator().next(), transferredToCard.iterator().next()));
                     }
                 });
 

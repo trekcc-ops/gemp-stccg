@@ -58,7 +58,7 @@ public class ST1EGameState extends GameState {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, _library.getLotroCardBlueprint(blueprintId)));
+                        subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, _library.getCardBlueprint(blueprintId)));
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");

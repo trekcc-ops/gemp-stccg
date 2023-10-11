@@ -1,11 +1,10 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class MovesFrom implements TriggerCheckerProducer {
@@ -17,9 +16,9 @@ public class MovesFrom implements TriggerCheckerProducer {
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
 
-        return new TriggerChecker<>() {
+        return new TriggerChecker() {
             @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean accepts(ActionContext actionContext) {
                 return TriggerConditions.movesFrom(actionContext.getGame(), actionContext.getEffectResult(), filterableSource.getFilterable(actionContext));
             }
 

@@ -1,15 +1,10 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.results.PlayCardResult;
 import com.gempukku.stccg.results.PlayEventResult;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
@@ -23,9 +18,9 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
         boolean exertsRanger = FieldUtils.getBoolean(value.get("exertsRanger"), "exertsRanger", false);
         final FilterableSource filter = environment.getFilterFactory().generateFilter(filterString, environment);
         final FilterableSource onFilter = (onString != null) ? environment.getFilterFactory().generateFilter(onString, environment) : null;
-        return new TriggerChecker<>() {
+        return new TriggerChecker() {
             @Override
-            public boolean accepts(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean accepts(ActionContext actionContext) {
                 final Filterable filterable = filter.getFilterable(actionContext);
                 boolean played;
                 if (onFilter != null) {

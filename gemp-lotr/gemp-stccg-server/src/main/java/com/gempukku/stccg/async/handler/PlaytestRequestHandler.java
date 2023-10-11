@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-public class PlaytestRequestHandler extends LotroServerRequestHandler implements UriRequestHandler {
+public class PlaytestRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private final PlayerDAO _playerDAO;
     private final GameHistoryService _gameHistoryService;

@@ -2,12 +2,12 @@ package com.gempukku.stccg.effects.tribblepowers;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.effects.AbstractEffect;
-import com.gempukku.stccg.effects.ScorePointsEffect;
 import com.gempukku.stccg.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.effects.choose.ChooseAndPutCardsFromHandBeneathDrawDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.ActivateTribblePowerEffect;
+import com.gempukku.stccg.effects.defaulteffect.ScorePointsEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.rules.GameUtils;
@@ -20,37 +20,37 @@ import java.util.Objects;
 
 public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffect {
     private String _discardingPlayer;
-    public ActivateLaughterTribblePowerEffect(CostToEffectAction action, PhysicalCard source) {
-        super(action, source);
+    public ActivateLaughterTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+        super(action, actionContext);
     }
 
     @Override
-    public boolean isPlayableInFull(TribblesGame game) {
+    public boolean isPlayableInFull() {
         // There must be at least two players with cards in their hands
         int playersWithHands = 0;
-        for (String player : GameUtils.getAllPlayers(game)) {
-            if (game.getGameState().getHand(player).size() > 0)
+        for (String player : GameUtils.getAllPlayers(_game)) {
+            if (_game.getGameState().getHand(player).size() > 0)
                 playersWithHands++;
         }
         return playersWithHands >= 2;
     }
 
     @Override
-    protected AbstractEffect.FullEffectResult playEffectReturningResult(TribblesGame game) {
-        if (!isPlayableInFull(game))
-            return new AbstractEffect.FullEffectResult(false);
+    protected FullEffectResult playEffectReturningResult() {
+        if (!isPlayableInFull())
+            return new FullEffectResult(false);
         else {
-            List<String> players = Arrays.asList(GameUtils.getAllPlayers(game));
-            players.removeIf(player -> game.getGameState().getHand(player).size() == 0);
-            game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
+            List<String> players = Arrays.asList(GameUtils.getAllPlayers(_game));
+            players.removeIf(player -> _game.getGameState().getHand(player).size() == 0);
+            _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision(1, "Choose a player to discard a card", players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            firstPlayerChosen(players, result, game);
+                            firstPlayerChosen(players, result, _game);
                         }
                     });
-            game.getActionsEnvironment().emitEffectResult(_result);
-            return new AbstractEffect.FullEffectResult(true);
+            _game.getActionsEnvironment().emitEffectResult(_result);
+            return new FullEffectResult(true);
         }
     }
 
@@ -74,12 +74,12 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
 
     private void secondPlayerChosen(String secondPlayerChosen, TribblesGame game) {
         SubAction subAction = new SubAction(_action);
-        subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(_action, _discardingPlayer,false,1));
+        subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(_game, _action, _discardingPlayer,false,1));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
-                _action, secondPlayerChosen, 1, false, Filters.any));
+                game, _action, secondPlayerChosen, 1, false, Filters.any));
         if (!(Objects.equals(_discardingPlayer, _activatingPlayer) ||
                 Objects.equals(secondPlayerChosen, _activatingPlayer)))
-            subAction.appendEffect(new ScorePointsEffect(_source, _activatingPlayer, 25000));
+            subAction.appendEffect(new ScorePointsEffect(game, _source, _activatingPlayer, 25000));
         game.getActionsEnvironment().addActionToStack(subAction);
     }
 }

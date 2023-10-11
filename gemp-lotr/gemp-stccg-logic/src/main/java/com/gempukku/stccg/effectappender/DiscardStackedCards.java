@@ -1,18 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.DiscardCardsFromZoneEffect;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromZoneEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class DiscardStackedCards implements EffectAppenderProducer {
@@ -27,14 +22,14 @@ public class DiscardStackedCards implements EffectAppenderProducer {
 
         final FilterableSource onFilterSource = environment.getFilterFactory().generateFilter(on, environment);
 
-        MultiEffectAppender<DefaultGame> result = new MultiEffectAppender<>();
+        MultiEffectAppender result = new MultiEffectAppender();
         result.addEffectAppender(
                 CardResolver.resolveStackedCards(filter, valueSource, onFilterSource, memory, "you", "Choose stacked cards to discard", environment));
         result.addEffectAppender(
-                new DelayedAppender<>() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect<DefaultGame> createEffect(boolean cost, CostToEffectAction action, DefaultActionContext<DefaultGame> actionContext) {
-                        return new DiscardCardsFromZoneEffect(actionContext.getSource(), Zone.STACKED, actionContext.getCardsFromMemory(memory));
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                        return new DiscardCardsFromZoneEffect(actionContext, Zone.STACKED, actionContext.getCardsFromMemory(memory));
                     }
                 });
         return result;

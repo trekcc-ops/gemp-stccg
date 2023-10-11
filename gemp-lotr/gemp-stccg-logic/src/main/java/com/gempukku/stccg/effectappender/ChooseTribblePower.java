@@ -1,9 +1,9 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.choose.ChooseTribblePowerEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
@@ -16,10 +16,10 @@ public class ChooseTribblePower implements EffectAppenderProducer {
 
         final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
 
-        return new DelayedAppender<>() {
+        return new TribblesDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
-                return new ChooseTribblePowerEffect(actionContext.getPerformingPlayer()) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, TribblesActionContext actionContext) {
+                return new ChooseTribblePowerEffect(actionContext) {
                     @Override
                     protected void powerChosen(String playerId) {
                         actionContext.setValueToMemory(memorize, playerId);

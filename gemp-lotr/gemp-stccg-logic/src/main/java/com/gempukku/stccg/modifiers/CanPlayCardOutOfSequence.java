@@ -17,9 +17,9 @@ public class CanPlayCardOutOfSequence implements ModifierSourceProducer {
         final String filter = FieldUtils.getString(object.get("filter"), "filter");
         final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
 
-        final Requirement<DefaultGame>[] requirements =
+        final Requirement[] requirements =
                 environment.getRequirementFactory().getRequirements(conditionArray, environment);
-        final FilterableSource<DefaultGame> filterableSource =
+        final FilterableSource filterableSource =
                 environment.getFilterFactory().generateFilter(filter, environment);
 
         return actionContext ->

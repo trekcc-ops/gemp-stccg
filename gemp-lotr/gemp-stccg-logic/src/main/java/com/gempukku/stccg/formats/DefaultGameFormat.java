@@ -1,9 +1,9 @@
 package com.gempukku.stccg.formats;
 
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -280,13 +280,13 @@ public class DefaultGameFormat implements GameFormat {
     public String validateCard(String blueprintId) {
         blueprintId = _library.getBaseBlueprintId(blueprintId);
         try {
-            _library.getLotroCardBlueprint(blueprintId);
+            _library.getCardBlueprint(blueprintId);
             if (_validCards.contains(blueprintId) || _errataCardMap.containsValue(blueprintId))
                 return null;
 
             if (_validSets.size() > 0 && !isValidInSets(blueprintId))
                 return "Deck contains card not from valid set: " +
-                        GameUtils.getFullName(_library.getLotroCardBlueprint(blueprintId));
+                        GameUtils.getFullName(_library.getCardBlueprint(blueprintId));
 
             // Banned cards
             Set<String> allAlternates = _library.getAllAlternates(blueprintId);
@@ -294,7 +294,7 @@ public class DefaultGameFormat implements GameFormat {
                 if (bannedBlueprintId.equals(blueprintId) ||
                         (allAlternates != null && allAlternates.contains(bannedBlueprintId)))
                     return "Deck contains a copy of an X-listed card: " +
-                            GameUtils.getFullName(_library.getLotroCardBlueprint(bannedBlueprintId));
+                            GameUtils.getFullName(_library.getCardBlueprint(bannedBlueprintId));
             }
 
             // Errata
@@ -302,7 +302,7 @@ public class DefaultGameFormat implements GameFormat {
                 if (originalBlueprintId.equals(blueprintId) ||
                         (allAlternates != null && allAlternates.contains(originalBlueprintId)))
                     return "Deck contains non-errata of an errata'd card: " +
-                            GameUtils.getFullName(_library.getLotroCardBlueprint(originalBlueprintId));
+                            GameUtils.getFullName(_library.getCardBlueprint(originalBlueprintId));
             }
 
         } catch (CardNotFoundException e) {
@@ -375,7 +375,7 @@ public class DefaultGameFormat implements GameFormat {
         List<String> distinctCardsInDeck = deck.getDrawDeckCards().stream().distinct().toList();
         distinctCardsInDeck.forEach((card) -> {
             try {
-                LotroCardBlueprint blueprint = _library.getLotroCardBlueprint(card);
+                CardBlueprint blueprint = _library.getCardBlueprint(card);
                 if (blueprint.getCardType() == CardType.MISSION && blueprint.isUnique())
                     if (Collections.frequency(deck.getDrawDeckCards(), card) > 1)
                         result.add("Deck contains multiple copies of unique mission: " + blueprint.getTitle());
@@ -395,7 +395,7 @@ public class DefaultGameFormat implements GameFormat {
             for (String blueprintId : _restrictedCards) {
                 Integer count = cardCountByBaseBlueprintId.get(blueprintId);
                 if (count != null && count > 1) {
-                    result.add("Deck contains more than one copy of an R-listed card: " + GameUtils.getFullName(_library.getLotroCardBlueprint(blueprintId)));
+                    result.add("Deck contains more than one copy of an R-listed card: " + GameUtils.getFullName(_library.getCardBlueprint(blueprintId)));
                 }
             }
 
@@ -403,12 +403,12 @@ public class DefaultGameFormat implements GameFormat {
             for (String blueprintId : _limit2Cards) {
                 Integer count = cardCountByBaseBlueprintId.get(blueprintId);
                 if (count != null && count > 2)
-                    result.add("Deck contains more than two copies of a 2x limited card: " + GameUtils.getFullName(_library.getLotroCardBlueprint(blueprintId)));
+                    result.add("Deck contains more than two copies of a 2x limited card: " + GameUtils.getFullName(_library.getCardBlueprint(blueprintId)));
             }
             for (String blueprintId : _limit3Cards) {
                 Integer count = cardCountByBaseBlueprintId.get(blueprintId);
                 if (count != null && count > 3)
-                    result.add("Deck contains more than three copies of a 3x limited card: " + GameUtils.getFullName(_library.getLotroCardBlueprint(blueprintId)));
+                    result.add("Deck contains more than three copies of a 3x limited card: " + GameUtils.getFullName(_library.getCardBlueprint(blueprintId)));
             }
         }
         catch(CardNotFoundException ex)
@@ -487,7 +487,7 @@ public class DefaultGameFormat implements GameFormat {
     private void processCardCounts(String blueprintId, Map<String, Integer> cardCountByName,
                                    Map<String, Integer> cardCountByBaseBlueprintId)  {
         try {
-            LotroCardBlueprint cardBlueprint = _library.getLotroCardBlueprint(blueprintId);
+            CardBlueprint cardBlueprint = _library.getCardBlueprint(blueprintId);
             increaseCount(cardCountByName, cardBlueprint.getTitle());
             increaseCount(cardCountByBaseBlueprintId, _library.getBaseBlueprintId(blueprintId));
         }

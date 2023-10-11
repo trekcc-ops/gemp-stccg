@@ -1,17 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.DoNothingEffect;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.StackTopCardsFromDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.StackTopCardsFromDeckEffect;
+import com.gempukku.stccg.effects.defaulteffect.unrespondable.DoNothingEffect;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 public class StackTopCardsOfDrawDeck implements EffectAppenderProducer {
@@ -31,14 +27,14 @@ public class StackTopCardsOfDrawDeck implements EffectAppenderProducer {
         result.addEffectAppender(
                 CardResolver.resolveCard(where, cardMemory, "you", "Choose card to stack on", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final PhysicalCard card = actionContext.getCardFromMemory(cardMemory);
                         if (card != null) {
                             final String deckId = playerSource.getPlayer(actionContext);
 
-                            return new StackTopCardsFromDeckEffect(deckId, count, card);
+                            return new StackTopCardsFromDeckEffect(actionContext.getGame(), deckId, count, card);
                         } else
                             return new DoNothingEffect();
                     }

@@ -1,12 +1,13 @@
 package com.gempukku.stccg.effects.choose;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.StackCardFromPlayEffect;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.effects.AbstractSubActionEffect;
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.effects.defaulteffect.StackCardFromPlayEffect;
+import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayConditions;
 
 public class ChooseAndStackCardFromPlayEffect extends AbstractSubActionEffect {
@@ -14,46 +15,48 @@ public class ChooseAndStackCardFromPlayEffect extends AbstractSubActionEffect {
     private final String _playerId;
     private final Filterable _stackOnFilter;
     private final Filterable[] _cardFilter;
+    private final DefaultGame _game;
 
-    public ChooseAndStackCardFromPlayEffect(Action action, String playerId, Filterable stackOn, Filterable... filter) {
+    public ChooseAndStackCardFromPlayEffect(DefaultGame game, Action action, String playerId, Filterable stackOn, Filterable... filter) {
         _action = action;
         _playerId = playerId;
         _stackOnFilter = stackOn;
         _cardFilter = filter;
+        _game = game;
     }
 
     @Override
-    public Type getType() {
+    public EffectType getType() {
         return null;
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText() {
         return null;
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame game) {
-        return PlayConditions.isActive(game, _cardFilter) && PlayConditions.isActive(game, _stackOnFilter);
+    public boolean isPlayableInFull() {
+        return PlayConditions.isActive(_game, _cardFilter) && PlayConditions.isActive(_game, _stackOnFilter);
     }
 
     @Override
-    public void playEffect(DefaultGame game) {
+    public void playEffect() {
         final SubAction subAction = new SubAction(_action);
         subAction.appendEffect(
-                new ChooseActiveCardEffect(_action.getActionSource(), _playerId, "Choose card to stack", _cardFilter) {
+                new ChooseActiveCardEffect(_game, _action.getActionSource(), _playerId, "Choose card to stack", _cardFilter) {
                     @Override
                     protected void cardSelected(DefaultGame game, final PhysicalCard cardToStack) {
                         subAction.appendEffect(
-                                new ChooseActiveCardEffect(_action.getActionSource(), _playerId, "Choose card to stack on", _stackOnFilter) {
+                                new ChooseActiveCardEffect(_game, _action.getActionSource(), _playerId, "Choose card to stack on", _stackOnFilter) {
                                     @Override
                                     protected void cardSelected(DefaultGame game, PhysicalCard cardToStackOn) {
                                         subAction.appendEffect(
-                                                new StackCardFromPlayEffect(cardToStack, cardToStackOn));
+                                                new StackCardFromPlayEffect(game, cardToStack, cardToStackOn));
                                     }
                                 });
                     }
                 });
-        processSubAction(game, subAction);
+        processSubAction(_game, subAction);
     }
 }

@@ -168,7 +168,7 @@ public class FormatLibrary {
         try {
             collectionReady.acquire();
             var data = _allFormats.values().stream()
-                    .filter(lotroFormat -> lotroFormat.getName().equals(formatName))
+                    .filter(format -> format.getName().equals(formatName))
                     .findFirst()
                     .orElse(null);
             collectionReady.release();

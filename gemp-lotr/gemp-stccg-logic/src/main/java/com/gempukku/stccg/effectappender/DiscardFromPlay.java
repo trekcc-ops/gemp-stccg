@@ -7,7 +7,7 @@ import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.DiscardCardsFromPlayEffect;
+import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.effects.Effect;
 import org.json.simple.JSONObject;
 
@@ -34,9 +34,9 @@ public class DiscardFromPlay implements EffectAppenderProducer {
                         (actionContext) -> Filters.canBeDiscarded(actionContext.getPerformingPlayer(), actionContext.getSource()),
                         valueSource, memory, player, "Choose cards to discard", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final String discardingPlayerId = discardingPlayer.getPlayer(actionContext);
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         if (stackedCardsMemory != null) {
@@ -47,7 +47,7 @@ public class DiscardFromPlay implements EffectAppenderProducer {
 
                             actionContext.setCardMemory(stackedCardsMemory, stackedCards);
                         }
-                        return new DiscardCardsFromPlayEffect(discardingPlayerId, actionContext.getSource(), Filters.in(cardsFromMemory));
+                        return new DiscardCardsFromPlayEffect(actionContext, discardingPlayerId, Filters.in(cardsFromMemory));
                     }
                 });
 

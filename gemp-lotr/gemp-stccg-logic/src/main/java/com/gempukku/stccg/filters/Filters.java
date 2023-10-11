@@ -1,15 +1,13 @@
 package com.gempukku.stccg.filters;
 
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.cards.PhysicalCardVisitor;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.lotronly.LotroGameUtils;
-import com.gempukku.stccg.rules.lotronly.LotroPlayUtils;
 
 import java.util.*;
 
@@ -204,25 +202,24 @@ public class Filters {
     }
 
     public static Filter playable(final DefaultGame game, final int twilightModifier, final boolean ignoreRoamingPenalty) {
-        return playable(game, twilightModifier, ignoreRoamingPenalty, false);
+        return playable(twilightModifier, ignoreRoamingPenalty, false);
     }
 
-    public static Filter playable(final DefaultGame game, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile) {
-        return playable(game, 0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false);
+    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile) {
+        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false);
     }
 
-    public static Filter playable(final DefaultGame game, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return playable(game, 0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, ignoreResponseEvents);
+    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
+        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, ignoreResponseEvents);
     }
 
-    public static Filter playable(final DefaultGame game, final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
+    public static Filter playable(final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
         return (game1, physicalCard) -> {
             Side expectedSide = (physicalCard.getOwner().equals(game1.getGameState().getCurrentPlayerId()) ? Side.FREE_PEOPLE : Side.SHADOW);
-            final LotroCardBlueprint blueprint = physicalCard.getBlueprint();
+            final CardBlueprint blueprint = physicalCard.getBlueprint();
             if (blueprint.getSide() != expectedSide)
                 return false;
-
-            return LotroPlayUtils.checkPlayRequirements(game1, physicalCard, Filters.any, withTwilightRemoved, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, ignoreResponseEvents);
+            return game1.checkPlayRequirements(physicalCard);
         };
     }
 
@@ -237,7 +234,7 @@ public class Filters {
         return Filters.and(
                 Filters.or(CardType.COMPANION, CardType.ALLY, CardType.MINION, CardType.FOLLOWER),
                 (Filter) (game, physicalCard) -> {
-                    LotroCardBlueprint blueprint = physicalCard.getBlueprint();
+                    CardBlueprint blueprint = physicalCard.getBlueprint();
                     return blueprint.getRace() == race;
                 });
     }
@@ -249,20 +246,6 @@ public class Filters {
 
     public static Filter owner(final String playerId) {
         return (game, physicalCard) -> physicalCard.getOwner() != null && physicalCard.getOwner().equals(playerId);
-    }
-
-    public static Filter region(final int region) { return regionNumberBetweenInclusive(region, region); }
-
-    public static Filter regionNumberBetweenInclusive(final int minRegionNumber, final int maxRegionNumber) {
-        return (game, physicalCard) -> {
-
-            if(physicalCard.getSiteNumber() == null)
-                return false;
-
-            int regionNumber = LotroGameUtils.getRegion(physicalCard.getSiteNumber());
-
-            return regionNumber >= minRegionNumber && regionNumber <= maxRegionNumber;
-        };
     }
 
     public static Filter hasAttached(final Filterable... filters) {

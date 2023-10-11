@@ -1,18 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.DiscardCardsFromZoneEffect;
+import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromZoneEffect;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -29,20 +24,20 @@ public class DiscardCardsFromDrawDeck implements EffectAppenderProducer {
         final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
         final String deck = FieldUtils.getString(effectObject.get("deck"), "deck", "you");
 
-        final ValueSource<DefaultGame> countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 
         MultiEffectAppender result = new MultiEffectAppender();
 
         result.addEffectAppender(
                 CardResolver.resolveCardsInDeck(filter, null, countSource, memorize, player, deck, "Choose cards to discard", environment));
         result.addEffectAppender(
-                new DelayedAppender<>() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToDiscard = actionContext.getCardsFromMemory(memorize);
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard physicalCard : cardsToDiscard) {
-                            result.add(new DiscardCardsFromZoneEffect(action.getActionSource(), Zone.DRAW_DECK, physicalCard));
+                            result.add(new DiscardCardsFromZoneEffect(actionContext.getGame(), action.getActionSource(), Zone.DRAW_DECK, physicalCard));
                         }
 
                         return result;

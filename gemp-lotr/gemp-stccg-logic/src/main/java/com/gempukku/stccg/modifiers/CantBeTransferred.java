@@ -17,9 +17,9 @@ public class CantBeTransferred implements ModifierSourceProducer {
         final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
         final String filter = FieldUtils.getString(object.get("filter"), "filter");
 
-        final FilterableSource<DefaultGame> filterableSource =
+        final FilterableSource filterableSource =
                 environment.getFilterFactory().generateFilter(filter, environment);
-        final Requirement<DefaultGame>[] requirements =
+        final Requirement[] requirements =
                 environment.getRequirementFactory().getRequirements(conditionArray, environment);
 
         return (actionContext) -> new CantBeTransferredModifier(actionContext.getSource(), filterableSource.getFilterable(actionContext), new RequirementCondition(requirements, actionContext));

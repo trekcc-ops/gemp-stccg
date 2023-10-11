@@ -141,7 +141,9 @@
 	
 	<h1>Message of the Day</h1>
 	<div>
-		<p>Sets the MOTD in the Game Hall just beneath the action bar at the top of the window.	Supports HTML.</p>
+		<p>
+			<label for="motd-text">Sets the MOTD in the Game Hall just beneath the action bar at the top of the window.	Supports HTML.</label>
+		</p>
 		
 		<div id="motd-response"></div>
 
@@ -169,7 +171,8 @@
 		</tr>
 		<tr>
 			<td>
-				Type: <br><input type="text" id="collectionType">
+				<label for="collectionType">Type:</label><br>
+				<input type="text" id="collectionType">
 			</td>
 			<td>
 				Which collection to insert the cards in.  One of:
@@ -185,7 +188,8 @@
 		
 		<tr>
 			<td>
-				Product: <br><textarea rows="5" cols="20" id="product"></textarea>
+				<label for="product">Product:</label><br>
+				<textarea rows="5" cols="20" id="product"></textarea>
 			</td>
 			<td style="width: fit-content;">
 				A list of items + quantities to award (one item per line), in the form 
@@ -217,7 +221,8 @@
 		
 		<tr>
 			<td style="width: fit-content;">
-				Players: <br><textarea rows="5" cols="20" id="players"></textarea>
+				<label for="players">Players:</label><br>
+				<textarea rows="5" cols="20" id="players"></textarea>
 			</td>
 			<td>
 				A list of players to award cards to, one per line.  Case-sensitive.

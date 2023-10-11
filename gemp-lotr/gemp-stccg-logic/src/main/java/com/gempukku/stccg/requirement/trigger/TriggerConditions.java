@@ -5,6 +5,9 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.*;
+import com.gempukku.stccg.effects.defaulteffect.DrawOneCardEffect;
+import com.gempukku.stccg.results.EffectResult;
+import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.results.*;
@@ -84,16 +87,8 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean isGettingKilled(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_KILLED) {
-            KillEffect killEffect = (KillEffect) effect;
-            return Filters.filter(killEffect.getCharactersToBeKilled(), game, filters).size() > 0;
-        }
-        return false;
-    }
-
     public static boolean isDrawingACard(Effect effect, DefaultGame game, String playerId) {
-        if (effect.getType() == Effect.Type.BEFORE_DRAW_CARD) {
+        if (effect.getType() == EffectType.BEFORE_DRAW_CARD) {
             DrawOneCardEffect drawEffect = (DrawOneCardEffect) effect;
             return effect.getPerformingPlayer().equals(playerId) && drawEffect.canDrawCard(game);
         }
@@ -108,16 +103,8 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean forEachKilled(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.FOR_EACH_KILLED) {
-            ForEachKilledResult killResult = (ForEachKilledResult) effectResult;
-            return Filters.and(filters).accepts(game, killResult.getKilledCard());
-        }
-        return false;
-    }
-
     public static boolean isGettingDiscardedBy(Effect effect, DefaultGame game, Filterable sourceFilter, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_DISCARD_FROM_PLAY) {
+        if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
             if (effect.getSource() != null && Filters.and(sourceFilter).accepts(game, effect.getSource()))
                 return Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
@@ -126,7 +113,7 @@ public class TriggerConditions {
     }
 
     public static boolean isGettingDiscardedByOpponent(Effect effect, DefaultGame game, String playerId, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_DISCARD_FROM_PLAY) {
+        if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
             if (effect.getSource() != null && !effect.getPerformingPlayer().equals(playerId))
                 return Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
@@ -135,7 +122,7 @@ public class TriggerConditions {
     }
 
     public static boolean isGettingDiscarded(Effect effect, DefaultGame game, Filterable... filters) {
-        if (effect.getType() == Effect.Type.BEFORE_DISCARD_FROM_PLAY) {
+        if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect discardEffect = (PreventableCardEffect) effect;
             return Filters.filter(discardEffect.getAffectedCardsMinusPrevented(game), game, filters).size() > 0;
         }

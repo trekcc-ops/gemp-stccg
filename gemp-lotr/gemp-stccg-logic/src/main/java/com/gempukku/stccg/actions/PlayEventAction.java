@@ -3,9 +3,9 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Side;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effects.discount.DiscountEffect;
-import com.gempukku.stccg.effects.PayTwilightCostEffect;
-import com.gempukku.stccg.effects.PlayEventEffect;
+import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.effects.defaulteffect.PayTwilightCostEffect;
+import com.gempukku.stccg.effects.defaulteffect.PlayEventEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
@@ -103,7 +103,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
         if (!_discountApplied) {
             _discountApplied = true;
             int twilightModifier = -getProcessedDiscount();
-            insertCost(new PayTwilightCostEffect(_eventPlayed, twilightModifier));
+            insertCost(new PayTwilightCostEffect(game, _eventPlayed, twilightModifier));
         }
 
         if (!isCostFailed()) {
@@ -113,7 +113,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
 
             if (!_cardPlayed) {
                 _cardPlayed = true;
-                _playCardEffect = new PlayEventEffect(this, _playedFrom, _eventPlayed, _requiresRanger, isPaidToil());
+                _playCardEffect = new PlayEventEffect(game,this, _playedFrom, _eventPlayed, _requiresRanger);
                 return _playCardEffect;
             }
 

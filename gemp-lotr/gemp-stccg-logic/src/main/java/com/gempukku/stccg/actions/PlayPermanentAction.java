@@ -3,9 +3,9 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Side;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effects.discount.DiscountEffect;
-import com.gempukku.stccg.effects.PayTwilightCostEffect;
-import com.gempukku.stccg.effects.PlayCardEffect;
+import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.effects.defaulteffect.PayTwilightCostEffect;
+import com.gempukku.stccg.effects.defaulteffect.PlayCardEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
@@ -19,7 +19,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
 
     private boolean _cardRemoved;
 
-    private Effect _playCardEffect;
+    private PlayCardEffect _playCardEffect;
     private boolean _cardPlayed;
 
     private boolean _cardDiscarded;
@@ -69,7 +69,6 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
 
     @Override
     public Effect nextEffect(DefaultGame game) {
-//        game.getGameState().sendMessage("DEBUG: Calling nextEffect from lotronly/PlayPermanentAction");
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _permanentPlayed.getZone();
@@ -103,7 +102,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
         if (!_discountApplied) {
             _discountApplied = true;
             _twilightModifier -= getProcessedDiscount();
-            insertCost(new PayTwilightCostEffect(_permanentPlayed, _twilightModifier, _ignoreRoamingPenalty));
+            insertCost(new PayTwilightCostEffect(game, _permanentPlayed, _twilightModifier, _ignoreRoamingPenalty));
         }
 
         if (!isCostFailed()) {
@@ -113,7 +112,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
 
             if (!_cardPlayed) {
                 _cardPlayed = true;
-                _playCardEffect = new PlayCardEffect(_fromZone, _permanentPlayed, _toZone, _playedFromCard);
+                _playCardEffect = new PlayCardEffect(game, _fromZone, _permanentPlayed, _toZone, _playedFromCard);
                 return _playCardEffect;
             }
 

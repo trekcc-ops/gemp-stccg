@@ -3,15 +3,15 @@ package com.gempukku.stccg.db;
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.common.DBDefs;
 import com.gempukku.stccg.game.User;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public class CachedPlayerDAO implements PlayerDAO, Cached {
     private final PlayerDAO _delegate;
-    private final Map<Integer, User> _playerById = Collections.synchronizedMap(new LRUMap(500));
-    private final Map<String, User> _playerByName = Collections.synchronizedMap(new LRUMap(500));
+    private final Map<Integer, User> _playerById = Collections.synchronizedMap(new LRUMap<>(500));
+    private final Map<String, User> _playerByName = Collections.synchronizedMap(new LRUMap<>(500));
     private Set<String> _bannedUsernames = new HashSet<>();
 
     public CachedPlayerDAO(PlayerDAO delegate) {
@@ -122,8 +122,8 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public boolean registerUser(String login, String password, String remoteAddr) throws SQLException, LoginInvalidException {
-        boolean registered = _delegate.registerUser(login, password, remoteAddr);
+    public boolean registerUser(String login, String password, String remoteAddress) throws SQLException, LoginInvalidException {
+        boolean registered = _delegate.registerUser(login, password, remoteAddress);
         if (registered)
             _playerByName.remove(login);
         return registered;
@@ -137,8 +137,8 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public void updateLastLoginIp(String login, String remoteAddr) throws SQLException {
-        _delegate.updateLastLoginIp(login, remoteAddr);
+    public void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
+        _delegate.updateLastLoginIp(login, remoteAddress);
     }
 
     @Override

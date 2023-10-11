@@ -103,14 +103,6 @@ public class ProductLibrary {
                         sets = def.Data.get("sets").split("\\s*,\\s*");
                         result = new RandomFoilPack(rarities, sets, _cardLibrary);
                     }
-                    case TENGWAR -> {
-                        if (def.Data == null || !def.Data.containsKey("sets")) {
-                            System.out.println(def.Name + " TENGWAR pack type must contain a definition for 'sets' within data.");
-                            continue;
-                        }
-                        sets = def.Data.get("sets").split("\\s*,\\s*");
-                        result = new TengwarPackBox(sets, _cardLibrary);
-                    }
                     case BOOSTER -> {
                         if (def.Data == null || !def.Data.containsKey("set")) {
                             System.out.println(def.Name + " BOOSTER pack type must contain a definition for 'set' within data.");

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.fieldprocessor;
 
-import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
+import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.effectprocessor.*;
@@ -17,7 +17,6 @@ public class EffectFieldProcessor implements FieldProcessor {
         effectProcessors.put("activated", new ActivatedEffectProcessor());
         effectProcessors.put("activatedindiscard", new ActivatedInDiscardEffectProcessor());
         effectProcessors.put("activatedtrigger", new ActivatedTriggerEffectProcessor());
-        effectProcessors.put("aidcost", new AidCost());
         effectProcessors.put("copycard", new CopyCard());
         effectProcessors.put("discardedfromplaytrigger", new DiscardedFromPlayTriggerEffectProcessor());
         effectProcessors.put("discount", new PotentialDiscount());
@@ -34,7 +33,7 @@ public class EffectFieldProcessor implements FieldProcessor {
     }
 
     @Override
-    public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processField(String key, Object value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final JSONObject[] effectsArray = FieldUtils.getObjectArray(value, key);
         for (JSONObject effect : effectsArray) {
             final String effectType = FieldUtils.getString(effect.get("type"), "type");

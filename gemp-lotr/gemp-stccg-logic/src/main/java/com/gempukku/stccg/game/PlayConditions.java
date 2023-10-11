@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.LotroCardBlueprint;
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -12,19 +12,6 @@ import com.gempukku.stccg.modifiers.ModifierFlag;
 import java.util.Collection;
 
 public class PlayConditions {
-    public static boolean canPayForShadowCard(DefaultGame game, PhysicalCard self, Filterable validTargetFilter, int withTwilightRemoved, int twilightModifier, boolean ignoreRoamingPenalty) {
-        int minimumCost;
-        if (validTargetFilter == null)
-            minimumCost = game.getModifiersQuerying().getTwilightCost(game, self, null, twilightModifier, ignoreRoamingPenalty);
-        else {
-            minimumCost = 0;
-            for (PhysicalCard potentialTarget : Filters.filterActive(game, validTargetFilter)) {
-                minimumCost = Math.min(minimumCost, game.getModifiersQuerying().getTwilightCost(game, self, potentialTarget, twilightModifier, ignoreRoamingPenalty));
-            }
-        }
-
-        return minimumCost <= game.getGameState().getTwilightPool() - withTwilightRemoved;
-    }
 
     private static boolean containsPhase(Phase[] phases, Phase phase) {
         for (Phase phase1 : phases) {
@@ -84,7 +71,7 @@ public class PlayConditions {
     }
 
     public static boolean checkUniqueness(DefaultGame game, PhysicalCard self, boolean ignoreCheckingDeadPile) {
-        LotroCardBlueprint blueprint = self.getBlueprint();
+        CardBlueprint blueprint = self.getBlueprint();
         if (!blueprint.isUnique())
             return true;
 
@@ -134,11 +121,11 @@ public class PlayConditions {
     }
 
     public static boolean canPlayFromHand(String playerId, DefaultGame game, int twilightModifier, boolean ignoreRoamingPenalty, boolean ignoreCheckingDeadPile, Filterable... filters) {
-        return Filters.filter(game.getGameState().getHand(playerId), game, Filters.and(filters, Filters.playable(game, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile))).size() > 0;
+        return Filters.filter(game.getGameState().getHand(playerId), game, Filters.and(filters, Filters.playable(twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile))).size() > 0;
     }
 
     public static boolean canPlayFromHand(String playerId, DefaultGame game, int withTwilightRemoved, int twilightModifier, boolean ignoreRoamingPenalty, boolean ignoreCheckingDeadPile, Filterable... filters) {
-        return Filters.filter(game.getGameState().getHand(playerId), game, Filters.and(filters, Filters.playable(game, withTwilightRemoved, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false))).size() > 0;
+        return Filters.filter(game.getGameState().getHand(playerId), game, Filters.and(filters, Filters.playable(withTwilightRemoved, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false))).size() > 0;
     }
 
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, Filterable stackedOn, Filterable... filters) {
@@ -154,7 +141,7 @@ public class PlayConditions {
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, int withTwilightRemoved, Filterable stackedOn, Filterable... filters) {
         final Collection<PhysicalCard> matchingStackedOn = Filters.filterActive(game, stackedOn);
         for (PhysicalCard stackedOnCard : matchingStackedOn) {
-            if (Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(game, withTwilightRemoved, 0, false, false, false))).size() > 0)
+            if (Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(withTwilightRemoved, 0, false, false, false))).size() > 0)
                 return true;
         }
 
@@ -164,7 +151,7 @@ public class PlayConditions {
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, int withTwilightRemoved, int twilightModifier, Filterable stackedOn, Filterable... filters) {
         final Collection<PhysicalCard> matchingStackedOn = Filters.filterActive(game, stackedOn);
         for (PhysicalCard stackedOnCard : matchingStackedOn) {
-            if (Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(game, withTwilightRemoved, twilightModifier, false, false, false))).size() > 0)
+            if (Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(withTwilightRemoved, twilightModifier, false, false, false))).size() > 0)
                 return true;
         }
 
@@ -186,7 +173,7 @@ public class PlayConditions {
     public static boolean canPlayFromDiscard(String playerId, DefaultGame game, int withTwilightRemoved, int modifier, Filterable... filters) {
         if (game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
             return false;
-        return Filters.filter(game.getGameState().getDiscard(playerId), game, Filters.and(filters, Filters.playable(game, withTwilightRemoved, modifier, false, false, false))).size() > 0;
+        return Filters.filter(game.getGameState().getDiscard(playerId), game, Filters.and(filters, Filters.playable(withTwilightRemoved, modifier, false, false, false))).size() > 0;
     }
 
     public static boolean canDiscardFromPlay(final PhysicalCard source, DefaultGame game, final PhysicalCard card) {

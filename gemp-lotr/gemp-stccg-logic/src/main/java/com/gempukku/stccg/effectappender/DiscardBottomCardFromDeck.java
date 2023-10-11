@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.DiscardCardsFromEndOfCardPileEffect;
+import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.game.DefaultGame;
@@ -26,9 +26,9 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 
-        return new DelayedAppender<>() {
+        return new DefaultDelayedAppender() {
             @Override
-            public boolean isPlayableInFull(DefaultActionContext<DefaultGame> actionContext) {
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
@@ -38,12 +38,12 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String deckId = playerSource.getPlayer(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return new DiscardCardsFromEndOfCardPileEffect(
-                        actionContext.getSource(), Zone.DRAW_DECK, EndOfPile.BOTTOM, deckId, count, forced
+                        actionContext.getGame(), actionContext.getSource(), Zone.DRAW_DECK, EndOfPile.BOTTOM, deckId, count, forced
                 ) {
                     @Override
                     protected void cardsDiscardedCallback(Collection<PhysicalCard> cards) {

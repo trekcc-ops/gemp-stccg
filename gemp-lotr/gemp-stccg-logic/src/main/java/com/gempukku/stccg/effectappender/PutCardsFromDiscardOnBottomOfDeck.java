@@ -1,18 +1,14 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.effects.defaulteffect.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.effects.PutCardsFromZoneOnEndOfPileEffect;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -32,14 +28,14 @@ public class PutCardsFromDiscardOnBottomOfDeck implements EffectAppenderProducer
         result.addEffectAppender(
                 CardResolver.resolveCardsInDiscard(filter, valueSource, "_temp", "you", "Choose cards from discard", environment));
         result.addEffectAppender(
-                new DelayedAppender() {
+                new DefaultDelayedAppender() {
                     @Override
-                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, DefaultActionContext actionContext) {
+                    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard card : cards) {
                             result.add(
-                                    new PutCardsFromZoneOnEndOfPileEffect(true, Zone.DISCARD, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
+                                    new PutCardsFromZoneOnEndOfPileEffect(actionContext.getGame(), true, Zone.DISCARD, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
                         }
 
                         return result;

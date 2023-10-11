@@ -1,6 +1,6 @@
 package com.gempukku.stccg.fieldprocessor;
 
-import com.gempukku.stccg.cards.BuiltLotroCardBlueprint;
+import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class SeedPhaseProcessor implements FieldProcessor {
     @Override
-    public void processField(String key, Object value, BuiltLotroCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public void processField(String key, Object value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         String phase = FieldUtils.getString(value, key);
         List<Phase> phasesList = new LinkedList<>();
         if (Objects.equals(phase, "any")) {

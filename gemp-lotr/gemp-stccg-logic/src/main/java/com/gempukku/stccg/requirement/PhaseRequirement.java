@@ -7,7 +7,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
-public class PhaseRequirement implements RequirementProducer {
+public class PhaseRequirement extends RequirementProducer {
     @Override
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "phase");

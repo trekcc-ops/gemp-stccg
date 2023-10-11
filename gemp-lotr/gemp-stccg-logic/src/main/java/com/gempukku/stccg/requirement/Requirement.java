@@ -1,9 +1,7 @@
 package com.gempukku.stccg.requirement;
 
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.cards.ActionContext;
 
-public interface Requirement<AbstractGame extends DefaultGame> {
-
-    boolean accepts(DefaultActionContext<AbstractGame> actionContext);
+public interface Requirement<AbstractContext extends ActionContext> {
+    boolean accepts(AbstractContext actionContext);
 }

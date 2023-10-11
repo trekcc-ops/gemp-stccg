@@ -1,7 +1,7 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.LotroCardBlueprint;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.rules.GameUtils;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class CardBlueprintLibraryTests extends AbstractLogicTest {
                 try {
                     if (blueprintId.equals(_cardLibrary.getBaseBlueprintId(blueprintId))) {
                         try {
-                            LotroCardBlueprint cardBlueprint = _cardLibrary.getLotroCardBlueprint(blueprintId);
+                            CardBlueprint cardBlueprint = _cardLibrary.getCardBlueprint(blueprintId);
                             String cardName = GameUtils.getFullName(cardBlueprint);
                             if (cardNames.containsKey(cardName) && cardBlueprint.getCardType() != CardType.SITE)
                                 System.out.println("Multiple detected - " + cardName + ": " + cardNames.get(cardName) + " and " + blueprintId);

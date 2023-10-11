@@ -1,24 +1,27 @@
 package com.gempukku.stccg.effects.choose;
 
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.effects.UnrespondableEffect;
+import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.GameUtils;
 
 public abstract class ChoosePlayerEffect extends UnrespondableEffect {
-    private final String _playerId;
+    protected final String _playerId;
+    protected final DefaultGame _game;
 
-    public ChoosePlayerEffect(String playerId) {
-        _playerId = playerId;
+    public ChoosePlayerEffect(ActionContext actionContext) {
+        _playerId = actionContext.getPerformingPlayer();
+        _game = actionContext.getGame();
     }
 
     @Override
-    public void doPlayEffect(DefaultGame game) {
-        String[] players = GameUtils.getAllPlayers(game);
+    public void doPlayEffect() {
+        String[] players = GameUtils.getAllPlayers(_game);
         if (players.length == 1)
             playerChosen(players[0]);
         else
-            game.getUserFeedback().sendAwaitingDecision(_playerId,
+            _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new MultipleChoiceAwaitingDecision(1, "Choose a player", players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {

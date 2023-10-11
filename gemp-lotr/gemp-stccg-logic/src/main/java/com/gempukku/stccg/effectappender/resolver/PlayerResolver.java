@@ -16,6 +16,7 @@ public class PlayerResolver {
             return (actionContext) -> actionContext.getSource().getOwner();
         else {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
+            //noinspection SpellCheckingInspection
             if (type.toLowerCase(Locale.ROOT).startsWith("ownerfrommemory(") && type.endsWith(")")) {
                 return (actionContext) -> {
                     final PhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
@@ -26,7 +27,8 @@ public class PlayerResolver {
                         return actionContext.getPerformingPlayer();
                 };
             }
-            else if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
+            else //noinspection SpellCheckingInspection
+                if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
                 return (actionContext) -> actionContext.getValueFromMemory(memory);
             }
         }

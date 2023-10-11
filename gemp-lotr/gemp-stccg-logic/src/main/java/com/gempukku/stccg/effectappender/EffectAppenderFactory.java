@@ -3,7 +3,6 @@ package com.gempukku.stccg.effectappender;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -79,8 +78,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
         effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShufflePlayPileIntoDrawDeck());
-            // LotR-specific
-        effectAppenderProducers.put("kill", new Kill());
             // Uncertain - need to review to see if they apply to any Trek games
         effectAppenderProducers.put("addkeyword", new AddKeyword());
         effectAppenderProducers.put("addmodifier", new AddModifier());
@@ -122,8 +119,8 @@ public class EffectAppenderFactory {
         return effectAppenderProducer.createEffectAppender(effectObject, environment);
     }
 
-    public EffectAppender<DefaultGame>[] getEffectAppenders(JSONObject[] effectArray, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        EffectAppender<DefaultGame>[] result = new EffectAppender[effectArray.length];
+    public EffectAppender[] getEffectAppenders(JSONObject[] effectArray, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+        EffectAppender[] result = new EffectAppender[effectArray.length];
         for (int i = 0; i < result.length; i++) {
             final String type = FieldUtils.getString(effectArray[i].get("type"), "type");
             final EffectAppenderProducer effectAppenderProducer = effectAppenderProducers.get(type.toLowerCase());

@@ -1,45 +1,54 @@
 package com.gempukku.stccg.effects;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
+import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.game.PlayOrder;
+import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collection;
 import java.util.Collections;
 
-public class RevealCardEffect extends AbstractSuccessfulEffect {
+public class RevealCardEffect implements Effect {
     private final PhysicalCard _source;
     private final Collection<? extends PhysicalCard> _cards;
+    private final DefaultGame _game;
 
-    public RevealCardEffect(PhysicalCard source, PhysicalCard card) {
-        this(source, Collections.singleton(card));
-    }
-
-    public RevealCardEffect(PhysicalCard source, Collection<? extends PhysicalCard> cards) {
-        _source = source;
+    public RevealCardEffect(ActionContext actionContext, Collection<? extends PhysicalCard> cards) {
+        _source = actionContext.getSource();
+        _game = actionContext.getGame();
         _cards = cards;
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getText() {
         return null;
     }
 
     @Override
-    public Effect.Type getType() {
+    public EffectType getType() {
         return null;
+    }
+    @Override
+    public boolean isPlayableInFull() {
+        return true;
     }
 
     @Override
-    public void playEffect(DefaultGame game) {
+    public boolean wasCarriedOut() {
+        return true;
+    }
+
+    @Override
+    public void playEffect() {
         if (_cards.size() > 0) {
-            final PlayOrder playerOrder = game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwner(), false);
+            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwner(), false);
 
             String nextPlayer;
             while ((nextPlayer = playerOrder.getNextPlayer()) != null) {
-                game.getUserFeedback().sendAwaitingDecision(nextPlayer,
+                _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
                         new ArbitraryCardsSelectionDecision(1, "Revealed card(s)", _cards, Collections.emptySet(), 0, 0) {
                             @Override
                             public void decisionMade(String result) {
@@ -47,7 +56,7 @@ public class RevealCardEffect extends AbstractSuccessfulEffect {
                         });
             }
 
-            game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " revealed cards - " + getAppendedNames(_cards));
+            _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " revealed cards - " + GameUtils.getAppendedNames(_cards));
         }
     }
 }
