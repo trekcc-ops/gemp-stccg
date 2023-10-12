@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.results.EffectResult;
@@ -23,5 +22,4 @@ public interface ActionContext {
     PhysicalCard getSource();
     EffectResult getEffectResult();
     Effect getEffect();
-    Filterable getFilterable(FilterableSource filterableSource);
 }

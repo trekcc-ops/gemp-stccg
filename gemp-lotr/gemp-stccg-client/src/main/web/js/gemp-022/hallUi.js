@@ -1,4 +1,4 @@
-var GempLotrHallUI = Class.extend({
+var GempHallUI = Class.extend({
 	comm:null,
 	chat:null,
 	supportedFormatsInitialized:false,

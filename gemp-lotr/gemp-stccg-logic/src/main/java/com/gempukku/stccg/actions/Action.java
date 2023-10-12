@@ -4,9 +4,9 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 
-public interface Action<AbstractGame extends DefaultGame> {
+public interface Action {
     enum ActionType {
-        PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, RECONCILE, RESOLVE_DAMAGE, OTHER,
+        PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
         TRIBBLE_POWER
     }
 

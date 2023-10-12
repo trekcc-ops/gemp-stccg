@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 public class EndOfPhase implements TriggerCheckerProducer {

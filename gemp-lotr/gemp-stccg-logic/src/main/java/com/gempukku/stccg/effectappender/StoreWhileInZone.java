@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class StoreWhileInZone implements EffectAppenderProducer {

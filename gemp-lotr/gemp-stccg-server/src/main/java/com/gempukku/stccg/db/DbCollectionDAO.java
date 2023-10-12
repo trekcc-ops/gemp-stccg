@@ -58,7 +58,7 @@ public class DbCollectionDAO implements CollectionDAO {
         return _collectionSerializer.deserializeCollection(coll, entries);
     }
 
-    private List<DBDefs.CollectionEntry> extractCollectionEntries(int collectionID) throws SQLException, IOException {
+    private List<DBDefs.CollectionEntry> extractCollectionEntries(int collectionID) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 

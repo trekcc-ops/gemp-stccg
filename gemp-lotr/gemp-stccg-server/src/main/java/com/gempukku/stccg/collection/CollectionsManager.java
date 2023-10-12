@@ -141,7 +141,7 @@ public class CollectionsManager {
         }
     }
 
-    public CardCollection openPackInPlayerCollection(User player, CollectionType collectionType, String selection, ProductLibrary productLibrary, String packId) throws SQLException, IOException {
+    public CardCollection openPackInPlayerCollection(User player, CollectionType collectionType, String selection, ProductLibrary productLibrary, String packId) {
         _readWriteLock.writeLock().lock();
         try {
             final CardCollection playerCollection = getPlayerCollection(player, collectionType.getCode());

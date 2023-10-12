@@ -26,7 +26,7 @@ public class FixedPackBox implements PackBox {
         return LoadFromArray(lines, false);
     }
 
-    public static FixedPackBox LoadFromArray(Iterable<String>  items, boolean recursive) throws IOException {
+    public static FixedPackBox LoadFromArray(Iterable<String>  items, boolean recursive) {
         FixedPackBox box = new FixedPackBox(recursive);
         for (String item : items) {
             item = item.trim();

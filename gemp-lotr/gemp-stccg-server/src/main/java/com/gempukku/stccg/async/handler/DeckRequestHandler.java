@@ -120,7 +120,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void getDeckStats(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException, CardNotFoundException {
+    private void getDeckStats(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException {
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");

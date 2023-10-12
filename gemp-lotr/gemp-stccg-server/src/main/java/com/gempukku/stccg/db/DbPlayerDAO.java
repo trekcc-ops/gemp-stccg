@@ -107,7 +107,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public boolean resetUserPassword(String login) throws SQLException {
+    public boolean resetUserPassword(String login) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -162,7 +162,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public boolean addPlayerFlag(String login, User.Type flag) throws SQLException {
+    public boolean addPlayerFlag(String login, User.Type flag) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -187,7 +187,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public boolean removePlayerFlag(String login, User.Type flag) throws SQLException {
+    public boolean removePlayerFlag(String login, User.Type flag) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -212,7 +212,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public User loginUser(String login, String password) throws SQLException {
+    public User loginUser(String login, String password) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -357,7 +357,7 @@ public class DbPlayerDAO implements PlayerDAO {
         return !lowerCase.startsWith("admin") && !lowerCase.startsWith("guest") && !lowerCase.startsWith("system") && !lowerCase.startsWith("bye");
     }
 
-    private boolean loginExists(String login) throws SQLException {
+    private boolean loginExists(String login) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -379,7 +379,7 @@ public class DbPlayerDAO implements PlayerDAO {
         }
     }
 
-    private boolean needsPasswordReset(String login) throws SQLException {
+    private boolean needsPasswordReset(String login) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 

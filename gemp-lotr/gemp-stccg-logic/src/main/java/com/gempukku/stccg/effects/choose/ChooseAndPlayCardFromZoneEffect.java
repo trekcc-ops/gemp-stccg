@@ -50,7 +50,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
 
                 // FOR PLAYFROMHANDEFFECT
         // Card has to be in hand when you start playing the card (we need to copy the collection)
-        _filter = Filters.and(filters, Filters.in(new LinkedList<PhysicalCard>(game.getGameState().getHand(playerId))));
+        _filter = Filters.and(filters, Filters.in(new LinkedList<>(game.getGameState().getHand(playerId))));
 
         _twilightModifier = twilightModifier;
         _fromZone = fromZone;

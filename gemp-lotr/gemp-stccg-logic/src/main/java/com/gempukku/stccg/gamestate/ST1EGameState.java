@@ -95,6 +95,8 @@ public class ST1EGameState extends GameState {
 
     public void addToSpaceline(PhysicalCard missionCard, int indexNumber, boolean shared) {
         if (shared) {
+            assert _spacelineLocations.get(indexNumber).getMissions().size() == 1;
+            missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().iterator().next());
             _spacelineLocations.get(indexNumber).addMission(missionCard);
             addCardToZone(_game, missionCard, Zone.SPACELINE, true, GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY);
         } else {
@@ -113,7 +115,7 @@ public class ST1EGameState extends GameState {
 
     public Integer indexOfLocation(String location, Quadrant quadrant) {
         for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (_spacelineLocations.get(i).getLocationName() == location &&
+            if (Objects.equals(_spacelineLocations.get(i).getLocationName(), location) &&
                     _spacelineLocations.get(i).getQuadrant() == quadrant)
                 return i;
         }

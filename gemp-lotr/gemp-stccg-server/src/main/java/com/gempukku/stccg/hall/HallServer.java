@@ -4,7 +4,6 @@ import com.gempukku.stccg.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.DeckInvalidException;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
@@ -590,16 +589,12 @@ public class HallServer extends AbstractServer {
             throw new HallException("You don't have a deck registered yet");
         }
 
-        try {
-            cardDeck = validateUserAndDeck(format, player, collectionType, format.applyErrata(cardDeck));
-        } catch (DeckInvalidException e) {
-            throw new HallException("Your selected deck is not valid for this format: " + e.getMessage());
-        }
+        cardDeck = validateUserAndDeck(format, player, collectionType, format.applyErrata(cardDeck));
 
         return cardDeck;
     }
 
-    private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck deck) throws HallException, DeckInvalidException {
+    private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck deck) {
         // TODO - Removing this functionality since it seems closely related to the collections feature which will not be implemented in ST:CCG. Review to make sure it is not needed.
 /*        LOGGER.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deck);
         String validation = format.validateDeckForHall(deck);

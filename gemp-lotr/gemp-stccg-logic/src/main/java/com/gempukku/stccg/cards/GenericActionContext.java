@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.results.EffectResult;
@@ -106,9 +105,6 @@ public abstract class GenericActionContext implements ActionContext {
     
     public Effect getEffect() {
         return effect;
-    }
-    public Filterable getFilterable(FilterableSource filterableSource) {
-        return filterableSource.getFilterable(this);
     }
 
 }

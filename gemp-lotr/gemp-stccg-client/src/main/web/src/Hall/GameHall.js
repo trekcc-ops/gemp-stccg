@@ -10,7 +10,7 @@ var chat;
 		chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-stccg-server", true, null, false, null, true);
 		chat.showTimestamps = true;
 		
-		hall = new GempLotrHallUI("/gemp-stccg-server", chat);
+		hall = new GempHallUI("/gemp-stccg-server", chat);
 
 
 		var infoDialog = $("<div></div>")
