@@ -47,19 +47,24 @@ public class PlayMissionAction extends AbstractPlayCardAction {
 
         if (!_placementChosen) {
             if (!gameState.hasLocationsInQuadrant(quadrant)) {
-                appendCost(new PlayOutDecisionEffect(game, playerId,
-                        new MultipleChoiceAwaitingDecision(1, "Add new quadrant to which end of the table?", directions) {
-                            @Override
-                            protected void validDecisionMade(int index, String result) {
-                                _placementChosen = true;
-                                if (Objects.equals(result, "LEFT")) {
-                                    _locationZoneIndex = 0;
-                                } else {
-                                    _locationZoneIndex = gameState.getSpacelineLocationsSize();
+                if (gameState.getSpacelineLocationsSize() == 0) {
+                    _placementChosen = true;
+                    _locationZoneIndex = 0;
+                } else {
+                    appendCost(new PlayOutDecisionEffect(game, playerId,
+                            new MultipleChoiceAwaitingDecision(1, "Add new quadrant to which end of the table?", directions) {
+                                @Override
+                                protected void validDecisionMade(int index, String result) {
+                                    _placementChosen = true;
+                                    if (Objects.equals(result, "LEFT")) {
+                                        _locationZoneIndex = 0;
+                                    } else {
+                                        _locationZoneIndex = gameState.getSpacelineLocationsSize();
+                                    }
                                 }
-                            }
-                        }));
-                return getNextCost();
+                            }));
+                    return getNextCost();
+                }
             } else if (_sharedMission) {
                 _locationZoneIndex = gameState.indexOfLocation(missionLocation, quadrant);
                 _placementChosen = true;
@@ -72,7 +77,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
                                 if (Objects.equals(result, "LEFT")) {
                                     _locationZoneIndex = gameState.firstInRegion(region, quadrant);
                                 } else {
-                                    _locationZoneIndex = gameState.lastInRegion(region, quadrant);
+                                    _locationZoneIndex = gameState.lastInRegion(region, quadrant) + 1;
                                 }
                             }
                         }));
@@ -88,7 +93,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
                                 if (Objects.equals(result, "LEFT")) {
                                     _locationZoneIndex = gameState.firstInQuadrant(quadrant);
                                 } else {
-                                    _locationZoneIndex = gameState.lastInQuadrant(quadrant);
+                                    _locationZoneIndex = gameState.lastInQuadrant(quadrant) + 1;
                                 }
                             }
                         }));

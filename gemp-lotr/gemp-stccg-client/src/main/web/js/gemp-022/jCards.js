@@ -201,9 +201,10 @@ var Card = Class.extend({
     attachedCards: null,
     errata: null,
 
-    init: function (blueprintId, zone, cardId, owner, imageUrl, locationIndex) {
+    init: function (blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown) {
         this.blueprintId = blueprintId;
         this.imageUrl = imageUrl;
+        this.upsideDown = upsideDown;
 
 
         var imageBlueprint = blueprintId;
@@ -259,6 +260,10 @@ var Card = Class.extend({
 
     isFoil: function () {
         return this.foil;
+    },
+
+    isUpsideDown: function () {
+        return this.upsideDown;
     },
 
     hasErrata: function () {
@@ -492,7 +497,16 @@ var Card = Class.extend({
 });
 
 function createCardDiv(image, text, foil, tokens, noBorder, errata) {
-    var cardDiv = $("<div class='card'><img class='card_img' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
+    return createCardDiv(image, text, foil, tokens, noBorder, errata, false);
+}
+
+function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown) {
+    if (upsideDown)
+        var imgClass = "card_img upside-down";
+    else
+        var imgClass = "card_img";
+
+    var cardDiv = $("<div class='card'><img class='" + imgClass + "' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
 
     if (errata) {
         var errataDiv = $("<div class='errataOverlay'><img src='/gemp-lotr/images/errata-vertical.png' width='100%' height='100%'></div>");

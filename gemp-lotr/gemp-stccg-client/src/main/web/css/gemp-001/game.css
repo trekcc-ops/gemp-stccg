@@ -373,3 +373,27 @@ ul {
 #bottomLeftTabs {
     position: absolute;
 }
+
+.add-red-line {
+    border-width: 1px;
+    border-left-color: red;
+}
+
+.locationDiv {
+    position: absolute;
+    border-radius: 0px;
+    border-color: yellow;
+    border-width: 1px 0px;
+}
+
+.locationDiv .first-in-quadrant {
+    border-left: 1px;
+}
+
+.locationDiv .last-in-quadrant {
+    border-right: 1px;
+}
+
+.upside-down {
+    transform: rotateX(180deg) rotateY(180deg);
+}

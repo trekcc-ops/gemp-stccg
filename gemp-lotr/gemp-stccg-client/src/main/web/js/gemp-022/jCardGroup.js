@@ -516,6 +516,8 @@ var TableCardGroup = CardGroup.extend({
      */
      init:function (container, belongTest, createDiv, locationIndex, bottomPlayerId) {
         this._super(container, belongTest, createDiv);
+        this.descDiv.removeClass("card-group");
+        this.descDiv.addClass("st1e-card-group");
         this.locationIndex = locationIndex;
         this.bottomPlayerId = bottomPlayerId;
         this.heightPadding = 1;

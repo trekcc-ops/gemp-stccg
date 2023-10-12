@@ -1357,7 +1357,7 @@ var GameTableUI = Class.extend({
     },
 
     createCardDiv: function (card, text) {
-        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata());
+        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown());
 
         cardDiv.data("card", card);
 
@@ -2109,7 +2109,9 @@ var ST1EGameTableUI = GameTableUI.extend({
         // Increment locationIndex for existing cards on the table to the right of the added location
         var locationBeforeCount = this.locationDivs.length;
         for (var i=locationBeforeCount-1; i>=index; i--) {
-            this.locationDivs[i].data( "locationIndex", i+1)
+            this.locationDivs[i].data( "locationIndex", i+1);
+            this.locationDivs[i].removeAttr("id");
+            this.locationDivs[i].attr("id", "location" + (i+1));
 
             var otherCards4 = this.locationCardGroups[i].getCardElems();
             for (var j=0; j<otherCards4.length; j++) {
@@ -2120,9 +2122,9 @@ var ST1EGameTableUI = GameTableUI.extend({
         }
 
         var newDiv = $("<div class='ui-widget-content locationDiv'></div>");
-        newDiv.css({"border-radius":"0px", "border-color":"#111111", "border-width":"2px"});
         newDiv.data( "locationIndex", index);
         newDiv.data( "quadrant", quadrant);
+        newDiv.attr("id", "location" + index);
         $("#main").append(newDiv);
 
         this.locationDivs.splice(index, 0, newDiv);
@@ -2278,38 +2280,22 @@ var ST1EGameTableUI = GameTableUI.extend({
         var locationDivHeight = TABLE_AREA_HEIGHT;
 
         for (var locationIndex = 0; locationIndex < locationsCount; locationIndex++) {
-/*                if (locationIndex == (locationsCount - 1)) {
-                locationDivWidth = (width - x) - LOCATION_BORDER_PADDING;
-            } else {
-                locationDivWidth = otherLocationDivWidth;
-            }*/
-            this.locationDivs[locationIndex].css({left:x, top:y, width:locationDivWidth, height:locationDivHeight, position:"absolute"});
-
+            this.locationDivs[locationIndex].css({left:x, top:y, width:locationDivWidth, height:locationDivHeight});
             var currQuadrant = this.locationDivs[locationIndex].data("quadrant");
-            if (locationIndex > 0) {
-                var prevQuadrant = this.locationDivs[locationIndex - 1].data("quadrant");
-                if (currQuadrant == prevQuadrant) {
-                    this.locationDivs[locationIndex].css({"border-left-color":"#111111"});
-                }
-                else {
-                    this.locationDivs[locationIndex].css({"border-left-color":"#666666"});
-                }
-            }
-            else {
-                this.locationDivs[locationIndex].css({"border-left-color":"#666666"});
+            if (locationIndex == 0) {
+                this.locationDivs[locationIndex].addClass("first-in-quadrant");
+            } else if (currQuadrant != this.locationDivs[locationIndex - 1].data("quadrant")) {
+                this.locationDivs[locationIndex].addClass("first-in-quadrant");
+            } else if (this.locationDivs[locationIndex].hasClass("first-in-quadrant")) {
+                this.locationDivs[locationIndex].removeClass("first-in-quadrant");
             }
 
-            if (locationIndex < (locationsCount - 1)) {
-                var nextQuadrant = this.locationDivs[locationIndex + 1].data("quadrant");
-                if (currQuadrant == nextQuadrant) {
-                    this.locationDivs[locationIndex].css({"border-right-color":"#111111"});
-                }
-                else {
-                    this.locationDivs[locationIndex].css({"border-right-color":"#666666"});
-                }
-            }
-            else {
-                this.locationDivs[locationIndex].css({"border-right-color":"#666666"});
+            if (locationIndex == locationsCount - 1) {
+                this.locationDivs[locationIndex].addClass("last-in-quadrant");
+            } else if (currQuadrant != this.locationDivs[locationIndex + 1].data("quadrant")) {
+                this.locationDivs[locationIndex].addClass("last-in-quadrant");
+            } else if (this.locationDivs[locationIndex].hasClass("last-in-quadrant")) {
+                this.locationDivs[locationIndex].removeClass("last-in-quadrant");
             }
 
             this.locationCardGroups[locationIndex].setBounds(x, y + 2*locationDivHeight/5, locationDivWidth, locationDivHeight/5);

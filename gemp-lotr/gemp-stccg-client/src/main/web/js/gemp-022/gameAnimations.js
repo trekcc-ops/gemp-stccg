@@ -227,8 +227,14 @@ var GameAnimations = Class.extend({
                 if (controllerId != null)
                     participantId = controllerId;
 
-                var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex);
-                var cardDiv = that.game.createCardDiv(card, null, card.isFoil(), card.hasErrata());
+                if (zone == "SPACELINE" && participantId != that.game.bottomPlayerId) {
+                    var upsideDown = true;
+                } else {
+                    var upsideDown = false;
+                }
+
+                var card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
+                var cardDiv = that.game.createCardDiv(card, null);
 
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[participantId].append(cardDiv);

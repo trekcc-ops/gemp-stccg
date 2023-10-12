@@ -94,16 +94,18 @@ public class ST1EGameState extends GameState {
     }
 
     public void addToSpaceline(PhysicalCard missionCard, int indexNumber, boolean shared) {
+        GameEvent.Type eventType;
         if (shared) {
+            eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
             assert _spacelineLocations.get(indexNumber).getMissions().size() == 1;
             missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().iterator().next());
             _spacelineLocations.get(indexNumber).addMission(missionCard);
-            addCardToZone(_game, missionCard, Zone.SPACELINE, true, GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY);
         } else {
-            _spacelineLocations.add(new Location(missionCard));
-            addCardToZone(_game, missionCard, Zone.SPACELINE, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
+            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
+            _spacelineLocations.add(indexNumber, new Location(missionCard));
         }
         refreshSpacelineIndices();
+        addCardToZone(_game, missionCard, Zone.SPACELINE, true, eventType);
     }
 
     public void refreshSpacelineIndices() {
@@ -137,6 +139,8 @@ public class ST1EGameState extends GameState {
     }
 
     public Integer firstInRegion(Region region, Quadrant quadrant) {
+        if (quadrant == null || region == null)
+            return null;
         for (int i = 0; i < _spacelineLocations.size(); i++) {
             if (_spacelineLocations.get(i).getQuadrant() == quadrant &&
                     (_spacelineLocations.get(i).getRegion() == region))
@@ -172,13 +176,21 @@ public class ST1EGameState extends GameState {
             if (_currentPhase != null)
                 listener.setCurrentPhase(getPhaseString());
 
-            Set<PhysicalCard> cardsLeftToSent = new LinkedHashSet<>(_inPlay);
+            Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
             Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
+
+            // Send missions in order
+            for (Location location : _spacelineLocations) {
+                for (PhysicalCard mission : location.getMissions()) {
+                    listener.putCardIntoPlay(mission);
+                    cardsLeftToSend.remove(mission);
+                }
+            }
 
             int cardsToSendAtLoopStart;
             do {
-                cardsToSendAtLoopStart = cardsLeftToSent.size();
-                Iterator<PhysicalCard> cardIterator = cardsLeftToSent.iterator();
+                cardsToSendAtLoopStart = cardsLeftToSend.size();
+                Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
                 while (cardIterator.hasNext()) {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
@@ -189,7 +201,7 @@ public class ST1EGameState extends GameState {
                         cardIterator.remove();
                     }
                 }
-            } while (cardsToSendAtLoopStart != cardsLeftToSent.size() && cardsLeftToSent.size() > 0);
+            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && cardsLeftToSend.size() > 0);
 
             List<PhysicalCard> hand = _hands.get(playerId);
             if (hand != null) hand.forEach(listener::putCardIntoPlay);
