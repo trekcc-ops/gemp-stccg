@@ -439,7 +439,6 @@ var TableCardGroup = CardGroup.extend({
         this.heightPadding = 1;
         this.widthPadding = 5;
         this.columnWidthToAttachedHeightAboveRatio = 0.17;
-        this.cardScale = 350 / 490;
     },
 
    /**
@@ -525,7 +524,7 @@ var TableCardGroup = CardGroup.extend({
     */
     getWidthForLayoutInColumns:function (cardsToLayout, columnCount) {
         var columnWidth = Math.min(this.maxCardWidth, (this.width - (this.widthPadding * columnCount)) / columnCount);
-        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * this.cardScale);
+        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
         var numColumnsRemainingToLayout = columnCount;
         var numCardsRemainingToLayout = cardsToLayout.length;
         var largestTotalCardHeight = 0;
@@ -572,7 +571,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} the x-offset for the column
     */
     layoutInColumn:function (cardsToLayout, columnWidth, xOffset) {
-        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * this.cardScale);
+        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
         var totalCardHeight = this.heightPadding;
         var overlappedHeight = 0;
 
@@ -678,6 +677,69 @@ var TableCardGroup = CardGroup.extend({
         }
     }
 });
+
+
+var MissionCardGroup = CardGroup.extend({
+
+    locationIndex:null,
+    bottomPlayerId:null,
+    /**
+     * Initializes variables
+     */
+     init:function (container, belongTest, createDiv, locationIndex, bottomPlayerId) {
+        this._super(container, belongTest, createDiv);
+        this.descDiv.removeClass("card-group");
+        this.descDiv.addClass("st1e-card-group");
+        this.locationIndex = locationIndex;
+        this.bottomPlayerId = bottomPlayerId;
+        this.sharedOverlap = .60; // Percentage of a bottom shared mission card that will be covered by the mission on top
+    },
+
+   /**
+    * Performs laying out the cards in the group.
+    */
+    layoutCards:function () {
+        // Get the cards to layout
+        var cardsToLayout = this.getCardElems();
+        if (cardsToLayout.length == 0) {
+            return;
+        }
+
+        // TODO - Make sure the mission on top is always correct. The order isn't specified here
+
+        // Get max card size that will fit in the container
+            // cardScale = width / height of card template, defined in JCards.js
+        var sharedMissionScale = cardScale / (2 - this.sharedOverlap);
+        if ((this.width / this.height) > sharedMissionScale) {
+            this.maxCardHeight = this.height / (2 - this.sharedOverlap);
+            this.maxCardWidth = this.maxCardHeight * cardScale;
+        } else {
+            this.maxCardWidth = this.width;
+            this.maxCardHeight = this.maxCardWidth / cardScale;
+        }
+
+        var index = 10;
+        // Layout cards. Assumes no padding and that there will never be more than 2 missions in the group.
+        for (var cardIndex in cardsToLayout) {
+            var cardElem = cardsToLayout[cardIndex];
+            var cardData = cardElem.data("card");
+            var cardX = this.x + ((this.width - this.maxCardWidth) / 2);
+            if (cardsToLayout.length == 1) {
+                var cardY = this.y + ((this.height - this.maxCardHeight) / 2);
+            } else if (cardData.owner == this.bottomPlayerId) {
+                var cardY = this.y + ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+            } else {
+                var cardY = this.y + ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
+            }
+            cardX = cardX - this.x;
+            cardY = cardY - this.y;
+            cardElem.detach().appendTo(this.descDiv);
+            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, index, cardData);
+            index++;
+        }
+    }
+});
+
 
 
 function layoutCardElem(cardElem, x, y, width, height, index) {

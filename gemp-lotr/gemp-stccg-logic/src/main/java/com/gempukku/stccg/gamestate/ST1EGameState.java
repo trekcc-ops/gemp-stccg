@@ -181,9 +181,15 @@ public class ST1EGameState extends GameState {
 
             // Send missions in order
             for (Location location : _spacelineLocations) {
-                for (PhysicalCard mission : location.getMissions()) {
-                    listener.putCardIntoPlay(mission);
-                    cardsLeftToSend.remove(mission);
+                for (int i = 0; i < location.getMissions().size(); i++) {
+                    GameEvent.Type eventType;
+                    if (i == 0) {
+                        eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
+                    } else {
+                        eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
+                    }
+                    listener.cardCreated(location.getMissions().get(i), eventType);
+                    cardsLeftToSend.remove(location.getMissions().get(i));
                 }
             }
 

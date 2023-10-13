@@ -2128,7 +2128,7 @@ var ST1EGameTableUI = GameTableUI.extend({
 
         this.locationDivs.splice(index, 0, newDiv);
 
-        var newGrp4 = new TableCardGroup($("#main"), function (card) {
+        var newGrp4 = new MissionCardGroup($("#main"), function (card) {
             return (card.zone == "SPACELINE" && card.locationIndex == this.locationIndex );
         }, false, index, this.bottomPlayerId);
         this.locationCardGroups.splice(index, 0, newGrp4);
@@ -2297,7 +2297,7 @@ var ST1EGameTableUI = GameTableUI.extend({
                 this.locationDivs[locationIndex].removeClass("last-in-quadrant");
             }
 
-            this.locationCardGroups[locationIndex].setBounds(x, y + 2*locationDivHeight/5, locationDivWidth, locationDivHeight/5);
+            this.locationCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
             this.locationCardGroups[locationIndex].layoutCards();
 
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
