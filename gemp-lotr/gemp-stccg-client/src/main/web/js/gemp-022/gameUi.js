@@ -201,7 +201,7 @@ var GameTableUI = Class.extend({
 
             $("#showStats" + i).append(showBut);
 
-            this.playPiles[this.allPlayerIds[i]] = new StackedCardGroup(
+            this.playPiles[this.allPlayerIds[i]] = new PlayPileCardGroup(
                 $("#main"),
                 this.allPlayerIds[i],
                 function (card) {
@@ -2121,10 +2121,9 @@ var ST1EGameTableUI = GameTableUI.extend({
             this.locationCardGroups[i].locationIndex = i+1;
         }
 
-        var newDiv = $("<div class='ui-widget-content locationDiv'></div>");
+        var newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
         newDiv.data( "locationIndex", index);
         newDiv.data( "quadrant", quadrant);
-        newDiv.attr("id", "location" + index);
         $("#main").append(newDiv);
 
         this.locationDivs.splice(index, 0, newDiv);

@@ -101,90 +101,6 @@ var VerticalBarGroup = CardGroup.extend({
     }
 });
 
-var AdvPathCardGroup = CardGroup.extend({
-    positions:null,
-    currentPlayerIndex:null,
-
-    init:function (container) {
-        this._super(container,
-            function (card) {
-                return (card.zone == "ADVENTURE_PATH");
-            });
-    },
-
-    setPositions:function (positions) {
-        this.positions = positions;
-    },
-
-    setCurrentPlayerIndex:function (index) {
-        this.currentPlayedIndex = index;
-    },
-
-    layoutCards:function () {
-        var cardsToLayout = this.getCardElems();
-
-        cardsToLayout.sort(
-            function (first, second) {
-                return (first.data("card").siteNumber - second.data("card").siteNumber);
-            }
-        );
-
-        var cardCount = cardsToLayout.length;
-        var totalHeight = 0;
-
-        for (var cardIndex in cardsToLayout) {
-            var cardData = cardsToLayout[cardIndex].data("card");
-            var cardHeight = cardData.getHeightForWidth(this.width);
-            totalHeight += cardHeight;
-            if (cardData.attachedCards.length > 0)
-                totalHeight += cardHeight * 0.2;
-        }
-
-        var resultPadding = Math.min(this.padding, (this.height - totalHeight) / (cardCount - 1));
-
-        var x = this.x;
-        var y = this.y;
-        var index = 10;
-        for (var cardIndex in cardsToLayout) {
-            var cardElem = cardsToLayout[cardIndex];
-            var cardData = cardElem.data("card");
-            var cardHeight = (cardElem.data("card").getHeightForWidth(this.width));
-
-            if (cardData.attachedCards.length > 0)
-                y += cardHeight * 0.1;
-
-            cardData.tokens = {};
-            if (this.positions != null) {
-                for (var i = 0; i < this.positions.length; i++)
-                    if (this.positions[i] == cardData.siteNumber) {
-                        if (i == this.currentPlayedIndex)
-                            cardData.tokens["" + (i + 1) + "-a"] = 1;
-                        else
-                            cardData.tokens["" + (i + 1) + "-i"] = 1;
-                    }
-            }
-
-            if (cardData.attachedCards.length == 1) {
-                this.layoutCard(cardData.attachedCards[0], x + (this.width - cardHeight) / 2, y - (this.width - cardHeight) / 2, cardHeight, this.width, index);
-                index++;
-            } else {
-                for (var i = 0; i < cardData.attachedCards.length; i++) {
-                    this.layoutCard(cardData.attachedCards[i], x + i * (this.width - cardHeight) / (cardData.attachedCards.length - 1), y - (this.width - cardHeight) / 2, cardHeight, this.width, index);
-                    index++;
-                }
-            }
-
-            this.layoutCard(cardElem, x, y, this.width, cardHeight, index);
-
-            if (cardData.attachedCards.length > 0)
-                y += cardHeight * 0.1;
-
-            y += cardHeight + resultPadding;
-            index++;
-        }
-    }
-});
-
 var NormalCardGroup = CardGroup.extend({
 
     init:function (container, belongTest, createDiv) {
@@ -345,8 +261,8 @@ var NormalCardGroup = CardGroup.extend({
     }
 });
 
-var StackedCardGroup = CardGroup.extend({
-    // StackedCardGroup assumes all cards are vertical
+var PlayPileCardGroup = CardGroup.extend({
+    // PlayPileCardGroup assumes all cards are vertical
 
     overlap:null,
     player:null,
