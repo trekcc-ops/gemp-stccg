@@ -25,4 +25,13 @@
         seedPhase: doorway
         image-url: https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg
     }
+    105_046: {
+        title: Space
+        type: mission
+        seedPhase: mission
+        quadrant: alpha
+        canInsertIntoSpaceline: true
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Space.jpg
+    }
 }

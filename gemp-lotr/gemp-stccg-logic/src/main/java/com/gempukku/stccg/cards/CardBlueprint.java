@@ -122,4 +122,5 @@ public interface CardBlueprint {
     List<FilterableSource> getCopiedFilters();
 
     boolean canPlayOutOfSequence(TribblesGame game, PhysicalCard self);
+    boolean canInsertIntoSpaceline();
 }

@@ -1,11 +1,12 @@
 package com.gempukku.stccg.game;
 
+import com.gempukku.stccg.actions.ActionSource;
 import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.OptionalTriggerAction;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
@@ -14,6 +15,7 @@ import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.processes.TurnProcedure;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.rules.WinConditionRule;
 
 import java.util.*;
@@ -203,4 +205,53 @@ public abstract class DefaultGame {
     }
 
     public CardBlueprintLibrary getCardBlueprintLibrary() { return _library; }
+
+    protected <T> void addAllNotNull(List<T> list, List<? extends T> possiblyNullList) {
+        if (possiblyNullList != null)
+            list.addAll(possiblyNullList);
+    }
+
+    public List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult,
+                                                                      PhysicalCard card) {
+        return getOptionalAfterTriggerActions(playerId, effectResult, card, card);
+    }
+
+    public List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult,
+                                                                      PhysicalCard copyFilterCard, PhysicalCard origCard) {
+        List<OptionalTriggerAction> result = null;
+
+        if (copyFilterCard.getBlueprint().getOptionalAfterTriggers() != null) {
+            result = new LinkedList<>();
+            for (ActionSource optionalAfterTrigger : copyFilterCard.getBlueprint().getOptionalAfterTriggers()) {
+                DefaultActionContext actionContext = new DefaultActionContext(
+                        playerId, this, copyFilterCard, effectResult,null);
+                if (optionalAfterTrigger.isValid(actionContext)) {
+                    OptionalTriggerAction action = new OptionalTriggerAction(origCard);
+                    optionalAfterTrigger.createAction(action, actionContext);
+                    result.add(action);
+                }
+            }
+
+        }
+
+        if (copyFilterCard.getBlueprint().getCopiedFilters() != null) {
+            if (result == null)
+                result = new LinkedList<>();
+            for (FilterableSource copiedFilter : copyFilterCard.getBlueprint().getCopiedFilters()) {
+                DefaultActionContext actionContext = new DefaultActionContext(
+                        playerId, this, copyFilterCard, effectResult,null);
+                final PhysicalCard firstActive = Filters.findFirstActive(
+                        this, copiedFilter.getFilterable(actionContext)
+                );
+                if (firstActive != null)
+                    addAllNotNull(result, getOptionalAfterTriggerActions(playerId, effectResult,
+                            firstActive, origCard));
+            }
+        }
+
+        return result;
+    }
+
+
+
 }

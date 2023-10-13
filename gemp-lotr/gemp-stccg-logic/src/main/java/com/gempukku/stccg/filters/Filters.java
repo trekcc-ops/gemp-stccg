@@ -164,19 +164,8 @@ public class Filters {
         };
     }
 
-    public static final Filter gollum = Filters.name("Gollum");
-    public static final Filter smeagol = Filters.name("Smeagol");
-    public static final Filter gollumOrSmeagol = Filters.or(gollum, smeagol);
-
     public static final Filter aragorn = Filters.name("Aragorn");
     public static final Filter gandalf = Filters.name("Gandalf");
-    public static final Filter gimli = Filters.name("Gimli");
-    public static final Filter arwen = Filters.name("Arwen");
-    public static final Filter legolas = Filters.name("Legolas");
-    public static final Filter boromir = Filters.name("Boromir");
-    public static final Filter frodo = Filters.name("Frodo");
-    public static final Filter sam = Filters.name("Sam");
-
     public static final Filter weapon = Filters.or(PossessionClass.HAND_WEAPON, PossessionClass.RANGED_WEAPON);
     public static final Filter item = Filters.or(CardType.ARTIFACT, CardType.POSSESSION);
     public static final Filter character = Filters.or(CardType.ALLY, CardType.COMPANION, CardType.MINION);
@@ -287,6 +276,8 @@ public class Filters {
             cardIds.add(card.getCardId());
         return (game, physicalCard) -> cardIds.contains(physicalCard.getCardId());
     }
+
+    public static final Filter onTable = (game, physicalCard) -> physicalCard.getZone() != null && (physicalCard.getZone().isInPlay() || physicalCard.getZone()==Zone.TABLE);
 
     public static Filter zone(final Zone zone) {
         return (game, physicalCard) -> physicalCard.getZone() == zone;

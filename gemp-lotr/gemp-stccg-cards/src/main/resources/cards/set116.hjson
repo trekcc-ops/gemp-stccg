@@ -7,4 +7,21 @@
         seedPhase: doorway
         image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
     }
+    116_046: {
+        title: "Bat'leth Tournament"
+        type: mission
+        seedPhase: mission
+        quadrant: alpha
+        uniqueness: universal
+        location: Klingon planet
+        image-url: https://www.trekcc.org/1e/cardimages/bog/batlethtournament.gif
+    }
+    116_047: {
+        title: Chart Stellar Cluster
+        type: mission
+        seedPhase: mission
+        quadrant: gamma
+        location: Edge of Denkiri Arm
+        image-url: https://www.trekcc.org/1e/cardimages/bog/chartstellarcluster.gif
+    }
 }

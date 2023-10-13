@@ -43,8 +43,7 @@ public class OptionalTriggersRule {
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends OptionalTriggerAction> actions =
-                                        activatableCard.getOptionalAfterTriggerActions(playerId, game, effectResult,
-                                                activatableCard);
+                                        game.getOptionalAfterTriggerActions(playerId, effectResult, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
                             }

@@ -47,7 +47,7 @@ public class TribblesOptionalTriggersRule {
                                 game, getActivatableCardsFilter(playerId))) {
                             if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
                                 final List<? extends OptionalTriggerAction> actions =
-                                        activatableCard.getOptionalAfterTriggerActions(playerId, game, effectResult,
+                                        game.getOptionalAfterTriggerActions(playerId, effectResult,
                                                 activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);

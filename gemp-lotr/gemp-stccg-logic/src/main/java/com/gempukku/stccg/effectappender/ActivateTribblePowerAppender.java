@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 public class ActivateTribblePowerAppender implements EffectAppenderProducer {
 
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment)
+    public EffectAppender<TribblesActionContext> createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment)
             throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(effectObject);
 

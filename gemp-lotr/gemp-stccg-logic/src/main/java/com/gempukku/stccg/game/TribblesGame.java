@@ -1,16 +1,20 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.ActionSource;
+import com.gempukku.stccg.actions.OptionalTriggerAction;
+import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.gamestate.UserFeedback;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
+import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,6 +66,43 @@ public class TribblesGame extends DefaultGame {
             return true;
         }
         return (cardValue == _gameState.getNextTribbleInSequence());
+    }
+
+    @Override
+    public List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult,
+                                                                      PhysicalCard copyFilterCard, PhysicalCard origCard) {
+        List<OptionalTriggerAction> result = null;
+
+        if (copyFilterCard.getBlueprint().getOptionalAfterTriggers() != null) {
+            result = new LinkedList<>();
+            for (ActionSource optionalAfterTrigger : copyFilterCard.getBlueprint().getOptionalAfterTriggers()) {
+                TribblesActionContext actionContext = new TribblesActionContext(
+                        playerId, this, copyFilterCard, effectResult,null);
+                if (optionalAfterTrigger.isValid(actionContext)) {
+                    OptionalTriggerAction action = new OptionalTriggerAction(origCard);
+                    optionalAfterTrigger.createAction(action, actionContext);
+                    result.add(action);
+                }
+            }
+
+        }
+
+        if (copyFilterCard.getBlueprint().getCopiedFilters() != null) {
+            if (result == null)
+                result = new LinkedList<>();
+            for (FilterableSource copiedFilter : copyFilterCard.getBlueprint().getCopiedFilters()) {
+                TribblesActionContext actionContext = new TribblesActionContext(
+                        playerId, this, copyFilterCard, effectResult,null);
+                final PhysicalCard firstActive = Filters.findFirstActive(
+                        this, copiedFilter.getFilterable(actionContext)
+                );
+                if (firstActive != null)
+                    addAllNotNull(result, getOptionalAfterTriggerActions(playerId, effectResult,
+                            firstActive, origCard));
+            }
+        }
+
+        return result;
     }
 
 }

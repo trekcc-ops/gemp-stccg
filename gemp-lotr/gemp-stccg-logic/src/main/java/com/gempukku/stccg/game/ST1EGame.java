@@ -41,6 +41,7 @@ public class ST1EGame extends DefaultGame {
     public ST1EGameState getGameState() {
         return _gameState;
     }
+
     public TurnProcedure<ST1EGame> getTurnProcedure() { return _turnProcedure; }
     @Override
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {

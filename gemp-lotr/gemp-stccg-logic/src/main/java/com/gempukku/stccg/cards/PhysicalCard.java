@@ -1,12 +1,8 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.actions.ActionSource;
-import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.results.EffectResult;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -30,7 +26,6 @@ public class PhysicalCard implements Filterable {
     protected Object _whileInZoneData;
     protected Integer _siteNumber;
     private int _locationZoneIndex;
-
     public PhysicalCard(int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _blueprintId = blueprintId;
@@ -137,55 +132,11 @@ public class PhysicalCard implements Filterable {
         _siteNumber = number;
     }
 
-    public List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game,
-                                                                      EffectResult effectResult,
-                                                                      PhysicalCard self) {
-        List<OptionalTriggerAction> result = null;
-
-        if (_blueprint.getOptionalAfterTriggers() != null) {
-            result = new LinkedList<>();
-            for (ActionSource optionalAfterTrigger : _blueprint.getOptionalAfterTriggers()) {
-                ActionContext actionContext = new DefaultActionContext(
-                        playerId, game, self, effectResult,null);
-                if (optionalAfterTrigger.isValid(actionContext)) {
-                    OptionalTriggerAction action = new OptionalTriggerAction(self);
-                    optionalAfterTrigger.createAction(action, actionContext);
-                    result.add(action);
-                }
-            }
-
-        }
-
-        if (_blueprint.getCopiedFilters() != null) {
-            if (result == null)
-                result = new LinkedList<>();
-            for (FilterableSource copiedFilter : _blueprint.getCopiedFilters()) {
-                ActionContext actionContext = new DefaultActionContext(
-                        playerId, game, self, effectResult,null);
-                final PhysicalCard firstActive = Filters.findFirstActive(
-                        game, copiedFilter.getFilterable(actionContext)
-                );
-                if (firstActive != null)
-                    addAllNotNull(result, firstActive.getOptionalAfterTriggerActions(playerId, game,
-                            effectResult, self));
-            }
-        }
-
-        return result;
-    }
-
-    private <T> void addAllNotNull(List<T> list, List<? extends T> possiblyNullList) {
-        if (possiblyNullList != null)
-            list.addAll(possiblyNullList);
-    }
-
     public String getTitle() {
         return _blueprint.getTitle();
     }
 
-    public boolean canInsertIntoSpaceline() {
-        return false;
-    }
+    public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
     public void setLocationZoneIndex(int index) { _locationZoneIndex = index; }
 

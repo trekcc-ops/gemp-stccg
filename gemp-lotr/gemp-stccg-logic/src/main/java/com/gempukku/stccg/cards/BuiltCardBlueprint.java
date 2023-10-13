@@ -27,6 +27,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
     private Affiliation affiliation;
     private Region region;
     private Quadrant quadrant;
+    private boolean _canInsertIntoSpaceline;
     private Culture culture;
     private Race race;
     private Map<Keyword, Integer> keywords;
@@ -619,6 +620,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
         return optionalAfterTriggers;
     }
 
+
+
     @Override
     public List<? extends ActivateCardAction> getOptionalInPlayBeforeActions(String playerId, DefaultGame game, Effect effect, PhysicalCard self) {
         List<ActivateCardAction> result = null;
@@ -920,5 +923,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     public void setSeedPhase(List<Phase> seedPhases) { this.seedPhases = seedPhases; }
     public List<Phase> getSeedPhases() { return this.seedPhases; }
+    public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }
+    public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
 
 }

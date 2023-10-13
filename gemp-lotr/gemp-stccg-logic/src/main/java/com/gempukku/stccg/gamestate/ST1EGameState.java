@@ -167,6 +167,15 @@ public class ST1EGameState extends GameState {
         return x;
     }
 
+    public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
+        Set<PhysicalCard> newCollection = new HashSet<>();
+        for (Location location : _spacelineLocations)
+            for (PhysicalCard mission : location.getMissions())
+                if (mission.getQuadrant() == quadrant)
+                    newCollection.add(mission);
+        return newCollection;
+    }
+
     @Override
     protected void sendStateToPlayer(String playerId, GameStateListener listener, GameStats gameStats) {
         if (_playerOrder != null) {

@@ -7,13 +7,17 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.PlayOutDecisionEffect;
+import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.effects.defaulteffect.PlayMissionEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.rules.GameUtils;
+import com.google.common.collect.Iterables;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 public class PlayMissionAction extends AbstractPlayCardAction {
     private PlayMissionEffect _playCardEffect;
@@ -21,7 +25,10 @@ public class PlayMissionAction extends AbstractPlayCardAction {
     private int _locationZoneIndex;
     private final Zone _fromZone;
     private boolean _placementChosen;
+    private boolean _directionChosen;
     private final ST1EGame _game;
+    private Action _that;
+    private PhysicalCard _neighborCard;
 
     public PlayMissionAction(ST1EGame game, PhysicalCard missionPlayed) {
         super(missionPlayed, missionPlayed);
@@ -29,6 +36,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
         setPerformingPlayer(_cardToPlay.getOwner());
         _fromZone = _cardToPlay.getZone();
         _game = game;
+        _that = this;
     }
     
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
@@ -49,6 +57,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
             if (!gameState.hasLocationsInQuadrant(quadrant)) {
                 if (gameState.getSpacelineLocationsSize() == 0) {
                     _placementChosen = true;
+                    _directionChosen = true;
                     _locationZoneIndex = 0;
                 } else {
                     appendCost(new PlayOutDecisionEffect(game, playerId,
@@ -56,6 +65,7 @@ public class PlayMissionAction extends AbstractPlayCardAction {
                                 @Override
                                 protected void validDecisionMade(int index, String result) {
                                     _placementChosen = true;
+                                    _directionChosen = true;
                                     if (Objects.equals(result, "LEFT")) {
                                         _locationZoneIndex = 0;
                                     } else {
@@ -68,12 +78,14 @@ public class PlayMissionAction extends AbstractPlayCardAction {
             } else if (_sharedMission) {
                 _locationZoneIndex = gameState.indexOfLocation(missionLocation, quadrant);
                 _placementChosen = true;
+                _directionChosen = true;
             } else if (gameState.firstInRegion(region, quadrant) != null) {
                 appendCost(new PlayOutDecisionEffect(game, playerId,
                         new MultipleChoiceAwaitingDecision(1, "Insert on which end of the region?", directions) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 _placementChosen = true;
+                                _directionChosen = true;
                                 if (Objects.equals(result, "LEFT")) {
                                     _locationZoneIndex = gameState.firstInRegion(region, quadrant);
                                 } else {
@@ -84,12 +96,23 @@ public class PlayMissionAction extends AbstractPlayCardAction {
                 return getNextCost();
             } else if (_cardToPlay.canInsertIntoSpaceline() && gameState.getQuadrantLocationsSize(quadrant) >= 2) {
                 // TODO: canInsertIntoSpaceline method not defined
+                Set<PhysicalCard> otherCards = _game.getGameState().getQuadrantLocationCards(quadrant);
+                appendCost(new ChooseCardsOnTableEffect(_game, _that, getPerformingPlayer(), "Choose a location to seed " + GameUtils.getCardLink(_cardToPlay) + " next to", otherCards) {
+                    @Override
+                    protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
+                        assert selectedCards.size() == 1;
+                        _neighborCard = Iterables.getOnlyElement(selectedCards);
+                        _placementChosen = true;
+                    }
+                });
+                return getNextCost();
             } else {
                 appendCost(new PlayOutDecisionEffect(game, getPerformingPlayer(),
                         new MultipleChoiceAwaitingDecision(1, "Insert on which end of the quadrant?", directions) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 _placementChosen = true;
+                                _directionChosen = true;
                                 if (Objects.equals(result, "LEFT")) {
                                     _locationZoneIndex = gameState.firstInQuadrant(quadrant);
                                 } else {
@@ -99,6 +122,22 @@ public class PlayMissionAction extends AbstractPlayCardAction {
                         }));
                 return getNextCost();
             }
+        }
+        if (!_directionChosen) {
+            appendCost(new PlayOutDecisionEffect(game, playerId,
+                    new MultipleChoiceAwaitingDecision(1, "Insert on which side of " + _neighborCard.getTitle(), directions) {
+                        @Override
+                        protected void validDecisionMade(int index, String result) {
+                            _directionChosen = true;
+                            if (Objects.equals(result, "LEFT")) {
+                                _locationZoneIndex = _neighborCard.getLocationZoneIndex();
+                            } else {
+                                _locationZoneIndex = _neighborCard.getLocationZoneIndex() + 1;
+                            }
+                        }
+                    }));
+            return getNextCost();
+
         }
         if (!_cardPlayed) {
             _cardPlayed = true;

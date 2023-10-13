@@ -1102,9 +1102,10 @@ var GameTableUI = Class.extend({
             this.alertText.html("");
         if (this.alertButtons != null)
             this.alertButtons.html("");
-        // ****CCG League****: Border around alert box
-        if (this.alertBox != null)
-            this.alertBox.css({"border-radius": "7px", "border-color": ""});
+        if (this.alertBox != null) {
+            this.alertBox.removeClass("alert-box-highlight");
+            this.alertBox.removeClass("alert-box-card-selection");
+        }
 
         $(".card").each(
             function () {
@@ -1515,7 +1516,7 @@ var GameTableUI = Class.extend({
 
         this.alertText.html(text);
         // ****CCG League****: Border around alert box
-        this.alertBox.css({"border-radius": "7px", "border-color": "#7f7fff", "border-width": "2px"});
+        this.alertBox.addClass("alert-box-highlight");
 
         var processButtons = function () {
             that.alertButtons.html("");
@@ -1540,7 +1541,7 @@ var GameTableUI = Class.extend({
         var finishChoice = function () {
             that.alertText.html("");
             // ****CCG League****: Border around alert box
-            that.alertBox.css({"border-radius": "7px", "border-color": "", "border-width": "1px"});
+            that.alertBox.removeClass("alert-box-highlight");
             that.alertButtons.html("");
             that.clearSelection();
             $(".card").each(
@@ -1796,15 +1797,13 @@ var GameTableUI = Class.extend({
         var that = this;
 
         this.alertText.html(text);
-        // ****CCG League****: Border around alert box
-        this.alertBox.css({"border-radius": "7px", "border-color": "#7faf7f", "border-width": "2px"});
+        this.alertBox.addClass("alert-box-card-selection");
 
         var selectedCardIds = new Array();
 
         var finishChoice = function () {
             that.alertText.html("");
-            // ****CCG League****: Border around alert box
-            that.alertBox.css({"border-radius": "7px", "border-color": "", "border-width": "1px"});
+            that.alertBox.removeClass("alert-box-card-selection");
             that.alertButtons.html("");
             that.clearSelection();
             that.decisionFunction(id, "" + selectedCardIds);
@@ -2206,6 +2205,8 @@ var ST1EGameTableUI = GameTableUI.extend({
         var SIDE_OF_TABLE_LEFT = CARD_PILE_LEFT_3 + CARD_PILE_WIDTH_3 + BORDER_PADDING - 1;
         var SIDE_OF_TABLE_WIDTH = (width - SIDE_OF_TABLE_LEFT) - BORDER_PADDING;
 
+        var BOTTOM_LEFT_TABS_RIGHT = LEFT_SIDE + CHAT_WIDTH;
+
         $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
         this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
         this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
@@ -2313,8 +2314,8 @@ var ST1EGameTableUI = GameTableUI.extend({
         });
         this.alertBox.css({
             position: "absolute",
-            left: padding * 2 + advPathWidth,
-            top: height - (padding * 2) - alertHeight - chatHeight,
+            left: BOTTOM_LEFT_TABS_RIGHT + padding * 2,
+            top: PLAYER_ACTION_AREA_AND_HAND_TOP,
             width: specialUiWidth - padding,
             height: alertHeight
         });
