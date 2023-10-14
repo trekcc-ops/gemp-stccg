@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.common.filterable.SubDeck;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,12 +23,18 @@ public interface CardCollection {
         private final int _count;
         private final String _blueprintId;
         private final boolean _recursive;
+        private final SubDeck _subDeck;
 
         private Item(Type type, int count, String blueprintId, boolean recursive) {
+            this(type, count, blueprintId, recursive, null);
+        }
+
+        private Item(Type type, int count, String blueprintId, boolean recursive, SubDeck subDeck) {
             _type = type;
             _count = count;
             _blueprintId = blueprintId;
             _recursive = recursive;
+            _subDeck = subDeck;
         }
 
         public static Item createItem(String blueprintId, int count) {
@@ -40,6 +48,10 @@ public interface CardCollection {
                 return new Item(Item.Type.PACK, count, blueprintId, recursive);
             else
                 return new Item(Item.Type.CARD, count, blueprintId, recursive);
+        }
+
+        public static Item createItem(String blueprintId, int count, SubDeck subDeck) {
+            return new Item(Item.Type.CARD, count, blueprintId, false, subDeck);
         }
 
         public static Item createItem(String combined) {
@@ -58,6 +70,11 @@ public interface CardCollection {
         @Override
         public String getBlueprintId() {
             return _blueprintId;
+        }
+        public String getSubDeckString() {
+            if (_subDeck == null)
+                return null;
+            else return _subDeck.name();
         }
 
         @Override

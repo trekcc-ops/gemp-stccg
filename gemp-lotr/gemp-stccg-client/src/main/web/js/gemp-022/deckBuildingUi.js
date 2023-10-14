@@ -279,7 +279,6 @@ var GempLotrDeckBuildingUI = Class.extend({
     },
     
     parseDecklist:function(rawText) {
-        // TODO: The logic in this function should be replaced with what will be needed to parse ST:CCG deck text files.
         this.clearDeck();
         var that = this;
         var rawTextList = rawText.split("\n");

@@ -84,8 +84,11 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
         for (CardCollection.Item item : importResult) {
             String blueprintId = item.getBlueprintId();
+            String subDeck = item.getSubDeckString();
             if (item.getType() == CardCollection.Item.Type.CARD) {
                 Element card = doc.createElement("card");
+                if (subDeck != null)
+                    card.setAttribute("subDeck", subDeck);
                 card.setAttribute("count", String.valueOf(item.getCount()));
                 card.setAttribute("blueprintId", blueprintId);
                 CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);

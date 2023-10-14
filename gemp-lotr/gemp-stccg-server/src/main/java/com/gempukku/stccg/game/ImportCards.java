@@ -3,28 +3,42 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.rules.GameUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ImportCards {
 
     public List<CardCollection.Item> process(String rawDecklist, CardBlueprintLibrary cardLibrary) {
+        Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
+        for (SubDeck subDeck : SubDeck.values()) {
+            lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);
+        }
+        // Assumes formatting from Lackey txt files. "Draw deck" is not called out explicitly.
+        SubDeck currentSubDeck = SubDeck.DRAW_DECK;
+
         List<CardCount> decklist = getDecklist(rawDecklist);
 
         List<CardCollection.Item> result = new ArrayList<>();
         for (CardCount cardCount : decklist) {
-            for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
-                String id = cardBlueprint.getKey();
-                if (isFromSupportedSet(id)) {
-                    CardBlueprint blueprint = cardBlueprint.getValue();
-                    if (exactNameMatch(blueprint, cardCount.name())) {
-                        result.add(CardCollection.Item.createItem(id, cardCount.count()));
-                        break;
+            SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.name);
+            if (newSubDeck != null) currentSubDeck = newSubDeck;
+            else {
+                /* TODO - Create a card name to blueprint ID map when the card blueprint library is created.
+                    Accessing that map should be faster than iterating through the entire blueprint library
+                    for every card.
+                 */
+                for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
+                    String id = cardBlueprint.getKey();
+                    if (isFromSupportedSet(id)) {
+                        CardBlueprint blueprint = cardBlueprint.getValue();
+                        if (exactNameMatch(blueprint, cardCount.name())) {
+                            result.add(CardCollection.Item.createItem(id, cardCount.count(), currentSubDeck));
+                            break;
+                        }
                     }
                 }
             }
@@ -39,9 +53,10 @@ public class ImportCards {
     }
 
     private boolean isFromSupportedSet(String id) {
+        // TODO: Replace this logic with something that will check format-legal cards when importing decks
         try {
             int set = Integer.parseInt(id.split("_")[0]);
-            return set < 20 || (set > 99 && set < 149);
+            return set >= 0;
         } catch (NumberFormatException exp) {
             return false;
         }
