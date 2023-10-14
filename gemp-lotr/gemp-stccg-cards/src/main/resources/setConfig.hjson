@@ -24,6 +24,12 @@
     needsLoading: false
   }
   {
+    setId: "123"
+    setName: Voyager
+    rarityFile: "/set123-rarity.txt"
+    needsLoading: false
+  }
+  {
     setId: "128"
     setName: Enterprise Collection
     rarityFile: "/set128-rarity.txt"

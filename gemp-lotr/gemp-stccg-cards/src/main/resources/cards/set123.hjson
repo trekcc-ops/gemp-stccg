@@ -1,0 +1,21 @@
+// Set 123: Voyager
+
+{
+    123_082: {
+        title: Assist Cooperative
+        type: mission
+        region: Nekrit Expanse
+        location: Factionalized colony
+        quadrant: delta
+        image-url: https://www.trekcc.org/1e/cardimages/voy/assistcooperative.jpg
+    }
+    123_083: {
+        title: Catalog Phenomena
+        type: mission
+        region: Nekrit Expanse
+        location: Plasma storm
+        uniqueness: universal
+        quadrant: delta
+        image-url: https://www.trekcc.org/1e/cardimages/voy/catalogphenomena.jpg
+    }
+}

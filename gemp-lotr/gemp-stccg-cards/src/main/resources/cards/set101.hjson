@@ -43,4 +43,31 @@
         affiliation: romulan
         image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg
     }
+    101_148: {
+        title: Covert Installation
+        type: mission
+        seedPhase: mission
+        quadrant: alpha
+        region: Neutral Zone
+        location: Devora
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Covert-Installation.jpg
+    }
+    101_163: {
+        title: Iconia Investigation
+        type: mission
+        seedPhase: mission
+        quadrant: alpha
+        region: Neutral Zone
+        location: Iconia
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Iconia-Investigation.jpg
+    }
+    101_164: {
+        title: 'Investigate "Shattered Space"'
+        type: mission
+        seedPhase: mission
+        quadrant: alpha
+        region: Neutral Zone
+        location: Near Neutral Zone
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Investigate-Shattered-Space.jpg
+    }
 }

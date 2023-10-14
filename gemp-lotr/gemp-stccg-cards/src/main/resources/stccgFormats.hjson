@@ -4,14 +4,14 @@
       code: debug
       sites: SPECIAL
       maximumSameName: 100
-      set:[101, 144, 145, 146, 147, 150, 157, 164, 180, 190, 221]
+      set:[101, 103, 105, 116, 123, 128, 135, 144, 145, 146, 147, 150, 155, 157, 159, 164, 180, 190, 221]
       hall:false
     }
     {
         name: "1E Modern Complete"
         game: st1e
         code: st1emoderncomplete
-        set:[101, 103, 105, 116, 128, 135, 155, 159]
+        set:[101, 103, 105, 116, 123, 128, 135, 155, 159]
         minimumDrawDeckSize: 30
         maximumSeedDeckSize: 30
         missions: 6
