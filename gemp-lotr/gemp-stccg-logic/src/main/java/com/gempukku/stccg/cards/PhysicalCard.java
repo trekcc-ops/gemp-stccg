@@ -84,11 +84,12 @@ public class PhysicalCard implements Filterable {
     }
 
     public void stopAffectingGameInZone(Zone zone) {
-        if (_modifierHooksInZone.get(zone) != null) {
-            for (ModifierHook modifierHook : _modifierHooksInZone.get(zone))
-                modifierHook.stop();
-            _modifierHooksInZone.remove(zone);
-        }
+        if (_modifierHooksInZone != null)
+            if (_modifierHooksInZone.get(zone) != null) {
+                for (ModifierHook modifierHook : _modifierHooksInZone.get(zone))
+                    modifierHook.stop();
+                _modifierHooksInZone.remove(zone);
+            }
     }
 
     public CardBlueprint getBlueprint() {
