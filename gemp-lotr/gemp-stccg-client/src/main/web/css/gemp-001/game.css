@@ -29,17 +29,6 @@ ul {
     background-image: url('/gemp-lotr/images/hand-42.png');
 }
 
-.threatsSize {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
-    font-weight: bolder;
-    width: 42px;
-    height: 42px;
-    background-image: url('/gemp-lotr/images/threats-42.png');
-}
-
 .discardSize {
     display: table-cell;
     text-align: center;

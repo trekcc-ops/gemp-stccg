@@ -21,7 +21,6 @@ var GempLotrDeckBuildingUI = Class.extend({
     init:function () {
         var that = this;
 
-        // TODO - Look into replacing the "gemp-stccg-server" path
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
