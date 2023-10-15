@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Uniqueness;
 import com.gempukku.stccg.effectappender.EffectAppenderFactory;
 import com.gempukku.stccg.fieldprocessor.*;
@@ -23,13 +24,14 @@ public class CardBlueprintFactory implements CardGenerationEnvironment {
 
     public CardBlueprintFactory() {
         fieldProcessors.put("title", new TitleFieldProcessor());
+        fieldProcessors.put("property-logo", new PropertyLogoFieldProcessor());
+        fieldProcessors.put("lore", new LoreFieldProcessor());
         fieldProcessors.put("subtitle", new SubtitleFieldProcessor());
         fieldProcessors.put("image-url", new ImageUrlFieldProcessor());
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
         fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
         fieldProcessors.put("side", new SideFieldProcessor());
-        fieldProcessors.put("culture", new CultureFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
         fieldProcessors.put("seedphase", new SeedPhaseProcessor());
 
@@ -37,6 +39,8 @@ public class CardBlueprintFactory implements CardGenerationEnvironment {
         fieldProcessors.put("region", new RegionFieldProcessor());
         fieldProcessors.put("location", new LocationFieldProcessor());
         fieldProcessors.put("caninsertintospaceline", new CanInsertIntoSpacelineProcessor());
+        fieldProcessors.put("affiliation-icons", new AffiliationIconsFieldProcessor());
+        fieldProcessors.put("mission-type", new MissionTypeFieldProcessor());
 
         fieldProcessors.put("race", new RaceFieldProcessor());
         fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
@@ -45,22 +49,25 @@ public class CardBlueprintFactory implements CardGenerationEnvironment {
         fieldProcessors.put("keyword", new KeywordFieldProcessor());
         fieldProcessors.put("keywords", new KeywordFieldProcessor());
         fieldProcessors.put("twilight", new CostFieldProcessor());
-        fieldProcessors.put("strength", new StrengthFieldProcessor());
-        fieldProcessors.put("vitality", new VitalityFieldProcessor());
-        fieldProcessors.put("resistance", new ResistanceFieldProcessor());
         fieldProcessors.put("site", new SiteNumberFieldProcessor());
         fieldProcessors.put("direction", new DirectionFieldProcessor());
         fieldProcessors.put("target", new TargetFieldProcessor());
         fieldProcessors.put("requires", new RequirementFieldProcessor());
         fieldProcessors.put("effects", new EffectFieldProcessor());
 
-        fieldProcessors.put("gametext", new NullProcessor());
-        fieldProcessors.put("lore", new NullProcessor());
-        fieldProcessors.put("promotext", new NullProcessor());
-
-        //Soon!  But not yet
-        fieldProcessors.put("cardinfo", new NullProcessor());
-        fieldProcessors.put("alts", new NullProcessor());
+        // Fields in the JSON, but not yet implemented
+        fieldProcessors.put("game-text", new NullProcessor());
+        fieldProcessors.put("mission-requirements", new NullProcessor());
+        fieldProcessors.put("point-box", new NullProcessor());
+        fieldProcessors.put("span", new NullProcessor());
+        fieldProcessors.put("classification", new NullProcessor());
+        fieldProcessors.put("icons", new NullProcessor()); // For misc personnel icons
+        fieldProcessors.put("skill-box", new NullProcessor());
+        fieldProcessors.put("restriction-box", new NullProcessor());
+        fieldProcessors.put("span", new NullProcessor());
+        fieldProcessors.put("integrity", new NullProcessor());
+        fieldProcessors.put("cunning", new NullProcessor());
+        fieldProcessors.put("strength", new NullProcessor());
     }
 
     public CardBlueprint buildFromJson(JSONObject json) throws InvalidCardDefinitionException {
@@ -89,6 +96,12 @@ public class CardBlueprintFactory implements CardGenerationEnvironment {
                 result.setUniqueness(Uniqueness.UNIVERSAL);
             }
         }
+
+        // Set quadrant to alpha if none was specified
+        List<CardType> implicitlyAlphaQuadrant = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
+                CardType.MISSION);
+        if (result.getQuadrant() == null && implicitlyAlphaQuadrant.contains(result.getCardType()))
+            result.setQuadrant(Quadrant.ALPHA);
 
         result.validateConsistency();
 

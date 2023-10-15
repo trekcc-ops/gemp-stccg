@@ -27,6 +27,6 @@ public class TribblesBetweenTurnsProcess extends DefaultGameProcess<TribblesGame
 
     @Override
     public GameProcess getNextProcess() {
-        return new TribblesStartOfTurnGameProcess();
+        return new StartOfTurnGameProcess();
     }
 }

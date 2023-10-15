@@ -14,7 +14,6 @@ import java.util.Set;
 
 public interface CardBlueprint {
     Quadrant getQuadrant();
-
     String getLocation();
     Region getRegion();
 
@@ -23,8 +22,11 @@ public interface CardBlueprint {
     }
 
     Side getSide();
+    Set<Affiliation> getAffiliations();
 
+    Set<Affiliation> getOwnerAffiliationIcons();
     CardType getCardType();
+    FacilityType getFacilityType();
 
     Culture getCulture();
 
@@ -123,4 +125,6 @@ public interface CardBlueprint {
 
     boolean canPlayOutOfSequence(TribblesGame game, PhysicalCard self);
     boolean canInsertIntoSpaceline();
+    Set<Affiliation> getOpponentAffiliationIcons();
+    boolean isHomeworld();
 }

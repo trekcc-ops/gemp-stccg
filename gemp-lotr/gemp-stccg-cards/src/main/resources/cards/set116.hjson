@@ -5,6 +5,7 @@
         title: Battle Bridge Door
         type: doorway
         seedPhase: doorway
+        property-logo: tng
         image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
     }
     116_046: {
@@ -14,6 +15,9 @@
         quadrant: alpha
         uniqueness: universal
         location: Klingon planet
+        affiliation-icons: klingon
+        mission-type: planet
+        lore: "Participate in bat'leth competition held at this Klingon settlement."
         image-url: https://www.trekcc.org/1e/cardimages/bog/batlethtournament.gif
     }
     116_047: {
@@ -22,6 +26,9 @@
         seedPhase: mission
         quadrant: gamma
         location: Edge of Denkiri Arm
+        affiliation-icons: federation,romulan,cardassian
+        mission-type: space
+        lore: Perform long-distance overview survey of this region of the Gamma Quadrant.
         image-url: https://www.trekcc.org/1e/cardimages/bog/chartstellarcluster.gif
     }
 }

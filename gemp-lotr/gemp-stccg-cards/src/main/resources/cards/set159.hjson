@@ -4,21 +4,25 @@
     159_004: {
         title: El-Aurian Phaser
         type: equipment
+        property-logo: generations
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/4V.jpg
     }
     159_005: {
         title: Mr. Tricorder
         type: equipment
+        property-logo: generations
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/5V.jpg
     }
     159_006: {
         title: Trilithium Weapon Control PADD
         type: equipment
+        property-logo: generations
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/6V.jpg
     }
     159_015: {
         title: Reaching Out
         type: objective
+        property-logo: ent
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/15V.jpg
     }
     159_020: {
@@ -26,6 +30,7 @@
         type: personnel
         affiliation: federation
         uniqueness: universal
+        property-logo: ds9
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/20V.jpg
     }
     159_021: {
@@ -33,6 +38,7 @@
         type: personnel
         affiliation: federation
         uniqueness: unique
+        property-logo: tng
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/21V.jpg
     }
     159_026: {
@@ -40,6 +46,7 @@
         type: personnel
         affiliation: non-aligned
         uniqueness: unique
+        property-logo: tng
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/26V.jpg
     }
     159_028: {
@@ -47,6 +54,7 @@
         type: personnel
         affiliation: non-aligned
         uniqueness: unique
+        property-logo: ent
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/28V.jpg
     }
     159_029: {
@@ -54,6 +62,7 @@
         type: personnel
         affiliation: romulan
         uniqueness: universal
+        property-logo: nemesis
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/29V.jpg
     }
     159_030: {
@@ -61,6 +70,7 @@
         type: personnel
         affiliation: romulan
         uniqueness: unique
+        property-logo: nemesis
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/30V.jpg
     }
     159_031: {
@@ -68,6 +78,7 @@
         type: personnel
         affiliation: romulan
         uniqueness: unique
+        property-logo: tng
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/31V.jpg
     }
     159_032: {
@@ -75,6 +86,7 @@
         type: personnel
         affiliation: starfleet
         uniqueness: unique
+        property-logo: ent
         image-url: https://www.trekcc.org/1e/cardimages/homefront3/32V.jpg
     }
 }

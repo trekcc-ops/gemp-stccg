@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.PhysicalMissionCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,8 +20,9 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-public class PlayMissionAction extends AbstractPlayCardAction {
+public class SeedMissionAction extends AbstractPlayCardAction {
     private PlayMissionEffect _playCardEffect;
+    private final PhysicalMissionCard _cardToPlay;
     private boolean _cardPlayed;
     private int _locationZoneIndex;
     private final Zone _fromZone;
@@ -30,14 +32,18 @@ public class PlayMissionAction extends AbstractPlayCardAction {
     private Action _that;
     private PhysicalCard _neighborCard;
 
-    public PlayMissionAction(ST1EGame game, PhysicalCard missionPlayed) {
-        super(missionPlayed, missionPlayed);
+    public SeedMissionAction(ST1EGame game, PhysicalMissionCard cardToPlay) {
+        super(cardToPlay);
+        _cardToPlay = cardToPlay;
+        _fromZone = cardToPlay.getZone();
         setText("Play " + GameUtils.getFullName(_cardToPlay));
         setPerformingPlayer(_cardToPlay.getOwner());
-        _fromZone = _cardToPlay.getZone();
         _game = game;
         _that = this;
     }
+
+    @Override
+    public PhysicalMissionCard getPlayedCard() { return _cardToPlay; }
     
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
     

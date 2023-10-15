@@ -9,15 +9,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ST1EStartOfMissionPhaseProcess implements GameProcess<ST1EGame> {
-    public ST1EStartOfMissionPhaseProcess() {    }
+public class ST1EStartOfFacilitySeedPhaseProcess implements GameProcess<ST1EGame> {
+    public ST1EStartOfFacilitySeedPhaseProcess() {    }
 
     @Override
     public void process(ST1EGame game) {
-        game.getGameState().setCurrentPhase(Phase.SEED_MISSION);
+        game.getGameState().setCurrentPhase(Phase.SEED_FACILITY);
         for (String player : game.getPlayers()) {
-            List<PhysicalCard> missionSeeds = new LinkedList<>(game.getGameState().getMissionPile(player));
-            for (PhysicalCard card : missionSeeds) {
+            List<PhysicalCard> facilitySeeds = new LinkedList<>(game.getGameState().getSeedDeck(player));
+            for (PhysicalCard card : facilitySeeds) {
                 game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
                 game.getGameState().addCardToZone(game, card, Zone.HAND);
             }
@@ -27,6 +27,6 @@ public class ST1EStartOfMissionPhaseProcess implements GameProcess<ST1EGame> {
 
     @Override
     public GameProcess<ST1EGame> getNextProcess() {
-        return new ST1EMissionSeedPhaseProcess(0,new ST1EDilemmaSeedPhaseProcess());
+        return new ST1EFacilitySeedPhaseProcess(0);
     }
 }

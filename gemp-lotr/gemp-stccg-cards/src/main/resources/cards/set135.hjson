@@ -6,6 +6,7 @@
         type: personnel
         affiliation: federation
         uniqueness: unique
+        property-logo: tos
         image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/captainkirk.jpg
     }
     135_005: {
@@ -13,6 +14,7 @@
         type: personnel
         affiliation: federation
         uniqueness: unique
+        property-logo: voy
         image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/kathrynjaneway.jpg
     }
     135_009: {
@@ -20,6 +22,7 @@
         type: ship
         affiliation: federation
         uniqueness: unique
+        property-logo: tos
         image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/starshipenterprise.jpg
     }
     135_010: {
@@ -27,6 +30,7 @@
         type: ship
         affiliation: federation
         uniqueness: unique
+        property-logo: ds9
         image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/ussdefiant.jpg
     }
     135_012: {
@@ -34,6 +38,7 @@
         type: ship
         affiliation: federation
         uniqueness: unique
+        property-logo: first contact
         image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/ussenterprisee.jpg
     }
 }

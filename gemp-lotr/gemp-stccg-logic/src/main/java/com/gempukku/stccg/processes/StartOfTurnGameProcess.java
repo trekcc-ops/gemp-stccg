@@ -7,7 +7,10 @@ import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.results.StartOfTurnResult;
 
-public class TribblesStartOfTurnGameProcess implements GameProcess {
+import java.util.Objects;
+
+public class StartOfTurnGameProcess implements GameProcess {
+    private GameProcess _followingGameProcess;
     @Override
     public void process(DefaultGame game) {
         game.getGameState().startAffectingCardsForCurrentPlayer(game);
@@ -26,10 +29,12 @@ public class TribblesStartOfTurnGameProcess implements GameProcess {
                 new TriggeringResultEffect(game, new StartOfTurnResult(), "Start of turn"));
         ((ModifiersLogic) game.getModifiersEnvironment()).signalStartOfTurn(game.getGameState().getCurrentPlayerId());
         game.getActionsEnvironment().addActionToStack(action);
+        if (Objects.equals(game.getFormat().getGameType(), "tribbles"))
+            _followingGameProcess = new TribblesTurnProcess();
+        else if (Objects.equals(game.getFormat().getGameType(), "st1e"))
+            _followingGameProcess = new ST1ETurnProcess();
     }
 
     @Override
-    public GameProcess getNextProcess() {
-        return new TribblesTurnProcess();
-    }
+    public GameProcess getNextProcess() { return _followingGameProcess; }
 }

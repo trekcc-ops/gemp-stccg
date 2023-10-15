@@ -1,15 +1,12 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction {
 
     protected final PhysicalCard _actionSource;
-    protected final PhysicalCard _cardToPlay;
-    protected final Zone _playedFromZone;
     protected boolean _reshuffle;
     protected boolean _placeOutOfPlay;
     protected String _text;
@@ -17,12 +14,9 @@ public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction 
     private String _performingPlayer;
     /**
      * Creates an action for playing the specified card.
-     * @param cardToPlay the card to play
      * @param actionSource the card to initiate the deployment
      */
-    public AbstractPlayCardAction(PhysicalCard cardToPlay, PhysicalCard actionSource) {
-        _cardToPlay = cardToPlay;
-        _playedFromZone = cardToPlay.getZone();
+    public AbstractPlayCardAction(PhysicalCard actionSource) {
         _actionSource = actionSource;
     }
 
@@ -37,20 +31,10 @@ public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction 
 
     @Override
     public PhysicalCard getActionAttachedToCard() {
-        return  _cardToPlay;
+        return getPlayedCard();
     }
 
-    public PhysicalCard getPlayedCard() {
-        return _cardToPlay;
-    }
-
-    /**
-     * Gets the zone the card is being played or deployed from.
-     * @return the zone
-     */
-    public Zone getPlayingFromZone() {
-        return _playedFromZone;
-    }
+    public abstract PhysicalCard getPlayedCard();
 
     public String getText() {
         return _text;

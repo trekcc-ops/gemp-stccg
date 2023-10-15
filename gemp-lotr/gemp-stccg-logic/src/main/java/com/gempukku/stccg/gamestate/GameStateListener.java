@@ -35,8 +35,6 @@ public interface GameStateListener {
 
     void sendMessage(String message);
 
-    void setSite(PhysicalCard card);
-
     void sendGameStats(GameStats gameStats);
 
     void cardAffectedByCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCard);

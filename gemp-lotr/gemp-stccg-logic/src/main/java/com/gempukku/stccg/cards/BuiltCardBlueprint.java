@@ -20,14 +20,21 @@ public class BuiltCardBlueprint implements CardBlueprint {
     private String title;
     private String location;
     private String subtitle;
+    private String _lore;
     private String imageUrl;
     private Uniqueness uniqueness = null;
     private Side side;
     private CardType cardType;
-    private Affiliation affiliation;
+    private Set<Affiliation> _affiliations = new HashSet<>();
     private Region region;
     private Quadrant quadrant;
     private boolean _canInsertIntoSpaceline;
+    private PropertyLogo _propertyLogo;
+    private Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
+    private Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
+    private boolean _anyCrewOrAwayTeamCanAttempt;
+    private MissionType _missionType;
+    private FacilityType _facilityType;
     private Culture culture;
     private Race race;
     private Map<Keyword, Integer> keywords;
@@ -258,11 +265,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public void setSide(Side side) {
         this.side = side;
     }
-
-    public void setAffiliation(Affiliation affiliation) {
-        this.affiliation = affiliation;
-    }
-    public Affiliation getAffiliation() { return this.affiliation; }
+    public void addAffiliation(Affiliation affiliation) { _affiliations.add(affiliation); }
+    public Set<Affiliation> getAffiliations() { return _affiliations; }
     public void setQuadrant(Quadrant quadrant) {
         this.quadrant = quadrant;
     }
@@ -278,9 +282,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public void setCardType(CardType cardType) {
         this.cardType = cardType;
     }
-
-    public void setFacilityType(FacilityType facilityType) {
-    }
+    public void setFacilityType(FacilityType facilityType) { _facilityType = facilityType; }
+    public FacilityType getFacilityType() { return _facilityType; }
 
     public void setCulture(Culture culture) {
         this.culture = culture;
@@ -887,26 +890,30 @@ public class BuiltCardBlueprint implements CardBlueprint {
         return result;
     }
 
+    public void throwException(String message) throws InvalidCardDefinitionException {
+        throw new InvalidCardDefinitionException(message);
+    }
+
     public void validateConsistency() throws InvalidCardDefinitionException {
-        if (title == null)
-            throw new InvalidCardDefinitionException("Card has to have a title");
-        if (cardType == null)
-            throw new InvalidCardDefinitionException("Card has to have a type");
-        if (siteNumber != 0
-                && cardType != CardType.SITE
-                && cardType != CardType.MINION)
-            throw new InvalidCardDefinitionException("Only minions and sites have a site number, use siteHome for allies");
+        if (title == null) throwException("Card has to have a title");
+        if (cardType == null) throwException("Card has to have a type");
+        if (cardType == CardType.MISSION) {
+            if (_propertyLogo != null) throwException("Mission card should not have a property logo");
+            if (location == null && !title.equals("Space")) throwException("Mission card should have a location");
+        } else if (cardType == CardType.TRIBBLE) {
+            if (tribblePower == null) throwException("Tribble card has to have a Tribble power");
+            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
+                throwException("Tribble card does not have a valid Tribble value");
+        } else if (_propertyLogo == null)
+            // TODO - Technically tribbles should have property logos too, they're just never relevant
+            throwException("Non-mission card has to have a property logo");
+
+            // Checks below are LotR-specific
         if (cardType != CardType.EVENT && playEventAction != null)
-            throw new InvalidCardDefinitionException("Only events should have an event type effect");
-        if (Arrays.asList(CardType.MINION, CardType.COMPANION, CardType.ALLY).contains(cardType)) {
-            if (vitality == 0)
-                throw new InvalidCardDefinitionException("Character has 0 vitality");
-            if (strength == 0)
-                throw new InvalidCardDefinitionException("Character has 0 strength");
-        }
+            throwException("Only events should have an event type effect");
         if (targetFilters != null && keywords != null) {
             if (keywords.size() > 1 && keywords.containsKey(Keyword.TALE))
-                throw new InvalidCardDefinitionException("Attachment should not have keywords");
+                throwException("Attachment should not have keywords");
         }
     }
 
@@ -925,5 +932,25 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public List<Phase> getSeedPhases() { return this.seedPhases; }
     public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
+    public void setAnyCrewOrAwayTeamCanAttempt(boolean canAttempt) { _anyCrewOrAwayTeamCanAttempt = canAttempt; }
+    public void addOwnerAffiliationIcon(Affiliation affiliation) { _ownerAffiliationIcons.add(affiliation); }
+    public Set<Affiliation> getOwnerAffiliationIcons() { return _ownerAffiliationIcons; }
+    public Set<Affiliation> getOpponentAffiliationIcons() { return _opponentAffiliationIcons; }
+    public void setMissionType(MissionType type) { _missionType = type; }
+    public MissionType getMissionType(MissionType type) { return _missionType; }
+    public Affiliation homeworldAffiliation() {
+        if (this.cardType != CardType.MISSION)
+            return null;
+        for (Affiliation affiliation : Affiliation.values()) {
+            String homeworldString = affiliation.name().toLowerCase() + " homeworld";
+            if (_lore != null)
+                if (_lore.toLowerCase().contains(homeworldString))
+                    return affiliation;
+        }
+        return null;
+    }
 
+    public boolean isHomeworld() { return homeworldAffiliation() != null; }
+    public void setLore(String lore) { _lore = lore; }
+    public void setPropertyLogo(PropertyLogo propertyLogo) { _propertyLogo = propertyLogo; }
 }

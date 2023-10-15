@@ -1,4 +1,20 @@
 {
+    124_036: {
+        title: Corner Enemy Ship
+        type: mission
+        // (Include region if there is one, but leave it out otherwise.)
+        mission-type: space
+        location: Dense nebula
+        lore: Flush out enemy hiding amidst the radiation of this anomaly.
+        mission-requirements: Leadership + Navigation + Stellar Cartography
+        game-text
+        affiliation-icons: klingon,romulan,kazon,hirogen
+        points: 40
+        quadrant: delta
+        span: 5
+    }
+
+{
 	1_12E: {
 		cardInfo: {
 			imagePath: errata/71_13.jpg
@@ -33,7 +49,7 @@
 		effects: [
 			...
 		]
-		gametext: <b>Damage +1</b> <br> <b>Fellowship: </b> If the twilight pool has fewer than 2 twilight tokens, add (2) and place a card from hand beneath your draw deck to draw a card.
+		game-text: <b>Damage +1</b> <br> <b>Fellowship: </b> If the twilight pool has fewer than 2 twilight tokens, add (2) and place a card from hand beneath your draw deck to draw a card.
 		lore: "Gimli now walked ahead by the wizard's side, so eager was he to come to Moria."
 		promotext: ""
 		alts: {

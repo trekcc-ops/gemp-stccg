@@ -19,6 +19,6 @@ public class BetweenTurnsProcess implements GameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new TribblesStartOfTurnGameProcess();
+        return new StartOfTurnGameProcess();
     }
 }

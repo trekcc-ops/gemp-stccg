@@ -25,7 +25,7 @@ public class ST1EMissionSeedPhaseProcess implements GameProcess<ST1EGame> {
 
         final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         if (playableActions.size() == 0 && game.shouldAutoPass(_currentPlayer, game.getGameState().getCurrentPhase())) {
-            playerPassed();
+            _consecutivePasses++;
         } else {
             game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
                     new CardActionSelectionDecision(1, "Play " +
@@ -35,21 +35,19 @@ public class ST1EMissionSeedPhaseProcess implements GameProcess<ST1EGame> {
                             Action action = getSelectedAction(result);
                             if (action != null) {
                                 game.getActionsEnvironment().addActionToStack(action);
+                                _consecutivePasses = 0;
                             } else {
-                                playerPassed();
+                                _consecutivePasses++;
                             }
                         }
                     });
         }
     }
 
-    private void playerPassed() {
-        _consecutivePasses++;
-    }
-
     @Override
     public GameProcess<ST1EGame> getNextProcess() {
         if (_consecutivePasses >= _playOrder.getPlayerCount()) {
+            _playOrder.setCurrentPlayer(_playOrder.getFirstPlayer());
             return _followingGameProcess;
         } else {
             _playOrder.advancePlayer();

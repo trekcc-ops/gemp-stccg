@@ -78,46 +78,6 @@ public class IndividualCardAtTest extends AbstractAtTest {
     }
 
     @Test
-    public void fordOfBruinenReduce() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
-
-        skipMulligans();
-
-        // End fellowship
-        playerDecided(P1, "");
-
-        // End shadow
-        playerDecided(P2, "");
-
-        PhysicalCardImpl ford = new PhysicalCardImpl(101, "1_338", P2, _cardLibrary.getCardBlueprint("1_338"));
-        ford.setSiteNumber(3);
-        _game.getGameState().addCardToZone(_game, ford, Zone.ADVENTURE_PATH);
-
-        // End regroup
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        // Decide to move
-        playerDecided(P1, getMultipleDecisionIndex(_userFeedback.getAwaitingDecision(P1), "Yes"));
-
-        // End shadow
-        playerDecided(P2, "");
-
-        // End regroup
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        // P2 Turn
-        PhysicalCardImpl attea = new PhysicalCardImpl(102, "1_229", P1, _cardLibrary.getCardBlueprint("1_229"));
-        _game.getGameState().addCardToZone(_game, attea, Zone.HAND);
-
-        // End fellowship
-        playerDecided(P2, "");
-
-        assertEquals(8, _game.getModifiersQuerying().getTwilightCost(_game, attea, null, 0, false));
-    }
-
-    @Test
     public void sentBackAllowsPlayingCardInDeadPile() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 

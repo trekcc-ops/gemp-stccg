@@ -214,14 +214,15 @@ public class GameEvent {
         GameEvent gameEvent = cardId(physicalCard.getCardId()).blueprintId(physicalCard.getBlueprintId()).participantId(physicalCard.getOwner()).zone(physicalCard.getZone()).imageUrl(physicalCard.getImageUrl());
         if (physicalCard.getCardController() != null)
             gameEvent = gameEvent.controllerId(physicalCard.getCardController());
+
         PhysicalCard attachedTo = physicalCard.getAttachedTo();
         if (attachedTo != null)
             gameEvent = gameEvent.targetCardId(attachedTo.getCardId());
+
         PhysicalCard stackedOn = physicalCard.getStackedOn();
         if (stackedOn != null)
             gameEvent = gameEvent.targetCardId(stackedOn.getCardId());
-        if (physicalCard.getBlueprint().getCardType() == CardType.SITE && physicalCard.getZone().isInPlay())
-            gameEvent = gameEvent.index(physicalCard.getSiteNumber());
+
         gameEvent = gameEvent.locationIndex(physicalCard.getLocationZoneIndex());
         if (physicalCard.getBlueprint().getCardType() == CardType.MISSION) {
             gameEvent = gameEvent.quadrant(physicalCard.getQuadrant().name());

@@ -2,6 +2,9 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.PhysicalMissionCard;
+import com.gempukku.stccg.cards.PhysicalOutpostCard;
+import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -35,10 +38,20 @@ public class ST1EPlayCardInPhaseRule {
                         } else if (phase == Phase.SEED_MISSION && game.getGameState().getHand(playerId).size() > 0) {
                             if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
                                 List<Action> actionList = new LinkedList<>();
-                                actionList.add(new PlayMissionAction(game, game.getGameState().getHand(playerId).get(0)));
+                                actionList.add(new SeedMissionAction(game, (PhysicalMissionCard) game.getGameState().getHand(playerId).get(0)));
                                 return actionList;
                             }
-//                        else if (phase == Phase.SEED_DOORWAY && game.getGameState().get)
+                        } else if (phase == Phase.SEED_FACILITY) {
+                            List<Action> result = new LinkedList<>();
+                            for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
+                                if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
+                                    if (game.checkPlayRequirements(card)) {
+                                        if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
+                                            result.add(new SeedOutpostAction(game, (PhysicalOutpostCard) card));
+                                    }
+                                }
+                            }
+                            return result;
                         }
                         return null;
                     }

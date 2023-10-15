@@ -25,7 +25,7 @@ public class PhysicalCard implements Filterable {
     protected Map<Zone, List<ModifierHook>> _modifierHooksInZone; // modifier hooks specific to stacked and discard
     protected Object _whileInZoneData;
     protected Integer _siteNumber;
-    private int _locationZoneIndex;
+    protected int _locationZoneIndex;
     public PhysicalCard(int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _blueprintId = blueprintId;
@@ -128,10 +128,6 @@ public class PhysicalCard implements Filterable {
         return _siteNumber;
     }
 
-    
-    public void setSiteNumber(Integer number) {
-        _siteNumber = number;
-    }
 
     public String getTitle() {
         return _blueprint.getTitle();
@@ -148,5 +144,6 @@ public class PhysicalCard implements Filterable {
     public boolean isAffectingGame(GameState gameState) {
         return gameState.getCurrentPlayerId().equals(_owner);
     }
+    public boolean canBeSeeded() { return false; }
 
 }

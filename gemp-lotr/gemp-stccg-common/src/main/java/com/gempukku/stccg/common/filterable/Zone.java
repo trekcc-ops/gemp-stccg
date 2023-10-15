@@ -6,6 +6,7 @@ public enum Zone implements Filterable {
     SEED_DECK("seed deck", false, true, false),
     TABLE("table", true, true, true),
     SPACELINE("spaceline", true, true, true),
+    AT_LOCATION("location", true, true, true),
 
     // Public knowledge and in play
     FREE_CHARACTERS("play", true, true, true),

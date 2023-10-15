@@ -154,11 +154,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void setSite(PhysicalCard card) {
-        appendEvent(new GameEvent(PUT_CARD_INTO_PLAY).card(card).index(card.getSiteNumber()));
-    }
-
-    @Override
     public void sendGameStats(GameStats gameStats) {
         appendEvent(new GameEvent(GAME_STATS).gameStats(gameStats.makeACopy()));
     }

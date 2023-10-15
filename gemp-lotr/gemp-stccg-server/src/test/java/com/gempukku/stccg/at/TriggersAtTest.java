@@ -1,11 +1,10 @@
 package com.gempukku.stccg.at;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCardImpl;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.AwaitingDecisionType;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
@@ -13,7 +12,6 @@ import com.gempukku.stccg.modifiers.KeywordModifier;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -248,61 +246,4 @@ public class TriggersAtTest extends AbstractAtTest {
         assertEquals(Phase.REGROUP, _game.getGameState().getCurrentPhase());
     }
 
-    @Test
-    public void replaceSiteNotPossibleWithMountDoom() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
-
-        PhysicalCardImpl gandalf = new PhysicalCardImpl(100, "1_72", P1, _cardLibrary.getCardBlueprint("1_72"));
-        PhysicalCardImpl traveledLeader = new PhysicalCardImpl(101, "12_34", P1, _cardLibrary.getCardBlueprint("12_34"));
-        PhysicalCardImpl mountDoom = new PhysicalCardImpl(102, "15_193", P2, _cardLibrary.getCardBlueprint("15_193"));
-
-        skipMulligans();
-
-        _game.getGameState().addCardToZone(_game, traveledLeader, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
-
-        // End fellowship phase
-        playerDecided(P1, "");
-
-        _game.getGameState().removeCardsFromZone(P2, Collections.singleton(_game.getGameState().getSite(2)));
-        mountDoom.setSiteNumber(2);
-        _game.getGameState().addCardToZone(_game, mountDoom, Zone.ADVENTURE_PATH);
-
-        // End shadow phase
-        playerDecided(P2, "");
-
-        // End regroup phase
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        playerDecided(P1, "1");
-
-        // Reconcile
-        playerDecided(P1, "");
-
-        playerDecided(P2, "");
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-        playerDecided(P1, "");
-
-        // Reconcile
-        playerDecided(P1, "");
-
-        playerDecided(P2, "1");
-
-        playerDecided(P1, "");
-        playerDecided(P2, "");
-
-        final AwaitingDecision regroupActionDecision = _userFeedback.getAwaitingDecision(P1);
-        assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, regroupActionDecision.getDecisionType());
-        validateContents(new String[]{String.valueOf(traveledLeader.getCardId())}, regroupActionDecision.getDecisionParameters().get("cardId"));
-
-        playerDecided(P1, "0");
-
-        PhysicalCard siteOne = _game.getGameState().getSite(1);
-
-        playerDecided(P1, String.valueOf(siteOne.getCardId()));
-
-        assertEquals(siteOne, _game.getGameState().getSite(1));
-    }
 }

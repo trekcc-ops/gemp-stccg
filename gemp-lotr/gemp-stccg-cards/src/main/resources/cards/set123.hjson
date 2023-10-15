@@ -7,6 +7,9 @@
         region: Nekrit Expanse
         location: Factionalized colony
         quadrant: delta
+        affiliation-icons: non-aligned
+        mission-type: planet
+        lore: Help group of former Borg to unite and end anarchy.
         image-url: https://www.trekcc.org/1e/cardimages/voy/assistcooperative.jpg
     }
     123_083: {
@@ -16,6 +19,9 @@
         location: Plasma storm
         uniqueness: universal
         quadrant: delta
+        affiliation-icons: any
+        mission-type: space
+        lore: Map dust clouds and other hazards in the Expanse.
         image-url: https://www.trekcc.org/1e/cardimages/voy/catalogphenomena.jpg
     }
 }

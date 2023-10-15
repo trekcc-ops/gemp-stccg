@@ -92,10 +92,6 @@ public class ValueResolver {
                     }
                 };
 
-            } else if (type.equalsIgnoreCase("siteNumberInMemory")) {
-                FieldUtils.validateAllowedFields(object, "memory");
-                final String memory = FieldUtils.getString(object.get("memory"), "memory");
-                return actionContext -> (game, cardAffected) -> actionContext.getCardFromMemory(memory).getSiteNumber();
             } else if (type.equalsIgnoreCase("forEachInMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory", "limit");
                 final String memory = FieldUtils.getString(object.get("memory"), "memory");

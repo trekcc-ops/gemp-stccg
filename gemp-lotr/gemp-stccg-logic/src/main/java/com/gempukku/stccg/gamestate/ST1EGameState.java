@@ -1,9 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
@@ -14,7 +11,7 @@ import java.util.*;
 public class ST1EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _seedDecks;
     private final Map<String, List<PhysicalCard>> _missionPiles;
-    private final List<Location> _spacelineLocations = new ArrayList<>();
+    private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
     private final Map<String, List<PhysicalCard>> _tableCards;
     private final ST1EGame _game;
 
@@ -47,6 +44,8 @@ public class ST1EGameState extends GameState {
             return _missionPiles.get(playerId);
         else if (zone == Zone.TABLE)
             return _tableCards.get(playerId);
+        else if (zone == Zone.SEED_DECK)
+            return _seedDecks.get(playerId);
         else // This should never be accessed
             return _inPlay;
     }
@@ -58,7 +57,13 @@ public class ST1EGameState extends GameState {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, _library.getCardBlueprint(blueprintId)));
+                        CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
+                        if (blueprint.getCardType() == CardType.MISSION)
+                            subDeck.add(new PhysicalMissionCard(_nextCardId, blueprintId, playerId, blueprint));
+                        else if (blueprint.getFacilityType() == FacilityType.OUTPOST)
+                            subDeck.add(new PhysicalOutpostCard(_game, _nextCardId, blueprintId, playerId, blueprint));
+                        else
+                            subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, blueprint));
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");
@@ -87,13 +92,13 @@ public class ST1EGameState extends GameState {
     }
 
     public boolean hasLocationsInQuadrant(Quadrant quadrant) {
-        for (Location location : _spacelineLocations) {
+        for (ST1ELocation location : _spacelineLocations) {
             if (location.getQuadrant() == quadrant) return true;
         }
         return false;
     }
 
-    public void addToSpaceline(PhysicalCard missionCard, int indexNumber, boolean shared) {
+    public void addToSpaceline(PhysicalMissionCard missionCard, int indexNumber, boolean shared) {
         GameEvent.Type eventType;
         if (shared) {
             eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
@@ -102,16 +107,21 @@ public class ST1EGameState extends GameState {
             _spacelineLocations.get(indexNumber).addMission(missionCard);
         } else {
             eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
-            _spacelineLocations.add(indexNumber, new Location(missionCard));
+            _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));
         }
         refreshSpacelineIndices();
         addCardToZone(_game, missionCard, Zone.SPACELINE, true, eventType);
     }
 
+    public void seedFacilityAtLocation(PhysicalCard card, int spacelineIndex) {
+        card.setLocationZoneIndex(spacelineIndex);
+        _spacelineLocations.get(spacelineIndex).addNonMission(card);
+        addCardToZone(_game, card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
+    }
+
     public void refreshSpacelineIndices() {
         for (int i = 0; i < _spacelineLocations.size(); i++) {
-            for (PhysicalCard mission : _spacelineLocations.get(i).getMissions())
-                mission.setLocationZoneIndex(i);
+            _spacelineLocations.get(i).refreshSpacelineIndex(i);
         }
     }
 
@@ -161,15 +171,16 @@ public class ST1EGameState extends GameState {
     public int getSpacelineLocationsSize() { return _spacelineLocations.size(); }
     public int getQuadrantLocationsSize(Quadrant quadrant) {
         int x = 0;
-        for (Location location : _spacelineLocations) {
+        for (ST1ELocation location : _spacelineLocations) {
             if (location.getQuadrant() == quadrant) x++;
         }
         return x;
     }
+    public List<ST1ELocation> getSpacelineLocations() { return _spacelineLocations; }
 
     public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
         Set<PhysicalCard> newCollection = new HashSet<>();
-        for (Location location : _spacelineLocations)
+        for (ST1ELocation location : _spacelineLocations)
             for (PhysicalCard mission : location.getMissions())
                 if (mission.getQuadrant() == quadrant)
                     newCollection.add(mission);
@@ -189,7 +200,7 @@ public class ST1EGameState extends GameState {
             Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
             // Send missions in order
-            for (Location location : _spacelineLocations) {
+            for (ST1ELocation location : _spacelineLocations) {
                 for (int i = 0; i < location.getMissions().size(); i++) {
                     GameEvent.Type eventType;
                     if (i == 0) {

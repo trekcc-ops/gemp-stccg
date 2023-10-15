@@ -30,6 +30,6 @@ public class TribblesStartOfRoundGameProcess extends DefaultGameProcess<Tribbles
 
     @Override
     public GameProcess getNextProcess() {
-        return new TribblesStartOfTurnGameProcess();
+        return new StartOfTurnGameProcess();
     }
 }

@@ -67,6 +67,10 @@ public class FieldUtils {
         return Enum.valueOf(enumClass, string.toUpperCase().replaceAll("[ '\\-]","_"));
     }
 
+    public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String string) throws InvalidCardDefinitionException {
+        return Enum.valueOf(enumClass, string.toUpperCase().replaceAll("[ '\\-]","_"));
+    }
+
     public static Side getSide(Object value, String key) throws InvalidCardDefinitionException {
         final String string = getString(value, key);
         final Side side = Side.Parse(string);

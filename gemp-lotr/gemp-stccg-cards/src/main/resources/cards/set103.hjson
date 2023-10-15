@@ -5,6 +5,16 @@
         title: Alternate Universe Door
         type: doorway
         seedPhase: doorway
+        property-logo: tng
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg
+    }
+    103_052: {
+        title: Neutral Outpost
+        type: facility
+        facility-type: outpost
+        property-logo: tng
+        affiliation: neutral
+        uniqueness: universal
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Neutral-Outpost.jpg
     }
 }

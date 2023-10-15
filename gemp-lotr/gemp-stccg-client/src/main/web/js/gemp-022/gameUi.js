@@ -122,7 +122,9 @@ var GameTableUI = Class.extend({
         this.playPiles = {};
         this.onTableAreas = {};
         this.locationDivs = new Array();
-        this.locationCardGroups = new Array();
+        this.missionCardGroups = new Array();
+        this.opponentAtLocationCardGroups = new Array();
+        this.playerAtLocationCardGroups = new Array();
 
         this.initializeDialogs();
 
@@ -130,9 +132,19 @@ var GameTableUI = Class.extend({
     },
 
     getReorganizableCardGroupForCardData: function (cardData) {
-        for (var i=0; i < this.locationCardGroups.length; i++) {
-            if (this.locationCardGroups[i].cardBelongs(cardData)) {
-                return this.locationCardGroups[i];
+        for (var i=0; i < this.missionCardGroups.length; i++) {
+            if (this.missionCardGroups[i].cardBelongs(cardData)) {
+                return this.missionCardGroups[i];
+            }
+        }
+        for (var i=0; i < this.opponentAtLocationCardGroups.length; i++) {
+            if (this.opponentAtLocationCardGroups[i].cardBelongs(cardData)) {
+                return this.opponentAtLocationCardGroups[i];
+            }
+        }
+        for (var i=0; i < this.playerAtLocationCardGroups.length; i++) {
+            if (this.playerAtLocationCardGroups[i].cardBelongs(cardData)) {
+                return this.playerAtLocationCardGroups[i];
             }
         }
         for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
@@ -2112,12 +2124,26 @@ var ST1EGameTableUI = GameTableUI.extend({
             this.locationDivs[i].removeAttr("id");
             this.locationDivs[i].attr("id", "location" + (i+1));
 
-            var otherCards4 = this.locationCardGroups[i].getCardElems();
-            for (var j=0; j<otherCards4.length; j++) {
-                var cardData = $(otherCards4[j]).data("card");
+            var missionCardGroup = this.missionCardGroups[i].getCardElems();
+            for (var j=0; j<missionCardGroup.length; j++) {
+                var cardData = $(missionCardGroup[j]).data("card");
                 cardData.locationIndex = i+1;
             }
-            this.locationCardGroups[i].locationIndex = i+1;
+            this.missionCardGroups[i].locationIndex = i+1;
+            
+            var opponentAtLocationCardGroup = this.opponentAtLocationCardGroups[i].getCardElems();
+            for (var j=0; j<opponentAtLocationCardGroup.length; j++) {
+                var cardData = $(opponentAtLocationCardGroup[j]).data("card");
+                cardData.locationIndex = i+1;
+            }
+            this.opponentAtLocationCardGroups[i].locationIndex = i+1;
+
+            var playerAtLocationCardGroup = this.playerAtLocationCardGroups[i].getCardElems();
+            for (var j=0; j<playerAtLocationCardGroup.length; j++) {
+                var cardData = $(playerAtLocationCardGroup[j]).data("card");
+                cardData.locationIndex = i+1;
+            }
+            this.playerAtLocationCardGroups[i].locationIndex = i+1;            
         }
 
         var newDiv = $("<div id='location" + index + "' class='ui-widget-content locationDiv'></div>");
@@ -2127,10 +2153,20 @@ var ST1EGameTableUI = GameTableUI.extend({
 
         this.locationDivs.splice(index, 0, newDiv);
 
-        var newGrp4 = new MissionCardGroup($("#main"), function (card) {
+        var missionCardGroup = new MissionCardGroup($("#main"), function (card) {
             return (card.zone == "SPACELINE" && card.locationIndex == this.locationIndex );
         }, false, index, this.bottomPlayerId);
-        this.locationCardGroups.splice(index, 0, newGrp4);
+        this.missionCardGroups.splice(index, 0, missionCardGroup);
+
+        var opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
+            return (card.zone == "AT_LOCATION" && card.locationIndex == this.locationIndex && card.owner != that.bottomPlayerId);
+        }, false, index, this.bottomPlayerId);
+        this.opponentAtLocationCardGroups.splice(index, 0, opponentAtLocationCardGroup);
+
+        var playerAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {
+            return (card.zone == "AT_LOCATION" && card.locationIndex == this.locationIndex && card.owner == that.bottomPlayerId);
+        }, false, index, this.bottomPlayerId);
+        this.playerAtLocationCardGroups.splice(index, 0, playerAtLocationCardGroup);
 
         this.layoutUI(false);
     },
@@ -2298,8 +2334,12 @@ var ST1EGameTableUI = GameTableUI.extend({
                 this.locationDivs[locationIndex].removeClass("last-in-quadrant");
             }
 
-            this.locationCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
-            this.locationCardGroups[locationIndex].layoutCards();
+            this.missionCardGroups[locationIndex].setBounds(x, y + locationDivHeight/3, locationDivWidth, locationDivHeight/3);
+            this.missionCardGroups[locationIndex].layoutCards();
+            this.opponentAtLocationCardGroups[locationIndex].setBounds(x, y, locationDivWidth, locationDivHeight / 3);
+            this.opponentAtLocationCardGroups[locationIndex].layoutCards();
+            this.playerAtLocationCardGroups[locationIndex].setBounds(x, y + 2 * locationDivHeight/3, locationDivWidth, locationDivHeight / 3);
+            this.playerAtLocationCardGroups[locationIndex].layoutCards();
 
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }

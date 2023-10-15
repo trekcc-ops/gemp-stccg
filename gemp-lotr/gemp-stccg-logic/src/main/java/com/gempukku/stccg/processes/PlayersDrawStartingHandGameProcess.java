@@ -1,7 +1,7 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 
 public class PlayersDrawStartingHandGameProcess implements GameProcess {
     private final String _firstPlayer;
@@ -23,8 +23,7 @@ public class PlayersDrawStartingHandGameProcess implements GameProcess {
         if (game.getFormat().hasMulliganRule())
             _followingGameProcess = new MulliganProcess(game.getGameState().getPlayerOrder().getClockwisePlayOrder(_firstPlayer, false));
         else
-            _followingGameProcess = new TribblesStartOfTurnGameProcess();
-
+            _followingGameProcess = new StartOfTurnGameProcess();
     }
 
     @Override

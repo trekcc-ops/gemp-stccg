@@ -326,13 +326,8 @@ public abstract class GameState {
 
         card.setZone(zone);
 
-        if (zone == Zone.ADVENTURE_PATH) {
-            for (GameStateListener listener : getAllGameStateListeners())
-                listener.setSite(card);
-        } else {
-            for (GameStateListener listener : getAllGameStateListeners())
-                listener.cardCreated(card, eventType);
-        }
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.cardCreated(card, eventType);
 
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
@@ -478,15 +473,6 @@ public abstract class GameState {
 
     public Phase getCurrentPhase() {
         return _currentPhase;
-    }
-
-    public PhysicalCard getSite(int siteNumber) {
-        for (PhysicalCard physicalCard : _inPlay) {
-            CardBlueprint blueprint = physicalCard.getBlueprint();
-            if (blueprint.getCardType() == CardType.SITE && physicalCard.getSiteNumber() == siteNumber)
-                return physicalCard;
-        }
-        return null;
     }
 
     public void addTwilight(int twilight) {
