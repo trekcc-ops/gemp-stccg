@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class AddActionToCardModifier extends AbstractModifier {
     public AddActionToCardModifier(PhysicalCard source, Condition condition, Filterable... affectFilter) {
-        super(source, "Has extra action from " + GameUtils.getFullName(source), Filters.and(affectFilter), condition, ModifierEffect.EXTRA_ACTION_MODIFIER);
+        super(source, "Has extra action from " + source.getFullName(), Filters.and(affectFilter), condition, ModifierEffect.EXTRA_ACTION_MODIFIER);
     }
 
     @Override

@@ -15,7 +15,6 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifierFlag;
-import com.gempukku.stccg.rules.PlayUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -122,7 +121,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
     }
 
     private void playCard(DefaultGame game, final PhysicalCard selectedCard) {
-        _playCardAction = PlayUtils.getPlayCardAction(game, selectedCard, _twilightModifier, Filters.any, _ignoreRoamingPenalty);
+        _playCardAction = selectedCard.getPlayCardAction(_twilightModifier, Filters.any, _ignoreRoamingPenalty);
         _playCardAction.appendEffect(
                 new UnrespondableEffect() {
                     @Override

@@ -35,7 +35,7 @@ public class SeedMissionAction extends AbstractPlayCardAction {
         super(cardToPlay);
         _cardToPlay = cardToPlay;
         _fromZone = cardToPlay.getZone();
-        setText("Seed " + GameUtils.getFullName(_cardToPlay));
+        setText("Seed " + _cardToPlay.getFullName());
         setPerformingPlayer(_cardToPlay.getOwner());
         _game = game;
     }

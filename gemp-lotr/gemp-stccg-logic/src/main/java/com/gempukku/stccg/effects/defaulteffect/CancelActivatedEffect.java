@@ -24,7 +24,7 @@ public class CancelActivatedEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Cancel effect of " + GameUtils.getFullName(_effect.getSource());
+        return "Cancel effect of " + _effect.getSource().getFullName();
     }
 
     @Override

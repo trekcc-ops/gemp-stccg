@@ -30,7 +30,7 @@ public class SeedOutpostEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Seed " + GameUtils.getFullName(_cardSeeded);
+        return "Seed " + _cardSeeded.getFullName();
     }
 
     @Override

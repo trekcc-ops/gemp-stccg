@@ -58,7 +58,7 @@ public class PutCardFromPlayOnBottomOfDeckEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Put " + GameUtils.getFullName(_physicalCard) + " from play on bottom of deck";
+        return "Put " + _physicalCard.getFullName() + " from play on bottom of deck";
     }
 
 }

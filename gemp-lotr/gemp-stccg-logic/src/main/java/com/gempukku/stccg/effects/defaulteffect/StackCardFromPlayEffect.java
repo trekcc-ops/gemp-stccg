@@ -26,7 +26,7 @@ public class StackCardFromPlayEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Stack " + GameUtils.getFullName(_card) + " on " + GameUtils.getFullName(_stackOn);
+        return "Stack " + _card.getFullName() + " on " + _stackOn.getFullName();
     }
 
     @Override

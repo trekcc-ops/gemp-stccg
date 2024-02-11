@@ -20,7 +20,7 @@ public class PutPlayedEventIntoHandEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Put " + GameUtils.getFullName(card) + " into hand";
+        return "Put " + card.getFullName() + " into hand";
     }
 
     @Override

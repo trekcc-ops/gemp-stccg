@@ -24,7 +24,7 @@ public class PlacePlayedCardBeneathDrawDeckEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Put " + GameUtils.getFullName(card) + " on bottom of your deck";
+        return "Put " + card.getFullName() + " on bottom of your deck";
     }
 
     @Override

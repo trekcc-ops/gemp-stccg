@@ -8,6 +8,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -47,7 +48,7 @@ public interface CardBlueprint {
 
     int getKeywordCount(Keyword keyword);
 
-    Filterable getValidTargetFilter(String playerId, DefaultGame game, PhysicalCard self);
+    Filterable getValidTargetFilter();
 
     int getTwilightCost();
 
@@ -62,17 +63,17 @@ public interface CardBlueprint {
     int getTribbleValue();
     TribblePower getTribblePower();
 
-    PlayEventAction getPlayEventCardAction(String playerId, DefaultGame game, PhysicalCard self);
+    PlayEventAction getPlayEventCardAction(PhysicalCard self);
 
     List<? extends Modifier> getInPlayModifiers(DefaultGame game, PhysicalCard self);
 
-    List<? extends Modifier> getStackedOnModifiers(DefaultGame game, PhysicalCard self);
+    List<? extends Modifier> getStackedOnModifiers(PhysicalCard self);
 
-    List<? extends Modifier> getInDiscardModifiers(DefaultGame game, PhysicalCard self);
+    List<? extends Modifier> getInDiscardModifiers(PhysicalCard self);
 
     boolean playRequirementsNotMet(DefaultGame game, PhysicalCard self);
 
-    List<? extends Action> getPhaseActionsInHand(String playerId, DefaultGame game, PhysicalCard self);
+    List<? extends Action> getPhaseActionsInHand(String playerId, PhysicalCard self);
 
     List<? extends Action> getPhaseActionsFromDiscard(String playerId, DefaultGame game, PhysicalCard self);
 
@@ -117,7 +118,7 @@ public interface CardBlueprint {
 
     List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game, PhysicalCard self);
 
-    int getPotentialDiscount(DefaultGame game, String playerId, PhysicalCard self);
+    int getPotentialDiscount(PhysicalCard self);
 
     void appendPotentialDiscountEffects(DefaultGame game, CostToEffectAction action, String playerId, PhysicalCard self);
 
@@ -128,4 +129,7 @@ public interface CardBlueprint {
     Set<Affiliation> getOpponentAffiliationIcons();
     boolean isHomeworld();
     MissionType getMissionType();
+    String getFullName();
+    String getCardLink(String blueprintId);
+
 }

@@ -31,7 +31,7 @@ public class PlayMissionEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Play " + GameUtils.getFullName(_cardPlayed);
+        return "Play " + _cardPlayed.getFullName();
     }
 
     @Override

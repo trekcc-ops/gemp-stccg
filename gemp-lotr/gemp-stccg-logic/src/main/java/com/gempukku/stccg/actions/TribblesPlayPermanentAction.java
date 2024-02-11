@@ -21,7 +21,7 @@ public class TribblesPlayPermanentAction extends AbstractCostToEffectAction {
 
     public TribblesPlayPermanentAction(TribblesGame game, PhysicalCard card, Zone zone) {
         _permanentPlayed = card;
-        setText("Play " + GameUtils.getFullName(_permanentPlayed));
+        setText("Play " + _permanentPlayed.getFullName());
         setPerformingPlayer(card.getOwner());
 
         _fromZone = card.getZone();

@@ -13,61 +13,17 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameUtils {
-    public static boolean isCurrentPlayer(DefaultGame game, String playerId) {
-        return game.getGameState().getCurrentPlayerId().equals(playerId);
-    }
 
-    public static String getFullName(PhysicalCard card) {
-        CardBlueprint blueprint = card.getBlueprint();
-        return getFullName(blueprint);
-    }
+    public static String getFullName(CardBlueprint blueprint) { return blueprint.getFullName(); }
+    public static String getCardLink(PhysicalCard card) { return card.getCardLink(); }
+    public static String[] getAllPlayers(DefaultGame game) { return game.getAllPlayers(); }
 
-    public static String getFullName(CardBlueprint blueprint) {
-        if (blueprint.getSubtitle() != null)
-            return blueprint.getTitle() + ", " + blueprint.getSubtitle();
-        return blueprint.getTitle();
-    }
-
-    public static String[] getOpponents(DefaultGame game, String playerId) {
-        if (game.isSolo())
-            throw new InvalidSoloAdventureException("Opponent requested");
-        List<String> shadowPlayers = new LinkedList<>(game.getGameState().getPlayerOrder().getAllPlayers());
-        shadowPlayers.remove(playerId);
-        return shadowPlayers.toArray(new String[0]);
-    }
-
-    public static String[] getAllPlayers(DefaultGame game) {
-        final GameState gameState = game.getGameState();
-        final PlayerOrder playerOrder = gameState.getPlayerOrder();
-        String[] result = new String[playerOrder.getPlayerCount()];
-
-        final PlayOrder counterClockwisePlayOrder = playerOrder.getCounterClockwisePlayOrder(gameState.getCurrentPlayerId(), false);
-        int index = 0;
-
-        String nextPlayer;
-        while ((nextPlayer = counterClockwisePlayOrder.getNextPlayer()) != null) {
-            result[index++] = nextPlayer;
-        }
-        return result;
-    }
 
     public static List<PhysicalCard> getRandomCards(List<? extends PhysicalCard> cards, int count) {
         List<PhysicalCard> randomizedCards = new ArrayList<>(cards);
         Collections.shuffle(randomizedCards, ThreadLocalRandom.current());
 
         return new LinkedList<>(randomizedCards.subList(0, Math.min(count, randomizedCards.size())));
-    }
-
-    public static String s(Collection<PhysicalCard> cards) {
-        if (cards.size() > 1)
-            return "s";
-        return "";
-    }
-
-    public static String s(int count) {
-        if (count > 1)
-            return "s";
-        return "";
     }
 
     public static String plural(int count, String noun) {
@@ -84,19 +40,11 @@ public class GameUtils {
         return "is";
     }
 
-    public static String getCardLink(PhysicalCard card) {
-        CardBlueprint blueprint = card.getBlueprint();
-        return getCardLink(card.getBlueprintId(), blueprint);
-    }
-
-    public static String getCardLink(String blueprintId, CardBlueprint blueprint) {
-        return "<div class='cardHint' value='" + blueprintId + "'>" + (blueprint.isUnique() ? "·" : "") + GameUtils.getFullName(blueprint) + "</div>";
-    }
 
     public static String getAppendedTextNames(Collection<? extends PhysicalCard> cards) {
         StringJoiner sj = new StringJoiner(", ");
         for (PhysicalCard card : cards)
-            sj.add(GameUtils.getFullName(card));
+            sj.add(card.getFullName());
 
         if (sj.length() == 0)
             return "none";
@@ -110,17 +58,10 @@ public class GameUtils {
             cardStrings.add(GameUtils.getCardLink(card));
         }
 
-        if (cardStrings.size() == 0)
+        if (cardStrings.isEmpty())
             return "none";
 
         return String.join(", ", cardStrings);
-    }
-
-    public static String formatNumber(int effective, int requested) {
-        if (effective != requested)
-            return effective + "(out of " + requested + ")";
-        else
-            return String.valueOf(effective);
     }
 
     public static String SubstituteText(String text, ActionContext context)

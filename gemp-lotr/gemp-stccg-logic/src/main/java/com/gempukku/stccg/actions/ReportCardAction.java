@@ -38,7 +38,7 @@ public class ReportCardAction extends AbstractPlayCardAction {
         super(cardToPlay);
         _cardToReport = cardToPlay;
         _fromZone = cardToPlay.getZone();
-        setText("Play " + GameUtils.getFullName(_cardToReport));
+        setText("Play " + _cardToReport.getFullName());
         setPerformingPlayer(_cardToReport.getOwner());
         _game = game;
         _destinationChosen = false;

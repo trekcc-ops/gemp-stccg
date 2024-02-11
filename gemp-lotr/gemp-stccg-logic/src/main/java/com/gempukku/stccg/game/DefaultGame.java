@@ -253,6 +253,20 @@ public abstract class DefaultGame {
         return result;
     }
 
+    public String[] getAllPlayers() {
+        final GameState gameState = getGameState();
+        final PlayerOrder playerOrder = gameState.getPlayerOrder();
+        String[] result = new String[playerOrder.getPlayerCount()];
+
+        final PlayOrder counterClockwisePlayOrder = playerOrder.getCounterClockwisePlayOrder(gameState.getCurrentPlayerId(), false);
+        int index = 0;
+
+        String nextPlayer;
+        while ((nextPlayer = counterClockwisePlayOrder.getNextPlayer()) != null) {
+            result[index++] = nextPlayer;
+        }
+        return result;
+    }
 
 
 }

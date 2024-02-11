@@ -20,7 +20,7 @@ public class PutPlayedEventOnTopOfDeckEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Put " + GameUtils.getFullName(_action.getEventPlayed()) + " on top of your deck";
+        return "Put " + _action.getEventPlayed().getFullName() + " on top of your deck";
     }
 
     @Override

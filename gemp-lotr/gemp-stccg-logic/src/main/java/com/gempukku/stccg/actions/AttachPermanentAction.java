@@ -36,12 +36,12 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
     public AttachPermanentAction(DefaultGame game, final PhysicalCard card, Filter filter, final int twilightModifier) {
         _game = game;
         _cardToAttach = card;
-        setText("Play " + GameUtils.getFullName(_cardToAttach));
+        setText("Play " + _cardToAttach.getFullName());
         _playedFrom = card.getZone();
         _twilightModifier = twilightModifier;
 
         _chooseTargetEffect =
-                new ChooseActiveCardEffect(_game,null, card.getOwner(), "Attach " + GameUtils.getFullName(card) + ". Choose target to attach to", filter) {
+                new ChooseActiveCardEffect(_game,null, card.getOwner(), "Attach " + card.getFullName() + ". Choose target to attach to", filter) {
                     @Override
                     protected void cardSelected(DefaultGame game, PhysicalCard target) {
                         _target = target;

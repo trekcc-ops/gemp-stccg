@@ -483,5 +483,4 @@ public class CardBlueprintLibrary {
         }
     }
 
-
 }

@@ -7,7 +7,6 @@ import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.PlayUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.effects.StackActionEffect;
 import com.gempukku.stccg.modifiers.ModifierFlag;
@@ -77,7 +76,7 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
                             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
                             Filterable onFilterable = (onFilterableSource != null) ? onFilterableSource.getFilterable(actionContext) : Filters.any;
 
-                            final CostToEffectAction playCardAction = PlayUtils.getPlayCardAction(game, cardsToPlay.iterator().next(), costModifier, onFilterable, false);
+                            final CostToEffectAction playCardAction = cardsToPlay.iterator().next().getPlayCardAction(costModifier, onFilterable, false);
                             return new StackActionEffect(game, playCardAction);
                         } else {
                             return null;

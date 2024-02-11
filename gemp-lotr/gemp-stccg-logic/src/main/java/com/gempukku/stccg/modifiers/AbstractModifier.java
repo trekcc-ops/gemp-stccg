@@ -344,12 +344,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getPotentialDiscount(DefaultGame game, PhysicalCard discountCard) {
-        return 0;
-    }
-
-    @Override
-    public void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
+    public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard card) {
 
     }
 

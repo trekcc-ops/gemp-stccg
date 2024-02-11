@@ -6,7 +6,6 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.rules.PlayUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collections;
@@ -32,7 +31,7 @@ public class CanPlayStackedCards implements ModifierSourceProducer {
             public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card) {
                 if (game.checkPlayRequirements(card))
                     return Collections.singletonList(
-                            PlayUtils.getPlayCardAction(game, card, 0, Filters.any, false));
+                            card.getPlayCardAction(0, Filters.any, false));
                 return null;
             }
         };

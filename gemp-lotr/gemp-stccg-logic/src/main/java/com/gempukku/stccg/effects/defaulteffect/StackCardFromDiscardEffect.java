@@ -26,7 +26,7 @@ public class StackCardFromDiscardEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Stack " + GameUtils.getFullName(_card) + " from discard on " + GameUtils.getFullName(_stackOn);
+        return "Stack " + _card.getFullName() + " from discard on " + _stackOn.getFullName();
     }
 
     @Override

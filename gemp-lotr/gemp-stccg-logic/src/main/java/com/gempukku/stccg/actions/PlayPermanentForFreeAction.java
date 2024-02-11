@@ -19,7 +19,7 @@ public class PlayPermanentForFreeAction extends AbstractCostToEffectAction {
 
     public PlayPermanentForFreeAction(PhysicalCard card, Zone zone) {
         _permanentPlayed = card;
-        setText("Play " + GameUtils.getFullName(_permanentPlayed));
+        setText("Play " + _permanentPlayed.getFullName());
         setPerformingPlayer(card.getOwner());
 
         _fromZone = card.getZone();

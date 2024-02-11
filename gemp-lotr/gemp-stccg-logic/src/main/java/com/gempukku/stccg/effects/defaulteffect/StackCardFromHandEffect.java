@@ -32,7 +32,7 @@ public class StackCardFromHandEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Stack " + GameUtils.getFullName(_card) + " from hand on " + GameUtils.getFullName(_stackOn);
+        return "Stack " + _card.getFullName() + " from hand on " + _stackOn.getFullName();
     }
 
     @Override

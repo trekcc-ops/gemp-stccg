@@ -59,13 +59,13 @@ public class ST1EGameState extends GameState {
                     try {
                         CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
                         if (blueprint.getCardType() == CardType.MISSION)
-                            subDeck.add(new PhysicalMissionCard(_nextCardId, blueprintId, playerId, blueprint));
+                            subDeck.add(new PhysicalMissionCard(_game, _nextCardId, blueprintId, playerId, blueprint));
                         else if (blueprint.getFacilityType() == FacilityType.OUTPOST)
                             subDeck.add(new PhysicalFacilityCard(_game, _nextCardId, blueprintId, playerId, blueprint));
                         else if (blueprint.getCardType() == CardType.PERSONNEL)
                             subDeck.add(new PhysicalPersonnelCard(_game, _nextCardId, blueprintId, playerId, blueprint));
                         else
-                            subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, blueprint));
+                            subDeck.add(new PhysicalCardImpl(_nextCardId, blueprintId, playerId, blueprint));
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");

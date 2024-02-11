@@ -11,7 +11,7 @@ public class ExtraFilters {
     public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
         return Filters.and(Filters.playable(game, twilightModifier),
                 (Filter) (game1, physicalCard) -> {
-                    if (physicalCard.getBlueprint().getValidTargetFilter(physicalCard.getOwner(), game1, physicalCard) == null)
+                    if (physicalCard.getBlueprint().getValidTargetFilter() == null)
                         return false;
                     return game1.checkPlayRequirements(physicalCard);
                 });

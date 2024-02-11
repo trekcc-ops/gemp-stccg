@@ -22,6 +22,8 @@ public class PhysicalNounCard1E extends PhysicalCard {
         _nativeQuadrant = blueprint.getQuadrant();
         _game = game;
     }
+    @Override
+    public ST1EGame getGame() { return _game; }
     public boolean isMultiAffiliation() { return _affiliationOptions.size() > 1; }
     public Affiliation getCurrentAffiliation() { return _currentAffiliation; }
     public void setCurrentAffiliation(Affiliation affiliation) { _currentAffiliation = affiliation; }

@@ -11,7 +11,6 @@ import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.rules.RuleUtils;
 
 import java.util.Collection;
 import java.util.Set;
@@ -48,7 +47,7 @@ public class ChooseAndTransferAttachableEffect extends DefaultEffect {
         } else {
             return Filters.and(
                     _transferTo,
-                    RuleUtils.getFullValidTargetFilter(attachment.getOwner(), game, attachment),
+                    attachment.getFullValidTargetFilter(),
                     Filters.not(attachment.getAttachedTo()),
                     (Filter) (game1, target) -> game1.getModifiersQuerying().canHaveTransferredOn(game1, attachment, target));
         }
@@ -59,7 +58,7 @@ public class ChooseAndTransferAttachableEffect extends DefaultEffect {
                 _attachedCard,
                 Filters.attachedTo(_attachedTo),
                 (Filter) (game1, transferredCard) -> {
-                    if (transferredCard.getBlueprint().getValidTargetFilter(transferredCard.getOwner(), game1, transferredCard) == null)
+                    if (transferredCard.getBlueprint().getValidTargetFilter() == null)
                         return false;
 
                     if (!game1.getModifiersQuerying().canBeTransferred(game1, transferredCard))
@@ -71,13 +70,13 @@ public class ChooseAndTransferAttachableEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return getPossibleAttachmentsToTransfer(_game).size() > 0;
+        return !getPossibleAttachmentsToTransfer(_game).isEmpty();
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
         final Collection<PhysicalCard> possibleAttachmentsToTransfer = getPossibleAttachmentsToTransfer(_game);
-        if (possibleAttachmentsToTransfer.size() > 0) {
+        if (!possibleAttachmentsToTransfer.isEmpty()) {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardsSelectionDecision(1, "Choose card to transfer", possibleAttachmentsToTransfer, 1, 1) {
                         @Override

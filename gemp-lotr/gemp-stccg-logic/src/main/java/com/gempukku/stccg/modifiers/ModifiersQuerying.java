@@ -98,7 +98,7 @@ public interface ModifiersQuerying {
 
     boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard target);
 
-    void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard target);
+    void appendExtraCosts(CostToEffectAction action, PhysicalCard target);
 
     // Others
     boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source);
@@ -130,7 +130,7 @@ public interface ModifiersQuerying {
 
     boolean canPlaySite(DefaultGame game, String playerId);
 
-    int getPotentialDiscount(DefaultGame game, PhysicalCard playedCard);
+    int getPotentialDiscount(PhysicalCard playedCard);
 
-    void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, PhysicalCard playedCard);
+    void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard);
 }

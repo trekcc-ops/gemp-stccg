@@ -22,7 +22,7 @@ public class StackPlayedEventOnACardEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Stack " + GameUtils.getFullName(_action.getEventPlayed()) + " on "+GameUtils.getFullName(_stackOn);
+        return "Stack " + _action.getEventPlayed().getFullName() + " on "+_stackOn.getFullName();
     }
 
     @Override

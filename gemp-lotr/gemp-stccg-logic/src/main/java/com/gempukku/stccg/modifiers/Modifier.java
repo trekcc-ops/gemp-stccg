@@ -140,7 +140,5 @@ public interface Modifier {
 
     int getFPCulturesSpotCountModifier(DefaultGame game, String playerId);
 
-    int getPotentialDiscount(DefaultGame game, PhysicalCard discountCard);
-
-    void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, PhysicalCard card);
+    void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard card);
 }

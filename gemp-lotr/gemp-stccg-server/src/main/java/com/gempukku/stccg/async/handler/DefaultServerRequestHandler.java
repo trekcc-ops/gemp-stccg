@@ -221,19 +221,6 @@ public class DefaultServerRequestHandler {
         return generateCardTooltip(_library.getCardBlueprint(item.getBlueprintId()), item.getBlueprintId());
     }
 
-    protected String listCard(String label, String card, boolean showToolTip) throws CardNotFoundException {
-        if (card == null) {
-            return "";
-        } else {
-            String cardText;
-            if (showToolTip)
-                cardText = generateCardTooltip(_library.getCardBlueprint(card), card);
-            else
-                cardText = GameUtils.getFullName(_library.getCardBlueprint(card));
-            return "<b>" + label + ":</b> " + cardText + "<br/>";
-        }
-    }
-    
     protected String listCards(String deckName, String filter, DefaultCardCollection deckCards, boolean countCards,
                                SortAndFilterCards sortAndFilter, FormatLibrary formatLibrary, boolean showToolTip)
             throws CardNotFoundException {

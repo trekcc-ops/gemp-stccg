@@ -26,7 +26,7 @@ public class StackCardFromDeckEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Stack " + GameUtils.getFullName(_card) + " from deck on " + GameUtils.getFullName(_stackOn);
+        return "Stack " + _card.getFullName() + " from deck on " + _stackOn.getFullName();
     }
 
     @Override

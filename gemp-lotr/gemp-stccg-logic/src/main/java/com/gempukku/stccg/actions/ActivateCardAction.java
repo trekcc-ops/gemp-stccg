@@ -18,7 +18,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     public ActivateCardAction(DefaultGame game, PhysicalCard physicalCard) {
         _physicalCard = physicalCard;
         _game = game;
-        setText("Use " + GameUtils.getFullName(_physicalCard));
+        setText("Use " + _physicalCard.getFullName());
     }
 
     @Override

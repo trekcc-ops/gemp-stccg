@@ -38,7 +38,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
 
         _playedFrom = card.getZone();
 
-        setText("Play " + GameUtils.getFullName(_eventPlayed));
+        setText("Play " + _eventPlayed.getFullName());
     }
 
     public PhysicalCard getEventPlayed() {

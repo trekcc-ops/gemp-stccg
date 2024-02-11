@@ -25,7 +25,7 @@ public class CancelEventEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Cancel effect - " + GameUtils.getFullName(_effect.getPlayedCard());
+        return "Cancel effect - " + _effect.getPlayedCard().getFullName();
     }
 
     @Override

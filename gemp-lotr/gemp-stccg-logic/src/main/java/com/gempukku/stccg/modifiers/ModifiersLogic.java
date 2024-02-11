@@ -619,17 +619,17 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard target) {
-        final List<? extends ExtraPlayCost> playCosts = target.getBlueprint().getExtraCostToPlay(game, target);
+    public void appendExtraCosts(CostToEffectAction action, PhysicalCard target) {
+        final List<? extends ExtraPlayCost> playCosts = target.getBlueprint().getExtraCostToPlay(target.getGame(), target);
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
-                if (condition == null || condition.isFulfilled(game))
-                    playCost.appendExtraCosts(game, action, target);
+                if (condition == null || condition.isFulfilled(target.getGame()))
+                    playCost.appendExtraCosts(target.getGame(), action, target);
             }
 
-        for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.EXTRA_COST_MODIFIER, target)) {
-            modifier.appendExtraCosts(game, action, target);
+        for (Modifier modifier : getModifiersAffectingCard(target.getGame(), ModifierEffect.EXTRA_COST_MODIFIER, target)) {
+            modifier.appendExtraCosts(target.getGame(), action, target);
         }
     }
 
@@ -911,22 +911,18 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
     }
 
     @Override
-    public int getPotentialDiscount(DefaultGame game, PhysicalCard playedCard) {
-        int result = playedCard.getBlueprint().getPotentialDiscount(game, playedCard.getOwner(), playedCard);
-
-        for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.POTENTIAL_DISCOUNT_MODIFIER, playedCard)) {
-            result += modifier.getPotentialDiscount(game, playedCard);
-        }
-
-        return result;
+    public int getPotentialDiscount(PhysicalCard playedCard) {
+        return playedCard.getBlueprint().getPotentialDiscount(playedCard);
     }
 
     @Override
-    public void appendPotentialDiscounts(DefaultGame game, CostToEffectAction action, PhysicalCard playedCard) {
-        playedCard.getBlueprint().appendPotentialDiscountEffects(game, action, playedCard.getOwner(), playedCard);
+    public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard) {
+        playedCard.getBlueprint().appendPotentialDiscountEffects(playedCard.getGame(), action, playedCard.getOwner(),
+                playedCard);
 
-        for (Modifier modifier : getModifiersAffectingCard(game, ModifierEffect.POTENTIAL_DISCOUNT_MODIFIER, playedCard)) {
-            modifier.appendPotentialDiscounts(game, action, playedCard);
+        for (Modifier modifier : getModifiersAffectingCard(playedCard.getGame(),
+                ModifierEffect.POTENTIAL_DISCOUNT_MODIFIER, playedCard)) {
+            modifier.appendPotentialDiscounts(action, playedCard);
         }
     }
 

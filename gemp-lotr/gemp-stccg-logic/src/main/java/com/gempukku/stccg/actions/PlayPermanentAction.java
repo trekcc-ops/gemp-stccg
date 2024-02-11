@@ -34,7 +34,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
 
     public PlayPermanentAction(PhysicalCard card, Zone zone, int twilightModifier, boolean ignoreRoamingPenalty) {
         _permanentPlayed = card;
-        setText("Play " + GameUtils.getFullName(_permanentPlayed));
+        setText("Play " + _permanentPlayed.getFullName());
         setPerformingPlayer(card.getOwner());
         _twilightModifier = twilightModifier;
         _ignoreRoamingPenalty = ignoreRoamingPenalty;

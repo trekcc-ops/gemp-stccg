@@ -5,7 +5,6 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.rules.PlayUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.effects.StackActionEffect;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
@@ -49,7 +48,7 @@ public class PlayCardFromStacked implements EffectAppenderProducer {
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory("_temp");
                         if (cardsToPlay.size() == 1) {
-                            final CostToEffectAction playCardAction = PlayUtils.getPlayCardAction(actionContext.getGame(), cardsToPlay.iterator().next(), 0, Filters.any, false);
+                            final CostToEffectAction playCardAction = cardsToPlay.iterator().next().getPlayCardAction(0, Filters.any, false);
                             return new StackActionEffect(actionContext.getGame(), playCardAction);
                         } else {
                             return null;

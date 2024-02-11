@@ -12,7 +12,7 @@ import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
-import com.gempukku.stccg.rules.PlayUtils;
+import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
 
@@ -424,8 +424,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         return Objects.requireNonNullElse(count, 0);
     }
 
-    @Override
-    public Filterable getValidTargetFilter(String playerId, DefaultGame game, PhysicalCard self) {
+    public Filterable getValidTargetFilter() {
         if (targetFilters == null)
             return null;
 
@@ -466,7 +465,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     @Override
     public List<? extends Modifier> getInPlayModifiers(DefaultGame game, PhysicalCard self) {
-        List<Modifier> modifiers = getModifiers(game, self, inPlayModifiers);
+        List<Modifier> modifiers = self.getModifiers(inPlayModifiers);
         if (copiedFilters != null) {
             if (modifiers == null)
                 modifiers = new LinkedList<>();
@@ -487,13 +486,13 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     @Override
-    public List<? extends Modifier> getStackedOnModifiers(DefaultGame game, PhysicalCard self) {
-        return getModifiers(game, self, stackedOnModifiers);
+    public List<? extends Modifier> getStackedOnModifiers(PhysicalCard self) {
+        return self.getModifiers(stackedOnModifiers);
     }
 
     @Override
-    public List<? extends Modifier> getInDiscardModifiers(DefaultGame game, PhysicalCard self) {
-        return getModifiers(game, self, inDiscardModifiers);
+    public List<? extends Modifier> getInDiscardModifiers(PhysicalCard self) {
+        return self.getModifiers(inDiscardModifiers);
     }
 
     @Override
@@ -522,8 +521,9 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     @Override
-    public PlayEventAction getPlayEventCardAction(String playerId, DefaultGame game, PhysicalCard self) {
-        DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
+    public PlayEventAction getPlayEventCardAction(PhysicalCard self) {
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), self.getGame(), self,
+                null, null);
         PlayEventAction action = new PlayEventAction(self, playEventAction.requiresRanger());
         playEventAction.createAction(action, actionContext);
         return action;
@@ -755,18 +755,16 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getPhaseActionsInHand(String playerId, DefaultGame game, PhysicalCard self) {
+    public List<? extends Action> getPhaseActionsInHand(String playerId, PhysicalCard self) {
         if (playInOtherPhaseConditions == null)
             return null;
-        DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
+        DefaultActionContext actionContext = new DefaultActionContext(playerId, self.getGame(), self, null, null);
         List<Action> playCardActions = new LinkedList<>();
 
-        if (game.checkPlayRequirements(self)) {
+        if (self.getGame().checkPlayRequirements(self)) {
             for (Requirement playInOtherPhaseCondition : playInOtherPhaseConditions) {
                 if (playInOtherPhaseCondition.accepts(actionContext))
-                    playCardActions.add(PlayUtils.getPlayCardAction(
-                            game, self, 0, Filters.any, false
-                    ));
+                    playCardActions.add(self.getPlayCardAction(0, Filters.any, false));
             }
         }
 
@@ -776,12 +774,13 @@ public class BuiltCardBlueprint implements CardBlueprint {
     // Default implementations - not needed (for now)
 
     @Override
-    public int getPotentialDiscount(DefaultGame game, String playerId, PhysicalCard self) {
+    public int getPotentialDiscount(PhysicalCard self) {
         if (discountSources == null)
             return 0;
 
         int result = 0;
-        DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), self.getGame(), self,
+                null, null);
         for (DiscountSource discountSource : discountSources)
             result += discountSource.getPotentialDiscount(actionContext);
 
@@ -862,18 +861,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     // Helper methods
 
-    private List<Modifier> getModifiers(DefaultGame game, PhysicalCard self, List<ModifierSource> sources) {
-        if (sources == null)
-            return null;
-
-        List<Modifier> result = new LinkedList<>();
-        for (ModifierSource inPlayModifier : sources) {
-            DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
-            result.add(inPlayModifier.getModifier(actionContext));
-        }
-        return result;
-    }
-
     private List<ActivateCardAction> getActivatedActions(String playerId, DefaultGame game, PhysicalCard self, List<ActionSource> sources) {
         if (sources == null)
             return null;
@@ -953,4 +940,16 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public boolean isHomeworld() { return homeworldAffiliation() != null; }
     public void setLore(String lore) { _lore = lore; }
     public void setPropertyLogo(PropertyLogo propertyLogo) { _propertyLogo = propertyLogo; }
+
+    public String getFullName() {
+        if (getSubtitle() != null)
+            return getTitle() + ", " + getSubtitle();
+        else
+            return getTitle();
+    }
+
+    public String getCardLink(String blueprintId) {
+        return "<div class='cardHint' value='" + blueprintId + "'>" +
+                (isUnique() ? "·" : "") + getFullName() + "</div>";
+    }
 }

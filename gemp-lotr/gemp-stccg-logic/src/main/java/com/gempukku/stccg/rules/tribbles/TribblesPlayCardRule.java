@@ -28,7 +28,7 @@ public class TribblesPlayCardRule {
                 new AbstractActionProxy() {
                     @Override
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
-                        if (GameUtils.isCurrentPlayer(game, playerId)) {
+                        if (game.getGameState().getCurrentPlayerId().equals(playerId)) {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
                                 if (game.checkPlayRequirements(card)) {

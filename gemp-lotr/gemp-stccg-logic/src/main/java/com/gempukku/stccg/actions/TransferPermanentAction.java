@@ -16,7 +16,7 @@ public class TransferPermanentAction extends ActivateCardAction {
 
     public TransferPermanentAction(DefaultGame game, final PhysicalCard card, Filter filter) {
         super(game, card);
-        setText("Transfer " + GameUtils.getFullName(card));
+        setText("Transfer " + card.getFullName());
 
         appendCost(
                 new UnrespondableEffect() {

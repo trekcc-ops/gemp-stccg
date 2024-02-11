@@ -12,7 +12,6 @@ import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.rules.RuleUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -45,7 +44,7 @@ public class Transfer implements EffectAppenderProducer {
                             if (transferredCard.getAttachedTo() == physicalCard)
                                 return false;
                             // Optionally check target against original target filter
-                            if (checkTarget && !RuleUtils.getFullValidTargetFilter(transferredCard.getOwner(), game, transferredCard).accepts(game, physicalCard))
+                            if (checkTarget && !transferredCard.getFullValidTargetFilter().accepts(game, physicalCard))
                                 return false;
 
                             return actionContext.getGame().getModifiersQuerying().canHaveTransferredOn(game, transferredCard, physicalCard);

@@ -361,7 +361,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
         if (additionalValidCards.size() > 0) {
             for (String blueprintId : additionalValidCards)
-                result.append(GameUtils.getCardLink(blueprintId, _library.getCardBlueprint(blueprintId))).append(", ");
+                result.append(_library.getCardBlueprint(blueprintId).getCardLink(blueprintId)).append(", ");
             if (additionalValidCards.size() == 0)
                 result.append("none,");
         }

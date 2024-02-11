@@ -24,7 +24,7 @@ public class ActivatePhaseActionsFromHandRule {
                     public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
                         List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                            List<? extends Action> list = activatableCard.getBlueprint().getPhaseActionsInHand(playerId, game, activatableCard);
+                            List<? extends Action> list = activatableCard.getBlueprint().getPhaseActionsInHand(playerId, activatableCard);
                             if (list != null) {
                                 for (Action action : list) {
                                     action.setVirtualCardAction(true);

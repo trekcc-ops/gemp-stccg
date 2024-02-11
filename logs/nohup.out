@@ -1273,3 +1273,6 @@ java.lang.NullPointerException: Cannot invoke "com.gempukku.stccg.formats.GameFo
 	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [web.jar:?]
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) [web.jar:?]
 	at java.lang.Thread.run(Thread.java:833) [?:?]
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+Listening for transport dt_socket at address: 8000
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
