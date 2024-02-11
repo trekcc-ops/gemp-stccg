@@ -32,7 +32,7 @@ public class DiscardFromHandBy implements TriggerCheckerProducer {
                         byFilterableSource.getFilterable(actionContext), filterableSource.getFilterable(actionContext));
                 if (result && playerSource != null) {
                     // Need to check if it was that player discarding the card
-                    final String performingPlayer = ((DiscardCardFromHandResult) actionContext.getEffectResult()).getSource().getOwner();
+                    final String performingPlayer = ((DiscardCardFromHandResult) actionContext.getEffectResult()).getSource().getOwnerName();
                     if (performingPlayer == null || !performingPlayer.equals(playerSource.getPlayer(actionContext)))
                         result = false;
                 }

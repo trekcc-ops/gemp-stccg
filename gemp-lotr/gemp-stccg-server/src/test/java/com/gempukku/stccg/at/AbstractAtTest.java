@@ -57,9 +57,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         GameFormat format = formatLibrary.getFormat(formatName);
 
         Map<String, CardDeck> genericDecks = new HashMap<>();
-        for (Map.Entry<String, CardDeck> entry : decks.entrySet()) {
-            genericDecks.put(entry.getKey(), entry.getValue());
-        }
+        genericDecks.putAll(decks);
 
         _game = new TribblesGame(format, genericDecks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);

@@ -13,7 +13,7 @@ public class PlayerResolver {
         if (type.equalsIgnoreCase("you"))
             return ActionContext::getPerformingPlayer;
         if (type.equalsIgnoreCase("owner"))
-            return (actionContext) -> actionContext.getSource().getOwner();
+            return (actionContext) -> actionContext.getSource().getOwnerName();
         else {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
             //noinspection SpellCheckingInspection
@@ -21,7 +21,7 @@ public class PlayerResolver {
                 return (actionContext) -> {
                     final PhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
                     if (cardFromMemory != null)
-                        return cardFromMemory.getOwner();
+                        return cardFromMemory.getOwnerName();
                     else
                         // Sensible default
                         return actionContext.getPerformingPlayer();

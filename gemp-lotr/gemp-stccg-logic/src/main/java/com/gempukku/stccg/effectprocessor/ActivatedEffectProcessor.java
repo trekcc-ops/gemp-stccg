@@ -53,7 +53,7 @@ public class ActivatedEffectProcessor implements EffectProcessor {
                         });
             }
             actionSource.addPlayRequirement(
-                    (actionContext) -> PlayConditions.isPhase(actionContext.getGame(), phase));
+                    (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase);
             EffectUtils.processRequirementsCostsAndEffects(value, environment, actionSource);
 
             blueprint.appendInPlayPhaseAction(actionSource);

@@ -83,7 +83,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     protected List<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
         String[] cardIds;
-        if (response.equals(""))
+        if (response.isEmpty())
             cardIds = new String[0];
         else
             cardIds = response.split(",");

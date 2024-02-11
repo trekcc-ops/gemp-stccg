@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 
@@ -12,7 +13,7 @@ public class PhysicalMissionCard extends PhysicalCard {
     private Quadrant _quadrant;
     private ST1ELocation _location = null;
     private ST1EGame _game;
-    public PhysicalMissionCard(ST1EGame game, int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
+    public PhysicalMissionCard(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         super(cardId, blueprintId, owner, blueprint);
         _quadrant = blueprint.getQuadrant();
         _game = game;
@@ -22,7 +23,7 @@ public class PhysicalMissionCard extends PhysicalCard {
     public ST1EGame getGame() { return _game; }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {
-        if (Objects.equals(playerId, _owner)) {
+        if (Objects.equals(playerId, _ownerName)) {
             return _blueprint.getOwnerAffiliationIcons();
         } else if (_blueprint.getOpponentAffiliationIcons() == null) {
             return _blueprint.getOwnerAffiliationIcons();

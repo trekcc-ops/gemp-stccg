@@ -38,20 +38,20 @@ public class PutCardFromDeckIntoHandOrDiscardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (_physicalCard.getZone() == Zone.DRAW_DECK) {
             var gameState = _game.getGameState();
-            if ((_game.getFormat().doesNotHaveRuleOfFour() || _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _physicalCard.getOwner()))) {
+            if ((_game.getFormat().doesNotHaveRuleOfFour() || _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _physicalCard.getOwnerName()))) {
                 if(_reveal) {
-                    gameState.sendMessage(_physicalCard.getOwner() + " puts " + GameUtils.getCardLink(_physicalCard) + " from deck into their hand");
+                    gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + GameUtils.getCardLink(_physicalCard) + " from deck into their hand");
                 }
                 else {
-                    gameState.sendMessage(_physicalCard.getOwner() + " puts a card from deck into their hand");
+                    gameState.sendMessage(_physicalCard.getOwnerName() + " puts a card from deck into their hand");
                 }
-                gameState.removeCardsFromZone(_physicalCard.getOwner(), Collections.singleton(_physicalCard));
+                gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
                 gameState.addCardToZone(_game, _physicalCard, Zone.HAND);
-                _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(_physicalCard.getOwner()));
+                _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(_physicalCard.getOwnerName()));
                 return new FullEffectResult(true);
             } else {
-                gameState.sendMessage(_physicalCard.getOwner() + " discards " + GameUtils.getCardLink(_physicalCard) + " from deck due to Rule of 4");
-                gameState.removeCardsFromZone(_physicalCard.getOwner(), Collections.singleton(_physicalCard));
+                gameState.sendMessage(_physicalCard.getOwnerName() + " discards " + GameUtils.getCardLink(_physicalCard) + " from deck due to Rule of 4");
+                gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
                 gameState.addCardToZone(_game, _physicalCard, Zone.DISCARD);
             }
         }

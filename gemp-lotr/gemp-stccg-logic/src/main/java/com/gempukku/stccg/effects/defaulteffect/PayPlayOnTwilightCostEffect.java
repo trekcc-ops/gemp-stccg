@@ -22,7 +22,7 @@ public class PayPlayOnTwilightCostEffect extends DefaultEffect {
         int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _physicalCard, _target, _twilightModifier, false);
 
         String currentPlayerId = _game.getGameState().getCurrentPlayerId();
-        if (!currentPlayerId.equals(_physicalCard.getOwner())) {
+        if (!currentPlayerId.equals(_physicalCard.getOwnerName())) {
             int twilightPool = _game.getGameState().getTwilightPool();
             return twilightPool >= twilightCost;
         }
@@ -34,10 +34,10 @@ public class PayPlayOnTwilightCostEffect extends DefaultEffect {
         int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _physicalCard, _target, _twilightModifier, false);
 
         String currentPlayerId = _game.getGameState().getCurrentPlayerId();
-        if (currentPlayerId.equals(_physicalCard.getOwner())) {
+        if (currentPlayerId.equals(_physicalCard.getOwnerName())) {
             _game.getGameState().addTwilight(twilightCost);
             if (twilightCost > 0)
-                _game.getGameState().sendMessage(_physicalCard.getOwner() + " adds " + twilightCost + " to twilight pool");
+                _game.getGameState().sendMessage(_physicalCard.getOwnerName() + " adds " + twilightCost + " to twilight pool");
             return new FullEffectResult(true);
         } else {
             int twilightPool = _game.getGameState().getTwilightPool();
@@ -45,7 +45,7 @@ public class PayPlayOnTwilightCostEffect extends DefaultEffect {
             twilightCost = Math.min(twilightPool, twilightCost);
             _game.getGameState().removeTwilight(twilightCost);
             if (twilightCost > 0)
-                _game.getGameState().sendMessage(_physicalCard.getOwner() + " removes " + twilightCost + " from twilight pool");
+                _game.getGameState().sendMessage(_physicalCard.getOwnerName() + " removes " + twilightCost + " from twilight pool");
             return new FullEffectResult(success);
         }
     }

@@ -223,10 +223,10 @@ public class DbPlayerDAO implements PlayerDAO {
                             WHERE name = :login
                                 AND (password = :password OR password = '')
                         """;
-                List<DBDefs.Player> result = conn.createQuery(sql)
+                List<DBDefs.DBPlayer> result = conn.createQuery(sql)
                         .addParameter("login", login)
                         .addParameter("password", encodePassword(password))
-                        .executeAndFetch(DBDefs.Player.class);
+                        .executeAndFetch(DBDefs.DBPlayer.class);
 
                 var def = result.stream().findFirst().orElse(null);
                 if(def == null)
@@ -367,9 +367,9 @@ public class DbPlayerDAO implements PlayerDAO {
                         """
                             WHERE LOWER(name) = :login
                         """;
-                List<DBDefs.Player> result = conn.createQuery(sql)
+                List<DBDefs.DBPlayer> result = conn.createQuery(sql)
                         .addParameter("login", login.toLowerCase())
-                        .executeAndFetch(DBDefs.Player.class);
+                        .executeAndFetch(DBDefs.DBPlayer.class);
 
                 var def = result.stream().findFirst().orElse(null);
                 return def != null;
@@ -389,9 +389,9 @@ public class DbPlayerDAO implements PlayerDAO {
                             WHERE LOWER(name) = :login
                                 AND (password = '' OR password IS NULL)
                         """;
-                List<DBDefs.Player> result = conn.createQuery(sql)
+                List<DBDefs.DBPlayer> result = conn.createQuery(sql)
                         .addParameter("login", login.toLowerCase())
-                        .executeAndFetch(DBDefs.Player.class);
+                        .executeAndFetch(DBDefs.DBPlayer.class);
 
                 var def = result.stream().findFirst().orElse(null);
                 return def != null;
@@ -464,7 +464,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public List<DBDefs.Player> getAllPlayers() {
+    public List<DBDefs.DBPlayer> getAllPlayers() {
 
         try {
 
@@ -474,7 +474,7 @@ public class DbPlayerDAO implements PlayerDAO {
                 String sql = "SELECT id, name FROM player";
 
                 return conn.createQuery(sql)
-                        .executeAndFetch(DBDefs.Player.class);
+                        .executeAndFetch(DBDefs.DBPlayer.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve players", ex);

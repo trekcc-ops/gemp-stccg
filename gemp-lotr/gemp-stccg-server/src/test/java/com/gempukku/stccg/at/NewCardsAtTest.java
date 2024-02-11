@@ -18,9 +18,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void reduceArcheryTotal() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl legolas = new PhysicalCardImpl(100, "40_52", P1, _cardLibrary.getCardBlueprint("40_52"));
-        PhysicalCardImpl arrowsOfLight = new PhysicalCardImpl(100, "40_33", P1, _cardLibrary.getCardBlueprint("40_33"));
-        PhysicalCardImpl inquisitor = new PhysicalCardImpl(100, "1_268", P2, _cardLibrary.getCardBlueprint("1_268"));
+        PhysicalCardImpl legolas = new PhysicalCardImpl(_game, 100, "40_52", P1, _cardLibrary.getCardBlueprint("40_52"));
+        PhysicalCardImpl arrowsOfLight = new PhysicalCardImpl(_game, 100, "40_33", P1, _cardLibrary.getCardBlueprint("40_33"));
+        PhysicalCardImpl inquisitor = new PhysicalCardImpl(_game, 100, "1_268", P2, _cardLibrary.getCardBlueprint("1_268"));
 
         _game.getGameState().addCardToZone(_game, inquisitor, Zone.SHADOW_CHARACTERS);
 
@@ -48,9 +48,9 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void playedTrigger() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl bruinenUnleashed = new PhysicalCardImpl(100, "40_37", P1, _cardLibrary.getCardBlueprint("40_37"));
-        PhysicalCardImpl legolas = new PhysicalCardImpl(100, "40_52", P1, _cardLibrary.getCardBlueprint("40_52"));
-        PhysicalCardImpl nazgul = new PhysicalCardImpl(100, "40_211", P2, _cardLibrary.getCardBlueprint("40_211"));
+        PhysicalCardImpl bruinenUnleashed = new PhysicalCardImpl(_game, 100, "40_37", P1, _cardLibrary.getCardBlueprint("40_37"));
+        PhysicalCardImpl legolas = new PhysicalCardImpl(_game, 100, "40_52", P1, _cardLibrary.getCardBlueprint("40_52"));
+        PhysicalCardImpl nazgul = new PhysicalCardImpl(_game, 100, "40_211", P2, _cardLibrary.getCardBlueprint("40_211"));
 
         _game.getGameState().addCardToZone(_game, legolas, Zone.FREE_CHARACTERS);
         _game.getGameState().addCardToZone(_game, bruinenUnleashed, Zone.SUPPORT);

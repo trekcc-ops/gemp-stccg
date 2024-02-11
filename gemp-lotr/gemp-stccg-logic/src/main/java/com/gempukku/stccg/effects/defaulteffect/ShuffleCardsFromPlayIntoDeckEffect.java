@@ -54,7 +54,7 @@ public class ShuffleCardsFromPlayIntoDeckEffect extends DefaultEffect {
             Set<PhysicalCard> removeFromPlay = new HashSet<>(goingToDiscard);
             removeFromPlay.addAll(toShuffleIn);
 
-            _game.getGameState().removeCardsFromZone(_source.getOwner(), removeFromPlay);
+            _game.getGameState().removeCardsFromZone(_source.getOwnerName(), removeFromPlay);
 
             _game.getGameState().shuffleCardsIntoDeck(toShuffleIn, _playerDeck);
 

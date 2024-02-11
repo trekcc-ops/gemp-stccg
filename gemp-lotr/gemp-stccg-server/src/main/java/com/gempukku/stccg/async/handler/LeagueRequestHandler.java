@@ -45,7 +45,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("") && request.method() == HttpMethod.GET) {
+        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getNonExpiredLeagues(responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getLeagueInformation(request, uri.substring(1), responseWriter);

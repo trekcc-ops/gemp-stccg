@@ -58,7 +58,7 @@ public abstract class GameState {
         _decks = decks;
         _library = library;
         for (String playerId : players) {
-            _players.put(playerId, new Player(playerId));
+            _players.put(playerId, new Player(getGame(), playerId));
             _drawDecks.put(playerId, new LinkedList<>());
             _hands.put(playerId, new LinkedList<>());
             _voids.put(playerId, new LinkedList<>());
@@ -67,6 +67,8 @@ public abstract class GameState {
             _discards.put(playerId, new LinkedList<>());
         }
     }
+
+    public abstract DefaultGame getGame();
 
     public void init(PlayerOrder playerOrder, String firstPlayer) {
         _playerOrder = playerOrder;
@@ -100,7 +102,7 @@ public abstract class GameState {
         CardBlueprint card = library.getCardBlueprint(blueprintId);
 
         int cardId = nextCardId();
-        PhysicalCard result = new PhysicalCardImpl(cardId, blueprintId, playerId, card);
+        PhysicalCard result = new PhysicalCardImpl(getGame(), cardId, blueprintId, playerId, card);
 
         _allCards.put(cardId, result);
 
@@ -254,12 +256,12 @@ public abstract class GameState {
     }
 
     public void removeCardFromZone(PhysicalCard card) {
-        removeCardsFromZone(card.getOwner(), Collections.singleton(card));
+        removeCardsFromZone(card.getOwnerName(), Collections.singleton(card));
     }
 
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
-            List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), card.getZone());
+            List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
             if (!zoneCards.contains(card))
                 LOGGER.error("Card was not found in the expected zone");
         }
@@ -271,7 +273,7 @@ public abstract class GameState {
             if (zone == Zone.STACKED || zone == Zone.DISCARD)
                 if (card.isAffectingGame()) card.stopAffectingGameInZone(zone);
 
-            getZoneCards(card.getOwner(), zone).remove(card);
+            getZoneCards(card.getOwnerName(), zone).remove(card);
 
             if (zone.isInPlay())
                 _inPlay.remove(card);
@@ -315,7 +317,7 @@ public abstract class GameState {
             _inPlay.add(card);
         }
 
-        List<PhysicalCard> zoneCards = getZoneCards(card.getOwner(), zone);
+        List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), zone);
         if (end)
             zoneCards.add(card);
         else

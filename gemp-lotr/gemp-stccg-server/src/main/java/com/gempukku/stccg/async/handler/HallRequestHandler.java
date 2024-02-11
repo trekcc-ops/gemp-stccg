@@ -59,9 +59,9 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
                               ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("") && request.method() == HttpMethod.GET) {
+        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getHall(request, responseWriter);
-        } else if (uri.equals("") && request.method() == HttpMethod.POST) {
+        } else if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             createTable(request, responseWriter);
         } else if (uri.equals("/update") && request.method() == HttpMethod.POST) {
             updateHall(request, responseWriter);

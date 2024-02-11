@@ -40,7 +40,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     }
 
     protected Set<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
-        if (response.equals("")) {
+        if (response.isEmpty()) {
             if (_minimum == 0)
                 return Collections.emptySet();
             else

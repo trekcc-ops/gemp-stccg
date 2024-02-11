@@ -49,7 +49,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends DefaultEffect i
             PhysicalCard card = _game.getGameState().getDrawDeck(_playerId).get(0);
             _game.getGameState().removeCardsFromZone(null, Collections.singleton(card));
             _game.getGameState().addCardToZone(_game, card, Zone.PLAY_PILE);
-            _game.getGameState().sendMessage(card.getOwner() + " puts " + GameUtils.getCardLink(card) + " from the top of their draw deck on top of their play pile");
+            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + GameUtils.getCardLink(card) + " from the top of their draw deck on top of their play pile");
             drawn++;
         }
 

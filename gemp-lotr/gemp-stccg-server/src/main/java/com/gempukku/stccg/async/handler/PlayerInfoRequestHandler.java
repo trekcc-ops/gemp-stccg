@@ -20,7 +20,7 @@ public class PlayerInfoRequestHandler extends DefaultServerRequestHandler implem
 
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("") && request.method() == HttpMethod.GET) {
+        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
             String participantId = getQueryParameterSafely(queryDecoder, "participantId");
             User resourceOwner = getResourceOwnerSafely(request, participantId);

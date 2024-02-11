@@ -81,7 +81,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public void cardCreated(PhysicalCard card, GameEvent.Type eventType) {
         boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
-        if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwner().equals(_self)))
+        if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_self)))
             appendEvent(new GameEvent(eventType).card(card));
     }
 
@@ -92,7 +92,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public void cardCreated(PhysicalCard card, boolean overridePlayerVisibility) {
         boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
-        if (card.getZone().isPublic() || publicDiscard || ((overridePlayerVisibility || card.getZone().isVisibleByOwner()) && card.getOwner().equals(_self)))
+        if (card.getZone().isPublic() || publicDiscard || ((overridePlayerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(_self)))
             appendEvent(new GameEvent(PUT_CARD_INTO_PLAY).card(card));
     }
 
@@ -106,7 +106,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
         for (PhysicalCard card : cards) {
             boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
-            if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwner().equals(_self)))
+            if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_self)))
                 removedCardsVisibleByPlayer.add(card);
         }
         if (removedCardsVisibleByPlayer.size() > 0)

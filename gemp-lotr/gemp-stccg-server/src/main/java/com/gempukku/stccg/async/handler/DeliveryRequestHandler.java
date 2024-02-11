@@ -26,7 +26,7 @@ public class DeliveryRequestHandler extends DefaultServerRequestHandler implemen
 
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("") && request.method() == HttpMethod.GET) {
+        if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getDelivery(request, responseWriter);
         } else {
             throw new HttpProcessingException(404);

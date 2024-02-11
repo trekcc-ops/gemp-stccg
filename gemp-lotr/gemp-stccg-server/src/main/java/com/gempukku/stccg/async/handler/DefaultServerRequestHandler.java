@@ -109,7 +109,7 @@ public class DefaultServerRequestHandler {
         if (resourceOwner == null)
             throw new HttpProcessingException(401);
 
-        if (resourceOwner.hasType(User.Type.ADMIN) && participantId != null && !participantId.equals("null") && !participantId.equals("")) {
+        if (resourceOwner.hasType(User.Type.ADMIN) && participantId != null && !participantId.equals("null") && !participantId.isEmpty()) {
             resourceOwner = _playerDao.getPlayer(participantId);
             if (resourceOwner == null)
                 throw new HttpProcessingException(401);

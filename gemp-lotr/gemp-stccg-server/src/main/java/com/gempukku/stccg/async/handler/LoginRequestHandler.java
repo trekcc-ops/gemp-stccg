@@ -20,7 +20,7 @@ public class LoginRequestHandler extends DefaultServerRequestHandler implements 
 
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("") && request.method() == HttpMethod.POST) {
+        if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
             String login = getFormParameterSafely(postDecoder, "login");

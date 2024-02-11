@@ -30,8 +30,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(101, "1_299", P1, _cardLibrary.getCardBlueprint("1_299"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(_game, 101, "1_299", P1, _cardLibrary.getCardBlueprint("1_299"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, hobbitSword, merry);
@@ -51,7 +51,7 @@ public class DiscardEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DiscardCardsFromPlayEffect discardEffect = new DiscardCardsFromPlayEffect(_game, merry.getOwner(), merry, merry);
+        DiscardCardsFromPlayEffect discardEffect = new DiscardCardsFromPlayEffect(_game, merry.getOwnerName(), merry, merry);
 
         carryOutEffectInPhaseActionByPlayer(P1, discardEffect);
 
@@ -71,9 +71,9 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl alatar = new PhysicalCardImpl(101, "13_28", P1, _cardLibrary.getCardBlueprint("13_28"));
-        final PhysicalCardImpl whisperInTheDark = new PhysicalCardImpl(101, "18_77", P1, _cardLibrary.getCardBlueprint("18_77"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardImpl alatar = new PhysicalCardImpl(_game, 101, "13_28", P1, _cardLibrary.getCardBlueprint("13_28"));
+        final PhysicalCardImpl whisperInTheDark = new PhysicalCardImpl(_game, 101, "18_77", P1, _cardLibrary.getCardBlueprint("18_77"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, alatar, merry);
@@ -94,7 +94,7 @@ public class DiscardEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DiscardCardsFromPlayEffect discardEffect = new DiscardCardsFromPlayEffect(_game, merry.getOwner(), merry, merry);
+        DiscardCardsFromPlayEffect discardEffect = new DiscardCardsFromPlayEffect(_game, merry.getOwnerName(), merry, merry);
 
         carryOutEffectInPhaseActionByPlayer(P1, discardEffect);
 
@@ -116,8 +116,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(101, "1_299", P1, _cardLibrary.getCardBlueprint("1_299"));
+        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(_game, 101, "1_299", P1, _cardLibrary.getCardBlueprint("1_299"));
 
         _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
         _game.getGameState().stackCard(_game, hobbitSword, merry);
@@ -137,7 +137,7 @@ public class DiscardEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DiscardCardsFromPlayEffect discardEffect = new DiscardCardsFromPlayEffect(_game, merry.getOwner(), merry, merry);
+        DiscardCardsFromPlayEffect discardEffect = new DiscardCardsFromPlayEffect(_game, merry.getOwnerName(), merry, merry);
 
         carryOutEffectInPhaseActionByPlayer(P1, discardEffect);
 

@@ -26,7 +26,7 @@ public class StorageBasedMerchant implements Merchant {
     private static final int DOUBLE_AFTER_DAYS_LOW_STOCK = 10;
     private static final int HALVE_AFTER_DAYS_IN_STOCK = 30;
 
-    private static final double PRICE_SHIFT_AFTER_TRANSACTION_PERC = 10;
+    private static final float PRICE_SHIFT_AFTER_TRANSACTION_PERC = 10;
 
     private final CardBlueprintLibrary _library;
     private final MerchantDAO _merchantDao;

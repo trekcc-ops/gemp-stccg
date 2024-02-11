@@ -1,6 +1,7 @@
 package com.gempukku.stccg.requirement.producers;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -23,7 +24,8 @@ public class HasCardInHand extends RequirementProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         return (actionContext) -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);
-            return PlayConditions.hasCardInHand(actionContext.getGame(), playerSource.getPlayer(actionContext), count, filterable);
+            return actionContext.getGame().getGameState().getPlayer(playerSource.getPlayer(actionContext))
+                    .hasCardInZone(Zone.HAND, count, filterable);
         };
     }
 }

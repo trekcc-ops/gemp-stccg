@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 
 public class PhysicalFacilityCard extends PhysicalNounCard1E {
     private final Set<PhysicalCard> _cardsAboard = new HashSet<>();
-    public PhysicalFacilityCard(ST1EGame game, int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
+    public PhysicalFacilityCard(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, blueprintId, owner, blueprint);
     }
     public FacilityType getFacilityType() {
@@ -26,9 +27,9 @@ public class PhysicalFacilityCard extends PhysicalNounCard1E {
     public boolean canSeedAtMissionAsAffiliation(PhysicalMissionCard mission, Affiliation affiliation) {
         if (mission.isHomeworld())
             return false;
-        if (mission.getLocation().hasFacilityOwnedByPlayer(_owner))
+        if (mission.getLocation().hasFacilityOwnedByPlayer(_ownerName))
             return false;
-        return mission.getAffiliationIcons(_owner).contains(affiliation) && mission.getQuadrant() == _nativeQuadrant;
+        return mission.getAffiliationIcons(_ownerName).contains(affiliation) && mission.getQuadrant() == _nativeQuadrant;
     }
 
     @Override

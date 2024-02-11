@@ -103,14 +103,10 @@ public class FormatLibrary {
     public void ReloadFormats() {
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(_formatPath), StandardCharsets.UTF_8)) {
             collectionReady.acquire();
-            String json = JsonValue.readHjson(reader).toString();
-
-            JSONDefs.Format[] formatDefs = JSON.parseObject(json, JSONDefs.Format[].class);
-
             _allFormats.clear();
             _hallFormats.clear();
 
-            for (JSONDefs.Format def : formatDefs) {
+            for (JSONDefs.Format def : JSON.parseObject(JsonValue.readHjson(reader).toString(), JSONDefs.Format[].class)) {
                 if (def == null)
                     continue;
 

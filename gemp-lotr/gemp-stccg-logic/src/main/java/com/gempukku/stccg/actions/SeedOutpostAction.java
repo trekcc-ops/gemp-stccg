@@ -36,7 +36,7 @@ public class SeedOutpostAction extends AbstractPlayCardAction {
         super(cardToSeed);
         _seedCard = cardToSeed;
         setText("Seed " + _seedCard.getFullName());
-        setPerformingPlayer(_seedCard.getOwner());
+        setPerformingPlayer(_seedCard.getOwnerName());
         _fromZone = _seedCard.getZone();
         _game = game;
         _placementChosen = false;

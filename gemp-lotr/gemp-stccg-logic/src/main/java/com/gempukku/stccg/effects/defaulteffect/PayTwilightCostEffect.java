@@ -30,7 +30,7 @@ public class PayTwilightCostEffect extends DefaultEffect {
         int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _physicalCard, null, _twilightModifier, _ignoreRoamingPenalty);
 
         String currentPlayerId = _game.getGameState().getCurrentPlayerId();
-        if (!currentPlayerId.equals(_physicalCard.getOwner())) {
+        if (!currentPlayerId.equals(_physicalCard.getOwnerName())) {
             int twilightPool = _game.getGameState().getTwilightPool();
             return twilightPool >= twilightCost;
         }
@@ -42,17 +42,17 @@ public class PayTwilightCostEffect extends DefaultEffect {
         int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _physicalCard, null, _twilightModifier, _ignoreRoamingPenalty);
 
         String currentPlayerId = _game.getGameState().getCurrentPlayerId();
-        if (currentPlayerId.equals(_physicalCard.getOwner())) {
+        if (currentPlayerId.equals(_physicalCard.getOwnerName())) {
             _game.getGameState().addTwilight(twilightCost);
             if (twilightCost > 0)
-                _game.getGameState().sendMessage(_physicalCard.getOwner() + " adds " + twilightCost + " to twilight pool");
+                _game.getGameState().sendMessage(_physicalCard.getOwnerName() + " adds " + twilightCost + " to twilight pool");
             return new FullEffectResult(true);
         } else {
             boolean success = _game.getGameState().getTwilightPool() >= twilightCost;
             twilightCost = Math.min(twilightCost, _game.getGameState().getTwilightPool());
             if (twilightCost > 0) {
                 _game.getGameState().removeTwilight(twilightCost);
-                _game.getGameState().sendMessage(_physicalCard.getOwner() + " removes " + twilightCost + " from twilight pool");
+                _game.getGameState().sendMessage(_physicalCard.getOwnerName() + " removes " + twilightCost + " from twilight pool");
             }
             return new FullEffectResult(success);
         }

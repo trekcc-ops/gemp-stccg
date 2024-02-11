@@ -22,11 +22,11 @@ public class DiscardFromHandExtraPlayCostModifier extends AbstractExtraPlayCostM
     @Override
     public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
         action.appendCost(
-                new ChooseAndDiscardCardsFromHandEffect(game, action, card.getOwner(), false, count, cardFilter));
+                new ChooseAndDiscardCardsFromHandEffect(game, action, card.getOwnerName(), false, count, cardFilter));
     }
 
     @Override
     public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
-        return PlayConditions.canDiscardFromHand(game, card.getOwner(), count, Filters.and(Filters.not(card), Filters.and(cardFilter)));
+        return card.getOwner().canDiscardFromHand(count, Filters.and(Filters.not(card), Filters.and(cardFilter)));
     }
 }

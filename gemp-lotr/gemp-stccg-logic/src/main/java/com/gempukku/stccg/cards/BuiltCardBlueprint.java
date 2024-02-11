@@ -12,7 +12,6 @@ import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
 
@@ -470,7 +469,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
             if (modifiers == null)
                 modifiers = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
+                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null) {
                     addAllNotNull(modifiers, firstActive.getBlueprint().getInPlayModifiers(game, self));
@@ -496,8 +495,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     @Override
-    public boolean playRequirementsNotMet(DefaultGame game, PhysicalCard self) {
-        DefaultActionContext dummy = new DefaultActionContext(self.getOwner(), game, self, null, null);
+    public boolean playRequirementsNotMet(PhysicalCard self) {
+        DefaultActionContext dummy = new DefaultActionContext(self.getOwnerName(), self.getGame(), self, null, null);
 
         if (requirements != null) {
             if (!RequirementUtils.acceptsAllRequirements(requirements, dummy)) return true;
@@ -511,7 +510,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (twilightCostModifiers == null)
             return 0;
 
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
 
         int result = 0;
         for (TwilightCostModifierSource twilightCostModifier : twilightCostModifiers)
@@ -522,7 +521,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     @Override
     public PlayEventAction getPlayEventCardAction(PhysicalCard self) {
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), self.getGame(), self,
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), self.getGame(), self,
                 null, null);
         PlayEventAction action = new PlayEventAction(self, playEventAction.requiresRanger());
         playEventAction.createAction(action, actionContext);
@@ -536,7 +535,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (requiredBeforeTriggers != null) {
             result = new LinkedList<>();
             for (ActionSource requiredBeforeTrigger : requiredBeforeTriggers) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, effect);
+                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, effect);
                 if (requiredBeforeTrigger.isValid(actionContext)) {
                     RequiredTriggerAction action = new RequiredTriggerAction(self);
                     requiredBeforeTrigger.createAction(action, actionContext);
@@ -549,7 +548,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
             if (result == null)
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, effect);
+                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, effect);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getRequiredBeforeTriggers(game, effect, self));
@@ -566,7 +565,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (requiredAfterTriggers != null) {
             result = new LinkedList<>();
             for (ActionSource requiredAfterTrigger : requiredAfterTriggers) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, effectResult, null);
+                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, effectResult, null);
                 if (requiredAfterTrigger.isValid(actionContext)) {
                     RequiredTriggerAction action = new RequiredTriggerAction(self);
                     requiredAfterTrigger.createAction(action, actionContext);
@@ -579,7 +578,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
             if (result == null)
                 result = new LinkedList<>();
             for (FilterableSource copiedFilter : copiedFilters) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, effectResult, null);
+                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, effectResult, null);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
                     addAllNotNull(result, firstActive.getBlueprint().getRequiredAfterTriggers(game, effectResult, self));
@@ -744,7 +743,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (extraPlayCosts == null)
             return null;
 
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
 
         List<ExtraPlayCost> result = new LinkedList<>();
         for (ExtraPlayCostSource extraPlayCost : extraPlayCosts) {
@@ -779,7 +778,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
             return 0;
 
         int result = 0;
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), self.getGame(), self,
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), self.getGame(), self,
                 null, null);
         for (DiscountSource discountSource : discountSources)
             result += discountSource.getPotentialDiscount(actionContext);
@@ -803,7 +802,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (discardedFromPlayRequiredTriggerAction == null)
             return null;
 
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
         if (discardedFromPlayRequiredTriggerAction.isValid(actionContext)) {
             RequiredTriggerAction action = new RequiredTriggerAction(self);
             discardedFromPlayRequiredTriggerAction.createAction(action, actionContext);
@@ -831,7 +830,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (killedRequiredTriggerAction == null)
             return null;
 
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwner(), game, self, null, null);
+        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
         if (killedRequiredTriggerAction.isValid(actionContext)) {
             RequiredTriggerAction action = new RequiredTriggerAction(self);
             killedRequiredTriggerAction.createAction(action, actionContext);
@@ -911,7 +910,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public boolean canPlayOutOfSequence(TribblesGame game, PhysicalCard self) {
         if (playOutOfSequenceConditions == null) return false;
         TribblesActionContext actionContext =
-                new TribblesActionContext(self.getOwner(), game, self, null, null);
+                new TribblesActionContext(self.getOwnerName(), game, self, null, null);
         return playOutOfSequenceConditions.stream().anyMatch(requirement -> requirement.accepts(actionContext));
     }
 

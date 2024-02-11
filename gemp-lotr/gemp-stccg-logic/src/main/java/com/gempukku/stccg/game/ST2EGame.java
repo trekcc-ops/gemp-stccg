@@ -4,17 +4,14 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.GameStateListener;
-import com.gempukku.stccg.gamestate.TribblesGameState;
-import com.gempukku.stccg.gamestate.UserFeedback;
+import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.RuleSet;
 
 import java.util.Map;
 
 public class ST2EGame extends DefaultGame {
-    private final GameState _gameState;
+    private final ST2EGameState _gameState;
     private final TurnProcedure<ST2EGame> _turnProcedure;
 
     public ST2EGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
@@ -24,14 +21,14 @@ public class ST2EGame extends DefaultGame {
         new RuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
 
             // TODO: Will likely need its own game state class
-        _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
+        _gameState = new ST2EGameState(_allPlayers, decks, library, _format, this);
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init);
     }
 
 
     @Override
-    public GameState getGameState() {
+    public ST2EGameState getGameState() {
         return _gameState;
     }
     public TurnProcedure<ST2EGame> getTurnProcedure() { return _turnProcedure; }
@@ -45,10 +42,10 @@ public class ST2EGame extends DefaultGame {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met
-        if (card.getBlueprint().playRequirementsNotMet(this, card))
+        if (card.getBlueprint().playRequirementsNotMet(card))
             return false;
         // Check if the card's playability has been modified in the current game state
-        return !_modifiersLogic.canNotPlayCard(this, card.getOwner(), card);
+        return !_modifiersLogic.canNotPlayCard(this, card.getOwnerName(), card);
 
     }
 

@@ -47,7 +47,7 @@ public class ST1ELocation {
         }
         else if (_missionCards.size() == 2) {
             for (PhysicalMissionCard mission : _missionCards) {
-                if (Objects.equals(mission.getOwner(), playerId))
+                if (Objects.equals(mission.getOwnerName(), playerId))
                     return mission;
             }
         }
@@ -69,7 +69,7 @@ public class ST1ELocation {
 
     public boolean hasFacilityOwnedByPlayer(String playerId) {
         for (PhysicalCard nonMission : _nonMissionCards)
-            if (nonMission.getBlueprint().getCardType() == CardType.FACILITY && nonMission.getOwner() == playerId)
+            if (nonMission.getBlueprint().getCardType() == CardType.FACILITY && nonMission.getOwnerName() == playerId)
                 return true;
         return false;
     }

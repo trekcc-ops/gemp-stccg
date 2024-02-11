@@ -166,7 +166,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
                     sb.append("<br><i>nothing</i>");
 
                 if (card.getZone().isInPlay() && card.getBlueprint().getCardType() == CardType.SITE)
-                    sb.append("<br><b>Owner:</b> ").append(card.getOwner());
+                    sb.append("<br><b>Owner:</b> ").append(card.getOwnerName());
 
                 List<PhysicalCard> stackedCards = getGame().getGameState().getStackedCards(card);
                 if (stackedCards != null && stackedCards.size() > 0) {

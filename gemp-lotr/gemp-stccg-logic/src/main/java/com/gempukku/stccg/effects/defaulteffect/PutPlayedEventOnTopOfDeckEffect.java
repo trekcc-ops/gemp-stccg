@@ -34,7 +34,7 @@ public class PutPlayedEventOnTopOfDeckEffect extends DefaultEffect {
         if (isPlayableInFull()) {
             PhysicalCard eventPlayed = _action.getEventPlayed();
             _game.getGameState().sendMessage(_action.getPerformingPlayer() + " puts " + GameUtils.getCardLink(eventPlayed) + " on top of their deck");
-            _game.getGameState().removeCardsFromZone(eventPlayed.getOwner(), Collections.singletonList(eventPlayed));
+            _game.getGameState().removeCardsFromZone(eventPlayed.getOwnerName(), Collections.singletonList(eventPlayed));
             _game.getGameState().putCardOnTopOfDeck(eventPlayed);
             return new FullEffectResult(true);
         }

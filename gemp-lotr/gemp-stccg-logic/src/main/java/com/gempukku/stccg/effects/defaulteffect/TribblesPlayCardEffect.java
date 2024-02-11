@@ -6,7 +6,6 @@ import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.results.PlayCardResult;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
 
@@ -40,7 +39,7 @@ public class TribblesPlayCardEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         TribblesGameState gameState = _game.getGameState();
-        gameState.removeCardsFromZone(_cardPlayed.getOwner(), Collections.singleton(_cardPlayed));
+        gameState.removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
         gameState.addCardToZone(_game, _cardPlayed, _zone);
 
         int tribbleValue = _cardPlayed.getBlueprint().getTribbleValue();

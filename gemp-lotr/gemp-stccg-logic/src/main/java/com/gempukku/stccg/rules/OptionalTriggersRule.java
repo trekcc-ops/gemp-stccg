@@ -27,7 +27,7 @@ public class OptionalTriggersRule {
                     public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                            if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends OptionalTriggerAction> actions = activatableCard.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
@@ -41,7 +41,7 @@ public class OptionalTriggersRule {
                     public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                            if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends OptionalTriggerAction> actions =
                                         game.getOptionalAfterTriggerActions(playerId, effectResult, activatableCard);
                                 if (actions != null)

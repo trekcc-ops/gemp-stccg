@@ -74,7 +74,7 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
     }
 
     protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
-        if (result.equals(""))
+        if (result.isEmpty())
             return null;
         try {
             int actionIndex = Integer.parseInt(result);

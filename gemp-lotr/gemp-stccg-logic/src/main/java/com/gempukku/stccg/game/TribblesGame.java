@@ -28,7 +28,7 @@ public class TribblesGame extends DefaultGame {
 
         new TribblesRuleSet(_actionsEnvironment, _modifiersLogic, this).applyRuleSet();
 
-        _gameState = new TribblesGameState(_allPlayers, decks, library, _format);
+        _gameState = new TribblesGameState(_allPlayers, decks, library, _format, this);
         _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {
@@ -49,10 +49,10 @@ public class TribblesGame extends DefaultGame {
 //        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
 
         // Check if card's own play requirements are met
-        if (card.getBlueprint().playRequirementsNotMet(this, card))
+        if (card.getBlueprint().playRequirementsNotMet(card))
             return false;
         // Check if the card's playability has been modified in the current game state
-        if (_modifiersLogic.canNotPlayCard(this, card.getOwner(), card))
+        if (_modifiersLogic.canNotPlayCard(this, card.getOwnerName(), card))
             return false;
 
         // Otherwise, the play requirements are met if the card is next in the tribble sequence,

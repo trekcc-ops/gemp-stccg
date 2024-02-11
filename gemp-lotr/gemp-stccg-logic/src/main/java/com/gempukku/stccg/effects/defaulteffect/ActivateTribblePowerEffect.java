@@ -20,7 +20,7 @@ public abstract class ActivateTribblePowerEffect extends DefaultEffect {
     protected final TribblesGame _game;
     public ActivateTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
         _source = actionContext.getSource();
-        _activatingPlayer = actionContext.getSource().getOwner();
+        _activatingPlayer = actionContext.getSource().getOwnerName();
         _tribblePower = actionContext.getSource().getBlueprint().getTribblePower();
         _game = actionContext.getGame();
         _action = action;

@@ -35,8 +35,8 @@ public class PlacePlayedCardBeneathDrawDeckEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(card.getOwner() + " puts " + GameUtils.getCardLink(card) + " on bottom of their deck");
-            _game.getGameState().removeCardsFromZone(card.getOwner(), Collections.singletonList(card));
+            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + GameUtils.getCardLink(card) + " on bottom of their deck");
+            _game.getGameState().removeCardsFromZone(card.getOwnerName(), Collections.singletonList(card));
             _game.getGameState().putCardOnBottomOfDeck(card);
             return new FullEffectResult(true);
         }

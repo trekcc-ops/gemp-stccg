@@ -28,7 +28,7 @@ public class ActivateResponseAbilitiesRule {
                     public List<? extends Action> getOptionalBeforeActions(String playerId, DefaultGame game, Effect effect) {
                         List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                            if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getOptionalInPlayBeforeActions(playerId, game, effect, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
@@ -42,7 +42,7 @@ public class ActivateResponseAbilitiesRule {
                     public List<? extends Action> getOptionalAfterActions(String playerId, DefaultGame game, EffectResult effectResult) {
                         List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                            if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getOptionalInPlayAfterActions(playerId, game, effectResult, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);

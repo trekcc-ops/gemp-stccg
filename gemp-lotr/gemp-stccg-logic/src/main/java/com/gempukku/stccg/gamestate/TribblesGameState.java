@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.text.DecimalFormat;
@@ -14,16 +15,21 @@ public class TribblesGameState extends GameState {
     private int _lastTribblePlayed;
     private boolean _chainBroken;
     private int _currentRound;
+    private final TribblesGame _game;
 
-    public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
+    public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, TribblesGame game) {
         super(players, decks, library, format);
         for (String player : players) {
             _playPiles.put(player, new LinkedList<>());
         }
         _currentRound = 0;
         _chainBroken = false;
+        _game = game;
         setNextTribbleInSequence(1);
     }
+
+    @Override
+    public TribblesGame getGame() { return _game; }
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
@@ -46,12 +52,13 @@ public class TribblesGameState extends GameState {
     @Override
     public void createPhysicalCards() {
         int cardId = 1;
-        for (String playerId : _players.keySet()) {
+        for (Player player : _players.values()) {
+            String playerId = player.getPlayerId();
             for (Map.Entry<String,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(new PhysicalCardImpl(cardId, blueprintId, playerId, _library.getCardBlueprint(blueprintId)));
+                        subDeck.add(new PhysicalCardImpl(_game, cardId, blueprintId, player, _library.getCardBlueprint(blueprintId)));
                         cardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");

@@ -13,6 +13,6 @@ public class PhaseRequirement extends RequirementProducer {
         FieldUtils.validateAllowedFields(object, "phase");
 
         final Phase phase = FieldUtils.getEnum(Phase.class, object.get("phase"), "phase");
-        return (actionContext) -> PlayConditions.isPhase(actionContext.getGame(), phase);
+        return (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase;
     }
 }

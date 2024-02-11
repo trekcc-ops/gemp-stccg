@@ -142,7 +142,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public List<DBDefs.Player> getAllPlayers() {
+    public List<DBDefs.DBPlayer> getAllPlayers() {
         return _delegate.getAllPlayers();
     }
 

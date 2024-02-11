@@ -35,7 +35,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
     public PlayPermanentAction(PhysicalCard card, Zone zone, int twilightModifier, boolean ignoreRoamingPenalty) {
         _permanentPlayed = card;
         setText("Play " + _permanentPlayed.getFullName());
-        setPerformingPlayer(card.getOwner());
+        setPerformingPlayer(card.getOwnerName());
         _twilightModifier = twilightModifier;
         _ignoreRoamingPenalty = ignoreRoamingPenalty;
 
@@ -72,16 +72,16 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _permanentPlayed.getZone();
-            game.getGameState().sendMessage(_permanentPlayed.getOwner() + " plays " +
+            game.getGameState().sendMessage(_permanentPlayed.getOwnerName() + " plays " +
                     GameUtils.getCardLink(_permanentPlayed));
-            game.getGameState().removeCardsFromZone(_permanentPlayed.getOwner(), Collections.singleton(_permanentPlayed));
+            game.getGameState().removeCardsFromZone(_permanentPlayed.getOwnerName(), Collections.singleton(_permanentPlayed));
             if (playedFromZone == Zone.HAND)
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID_FROM_HAND);
             else
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID);
             if (playedFromZone == Zone.DRAW_DECK && !_skipShuffling) {
-                game.getGameState().sendMessage(_permanentPlayed.getOwner() + " shuffles their deck");
-                game.getGameState().shuffleDeck(_permanentPlayed.getOwner());
+                game.getGameState().sendMessage(_permanentPlayed.getOwnerName() + " shuffles their deck");
+                game.getGameState().shuffleDeck(_permanentPlayed.getOwnerName());
             }
         }
 
@@ -120,7 +120,7 @@ public class PlayPermanentAction extends AbstractCostToEffectAction {
         } else {
             if (!_cardDiscarded) {
                 _cardDiscarded = true;
-                game.getGameState().removeCardsFromZone(_permanentPlayed.getOwner(), Collections.singleton(_permanentPlayed));
+                game.getGameState().removeCardsFromZone(_permanentPlayed.getOwnerName(), Collections.singleton(_permanentPlayed));
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.DISCARD);
             }
         }

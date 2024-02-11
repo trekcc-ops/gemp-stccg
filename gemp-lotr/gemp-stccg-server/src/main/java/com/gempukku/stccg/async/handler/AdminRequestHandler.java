@@ -151,7 +151,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     }
 
     private String getStatus(User similarPlayer) {
-        if (similarPlayer.getType().equals(""))
+        if (similarPlayer.getType().isEmpty())
             return "Banned permanently";
         if (similarPlayer.getBannedUntil() != null) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");

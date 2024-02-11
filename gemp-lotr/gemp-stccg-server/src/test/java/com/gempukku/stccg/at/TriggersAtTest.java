@@ -24,9 +24,9 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl gimli = new PhysicalCardImpl(100, "5_7", P1, _cardLibrary.getCardBlueprint("5_7"));
-        PhysicalCardImpl stoutAndStrong = new PhysicalCardImpl(101, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
+        PhysicalCardImpl gimli = new PhysicalCardImpl(_game, 100, "5_7", P1, _cardLibrary.getCardBlueprint("5_7"));
+        PhysicalCardImpl stoutAndStrong = new PhysicalCardImpl(_game, 101, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(_game, 102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
 
         skipMulligans();
 
@@ -75,12 +75,12 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl dervorin = new PhysicalCardImpl(100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
-        PhysicalCardImpl boromir = new PhysicalCardImpl(101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
-        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl dervorin = new PhysicalCardImpl(_game, 100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
+        PhysicalCardImpl boromir = new PhysicalCardImpl(_game, 101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(_game, 102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(_game, 103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(_game, 104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(_game, 105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
 
         skipMulligans();
 
@@ -116,13 +116,13 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl dervorin = new PhysicalCardImpl(100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
-        PhysicalCardImpl boromir = new PhysicalCardImpl(101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
-        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand5 = new PhysicalCardImpl(106, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl dervorin = new PhysicalCardImpl(_game, 100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
+        PhysicalCardImpl boromir = new PhysicalCardImpl(_game, 101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(_game, 102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(_game, 103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(_game, 104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(_game, 105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand5 = new PhysicalCardImpl(_game, 106, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
 
         skipMulligans();
 
@@ -161,12 +161,12 @@ public class TriggersAtTest extends AbstractAtTest {
     public void userOfMusterDisablesUseOfOtherOptionalStartOfRegroupTrigger() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl dervorin = new PhysicalCardImpl(100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
-        PhysicalCardImpl boromir = new PhysicalCardImpl(101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
-        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl dervorin = new PhysicalCardImpl(_game, 100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
+        PhysicalCardImpl boromir = new PhysicalCardImpl(_game, 101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(_game, 102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(_game, 103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(_game, 104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(_game, 105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
 
         skipMulligans();
 
@@ -204,8 +204,8 @@ public class TriggersAtTest extends AbstractAtTest {
     public void musterForShadowSideTriggersCorrectly() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl musterWitchKing = new PhysicalCardImpl(100, "11_226", P2, _cardLibrary.getCardBlueprint("11_226"));
-        PhysicalCardImpl musterWitchKing2 = new PhysicalCardImpl(101, "11_226", P2, _cardLibrary.getCardBlueprint("11_226"));
+        PhysicalCardImpl musterWitchKing = new PhysicalCardImpl(_game, 100, "11_226", P2, _cardLibrary.getCardBlueprint("11_226"));
+        PhysicalCardImpl musterWitchKing2 = new PhysicalCardImpl(_game, 101, "11_226", P2, _cardLibrary.getCardBlueprint("11_226"));
 
         skipMulligans();
 

@@ -26,8 +26,6 @@ public interface ModifiersQuerying {
 
     Collection<Modifier> getModifiersAffecting(DefaultGame game, PhysicalCard card);
 
-    boolean hasTextRemoved(DefaultGame game, PhysicalCard card);
-
     // Keywords
     boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
 
@@ -71,9 +69,6 @@ public interface ModifiersQuerying {
     boolean canRemoveBurden(DefaultGame game, PhysicalCard source);
 
     boolean canRemoveThreat(DefaultGame game, PhysicalCard source);
-
-    // Assignments
-    boolean canBeAssignedToSkirmish(DefaultGame game, Side playerSide, PhysicalCard card);
 
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);
 
@@ -133,4 +128,6 @@ public interface ModifiersQuerying {
     int getPotentialDiscount(PhysicalCard playedCard);
 
     void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard);
+    List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
+
 }

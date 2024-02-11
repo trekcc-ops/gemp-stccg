@@ -40,7 +40,7 @@ public class PutCardFromPlayOnBottomOfDeckEffect extends DefaultEffect {
             Set<PhysicalCard> removeFromPlay = new HashSet<>(toGoToDiscardCards);
             removeFromPlay.add(_physicalCard);
 
-            gameState.removeCardsFromZone(_physicalCard.getOwner(), removeFromPlay);
+            gameState.removeCardsFromZone(_physicalCard.getOwnerName(), removeFromPlay);
 
             gameState.putCardOnBottomOfDeck(_physicalCard);
             for (PhysicalCard discardedCard : discardedCards) {
@@ -49,7 +49,7 @@ public class PutCardFromPlayOnBottomOfDeckEffect extends DefaultEffect {
             for (PhysicalCard toGoToDiscardCard : toGoToDiscardCards)
                 gameState.addCardToZone(_game, toGoToDiscardCard, Zone.DISCARD);
 
-            gameState.sendMessage(_physicalCard.getOwner() + " puts " + GameUtils.getCardLink(_physicalCard) + " from play on the bottom of deck");
+            gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + GameUtils.getCardLink(_physicalCard) + " from play on the bottom of deck");
 
             return new FullEffectResult(true);
         }

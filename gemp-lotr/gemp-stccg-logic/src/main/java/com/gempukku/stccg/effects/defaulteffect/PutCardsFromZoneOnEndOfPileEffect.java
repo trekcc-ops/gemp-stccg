@@ -40,7 +40,7 @@ public class PutCardsFromZoneOnEndOfPileEffect extends DefaultEffect {
 
     public String chatMessage(PhysicalCard card) {
         String cardInfoToShow = _reveal ? GameUtils.getCardLink(card) : "a card";
-        return card.getOwner() + " puts " + cardInfoToShow + " from " + _fromZone.getHumanReadable() + " on " +
+        return card.getOwnerName() + " puts " + cardInfoToShow + " from " + _fromZone.getHumanReadable() + " on " +
                 _toEndOfPile.name().toLowerCase() + " of their " + _toZone.getHumanReadable();
     }
 
@@ -48,7 +48,7 @@ public class PutCardsFromZoneOnEndOfPileEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             GameState gameState = _game.getGameState();
-            gameState.removeCardsFromZone(physicalCards[0].getOwner(), Arrays.asList(physicalCards));
+            gameState.removeCardsFromZone(physicalCards[0].getOwnerName(), Arrays.asList(physicalCards));
             for (PhysicalCard physicalCard : physicalCards) {
                 gameState.sendMessage(chatMessage(physicalCard));
                 gameState.addCardToZone(_game, physicalCard, _toZone, _toEndOfPile);

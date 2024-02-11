@@ -70,8 +70,8 @@ public class PlayEventAction extends AbstractCostToEffectAction {
             _cardRemoved = true;
             final Zone playedFromZone = _eventPlayed.getZone();
 
-            game.getGameState().sendMessage(_eventPlayed.getOwner() + " plays " + GameUtils.getCardLink(_eventPlayed) + " from " + playedFromZone.getHumanReadable());
-            game.getGameState().removeCardsFromZone(_eventPlayed.getOwner(), Collections.singleton(_eventPlayed));
+            game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " plays " + GameUtils.getCardLink(_eventPlayed) + " from " + playedFromZone.getHumanReadable());
+            game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
 
             if (playedFromZone == Zone.HAND)
                 game.getGameState().addCardToZone(game, _eventPlayed, Zone.VOID_FROM_HAND);
@@ -79,8 +79,8 @@ public class PlayEventAction extends AbstractCostToEffectAction {
                 game.getGameState().addCardToZone(game, _eventPlayed, Zone.VOID);
 
             if (playedFromZone == Zone.DRAW_DECK) {
-                game.getGameState().sendMessage(_eventPlayed.getOwner() + " shuffles their deck");
-                game.getGameState().shuffleDeck(_eventPlayed.getOwner());
+                game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " shuffles their deck");
+                game.getGameState().shuffleDeck(_eventPlayed.getOwnerName());
             }
 
             game.getGameState().eventPlayed(_eventPlayed);
@@ -126,7 +126,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
 
         if (!_cardDiscarded && (_eventPlayed.getZone() == Zone.VOID || _eventPlayed.getZone() == Zone.VOID_FROM_HAND)) {
             _cardDiscarded = true;
-            game.getGameState().removeCardsFromZone(_eventPlayed.getOwner(), Collections.singleton(_eventPlayed));
+            game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
             game.getGameState().addCardToZone(game, _eventPlayed, Zone.DISCARD);
         }
 

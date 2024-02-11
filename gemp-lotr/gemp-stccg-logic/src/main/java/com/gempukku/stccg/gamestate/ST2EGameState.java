@@ -6,17 +6,18 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.ST2EGame;
 
 import java.util.*;
 
-public class ST1EGameState extends GameState {
+public class ST2EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _seedDecks;
     private final Map<String, List<PhysicalCard>> _missionPiles;
     private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
     private final Map<String, List<PhysicalCard>> _tableCards;
-    private final ST1EGame _game;
+    private final ST2EGame _game;
 
-    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST1EGame game) {
+    public ST2EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST2EGame game) {
         super(players, decks, library, format);
         _format = format;
         _game = game;
@@ -30,7 +31,7 @@ public class ST1EGameState extends GameState {
     }
 
     @Override
-    public ST1EGame getGame() { return _game; }
+    public ST2EGame getGame() { return _game; }
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
@@ -63,14 +64,7 @@ public class ST1EGameState extends GameState {
                 for (String blueprintId : entry.getValue()) {
                     try {
                         CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
-                        if (blueprint.getCardType() == CardType.MISSION)
-                            subDeck.add(new PhysicalMissionCard(_game, _nextCardId, blueprintId, player, blueprint));
-                        else if (blueprint.getFacilityType() == FacilityType.OUTPOST)
-                            subDeck.add(new PhysicalFacilityCard(_game, _nextCardId, blueprintId, player, blueprint));
-                        else if (blueprint.getCardType() == CardType.PERSONNEL)
-                            subDeck.add(new PhysicalPersonnelCard(_game, _nextCardId, blueprintId, player, blueprint));
-                        else
-                            subDeck.add(new PhysicalCardImpl(_game, _nextCardId, blueprintId, player, blueprint));
+                        subDeck.add(new PhysicalCardImpl(_game, _nextCardId, blueprintId, player, blueprint));
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");

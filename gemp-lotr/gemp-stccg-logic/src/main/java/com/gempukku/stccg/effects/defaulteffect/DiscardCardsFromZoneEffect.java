@@ -24,17 +24,17 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
 
     public DiscardCardsFromZoneEffect(DefaultGame game, PhysicalCard source, Zone fromZone,
                                       PhysicalCard cardToDiscard) {
-        this(game, source, fromZone, source.getOwner(), Collections.singleton(cardToDiscard), false);
+        this(game, source, fromZone, source.getOwnerName(), Collections.singleton(cardToDiscard), false);
     }
     public DiscardCardsFromZoneEffect(ActionContext actionContext, Zone fromZone,
                                       Collection<PhysicalCard> cardsToDiscard) {
-        this(actionContext.getGame(), actionContext.getSource(), fromZone, actionContext.getSource().getOwner(),
+        this(actionContext.getGame(), actionContext.getSource(), fromZone, actionContext.getSource().getOwnerName(),
                 cardsToDiscard, false);
     }
 
     public DiscardCardsFromZoneEffect(DefaultGame game, PhysicalCard source, Zone fromZone,
                                       Collection<PhysicalCard> cardsToDiscard) {
-        this(game, source, fromZone, source.getOwner(), cardsToDiscard, false);
+        this(game, source, fromZone, source.getOwnerName(), cardsToDiscard, false);
     }
 
     public DiscardCardsFromZoneEffect(ActionContext actionContext, Zone fromZone, String playerId,

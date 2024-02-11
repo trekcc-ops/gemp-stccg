@@ -35,12 +35,12 @@ public class PutCardFromZoneIntoHandEffect extends DefaultEffect {
     @Override
     public boolean isPlayableInFull() {
         return _card.getZone() == _fromZone && (_game.getFormat().doesNotHaveRuleOfFour() ||
-                _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _card.getOwner()));
+                _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _card.getOwnerName()));
     }
 
     public String chatMessage(PhysicalCard card) {
         String cardInfoToShow = _reveal ? GameUtils.getCardLink(card) : "a card";
-        return card.getOwner() + " puts " + cardInfoToShow + " from " + _fromZone.getHumanReadable() + " into their hand";
+        return card.getOwnerName() + " puts " + cardInfoToShow + " from " + _fromZone.getHumanReadable() + " into their hand";
     }
 
     @Override
@@ -48,9 +48,9 @@ public class PutCardFromZoneIntoHandEffect extends DefaultEffect {
         if (isPlayableInFull()) {
             GameState gameState = _game.getGameState();
             gameState.sendMessage(chatMessage(_card));
-            gameState.removeCardsFromZone(_card.getOwner(), Collections.singleton(_card));
+            gameState.removeCardsFromZone(_card.getOwnerName(), Collections.singleton(_card));
             gameState.addCardToZone(_game, _card, Zone.HAND);
-            _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(_card.getOwner()));
+            _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(_card.getOwnerName()));
 
             return new FullEffectResult(true);
         }

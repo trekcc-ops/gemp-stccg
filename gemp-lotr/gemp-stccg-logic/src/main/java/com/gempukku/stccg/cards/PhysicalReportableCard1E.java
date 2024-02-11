@@ -2,11 +2,12 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
-    public PhysicalReportableCard1E(ST1EGame game, int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
+    public PhysicalReportableCard1E(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, blueprintId, owner, blueprint);
     }
     public boolean canReportToFacility(PhysicalFacilityCard facility) {
@@ -20,7 +21,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
                 in their native quadrant. */
         if (facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS)
           return facility.isCompatibleWith(affiliation) &&
-                  facility.isUsableBy(_owner) &&
+                  facility.isUsableBy(_ownerName) &&
                   facility.getCurrentQuadrant() == _nativeQuadrant;
         else
             return false;

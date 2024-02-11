@@ -54,9 +54,9 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             listDecks(request, responseWriter);
         } else if (uri.equals("/libraryList") && request.method() == HttpMethod.GET) {
             listLibraryDecks(responseWriter);
-        } else if (uri.equals("") && request.method() == HttpMethod.GET) {
+        } else if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getDeck(request, responseWriter);
-        } else if (uri.equals("") && request.method() == HttpMethod.POST) {
+        } else if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             saveDeck(request, responseWriter);
         } else if (uri.equals("/library") && request.method() == HttpMethod.GET) {
             getLibraryDeck(request, responseWriter);

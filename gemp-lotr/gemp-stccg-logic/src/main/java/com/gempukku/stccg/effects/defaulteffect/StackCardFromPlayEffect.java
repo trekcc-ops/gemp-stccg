@@ -47,7 +47,7 @@ public class StackCardFromPlayEffect extends DefaultEffect {
             Set<PhysicalCard> removeFromPlay = new HashSet<>(toMoveToDiscardCards);
             removeFromPlay.add(_card);
 
-            gameState.removeCardsFromZone(_card.getOwner(), removeFromPlay);
+            gameState.removeCardsFromZone(_card.getOwnerName(), removeFromPlay);
 
             // And put them in new zones (attached and stacked to discard, the card gets stacked on)
             for (PhysicalCard attachedCard : toMoveToDiscardCards)

@@ -41,11 +41,11 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         _twilightModifier = twilightModifier;
 
         _chooseTargetEffect =
-                new ChooseActiveCardEffect(_game,null, card.getOwner(), "Attach " + card.getFullName() + ". Choose target to attach to", filter) {
+                new ChooseActiveCardEffect(_game,null, card.getOwnerName(), "Attach " + card.getFullName() + ". Choose target to attach to", filter) {
                     @Override
                     protected void cardSelected(DefaultGame game, PhysicalCard target) {
                         _target = target;
-                        _game.getGameState().sendMessage(card.getOwner() + " plays " + GameUtils.getCardLink(card) + " from " + _playedFrom.getHumanReadable() + " on " + GameUtils.getCardLink(target));
+                        _game.getGameState().sendMessage(card.getOwnerName() + " plays " + GameUtils.getCardLink(card) + " from " + _playedFrom.getHumanReadable() + " on " + GameUtils.getCardLink(target));
                     }
                 };
     }
@@ -75,14 +75,14 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToAttach.getZone();
-            game.getGameState().removeCardsFromZone(_cardToAttach.getOwner(), Collections.singleton(_cardToAttach));
+            game.getGameState().removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
             if (playedFromZone == Zone.HAND)
                 game.getGameState().addCardToZone(game, _cardToAttach, Zone.VOID_FROM_HAND);
             else
                 game.getGameState().addCardToZone(game, _cardToAttach, Zone.VOID);
             if (playedFromZone == Zone.DRAW_DECK) {
-                game.getGameState().sendMessage(_cardToAttach.getOwner() + " shuffles their deck");
-                game.getGameState().shuffleDeck(_cardToAttach.getOwner());
+                game.getGameState().sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
+                game.getGameState().shuffleDeck(_cardToAttach.getOwnerName());
             }
         }
 
@@ -126,7 +126,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         } else {
             if (!_cardDiscarded) {
                 _cardDiscarded = true;
-                game.getGameState().removeCardsFromZone(_cardToAttach.getOwner(), Collections.singleton(_cardToAttach));
+                game.getGameState().removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
                 game.getGameState().addCardToZone(game, _cardToAttach, Zone.DISCARD);
             }
         }

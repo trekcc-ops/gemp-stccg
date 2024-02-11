@@ -44,7 +44,7 @@ public class DiscardCardAtRandomFromHandEffect extends DefaultEffect {
             List<? extends PhysicalCard> hand = gameState.getHand(_playerId);
             PhysicalCard randomCard = hand.get(ThreadLocalRandom.current().nextInt(hand.size()));
             gameState.sendMessage(_playerId + " randomly discards " + GameUtils.getCardLink(randomCard));
-            gameState.removeCardsFromZone(_source.getOwner(), Collections.singleton(randomCard));
+            gameState.removeCardsFromZone(_source.getOwnerName(), Collections.singleton(randomCard));
             gameState.addCardToZone(_game, randomCard, Zone.DISCARD);
             _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_source, randomCard, _forced));
             return new FullEffectResult(true);

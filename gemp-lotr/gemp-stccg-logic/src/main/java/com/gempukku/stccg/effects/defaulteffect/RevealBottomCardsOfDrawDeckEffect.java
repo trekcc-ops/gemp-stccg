@@ -37,7 +37,7 @@ public abstract class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
         LinkedList<PhysicalCard> bottomCards = new LinkedList<>(deck.subList(deck.size() - count, deck.size()));
 
         if (bottomCards.size() > 0) {
-            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwner(), false);
+            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwnerName(), false);
 
             String nextPlayer;
             while ((nextPlayer = playerOrder.getNextPlayer()) != null) {

@@ -71,7 +71,7 @@ public interface CardBlueprint {
 
     List<? extends Modifier> getInDiscardModifiers(PhysicalCard self);
 
-    boolean playRequirementsNotMet(DefaultGame game, PhysicalCard self);
+    boolean playRequirementsNotMet(PhysicalCard self);
 
     List<? extends Action> getPhaseActionsInHand(String playerId, PhysicalCard self);
 

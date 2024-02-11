@@ -30,8 +30,8 @@ public class TransferPermanentNotFromPlayEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             GameState gameState = _game.getGameState();
-            gameState.sendMessage(_physicalCard.getOwner() + " transfers " + GameUtils.getCardLink(_physicalCard) + " to " + GameUtils.getCardLink(_targetCard));
-            gameState.removeCardsFromZone(_physicalCard.getOwner(), Collections.singleton(_physicalCard));
+            gameState.sendMessage(_physicalCard.getOwnerName() + " transfers " + GameUtils.getCardLink(_physicalCard) + " to " + GameUtils.getCardLink(_targetCard));
+            gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
             gameState.attachCard(_game, _physicalCard, _targetCard);
 
             return new FullEffectResult(true);

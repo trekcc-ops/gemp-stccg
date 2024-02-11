@@ -8,21 +8,20 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.modifiers.ModifierHook;
-import com.gempukku.stccg.rules.GameUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class PhysicalCard implements Filterable {
     protected Zone _zone;
     protected final String _blueprintId;
     protected final CardBlueprint _blueprint;
-    protected final String _owner;
+    protected final Player _owner;
+    protected final String _ownerName;
     protected String _cardController;
     protected int _cardId;
     protected PhysicalCard _attachedTo;
@@ -31,12 +30,13 @@ public abstract class PhysicalCard implements Filterable {
     protected Map<Zone, List<ModifierHook>> _modifierHooksInZone; // modifier hooks specific to stacked and discard
     protected Object _whileInZoneData;
     protected int _locationZoneIndex;
-    public PhysicalCard(int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
+    public PhysicalCard(int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _blueprintId = blueprintId;
         _owner = owner;
+        _ownerName = owner.getPlayerId();
         _blueprint = blueprint;
-        _cardController = _owner; // TODO - This is likely not 100% accurate, as it is probably setting the controller before the card enters play.
+        _cardController = _ownerName; // TODO - This is likely not 100% accurate, as it is probably setting the controller before the card enters play.
     }
 
     public abstract DefaultGame getGame();
@@ -55,9 +55,10 @@ public abstract class PhysicalCard implements Filterable {
     }
     
     public int getCardId() { return _cardId; }
+    public Player getOwner() { return _owner; }
 
-    public String getOwner() {
-        return _owner;
+    public String getOwnerName() {
+        return _ownerName;
     }
 
     public void startAffectingGame() {
@@ -144,7 +145,7 @@ public abstract class PhysicalCard implements Filterable {
 
     public Quadrant getQuadrant() { return _blueprint.getQuadrant(); }
 
-    public boolean isAffectingGame() { return getGame().getGameState().getCurrentPlayerId().equals(_owner); }
+    public boolean isAffectingGame() { return getGame().getGameState().getCurrentPlayerId().equals(_ownerName); }
     public boolean canBeSeeded() { return false; }
     public boolean canBePlayed() { return true; }
 
@@ -219,8 +220,17 @@ public abstract class PhysicalCard implements Filterable {
         List<Modifier> result = new LinkedList<>();
         for (ModifierSource inPlayModifier : sources) {
             result.add(inPlayModifier.getModifier(
-                    new DefaultActionContext(_owner, getGame(), this, null, null)));
+                    new DefaultActionContext(_ownerName, getGame(), this, null, null)));
         }
         return result;
     }
+
+    public boolean hasTextRemoved() {
+        for (Modifier modifier : getGame().getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
+            if (modifier.hasRemovedText(getGame(), this))
+                return true;
+        }
+        return false;
+    }
+
 }

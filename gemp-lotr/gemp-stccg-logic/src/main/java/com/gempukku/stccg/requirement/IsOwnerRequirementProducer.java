@@ -10,6 +10,6 @@ public class IsOwnerRequirementProducer extends RequirementProducer {
     public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object);
 
-        return actionContext -> actionContext.getPerformingPlayer().equals(actionContext.getSource().getOwner());
+        return actionContext -> actionContext.getPerformingPlayer().equals(actionContext.getSource().getOwnerName());
     }
 }

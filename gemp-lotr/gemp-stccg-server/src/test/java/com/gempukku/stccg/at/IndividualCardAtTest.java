@@ -24,8 +24,8 @@ public class IndividualCardAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl mumakChieftain = new PhysicalCardImpl(100, "10_45", P2, _cardLibrary.getCardBlueprint("10_45"));
-        PhysicalCardImpl mumak = new PhysicalCardImpl(100, "5_73", P2, _cardLibrary.getCardBlueprint("5_73"));
+        PhysicalCardImpl mumakChieftain = new PhysicalCardImpl(_game, 100, "10_45", P2, _cardLibrary.getCardBlueprint("10_45"));
+        PhysicalCardImpl mumak = new PhysicalCardImpl(_game, 100, "5_73", P2, _cardLibrary.getCardBlueprint("5_73"));
 
         skipMulligans();
 
@@ -58,8 +58,8 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void oneGoodTurnDeservesAnother() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl smeagol = new PhysicalCardImpl(100, "5_29", P1, _cardLibrary.getCardBlueprint("5_29"));
-        PhysicalCardImpl oneGoodTurnDeservesAnother = new PhysicalCardImpl(101, "11_49", P1, _cardLibrary.getCardBlueprint("11_49"));
+        PhysicalCardImpl smeagol = new PhysicalCardImpl(_game, 100, "5_29", P1, _cardLibrary.getCardBlueprint("5_29"));
+        PhysicalCardImpl oneGoodTurnDeservesAnother = new PhysicalCardImpl(_game, 101, "11_49", P1, _cardLibrary.getCardBlueprint("11_49"));
 
         _game.getGameState().addCardToZone(_game, oneGoodTurnDeservesAnother, Zone.HAND);
         _game.getGameState().addCardToZone(_game, smeagol, Zone.FREE_CHARACTERS);
@@ -81,13 +81,13 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void sentBackAllowsPlayingCardInDeadPile() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl sentBack = new PhysicalCardImpl(100, "9_27", P1, _cardLibrary.getCardBlueprint("9_27"));
+        PhysicalCardImpl sentBack = new PhysicalCardImpl(_game, 100, "9_27", P1, _cardLibrary.getCardBlueprint("9_27"));
         _game.getGameState().addCardToZone(_game, sentBack, Zone.SUPPORT);
 
-        PhysicalCardImpl radagast1 = new PhysicalCardImpl(101, "9_26", P1, _cardLibrary.getCardBlueprint("9_26"));
+        PhysicalCardImpl radagast1 = new PhysicalCardImpl(_game, 101, "9_26", P1, _cardLibrary.getCardBlueprint("9_26"));
         _game.getGameState().addCardToZone(_game, radagast1, Zone.DEAD);
 
-        PhysicalCardImpl radagast2 = new PhysicalCardImpl(101, "9_26", P1, _cardLibrary.getCardBlueprint("9_26"));
+        PhysicalCardImpl radagast2 = new PhysicalCardImpl(_game, 101, "9_26", P1, _cardLibrary.getCardBlueprint("9_26"));
         _game.getGameState().addCardToZone(_game, radagast2, Zone.HAND);
 
         skipMulligans();
@@ -106,10 +106,10 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void hisFirstSeriousCheck() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl gandalf = new PhysicalCardImpl(100, "1_72", P1, _cardLibrary.getCardBlueprint("1_72"));
+        PhysicalCardImpl gandalf = new PhysicalCardImpl(_game, 100, "1_72", P1, _cardLibrary.getCardBlueprint("1_72"));
         _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
 
-        PhysicalCardImpl hisFirstSeriousCheck = new PhysicalCardImpl(100, "3_33", P1, _cardLibrary.getCardBlueprint("3_33"));
+        PhysicalCardImpl hisFirstSeriousCheck = new PhysicalCardImpl(_game, 100, "3_33", P1, _cardLibrary.getCardBlueprint("3_33"));
         _game.getGameState().addCardToZone(_game, hisFirstSeriousCheck, Zone.HAND);
 
         skipMulligans();
@@ -117,7 +117,7 @@ public class IndividualCardAtTest extends AbstractAtTest {
         // End fellowship
         playerDecided(P1, "");
 
-        PhysicalCardImpl urukHaiRaidingParty = new PhysicalCardImpl(102, "1_158", P2, _cardLibrary.getCardBlueprint("1_158"));
+        PhysicalCardImpl urukHaiRaidingParty = new PhysicalCardImpl(_game, 102, "1_158", P2, _cardLibrary.getCardBlueprint("1_158"));
         _game.getGameState().addCardToZone(_game, urukHaiRaidingParty, Zone.SHADOW_CHARACTERS);
 
         // End shadow
@@ -132,10 +132,10 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void moreYetToComeWorks() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl gimli = new PhysicalCardImpl(100, "1_12", P1, _cardLibrary.getCardBlueprint("1_12"));
-        PhysicalCardImpl moreYetToCome = new PhysicalCardImpl(101, "10_3", P1, _cardLibrary.getCardBlueprint("10_3"));
-        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
-        PhysicalCardImpl goblinRunner2 = new PhysicalCardImpl(103, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
+        PhysicalCardImpl gimli = new PhysicalCardImpl(_game, 100, "1_12", P1, _cardLibrary.getCardBlueprint("1_12"));
+        PhysicalCardImpl moreYetToCome = new PhysicalCardImpl(_game, 101, "10_3", P1, _cardLibrary.getCardBlueprint("10_3"));
+        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(_game, 102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
+        PhysicalCardImpl goblinRunner2 = new PhysicalCardImpl(_game, 103, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
 
         _game.getGameState().addCardToZone(_game, moreYetToCome, Zone.HAND);
 
@@ -187,9 +187,9 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void treebeardEarthborn() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl treebeard = new PhysicalCardImpl(100, "4_103", P1, _cardLibrary.getCardBlueprint("4_103"));
-        PhysicalCardImpl merry = new PhysicalCardImpl(101, "4_311", P1, _cardLibrary.getCardBlueprint("4_311"));
-        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
+        PhysicalCardImpl treebeard = new PhysicalCardImpl(_game, 100, "4_103", P1, _cardLibrary.getCardBlueprint("4_103"));
+        PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "4_311", P1, _cardLibrary.getCardBlueprint("4_311"));
+        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(_game, 102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
 
         skipMulligans();
 
@@ -272,8 +272,8 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void orcMarksmanUnique() throws CardNotFoundException, DecisionResultInvalidException {
         initializeSimplestGame();
 
-        PhysicalCardImpl marksman1 = new PhysicalCardImpl(100, "40_227", P2, _cardLibrary.getCardBlueprint("40_227"));
-        PhysicalCardImpl marksman2 = new PhysicalCardImpl(101, "40_227", P2, _cardLibrary.getCardBlueprint("40_227"));
+        PhysicalCardImpl marksman1 = new PhysicalCardImpl(_game, 100, "40_227", P2, _cardLibrary.getCardBlueprint("40_227"));
+        PhysicalCardImpl marksman2 = new PhysicalCardImpl(_game, 101, "40_227", P2, _cardLibrary.getCardBlueprint("40_227"));
 
         skipMulligans();
 
@@ -293,9 +293,9 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void frodosPipeOncePerPhase() throws CardNotFoundException, DecisionResultInvalidException {
         initializeSimplestGame();
 
-        PhysicalCardImpl frodosPipe = new PhysicalCardImpl(100, "40_250", P1, _cardLibrary.getCardBlueprint("40_250"));
-        PhysicalCardImpl pipeweed1 = new PhysicalCardImpl(101, "40_255", P1, _cardLibrary.getCardBlueprint("40_255"));
-        PhysicalCardImpl pipeweed2 = new PhysicalCardImpl(102, "40_255", P1, _cardLibrary.getCardBlueprint("40_255"));
+        PhysicalCardImpl frodosPipe = new PhysicalCardImpl(_game, 100, "40_250", P1, _cardLibrary.getCardBlueprint("40_250"));
+        PhysicalCardImpl pipeweed1 = new PhysicalCardImpl(_game, 101, "40_255", P1, _cardLibrary.getCardBlueprint("40_255"));
+        PhysicalCardImpl pipeweed2 = new PhysicalCardImpl(_game, 102, "40_255", P1, _cardLibrary.getCardBlueprint("40_255"));
 
         _game.getGameState().addCardToZone(_game, frodosPipe, Zone.HAND);
         _game.getGameState().addCardToZone(_game, pipeweed1, Zone.SUPPORT);
@@ -316,8 +316,8 @@ public class IndividualCardAtTest extends AbstractAtTest {
     public void athelasDoesNothing() throws CardNotFoundException, DecisionResultInvalidException {
         initializeSimplestGame();
 
-        PhysicalCardImpl athelas = new PhysicalCardImpl(100, "1_94", P1, _cardLibrary.getCardBlueprint("1_94"));
-        PhysicalCardImpl aragorn = new PhysicalCardImpl(101, "1_89", P1, _cardLibrary.getCardBlueprint("1_89"));
+        PhysicalCardImpl athelas = new PhysicalCardImpl(_game, 100, "1_94", P1, _cardLibrary.getCardBlueprint("1_94"));
+        PhysicalCardImpl aragorn = new PhysicalCardImpl(_game, 101, "1_89", P1, _cardLibrary.getCardBlueprint("1_89"));
 
         _game.getGameState().addCardToZone(_game, aragorn, Zone.FREE_CHARACTERS);
         _game.getGameState().attachCard(_game, athelas, aragorn);

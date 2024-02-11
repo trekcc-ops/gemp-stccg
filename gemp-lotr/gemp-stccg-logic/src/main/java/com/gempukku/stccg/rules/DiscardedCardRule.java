@@ -39,7 +39,7 @@ public class DiscardedCardRule {
                         if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
                             final PhysicalCard discardedCard = discardResult.getDiscardedCard();
-                            if (discardedCard.getOwner().equals(playerId)) {
+                            if (discardedCard.getOwnerName().equals(playerId)) {
                                 OptionalTriggerAction trigger = discardedCard.getBlueprint().getDiscardedFromPlayOptionalTrigger(playerId, game, discardedCard);
                                 if (trigger != null) {
                                     trigger.setVirtualCardAction(true);

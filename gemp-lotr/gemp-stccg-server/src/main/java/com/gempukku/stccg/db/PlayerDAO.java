@@ -36,5 +36,5 @@ public interface PlayerDAO {
 
     void updateLastLoginIp(String login, String remoteAddress) throws SQLException;
 
-    List<DBDefs.Player> getAllPlayers();
+    List<DBDefs.DBPlayer> getAllPlayers();
 }

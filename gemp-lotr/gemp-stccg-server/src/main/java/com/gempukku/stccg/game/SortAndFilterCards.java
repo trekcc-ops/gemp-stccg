@@ -43,7 +43,7 @@ public class SortAndFilterCards {
         }
 
         String sort = getSort(filterParams);
-        if (sort == null || sort.equals(""))
+        if (sort == null || sort.isEmpty())
             sort = "name";
 
         final String[] sortSplit = sort.split(",");

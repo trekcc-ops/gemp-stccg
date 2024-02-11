@@ -6,7 +6,6 @@ import com.gempukku.stccg.effects.defaulteffect.PayTwilightCostEffect;
 import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 
@@ -27,7 +26,7 @@ public class TransferPermanentAction extends ActivateCardAction {
                     }
                 });
         appendEffect(
-                new ChooseActiveCardsEffect(null, card.getOwner(), "Choose target to attach to", 1, 1, filter) {
+                new ChooseActiveCardsEffect(null, card.getOwnerName(), "Choose target to attach to", 1, 1, filter) {
                     @Override
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> target) {
                         if (target.size() > 0) {

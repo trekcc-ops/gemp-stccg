@@ -37,7 +37,7 @@ public class CardDeck {
         for (int i = 0; i < parts.length; i += 2) {
             List<String> cards = new ArrayList<>();
             for (String card : parts[i+1].split(",")) {
-                if (!card.equals("")) {
+                if (!card.isEmpty()) {
                     cards.add(card);
                 }
             }

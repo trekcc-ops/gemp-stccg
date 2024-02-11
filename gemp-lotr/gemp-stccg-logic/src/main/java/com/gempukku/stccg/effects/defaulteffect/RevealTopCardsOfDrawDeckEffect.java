@@ -37,7 +37,7 @@ public abstract class RevealTopCardsOfDrawDeckEffect extends DefaultEffect {
         int count = Math.min(deck.size(), _count);
         LinkedList<PhysicalCard> topCards = new LinkedList<>(deck.subList(0, count));
         if (topCards.size() > 0) {
-            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwner(), false);
+            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwnerName(), false);
 
             String nextPlayer;
             while ((nextPlayer = playerOrder.getNextPlayer()) != null) {

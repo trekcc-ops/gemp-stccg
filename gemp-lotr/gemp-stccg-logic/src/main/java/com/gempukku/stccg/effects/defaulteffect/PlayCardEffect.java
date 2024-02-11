@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.results.PlayCardResult;
 
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class PlayCardEffect extends DefaultEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        _game.getGameState().removeCardsFromZone(_cardPlayed.getOwner(), Collections.singleton(_cardPlayed));
+        _game.getGameState().removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
         if (_attachedToCard != null) {
             _game.getGameState().attachCard(_game, _cardPlayed, _attachedToCard);
         } else {

@@ -66,7 +66,7 @@ public class AddActivated implements ModifierSourceProducer {
                         });
             }
             actionSource.addPlayRequirement(
-                    (actionContext) -> PlayConditions.isPhase(actionContext.getGame(), phase));
+                    (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase);
             EffectUtils.processRequirementsCostsAndEffects(object, environment, actionSource);
 
             actionSources.add(actionSource);
@@ -77,7 +77,7 @@ public class AddActivated implements ModifierSourceProducer {
             public List<? extends ActivateCardAction> getExtraPhaseAction(DefaultGame game, PhysicalCard card) {
                 LinkedList<ActivateCardAction> result = new LinkedList<>();
                 for (ActionSource inPlayPhaseAction : actionSources) {
-                    DefaultActionContext actionContext = new DefaultActionContext(card.getOwner(), game, card, null, null);
+                    DefaultActionContext actionContext = new DefaultActionContext(card.getOwnerName(), game, card, null, null);
                     if (inPlayPhaseAction.isValid(actionContext)) {
                         ActivateCardAction action = new ActivateCardAction(game, card);
                         inPlayPhaseAction.createAction(action, actionContext);

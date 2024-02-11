@@ -55,7 +55,7 @@ public class ReturnCardsToHandEffect extends DefaultEffect {
         cardsToRemoveFromZones.addAll(cardsToReturnToHand);
 
         // Remove from their zone
-        gameState.removeCardsFromZone(_source.getOwner(), cardsToRemoveFromZones);
+        gameState.removeCardsFromZone(_source.getOwnerName(), cardsToRemoveFromZones);
 
         // Add cards to hand
         for (PhysicalCard card : cardsToReturnToHand)

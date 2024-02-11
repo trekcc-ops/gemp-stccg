@@ -67,7 +67,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     }
 
     protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
-        if (result.equals(""))
+        if (result.isEmpty())
             throw new DecisionResultInvalidException();
 
         try {

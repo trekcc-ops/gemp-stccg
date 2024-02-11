@@ -2,8 +2,6 @@ package com.gempukku.stccg.effects.defaulteffect;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.cards.PhysicalFacilityCard;
-import com.gempukku.stccg.cards.PhysicalNounCard1E;
-import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.ST1EGame;
@@ -42,11 +40,11 @@ public class SeedOutpostEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         ST1EGameState gameState = _game.getGameState();
 
-        _game.getGameState().sendMessage(_cardSeeded.getOwner() + " seeded " +
+        _game.getGameState().sendMessage(_cardSeeded.getOwnerName() + " seeded " +
                 GameUtils.getCardLink(_cardSeeded));
 
         gameState.removeCardFromZone(_cardSeeded);
-        _game.getGameState().getPlayer(_cardSeeded.getOwner()).addPlayedAffiliation(_cardSeeded.getCurrentAffiliation());
+        _game.getGameState().getPlayer(_cardSeeded.getOwnerName()).addPlayedAffiliation(_cardSeeded.getCurrentAffiliation());
         _game.getGameState().seedFacilityAtLocation(_cardSeeded, _spacelineIndex);
         _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(_playedFrom, _cardSeeded));
 

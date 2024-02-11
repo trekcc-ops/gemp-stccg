@@ -43,7 +43,7 @@ public class ShuffleCardsIntoDrawDeckEffect extends DefaultEffect {
         if (!isPlayableInFull()) {
             return new FullEffectResult(false);
         } else  {
-                _game.getGameState().removeCardsFromZone(_source.getOwner(), _cards);
+                _game.getGameState().removeCardsFromZone(_source.getOwnerName(), _cards);
                 _game.getGameState().shuffleCardsIntoDeck(_cards, _shufflingPlayer);
                 _game.getGameState().sendMessage(GameUtils.getAppendedNames(_cards) + " " + GameUtils.be(_cards) + " shuffled into " + _shufflingPlayer + " deck");
             return new FullEffectResult(true);

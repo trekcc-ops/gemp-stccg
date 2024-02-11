@@ -32,8 +32,8 @@ public class PutPlayedEventIntoHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(card.getOwner() + " puts " + GameUtils.getCardLink(card) + " into hand");
-            _game.getGameState().removeCardsFromZone(card.getOwner(), Collections.singletonList(card));
+            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + GameUtils.getCardLink(card) + " into hand");
+            _game.getGameState().removeCardsFromZone(card.getOwnerName(), Collections.singletonList(card));
             _game.getGameState().addCardToZone(_game, card, Zone.HAND);
             return new FullEffectResult(true);
         }

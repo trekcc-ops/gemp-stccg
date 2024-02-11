@@ -60,7 +60,7 @@ public class User {
     private final String _createIp;
     private final String _lastIp;
 
-    public User(DBDefs.Player def) {
+    public User(DBDefs.DBPlayer def) {
         this(def.id, def.name, def.password, def.type, def.last_login_reward, def.GetBannedUntilDate(), def.create_ip, def.last_ip);
     }
 

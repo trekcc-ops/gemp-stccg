@@ -44,7 +44,7 @@ public class PlayMissionEffect extends DefaultEffect {
         ST1EGameState gameState = _game.getGameState();
 
         final Zone playedFromZone = _cardPlayed.getZone();
-        _game.getGameState().sendMessage(_cardPlayed.getOwner() + " played " +
+        _game.getGameState().sendMessage(_cardPlayed.getOwnerName() + " played " +
                 GameUtils.getCardLink(_cardPlayed) +  " from " + playedFromZone.getHumanReadable());
 
         gameState.removeCardFromZone(_cardPlayed);

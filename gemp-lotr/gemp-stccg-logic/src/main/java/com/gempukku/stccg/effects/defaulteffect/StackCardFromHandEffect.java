@@ -22,8 +22,8 @@ public class StackCardFromHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(_card.getOwner() + " stacks " + GameUtils.getCardLink(_card) + " from hand on " + GameUtils.getCardLink(_stackOn));
-            _game.getGameState().removeCardsFromZone(_card.getOwner(), Collections.singleton(_card));
+            _game.getGameState().sendMessage(_card.getOwnerName() + " stacks " + GameUtils.getCardLink(_card) + " from hand on " + GameUtils.getCardLink(_stackOn));
+            _game.getGameState().removeCardsFromZone(_card.getOwnerName(), Collections.singleton(_card));
             _game.getGameState().stackCard(_game, _card, _stackOn);
             return new FullEffectResult(true);
         }

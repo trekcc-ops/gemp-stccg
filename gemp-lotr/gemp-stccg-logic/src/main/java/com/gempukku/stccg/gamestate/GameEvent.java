@@ -211,7 +211,7 @@ public class GameEvent {
     }
 
     public GameEvent card(PhysicalCard physicalCard) {
-        GameEvent gameEvent = cardId(physicalCard.getCardId()).blueprintId(physicalCard.getBlueprintId()).participantId(physicalCard.getOwner()).zone(physicalCard.getZone()).imageUrl(physicalCard.getImageUrl());
+        GameEvent gameEvent = cardId(physicalCard.getCardId()).blueprintId(physicalCard.getBlueprintId()).participantId(physicalCard.getOwnerName()).zone(physicalCard.getZone()).imageUrl(physicalCard.getImageUrl());
         if (physicalCard.getCardController() != null)
             gameEvent = gameEvent.controllerId(physicalCard.getCardController());
 

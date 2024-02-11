@@ -187,7 +187,7 @@ public class Filters {
     public static final Filter active = (game, physicalCard) -> game.getGameState().isCardInPlayActive(physicalCard);
 
     public static Filter canBeDiscarded(final PhysicalCard source) {
-        return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(game, source.getOwner(), physicalCard, source);
+        return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(game, source.getOwnerName(), physicalCard, source);
     }
 
     public static Filter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
@@ -216,7 +216,7 @@ public class Filters {
 
     public static Filter playable(final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
         return (game1, physicalCard) -> {
-            Side expectedSide = (physicalCard.getOwner().equals(game1.getGameState().getCurrentPlayerId()) ? Side.FREE_PEOPLE : Side.SHADOW);
+            Side expectedSide = (physicalCard.getOwnerName().equals(game1.getGameState().getCurrentPlayerId()) ? Side.FREE_PEOPLE : Side.SHADOW);
             final CardBlueprint blueprint = physicalCard.getBlueprint();
             if (blueprint.getSide() != expectedSide)
                 return false;
@@ -246,7 +246,7 @@ public class Filters {
     }
 
     public static Filter owner(final String playerId) {
-        return (game, physicalCard) -> physicalCard.getOwner() != null && physicalCard.getOwner().equals(playerId);
+        return (game, physicalCard) -> physicalCard.getOwnerName() != null && physicalCard.getOwnerName().equals(playerId);
     }
 
     public static Filter your(final String playerId) {
@@ -378,9 +378,9 @@ public class Filters {
     public static final Filter activeSide = (game, physicalCard) -> {
         boolean shadow = physicalCard.getBlueprint().getSide() == Side.SHADOW;
         if (shadow)
-            return !physicalCard.getOwner().equals(game.getGameState().getCurrentPlayerId());
+            return !physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
         else
-            return physicalCard.getOwner().equals(game.getGameState().getCurrentPlayerId());
+            return physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
     };
 
     private static Filter andInternal(final Filter... filters) {

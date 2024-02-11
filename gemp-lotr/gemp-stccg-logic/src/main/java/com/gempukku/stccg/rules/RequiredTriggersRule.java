@@ -27,7 +27,7 @@ public class RequiredTriggersRule {
                     public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect) {
                         List<RequiredTriggerAction> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter())) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                            if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends RequiredTriggerAction> actions = activatableCard.getBlueprint().getRequiredBeforeTriggers(game, effect, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
@@ -41,7 +41,7 @@ public class RequiredTriggersRule {
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
                         List<RequiredTriggerAction> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter())) {
-                            if (!game.getModifiersQuerying().hasTextRemoved(game, activatableCard)) {
+                            if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends RequiredTriggerAction> actions = activatableCard.getBlueprint().getRequiredAfterTriggers(game, effectResult, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);

@@ -63,7 +63,7 @@ public class DBDefs {
         public String notes;
     }
 
-    public static class Player {
+    public static class DBPlayer {
         public int id;
         public String name;
         public String password;

@@ -20,7 +20,7 @@ public class PlayPermanentForFreeAction extends AbstractCostToEffectAction {
     public PlayPermanentForFreeAction(PhysicalCard card, Zone zone) {
         _permanentPlayed = card;
         setText("Play " + _permanentPlayed.getFullName());
-        setPerformingPlayer(card.getOwner());
+        setPerformingPlayer(card.getOwnerName());
 
         _fromZone = card.getZone();
         _toZone = zone;
@@ -46,18 +46,18 @@ public class PlayPermanentForFreeAction extends AbstractCostToEffectAction {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _permanentPlayed.getZone();
-            game.getGameState().sendMessage(_permanentPlayed.getOwner() + " plays " +
+            game.getGameState().sendMessage(_permanentPlayed.getOwnerName() + " plays " +
                     GameUtils.getCardLink(_permanentPlayed) +  " from " + playedFromZone.getHumanReadable() +
                     " to " + _toZone.getHumanReadable());
-            game.getGameState().removeCardsFromZone(_permanentPlayed.getOwner(),
+            game.getGameState().removeCardsFromZone(_permanentPlayed.getOwnerName(),
                     Collections.singleton(_permanentPlayed));
             if (playedFromZone == Zone.HAND)
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID_FROM_HAND);
             else
                 game.getGameState().addCardToZone(game, _permanentPlayed, Zone.VOID);
             if (playedFromZone == Zone.DRAW_DECK) {
-                game.getGameState().sendMessage(_permanentPlayed.getOwner() + " shuffles their deck");
-                game.getGameState().shuffleDeck(_permanentPlayed.getOwner());
+                game.getGameState().sendMessage(_permanentPlayed.getOwnerName() + " shuffles their deck");
+                game.getGameState().shuffleDeck(_permanentPlayed.getOwnerName());
             }
         }
 

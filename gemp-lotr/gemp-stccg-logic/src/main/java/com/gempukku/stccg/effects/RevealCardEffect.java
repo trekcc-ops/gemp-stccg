@@ -44,7 +44,7 @@ public class RevealCardEffect implements Effect {
     @Override
     public void playEffect() {
         if (_cards.size() > 0) {
-            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwner(), false);
+            final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwnerName(), false);
 
             String nextPlayer;
             while ((nextPlayer = playerOrder.getNextPlayer()) != null) {

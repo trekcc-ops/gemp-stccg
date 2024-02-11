@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effects.AbstractSubActionEffect;
 import com.gempukku.stccg.effects.defaulteffect.StackCardFromPlayEffect;
 import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayConditions;
 
@@ -37,7 +38,7 @@ public class ChooseAndStackCardFromPlayEffect extends AbstractSubActionEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return PlayConditions.isActive(_game, _cardFilter) && PlayConditions.isActive(_game, _stackOnFilter);
+        return (Filters.countActive(_game, _cardFilter) >= 1) && (Filters.countActive(_game, _stackOnFilter) >= 1);
     }
 
     @Override

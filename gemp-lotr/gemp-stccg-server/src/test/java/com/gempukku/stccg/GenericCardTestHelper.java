@@ -8,7 +8,6 @@ import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.FilterFactory;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
 
@@ -267,7 +266,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void AttachCardsTo(PhysicalCardImpl bearer, PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().attachCard(_game, card, bearer);
         });
     }
@@ -280,7 +279,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void StackCardsOn(PhysicalCardImpl on, PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().stackCard(_game, card, on);
         });
     }
@@ -290,7 +289,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void FreepsMoveCardsToTopOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
         });
     }
@@ -299,7 +298,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void ShadowMoveCardsToTopOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
         });
     }
@@ -309,7 +308,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void FreepsMoveCardsToBottomOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().putCardOnBottomOfDeck(card);
         });
     }
@@ -318,7 +317,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void ShadowMoveCardsToBottomOfDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().putCardOnBottomOfDeck(card);
         });
     }
@@ -346,7 +345,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void FreepsShuffleCardsInDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
         });
 
@@ -357,7 +356,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
     public void ShadowShuffleCardsInDeck(PhysicalCardImpl...cards) {
         Arrays.stream(cards).forEach(card -> {
-            RemoveCardZone(card.getOwner(), card);
+            RemoveCardZone(card.getOwnerName(), card);
             _game.getGameState().putCardOnTopOfDeck(card);
         });
 
@@ -674,18 +673,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return card.getBlueprint().getCardType() == type
             || _game.getModifiersQuerying().isAdditionalCardType(_game, card, type);
     }
-
-    public Boolean CanBeAssigned(PhysicalCardImpl card)
-    {
-        return CanBeAssigned(card, Side.SHADOW) || CanBeAssigned(card, Side.FREE_PEOPLE);
-    }
-
-    public Boolean CanBeAssigned(PhysicalCardImpl card, Side side)
-    {
-        return _game.getModifiersQuerying().canBeAssignedToSkirmish(_game, side, card);
-    }
-
-
 
 
     public void ApplyAdHocModifier(Modifier mod)

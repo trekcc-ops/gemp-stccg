@@ -2,7 +2,6 @@ package com.gempukku.stccg.effects.defaulteffect;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.cards.PhysicalFacilityCard;
-import com.gempukku.stccg.cards.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
@@ -42,13 +41,13 @@ public class ReportCardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         ST1EGameState gameState = _game.getGameState();
 
-        _game.getGameState().sendMessage(_cardPlayed.getOwner() + " played " +
+        _game.getGameState().sendMessage(_cardPlayed.getOwnerName() + " played " +
                 GameUtils.getCardLink(_cardPlayed));
 
         gameState.removeCardFromZone(_cardPlayed);
-        _game.getGameState().getPlayer(_cardPlayed.getOwner()).addPlayedAffiliation(_cardPlayed.getCurrentAffiliation());
+        _game.getGameState().getPlayer(_cardPlayed.getOwnerName()).addPlayedAffiliation(_cardPlayed.getCurrentAffiliation());
         _game.getGameState().sendMessage(
-                "DEBUG: " + _cardPlayed.getOwner() + " now playing: " +
+                "DEBUG: " + _cardPlayed.getOwnerName() + " now playing: " +
                         _cardPlayed.getCurrentAffiliation().getHumanReadable());
         _game.getGameState().reportCardToFacility(_cardPlayed, _reportingDestination);
         _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(_playedFrom, _cardPlayed));

@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
@@ -14,7 +15,7 @@ public class PhysicalNounCard1E extends PhysicalCard {
     protected Quadrant _nativeQuadrant;
     protected ST1ELocation _currentLocation;
     protected final ST1EGame _game;
-    public PhysicalNounCard1E(ST1EGame game, int cardId, String blueprintId, String owner, CardBlueprint blueprint) {
+    public PhysicalNounCard1E(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         super(cardId, blueprintId, owner, blueprint);
         _affiliationOptions = blueprint.getAffiliations();
         if (_affiliationOptions.size() == 1)
