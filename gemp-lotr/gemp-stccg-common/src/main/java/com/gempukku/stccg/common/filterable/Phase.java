@@ -9,6 +9,7 @@ public enum Phase {
     SEED_DILEMMA("Dilemma seed phase", true, true),
     SEED_FACILITY("Facility seed phase", true, true),
     PLAY("Play phase", true, true),
+    NORMAL_CARD_PLAY("Normal card play", true, true),
     // Tribbles
     TRIBBLES_TURN("Tribbles turn", true, true),
     // LotR

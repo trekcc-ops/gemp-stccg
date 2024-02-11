@@ -2,12 +2,14 @@ package com.gempukku.stccg.effects.choose;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.PhysicalFacilityCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +50,12 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
     public ChooseCardsOnTableEffect(DefaultGame game, Action action, String playerId, String choiceText, Collection<PhysicalCard> cards) {
         this(game, action, playerId, choiceText, 1,1,cards,Filters.any);
     }
+
+    public ChooseCardsOnTableEffect(DefaultGame game, Action action, String playerId, String choiceText,
+                                    int minimum, int maximum, Collection<PhysicalCard> cards) {
+        this(game, action, playerId, choiceText, minimum, maximum, cards, Filters.any);
+    }
+
     public ChooseCardsOnTableEffect(DefaultGame game, Action action, String playerId, String choiceText, int minimum, int maximum, Collection<PhysicalCard> cards, Filterable filters) {
         _action = action;
         _playerId = playerId;

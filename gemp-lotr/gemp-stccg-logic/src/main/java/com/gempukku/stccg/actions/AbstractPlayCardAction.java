@@ -12,12 +12,14 @@ public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction 
     protected String _text;
     private boolean _virtualCardAction;
     private String _performingPlayer;
+    protected final Action _thisAction;
     /**
      * Creates an action for playing the specified card.
      * @param actionSource the card to initiate the deployment
      */
     public AbstractPlayCardAction(PhysicalCard actionSource) {
         _actionSource = actionSource;
+        _thisAction = this;
     }
 
     public ActionType getType() {

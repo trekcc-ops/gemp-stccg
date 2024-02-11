@@ -1,14 +1,14 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalMissionCard;
 import com.gempukku.stccg.cards.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
-import com.gempukku.stccg.effects.defaulteffect.SeedOutpostEffect;
+import com.gempukku.stccg.effects.defaulteffect.ReportCardEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -21,62 +21,68 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SeedOutpostAction extends AbstractPlayCardAction {
-    private SeedOutpostEffect _seedCardEffect;
-    private final PhysicalFacilityCard _seedCard;
-    private boolean _cardWasSeeded;
+public class ReportCardAction extends AbstractPlayCardAction {
+    private ReportCardEffect _playCardEffect;
+    private final PhysicalReportableCard1E _cardToReport;
+    private PhysicalFacilityCard _reportingDestination;
+    private boolean _cardPlayed;
     private int _locationZoneIndex;
     private final Zone _fromZone;
-    private boolean _placementChosen;
-    private boolean _affiliationWasChosen;
-    private final Set<Affiliation> _affiliationOptions = new HashSet<>();
-    private Affiliation _selectedAffiliation;
     private final ST1EGame _game;
-    public SeedOutpostAction(ST1EGame game, PhysicalFacilityCard cardToSeed) {
-        super(cardToSeed);
-        _seedCard = cardToSeed;
-        setText("Seed " + GameUtils.getFullName(_seedCard));
-        setPerformingPlayer(_seedCard.getOwner());
-        _fromZone = _seedCard.getZone();
+    private boolean _destinationChosen;
+    private final Set<Affiliation> _affiliationOptions = new HashSet<>();
+    private boolean _affiliationWasChosen;
+    private Affiliation _selectedAffiliation;
+
+    public ReportCardAction(ST1EGame game, PhysicalReportableCard1E cardToPlay) {
+        super(cardToPlay);
+        _cardToReport = cardToPlay;
+        _fromZone = cardToPlay.getZone();
+        setText("Play " + GameUtils.getFullName(_cardToReport));
+        setPerformingPlayer(_cardToReport.getOwner());
         _game = game;
-        _placementChosen = false;
-        if (cardToSeed.isMultiAffiliation()) {
+        _destinationChosen = false;
+        if (_cardToReport.isMultiAffiliation()) {
             _affiliationWasChosen = false;
         } else {
             _affiliationWasChosen = true;
-            _selectedAffiliation = _seedCard.getCurrentAffiliation();
+            _selectedAffiliation = _cardToReport.getCurrentAffiliation();
         }
     }
 
     @Override
-    public PhysicalFacilityCard getPlayedCard() { return _seedCard; }
+    public PhysicalReportableCard1E getPlayedCard() { return _cardToReport; }
     
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
     
     @Override
     public Effect nextEffect(DefaultGame game) {
-            String playerId = getPerformingPlayer();
+        // TODO - Add affiliation of personnel to affiliations player is playing
+        String playerId = getPerformingPlayer();
         ST1EGameState gameState = _game.getGameState();
 
-        Set<PhysicalCard> availableMissions = new HashSet<>();
+        Collection<PhysicalCard> availableFacilities = new HashSet<>();
         for (ST1ELocation location : gameState.getSpacelineLocations()) {
-            PhysicalMissionCard missionCard = location.getMissionForPlayer(playerId);
-            if (_seedCard.canSeedAtMission(missionCard)) {
-                availableMissions.add(missionCard);
+            for (PhysicalFacilityCard facility : location.getOutposts()) {
+                if (_cardToReport.canReportToFacility(facility))
+                    availableFacilities.add(facility);
             }
         }
 
-        if (!_placementChosen) {
-            appendCost(new ChooseCardsOnTableEffect(_game, _thisAction, getPerformingPlayer(), "Choose a mission to seed " + GameUtils.getCardLink(_seedCard) + " at", availableMissions) {
+        if (!_destinationChosen) {
+            appendCost(new ChooseCardsOnTableEffect(
+                    _game, _thisAction, getPerformingPlayer(),
+                    "Choose a facility to report " + GameUtils.getCardLink(_cardToReport) + " to", availableFacilities
+            ) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                     assert selectedCards.size() == 1;
-                    PhysicalMissionCard selectedMission = (PhysicalMissionCard) Iterables.getOnlyElement(selectedCards);
-                    _locationZoneIndex = selectedMission.getLocationZoneIndex();
-                    _placementChosen = true;
+                    PhysicalFacilityCard selectedFacility = (PhysicalFacilityCard) Iterables.getOnlyElement(selectedCards);
+                    _reportingDestination = selectedFacility;
+                    _destinationChosen = true;
                     if (!_affiliationWasChosen) {
-                        for (Affiliation affiliation : _seedCard.getAffiliationOptions()) {
-                            if (_seedCard.canSeedAtMissionAsAffiliation(selectedMission, affiliation))
+                        for (Affiliation affiliation : _cardToReport.getAffiliationOptions()) {
+                            if (_cardToReport.canReportToFacilityAsAffiliation(selectedFacility, affiliation))
                                 _affiliationOptions.add(affiliation);
                         }
                         if (_affiliationOptions.size() == 1) {
@@ -97,16 +103,17 @@ public class SeedOutpostAction extends AbstractPlayCardAction {
                 }
             });
         }
-        if (!_cardWasSeeded) {
-            _seedCard.setCurrentAffiliation(_selectedAffiliation);
-            _cardWasSeeded = true;
-            _seedCardEffect = new SeedOutpostEffect(_game, _fromZone, _seedCard, _locationZoneIndex);
-            return _seedCardEffect;
+        if (!_cardPlayed) {
+            _cardToReport.setCurrentAffiliation(_selectedAffiliation);
+            _cardPlayed = true;
+            _playCardEffect = new ReportCardEffect(_game, _fromZone, _cardToReport, _reportingDestination);
+            return _playCardEffect;
         }
         return null;
+
     }
 
     public boolean wasCarriedOut() {
-        return _cardWasSeeded && _seedCardEffect.wasCarriedOut();
+        return _cardPlayed && _playCardEffect.wasCarriedOut();
     }
 }

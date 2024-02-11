@@ -15,7 +15,6 @@ public class ST1ERuleSet extends RuleSet {
     public void applyRuleSet() {
         new DiscardedCardRule(_actionsEnvironment).applyRule();
         new ST1EPlayCardInPhaseRule(_actionsEnvironment).applyRule();
-        new TribblesOptionalTriggersRule(_actionsEnvironment).applyRule();
         new ActivateResponseAbilitiesRule(_actionsEnvironment).applyRule();
         new RequiredTriggersRule(_actionsEnvironment).applyRule();
     }

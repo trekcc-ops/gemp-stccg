@@ -8,11 +8,13 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.ST1ELocation;
 
 import java.util.*;
 
 public class Filters {
-    private static final Map<CardType, Filter> _typeFilterMap = new HashMap<>();
+    private static final Map<CardType, Filter> _cardTypeFilterMap = new HashMap<>();
+    private static final Map<MissionType, Filter> _missionTypeFilterMap = new HashMap<>();
     private static final Map<PossessionClass, Filter> _possessionClassFilterMap = new HashMap<>();
     private static final Map<Race, Filter> _raceFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
@@ -28,7 +30,9 @@ public class Filters {
         for (Zone zone : Zone.values())
             _zoneFilterMap.put(zone, zone(zone));
         for (CardType cardType : CardType.values())
-            _typeFilterMap.put(cardType, type(cardType));
+            _cardTypeFilterMap.put(cardType, cardType(cardType));
+        for (MissionType missionType : MissionType.values())
+            _missionTypeFilterMap.put(missionType, missionType(missionType));
         for (Race race : Race.values())
             _raceFilterMap.put(race, race(race));
         for (PossessionClass possessionClass : PossessionClass.values())
@@ -169,6 +173,14 @@ public class Filters {
     public static final Filter weapon = Filters.or(PossessionClass.HAND_WEAPON, PossessionClass.RANGED_WEAPON);
     public static final Filter item = Filters.or(CardType.ARTIFACT, CardType.POSSESSION);
     public static final Filter character = Filters.or(CardType.ALLY, CardType.COMPANION, CardType.MINION);
+    public static final Filter personnel = Filters.or(CardType.PERSONNEL);
+    public static final Filter ship = Filters.or(CardType.SHIP);
+    public static final Filter facility = Filters.or(CardType.FACILITY);
+    public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
+    public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
+    public static final Filter atLocation(final ST1ELocation location) {
+        return (game, physicalCard) -> physicalCard.getCurrentLocation() == location;
+    }
 
     public static final Filter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();
 
@@ -237,6 +249,10 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.getOwner() != null && physicalCard.getOwner().equals(playerId);
     }
 
+    public static Filter your(final String playerId) {
+        return (game, physicalCard) -> physicalCard.isControlledBy(playerId);
+    }
+
     public static Filter hasAttached(final Filterable... filters) {
         return hasAttached(1, filters);
     }
@@ -287,9 +303,13 @@ public class Filters {
         return (game, physicalCard) -> name != null && physicalCard.getBlueprint().getTitle() != null && physicalCard.getBlueprint().getTitle().equals(name);
     }
 
-    private static Filter type(final CardType cardType) {
+    private static Filter cardType(final CardType cardType) {
         return (game, physicalCard) -> (physicalCard.getBlueprint().getCardType() == cardType)
                 || game.getModifiersQuerying().isAdditionalCardType(game, physicalCard, cardType);
+    }
+
+    private static Filter missionType(final MissionType missionType) {
+        return (game, physicalCard) -> (physicalCard.getBlueprint().getMissionType() == missionType);
     }
 
     public static Filter attachedTo(final Filterable... filters) {
@@ -336,11 +356,13 @@ public class Filters {
         else if (filter instanceof PhysicalCard)
             return Filters.sameCard((PhysicalCard) filter);
         else if (filter instanceof CardType)
-            return _typeFilterMap.get((CardType) filter);
+            return _cardTypeFilterMap.get((CardType) filter);
         else if (filter instanceof Culture)
             return _cultureFilterMap.get((Culture) filter);
         else if (filter instanceof Keyword)
             return _keywordFilterMap.get((Keyword) filter);
+        else if (filter instanceof MissionType)
+            return _missionTypeFilterMap.get((MissionType) filter);
         else if (filter instanceof PossessionClass)
             return _possessionClassFilterMap.get((PossessionClass) filter);
         else if (filter instanceof Race)

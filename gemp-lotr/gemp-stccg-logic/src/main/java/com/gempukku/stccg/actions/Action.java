@@ -7,6 +7,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public interface Action {
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
+        MOVE_CARDS,
         TRIBBLE_POWER
     }
 

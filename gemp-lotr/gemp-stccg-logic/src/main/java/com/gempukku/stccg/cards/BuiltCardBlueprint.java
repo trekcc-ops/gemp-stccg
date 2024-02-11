@@ -937,7 +937,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public Set<Affiliation> getOwnerAffiliationIcons() { return _ownerAffiliationIcons; }
     public Set<Affiliation> getOpponentAffiliationIcons() { return _opponentAffiliationIcons; }
     public void setMissionType(MissionType type) { _missionType = type; }
-    public MissionType getMissionType(MissionType type) { return _missionType; }
+    public MissionType getMissionType() { return _missionType; }
     public Affiliation homeworldAffiliation() {
         if (this.cardType != CardType.MISSION)
             return null;

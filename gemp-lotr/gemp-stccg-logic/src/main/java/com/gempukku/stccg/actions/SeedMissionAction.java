@@ -29,17 +29,15 @@ public class SeedMissionAction extends AbstractPlayCardAction {
     private boolean _placementChosen;
     private boolean _directionChosen;
     private final ST1EGame _game;
-    private Action _that;
     private PhysicalCard _neighborCard;
 
     public SeedMissionAction(ST1EGame game, PhysicalMissionCard cardToPlay) {
         super(cardToPlay);
         _cardToPlay = cardToPlay;
         _fromZone = cardToPlay.getZone();
-        setText("Play " + GameUtils.getFullName(_cardToPlay));
+        setText("Seed " + GameUtils.getFullName(_cardToPlay));
         setPerformingPlayer(_cardToPlay.getOwner());
         _game = game;
-        _that = this;
     }
 
     @Override
@@ -103,7 +101,7 @@ public class SeedMissionAction extends AbstractPlayCardAction {
             } else if (_cardToPlay.canInsertIntoSpaceline() && gameState.getQuadrantLocationsSize(quadrant) >= 2) {
                 // TODO: canInsertIntoSpaceline method not defined
                 Set<PhysicalCard> otherCards = _game.getGameState().getQuadrantLocationCards(quadrant);
-                appendCost(new ChooseCardsOnTableEffect(_game, _that, getPerformingPlayer(), "Choose a location to seed " + GameUtils.getCardLink(_cardToPlay) + " next to", otherCards) {
+                appendCost(new ChooseCardsOnTableEffect(_game, _thisAction, getPerformingPlayer(), "Choose a location to seed " + GameUtils.getCardLink(_cardToPlay) + " next to", otherCards) {
                     @Override
                     protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                         assert selectedCards.size() == 1;

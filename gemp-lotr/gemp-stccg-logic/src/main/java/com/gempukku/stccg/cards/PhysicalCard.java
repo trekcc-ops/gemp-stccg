@@ -5,8 +5,10 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierHook;
+import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +33,7 @@ public class PhysicalCard implements Filterable {
         _blueprintId = blueprintId;
         _owner = owner;
         _blueprint = blueprint;
+        _cardController = _owner; // TODO - This is likely not 100% accurate, as it is probably setting the controller before the card enters play.
     }
     
     public Zone getZone() { return _zone; }
@@ -145,5 +148,15 @@ public class PhysicalCard implements Filterable {
         return gameState.getCurrentPlayerId().equals(_owner);
     }
     public boolean canBeSeeded() { return false; }
+    public boolean canBePlayed() { return true; }
+
+    public boolean isControlledBy(String playerId) {
+        return _cardController == playerId;
+    }
+
+    public String getCardLink() {
+        return GameUtils.getCardLink(getBlueprintId(), getBlueprint());
+    }
+    public ST1ELocation getCurrentLocation() { return null; }
 
 }

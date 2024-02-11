@@ -127,4 +127,5 @@ public interface CardBlueprint {
     boolean canInsertIntoSpaceline();
     Set<Affiliation> getOpponentAffiliationIcons();
     boolean isHomeworld();
+    MissionType getMissionType();
 }

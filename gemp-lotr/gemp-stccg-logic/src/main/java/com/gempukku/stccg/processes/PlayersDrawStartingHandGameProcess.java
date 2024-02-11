@@ -18,7 +18,7 @@ public class PlayersDrawStartingHandGameProcess implements GameProcess {
         for (String player : gameState.getPlayerOrder().getAllPlayers()) {
             gameState.shuffleDeck(player);
             for (int i = 0; i < game.getFormat().getHandSize(); i++)
-                gameState.playerDrawsCard(player);
+                gameState.playerDrawsCard(game, player);
         }
         if (game.getFormat().hasMulliganRule())
             _followingGameProcess = new MulliganProcess(game.getGameState().getPlayerOrder().getClockwisePlayOrder(_firstPlayer, false));

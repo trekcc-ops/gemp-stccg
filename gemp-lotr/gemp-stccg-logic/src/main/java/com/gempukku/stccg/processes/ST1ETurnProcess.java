@@ -6,9 +6,7 @@ public class ST1ETurnProcess extends DefaultGameProcess<ST1EGame> {
     private GameProcess _followingGameProcess;
     @Override
     public void process(ST1EGame game) {
-        _followingGameProcess = new ST1ENormalCardPlayProcess(game.getGameState().getCurrentPlayerId(),
-                new TribblesEndOfTurnGameProcess()
-        );
+        _followingGameProcess = new ST1ENormalCardPlayProcess(game.getGameState().getCurrentPlayerId());
     }
 
     @Override

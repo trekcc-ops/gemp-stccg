@@ -7,6 +7,7 @@ public enum Zone implements Filterable {
     TABLE("table", true, true, true),
     SPACELINE("spaceline", true, true, true),
     AT_LOCATION("location", true, true, true),
+    ABOARD_FACILITY("aboard-facility", false, true, true),
 
     // Public knowledge and in play
     FREE_CHARACTERS("play", true, true, true),

@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -11,12 +12,13 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
     private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
+    private final LinkedList<Effect> _targeting = new LinkedList<>();
     private final LinkedList<Effect> _processedCosts = new LinkedList<>();
     private final LinkedList<Effect> _effects = new LinkedList<>();
     private final LinkedList<Effect> _processedEffects = new LinkedList<>();
     private String text;
 
-    private String _performingPlayer;
+    protected String _performingPlayer;
 
     private boolean _virtualCardAction = false;
 
@@ -48,6 +50,11 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     @Override
     public final void appendCost(Effect cost) {
         _costs.add(cost);
+    }
+
+    @Override
+    public final void appendTargeting(Effect targeting) {
+        _targeting.add(targeting);
     }
 
     @Override
@@ -98,6 +105,12 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     protected final Effect getNextCost() {
+        Effect targetingCost = _targeting.poll();
+        if (targetingCost != null) {
+            _processedCosts.add(targetingCost);
+            return targetingCost;
+        }
+
         Effect cost = _costs.poll();
         if (cost != null)
             _processedCosts.add(cost);

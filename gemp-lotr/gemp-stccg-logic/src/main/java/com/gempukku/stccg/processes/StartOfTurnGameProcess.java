@@ -33,6 +33,9 @@ public class StartOfTurnGameProcess implements GameProcess {
             _followingGameProcess = new TribblesTurnProcess();
         else if (Objects.equals(game.getFormat().getGameType(), "st1e"))
             _followingGameProcess = new ST1ETurnProcess();
+        // TODO - Remove commented code below
+        // DEBUG - End game to see if this is working
+//        game.playerWon(game.getGameState().getCurrentPlayerId(), "testing");
     }
 
     @Override

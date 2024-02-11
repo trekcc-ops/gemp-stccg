@@ -61,7 +61,9 @@ public class ST1EGameState extends GameState {
                         if (blueprint.getCardType() == CardType.MISSION)
                             subDeck.add(new PhysicalMissionCard(_nextCardId, blueprintId, playerId, blueprint));
                         else if (blueprint.getFacilityType() == FacilityType.OUTPOST)
-                            subDeck.add(new PhysicalOutpostCard(_game, _nextCardId, blueprintId, playerId, blueprint));
+                            subDeck.add(new PhysicalFacilityCard(_game, _nextCardId, blueprintId, playerId, blueprint));
+                        else if (blueprint.getCardType() == CardType.PERSONNEL)
+                            subDeck.add(new PhysicalPersonnelCard(_game, _nextCardId, blueprintId, playerId, blueprint));
                         else
                             subDeck.add(new PhysicalCard(_nextCardId, blueprintId, playerId, blueprint));
                         _nextCardId++;
@@ -113,10 +115,16 @@ public class ST1EGameState extends GameState {
         addCardToZone(_game, missionCard, Zone.SPACELINE, true, eventType);
     }
 
-    public void seedFacilityAtLocation(PhysicalCard card, int spacelineIndex) {
+    public void seedFacilityAtLocation(PhysicalFacilityCard card, int spacelineIndex) {
         card.setLocationZoneIndex(spacelineIndex);
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
+        card.setCurrentLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(_game, card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
+    }
+
+    public void reportCardToFacility(PhysicalReportableCard1E cardReported, PhysicalFacilityCard facility) {
+        cardReported.setCurrentLocation(facility.getCurrentLocation());
+        attachCard(_game, cardReported, facility);
     }
 
     public void refreshSpacelineIndices() {

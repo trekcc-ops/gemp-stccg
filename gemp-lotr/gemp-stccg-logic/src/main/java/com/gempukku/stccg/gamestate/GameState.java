@@ -157,7 +157,7 @@ public abstract class GameState {
                         cardIterator.remove();
                     }
                 }
-            } while (cardsLeftToSend.size() > 0);
+            } while (!cardsLeftToSend.isEmpty());
 
             List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
             _stacked.values().forEach(cardsPutIntoPlay::addAll);
@@ -486,7 +486,7 @@ public abstract class GameState {
     public PhysicalCard removeCardFromEndOfPile(String player, Zone zone, EndOfPile endOfPile) {
         List<PhysicalCard> deck = getZoneCards(player, zone);
         int pileIndex = endOfPile == EndOfPile.BOTTOM ? deck.size() - 1 : 0;
-        if (deck.size() > 0) {
+        if (!deck.isEmpty()) {
             final PhysicalCard removedCard = deck.get(pileIndex);
             removeCardsFromZone(null, Collections.singleton(removedCard));
             return removedCard;
@@ -496,11 +496,15 @@ public abstract class GameState {
     }
 
     public void playerDrawsCard(String player) {
+        playerDrawsCard(null, player);
+    }
+
+    public void playerDrawsCard(DefaultGame game, String player) {
         List<PhysicalCard> deck = _drawDecks.get(player);
-        if (deck.size() > 0) {
+        if (!deck.isEmpty()) {
             PhysicalCard card = deck.get(0);
-            removeCardsFromZone(null, Collections.singleton(card));
-            addCardToZone(null, card, Zone.HAND);
+            removeCardsFromZone(player, Collections.singleton(card));
+            addCardToZone(game, card, Zone.HAND);
         }
     }
 
@@ -528,6 +532,8 @@ public abstract class GameState {
     public int getPlayerScore(String playerId) {
         return _players.get(playerId).getScore();
     }
+
+    public Player getPlayer(String playerId) { return _players.get(playerId); }
 
     public void discardHand(DefaultGame game, String playerId) {
         List<PhysicalCard> hand = new LinkedList<>(getHand(playerId));

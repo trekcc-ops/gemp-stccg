@@ -2,10 +2,8 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.cards.PhysicalMissionCard;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Quadrant;
-import com.gempukku.stccg.common.filterable.Region;
+import com.gempukku.stccg.cards.PhysicalFacilityCard;
+import com.gempukku.stccg.common.filterable.*;
 
 import java.util.*;
 
@@ -15,17 +13,20 @@ public class ST1ELocation {
     private final String _locationName;
     private final List<PhysicalMissionCard> _missionCards;
     private final Set<PhysicalCard> _nonMissionCards;
+    private final Set<PhysicalFacilityCard> _outpostCards;
     public ST1ELocation(PhysicalMissionCard mission) {
         _quadrant = mission.getQuadrant();
         _region = mission.getBlueprint().getRegion();
         _locationName = mission.getBlueprint().getLocation();
         _missionCards = new ArrayList<>();
         _nonMissionCards = new HashSet<>();
+        _outpostCards = new HashSet<>();
         addMission(mission);
     }
 
     public List<PhysicalMissionCard> getMissions() { return _missionCards; }
-    public boolean hasMissions() { return _missionCards.size() > 0; }
+    public Set<PhysicalFacilityCard> getOutposts() { return _outpostCards; }
+    public boolean hasMissions() { return !_missionCards.isEmpty(); }
     public void addMission(PhysicalMissionCard card) {
         _missionCards.add(card);
         card.setLocation(this);
@@ -34,7 +35,7 @@ public class ST1ELocation {
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
     public Set<Affiliation> getAffiliationIcons(String playerId) {
-        if (_missionCards.size() < 1)
+        if (_missionCards.isEmpty())
             return null;
         else
             // TODO - Assumes that the mission is symmetric
@@ -55,6 +56,8 @@ public class ST1ELocation {
 
     public void addNonMission(PhysicalCard card) {
         _nonMissionCards.add(card);
+        if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
+            _outpostCards.add((PhysicalFacilityCard) card);
     }
 
     public void refreshSpacelineIndex(int newIndex) {

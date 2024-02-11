@@ -226,6 +226,7 @@ var CardFilter = Class.extend({
             + "<option value='INTERRUPT'>Interrupts</option>"
             + "<option value='MISSION'>Missions</option>"
             + "<option value='PERSONNEL'>Personnel</option>"
+            + "<option value='SHIP'>Ships</option>"
             + "<option value='TRIBBLE'>Tribbles</option>"
             + "<option value='TROUBLE'>Troubles</option>"
             + "</select>");
