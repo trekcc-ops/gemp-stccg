@@ -1,9 +1,6 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.actions.AttachPermanentAction;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.PlayEventAction;
-import com.gempukku.stccg.actions.PlayPermanentAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
@@ -13,6 +10,7 @@ import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.modifiers.ModifierHook;
+import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
 
@@ -30,6 +28,7 @@ public abstract class PhysicalCard implements Filterable {
     protected Map<Zone, List<ModifierHook>> _modifierHooksInZone; // modifier hooks specific to stacked and discard
     protected Object _whileInZoneData;
     protected int _locationZoneIndex;
+    protected ST1ELocation _currentLocation;
     public PhysicalCard(int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _blueprintId = blueprintId;
@@ -154,7 +153,8 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public String getCardLink() { return _blueprint.getCardLink(_blueprintId); }
-    public ST1ELocation getCurrentLocation() { return null; }
+    public ST1ELocation getLocation() { return null; }
+    public void setLocation(ST1ELocation location) { _currentLocation = location; }
 
     public String getFullName() { return _blueprint.getFullName(); }
 
@@ -233,4 +233,93 @@ public abstract class PhysicalCard implements Filterable {
         return false;
     }
 
+    public boolean hasTransporters() {
+        return false;
+    }
+
+    public CardType getCardType() { return _blueprint.getCardType(); }
+
+    public List<? extends Action> getPhaseActionsInPlay(Player player) {
+        return null;
+    }
+
+    public void attachToCardAtLocation(PhysicalCard destinationCard) {
+        getGame().getGameState().transferCard(this, destinationCard);
+        setLocation(destinationCard.getLocation());
+    }
+
+    public String getCardInfoHTML() {
+        if (getZone().isInPlay() || getZone() == Zone.HAND) {
+            StringBuilder sb = new StringBuilder();
+
+            if (getZone() == Zone.HAND)
+                sb.append("<b>Card is in hand - stats are only provisional</b><br><br>");
+            else if (Filters.filterActive(getGame(), this).isEmpty())
+                sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");
+
+            sb.append("<b>Affecting card:</b>");
+            Collection<Modifier> modifiers =
+                    getGame().getModifiersQuerying().getModifiersAffecting(getGame(), this);
+            for (Modifier modifier : modifiers) {
+                String sourceText;
+                PhysicalCard source = modifier.getSource();
+                if (source != null) {
+                    sourceText = GameUtils.getCardLink(source);
+                } else {
+                    sourceText = "<i>System</i>";
+                }
+                sb.append("<br><b>").append(sourceText).append(":</b> ");
+                sb.append(modifier.getText(getGame(), this));
+            }
+            if (modifiers.isEmpty())
+                sb.append("<br><i>nothing</i>");
+
+            Collection<PhysicalCard> attachedCards = getAttachedCards();
+            if (!attachedCards.isEmpty()) {
+                sb.append("<br><b>Attached cards:</b>");
+                sb.append("<br>").append(GameUtils.getAppendedNames(attachedCards));
+            }
+
+            List<PhysicalCard> stackedCards = getStackedCards();
+            if (!stackedCards.isEmpty()) {
+                sb.append("<br><b>Stacked cards:</b>");
+                sb.append("<br>").append(GameUtils.getAppendedNames(stackedCards));
+            }
+
+            final String extraDisplayableInformation = _blueprint.getDisplayableInformation(this);
+            if (extraDisplayableInformation != null) {
+                sb.append("<br><b>Extra information:</b>");
+                sb.append("<br>").append(extraDisplayableInformation);
+            }
+
+            sb.append("<br><br><b>Effective stats:</b>");
+
+            StringBuilder keywords = new StringBuilder();
+            for (Keyword keyword : Keyword.values()) {
+                if (keyword.isInfoDisplayable()) {
+                    if (keyword.isMultiples()) {
+                        int count = getGame().getModifiersQuerying().getKeywordCount(
+                                getGame(), this, keyword
+                        );
+                        if (count > 0)
+                            keywords.append(keyword.getHumanReadable()).append(" +").append(count).append(", ");
+                    } else {
+                        if (getGame().getModifiersQuerying().hasKeyword(getGame(), this, keyword))
+                            keywords.append(keyword.getHumanReadable()).append(", ");
+                    }
+                }
+            }
+            if (!keywords.isEmpty())
+                sb.append("<br><b>Keywords:</b> ").append(keywords.substring(0, keywords.length() - 2));
+
+            return sb.append(getTypeSpecificCardInfoHTML()).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public List<PhysicalCard> getStackedCards() { return getGame().getGameState().getStackedCards(this); }
+    public Collection<PhysicalCard> getAttachedCards() { return getGame().getGameState().getAttachedCards(this); }
+
+    public String getTypeSpecificCardInfoHTML() { return ""; }
 }

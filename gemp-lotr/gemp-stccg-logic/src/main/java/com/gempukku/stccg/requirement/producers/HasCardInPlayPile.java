@@ -5,7 +5,6 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.game.PlayConditions;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementProducer;
 import org.json.simple.JSONObject;
@@ -25,7 +24,7 @@ public class HasCardInPlayPile extends RequirementProducer {
         final FilterableSource filterableSource =
                 environment.getFilterFactory().generateFilter(filter, environment);
         return (actionContext) -> {
-            final String playerId = playerSource.getPlayer(actionContext);
+            final String playerId = playerSource.getPlayerId(actionContext);
             final Filterable filterable = filterableSource.getFilterable(actionContext);
             return actionContext.getGame().getGameState().getPlayer(playerId).hasCardInZone(Zone.PLAY_PILE, count, filterable);
         };

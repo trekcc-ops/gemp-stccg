@@ -25,13 +25,13 @@ public class ReorderTopCardsOfDrawDeck implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final Evaluator count = valueSource.getEvaluator(actionContext);
-                return actionContext.getGame().getGameState().getDrawDeck(deckSource.getPlayer(actionContext)).size() >= count.evaluateExpression(actionContext.getGame(), null);
+                return actionContext.getGame().getGameState().getDrawDeck(deckSource.getPlayerId(actionContext)).size() >= count.evaluateExpression(actionContext.getGame(), null);
             }
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                return new ReorderTopCardsOfDeckEffect(actionContext.getGame(), action, playerSource.getPlayer(actionContext), deckSource.getPlayer(actionContext), count);
+                return new ReorderTopCardsOfDeckEffect(actionContext.getGame(), action, playerSource.getPlayerId(actionContext), deckSource.getPlayerId(actionContext), count);
             }
         };
     }

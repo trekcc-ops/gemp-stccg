@@ -29,7 +29,7 @@ public class ChooseYesOrNo implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                return new PlayOutDecisionEffect(actionContext.getGame(), playerSource.getPlayer(actionContext),
+                return new PlayOutDecisionEffect(actionContext.getGame(), playerSource.getPlayerId(actionContext),
                         new YesNoDecision(GameUtils.SubstituteText(_text, actionContext)) {
                             @Override
                             protected void yes() {

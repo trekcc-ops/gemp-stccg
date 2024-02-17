@@ -32,7 +32,7 @@ public class StackTopCardsOfDrawDeck implements EffectAppenderProducer {
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final PhysicalCard card = actionContext.getCardFromMemory(cardMemory);
                         if (card != null) {
-                            final String deckId = playerSource.getPlayer(actionContext);
+                            final String deckId = playerSource.getPlayerId(actionContext);
 
                             return new StackTopCardsFromDeckEffect(actionContext.getGame(), deckId, count, card);
                         } else

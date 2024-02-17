@@ -33,7 +33,7 @@ public class Discarded implements TriggerCheckerProducer {
                 if (result && playerSource != null) {
                     // Need to check if it was that player discarding the card
                     final String performingPlayer = ((DiscardCardsFromPlayResult) actionContext.getEffectResult()).getPerformingPlayer();
-                    if (performingPlayer == null || !performingPlayer.equals(playerSource.getPlayer(actionContext)))
+                    if (performingPlayer == null || !performingPlayer.equals(playerSource.getPlayerId(actionContext)))
                         result = false;
                 }
                 if (result && memorize != null) {

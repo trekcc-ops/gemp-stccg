@@ -472,7 +472,8 @@ var GameTableUI = Class.extend({
 
         if (tar.hasClass("cardHint")) {
             var blueprintId = tar.attr("value");
-            var card = new Card(blueprintId, "SPECIAL", "hint", ""); // TODO - missing imageUrl and locationIndex
+            var imageUrl = tar.attr("card_img_url");
+            var card = new Card(blueprintId, "SPECIAL", "hint", "", imageUrl);
             this.displayCard(card, false);
             event.stopPropagation();
             return false;
@@ -2153,7 +2154,8 @@ var ST1EGameTableUI = GameTableUI.extend({
 
         this.locationDivs.splice(index, 0, newDiv);
 
-        var missionCardGroup = new MissionCardGroup($("#main"), function (card) {
+            // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
+        var missionCardGroup = new TableCardGroup($("#main"), function (card) {
             return (card.zone == "SPACELINE" && card.locationIndex == this.locationIndex );
         }, false, index, this.bottomPlayerId);
         this.missionCardGroups.splice(index, 0, missionCardGroup);

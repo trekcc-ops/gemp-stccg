@@ -24,8 +24,8 @@ public class CantLookOrRevealHand implements ModifierSourceProducer {
                 null, ModifierEffect.LOOK_OR_REVEAL_MODIFIER) {
             @Override
             public boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String actingPlayerId) {
-                return !playerSource.getPlayer(actionContext).equals(actingPlayerId)
-                        || !handSource.getPlayer(actionContext).equals(revealingPlayerId);
+                return !playerSource.getPlayerId(actionContext).equals(actingPlayerId)
+                        || !handSource.getPlayerId(actionContext).equals(revealingPlayerId);
             }
         };
     }

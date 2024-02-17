@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.TribblesGame;
 
@@ -29,5 +30,8 @@ public class TribblesActionContext extends GenericActionContext {
     public TribblesGame getGame() {
         return _game;
     }
+
+    @Override
+    public TribblesGameState getGameState() { return _game.getGameState(); }
 
 }

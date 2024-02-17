@@ -17,7 +17,7 @@ public class ST1ENormalCardPlayProcess implements GameProcess<ST1EGame> {
     @Override
     public void process(ST1EGame game) {
         game.getGameState().sendMessage("DEBUG: Beginning normal card play process");
-        game.getGameState().setCurrentPhase(Phase.NORMAL_CARD_PLAY);
+        game.getGameState().setCurrentPhase(Phase.CARD_PLAY);
         final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_playerId);
         if (!playableActions.isEmpty() || !game.shouldAutoPass(_playerId, game.getGameState().getCurrentPhase())) {
             game.getUserFeedback().sendAwaitingDecision(_playerId,

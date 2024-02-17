@@ -18,7 +18,7 @@ public class CardsInDeckCount extends RequirementProducer {
         final ValueSource valueSource = ValueResolver.resolveEvaluator(object.get("count"), environment);
 
         return actionContext -> {
-            final String player = playerSource.getPlayer(actionContext);
+            final String player = playerSource.getPlayerId(actionContext);
             final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
             return actionContext.getGame().getGameState().getDrawDeck(player).size() == count;

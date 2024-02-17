@@ -670,7 +670,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public boolean IsType(PhysicalCardImpl card, CardType type)
     {
-        return card.getBlueprint().getCardType() == type
+        return card.getCardType() == type
             || _game.getModifiersQuerying().isAdditionalCardType(_game, card, type);
     }
 

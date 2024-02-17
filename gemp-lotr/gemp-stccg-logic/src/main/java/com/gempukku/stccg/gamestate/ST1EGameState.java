@@ -3,7 +3,9 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.AwayTeam;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -15,16 +17,16 @@ public class ST1EGameState extends GameState {
     private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
     private final Map<String, List<PhysicalCard>> _tableCards;
     private final ST1EGame _game;
+    private final Set<AwayTeam> _awayTeams = new HashSet<>();
 
     public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST1EGame game) {
-        super(players, decks, library, format);
-        _format = format;
+        super(players, decks, library, format, game);
         _game = game;
         _seedDecks = new HashMap<>();
         _missionPiles = new HashMap<>();
         _tableCards = new HashMap<>();
-        for (String player : players) {
-            _tableCards.put(player, new LinkedList<>());
+        for (String playerId : players) {
+            _tableCards.put(playerId, new LinkedList<>());
         }
         _currentPhase = Phase.SEED_DOORWAY;
     }
@@ -125,11 +127,6 @@ public class ST1EGameState extends GameState {
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setCurrentLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(_game, card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
-    }
-
-    public void reportCardToFacility(PhysicalReportableCard1E cardReported, PhysicalFacilityCard facility) {
-        cardReported.setCurrentLocation(facility.getCurrentLocation());
-        attachCard(_game, cardReported, facility);
     }
 
     public void refreshSpacelineIndices() {
@@ -261,5 +258,7 @@ public class ST1EGameState extends GameState {
         if (awaitingDecision != null)
             listener.decisionRequired(playerId, awaitingDecision);
     }
+
+    public Set<AwayTeam> getAwayTeams() { return _awayTeams; }
 
 }

@@ -131,5 +131,7 @@ public interface CardBlueprint {
     MissionType getMissionType();
     String getFullName();
     String getCardLink(String blueprintId);
-
+    boolean hasNoTransporters();
+    boolean hasNoPointBox();
+    int getPointsShown();
 }

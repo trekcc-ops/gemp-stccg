@@ -26,7 +26,7 @@ public class DiscardCardAtRandomFromHand implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected List<Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String playerId = playerSource.getPlayer(actionContext);
+                final String playerId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 List<Effect> result = new LinkedList<>();
@@ -39,7 +39,7 @@ public class DiscardCardAtRandomFromHand implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final DefaultGame game = actionContext.getGame();
-                final String playerId = playerSource.getPlayer(actionContext);
+                final String playerId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(game, null);
                 return game.getGameState().getHand(playerId).size() >= count
                         && (!forced || game.getModifiersQuerying().canDiscardCardsFromHand(game, playerId, actionContext.getSource()));

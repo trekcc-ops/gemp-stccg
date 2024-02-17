@@ -149,6 +149,7 @@
     155_037: {
         title: Avert Solar Implosion
         type: mission
+        mission-type: planet
         location: Veridian III
         affiliation-icons: federation
         lore: Prevent annihilation of inhabited star system by deranged scientist.
@@ -275,7 +276,7 @@
         title: Treat Plague Ship
         type: mission
         location: Near Haven
-        lore: Proivde medical assistance to last members of disease-ravaged culture.
+        lore: Provide medical assistance to last members of disease-ravaged culture.
         affiliation-icons: federation,romulan,non-aligned,bajoran
         mission-requirements: Biology + CUNNING >26 + discard one MEDICAL personnel
         game-text: *+10 if Plague Planet complete.
@@ -286,6 +287,7 @@
     155_049: {
         title: Visit Tranquil Colony
         type: mission
+        mission-type: planet
         location: Jouret IV
         lore: Make routine stop at hospitable world near enemy space.
         affiliation-icons: federation,romulan,non-aligned

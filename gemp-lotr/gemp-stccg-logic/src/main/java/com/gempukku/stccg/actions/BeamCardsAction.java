@@ -2,14 +2,13 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.effects.defaulteffect.BeamCardsEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
-import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.google.common.collect.Iterables;
 
@@ -34,11 +33,12 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
      * @param game                  the game
      * @param cardUsingTransporters the card whose transporters are being used to beam
      */
-    public BeamCardsAction(String playerId, ST1EGame game, PhysicalNounCard1E cardUsingTransporters) {
-        _performingPlayer = playerId;
-        _playerId = playerId;
+    public BeamCardsAction(Player player, PhysicalNounCard1E cardUsingTransporters) {
+        _performingPlayer = player.getPlayerId();
+        _playerId = _performingPlayer;
         _cardUsingTransporters = cardUsingTransporters;
         _thisAction = this;
+        DefaultGame game = player.getGame();
 
         final GameState gameState = game.getGameState();
         final ModifiersQuerying modifiersQuerying = game.getModifiersQuerying();
@@ -59,19 +59,19 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
         // Get potential targets to beam to/from
         Collection<PhysicalCard> destinationOptions = Filters.filterActive(
                 game,
-                Filters.atLocation(_cardUsingTransporters.getCurrentLocation()),
+                Filters.atLocation(_cardUsingTransporters.getLocation()),
                 Filters.or(
                         Filters.planetLocation,
                         Filters.and(
                                 Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                Filters.or(Filters.your(playerId)) // TODO - Add unshielded
+                                Filters.or(Filters.your(player)) // TODO - Add unshielded
                         )
                 )
         );
 
         List<PhysicalCard> validFromCards = new ArrayList<>();
         for (PhysicalCard destinationCard : destinationOptions) {
-            if (!gameState.getAttachedCards(destinationCard).isEmpty())
+            if (!Filters.filter(gameState.getAttachedCards(destinationCard), game, Filters.your(player)).isEmpty())
                 validFromCards.add(destinationCard);
         }
 /*
@@ -118,10 +118,11 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
                 _fromCard = Iterables.getOnlyElement(cardSelected);
 
                 if (_fromCard != _cardUsingTransporters) {
-                    _toCard = _cardUsingTransporters;
-                    _toCardChosen = true;
+                    destinationOptions.removeAll(destinationOptions);
+                    destinationOptions.add(_cardUsingTransporters);
                 } else {
                     destinationOptions.remove(_fromCard);
+                }
 
                     // Choose card beaming to
                     _chooseToCardEffect = new ChooseCardsOnTableEffect(game, _thisAction, _playerId, "Choose card to beam to",
@@ -132,7 +133,8 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
                             _toCardChosen = true;
 
                             // TODO - No checks here yet to make sure cards can be beamed (compatibility, etc.)
-                            List<PhysicalCard> beamableCards = gameState.getAttachedCards(_fromCard);
+                            Collection<PhysicalCard> beamableCards =
+                                    Filters.filter(gameState.getAttachedCards(_fromCard), game, Filters.your(player));
 
                             // Choose cards to transit
                             _chooseCardsToBeamEffect = new ChooseCardsOnTableEffect(game, _thisAction, _playerId,
@@ -144,7 +146,7 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
                                     _cardsToBeam = cards;
 
                                     // Transit cards
-// TODO                                    _beamCardsEffect = new BeamCardsEffect(_thisAction, _cardsToBeam, _fromCard, _toCard);
+                                    _beamCardsEffect = new BeamCardsEffect(_cardsToBeam, _fromCard, _toCard);
                                 }
                             };
                         }
@@ -152,7 +154,6 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
                         ;
                     };
                 };
-            }
         };
     }
 
@@ -178,19 +179,16 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
             return cost;
 
         if (!_fromCardChosen) {
-            _fromCardChosen = true;
             appendTargeting(_chooseFromCardEffect);
             return getNextCost();
         }
 
         if (!_toCardChosen) {
-            _toCardChosen = true;
             appendTargeting(_chooseToCardEffect);
             return getNextCost();
         }
 
         if (!_cardsToBeamChosen) {
-            _cardsToBeamChosen = true;
             appendTargeting(_chooseCardsToBeamEffect);
             return getNextCost();
         }

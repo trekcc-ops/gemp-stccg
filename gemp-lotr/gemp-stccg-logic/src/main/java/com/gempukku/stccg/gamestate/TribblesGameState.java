@@ -18,7 +18,7 @@ public class TribblesGameState extends GameState {
     private final TribblesGame _game;
 
     public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, TribblesGame game) {
-        super(players, decks, library, format);
+        super(players, decks, library, format, game);
         for (String player : players) {
             _playPiles.put(player, new LinkedList<>());
         }

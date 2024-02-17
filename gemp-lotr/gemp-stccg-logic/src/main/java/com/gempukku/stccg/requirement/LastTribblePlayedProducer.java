@@ -14,7 +14,7 @@ public class LastTribblePlayedProducer extends TribblesRequirementProducer{
 
         final ValueSource valueSource = ValueResolver.resolveEvaluator(object.get("value"), environment);
 
-        return actionContext -> actionContext.getGame().getGameState().getLastTribblePlayed() ==
+        return actionContext -> actionContext.getGameState().getLastTribblePlayed() ==
                 valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
     }
 }

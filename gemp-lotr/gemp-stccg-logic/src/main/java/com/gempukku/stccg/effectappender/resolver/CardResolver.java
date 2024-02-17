@@ -44,7 +44,7 @@ public class CardResolver {
         else if (type.startsWith("choose(") && type.endsWith(")")) {
             final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
-                String choicePlayerId = playerSource.getPlayer(actionContext);
+                String choicePlayerId = playerSource.getPlayerId(actionContext);
                 return new ChooseStackedCardsEffect(actionContext.getGame(), choicePlayerId, min, max, stackedOn.getFilterable(actionContext), Filters.in(possibleCards)) {
                     @Override
                     protected void cardsChosen(DefaultGame game, Collection<PhysicalCard> stackedCards) {
@@ -74,7 +74,7 @@ public class CardResolver {
     public static EffectAppender resolveCardsInHand(String type, FilterableSource additionalFilter, ValueSource countSource, String memory, String choicePlayer, String handPlayer, String choiceText, boolean showMatchingOnly, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         final PlayerSource handSource = PlayerResolver.resolvePlayer(handPlayer);
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
-            String handPlayer1 = handSource.getPlayer(actionContext);
+            String handPlayer1 = handSource.getPlayerId(actionContext);
             return actionContext.getGame().getGameState().getHand(handPlayer1);
         };
 
@@ -83,13 +83,13 @@ public class CardResolver {
             return new DefaultDelayedAppender() {
                 @Override
                 public boolean isPlayableInFull(ActionContext actionContext) {
-                    final String handPlayer = handSource.getPlayer(actionContext);
+                    final String handPlayer = handSource.getPlayerId(actionContext);
                     return actionContext.getGame().getGameState().getHand(handPlayer).size() >= count;
                 }
 
                 @Override
                 protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                    final String handPlayer = handSource.getPlayer(actionContext);
+                    final String handPlayer = handSource.getPlayerId(actionContext);
                     return new UnrespondableEffect() {
                         @Override
                         protected void doPlayEffect() {
@@ -109,8 +109,8 @@ public class CardResolver {
         } else if (type.startsWith("choose(") && type.endsWith(")")) {
             final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
-                String handId = handSource.getPlayer(actionContext);
-                String choicePlayerId = playerSource.getPlayer(actionContext);
+                String handId = handSource.getPlayerId(actionContext);
+                String choicePlayerId = playerSource.getPlayerId(actionContext);
                 if (handId.equals(choicePlayerId)) {
                     return new ChooseCardsFromZoneEffect(actionContext.getGame(), Zone.HAND, choicePlayerId, min, max, Filters.in(possibleCards)) {
                         @Override
@@ -165,7 +165,7 @@ public class CardResolver {
         final PlayerSource targetPlayerDiscardSource = PlayerResolver.resolvePlayer(targetPlayerDiscard);
 
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
-            String targetPlayerId = targetPlayerDiscardSource.getPlayer(actionContext);
+            String targetPlayerId = targetPlayerDiscardSource.getPlayerId(actionContext);
             return actionContext.getGame().getGameState().getDiscard(targetPlayerId);
         };
 
@@ -177,8 +177,8 @@ public class CardResolver {
             return resolveAllCards(type, choiceFilter, memory, environment, cardSource);
         } else if (type.startsWith("choose(") && type.endsWith(")")) {
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
-                String choicePlayerId = playerSource.getPlayer(actionContext);
-                String targetPlayerDiscardId = targetPlayerDiscardSource.getPlayer(actionContext);
+                String choicePlayerId = playerSource.getPlayerId(actionContext);
+                String targetPlayerDiscardId = targetPlayerDiscardSource.getPlayerId(actionContext);
                 return new ChooseCardsFromZoneEffect(actionContext.getGame(), Zone.DISCARD, choicePlayerId, targetPlayerDiscardId, min, max, Filters.in(possibleCards)) {
                     @Override
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
@@ -206,7 +206,7 @@ public class CardResolver {
         final PlayerSource deckSource = PlayerResolver.resolvePlayer(targetDeck);
 
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
-            String deckId = deckSource.getPlayer(actionContext);
+            String deckId = deckSource.getPlayerId(actionContext);
             return actionContext.getGame().getGameState().getDrawDeck(deckId);
         };
 
@@ -216,8 +216,8 @@ public class CardResolver {
             return resolveAllCards(type, choiceFilter, memory, environment, cardSource);
         } else if (type.startsWith("choose(") && type.endsWith(")")) {
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
-                String choicePlayerId = playerSource.getPlayer(actionContext);
-                String targetDeckId = deckSource.getPlayer(actionContext);
+                String choicePlayerId = playerSource.getPlayerId(actionContext);
+                String targetDeckId = deckSource.getPlayerId(actionContext);
                 return new ChooseCardsFromZoneEffect(actionContext.getGame(), Zone.DRAW_DECK, choicePlayerId,
                         targetDeckId, min, max, Filters.in(possibleCards)) {
                     @Override
@@ -309,7 +309,7 @@ public class CardResolver {
         } else if (type.startsWith("choose(") && type.endsWith(")")) {
             final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
-                String choicePlayerId = playerSource.getPlayer(actionContext);
+                String choicePlayerId = playerSource.getPlayerId(actionContext);
                 return new ChooseActiveCardsEffect(actionContext, choicePlayerId, GameUtils.SubstituteText(choiceText, actionContext), min, max, Filters.in(possibleCards)) {
                     @Override
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {

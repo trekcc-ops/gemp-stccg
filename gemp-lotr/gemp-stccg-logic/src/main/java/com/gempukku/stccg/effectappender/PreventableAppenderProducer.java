@@ -38,7 +38,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 if (areCostsPlayable(actionContext)) {
-                    final String preventingPlayer = preventingPlayerSource.getPlayer(actionContext);
+                    final String preventingPlayer = preventingPlayerSource.getPlayerId(actionContext);
 
                     String textToUse = GameUtils.SubstituteText(_text, actionContext);
 

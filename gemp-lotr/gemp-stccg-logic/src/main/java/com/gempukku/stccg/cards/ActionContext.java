@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.results.EffectResult;
 import com.google.common.collect.Multimap;
 
@@ -12,6 +13,7 @@ public interface ActionContext {
     Map<String, String> getValueMemory();
     Multimap<String, PhysicalCard> getCardMemory();
     DefaultGame getGame();
+    GameState getGameState();
     void setValueToMemory(String memory, String value);
     String getValueFromMemory(String memory);
     void setCardMemory(String memory, PhysicalCard card);

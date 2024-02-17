@@ -15,7 +15,7 @@ public class NextTribbleInSequenceRequirement extends RequirementProducer{
 
         final ValueSource valueSource = ValueResolver.resolveEvaluator(object.get("value"), environment);
 
-        return actionContext -> actionContext.getGame().getGameState().getNextTribbleInSequence() ==
+        return actionContext -> actionContext.getGameState().getNextTribbleInSequence() ==
                 valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
     }
 }

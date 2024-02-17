@@ -49,7 +49,7 @@ public class ReportCardEffect extends DefaultEffect {
         _game.getGameState().sendMessage(
                 "DEBUG: " + _cardPlayed.getOwnerName() + " now playing: " +
                         _cardPlayed.getCurrentAffiliation().getHumanReadable());
-        _game.getGameState().reportCardToFacility(_cardPlayed, _reportingDestination);
+        _cardPlayed.reportToFacility(_reportingDestination);
         _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(_playedFrom, _cardPlayed));
 
         return new FullEffectResult(true);

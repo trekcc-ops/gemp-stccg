@@ -35,7 +35,7 @@ public class ShuffleCardsFromHandIntoDrawDeck implements EffectAppenderProducer 
                         final Collection<PhysicalCard> cardsFromHand = actionContext.getCardsFromMemory(memorize);
 
                         return new ShuffleCardsIntoDrawDeckEffect(
-                                actionContext.getGame(), actionContext.getSource(), Zone.HAND, playerSource.getPlayer(actionContext), cardsFromHand
+                                actionContext.getGame(), actionContext.getSource(), Zone.HAND, playerSource.getPlayerId(actionContext), cardsFromHand
                         );
                     }
                 });

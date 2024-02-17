@@ -24,7 +24,7 @@ public class ShuffleHandIntoDrawDeck implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 DefaultGame game = actionContext.getGame();
-                final String handPlayer = playerSource.getPlayer(actionContext);
+                final String handPlayer = playerSource.getPlayerId(actionContext);
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect() {

@@ -55,7 +55,7 @@ public class GameUtils {
     public static String getAppendedNames(Collection<? extends PhysicalCard> cards) {
         ArrayList<String> cardStrings = new ArrayList<>();
         for (PhysicalCard card : cards) {
-            cardStrings.add(GameUtils.getCardLink(card));
+            cardStrings.add(card.getCardLink());
         }
 
         if (cardStrings.isEmpty())
@@ -91,8 +91,8 @@ public class GameUtils {
     // TODO - This method probably isn't doing what it should since the LotR elements were stripped out
     public static String getDeluxeCardLink(String blueprintId, CardBlueprint blueprint) {
         var cultureString = "";
-        return "<div class='cardHint' value='" + blueprintId + "'>" + cultureString
-                + (blueprint.isUnique() ? "·" : "") + " " + getFullName(blueprint) + "</div>";
+        return "<div class='cardHint' value='" + blueprintId + "' + card_img_url='" + blueprint.getImageUrl() + "'>" +
+                cultureString + (blueprint.isUnique() ? "·" : "") + " " + getFullName(blueprint) + "</div>";
     }
 
 }

@@ -23,7 +23,7 @@ public class DrawCards implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String drawPlayer = playerSource.getPlayer(actionContext);
+                final String drawPlayer = playerSource.getPlayerId(actionContext);
                 final Evaluator evaluator = count.getEvaluator(null);
                 final int cardCount = evaluator.evaluateExpression(actionContext.getGame(), null);
                 return actionContext.getGame().getGameState().getDrawDeck(drawPlayer).size() >= cardCount;
@@ -31,7 +31,7 @@ public class DrawCards implements EffectAppenderProducer {
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String drawPlayer = playerSource.getPlayer(actionContext);
+                final String drawPlayer = playerSource.getPlayerId(actionContext);
                 final Evaluator evaluator = count.getEvaluator(actionContext);
                 final int cardsDrawn = evaluator.evaluateExpression(actionContext.getGame(), null);
                 return new DrawCardsEffect(actionContext.getGame(), action, drawPlayer, cardsDrawn);

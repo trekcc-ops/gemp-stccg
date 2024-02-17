@@ -37,12 +37,12 @@ public class DiscardFromPlay implements EffectAppenderProducer {
                 new DefaultDelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                        final String discardingPlayerId = discardingPlayer.getPlayer(actionContext);
+                        final String discardingPlayerId = discardingPlayer.getPlayerId(actionContext);
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         if (stackedCardsMemory != null) {
                             List<PhysicalCard> stackedCards = new LinkedList<>();
                             for (PhysicalCard physicalCard : cardsFromMemory) {
-                                stackedCards.addAll(actionContext.getGame().getGameState().getStackedCards(physicalCard));
+                                stackedCards.addAll(physicalCard.getStackedCards());
                             }
 
                             actionContext.setCardMemory(stackedCardsMemory, stackedCards);

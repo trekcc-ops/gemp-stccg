@@ -2,6 +2,7 @@ package com.gempukku.stccg.hall;
 
 public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, int maxSecondsPerDecision) {
 
+    public static final GameTimer DEBUG_TIMER = new GameTimer(false, "Debug", 60 * 120, 60 * 120);
     public static final GameTimer DEFAULT_TIMER = new GameTimer(false, "Default", 60 * 80, 60 * 5);
     public static final GameTimer BLITZ_TIMER = new GameTimer(false, "Blitz!", 60 * 30, 60 * 5);
     public static final GameTimer SLOW_TIMER = new GameTimer(false, "Slow", 60 * 120, 60 * 10);
@@ -13,15 +14,10 @@ public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, 
     public static GameTimer ResolveTimer(String timer) {
         if (timer != null) {
             switch (timer.toLowerCase()) {
-                case "blitz" -> {
-                    return GameTimer.BLITZ_TIMER;
-                }
-                case "slow" -> {
-                    return GameTimer.SLOW_TIMER;
-                }
-                case "glacial" -> {
-                    return GameTimer.GLACIAL_TIMER;
-                }
+                case "debug" -> { return GameTimer.DEBUG_TIMER; }
+                case "blitz" -> { return GameTimer.BLITZ_TIMER; }
+                case "slow" -> { return GameTimer.SLOW_TIMER; }
+                case "glacial" -> { return GameTimer.GLACIAL_TIMER; }
             }
         }
         return GameTimer.DEFAULT_TIMER;

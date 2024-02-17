@@ -25,13 +25,13 @@ public class RevealHand implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final DefaultGame game = actionContext.getGame();
-                final String revealingPlayer = playerSource.getPlayer(actionContext);
+                final String revealingPlayer = playerSource.getPlayerId(actionContext);
                 return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, revealingPlayer, actionContext.getPerformingPlayer());
             }
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String revealingPlayer = playerSource.getPlayer(actionContext);
+                final String revealingPlayer = playerSource.getPlayerId(actionContext);
                 return new RevealHandEffect(actionContext, revealingPlayer) {
                     @Override
                     protected void cardsRevealed(Collection<? extends PhysicalCard> cards) {

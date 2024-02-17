@@ -9,12 +9,12 @@ public enum Phase {
     SEED_DILEMMA("Dilemma seed phase", true, true),
     SEED_FACILITY("Facility seed phase", true, true),
     PLAY("Play phase", true, true),
-    NORMAL_CARD_PLAY("Normal card play", true, true),
+    CARD_PLAY("Card play", true, true),
+    EXECUTE_ORDERS("Execute orders", true, true),
     // Tribbles
     TRIBBLES_TURN("Tribbles turn", true, true),
+
     // LotR
-    PUT_RING_BEARER("Put Ring-bearer", false, false),
-    PLAY_STARTING_FELLOWSHIP("Play starting fellowship", false, true),
     FELLOWSHIP("Fellowship", true, true),
     SHADOW("Shadow", true, true),
     MANEUVER("Maneuver", true, true),

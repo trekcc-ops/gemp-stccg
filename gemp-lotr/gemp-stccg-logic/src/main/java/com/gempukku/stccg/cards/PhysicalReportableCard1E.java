@@ -37,4 +37,8 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return false;
     }
 
+    public void reportToFacility(PhysicalFacilityCard facility) {
+        setCurrentLocation(facility.getLocation());
+        _game.getGameState().attachCard(_game, this, facility);
+    }
 }

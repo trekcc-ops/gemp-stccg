@@ -30,7 +30,7 @@ public class Optional implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String choosingPlayer = playerSource.getPlayer(actionContext);
+                final String choosingPlayer = playerSource.getPlayerId(actionContext);
                 SubAction subAction = new SubAction(action);
                 subAction.appendCost(
                         new PlayOutDecisionEffect(actionContext.getGame(), choosingPlayer,
@@ -50,7 +50,7 @@ public class Optional implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String choosingPlayer = playerSource.getPlayer(actionContext);
+                final String choosingPlayer = playerSource.getPlayerId(actionContext);
                 DefaultActionContext delegate = new DefaultActionContext(actionContext,
                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                         actionContext.getEffectResult(), actionContext.getEffect());

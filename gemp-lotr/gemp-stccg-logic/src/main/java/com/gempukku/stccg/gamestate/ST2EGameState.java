@@ -5,7 +5,6 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.ST2EGame;
 
 import java.util.*;
@@ -18,8 +17,7 @@ public class ST2EGameState extends GameState {
     private final ST2EGame _game;
 
     public ST2EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST2EGame game) {
-        super(players, decks, library, format);
-        _format = format;
+        super(players, decks, library, format, game);
         _game = game;
         _seedDecks = new HashMap<>();
         _missionPiles = new HashMap<>();
@@ -122,7 +120,7 @@ public class ST2EGameState extends GameState {
     }
 
     public void reportCardToFacility(PhysicalReportableCard1E cardReported, PhysicalFacilityCard facility) {
-        cardReported.setCurrentLocation(facility.getCurrentLocation());
+        cardReported.setCurrentLocation(facility.getLocation());
         attachCard(_game, cardReported, facility);
     }
 

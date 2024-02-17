@@ -24,7 +24,7 @@ public class ShufflePlayPileIntoDrawDeck implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action,
                                           TribblesActionContext actionContext) {
-                final String pileOwner = playerSource.getPlayer(actionContext);
+                final String pileOwner = playerSource.getPlayerId(actionContext);
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect() {

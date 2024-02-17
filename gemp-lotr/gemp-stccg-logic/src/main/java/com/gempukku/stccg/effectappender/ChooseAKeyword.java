@@ -28,7 +28,7 @@ public class ChooseAKeyword implements EffectAppenderProducer {
                             @Override
                             protected void validDecisionMade(int index, String result) {
                                 actionContext.setValueToMemory(memorize, result.toUpperCase().replace(' ', '_').replace('-', '_'));
-                                actionContext.getGame().getGameState().sendMessage(actionContext.getPerformingPlayer() + " has chosen " + result);
+                                actionContext.getGameState().sendMessage(actionContext.getPerformingPlayer() + " has chosen " + result);
                             }
                         });
             }

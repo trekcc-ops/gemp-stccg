@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -11,9 +12,8 @@ import java.util.Set;
 
 public class PhysicalNounCard1E extends PhysicalCard {
     protected Set<Affiliation> _affiliationOptions;
-    protected Affiliation _currentAffiliation;
+    protected Affiliation _currentAffiliation; // TODO - NounCard class may include Equipment or other cards with no affiliation
     protected Quadrant _nativeQuadrant;
-    protected ST1ELocation _currentLocation;
     protected final ST1EGame _game;
     public PhysicalNounCard1E(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         super(cardId, blueprintId, owner, blueprint);
@@ -47,7 +47,14 @@ public class PhysicalNounCard1E extends PhysicalCard {
     }
 
     @Override
-    public ST1ELocation getCurrentLocation() {
+    public ST1ELocation getLocation() {
         return _currentLocation;
+    }
+
+    @Override
+    public boolean hasTransporters() {
+        if (_blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY) {
+            return !_blueprint.hasNoTransporters();
+        } else return false;
     }
 }

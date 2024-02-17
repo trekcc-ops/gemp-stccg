@@ -28,7 +28,7 @@ public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
         return new TribblesDelayedAppender() {
             @Override
             public boolean isPlayableInFull(TribblesActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 final TribblesGame game = actionContext.getGame();
@@ -37,7 +37,7 @@ public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, TribblesActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return new DiscardCardsFromEndOfCardPileEffect(actionContext.getGame(), actionContext.getSource(), Zone.PLAY_PILE, EndOfPile.TOP,

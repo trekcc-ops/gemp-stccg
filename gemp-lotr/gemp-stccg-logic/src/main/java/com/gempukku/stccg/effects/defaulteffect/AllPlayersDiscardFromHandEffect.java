@@ -30,7 +30,7 @@ public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
     @Override
     public boolean isPlayableInFull() {
         boolean temp = false;
-        for (String player : _game.getPlayers()) {
+        for (String player : _game.getPlayerIds()) {
             if ((_game.getGameState().getHand(player).size() == 0) && (_allPlayersMustBeAble))
                 temp = false;
             else if ((_game.getGameState().getHand(player).size() > 0) && (!_allPlayersMustBeAble))

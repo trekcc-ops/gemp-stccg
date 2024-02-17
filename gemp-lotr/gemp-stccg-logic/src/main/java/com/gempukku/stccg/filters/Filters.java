@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 
 import java.util.*;
@@ -138,6 +139,10 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(game, physicalCard) < game.getModifiersQuerying().getStrength(game, card);
     }
 
+    public static Filter attachedTo(final PhysicalCard parentCard) {
+        return (game, physicalCard) -> physicalCard.getAttachedTo() == parentCard;
+    }
+
 
     private static Filter possessionClass(final PossessionClass possessionClass) {
         return (game, physicalCard) -> {
@@ -179,7 +184,7 @@ public class Filters {
     public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
     public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
     public static final Filter atLocation(final ST1ELocation location) {
-        return (game, physicalCard) -> physicalCard.getCurrentLocation() == location;
+        return (game, physicalCard) -> physicalCard.getLocation() == location;
     }
 
     public static final Filter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();
@@ -253,6 +258,10 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.isControlledBy(playerId);
     }
 
+    public static Filter your(final Player player) {
+        return your(player.getPlayerId());
+    }
+
     public static Filter hasAttached(final Filterable... filters) {
         return hasAttached(1, filters);
     }
@@ -304,7 +313,7 @@ public class Filters {
     }
 
     private static Filter cardType(final CardType cardType) {
-        return (game, physicalCard) -> (physicalCard.getBlueprint().getCardType() == cardType)
+        return (game, physicalCard) -> (physicalCard.getCardType() == cardType)
                 || game.getModifiersQuerying().isAdditionalCardType(game, physicalCard, cardType);
     }
 

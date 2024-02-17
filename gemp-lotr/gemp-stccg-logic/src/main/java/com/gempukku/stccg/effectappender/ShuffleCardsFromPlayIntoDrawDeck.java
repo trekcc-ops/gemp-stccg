@@ -33,7 +33,7 @@ public class ShuffleCardsFromPlayIntoDrawDeck implements EffectAppenderProducer 
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsInPlay = actionContext.getCardsFromMemory(memorize);
 
-                        return new ShuffleCardsFromPlayIntoDeckEffect(actionContext, playerSource.getPlayer(actionContext), cardsInPlay);
+                        return new ShuffleCardsFromPlayIntoDeckEffect(actionContext, playerSource.getPlayerId(actionContext), cardsInPlay);
                     }
                 });
 

@@ -25,7 +25,7 @@ public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return actionContext.getGame().getGameState().getDrawDeck(deckId).size() >= count;
@@ -34,7 +34,7 @@ public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action,
                                           ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return new RevealBottomCardsOfDrawDeckEffect(actionContext, deckId, count) {

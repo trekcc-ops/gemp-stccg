@@ -23,7 +23,7 @@ public class ScorePoints implements EffectAppenderProducer {
             protected Effect createEffect(boolean cost, CostToEffectAction action,
                                           ActionContext actionContext) {
                 int points = amount.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                final String scoringPlayer = playerSource.getPlayer(actionContext);
+                final String scoringPlayer = playerSource.getPlayerId(actionContext);
 
                 return new UnrespondableEffect() {
                     @Override

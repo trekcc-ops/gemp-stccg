@@ -14,11 +14,11 @@ public class ST1EStartOfGameProcess implements GameProcess<ST1EGame> {
 
     @Override
     public void process(ST1EGame game) {
-        _players = game.getPlayers();
+        _players = game.getPlayerIds();
         for (String player : _players) {
             List<PhysicalCard> doorwaySeeds = new LinkedList<>();
             for (PhysicalCard seedCard : game.getGameState().getSeedDeck(player)) {
-                if (seedCard.getBlueprint().getCardType() == CardType.DOORWAY)
+                if (seedCard.getCardType() == CardType.DOORWAY)
                     doorwaySeeds.add(seedCard);
             }
             for (PhysicalCard card : doorwaySeeds) {

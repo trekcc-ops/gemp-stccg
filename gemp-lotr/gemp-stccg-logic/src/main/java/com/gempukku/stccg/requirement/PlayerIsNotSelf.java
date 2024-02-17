@@ -16,7 +16,7 @@ public class PlayerIsNotSelf extends RequirementProducer {
         final PlayerSource selfPlayerSource = PlayerResolver.resolvePlayer("you");
 
         return (actionContext) -> {
-            String selfPlayerId = selfPlayerSource.getPlayer(actionContext);
+            String selfPlayerId = selfPlayerSource.getPlayerId(actionContext);
             String valueFromMemory = actionContext.getValueFromMemory(memory);
             return valueFromMemory != null && !valueFromMemory.equals(selfPlayerId);
         };

@@ -38,15 +38,15 @@ public class DiscardFromHand implements EffectAppenderProducer {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<PhysicalCard> cardsToDiscard = actionContext.getCardsFromMemory(memorize);
-                        return new DiscardCardsFromZoneEffect(actionContext, Zone.HAND, handSource.getPlayer(actionContext), cardsToDiscard, forced);
+                        return new DiscardCardsFromZoneEffect(actionContext, Zone.HAND, handSource.getPlayerId(actionContext), cardsToDiscard, forced);
                     }
 
                     @Override
                     public boolean isPlayableInFull(ActionContext actionContext) {
                         final DefaultGame game = actionContext.getGame();
 
-                        final String handPlayer = handSource.getPlayer(actionContext);
-                        final String choosingPlayer = playerSource.getPlayer(actionContext);
+                        final String handPlayer = handSource.getPlayerId(actionContext);
+                        final String choosingPlayer = playerSource.getPlayerId(actionContext);
                         if (!handPlayer.equals(choosingPlayer)
                                 && !game.getModifiersQuerying().canLookOrRevealCardsInHand(game, handPlayer, choosingPlayer))
                             return false;

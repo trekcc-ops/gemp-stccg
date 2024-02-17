@@ -47,7 +47,7 @@ public class TribblesEndOfTurnGameProcess extends DefaultGameProcess<TribblesGam
                     }
                 });
         boolean playerWentOut = false;
-        for (String playerId : game.getPlayers()) {
+        for (String playerId : game.getPlayerIds()) {
             if (game.getGameState().getHand(playerId).size() == 0) {
                 playerWentOut = true;
             }

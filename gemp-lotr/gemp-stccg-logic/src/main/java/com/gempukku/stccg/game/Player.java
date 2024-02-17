@@ -24,6 +24,8 @@ public class Player {
         _game = game;
     }
 
+    public DefaultGame getGame() { return _game; }
+
     public String getPlayerId() {
         return _playerId;
     }

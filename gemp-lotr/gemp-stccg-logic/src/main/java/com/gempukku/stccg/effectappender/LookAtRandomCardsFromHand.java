@@ -26,7 +26,7 @@ public class LookAtRandomCardsFromHand implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final DefaultGame game = actionContext.getGame();
-                final String handPlayer = handSource.getPlayer(actionContext);
+                final String handPlayer = handSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(game, null);
 
                 if (actionContext.getGame().getGameState().getHand(handPlayer).size() < count)
@@ -37,7 +37,7 @@ public class LookAtRandomCardsFromHand implements EffectAppenderProducer {
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String handPlayer = handSource.getPlayer(actionContext);
+                final String handPlayer = handSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return new LookAtRandomCardsFromHandEffect(actionContext, handPlayer, count) {

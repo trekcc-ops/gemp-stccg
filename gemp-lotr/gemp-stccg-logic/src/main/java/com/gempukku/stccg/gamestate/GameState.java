@@ -53,12 +53,13 @@ public abstract class GameState {
         return _nextCardId++;
     }
 
-    public GameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
+    public GameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
+                     GameFormat format, DefaultGame game) {
         _format = format;
         _decks = decks;
         _library = library;
         for (String playerId : players) {
-            _players.put(playerId, new Player(getGame(), playerId));
+            _players.put(playerId, new Player(game, playerId));
             _drawDecks.put(playerId, new LinkedList<>());
             _hands.put(playerId, new LinkedList<>());
             _voids.put(playerId, new LinkedList<>());
@@ -317,11 +318,13 @@ public abstract class GameState {
             _inPlay.add(card);
         }
 
-        List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), zone);
-        if (end)
-            zoneCards.add(card);
-        else
-            zoneCards.add(0, card);
+        if (zone.hasList()) {
+            List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), zone);
+            if (end)
+                zoneCardList.add(card);
+            else
+                zoneCardList.add(0, card);
+        }
 
         if (card.getZone() != null)
             LOGGER.error("Card was in " + card.getZone() + " when tried to add to zone: " + zone);
@@ -536,6 +539,7 @@ public abstract class GameState {
     }
 
     public Player getPlayer(String playerId) { return _players.get(playerId); }
+    public Collection<Player> getPlayers() { return _players.values(); }
 
     public void discardHand(DefaultGame game, String playerId) {
         List<PhysicalCard> hand = new LinkedList<>(getHand(playerId));

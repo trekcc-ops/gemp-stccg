@@ -15,7 +15,7 @@ public class ST1EStartOfFacilitySeedPhaseProcess implements GameProcess<ST1EGame
     @Override
     public void process(ST1EGame game) {
         game.getGameState().setCurrentPhase(Phase.SEED_FACILITY);
-        for (String player : game.getPlayers()) {
+        for (String player : game.getPlayerIds()) {
             List<PhysicalCard> facilitySeeds = new LinkedList<>(game.getGameState().getSeedDeck(player));
             for (PhysicalCard card : facilitySeeds) {
                 game.getGameState().removeCardsFromZone(player, Collections.singleton(card));

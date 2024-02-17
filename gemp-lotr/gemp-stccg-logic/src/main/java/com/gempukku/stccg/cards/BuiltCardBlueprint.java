@@ -21,6 +21,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
     private String subtitle;
     private String _lore;
     private String imageUrl;
+    private int _pointsShown;
+    private boolean _hasPointBox;
     private Uniqueness uniqueness = null;
     private Side side;
     private CardType cardType;
@@ -948,7 +950,18 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     public String getCardLink(String blueprintId) {
-        return "<div class='cardHint' value='" + blueprintId + "'>" +
+        return "<div class='cardHint' value='" + blueprintId + "' card_img_url = '" + imageUrl + "'>" +
                 (isUnique() ? "·" : "") + getFullName() + "</div>";
     }
+
+    public boolean hasNoTransporters() {
+        // TODO - No actual code built here for cards that don't have transporters
+        return false;
+    }
+
+    public void setPointsShown(int pointsShown) { _pointsShown = pointsShown; }
+    public int getPointsShown() { return _pointsShown; }
+
+    public void setHasPointBox(boolean hasPointBox) { _hasPointBox = hasPointBox; }
+    public boolean hasNoPointBox() { return !_hasPointBox; }
 }

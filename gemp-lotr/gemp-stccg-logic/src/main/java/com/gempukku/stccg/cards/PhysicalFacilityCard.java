@@ -1,14 +1,15 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.BeamCardsAction;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class PhysicalFacilityCard extends PhysicalNounCard1E {
     private final Set<PhysicalCard> _cardsAboard = new HashSet<>();
@@ -56,5 +57,15 @@ public class PhysicalFacilityCard extends PhysicalNounCard1E {
 
     public void addCardAboard(PhysicalCard card) {
         _cardsAboard.add(card);
+    }
+
+    @Override
+    public List<? extends Action> getPhaseActionsInPlay(Player player) {
+        List<Action> actions = new LinkedList<>();
+        if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
+            if (hasTransporters() && isControlledBy(player.getPlayerId()))
+                actions.add(new BeamCardsAction(player, this));
+        }
+        return actions;
     }
 }

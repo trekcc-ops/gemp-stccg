@@ -33,7 +33,7 @@ public class ShuffleCardsFromDiscardIntoDrawDeck implements EffectAppenderProduc
                 new DefaultDelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                        final String recyclePlayer = playerSource.getPlayer(actionContext);
+                        final String recyclePlayer = playerSource.getPlayerId(actionContext);
                         final Collection<PhysicalCard> cardsInDiscard = actionContext.getCardsFromMemory("_temp");
                         return new ShuffleCardsIntoDrawDeckEffect(actionContext.getGame(), actionContext.getSource(), Zone.DISCARD, recyclePlayer, cardsInDiscard);
                     }

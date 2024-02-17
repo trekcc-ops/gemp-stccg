@@ -22,15 +22,15 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPile implements EffectAppenderProd
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String drawPlayer = playerSource.getPlayer(actionContext);
+                final String drawPlayer = playerSource.getPlayerId(actionContext);
                 final Evaluator evaluator = count.getEvaluator(null);
                 final int cardCount = evaluator.evaluateExpression(actionContext.getGame(), null);
-                return actionContext.getGame().getGameState().getDrawDeck(drawPlayer).size() >= cardCount;
+                return actionContext.getGameState().getDrawDeck(drawPlayer).size() >= cardCount;
             }
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String drawPlayer = playerSource.getPlayer(actionContext);
+                final String drawPlayer = playerSource.getPlayerId(actionContext);
                 final Evaluator evaluator = count.getEvaluator(actionContext);
                 final int cardsDrawn = evaluator.evaluateExpression(actionContext.getGame(), null);
                 return new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(actionContext, drawPlayer, cardsDrawn);

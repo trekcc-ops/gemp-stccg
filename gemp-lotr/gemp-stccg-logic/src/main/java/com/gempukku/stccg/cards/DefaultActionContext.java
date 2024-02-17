@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -29,5 +30,8 @@ public class DefaultActionContext extends GenericActionContext {
     public DefaultGame getGame() {
         return _game;
     }
+
+    @Override
+    public GameState getGameState() { return _game.getGameState(); }
 
 }

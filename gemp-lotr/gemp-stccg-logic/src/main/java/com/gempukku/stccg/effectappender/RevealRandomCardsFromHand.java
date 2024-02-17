@@ -26,7 +26,7 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String handPlayer = handSource.getPlayer(actionContext);
+                final String handPlayer = handSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return new RevealRandomCardsFromHandEffect(actionContext, handPlayer, count) {
@@ -39,7 +39,7 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String handPlayer = handSource.getPlayer(actionContext);
+                final String handPlayer = handSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
                 if (actionContext.getGame().getGameState().getHand(handPlayer).size() < count)
                     return false;

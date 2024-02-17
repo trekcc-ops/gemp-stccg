@@ -22,7 +22,7 @@ public class Reconciles implements TriggerCheckerProducer {
             public boolean accepts(ActionContext actionContext) {
                 if (playerSource != null)
                     return TriggerConditions.reconciles(actionContext.getEffectResult(),
-                            playerSource.getPlayer(actionContext));
+                            playerSource.getPlayerId(actionContext));
                 else
                     return TriggerConditions.reconciles(actionContext.getEffectResult(), null);
             }

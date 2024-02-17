@@ -16,7 +16,7 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
         
         TribblesGameState gameState = game.getGameState();
 
-        for (String playerId : game.getPlayers()) {
+        for (String playerId : game.getPlayerIds()) {
 
             // Count the total number of Tribbles in the play piles of the players who "went out" and score points.
             if (gameState.getHand(playerId).size() == 0) {
@@ -39,7 +39,7 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
 
         if (gameState.isLastRound()) {
             Map<String, Integer> finalPoints = new HashMap<>();
-            for (String playerId : game.getPlayers()) {
+            for (String playerId : game.getPlayerIds()) {
                 finalPoints.put(playerId, game.getGameState().getPlayerScore(playerId));
             }
             int highestScore = Collections.max(finalPoints.values());

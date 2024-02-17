@@ -29,7 +29,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
         SubAction subAction = new SubAction(_action);
         subAction.appendEffect(new DrawCardsEffect(_game, _action, _activatingPlayer, 1));
             // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
-        for (String player : _game.getPlayers()) {
+        for (String player : _game.getPlayerIds()) {
             if (_game.getGameState().getHand(player).size() >= 4) {
                 subAction.appendEffect(new ChooseCardsFromZoneEffect(_game, Zone.HAND, player, 1, 1) {
                     @Override

@@ -23,7 +23,7 @@ public class ChoosePlayerExcept implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String excludedPlayer = excludePlayerSource.getPlayer(actionContext);
+                final String excludedPlayer = excludePlayerSource.getPlayerId(actionContext);
                 return new ChoosePlayerExceptEffect(actionContext, excludedPlayer) {
                     @Override
                     protected void playerChosen(String playerId) {

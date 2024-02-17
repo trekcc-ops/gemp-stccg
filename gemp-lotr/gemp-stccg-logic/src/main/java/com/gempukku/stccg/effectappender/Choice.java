@@ -34,7 +34,7 @@ public class Choice implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String choosingPlayer = playerSource.getPlayer(actionContext);
+                final String choosingPlayer = playerSource.getPlayerId(actionContext);
                 DefaultActionContext delegateActionContext = new DefaultActionContext(actionContext,
                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                         actionContext.getEffectResult(), actionContext.getEffect());
@@ -77,7 +77,7 @@ public class Choice implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String choosingPlayer = playerSource.getPlayer(actionContext);
+                final String choosingPlayer = playerSource.getPlayerId(actionContext);
                 DefaultActionContext delegateActionContext = new DefaultActionContext(actionContext,
                         choosingPlayer, actionContext.getGame(), actionContext.getSource(),
                         actionContext.getEffectResult(), actionContext.getEffect());

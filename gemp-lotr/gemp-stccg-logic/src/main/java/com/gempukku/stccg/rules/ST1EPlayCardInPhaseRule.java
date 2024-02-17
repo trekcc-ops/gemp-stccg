@@ -54,12 +54,12 @@ public class ST1EPlayCardInPhaseRule {
                                 }
                             }
                             return result;
-                        } else if (phase == Phase.NORMAL_CARD_PLAY) {
+                        } else if (phase == Phase.CARD_PLAY) {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
                                 if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
                                     if (game.checkPlayRequirements(card)) {
-                                        if (card.getBlueprint().getCardType() == CardType.PERSONNEL || card.getBlueprint().getCardType() == CardType.SHIP)
+                                        if (card.getCardType() == CardType.PERSONNEL || card.getCardType() == CardType.SHIP)
                                             result.add(new ReportCardAction(game, (PhysicalPersonnelCard) card));
                                     }
                                 }

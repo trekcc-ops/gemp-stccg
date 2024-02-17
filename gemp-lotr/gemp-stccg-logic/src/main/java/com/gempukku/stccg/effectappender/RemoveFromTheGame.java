@@ -35,7 +35,7 @@ public class RemoveFromTheGame implements EffectAppenderProducer {
                 new DefaultDelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                        final String removingPlayerId = discardingPlayer.getPlayer(actionContext);
+                        final String removingPlayerId = discardingPlayer.getPlayerId(actionContext);
                         final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                         if (stackedCardsMemory != null) {
                             List<PhysicalCard> stackedCards = new LinkedList<>();

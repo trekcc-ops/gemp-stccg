@@ -1,13 +1,7 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class ST1EStartOfPlayPhaseProcess implements GameProcess<ST1EGame> {
     private final String _firstPlayer;
@@ -21,7 +15,7 @@ public class ST1EStartOfPlayPhaseProcess implements GameProcess<ST1EGame> {
     public void process(ST1EGame game) {
 
         ST1EGameState gameState = game.getGameState();
-        for (String player : game.getPlayers()) {
+        for (String player : game.getPlayerIds()) {
             gameState.shuffleDeck(player);
             for (int i = 0; i < game.getFormat().getHandSize(); i++) {
                 gameState.playerDrawsCard(game, player);

@@ -29,7 +29,7 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 final DefaultGame game = actionContext.getGame();
@@ -39,7 +39,7 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
                 return new DiscardCardsFromEndOfCardPileEffect(

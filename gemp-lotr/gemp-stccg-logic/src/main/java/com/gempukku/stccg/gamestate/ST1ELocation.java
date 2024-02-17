@@ -69,7 +69,7 @@ public class ST1ELocation {
 
     public boolean hasFacilityOwnedByPlayer(String playerId) {
         for (PhysicalCard nonMission : _nonMissionCards)
-            if (nonMission.getBlueprint().getCardType() == CardType.FACILITY && nonMission.getOwnerName() == playerId)
+            if (nonMission.getCardType() == CardType.FACILITY && nonMission.getOwnerName() == playerId)
                 return true;
         return false;
     }

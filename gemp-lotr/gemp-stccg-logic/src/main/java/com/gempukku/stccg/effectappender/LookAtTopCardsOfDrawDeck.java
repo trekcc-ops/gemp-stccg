@@ -24,14 +24,14 @@ public class LookAtTopCardsOfDrawDeck implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
 
                 return actionContext.getGame().getGameState().getDrawDeck(deckId).size() >= count;
             }
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
 
                 return new LookAtTopCardOfADeckEffect(actionContext, count, deckId) {
                     @Override

@@ -734,6 +734,7 @@ var MissionCardGroup = CardGroup.extend({
             cardX = cardX - this.x;
             cardY = cardY - this.y;
             cardElem.detach().appendTo(this.descDiv);
+
             this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, index, cardData);
             index++;
         }

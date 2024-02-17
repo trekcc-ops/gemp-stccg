@@ -19,7 +19,7 @@ public class PlayerGoesOut implements TriggerCheckerProducer {
             @Override
             public boolean accepts(TribblesActionContext actionContext) {
                 return TriggerConditions.playerGoesOut(actionContext.getEffectResult(),
-                        playerSource.getPlayer(actionContext));
+                        playerSource.getPlayerId(actionContext));
             }
 
             @Override

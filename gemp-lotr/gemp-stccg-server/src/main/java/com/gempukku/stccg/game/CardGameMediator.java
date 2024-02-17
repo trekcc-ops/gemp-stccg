@@ -124,8 +124,8 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
         if (getGame().isFinished())
             return "Finished";
         final Phase currentPhase = getGame().getGameState().getCurrentPhase();
-        if (currentPhase == Phase.PLAY_STARTING_FELLOWSHIP || currentPhase == Phase.PUT_RING_BEARER)
-            return "Preparation";
+        if (currentPhase == Phase.SEED_DOORWAY || currentPhase == Phase.SEED_FACILITY || currentPhase == Phase.SEED_MISSION || currentPhase == Phase.SEED_DILEMMA)
+            return "Seeding";
         return "Playing";
     }
 
@@ -139,70 +139,8 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
             PhysicalCard card = getGame().getGameState().findCardById(cardId);
             if (card == null || card.getZone() == null)
                 return null;
-
-            if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
-                StringBuilder sb = new StringBuilder();
-
-                if (card.getZone() == Zone.HAND)
-                    sb.append("<b>Card is in hand - stats are only provisional</b><br><br>");
-                else if (Filters.filterActive(getGame(), card).size() == 0)
-                    sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");
-
-                sb.append("<b>Affecting card:</b>");
-                Collection<Modifier> modifiers =
-                        getGame().getModifiersQuerying().getModifiersAffecting(getGame(), card);
-                for (Modifier modifier : modifiers) {
-                    String sourceText;
-                    PhysicalCard source = modifier.getSource();
-                    if (source != null) {
-                        sourceText = GameUtils.getCardLink(source);
-                    } else {
-                        sourceText = "<i>System</i>";
-                    }
-                    sb.append("<br><b>").append(sourceText).append(":</b> ");
-                    sb.append(modifier.getText(getGame(), card));
-                }
-                if (modifiers.size() == 0)
-                    sb.append("<br><i>nothing</i>");
-
-                if (card.getZone().isInPlay() && card.getBlueprint().getCardType() == CardType.SITE)
-                    sb.append("<br><b>Owner:</b> ").append(card.getOwnerName());
-
-                List<PhysicalCard> stackedCards = getGame().getGameState().getStackedCards(card);
-                if (stackedCards != null && stackedCards.size() > 0) {
-                    sb.append("<br><b>Stacked cards:</b>");
-                    sb.append("<br>").append(GameUtils.getAppendedNames(stackedCards));
-                }
-
-                final String extraDisplayableInformation = card.getBlueprint().getDisplayableInformation(card);
-                if (extraDisplayableInformation != null) {
-                    sb.append("<br><b>Extra information:</b>");
-                    sb.append("<br>").append(extraDisplayableInformation);
-                }
-
-                sb.append("<br><br><b>Effective stats:</b>");
-
-                StringBuilder keywords = new StringBuilder();
-                for (Keyword keyword : Keyword.values()) {
-                    if (keyword.isInfoDisplayable()) {
-                        if (keyword.isMultiples()) {
-                            int count = getGame().getModifiersQuerying().getKeywordCount(
-                                    getGame(), card, keyword
-                            );
-                            if (count > 0)
-                                keywords.append(keyword.getHumanReadable()).append(" +").append(count).append(", ");
-                        } else {
-                            if (getGame().getModifiersQuerying().hasKeyword(getGame(), card, keyword))
-                                keywords.append(keyword.getHumanReadable()).append(", ");
-                        }
-                    }
-                }
-                if (keywords.length() > 0)
-                    sb.append("<br><b>Keywords:</b> ").append(keywords.substring(0, keywords.length() - 2));
-                return sb.toString();
-            } else {
-                return null;
-            }
+            else
+                return card.getCardInfoHTML();
         } finally {
             _readLock.unlock();
         }

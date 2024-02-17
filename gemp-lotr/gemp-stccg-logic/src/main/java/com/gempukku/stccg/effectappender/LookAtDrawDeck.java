@@ -27,7 +27,7 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String deckId = playerSource.getPlayer(actionContext);
+                final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = actionContext.getGame().getGameState().getDrawDeck(deckId).size();
 
                 return new LookAtTopCardOfADeckEffect(actionContext, count, deckId) {
@@ -42,7 +42,7 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
         result.addEffectAppender(new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                return new ShuffleDeckEffect(actionContext.getGame(), playerSource.getPlayer(actionContext));
+                return new ShuffleDeckEffect(actionContext.getGame(), playerSource.getPlayerId(actionContext));
             }
         });
 

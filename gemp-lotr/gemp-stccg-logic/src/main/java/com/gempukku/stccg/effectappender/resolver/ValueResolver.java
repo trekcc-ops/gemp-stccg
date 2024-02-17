@@ -173,7 +173,7 @@ public class ValueResolver {
 
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
                 return actionContext -> new MultiplyEvaluator(multiplier, new Evaluator() {
-                    final String player = playerSrc.getPlayer(actionContext);
+                    final String player = playerSrc.getPlayerId(actionContext);
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
@@ -190,7 +190,7 @@ public class ValueResolver {
                 final String hand = FieldUtils.getString(object.get("hand"), "hand", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(hand);
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayer(actionContext)),
+                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getHand(player.getPlayerId(actionContext)),
                         game, filterableSource.getFilterable(actionContext)).size();
             } else if (type.equalsIgnoreCase("forEachInPlayPile")) {
                 FieldUtils.validateAllowedFields(object, "filter", "owner");
@@ -198,14 +198,14 @@ public class ValueResolver {
                 final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(owner);
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getZoneCards(player.getPlayer(actionContext), Zone.PLAY_PILE),
+                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getZoneCards(player.getPlayerId(actionContext), Zone.PLAY_PILE),
                         game, filterableSource.getFilterable(actionContext)).size();
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
                 FieldUtils.validateAllowedFields(object, "owner");
                 final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(owner);
                 return actionContext -> (Evaluator) (game, cardAffected)
-                        -> game.getGameState().getZoneCards(player.getPlayer(actionContext), Zone.PLAY_PILE).size();
+                        -> game.getGameState().getZoneCards(player.getPlayerId(actionContext), Zone.PLAY_PILE).size();
             } else if (type.equalsIgnoreCase("fromMemory")) {
                 FieldUtils.validateAllowedFields(object, "memory", "multiplier", "limit");
                 String memory = FieldUtils.getString(object.get("memory"), "memory");

@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameState;
@@ -66,7 +65,8 @@ public abstract class DefaultGame {
         return _format;
     }
     public abstract boolean checkPlayRequirements(PhysicalCard card);
-    public Set<String> getPlayers() { return _allPlayers; }
+    public Set<String> getPlayerIds() { return _allPlayers; }
+    public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
     public boolean isCancelled() { return _cancelled; }
 
     public void addGameResultListener(GameResultListener listener) {

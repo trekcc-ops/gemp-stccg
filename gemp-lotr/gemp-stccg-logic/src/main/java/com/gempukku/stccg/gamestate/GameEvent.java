@@ -224,7 +224,7 @@ public class GameEvent {
             gameEvent = gameEvent.targetCardId(stackedOn.getCardId());
 
         gameEvent = gameEvent.locationIndex(physicalCard.getLocationZoneIndex());
-        if (physicalCard.getBlueprint().getCardType() == CardType.MISSION) {
+        if (physicalCard.getCardType() == CardType.MISSION) {
             gameEvent = gameEvent.quadrant(physicalCard.getQuadrant().name());
         }
         return gameEvent;

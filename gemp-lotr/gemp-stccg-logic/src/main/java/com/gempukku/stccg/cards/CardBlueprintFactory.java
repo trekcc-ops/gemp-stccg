@@ -41,6 +41,7 @@ public class CardBlueprintFactory implements CardGenerationEnvironment {
         fieldProcessors.put("caninsertintospaceline", new CanInsertIntoSpacelineProcessor());
         fieldProcessors.put("affiliation-icons", new AffiliationIconsFieldProcessor());
         fieldProcessors.put("mission-type", new MissionTypeFieldProcessor());
+        fieldProcessors.put("point-box", new PointBoxFieldProcessor());
 
         fieldProcessors.put("race", new RaceFieldProcessor());
         fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
