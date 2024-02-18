@@ -9,24 +9,26 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ST1EStartOfFacilitySeedPhaseProcess implements GameProcess<ST1EGame> {
-    public ST1EStartOfFacilitySeedPhaseProcess() {    }
+public class ST1EStartOfFacilitySeedPhaseProcess extends ST1EGameProcess {
+    public ST1EStartOfFacilitySeedPhaseProcess(ST1EGame game) {
+        super(game);
+    }
 
     @Override
-    public void process(ST1EGame game) {
-        game.getGameState().setCurrentPhase(Phase.SEED_FACILITY);
-        for (String player : game.getPlayerIds()) {
-            List<PhysicalCard> facilitySeeds = new LinkedList<>(game.getGameState().getSeedDeck(player));
+    public void process() {
+        _game.getGameState().setCurrentPhase(Phase.SEED_FACILITY);
+        for (String player : _game.getPlayerIds()) {
+            List<PhysicalCard> facilitySeeds = new LinkedList<>(_game.getGameState().getSeedDeck(player));
             for (PhysicalCard card : facilitySeeds) {
-                game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
-                game.getGameState().addCardToZone(game, card, Zone.HAND);
+                _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
+                _game.getGameState().addCardToZone(_game, card, Zone.HAND);
             }
         }
 
     }
 
     @Override
-    public GameProcess<ST1EGame> getNextProcess() {
-        return new ST1EFacilitySeedPhaseProcess(0);
+    public GameProcess getNextProcess() {
+        return new ST1EFacilitySeedPhaseProcess(0, _game);
     }
 }

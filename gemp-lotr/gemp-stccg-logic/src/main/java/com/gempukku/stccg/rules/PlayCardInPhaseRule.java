@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
@@ -37,13 +36,13 @@ public class PlayCardInPhaseRule {
         actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
-                        final Keyword phaseKeyword = PhaseKeywordMap.get(game.getGameState().getCurrentPhase());
+                    public List<? extends Action> getPhaseActions(String playerId) {
+                        final Keyword phaseKeyword = PhaseKeywordMap.get(actionsEnvironment.getGame().getGameState().getCurrentPhase());
                         if (phaseKeyword != null) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game,
+                            for (PhysicalCard card : Filters.filter(actionsEnvironment.getGame().getGameState().getHand(playerId), actionsEnvironment.getGame(),
                                     Filters.and(CardType.EVENT, phaseKeyword))) {
-                                if (game.checkPlayRequirements(card))
+                                if (actionsEnvironment.getGame().checkPlayRequirements(card))
                                     result.add(card.getPlayCardAction(0, Filters.any, false));
                             }
                             return result;

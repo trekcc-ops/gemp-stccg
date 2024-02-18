@@ -232,7 +232,7 @@ public class ST2EGameState extends GameState {
                         cardIterator.remove();
                     }
                 }
-            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && cardsLeftToSend.size() > 0);
+            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
             List<PhysicalCard> hand = _hands.get(playerId);
             if (hand != null) hand.forEach(listener::putCardIntoPlay);

@@ -8,39 +8,44 @@ import com.gempukku.stccg.results.PlayerWentOutResult;
 
 import java.util.*;
 
-public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGame> {
+public class TribblesEndOfRoundGameProcess extends GameProcess {
     private final Map<String, Integer> _pointsScored = new HashMap<>();
     private GameProcess _nextProcess;
+    private TribblesGame _game;
+    TribblesEndOfRoundGameProcess(TribblesGame game) {
+        super();
+        _game = game;
+    }
     @Override
-    public void process(TribblesGame game) {
+    public void process() {
         
-        TribblesGameState gameState = game.getGameState();
+        TribblesGameState gameState = _game.getGameState();
 
-        for (String playerId : game.getPlayerIds()) {
+        for (String playerId : _game.getPlayerIds()) {
 
             // Count the total number of Tribbles in the play piles of the players who "went out" and score points.
-            if (gameState.getHand(playerId).size() == 0) {
+            if (gameState.getHand(playerId).isEmpty()) {
                 gameState.playerWentOut(playerId); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 _pointsScored.put(playerId, score);
                 gameState.addToPlayerScore(playerId, score);
                 gameState.sendMessage(playerId + " went out with " + score + " points");
-                game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
+                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
             }
 
             // Each player places the cards remaining in their hand into their discard pile.
-            gameState.discardHand(game, playerId);
+            gameState.discardHand(_game, playerId);
 
             // Each player then shuffles their play pile into their decks.
-            gameState.shufflePlayPileIntoDeck(game, playerId);
+            gameState.shufflePlayPileIntoDeck(_game, playerId);
         }
 
-        ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfRound();
+        ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfRound();
 
         if (gameState.isLastRound()) {
             Map<String, Integer> finalPoints = new HashMap<>();
-            for (String playerId : game.getPlayerIds()) {
-                finalPoints.put(playerId, game.getGameState().getPlayerScore(playerId));
+            for (String playerId : _game.getPlayerIds()) {
+                finalPoints.put(playerId, _game.getGameState().getPlayerScore(playerId));
             }
             int highestScore = Collections.max(finalPoints.values());
             finalPoints.entrySet().removeIf(entry -> entry.getValue() < highestScore);
@@ -50,7 +55,7 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
                  */
             List<String> winningPlayerList = new ArrayList<>(finalPoints.keySet());
             String winningPlayer = winningPlayerList.get(new Random().nextInt(winningPlayerList.size()));
-            game.playerWon(winningPlayer, "highest score after 5 rounds");
+            _game.playerWon(winningPlayer, "highest score after 5 rounds");
         } else {
             /* The player who "went out" this round will take the first turn in the next round.
                 If multiple players "went out" in the previous round, the player who "went out" with the
@@ -65,7 +70,7 @@ public class TribblesEndOfRoundGameProcess extends DefaultGameProcess<TribblesGa
                  */
             String firstPlayer = firstPlayerList.get(new Random().nextInt(firstPlayerList.size()));
             gameState.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
-            _nextProcess = new TribblesStartOfRoundGameProcess(firstPlayer);
+            _nextProcess = new TribblesStartOfRoundGameProcess(firstPlayer, _game);
         }
     }
 

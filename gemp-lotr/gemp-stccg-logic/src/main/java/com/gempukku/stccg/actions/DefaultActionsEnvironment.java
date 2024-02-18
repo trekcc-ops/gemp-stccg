@@ -25,6 +25,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionStack = actionStack;
     }
 
+    public DefaultGame getGame() { return _game; }
+
     public List<ActionProxy> getUntilStartOfPhaseActionProxies(Phase phase) {
         return _untilStartOfPhaseActionProxies.get(phase);
     }
@@ -104,7 +106,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> gatheredActions = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredBeforeTriggers(_game, effect);
+            List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredBeforeTriggers(effect);
             if (actions != null) {
                 gatheredActions.addAll(actions);
             }
@@ -118,7 +120,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalBeforeTriggers(playerId, _game, effect);
+            List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalBeforeTriggers(playerId, effect);
             if (actions != null) {
                 for (OptionalTriggerAction action : actions) {
                     action.setPerformingPlayer(playerId);
@@ -135,7 +137,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, _game, effect);
+            List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, effect);
             if (actions != null) {
                 for (Action action : actions) {
                     action.setPerformingPlayer(playerId);
@@ -155,7 +157,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
-                    List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredAfterTriggers(_game, effectResult);
+                    List<? extends RequiredTriggerAction> actions = actionProxy.getRequiredAfterTriggers(effectResult);
                     if (actions != null)
                         gatheredActions.addAll(actions);
                 }
@@ -172,7 +174,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
-                    List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalAfterTriggerActions(playerId, _game, effectResult);
+                    List<? extends OptionalTriggerAction> actions = actionProxy.getOptionalAfterTriggerActions(playerId, effectResult);
                     if (actions != null) {
                         for (OptionalTriggerAction action : actions) {
                             if (!effectResult.wasOptionalTriggerUsed(action)) {
@@ -195,7 +197,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         if (effectResults != null) {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, _game, effectResult);
+                    List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, effectResult);
                     if (actions != null) {
                         for (Action action : actions) {
                             action.setPerformingPlayer(playerId);
@@ -215,7 +217,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getPhaseActions(playerId, _game);
+            List<? extends Action> actions = actionProxy.getPhaseActions(playerId);
             if (actions != null) {
                 for (Action action : actions) {
                     action.setPerformingPlayer(playerId);

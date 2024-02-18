@@ -140,7 +140,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public Boolean ShadowAnyActionsAvailable() { return AnyActionsAvailable(P2); }
     public Boolean AnyActionsAvailable(String player) {
         List<String> actions = GetAvailableActions(player);
-        return actions.size() > 0;
+        return !actions.isEmpty();
     }
 
     public Boolean FreepsAnyDecisionsAvailable() { return AnyDecisionsAvailable(P1); }
@@ -554,7 +554,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public List<PhysicalCardImpl> FreepsGetStackedCards(String name) { return GetStackedCards(GetFreepsCard(name)); }
     public List<PhysicalCardImpl> ShadowGetStackedCards(String name) { return GetStackedCards(GetShadowCard(name)); }
     public List<PhysicalCardImpl> GetStackedCards(PhysicalCardImpl card) {
-        return (List<PhysicalCardImpl>)(List<?>)_game.getGameState().getStackedCards(card);
+        return (List<PhysicalCardImpl>)(List<?>)card.getStackedCards();
     }
 
     public void FreepsResolveSkirmish(String name) throws DecisionResultInvalidException { FreepsResolveSkirmish(GetFreepsCard(name)); }

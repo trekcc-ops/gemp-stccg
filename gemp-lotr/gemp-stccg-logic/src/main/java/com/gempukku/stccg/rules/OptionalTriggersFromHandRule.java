@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,10 +21,10 @@ public class OptionalTriggersFromHandRule {
         actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
+                    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (PhysicalCard responseEvent : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                            final List<OptionalTriggerAction> actions = responseEvent.getBlueprint().getOptionalInHandAfterTriggers(playerId, game, effectResult, responseEvent);
+                        for (PhysicalCard responseEvent : Filters.filter(actionsEnvironment.getGame().getGameState().getHand(playerId), actionsEnvironment.getGame())) {
+                            final List<OptionalTriggerAction> actions = responseEvent.getBlueprint().getOptionalInHandAfterTriggers(playerId, actionsEnvironment.getGame(), effectResult, responseEvent);
                             if (actions != null)
                                 result.addAll(actions);
                         }

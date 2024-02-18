@@ -22,7 +22,7 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
         // Choose a player to shuffle his or her discard pile into his or her draw deck
         List<String> playersWithCards = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(_game)) {
-            if (_game.getGameState().getDiscard(player).size() > 0)
+            if (!_game.getGameState().getDiscard(player).isEmpty())
                 playersWithCards.add(player);
         }
         String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);

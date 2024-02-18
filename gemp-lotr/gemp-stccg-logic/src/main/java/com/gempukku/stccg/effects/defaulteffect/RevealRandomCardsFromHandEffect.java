@@ -37,7 +37,7 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
         if (_actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer)) {
             List<PhysicalCard> randomCards = GameUtils.getRandomCards(_game.getGameState().getHand(_playerHand), _count);
 
-            if (randomCards.size() > 0) {
+            if (!randomCards.isEmpty()) {
                 final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwnerName(), false);
 
                 String nextPlayer;

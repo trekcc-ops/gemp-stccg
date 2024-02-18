@@ -4,9 +4,10 @@ import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.processes.BiddingGameProcess;
 import com.gempukku.stccg.processes.GameProcess;
@@ -284,7 +285,7 @@ public class DefaultGameFormat implements GameFormat {
             if (_validCards.contains(blueprintId) || _errataCardMap.containsValue(blueprintId))
                 return null;
 
-            if (_validSets.size() > 0 && !isValidInSets(blueprintId))
+            if (!_validSets.isEmpty() && !isValidInSets(blueprintId))
                 return "Deck contains card not from valid set: " +
                         GameUtils.getFullName(_library.getCardBlueprint(blueprintId));
 
@@ -323,7 +324,7 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public String validateDeckForHall(CardDeck deck) {
         List<String> validations = validateDeck(deck);
-        if(validations.size() == 0)
+        if(validations.isEmpty())
             return "";
 
         String firstValidation = validations.stream().findFirst().orElse(null);
@@ -531,8 +532,8 @@ public class DefaultGameFormat implements GameFormat {
             hall = _hallVisible;
         }};
     }
-    public GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
-        return new BiddingGameProcess(players, playerOrderFeedback);
+    public GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, DefaultGame game) {
+        return new BiddingGameProcess(players, playerOrderFeedback, game);
     }
 
 }

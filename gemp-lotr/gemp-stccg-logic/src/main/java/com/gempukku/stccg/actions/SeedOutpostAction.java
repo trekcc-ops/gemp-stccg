@@ -32,13 +32,13 @@ public class SeedOutpostAction extends AbstractPlayCardAction {
     private final Set<Affiliation> _affiliationOptions = new HashSet<>();
     private Affiliation _selectedAffiliation;
     private final ST1EGame _game;
-    public SeedOutpostAction(ST1EGame game, PhysicalFacilityCard cardToSeed) {
+    public SeedOutpostAction(PhysicalFacilityCard cardToSeed) {
         super(cardToSeed);
         _seedCard = cardToSeed;
         setText("Seed " + _seedCard.getFullName());
         setPerformingPlayer(_seedCard.getOwnerName());
         _fromZone = _seedCard.getZone();
-        _game = game;
+        _game = cardToSeed.getGame();
         _placementChosen = false;
         if (cardToSeed.isMultiAffiliation()) {
             _affiliationWasChosen = false;

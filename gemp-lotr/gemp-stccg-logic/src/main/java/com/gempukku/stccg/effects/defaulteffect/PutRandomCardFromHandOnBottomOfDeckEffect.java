@@ -20,7 +20,7 @@ public class PutRandomCardFromHandOnBottomOfDeckEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _game.getGameState().getHand(_playerId).size() > 0;
+        return !_game.getGameState().getHand(_playerId).isEmpty();
     }
 
     @Override

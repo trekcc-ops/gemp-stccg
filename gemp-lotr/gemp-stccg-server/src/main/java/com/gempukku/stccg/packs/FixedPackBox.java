@@ -30,7 +30,7 @@ public class FixedPackBox implements PackBox {
         FixedPackBox box = new FixedPackBox(recursive);
         for (String item : items) {
             item = item.trim();
-            if (!item.startsWith("#") && item.length() > 0) {
+            if (!item.startsWith("#") && !item.isEmpty()) {
                 String[] result = item.split("x", 2);
                 box._contents.put(result[1], Integer.parseInt(result[0]));
             }

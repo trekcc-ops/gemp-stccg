@@ -1,38 +1,37 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.effects.TriggeringResultEffect;
 import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.results.StartOfTurnResult;
 
-import java.util.Objects;
-
-public class StartOfTurnGameProcess implements GameProcess {
+public class TribblesStartOfTurnGameProcess extends GameProcess {
     private GameProcess _followingGameProcess;
+    private TribblesGame _game;
+    public TribblesStartOfTurnGameProcess(TribblesGame game) {
+        _game = game;
+    }
     @Override
-    public void process(DefaultGame game) {
-        game.getGameState().startAffectingCardsForCurrentPlayer(game);
+    public void process() {
+        _game.getGameState().startAffectingCardsForCurrentPlayer();
 
         SystemQueueAction action = new SystemQueueAction();
 
         action.appendEffect(new UnrespondableEffect() {
             @Override
             protected void doPlayEffect() {
-                var state = game.getGameState();
+                var state = _game.getGameState();
                 state.sendMessage("\n\n========\n\nStart of " + state.getCurrentPlayerId() + "'s turn.");
             }
         });
 
         action.appendEffect(
-                new TriggeringResultEffect(game, new StartOfTurnResult(), "Start of turn"));
-        ((ModifiersLogic) game.getModifiersEnvironment()).signalStartOfTurn(game.getGameState().getCurrentPlayerId());
-        game.getActionsEnvironment().addActionToStack(action);
-        if (Objects.equals(game.getFormat().getGameType(), "tribbles"))
-            _followingGameProcess = new TribblesTurnProcess();
-        else if (Objects.equals(game.getFormat().getGameType(), "st1e"))
-            _followingGameProcess = new ST1ETurnProcess();
+                new TriggeringResultEffect(_game, new StartOfTurnResult(), "Start of turn"));
+        ((ModifiersLogic) _game.getModifiersEnvironment()).signalStartOfTurn(_game.getGameState().getCurrentPlayerId());
+        _game.getActionsEnvironment().addActionToStack(action);
+        _followingGameProcess = new TribblesTurnProcess(_game);
         // TODO - Remove commented code below
         // DEBUG - End game to see if this is working
 //        game.playerWon(game.getGameState().getCurrentPlayerId(), "testing");

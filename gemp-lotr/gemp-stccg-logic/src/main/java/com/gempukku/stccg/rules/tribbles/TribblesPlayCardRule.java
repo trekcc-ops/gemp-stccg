@@ -7,9 +7,7 @@ import com.gempukku.stccg.actions.TribblesPlayPermanentAction;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,11 +25,11 @@ public class TribblesPlayCardRule {
         actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
-                        if (game.getGameState().getCurrentPlayerId().equals(playerId)) {
+                    public List<? extends Action> getPhaseActions(String playerId) {
+                        if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                                if (game.checkPlayRequirements(card)) {
+                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+                                if (_game.checkPlayRequirements(card)) {
                                     result.add(new TribblesPlayPermanentAction(_game, card, Zone.PLAY_PILE));
                                 }
                             }

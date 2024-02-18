@@ -24,7 +24,7 @@ public class CountStackedEvaluator implements Evaluator {
     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         int count = 0;
         for (PhysicalCard card : Filters.filterActive(game, _stackedOn)) {
-            count += Filters.filter(game.getGameState().getStackedCards(card), game, _stackedCard).size();
+            count += Filters.filter(card.getStackedCards(), game, _stackedCard).size();
         }
         if (_limit != null)
             return Math.min(_limit, count);

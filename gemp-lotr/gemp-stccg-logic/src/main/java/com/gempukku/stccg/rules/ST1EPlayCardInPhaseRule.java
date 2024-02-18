@@ -10,7 +10,7 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,49 +18,51 @@ import java.util.Objects;
 
 public class ST1EPlayCardInPhaseRule {
     private final DefaultActionsEnvironment actionsEnvironment;
+    private final DefaultGame _game;
 
     public ST1EPlayCardInPhaseRule(DefaultActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
+        _game = actionsEnvironment.getGame();
     }
 
     public void applyRule() {
         actionsEnvironment.addAlwaysOnActionProxy(
-                new AbstractActionProxy<ST1EGame>() {
+                new AbstractActionProxy() {
                     @Override
-                    public List<Action> getPhaseActions(String playerId, ST1EGame game) {
-                        final Phase phase = game.getGameState().getCurrentPhase();
+                    public List<Action> getPhaseActions(String playerId) {
+                        final Phase phase = _game.getGameState().getCurrentPhase();
                         if (phase == Phase.SEED_DOORWAY) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                                if (game.checkPlayRequirements(card)) {
+                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+                                if (_game.checkPlayRequirements(card)) {
                                     result.add(new PlayPermanentForFreeAction(card, Zone.TABLE));
                                 }
                             }
                             return result;
-                        } else if (phase == Phase.SEED_MISSION && !game.getGameState().getHand(playerId).isEmpty()) {
-                            if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
+                        } else if (phase == Phase.SEED_MISSION && !_game.getGameState().getHand(playerId).isEmpty()) {
+                            if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
                                 List<Action> actionList = new LinkedList<>();
-                                actionList.add(new SeedMissionAction(game, (PhysicalMissionCard) game.getGameState().getHand(playerId).get(0)));
+                                actionList.add(new SeedMissionAction((PhysicalMissionCard) _game.getGameState().getHand(playerId).get(0)));
                                 return actionList;
                             }
                         } else if (phase == Phase.SEED_FACILITY) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                                if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
-                                    if (game.checkPlayRequirements(card)) {
+                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+                                if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
+                                    if (_game.checkPlayRequirements(card)) {
                                         if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
-                                            result.add(new SeedOutpostAction(game, (PhysicalFacilityCard) card));
+                                            result.add(new SeedOutpostAction((PhysicalFacilityCard) card));
                                     }
                                 }
                             }
                             return result;
                         } else if (phase == Phase.CARD_PLAY) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                                if (Objects.equals(playerId, game.getGameState().getCurrentPlayerId())) {
-                                    if (game.checkPlayRequirements(card)) {
+                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+                                if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
+                                    if (_game.checkPlayRequirements(card)) {
                                         if (card.getCardType() == CardType.PERSONNEL || card.getCardType() == CardType.SHIP)
-                                            result.add(new ReportCardAction(game, (PhysicalPersonnelCard) card));
+                                            result.add(new ReportCardAction((PhysicalPersonnelCard) card));
                                     }
                                 }
                             }

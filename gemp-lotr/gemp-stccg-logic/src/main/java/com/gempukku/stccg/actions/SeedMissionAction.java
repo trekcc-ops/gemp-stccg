@@ -31,13 +31,13 @@ public class SeedMissionAction extends AbstractPlayCardAction {
     private final ST1EGame _game;
     private PhysicalCard _neighborCard;
 
-    public SeedMissionAction(ST1EGame game, PhysicalMissionCard cardToPlay) {
+    public SeedMissionAction(PhysicalMissionCard cardToPlay) {
         super(cardToPlay);
         _cardToPlay = cardToPlay;
         _fromZone = cardToPlay.getZone();
         setText("Seed " + _cardToPlay.getFullName());
         setPerformingPlayer(_cardToPlay.getOwnerName());
-        _game = game;
+        _game = cardToPlay.getGame();
     }
 
     @Override

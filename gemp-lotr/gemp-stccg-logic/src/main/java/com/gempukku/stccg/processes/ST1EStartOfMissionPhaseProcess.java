@@ -9,24 +9,24 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ST1EStartOfMissionPhaseProcess implements GameProcess<ST1EGame> {
-    public ST1EStartOfMissionPhaseProcess() {    }
+public class ST1EStartOfMissionPhaseProcess extends ST1EGameProcess {
+    public ST1EStartOfMissionPhaseProcess(ST1EGame game) { super(game); }
 
     @Override
-    public void process(ST1EGame game) {
-        game.getGameState().setCurrentPhase(Phase.SEED_MISSION);
-        for (String player : game.getPlayerIds()) {
-            List<PhysicalCard> missionSeeds = new LinkedList<>(game.getGameState().getMissionPile(player));
+    public void process() {
+        _game.getGameState().setCurrentPhase(Phase.SEED_MISSION);
+        for (String player : _game.getPlayerIds()) {
+            List<PhysicalCard> missionSeeds = new LinkedList<>(_game.getGameState().getMissionPile(player));
             for (PhysicalCard card : missionSeeds) {
-                game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
-                game.getGameState().addCardToZone(game, card, Zone.HAND);
+                _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
+                _game.getGameState().addCardToZone(_game, card, Zone.HAND);
             }
         }
 
     }
 
     @Override
-    public GameProcess<ST1EGame> getNextProcess() {
-        return new ST1EMissionSeedPhaseProcess(0,new ST1EDilemmaSeedPhaseProcess());
+    public GameProcess getNextProcess() {
+        return new ST1EMissionSeedPhaseProcess(0,new ST1EDilemmaSeedPhaseProcess(_game), _game);
     }
 }

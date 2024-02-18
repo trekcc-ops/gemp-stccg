@@ -45,7 +45,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends DefaultEffect i
     public FullEffectResult playEffectReturningResult() {
         int drawn = 0;
 
-        while ((drawn < _count) && (!_prevented) && (_game.getGameState().getDrawDeck(_playerId).size() > 0)) {
+        while ((drawn < _count) && (!_prevented) && (!_game.getGameState().getDrawDeck(_playerId).isEmpty())) {
             PhysicalCard card = _game.getGameState().getDrawDeck(_playerId).get(0);
             _game.getGameState().removeCardsFromZone(null, Collections.singleton(card));
             _game.getGameState().addCardToZone(_game, card, Zone.PLAY_PILE);

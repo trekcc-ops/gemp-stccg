@@ -72,7 +72,7 @@ public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends Abstract
                 _subAction.appendEffect(
                         new PutCardsFromZoneOnEndOfPileEffect(_game, _reveal, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, selectedCard));
                 _remainingCards.remove(selectedCard);
-                if (_remainingCards.size() > 0)
+                if (!_remainingCards.isEmpty())
                     _subAction.appendEffect(
                             new ChooseAndPutNextCardFromHandOnBottomOfLibrary(_subAction, _remainingCards));
             }

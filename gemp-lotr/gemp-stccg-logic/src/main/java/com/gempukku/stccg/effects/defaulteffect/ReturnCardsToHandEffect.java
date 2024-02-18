@@ -36,8 +36,8 @@ public class ReturnCardsToHandEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return Filters.filterActive(_game, _filter,
-                (Filter) (game1, physicalCard) -> (_source == null || game1.getModifiersQuerying().canBeReturnedToHand(game1, physicalCard, _source))).size() > 0;
+        return !Filters.filterActive(_game, _filter,
+                (Filter) (game1, physicalCard) -> (_source == null || game1.getModifiersQuerying().canBeReturnedToHand(game1, physicalCard, _source))).isEmpty();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ReturnCardsToHandEffect extends DefaultEffect {
         for (PhysicalCard card : toGoToDiscardCards)
             gameState.addCardToZone(_game, card, Zone.DISCARD);
 
-        if (cardsToReturnToHand.size() > 0)
+        if (!cardsToReturnToHand.isEmpty())
             gameState.sendMessage(GameUtils.getCardLink(_source) + " returns " + GameUtils.getAppendedNames(cardsToReturnToHand) + " to hand");
 
         for (PhysicalCard discardedCard : discardedFromPlay)

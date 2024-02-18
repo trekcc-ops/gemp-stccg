@@ -579,7 +579,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard target) {
-        final List<? extends ExtraPlayCost> playCosts = target.getBlueprint().getExtraCostToPlay(game, target);
+        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay();
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
@@ -597,7 +597,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying {
 
     @Override
     public void appendExtraCosts(CostToEffectAction action, PhysicalCard target) {
-        final List<? extends ExtraPlayCost> playCosts = target.getBlueprint().getExtraCostToPlay(target.getGame(), target);
+        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay();
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();

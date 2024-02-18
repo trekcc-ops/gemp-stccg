@@ -76,7 +76,7 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
                 _subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(
                         _game, false, Zone.DRAW_DECK, Zone.DRAW_DECK, EndOfPile.TOP, selectedCard));
                 _remainingCards.remove(selectedCard);
-                if (_remainingCards.size() > 0)
+                if (!_remainingCards.isEmpty())
                     _subAction.appendEffect(
                             new ChooseAndPutNextCardFromDeckOnTopOfDeck(_subAction, _remainingCards));
             }

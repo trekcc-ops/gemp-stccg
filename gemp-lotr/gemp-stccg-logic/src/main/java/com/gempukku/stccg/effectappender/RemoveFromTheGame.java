@@ -40,7 +40,7 @@ public class RemoveFromTheGame implements EffectAppenderProducer {
                         if (stackedCardsMemory != null) {
                             List<PhysicalCard> stackedCards = new LinkedList<>();
                             for (PhysicalCard physicalCard : cardsFromMemory) {
-                                stackedCards.addAll(actionContext.getGame().getGameState().getStackedCards(physicalCard));
+                                stackedCards.addAll(physicalCard.getStackedCards());
                             }
 
                             actionContext.setCardMemory(stackedCardsMemory, stackedCards);

@@ -29,7 +29,7 @@ public class TransferPermanentAction extends ActivateCardAction {
                 new ChooseActiveCardsEffect(null, card.getOwnerName(), "Choose target to attach to", 1, 1, filter) {
                     @Override
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> target) {
-                        if (target.size() > 0) {
+                        if (!target.isEmpty()) {
                             appendEffect(new TransferPermanentEffect(game, card, target.iterator().next()));
                         }
                     }

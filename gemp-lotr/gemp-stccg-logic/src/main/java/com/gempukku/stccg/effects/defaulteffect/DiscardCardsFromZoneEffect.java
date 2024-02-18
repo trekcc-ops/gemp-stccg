@@ -89,7 +89,7 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
                 }
             }
 
-            if (discardedCards.size() > 0)
+            if (!discardedCards.isEmpty())
                 gameState.sendMessage(_playerId + " discarded " + GameUtils.getAppendedNames(discardedCards) + " from " +
                         _fromZone.getHumanReadable());
 

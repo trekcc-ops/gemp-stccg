@@ -10,10 +10,14 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.results.EndOfTurnResult;
 
-public class EndOfTurnGameProcess implements GameProcess {
+public class EndOfTurnGameProcess extends GameProcess {
+    private DefaultGame _game;
+    public EndOfTurnGameProcess(DefaultGame game) {
+        _game = game;
+    }
     @Override
-    public void process(DefaultGame game) {
-        game.getGameState().sendMessage("DEBUG: Beginning EndOfTurnGameProcess");
+    public void process() {
+        _game.getGameState().sendMessage("DEBUG: Beginning EndOfTurnGameProcess");
         SystemQueueAction action = new SystemQueueAction();
         action.setText("End of turn");
         action.appendEffect(
@@ -41,18 +45,18 @@ public class EndOfTurnGameProcess implements GameProcess {
 
                     @Override
                     public void playEffect() {
-                        ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfTurn();
-                        ((DefaultActionsEnvironment) game.getActionsEnvironment()).signalEndOfTurn();
-                        game.getGameState().stopAffectingCardsForCurrentPlayer();
-                        game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
-                        game.getGameState().sendMessage("End of turn, players swap roles.");
+                        ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfTurn();
+                        ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalEndOfTurn();
+                        _game.getGameState().stopAffectingCardsForCurrentPlayer();
+                        _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
+                        _game.getGameState().sendMessage("End of turn, players swap roles.");
                     }
                 });
-        game.getActionsEnvironment().addActionToStack(action);
+        _game.getActionsEnvironment().addActionToStack(action);
     }
 
     @Override
     public GameProcess getNextProcess() {
-        return new BetweenTurnsProcess();
+        return new BetweenTurnsProcess(_game, new StartOfPhaseGameProcess(Phase.PLAY, null, _game));
     }
 }

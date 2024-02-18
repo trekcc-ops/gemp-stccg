@@ -7,9 +7,11 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.modifiers.ModifierHook;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
@@ -26,9 +28,11 @@ public abstract class PhysicalCard implements Filterable {
     protected PhysicalCard _stackedOn;
     protected List<ModifierHook> _modifierHooks;
     protected Map<Zone, List<ModifierHook>> _modifierHooksInZone; // modifier hooks specific to stacked and discard
+    private Map<Zone, List<ModifierSource>> _modifiers; // modifiers specific to stacked and discard
     protected Object _whileInZoneData;
     protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
+    private ActionSource _playEventAction;
     public PhysicalCard(int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
         _blueprintId = blueprintId;
@@ -61,7 +65,7 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public void startAffectingGame() {
-        List<? extends Modifier> modifiers = _blueprint.getInPlayModifiers(getGame(), this);
+        List<? extends Modifier> modifiers = getInPlayModifiers(getGame());
         if (modifiers != null) {
             _modifierHooks = new LinkedList<>();
             for (Modifier modifier : modifiers)
@@ -77,13 +81,15 @@ public abstract class PhysicalCard implements Filterable {
         }
     }
 
+    public void appendModifierInZone(ModifierSource modifierSource, Zone zone) {
+        _modifiers.computeIfAbsent(zone, k -> new LinkedList<>());
+        _modifiers.get(zone).add(modifierSource);
+    }
+
     public void startAffectingGameInZone(Zone zone) {
         List<? extends Modifier> modifiers = null;
-        if (zone == Zone.STACKED) {
-            modifiers = _blueprint.getStackedOnModifiers(this);
-        } else if (zone == Zone.DISCARD) {
-            modifiers = _blueprint.getInDiscardModifiers(this);
-        }
+        if (zone == Zone.STACKED || zone == Zone.DISCARD)
+            modifiers = getModifiers(_modifiers.get(zone));
         if (modifiers != null) {
             _modifierHooksInZone.put(zone, new LinkedList<>());
             for (Modifier modifier : modifiers)
@@ -205,7 +211,9 @@ public abstract class PhysicalCard implements Filterable {
                 return action;
             }
         } else {
-            final PlayEventAction action = _blueprint.getPlayEventCardAction(this);
+                // Play event action
+            PlayEventAction action = new PlayEventAction(this, _blueprint.getPlayEventAction().requiresRanger());
+            _blueprint.getPlayEventAction().createAction(action, new DefaultActionContext(this));
 
             getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
             getGame().getModifiersQuerying().appendExtraCosts(action, this);
@@ -218,10 +226,7 @@ public abstract class PhysicalCard implements Filterable {
         if (sources == null)
             return null;
         List<Modifier> result = new LinkedList<>();
-        for (ModifierSource inPlayModifier : sources) {
-            result.add(inPlayModifier.getModifier(
-                    new DefaultActionContext(_ownerName, getGame(), this, null, null)));
-        }
+        sources.forEach(inPlayModifier -> result.add(inPlayModifier.getModifier(new DefaultActionContext(this))));
         return result;
     }
 
@@ -318,8 +323,114 @@ public abstract class PhysicalCard implements Filterable {
         }
     }
 
-    public List<PhysicalCard> getStackedCards() { return getGame().getGameState().getStackedCards(this); }
+    public List<PhysicalCard> getStackedCards() {
+        List<PhysicalCard> result = new LinkedList<>();
+        for (List<PhysicalCard> physicalCardList : getGame().getGameState().getStackedCards().values()) {
+            for (PhysicalCard physicalCard : physicalCardList) {
+                if (physicalCard.getStackedOn() == this)
+                    result.add(physicalCard);
+            }
+        }
+        return result;
+    }
     public Collection<PhysicalCard> getAttachedCards() { return getGame().getGameState().getAttachedCards(this); }
 
     public String getTypeSpecificCardInfoHTML() { return ""; }
+
+    public List<? extends ActivateCardAction> getPhaseActionsInPlay(String playerId) {
+        List<ActivateCardAction> activatedActions =
+                getActivatedActions(playerId, _blueprint.getInPlayPhaseActions());
+        if (_blueprint.getCopiedFilters() != null) {
+            if (activatedActions == null)
+                activatedActions = new LinkedList<>();
+            for (FilterableSource copiedFilter : _blueprint.getCopiedFilters()) {
+                final PhysicalCard firstActive =
+                        Filters.findFirstActive(getGame(), copiedFilter.getFilterable(new DefaultActionContext(playerId, this)));
+                if (firstActive != null)
+                    GameUtils.addAllNotNull(activatedActions, firstActive.getPhaseActionsInPlay(playerId));
+            }
+        }
+        return activatedActions;
+    }
+
+    public List<? extends Action> getPhaseActionsFromZone(String playerId, Zone zone) {
+        if (zone == Zone.DISCARD) {
+            return getActivatedActions(playerId, _blueprint.getInDiscardPhaseActions());
+        }
+        else if (zone == Zone.HAND) {
+            if (_blueprint.getPlayInOtherPhaseConditions() == null)
+                return null;
+            DefaultActionContext actionContext = new DefaultActionContext(playerId, this);
+            List<Action> playCardActions = new LinkedList<>();
+
+            if (getGame().checkPlayRequirements(this)) {
+                for (Requirement playInOtherPhaseCondition : _blueprint.getPlayInOtherPhaseConditions()) {
+                    if (playInOtherPhaseCondition.accepts(actionContext))
+                        playCardActions.add(getPlayCardAction(0, Filters.any, false));
+                }
+            }
+            return playCardActions;
+        }
+        else return null;
+    }
+
+    public List<? extends Modifier> getInPlayModifiers(DefaultGame game) {
+        List<Modifier> modifiers = getModifiers(_blueprint.getInPlayModifiers());
+        if (_blueprint.getCopiedFilters() != null) {
+            if (modifiers == null)
+                modifiers = new LinkedList<>();
+            for (FilterableSource copiedFilter : _blueprint.getCopiedFilters()) {
+                final PhysicalCard firstActive =
+                        Filters.findFirstActive(game, copiedFilter.getFilterable(new DefaultActionContext(this)));
+                if (firstActive != null) {
+                    GameUtils.addAllNotNull(modifiers, firstActive.getInPlayModifiers(game));
+                }
+            }
+        }
+        return modifiers;
+    }
+
+    public List<? extends ExtraPlayCost> getExtraCostToPlay() {
+        if (_blueprint.getExtraPlayCosts() == null)
+            return null;
+
+        DefaultActionContext actionContext = new DefaultActionContext(this);
+
+        List<ExtraPlayCost> result = new LinkedList<>();
+        for (ExtraPlayCostSource extraPlayCost : _blueprint.getExtraPlayCosts()) {
+            result.add(extraPlayCost.getExtraPlayCost(actionContext));
+        }
+
+        return result;
+    }
+
+    private List<ActivateCardAction> getActivatedActions(String playerId, List<ActionSource> sources) {
+        if (sources == null)
+            return null;
+
+        List<ActivateCardAction> result = new LinkedList<>();
+        for (ActionSource inPlayPhaseAction : sources) {
+            DefaultActionContext actionContext = new DefaultActionContext(playerId, getGame(), this);
+            if (inPlayPhaseAction.isValid(actionContext)) {
+                ActivateCardAction action = new ActivateCardAction(getGame(), this);
+                inPlayPhaseAction.createAction(action, actionContext);
+                result.add(action);
+            }
+        }
+        return result;
+    }
+
+    public OptionalTriggerAction getDiscardedFromPlayOptionalTrigger(String playerId) {
+        if (_blueprint.getDiscardedFromPlayOptionalTriggerAction() == null)
+            return null;
+
+        DefaultActionContext actionContext = new DefaultActionContext(playerId, this);
+        if (_blueprint.getDiscardedFromPlayOptionalTriggerAction().isValid(actionContext)) {
+            OptionalTriggerAction action = new OptionalTriggerAction(this);
+            _blueprint.getDiscardedFromPlayOptionalTriggerAction().createAction(action, actionContext);
+            return action;
+        }
+        return null;
+    }
+
 }

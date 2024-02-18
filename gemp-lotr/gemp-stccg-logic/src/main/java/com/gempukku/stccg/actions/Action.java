@@ -8,7 +8,8 @@ public interface Action {
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
         MOVE_CARDS,
-        TRIBBLE_POWER
+        TRIBBLE_POWER,
+        ATTEMPT_MISSION
     }
 
     ActionType getActionType();

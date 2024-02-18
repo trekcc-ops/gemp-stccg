@@ -26,7 +26,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
 
     @Override
     public synchronized boolean registerRequest(WaitingRequest waitingRequest) {
-        if (_messages.size()>0)
+        if (!_messages.isEmpty())
             return true;
 
         _waitingRequest = waitingRequest;
@@ -53,7 +53,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
 
     public synchronized boolean hasMessages() {
         updateLastAccess();
-        return _messages.size() > 0;
+        return !_messages.isEmpty();
     }
 
     private synchronized void updateLastAccess() {

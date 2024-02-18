@@ -2,6 +2,7 @@ package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -61,5 +62,5 @@ public interface GameFormat {
     int getHandSize();
 
     JSONDefs.Format Serialize();
-    GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback);
+    GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, DefaultGame game);
 }

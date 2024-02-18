@@ -8,7 +8,7 @@ public class PointBoxFieldProcessor implements FieldProcessor {
     @Override
     public void processField(String key, Object value, BuiltCardBlueprint blueprint,
                              CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        String str = FieldUtils.getString(value, key);
+        String str = FieldUtils.getString(value.toString(), key);
         if (str == "none")
             blueprint.setHasPointBox(false);
         else

@@ -188,7 +188,7 @@ public class FilterFactory {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return (Filter) (game, physicalCard) -> {
                             for (PhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
-                                for (PhysicalCard stackedCard : game.getGameState().getStackedCards(cardWithStack)) {
+                                for (PhysicalCard stackedCard : cardWithStack.getStackedCards()) {
                                     if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))
                                         return true;
                                 }

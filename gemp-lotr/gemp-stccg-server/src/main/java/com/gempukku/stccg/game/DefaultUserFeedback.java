@@ -33,7 +33,7 @@ public class DefaultUserFeedback implements UserFeedback {
 
     @Override
     public boolean hasNoPendingDecisions() {
-        return _awaitingDecisionMap.size() == 0;
+        return _awaitingDecisionMap.isEmpty();
     }
 
     public Set<String> getUsersPendingDecision() {

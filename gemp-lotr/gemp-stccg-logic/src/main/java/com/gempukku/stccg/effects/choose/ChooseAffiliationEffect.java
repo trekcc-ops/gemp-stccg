@@ -21,7 +21,7 @@ public abstract class ChooseAffiliationEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _affiliationOptions.size() > 0;
+        return !_affiliationOptions.isEmpty();
     }
 
     @Override

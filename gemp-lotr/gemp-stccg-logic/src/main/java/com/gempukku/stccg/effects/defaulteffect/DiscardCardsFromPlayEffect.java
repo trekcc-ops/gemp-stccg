@@ -114,7 +114,7 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
         for (PhysicalCard card : toMoveFromZoneToDiscard)
             gameState.addCardToZone(game, card, Zone.DISCARD);
 
-        if (_source != null && discardedCards.size() > 0)
+        if (_source != null && !discardedCards.isEmpty())
             game.getGameState().sendMessage(_performingPlayer + " discards " + GameUtils.getAppendedNames(cards) + " from play using " + GameUtils.getCardLink(_source));
 
         for (PhysicalCard discardedCard : discardedCards)

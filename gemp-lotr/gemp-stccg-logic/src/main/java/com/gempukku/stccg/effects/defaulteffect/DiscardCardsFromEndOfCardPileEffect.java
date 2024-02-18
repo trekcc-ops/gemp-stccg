@@ -59,7 +59,7 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
                     gameState.addCardToZone(_game, card, Zone.DISCARD);
                 }
             }
-            if (cardsDiscarded.size() > 0) {
+            if (!cardsDiscarded.isEmpty()) {
                 gameState.sendMessage(_playerId + " discards " + _endOfPile.name().toLowerCase() +
                         " cards from their " + _fromZone.getHumanReadable() + " - " + GameUtils.getAppendedNames(cardsDiscarded));
                 cardsDiscardedCallback(cardsDiscarded);

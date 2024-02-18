@@ -48,7 +48,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     @Override
     public synchronized boolean registerRequest(WaitingRequest waitingRequest) {
-        if (_events.size()>0)
+        if (!_events.isEmpty())
             return true;
 
         _waitingRequest = waitingRequest;
@@ -109,7 +109,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
             if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_self)))
                 removedCardsVisibleByPlayer.add(card);
         }
-        if (removedCardsVisibleByPlayer.size() > 0)
+        if (!removedCardsVisibleByPlayer.isEmpty())
             appendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY).otherCardIds(getCardIds(removedCardsVisibleByPlayer)).participantId(playerPerforming));
     }
 
@@ -193,7 +193,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     public boolean hasGameEvents() {
         updateLastAccess();
-        return _events.size()>0;
+        return !_events.isEmpty();
     }
 
     private void updateLastAccess() {

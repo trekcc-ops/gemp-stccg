@@ -18,6 +18,10 @@ public class GameUtils {
     public static String getCardLink(PhysicalCard card) { return card.getCardLink(); }
     public static String[] getAllPlayers(DefaultGame game) { return game.getAllPlayers(); }
 
+    public static <T> void addAllNotNull(List<T> list, List<? extends T> possiblyNullList) {
+        if (possiblyNullList != null)
+            list.addAll(possiblyNullList);
+    }
 
     public static List<PhysicalCard> getRandomCards(List<? extends PhysicalCard> cards, int count) {
         List<PhysicalCard> randomizedCards = new ArrayList<>(cards);

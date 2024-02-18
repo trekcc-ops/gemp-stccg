@@ -95,7 +95,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
             try {
                 final boolean admin = resourceOwner.hasType(User.Type.ADMIN);
                 final boolean leagueAdmin = resourceOwner.hasType(User.Type.LEAGUE_ADMIN);
-                if (message != null && message.trim().length() > 0) {
+                if (message != null && !message.trim().isEmpty()) {
                     String newMsg;
                     newMsg = message.trim().replaceAll("\n\n\n+", "\n\n\n");
                     newMsg = QuoteExtender.matcher(newMsg).replaceAll("$1\n");

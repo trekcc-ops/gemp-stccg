@@ -1,12 +1,11 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.BeamCardsAction;
+import com.gempukku.stccg.actions.AttemptMissionAction;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.AwayTeam;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -14,8 +13,8 @@ import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
-
-import static com.gempukku.stccg.filters.Filters.ship;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PhysicalMissionCard extends PhysicalCard {
     private Quadrant _quadrant;
@@ -46,6 +45,11 @@ public class PhysicalMissionCard extends PhysicalCard {
             return _blueprint.getOwnerAffiliationIcons();
         }
     }
+
+    public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
+        return getAffiliationIcons(player.getPlayerId());
+    }
+
     public Quadrant getQuadrant() { return _quadrant; }
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
     @Override
@@ -62,10 +66,8 @@ public class PhysicalMissionCard extends PhysicalCard {
             return false;
         if (wasSeededBy(player) || _pointsShown >= 40) {
             if (_missionType == MissionType.PLANET)
-                for (AwayTeam awayTeam : getAwayTeamsOnSurface())
-                    for (Affiliation affiliation : getAffiliationIcons(player.getPlayerId()))
-                        if (awayTeam.hasAffiliation(affiliation))
-                            return true;
+                return getYourAwayTeamsOnSurface(player).anyMatch(
+                        awayTeam -> awayTeam.canAttemptMission(this));
                     // TODO - Implement for space missions
 /*            else if (_missionType == MissionType.SPACE)
                 for (PhysicalShipCard ship : Filters.filterActive(
@@ -95,14 +97,12 @@ public class PhysicalMissionCard extends PhysicalCard {
         }
     }
 
-    private Collection<AwayTeam> getAwayTeamsOnSurface() {
-        Set<AwayTeam> awayTeamsOnSurface = new HashSet<>();
-        for (AwayTeam awayTeam : getGame().getGameState().getAwayTeams()) {
-            if (awayTeam.isOnSurface(this)) {
-                awayTeamsOnSurface.add(awayTeam);
-            }
-        }
-        return awayTeamsOnSurface;
+    public Stream<AwayTeam> getYourAwayTeamsOnSurface(Player player) {
+        return getAwayTeamsOnSurface().filter(awayTeam -> awayTeam.getPlayer() == player);
+    }
+
+    private Stream<AwayTeam> getAwayTeamsOnSurface() {
+        return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
     }
 
     private Collection<PhysicalCard> getCardsOnSurface() {
@@ -116,20 +116,27 @@ public class PhysicalMissionCard extends PhysicalCard {
     public String getTypeSpecificCardInfoHTML() {
         if (_missionType == MissionType.PLANET) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<br><b>Away Teams on Planet</b>: ").append(getAwayTeamsOnSurface().size());
-            if (!getAwayTeamsOnSurface().isEmpty()) {
-                for (AwayTeam awayTeam : getAwayTeamsOnSurface()) {
-                    sb.append("<br><b>Away Team:</b> (").append(awayTeam.getPlayerId()).append(") ");
-                    sb.append(GameUtils.getAppendedNames(awayTeam.getCards()));
-                }
+            long awayTeamCount = getAwayTeamsOnSurface().count();
+            sb.append("<br><b>Away Teams on Planet</b>: ").append(awayTeamCount);
+            if (awayTeamCount > 0) {
+                getAwayTeamsOnSurface().forEach(awayTeam -> {
+                            sb.append("<br><b>Away Team:</b> (").append(awayTeam.getPlayerId()).append(") ");
+                            sb.append(GameUtils.getAppendedNames(awayTeam.getCards()));
+                        }
+                        );
             }
+            sb.append("<br><br><b>Mission Requirements:</b>: ").append(
+                    getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
             return sb.toString();
         }
         else return "";
     }
 
-        // TODO - Initiating mission attempts
-/*    @Override
+    public String getMissionRequirements() {
+        return _blueprint.getMissionRequirements();
+    }
+
+    @Override
     public List<? extends Action> getPhaseActionsInPlay(Player player) {
         List<Action> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
@@ -137,5 +144,5 @@ public class PhysicalMissionCard extends PhysicalCard {
                 actions.add(new AttemptMissionAction(player, this));
         }
         return actions;
-    } */
+    }
 }

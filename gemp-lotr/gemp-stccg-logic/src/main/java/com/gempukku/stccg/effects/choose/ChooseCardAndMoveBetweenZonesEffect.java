@@ -27,7 +27,7 @@ public class ChooseCardAndMoveBetweenZonesEffect extends ChooseCardsFromZoneEffe
     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         // ChooseAndPutCardsFromDeckIntoHandEffect
         // ChooseAndPutCardFromDiscardIntoHandEffect
-        if (cards.size() > 0 && _toZone == Zone.HAND) {
+        if (!cards.isEmpty() && _toZone == Zone.HAND) {
             SubAction subAction = new SubAction(_action);
             for (PhysicalCard card : cards)
                 subAction.appendEffect(new PutCardFromZoneIntoHandEffect(game, card, _fromZone, _reveal));

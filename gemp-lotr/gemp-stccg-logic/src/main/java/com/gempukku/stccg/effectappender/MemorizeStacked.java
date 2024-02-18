@@ -39,7 +39,7 @@ public class MemorizeStacked implements EffectAppenderProducer {
 
                         List<PhysicalCard> cardsToMemorize = new LinkedList<>();
                         for (PhysicalCard cardWithStack : cardsWithStack)
-                            cardsToMemorize.addAll(Filters.filter(game.getGameState().getStackedCards(cardWithStack), game, filterable));
+                            cardsToMemorize.addAll(Filters.filter(cardWithStack.getStackedCards(), game, filterable));
                         actionContext.setCardMemory(memory, cardsToMemorize);
                     }
                 };

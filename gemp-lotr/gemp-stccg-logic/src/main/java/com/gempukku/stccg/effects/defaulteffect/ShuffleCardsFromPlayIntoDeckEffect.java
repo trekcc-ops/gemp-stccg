@@ -48,7 +48,7 @@ public class ShuffleCardsFromPlayIntoDeckEffect extends DefaultEffect {
             }
         }
 
-        if (toShuffleIn.size() > 0) {
+        if (!toShuffleIn.isEmpty()) {
             DiscardUtils.cardsToChangeZones(_game, toShuffleIn, discardedFromPlay, goingToDiscard);
 
             Set<PhysicalCard> removeFromPlay = new HashSet<>(goingToDiscard);

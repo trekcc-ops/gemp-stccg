@@ -21,10 +21,12 @@ import java.util.Set;
 public class TribblesGame extends DefaultGame {
     private final TribblesGameState _gameState;
     private final TurnProcedure<TribblesGame> _turnProcedure;
+    private final TribblesGame _thisGame;
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
+        _thisGame = this;
 
         new TribblesRuleSet(_actionsEnvironment, _modifiersLogic, this).applyRuleSet();
 
@@ -35,7 +37,7 @@ public class TribblesGame extends DefaultGame {
             @Override
             protected GameProcess setFirstGameProcess(TribblesGame game, Set<String> players,
                                                       PlayerOrderFeedback playerOrderFeedback) {
-                return new TribblesPlayerOrderProcess(decks, _library, playerOrderFeedback);
+                return new TribblesPlayerOrderProcess(decks, _library, playerOrderFeedback, _thisGame);
             }
         };
     }

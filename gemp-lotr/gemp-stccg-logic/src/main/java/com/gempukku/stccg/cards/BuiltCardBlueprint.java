@@ -8,11 +8,11 @@ import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.modifiers.ExtraPlayCost;
-import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
+import com.gempukku.stccg.rules.GameUtils;
 
+import java.lang.invoke.TypeDescriptor;
 import java.util.*;
 
 public class BuiltCardBlueprint implements CardBlueprint {
@@ -44,18 +44,15 @@ public class BuiltCardBlueprint implements CardBlueprint {
     private int vitality;
     private int resistance;
     private int tribbleValue;
+    private String _missionRequirements;
     private TribblePower tribblePower;
-    private int siteNumber;
     private Set<PossessionClass> possessionClasses;
 
     private List<Requirement> requirements;
     private List<FilterableSource> targetFilters;
     private List<Phase> seedPhases;
-
-    private List<ActionSource> requiredBeforeTriggers;
-    private List<ActionSource> requiredAfterTriggers;
-    private List<ActionSource> optionalBeforeTriggers;
-    private List<ActionSource> optionalAfterTriggers;
+    private Map<RequiredType, List<ActionSource>> _beforeTriggers = new HashMap<>();
+    private Map<RequiredType, List<ActionSource>> _afterTriggers = new HashMap<>();
 
     private List<ActionSource> beforeActivatedTriggers;
     private List<ActionSource> afterActivatedTriggers;
@@ -67,11 +64,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     private List<ActionSource> inPlayPhaseActions;
     private List<ActionSource> inDiscardPhaseActions;
-    private List<ActionSource> fromStackedPhaseActions;
 
     private List<ModifierSource> inPlayModifiers;
-    private List<ModifierSource> stackedOnModifiers;
-    private List<ModifierSource> inDiscardModifiers;
 
     private List<TwilightCostModifierSource> twilightCostModifiers;
 
@@ -153,28 +147,14 @@ public class BuiltCardBlueprint implements CardBlueprint {
         afterActivatedTriggers.add(actionSource);
     }
 
-    public void appendRequiredBeforeTrigger(ActionSource actionSource) {
-        if (requiredBeforeTriggers == null)
-            requiredBeforeTriggers = new LinkedList<>();
-        requiredBeforeTriggers.add(actionSource);
+    public void appendBeforeTrigger(RequiredType requiredType, ActionSource actionSource) {
+        _beforeTriggers.computeIfAbsent(requiredType, k -> new LinkedList<>());
+        _beforeTriggers.get(requiredType).add(actionSource);
     }
 
-    public void appendRequiredAfterTrigger(ActionSource actionSource) {
-        if (requiredAfterTriggers == null)
-            requiredAfterTriggers = new LinkedList<>();
-        requiredAfterTriggers.add(actionSource);
-    }
-
-    public void appendOptionalBeforeTrigger(ActionSource actionSource) {
-        if (optionalBeforeTriggers == null)
-            optionalBeforeTriggers = new LinkedList<>();
-        optionalBeforeTriggers.add(actionSource);
-    }
-
-    public void appendOptionalAfterTrigger(ActionSource actionSource) {
-        if (optionalAfterTriggers == null)
-            optionalAfterTriggers = new LinkedList<>();
-        optionalAfterTriggers.add(actionSource);
+    public void appendAfterTrigger(RequiredType requiredType, ActionSource actionSource) {
+        _afterTriggers.computeIfAbsent(requiredType, k -> new LinkedList<>());
+        _afterTriggers.get(requiredType).add(actionSource);
     }
 
     public void appendPlayRequirement(Requirement requirement) {
@@ -187,18 +167,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
         if (inPlayModifiers == null)
             inPlayModifiers = new LinkedList<>();
         inPlayModifiers.add(modifierSource);
-    }
-
-    public void appendStackedOnModifier(ModifierSource modifierSource) {
-        if (stackedOnModifiers == null)
-            stackedOnModifiers = new LinkedList<>();
-        stackedOnModifiers.add(modifierSource);
-    }
-
-    public void appendInDiscardModifier(ModifierSource modifierSource) {
-        if (inDiscardModifiers == null)
-            inDiscardModifiers = new LinkedList<>();
-        inDiscardModifiers.add(modifierSource);
     }
 
     public void appendTargetFilter(FilterableSource targetFilter) {
@@ -219,12 +187,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
         inDiscardPhaseActions.add(actionSource);
     }
 
-    public void appendFromStackedPhaseAction(ActionSource actionSource) {
-        if (fromStackedPhaseActions == null)
-            fromStackedPhaseActions = new LinkedList<>();
-        fromStackedPhaseActions.add(actionSource);
-    }
-
     public void appendTwilightCostModifier(TwilightCostModifierSource twilightCostModifierSource) {
         if (twilightCostModifiers == null)
             twilightCostModifiers = new LinkedList<>();
@@ -234,6 +196,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public void setPlayEventAction(ActionSource playEventAction) {
         this.playEventAction = playEventAction;
     }
+    public ActionSource getPlayEventAction() { return this.playEventAction; }
 
     public void setKilledRequiredTriggerAction(ActionSource killedRequiredTriggerAction) {
         this.killedRequiredTriggerAction = killedRequiredTriggerAction;
@@ -320,10 +283,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     public void setTribblePower(TribblePower tribblePower) {
         this.tribblePower = tribblePower;
-    }
-
-    public void setSiteNumber(int siteNumber) {
-        this.siteNumber = siteNumber;
     }
 
     public void setPossessionClasses(Set<PossessionClass> possessionClasses) {
@@ -439,64 +398,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     @Override
-    public List<? extends Action> getPhaseActionsFromDiscard(String playerId, DefaultGame game, PhysicalCard self) {
-        return getActivatedActions(playerId, game, self, inDiscardPhaseActions);
-    }
-
-    @Override
-    public List<? extends ActivateCardAction> getPhaseActionsInPlay(String playerId, DefaultGame game, PhysicalCard self) {
-        List<ActivateCardAction> activatedActions = getActivatedActions(playerId, game, self, inPlayPhaseActions);
-        if (copiedFilters != null) {
-            if (activatedActions == null)
-                activatedActions = new LinkedList<>();
-            for (FilterableSource copiedFilter : copiedFilters) {
-                DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
-                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
-                if (firstActive != null)
-                    addAllNotNull(activatedActions, firstActive.getBlueprint().getPhaseActionsInPlay(playerId, game, self));
-            }
-        }
-        return activatedActions;
-    }
-
-    @Override
-    public List<? extends ActivateCardAction> getPhaseActionsFromStacked(String playerId, DefaultGame game, PhysicalCard self) {
-        return getActivatedActions(playerId, game, self, fromStackedPhaseActions);
-    }
-
-    @Override
-    public List<? extends Modifier> getInPlayModifiers(DefaultGame game, PhysicalCard self) {
-        List<Modifier> modifiers = self.getModifiers(inPlayModifiers);
-        if (copiedFilters != null) {
-            if (modifiers == null)
-                modifiers = new LinkedList<>();
-            for (FilterableSource copiedFilter : copiedFilters) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
-                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
-                if (firstActive != null) {
-                    addAllNotNull(modifiers, firstActive.getBlueprint().getInPlayModifiers(game, self));
-                }
-            }
-        }
-        return modifiers;
-    }
-
-    private <T> void addAllNotNull(List<T> list, List<? extends T> possiblyNullList) {
-        if (possiblyNullList != null)
-            list.addAll(possiblyNullList);
-    }
-
-    @Override
-    public List<? extends Modifier> getStackedOnModifiers(PhysicalCard self) {
-        return self.getModifiers(stackedOnModifiers);
-    }
-
-    @Override
-    public List<? extends Modifier> getInDiscardModifiers(PhysicalCard self) {
-        return self.getModifiers(inDiscardModifiers);
-    }
-
-    @Override
     public boolean playRequirementsNotMet(PhysicalCard self) {
         DefaultActionContext dummy = new DefaultActionContext(self.getOwnerName(), self.getGame(), self, null, null);
 
@@ -522,52 +423,18 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     @Override
-    public PlayEventAction getPlayEventCardAction(PhysicalCard self) {
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), self.getGame(), self,
-                null, null);
-        PlayEventAction action = new PlayEventAction(self, playEventAction.requiresRanger());
-        playEventAction.createAction(action, actionContext);
-        return action;
-    }
-
-    @Override
     public List<RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect, PhysicalCard self) {
-        List<RequiredTriggerAction> result = null;
-
-        if (requiredBeforeTriggers != null) {
-            result = new LinkedList<>();
-            for (ActionSource requiredBeforeTrigger : requiredBeforeTriggers) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, effect);
-                if (requiredBeforeTrigger.isValid(actionContext)) {
-                    RequiredTriggerAction action = new RequiredTriggerAction(self);
-                    requiredBeforeTrigger.createAction(action, actionContext);
-                    result.add(action);
-                }
-            }
-        }
-
-        if (copiedFilters != null) {
-            if (result == null)
-                result = new LinkedList<>();
-            for (FilterableSource copiedFilter : copiedFilters) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, effect);
-                final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
-                if (firstActive != null)
-                    addAllNotNull(result, firstActive.getBlueprint().getRequiredBeforeTriggers(game, effect, self));
-            }
-        }
-
-        return result;
+        return getBeforeTriggers(game, effect, self, RequiredType.REQUIRED);
     }
 
     @Override
     public List<RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult, PhysicalCard self) {
         List<RequiredTriggerAction> result = null;
 
-        if (requiredAfterTriggers != null) {
+        if (_afterTriggers.get(RequiredType.REQUIRED) != null) {
             result = new LinkedList<>();
-            for (ActionSource requiredAfterTrigger : requiredAfterTriggers) {
-                DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, effectResult, null);
+            for (ActionSource requiredAfterTrigger : _afterTriggers.get(RequiredType.REQUIRED)) {
+                DefaultActionContext actionContext = new DefaultActionContext(self, effectResult);
                 if (requiredAfterTrigger.isValid(actionContext)) {
                     RequiredTriggerAction action = new RequiredTriggerAction(self);
                     requiredAfterTrigger.createAction(action, actionContext);
@@ -583,7 +450,40 @@ public class BuiltCardBlueprint implements CardBlueprint {
                 DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, effectResult, null);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
-                    addAllNotNull(result, firstActive.getBlueprint().getRequiredAfterTriggers(game, effectResult, self));
+                    GameUtils.addAllNotNull(result, firstActive.getBlueprint().getRequiredAfterTriggers(game, effectResult, self));
+            }
+        }
+
+        return result;
+    }
+
+
+    public List<RequiredTriggerAction> getBeforeTriggers(DefaultGame game, Effect effect,
+                                                         PhysicalCard self, RequiredType requiredType) {
+
+        List<RequiredTriggerAction> result = null;
+
+        if (_beforeTriggers.get(requiredType) != null) {
+            result = new LinkedList<>();
+            for (ActionSource actionSource : _beforeTriggers.get(requiredType)) {
+                DefaultActionContext actionContext =
+                        new DefaultActionContext(game, self, effect);
+                if (actionSource.isValid(actionContext)) {
+                    RequiredTriggerAction action = new RequiredTriggerAction(self);
+                    actionSource.createAction(action, actionContext);
+                    result.add(action);
+                }
+            }
+        }
+
+        if (copiedFilters != null) {
+            if (result == null)
+                result = new LinkedList<>();
+            for (FilterableSource copiedFilter : copiedFilters) {
+                final PhysicalCard firstActive = Filters.findFirstActive(
+                        game, copiedFilter.getFilterable(new DefaultActionContext(game, self, effect)));
+                if (firstActive != null)
+                    GameUtils.addAllNotNull(result, firstActive.getBlueprint().getBeforeTriggers(game, effect, self, requiredType));
             }
         }
 
@@ -594,9 +494,9 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public List<OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect, PhysicalCard self) {
         List<OptionalTriggerAction> result = null;
 
-        if (optionalBeforeTriggers != null) {
+        if (_beforeTriggers.get(RequiredType.OPTIONAL) != null) {
             result = new LinkedList<>();
-            for (ActionSource optionalBeforeTrigger : optionalBeforeTriggers) {
+            for (ActionSource optionalBeforeTrigger : _beforeTriggers.get(RequiredType.OPTIONAL)) {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, effect);
                 if (optionalBeforeTrigger.isValid(actionContext)) {
                     OptionalTriggerAction action = new OptionalTriggerAction(self);
@@ -613,7 +513,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, effect);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
-                    addAllNotNull(result, firstActive.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, self));
+                    GameUtils.addAllNotNull(result, firstActive.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, self));
             }
         }
 
@@ -621,7 +521,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
     }
 
     public List<ActionSource> getOptionalAfterTriggers() {
-        return optionalAfterTriggers;
+        return _afterTriggers.get(RequiredType.OPTIONAL);
     }
 
 
@@ -649,7 +549,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, effect);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
-                    addAllNotNull(result, firstActive.getBlueprint().getOptionalInPlayBeforeActions(playerId, game, effect, self));
+                    GameUtils.addAllNotNull(result, firstActive.getBlueprint().getOptionalInPlayBeforeActions(playerId, game, effect, self));
             }
         }
 
@@ -679,7 +579,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
                 DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, effectResult, null);
                 final PhysicalCard firstActive = Filters.findFirstActive(game, copiedFilter.getFilterable(actionContext));
                 if (firstActive != null)
-                    addAllNotNull(result, firstActive.getBlueprint().getOptionalInPlayAfterActions(playerId, game, effectResult, self));
+                    GameUtils.addAllNotNull(result, firstActive.getBlueprint().getOptionalInPlayAfterActions(playerId, game, effectResult, self));
             }
         }
 
@@ -740,37 +640,9 @@ public class BuiltCardBlueprint implements CardBlueprint {
         return result;
     }
 
-    @Override
-    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game, PhysicalCard self) {
-        if (extraPlayCosts == null)
-            return null;
+    public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 
-        DefaultActionContext actionContext = new DefaultActionContext(self.getOwnerName(), game, self, null, null);
-
-        List<ExtraPlayCost> result = new LinkedList<>();
-        for (ExtraPlayCostSource extraPlayCost : extraPlayCosts) {
-            result.add(extraPlayCost.getExtraPlayCost(actionContext));
-        }
-
-        return result;
-    }
-
-    @Override
-    public List<? extends Action> getPhaseActionsInHand(String playerId, PhysicalCard self) {
-        if (playInOtherPhaseConditions == null)
-            return null;
-        DefaultActionContext actionContext = new DefaultActionContext(playerId, self.getGame(), self, null, null);
-        List<Action> playCardActions = new LinkedList<>();
-
-        if (self.getGame().checkPlayRequirements(self)) {
-            for (Requirement playInOtherPhaseCondition : playInOtherPhaseConditions) {
-                if (playInOtherPhaseCondition.accepts(actionContext))
-                    playCardActions.add(self.getPlayCardAction(0, Filters.any, false));
-            }
-        }
-
-        return playCardActions;
-    }
+    public List<Requirement<TribblesActionContext>> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
 
     // Default implementations - not needed (for now)
 
@@ -813,19 +685,7 @@ public class BuiltCardBlueprint implements CardBlueprint {
         return null;
     }
 
-    @Override
-    public OptionalTriggerAction getDiscardedFromPlayOptionalTrigger(String playerId, DefaultGame game, PhysicalCard self) {
-        if (discardedFromPlayOptionalTriggerAction == null)
-            return null;
-
-        DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
-        if (discardedFromPlayOptionalTriggerAction.isValid(actionContext)) {
-            OptionalTriggerAction action = new OptionalTriggerAction(self);
-            discardedFromPlayOptionalTriggerAction.createAction(action, actionContext);
-            return action;
-        }
-        return null;
-    }
+    public ActionSource getDiscardedFromPlayOptionalTriggerAction() { return discardedFromPlayOptionalTriggerAction; }
 
     @Override
     public RequiredTriggerAction getKilledRequiredTrigger(DefaultGame game, PhysicalCard self) {
@@ -862,21 +722,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     // Helper methods
 
-    private List<ActivateCardAction> getActivatedActions(String playerId, DefaultGame game, PhysicalCard self, List<ActionSource> sources) {
-        if (sources == null)
-            return null;
+    public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
 
-        List<ActivateCardAction> result = new LinkedList<>();
-        for (ActionSource inPlayPhaseAction : sources) {
-            DefaultActionContext actionContext = new DefaultActionContext(playerId, game, self, null, null);
-            if (inPlayPhaseAction.isValid(actionContext)) {
-                ActivateCardAction action = new ActivateCardAction(game, self);
-                inPlayPhaseAction.createAction(action, actionContext);
-                result.add(action);
-            }
-        }
-        return result;
-    }
 
     public void throwException(String message) throws InvalidCardDefinitionException {
         throw new InvalidCardDefinitionException(message);
@@ -925,6 +772,8 @@ public class BuiltCardBlueprint implements CardBlueprint {
     public Set<Affiliation> getOwnerAffiliationIcons() { return _ownerAffiliationIcons; }
     public Set<Affiliation> getOpponentAffiliationIcons() { return _opponentAffiliationIcons; }
     public void setMissionType(MissionType type) { _missionType = type; }
+    public void setMissionRequirements(String requirements) { _missionRequirements = requirements;}
+    public String getMissionRequirements() { return _missionRequirements; }
     public MissionType getMissionType() { return _missionType; }
     public Affiliation homeworldAffiliation() {
         if (this.cardType != CardType.MISSION)
@@ -964,4 +813,6 @@ public class BuiltCardBlueprint implements CardBlueprint {
 
     public void setHasPointBox(boolean hasPointBox) { _hasPointBox = hasPointBox; }
     public boolean hasNoPointBox() { return !_hasPointBox; }
+    public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
+    public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 }

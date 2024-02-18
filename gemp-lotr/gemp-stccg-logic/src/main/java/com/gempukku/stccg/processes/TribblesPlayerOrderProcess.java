@@ -3,33 +3,35 @@ package com.gempukku.stccg.processes;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class TribblesPlayerOrderProcess implements GameProcess {
+public class TribblesPlayerOrderProcess extends GameProcess {
     private final Map<String, Integer> _startingTribbles = new LinkedHashMap<>();
     private final PlayerOrderFeedback _playerOrderFeedback;
     private final LinkedList<String> _players = new LinkedList<>();
     private final Map<String, CardDeck> _decks;
     private final CardBlueprintLibrary _library;
     private String _firstPlayer;
+    private TribblesGame _game;
 
     public TribblesPlayerOrderProcess(Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                                      PlayerOrderFeedback playerOrderFeedback) {
+                                      PlayerOrderFeedback playerOrderFeedback, TribblesGame game) {
         _players.addAll(decks.keySet());
         Collections.shuffle(_players, ThreadLocalRandom.current());
         _decks = decks;
         _playerOrderFeedback = playerOrderFeedback;
         _library = library;
+        _game = game;
     }
 
     @Override
-    public void process(DefaultGame game) {
+    public void process() {
         LinkedList<String> playersSelecting = new LinkedList<>(_players);
         Map<String, Integer> playersWithOneValue = new LinkedHashMap<>();
 
@@ -45,7 +47,7 @@ public class TribblesPlayerOrderProcess implements GameProcess {
                 String randomCard = playerDeckCards.get(new Random().nextInt(playerDeckCards.size()));
                 try {
                     CardBlueprint randomBlueprint = _library.getCardBlueprint(randomCard);
-                    game.getGameState().sendMessage(player + " drew " + randomBlueprint.getTitle());
+                    _game.getGameState().sendMessage(player + " drew " + randomBlueprint.getTitle());
                     int randomTribbleCount = randomBlueprint.getTribbleValue();
                     _startingTribbles.put(player, randomTribbleCount);
                 } catch (CardNotFoundException e) {
@@ -102,6 +104,6 @@ public class TribblesPlayerOrderProcess implements GameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new TribblesStartOfRoundGameProcess(_firstPlayer);
+        return new TribblesStartOfRoundGameProcess(_firstPlayer, _game);
     }
 }

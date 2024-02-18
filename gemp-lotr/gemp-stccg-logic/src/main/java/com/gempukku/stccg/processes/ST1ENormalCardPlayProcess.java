@@ -8,26 +8,27 @@ import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.List;
 
-public class ST1ENormalCardPlayProcess implements GameProcess<ST1EGame> {
-    private String _playerId;
+public class ST1ENormalCardPlayProcess extends ST1EGameProcess {
+    private final String _playerId;
 
-    ST1ENormalCardPlayProcess(String playerId) {
+    ST1ENormalCardPlayProcess(String playerId, ST1EGame game) {
+        super(game);
         _playerId = playerId;
     }
     @Override
-    public void process(ST1EGame game) {
-        game.getGameState().sendMessage("DEBUG: Beginning normal card play process");
-        game.getGameState().setCurrentPhase(Phase.CARD_PLAY);
-        final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_playerId);
-        if (!playableActions.isEmpty() || !game.shouldAutoPass(_playerId, game.getGameState().getCurrentPhase())) {
-            game.getUserFeedback().sendAwaitingDecision(_playerId,
+    public void process() {
+        _game.getGameState().sendMessage("DEBUG: Beginning normal card play process");
+        _game.getGameState().setCurrentPhase(Phase.CARD_PLAY);
+        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_playerId);
+        if (!playableActions.isEmpty() || !_game.shouldAutoPass(_playerId, _game.getGameState().getCurrentPhase())) {
+            _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardActionSelectionDecision(1, "Play " +
-                            game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+                            _game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             if (action != null)
-                                game.getActionsEnvironment().addActionToStack(action);
+                                _game.getActionsEnvironment().addActionToStack(action);
                         }
                     });
         }
@@ -35,6 +36,6 @@ public class ST1ENormalCardPlayProcess implements GameProcess<ST1EGame> {
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EExecuteOrdersPhaseProcess(_playerId);
+        return new ST1EExecuteOrdersPhaseProcess(_playerId, _game);
     }
 }

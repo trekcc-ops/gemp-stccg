@@ -10,25 +10,26 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.results.StartOfPhaseResult;
 
-public class StartOfPhaseGameProcess implements GameProcess {
+public class StartOfPhaseGameProcess extends GameProcess {
     private final Phase _phase;
     private String _playerId;
     private final GameProcess _followingGameProcess;
+    private final DefaultGame _game;
 
-    public StartOfPhaseGameProcess(Phase phase, GameProcess followingGameProcess) {
-        _phase = phase;
-        _followingGameProcess = followingGameProcess;
+    public StartOfPhaseGameProcess(Phase phase, GameProcess followingGameProcess, DefaultGame game) {
+        this(phase, null, followingGameProcess, game);
     }
 
-    public StartOfPhaseGameProcess(Phase phase, String playerId, GameProcess followingGameProcess) {
+    public StartOfPhaseGameProcess(Phase phase, String playerId, GameProcess followingGameProcess, DefaultGame game) {
         _phase = phase;
         _playerId = playerId;
         _followingGameProcess = followingGameProcess;
+        _game = game;
     }
 
     @Override
-    public void process(DefaultGame game) {
-        game.getGameState().setCurrentPhase(_phase);
+    public void process() {
+        _game.getGameState().setCurrentPhase(_phase);
         SystemQueueAction action = new SystemQueueAction();
         action.setText("Start of " + _phase + " phase");
         action.appendEffect(
@@ -56,13 +57,13 @@ public class StartOfPhaseGameProcess implements GameProcess {
 
                     @Override
                     public void playEffect() {
-                        ((ModifiersLogic) game.getModifiersEnvironment()).signalStartOfPhase(_phase);
-                        ((DefaultActionsEnvironment) game.getActionsEnvironment()).signalStartOfPhase(_phase);
-                        game.getGameState().sendMessage("\nStart of " + _phase + " phase.");
+                        ((ModifiersLogic) _game.getModifiersEnvironment()).signalStartOfPhase(_phase);
+                        ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalStartOfPhase(_phase);
+                        _game.getGameState().sendMessage("\nStart of " + _phase + " phase.");
                     }
                 });
 
-        game.getActionsEnvironment().addActionToStack(action);
+        _game.getActionsEnvironment().addActionToStack(action);
     }
 
     @Override

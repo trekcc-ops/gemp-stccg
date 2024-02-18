@@ -155,7 +155,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
             if(isInviteOnly) {
-                if(desc.length()==0) {
+                if(desc.isEmpty()) {
                     responseWriter.writeXmlResponse(marshalException(new HallException("Invite-only games must have your intended opponent in the description")));
                     return;
                 }
@@ -311,29 +311,29 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         result.append("</li>");
         result.append("<li>Ring-bearer skirmish can be cancelled: ");
         result.append(gameFormat.canCancelRingBearerSkirmish() ? "yes" : "no").append("</li>");
-        if (gameFormat.getBannedCards().size() > 0) {
+        if (!gameFormat.getBannedCards().isEmpty()) {
             result.append("<li>X-listed (can't be played): ");
             appendCards(result, gameFormat.getBannedCards());
             result.append("</li>");
         }
-        if (gameFormat.getRestrictedCards().size() > 0) {
+        if (!gameFormat.getRestrictedCards().isEmpty()) {
             result.append("<li>R-listed (can play just one copy): ");
             appendCards(result, gameFormat.getRestrictedCards());
             result.append("</li>");
         }
-        if (gameFormat.getLimit2Cards().size() > 0) {
+        if (!gameFormat.getLimit2Cards().isEmpty()) {
             result.append("<li>Limited to 2 in deck: ");
             List<String> limit2Cards = gameFormat.getLimit2Cards();
             appendCards(result, limit2Cards);
             result.append("</li>");
         }
-        if (gameFormat.getLimit3Cards().size() > 0) {
+        if (!gameFormat.getLimit3Cards().isEmpty()) {
             result.append("<li>Limited to 3 in deck: ");
             List<String> limit3Cards = gameFormat.getLimit3Cards();
             appendCards(result, limit3Cards);
             result.append("</li>");
         }
-        if (gameFormat.getRestrictedCardNames().size() > 0) {
+        if (!gameFormat.getRestrictedCardNames().isEmpty()) {
             result.append("<li>Restricted by card name: ");
             boolean first = true;
             for (String cardName : gameFormat.getRestrictedCardNames()) {
@@ -349,7 +349,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             appendCards(result, new ArrayList<>(new LinkedHashSet<>(gameFormat.getErrataCardMap().values())));
             result.append("</li>");
         }
-        if (gameFormat.getValidCards().size() > 0) {
+        if (!gameFormat.getValidCards().isEmpty()) {
             result.append("<li>Additional valid: ");
             List<String> additionalValidCards = gameFormat.getValidCards();
             appendCards(result, additionalValidCards);
@@ -359,10 +359,10 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
-        if (additionalValidCards.size() > 0) {
+        if (!additionalValidCards.isEmpty()) {
             for (String blueprintId : additionalValidCards)
                 result.append(_library.getCardBlueprint(blueprintId).getCardLink(blueprintId)).append(", ");
-            if (additionalValidCards.size() == 0)
+            if (additionalValidCards.isEmpty())
                 result.append("none,");
         }
     }

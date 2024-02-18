@@ -52,8 +52,7 @@ public abstract class DelayedAppender<AbstractContext extends ActionContext> imp
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 
-    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action,
-                                                   AbstractContext actionContext) {
+    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, AbstractContext actionContext) {
         final Effect effect = createEffect(cost, action, actionContext);
         if (effect == null)
             return null;

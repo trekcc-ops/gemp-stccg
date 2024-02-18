@@ -10,18 +10,20 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.results.EndOfPhaseResult;
 
-public class EndOfPhaseGameProcess implements GameProcess {
+public class EndOfPhaseGameProcess extends GameProcess {
     private final Phase _phase;
     private final GameProcess _followingGameProcess;
+    private final DefaultGame _game;
 
-    public EndOfPhaseGameProcess(Phase phase, GameProcess followingGameProcess) {
+    public EndOfPhaseGameProcess(Phase phase, GameProcess followingGameProcess, DefaultGame game) {
         _phase = phase;
+        _game = game;
         _followingGameProcess = followingGameProcess;
     }
 
     @Override
-    public void process(DefaultGame game) {
-        game.getGameState().sendMessage("DEBUG: Beginning EndOfPhaseGameProcess");
+    public void process() {
+        _game.getGameState().sendMessage("DEBUG: Beginning EndOfPhaseGameProcess");
         SystemQueueAction action = new SystemQueueAction();
         action.setText("End of " + _phase + " phase");
         action.appendEffect(
@@ -49,12 +51,12 @@ public class EndOfPhaseGameProcess implements GameProcess {
 
                     @Override
                     public void playEffect() {
-                        ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfPhase(_phase);
-                        ((DefaultActionsEnvironment) game.getActionsEnvironment()).signalEndOfPhase(_phase);
-                        game.getGameState().sendMessage("End of " + _phase + " phase.");
+                        ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfPhase(_phase);
+                        ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalEndOfPhase(_phase);
+                        _game.getGameState().sendMessage("End of " + _phase + " phase.");
                     }
                 });
-        game.getActionsEnvironment().addActionToStack(action);
+        _game.getActionsEnvironment().addActionToStack(action);
     }
 
     @Override

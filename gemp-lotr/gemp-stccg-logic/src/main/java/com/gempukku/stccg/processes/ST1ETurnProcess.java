@@ -2,11 +2,14 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.game.ST1EGame;
 
-public class ST1ETurnProcess extends DefaultGameProcess<ST1EGame> {
-    private GameProcess _followingGameProcess;
+public class ST1ETurnProcess extends ST1EGameProcess {
+    private ST1EGameProcess _followingGameProcess;
+    public ST1ETurnProcess(ST1EGame game) {
+        super(game);
+    }
     @Override
-    public void process(ST1EGame game) {
-        _followingGameProcess = new ST1ENormalCardPlayProcess(game.getGameState().getCurrentPlayerId());
+    public void process() {
+        _followingGameProcess = new ST1ENormalCardPlayProcess(_game.getGameState().getCurrentPlayerId(), _game);
     }
 
     @Override

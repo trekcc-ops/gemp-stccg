@@ -25,6 +25,7 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
     private boolean _cardsBeamed;
     private Effect _beamCardsEffect;
     private Action _thisAction;
+    Collection<PhysicalCard> _destinationOptions;
 
     /**
      * Creates an action to move cards by beaming.
@@ -57,7 +58,7 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
         );*/
 
         // Get potential targets to beam to/from
-        Collection<PhysicalCard> destinationOptions = Filters.filterActive(
+        _destinationOptions = Filters.filterActive(
                 game,
                 Filters.atLocation(_cardUsingTransporters.getLocation()),
                 Filters.or(
@@ -70,14 +71,14 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
         );
 
         List<PhysicalCard> validFromCards = new ArrayList<>();
-        for (PhysicalCard destinationCard : destinationOptions) {
+        for (PhysicalCard destinationCard : _destinationOptions) {
             if (!Filters.filter(gameState.getAttachedCards(destinationCard), game, Filters.your(player)).isEmpty())
                 validFromCards.add(destinationCard);
         }
 /*
         // Find all cards that can be beamed using the specified transporters
         Map<PhysicalCard, List<PhysicalCard>> beamableCards = new HashMap<>();
-        for (PhysicalCard destinationCard : destinationOptions) {
+        for (PhysicalCard destinationCard : _destinationOptions) {
             List<PhysicalCard> beamableCardsAtDestination = new ArrayList<>();
             if (destinationCard.isLocation())
                 beamableCardsAtDestination = Filters.filter(destinationCard.getCardsOnSurface(),
@@ -118,15 +119,15 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
                 _fromCard = Iterables.getOnlyElement(cardSelected);
 
                 if (_fromCard != _cardUsingTransporters) {
-                    destinationOptions.removeAll(destinationOptions);
-                    destinationOptions.add(_cardUsingTransporters);
+                    _destinationOptions.clear();
+                    _destinationOptions.add(_cardUsingTransporters);
                 } else {
-                    destinationOptions.remove(_fromCard);
+                    _destinationOptions.remove(_fromCard);
                 }
 
                     // Choose card beaming to
                     _chooseToCardEffect = new ChooseCardsOnTableEffect(game, _thisAction, _playerId, "Choose card to beam to",
-                            destinationOptions) {
+                            _destinationOptions) {
                         @Override
                         protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
                             _toCard = Iterables.getOnlyElement(cardSelected);
@@ -151,9 +152,8 @@ public class BeamCardsAction extends AbstractCostToEffectAction {
                             };
                         }
 
-                        ;
                     };
-                };
+                }
         };
     }
 

@@ -33,7 +33,7 @@ public class DiscardCardAtRandomFromHandEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _game.getGameState().getHand(_playerId).size() > 0
+        return !_game.getGameState().getHand(_playerId).isEmpty()
                 && (!_forced || _game.getModifiersQuerying().canDiscardCardsFromHand(_game, _playerId, _source));
     }
 

@@ -26,7 +26,7 @@ public enum PropertyLogo implements Filterable {
     KLINGON_CHALLENGE("Star Trek: A Klingon Challenge"),
     CCG("Star Trek: Customizable Card Game");
 
-    private String _humanReadable;
+    private final String _humanReadable;
     PropertyLogo(String humanReadable) {
         _humanReadable = humanReadable;
     }

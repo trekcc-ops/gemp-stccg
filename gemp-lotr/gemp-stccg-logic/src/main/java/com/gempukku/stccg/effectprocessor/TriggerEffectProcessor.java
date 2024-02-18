@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.DefaultActionSource;
 import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.common.filterable.RequiredType;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
@@ -33,16 +34,12 @@ public class TriggerEffectProcessor implements EffectProcessor {
 //            LOGGER.debug("fullObject = " + value.toString());
             EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
 
+            RequiredType requiredType = optional ? RequiredType.OPTIONAL : RequiredType.REQUIRED;
+
             if (before) {
-                if (optional)
-                    blueprint.appendOptionalBeforeTrigger(triggerActionSource);
-                else
-                    blueprint.appendRequiredBeforeTrigger(triggerActionSource);
+                blueprint.appendBeforeTrigger(requiredType, triggerActionSource);
             } else {
-                if (optional)
-                    blueprint.appendOptionalAfterTrigger(triggerActionSource);
-                else
-                    blueprint.appendRequiredAfterTrigger(triggerActionSource);
+                blueprint.appendAfterTrigger(requiredType, triggerActionSource);
             }
         }
     }

@@ -304,7 +304,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         List<String> result = new LinkedList<>();
         for (String pack : values.split("\n")) {
             String blueprint = pack.trim();
-            if (blueprint.length() > 0)
+            if (!blueprint.isEmpty())
                 result.add(blueprint);
         }
         return result;
@@ -314,7 +314,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         List<CardCollection.Item> result = new LinkedList<>();
         for (String item : values.split("\n")) {
             item = item.trim();
-            if (item.length() > 0) {
+            if (!item.isEmpty()) {
                 final String[] itemSplit = item.split("x", 2);
                 if (itemSplit.length != 2)
                     throw new RuntimeException("Unable to parse the items");

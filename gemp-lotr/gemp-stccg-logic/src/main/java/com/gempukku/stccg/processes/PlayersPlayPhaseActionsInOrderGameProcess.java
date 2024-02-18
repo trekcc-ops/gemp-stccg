@@ -8,41 +8,44 @@ import com.gempukku.stccg.game.PlayOrder;
 
 import java.util.List;
 
-public class PlayersPlayPhaseActionsInOrderGameProcess implements GameProcess {
+public class PlayersPlayPhaseActionsInOrderGameProcess extends GameProcess {
     private final PlayOrder _playOrder;
     private int _consecutivePasses;
     private final GameProcess _followingGameProcess;
 
     private GameProcess _nextProcess;
+    private DefaultGame _game;
 
-    public PlayersPlayPhaseActionsInOrderGameProcess(PlayOrder playOrder, int consecutivePasses, GameProcess followingGameProcess) {
+    public PlayersPlayPhaseActionsInOrderGameProcess(PlayOrder playOrder, int consecutivePasses, GameProcess followingGameProcess, DefaultGame game) {
         _playOrder = playOrder;
         _consecutivePasses = consecutivePasses;
         _followingGameProcess = followingGameProcess;
+        _game = game;
     }
 
     @Override
-    public void process(final DefaultGame game) {
+    public void process() {
         String playerId;
-        if (game.getGameState().isConsecutiveAction()) {
+        if (_game.getGameState().isConsecutiveAction()) {
             playerId = _playOrder.getLastPlayer();
-            game.getGameState().setConsecutiveAction(false);
+            _game.getGameState().setConsecutiveAction(false);
         } else {
             playerId = _playOrder.getNextPlayer();
         }
 
-        final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(playerId);
-        if (playableActions.size() == 0 && game.shouldAutoPass(playerId, game.getGameState().getCurrentPhase())) {
+        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
+        if (playableActions.isEmpty() && _game.shouldAutoPass(playerId, _game.getGameState().getCurrentPhase())) {
             playerPassed();
         } else {
-            game.getUserFeedback().sendAwaitingDecision(playerId,
-                    new CardActionSelectionDecision(1, "Play " + game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+            _game.getUserFeedback().sendAwaitingDecision(playerId,
+                    new CardActionSelectionDecision(1, "Play " + _game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             if (action != null) {
-                                _nextProcess = new PlayersPlayPhaseActionsInOrderGameProcess(_playOrder, 0, _followingGameProcess);
-                                game.getActionsEnvironment().addActionToStack(action);
+                                _nextProcess = new PlayersPlayPhaseActionsInOrderGameProcess(
+                                        _playOrder, 0, _followingGameProcess, _game);
+                                _game.getActionsEnvironment().addActionToStack(action);
                             } else {
                                 playerPassed();
                             }
@@ -56,7 +59,8 @@ public class PlayersPlayPhaseActionsInOrderGameProcess implements GameProcess {
         if (_consecutivePasses >= _playOrder.getPlayerCount())
             _nextProcess = _followingGameProcess;
         else
-            _nextProcess = new PlayersPlayPhaseActionsInOrderGameProcess(_playOrder, _consecutivePasses, _followingGameProcess);
+            _nextProcess = new PlayersPlayPhaseActionsInOrderGameProcess(
+                    _playOrder, _consecutivePasses, _followingGameProcess, _game);
     }
 
     @Override

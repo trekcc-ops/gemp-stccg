@@ -2,7 +2,6 @@ package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.PhysicalCardImpl;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.trigger.TriggerConditions;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -37,7 +36,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(
@@ -75,7 +74,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(
@@ -115,7 +114,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(
@@ -155,7 +154,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(
@@ -166,11 +165,11 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
 
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect) {
-                        if (TriggerConditions.isDrawingACard(effect, game, P1)) {
+                    public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(Effect effect) {
+                        if (TriggerConditions.isDrawingACard(effect, _game, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(
-                                    new PreventEffect(game, (Preventable) effect));
+                                    new PreventEffect(_game, (Preventable) effect));
                             action.appendEffect(
                                     new IncrementEffect(preventCount));
                             return Collections.singletonList(action);

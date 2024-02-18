@@ -34,13 +34,13 @@ public class ReportCardAction extends AbstractPlayCardAction {
     private boolean _affiliationWasChosen;
     private Affiliation _selectedAffiliation;
 
-    public ReportCardAction(ST1EGame game, PhysicalReportableCard1E cardToPlay) {
+    public ReportCardAction(PhysicalReportableCard1E cardToPlay) {
         super(cardToPlay);
         _cardToReport = cardToPlay;
         _fromZone = cardToPlay.getZone();
         setText("Play " + _cardToReport.getFullName());
         setPerformingPlayer(_cardToReport.getOwnerName());
-        _game = game;
+        _game = cardToPlay.getGame();
         _destinationChosen = false;
         if (_cardToReport.isMultiAffiliation()) {
             _affiliationWasChosen = false;

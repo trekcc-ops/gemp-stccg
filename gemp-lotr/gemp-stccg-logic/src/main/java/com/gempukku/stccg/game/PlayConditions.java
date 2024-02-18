@@ -82,7 +82,7 @@ public class PlayConditions {
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, Filterable stackedOn, Filterable... filters) {
         final Collection<PhysicalCard> matchingStackedOn = Filters.filterActive(game, stackedOn);
         for (PhysicalCard stackedOnCard : matchingStackedOn) {
-            if (!Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(game))).isEmpty())
+            if (!Filters.filter(stackedOnCard.getStackedCards(), game, Filters.and(filters, Filters.playable(game))).isEmpty())
                 return true;
         }
 
@@ -92,7 +92,7 @@ public class PlayConditions {
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, int withTwilightRemoved, Filterable stackedOn, Filterable... filters) {
         final Collection<PhysicalCard> matchingStackedOn = Filters.filterActive(game, stackedOn);
         for (PhysicalCard stackedOnCard : matchingStackedOn) {
-            if (!Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(withTwilightRemoved, 0, false, false, false))).isEmpty())
+            if (!Filters.filter(stackedOnCard.getStackedCards(), game, Filters.and(filters, Filters.playable(withTwilightRemoved, 0, false, false, false))).isEmpty())
                 return true;
         }
 
@@ -102,7 +102,7 @@ public class PlayConditions {
     public static boolean canPlayFromStacked(String playerId, DefaultGame game, int withTwilightRemoved, int twilightModifier, Filterable stackedOn, Filterable... filters) {
         final Collection<PhysicalCard> matchingStackedOn = Filters.filterActive(game, stackedOn);
         for (PhysicalCard stackedOnCard : matchingStackedOn) {
-            if (!Filters.filter(game.getGameState().getStackedCards(stackedOnCard), game, Filters.and(filters, Filters.playable(withTwilightRemoved, twilightModifier, false, false, false))).isEmpty())
+            if (!Filters.filter(stackedOnCard.getStackedCards(), game, Filters.and(filters, Filters.playable(withTwilightRemoved, twilightModifier, false, false, false))).isEmpty())
                 return true;
         }
 

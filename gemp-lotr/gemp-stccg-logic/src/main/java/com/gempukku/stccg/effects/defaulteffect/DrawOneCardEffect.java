@@ -28,11 +28,11 @@ public class DrawOneCardEffect extends DefaultEffect implements Preventable {
 
     @Override
     public boolean isPlayableInFull() {
-        return _game.getGameState().getDrawDeck(_playerId).size() >= 1;
+        return !_game.getGameState().getDrawDeck(_playerId).isEmpty();
     }
 
     public boolean canDrawCard(DefaultGame game) {
-        return (!_prevented && game.getGameState().getDrawDeck(_playerId).size() > 0) && game.getModifiersQuerying().canDrawCardNoIncrement(game, _playerId);
+        return (!_prevented && !game.getGameState().getDrawDeck(_playerId).isEmpty()) && game.getModifiersQuerying().canDrawCardNoIncrement(game, _playerId);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DrawOneCardEffect extends DefaultEffect implements Preventable {
     @Override
     public FullEffectResult playEffectReturningResult() {
         int drawn = 0;
-        if (!_prevented && _game.getGameState().getDrawDeck(_playerId).size() > 0 &&
+        if (!_prevented && !_game.getGameState().getDrawDeck(_playerId).isEmpty() &&
                 (_game.getFormat().doesNotHaveRuleOfFour() ||
                         _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _playerId))) {
             _game.getGameState().playerDrawsCard(_playerId);

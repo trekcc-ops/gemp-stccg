@@ -2,6 +2,7 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
@@ -68,7 +69,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("revealtopcardsofdrawdeck", new RevealTopCardsOfDrawDeck());
         effectAppenderProducers.put("shufflecardsfromdiscardintodrawdeck", new ShuffleCardsFromDiscardIntoDrawDeck());
         effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new ShuffleCardsFromHandIntoDrawDeck());
-        effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleHandIntoDrawDeck());
+        effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.HAND));
             // Tribbles-specific
         effectAppenderProducers.put("activatetribblepower", new ActivateTribblePowerAppender());
         effectAppenderProducers.put("choosetribblepower", new ChooseTribblePower());
@@ -77,7 +78,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new PutCardsFromHandOnBottomOfPlayPile());
         effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
         effectAppenderProducers.put("setnexttribble", new SetNextTribble());
-        effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShufflePlayPileIntoDrawDeck());
+        effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.PLAY_PILE));
             // Uncertain - need to review to see if they apply to any Trek games
         effectAppenderProducers.put("addkeyword", new AddKeyword());
         effectAppenderProducers.put("addmodifier", new AddModifier());

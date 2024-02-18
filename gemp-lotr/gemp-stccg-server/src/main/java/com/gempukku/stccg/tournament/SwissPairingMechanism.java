@@ -65,7 +65,7 @@ public class SwissPairingMechanism implements PairingMechanism {
         List<String> playersInBracket = playersGroupedByBracket.get(bracketIndex);
 
         // First try to pair carried over players
-        while (carryOverPlayers.size() > 0) {
+        while (!carryOverPlayers.isEmpty()) {
             String firstCarryOver = carryOverPlayers.iterator().next();
             carryOverPlayers.remove(firstCarryOver);
 

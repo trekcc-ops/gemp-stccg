@@ -81,6 +81,16 @@ public class Filters {
         return result;
     }
 
+    public static Collection<PhysicalCard> filter(Iterable<? extends PhysicalCard> cards, Filterable... filters) {
+        Filter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : cards) {
+            if (filter.accepts(card.getGame(), card))
+                result.add(card);
+        }
+        return result;
+    }
+
     public static PhysicalCard findFirstActive(DefaultGame game, Filterable... filters) {
         FindFirstActiveCardInPlayVisitor visitor = new FindFirstActiveCardInPlayVisitor(game, Filters.and(filters));
         game.getGameState().iterateActiveCards(visitor);
@@ -279,7 +289,7 @@ public class Filters {
 
     public static Filter hasStacked(final int count, final Filterable... filter) {
         return (game, physicalCard) -> {
-            List<PhysicalCard> physicalCardList = game.getGameState().getStackedCards(physicalCard);
+            List<PhysicalCard> physicalCardList = physicalCard.getStackedCards();
             if (filter.length == 1 && filter[0] == Filters.any)
                 return physicalCardList.size() >= count;
             return (Filters.filter(physicalCardList, game, Filters.and(filter, activeSide)).size() >= count);

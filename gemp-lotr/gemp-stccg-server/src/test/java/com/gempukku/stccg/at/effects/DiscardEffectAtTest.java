@@ -1,7 +1,6 @@
 package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.trigger.TriggerConditions;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -41,8 +40,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
-                        if (TriggerConditions.forEachDiscardedFromPlay(game, effectResult, Filters.any)) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
+                        if (TriggerConditions.forEachDiscardedFromPlay(_game, effectResult, Filters.any)) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
                             discardedFromPlay.add(discardResult.getDiscardedCard());
                             return null;
@@ -84,8 +83,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
-                        if (TriggerConditions.forEachDiscardedFromPlay(game, effectResult, Filters.any)) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
+                        if (TriggerConditions.forEachDiscardedFromPlay(_game, effectResult, Filters.any)) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
                             discardedFromPlay.add(discardResult.getDiscardedCard());
                             return null;
@@ -127,8 +126,8 @@ public class DiscardEffectAtTest extends AbstractAtTest {
         _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
-                        if (TriggerConditions.forEachDiscardedFromPlay(game, effectResult, Filters.any)) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
+                        if (TriggerConditions.forEachDiscardedFromPlay(_game, effectResult, Filters.any)) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
                             discardedFromPlay.add(discardResult.getDiscardedCard());
                             return null;

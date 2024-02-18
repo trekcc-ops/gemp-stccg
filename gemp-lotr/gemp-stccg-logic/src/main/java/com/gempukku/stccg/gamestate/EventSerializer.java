@@ -137,10 +137,10 @@ public class EventSerializer {
         }
 
         StringBuilder charStr = new StringBuilder();
-        if (charStr.length() > 0)
+        if (!charStr.isEmpty())
             charStr.delete(0, 1);
 
-        if (charStr.length() > 0)
+        if (!charStr.isEmpty())
             eventElem.setAttribute("charStats", charStr.toString());
     }
 

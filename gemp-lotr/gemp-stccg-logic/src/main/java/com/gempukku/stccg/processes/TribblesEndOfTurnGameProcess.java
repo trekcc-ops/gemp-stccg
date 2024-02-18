@@ -9,15 +9,20 @@ import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.results.EndOfTurnResult;
 
-public class TribblesEndOfTurnGameProcess extends DefaultGameProcess<TribblesGame> {
+public class TribblesEndOfTurnGameProcess extends GameProcess {
     private GameProcess _nextProcess;
+    private final TribblesGame _game;
+    public TribblesEndOfTurnGameProcess(TribblesGame game) {
+        super();
+        _game = game;
+    }
     @Override
-    public void process(TribblesGame game) {
+    public void process() {
 //        game.getGameState().sendMessage("DEBUG: Beginning TribblesEndOfTurnGameProcess");
         SystemQueueAction action = new SystemQueueAction();
         action.setText("End of turn");
         action.appendEffect(
-                new TriggeringResultEffect(game, new EndOfTurnResult(), "End of turn"));
+                new TriggeringResultEffect(_game, new EndOfTurnResult(), "End of turn"));
         action.appendEffect(
                 new Effect() {
                     @Override
@@ -41,23 +46,23 @@ public class TribblesEndOfTurnGameProcess extends DefaultGameProcess<TribblesGam
 
                     @Override
                     public void playEffect() {
-                        ((ModifiersLogic) game.getModifiersEnvironment()).signalEndOfTurn();
-                        ((DefaultActionsEnvironment) game.getActionsEnvironment()).signalEndOfTurn();
-                        game.getGameState().stopAffectingCardsForCurrentPlayer();
+                        ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfTurn();
+                        ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalEndOfTurn();
+                        _game.getGameState().stopAffectingCardsForCurrentPlayer();
                     }
                 });
         boolean playerWentOut = false;
-        for (String playerId : game.getPlayerIds()) {
-            if (game.getGameState().getHand(playerId).size() == 0) {
+        for (String playerId : _game.getPlayerIds()) {
+            if (_game.getGameState().getHand(playerId).isEmpty()) {
                 playerWentOut = true;
             }
         }
         if (playerWentOut) {
-            _nextProcess = new TribblesEndOfRoundGameProcess();
+            _nextProcess = new TribblesEndOfRoundGameProcess(_game);
         } else {
-            _nextProcess = new TribblesBetweenTurnsProcess();
+            _nextProcess = new TribblesBetweenTurnsProcess(_game);
         }
-        game.getActionsEnvironment().addActionToStack(action);
+        _game.getActionsEnvironment().addActionToStack(action);
     }
 
     @Override

@@ -76,9 +76,9 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
     @Override
     public boolean isPlayableInFull() {
         if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK)
-            return !_game.getModifiersQuerying().hasFlagActive(_game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) && getPlayableCards().size() > 0;
+            return !_game.getModifiersQuerying().hasFlagActive(_game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK) && !getPlayableCards().isEmpty();
         else
-            return getPlayableCards().size() > 0;
+            return !getPlayableCards().isEmpty();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                                if (selectedCards.size() > 0) {
+                                if (!selectedCards.isEmpty()) {
                                     final PhysicalCard selectedCard = selectedCards.get(0);
                                     playCard(_game, selectedCard);
                                 }

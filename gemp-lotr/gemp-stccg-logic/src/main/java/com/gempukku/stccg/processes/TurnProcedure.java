@@ -43,7 +43,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
     }
 
     protected GameProcess setFirstGameProcess(AbstractGame game, Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
-        return game.getFormat().getStartingGameProcess(players, playerOrderFeedback);
+        return game.getFormat().getStartingGameProcess(players, playerOrderFeedback, game);
     }
 
     public GameStats getGameStats() { return _gameStats; }
@@ -52,7 +52,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         while (_userFeedback.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null) {
             // First check for any "state-based" effects
             Set<EffectResult> effectResults = ((DefaultActionsEnvironment) _game.getActionsEnvironment()).consumeEffectResults();
-            if (effectResults.size() > 0) {
+            if (!effectResults.isEmpty()) {
                 _actionStack.add(new PlayOutEffectResults(effectResults));
             } else {
                 if (_actionStack.isEmpty()) {
@@ -60,7 +60,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
                         _gameProcess = _gameProcess.getNextProcess();
                         _playedGameProcess = false;
                     } else {
-                        _gameProcess.process(_game);
+                        _gameProcess.process();
                         if (_gameStats.updateGameStats(_game))
                             _game.getGameState().sendGameStats(_gameStats);
                         _playedGameProcess = true;
@@ -145,7 +145,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
             if (!_initialized) {
                 _initialized = true;
                 List<Action> requiredResponses = _game.getActionsEnvironment().getRequiredAfterTriggers(_effectResults);
-                if (requiredResponses.size() > 0)
+                if (!requiredResponses.isEmpty())
                     appendEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(this, requiredResponses));
 
                 GameState gameState = _game.getGameState();
@@ -228,7 +228,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
             List<Action> possibleActions = new LinkedList<>(optionalBeforeTriggers);
             possibleActions.addAll(optionalBeforeActions);
 
-            if (possibleActions.size() > 0) {
+            if (!possibleActions.isEmpty()) {
                 _game.getUserFeedback().sendAwaitingDecision(activePlayer,
                         new CardActionSelectionDecision(1, _effect.getText() + " - Optional \"is about to\" responses", possibleActions) {
                             @Override
@@ -278,7 +278,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
             List<Action> possibleActions = new LinkedList<>(optionalAfterTriggers.keySet());
             possibleActions.addAll(optionalAfterActions);
 
-            if (possibleActions.size() > 0) {
+            if (!possibleActions.isEmpty()) {
                 _game.getUserFeedback().sendAwaitingDecision(activePlayer,
                         new CardActionSelectionDecision(1, "Optional responses", possibleActions) {
                             @Override

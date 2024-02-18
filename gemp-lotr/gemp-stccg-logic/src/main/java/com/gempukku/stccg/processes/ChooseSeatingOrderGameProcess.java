@@ -8,7 +8,7 @@ import com.gempukku.stccg.game.PlayerOrderFeedback;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChooseSeatingOrderGameProcess implements GameProcess {
+public class ChooseSeatingOrderGameProcess extends GameProcess {
     private final String[] _choices = new String[]{"first", "second", "third", "fourth", "fifth"};
     private final Map<String, Integer> _bids;
     private final PlayerOrderFeedback _playerOrderFeedback;
@@ -16,8 +16,10 @@ public class ChooseSeatingOrderGameProcess implements GameProcess {
     private final Iterator<String> _biddingOrderPlayers;
     private final String[] _orderedPlayers;
     private boolean _sentBids;
+    private DefaultGame _game;
 
-    public ChooseSeatingOrderGameProcess(Map<String, Integer> bids, PlayerOrderFeedback playerOrderFeedback) {
+    public ChooseSeatingOrderGameProcess(Map<String, Integer> bids, PlayerOrderFeedback playerOrderFeedback, DefaultGame game) {
+        _game = game;
         _bids = bids;
         _playerOrderFeedback = playerOrderFeedback;
 
@@ -31,13 +33,13 @@ public class ChooseSeatingOrderGameProcess implements GameProcess {
     }
 
     @Override
-    public void process(DefaultGame game) {
+    public void process() {
         if (!_sentBids) {
             _sentBids = true;
             for (Map.Entry<String, Integer> playerBid : _bids.entrySet())
-                game.getGameState().sendMessage(playerBid.getKey() + " bid " + playerBid.getValue());
+                _game.getGameState().sendMessage(playerBid.getKey() + " bid " + playerBid.getValue());
         }
-        checkForNextSeating(game);
+        checkForNextSeating(_game);
     }
 
     private int getLastEmptySeat() {
@@ -93,6 +95,6 @@ public class ChooseSeatingOrderGameProcess implements GameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new PlayersDrawStartingHandGameProcess(_orderedPlayers[0]);
+        return new PlayersDrawStartingHandGameProcess(_orderedPlayers[0], _game);
     }
 }

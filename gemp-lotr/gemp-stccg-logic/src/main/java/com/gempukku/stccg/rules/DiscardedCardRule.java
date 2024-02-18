@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.results.DiscardCardsFromPlayResult;
 import com.gempukku.stccg.results.EffectResult;
@@ -23,11 +22,11 @@ public class DiscardedCardRule {
         _actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult) {
+                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
                             final PhysicalCard discardedCard = discardResult.getDiscardedCard();
-                            RequiredTriggerAction trigger = discardedCard.getBlueprint().getDiscardedFromPlayRequiredTrigger(game, discardedCard);
+                            RequiredTriggerAction trigger = discardedCard.getBlueprint().getDiscardedFromPlayRequiredTrigger(_actionsEnvironment.getGame(), discardedCard);
                             if (trigger != null)
                                 return Collections.singletonList(trigger);
                         }
@@ -35,12 +34,12 @@ public class DiscardedCardRule {
                     }
 
                     @Override
-                    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, DefaultGame game, EffectResult effectResult) {
+                    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
                         if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY) {
                             DiscardCardsFromPlayResult discardResult = (DiscardCardsFromPlayResult) effectResult;
                             final PhysicalCard discardedCard = discardResult.getDiscardedCard();
                             if (discardedCard.getOwnerName().equals(playerId)) {
-                                OptionalTriggerAction trigger = discardedCard.getBlueprint().getDiscardedFromPlayOptionalTrigger(playerId, game, discardedCard);
+                                OptionalTriggerAction trigger = discardedCard.getDiscardedFromPlayOptionalTrigger(playerId);
                                 if (trigger != null) {
                                     trigger.setVirtualCardAction(true);
                                     return Collections.singletonList(trigger);

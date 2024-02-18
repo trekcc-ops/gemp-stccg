@@ -85,6 +85,7 @@ public class TribblesGameState extends GameState {
     public List<PhysicalCard> getPlayPile(String playerId) {
         return Collections.unmodifiableList(_playPiles.get(playerId));
     }
+
     public void setPlayerDecked(String playerId, boolean bool) {
         _players.get(playerId).setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())

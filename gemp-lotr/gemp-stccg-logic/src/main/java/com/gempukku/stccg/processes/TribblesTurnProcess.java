@@ -2,13 +2,18 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.game.TribblesGame;
 
-public class TribblesTurnProcess extends DefaultGameProcess<TribblesGame> {
+public class TribblesTurnProcess extends GameProcess {
     private GameProcess _followingGameProcess;
+    private TribblesGame _game;
+    public TribblesTurnProcess(TribblesGame game) {
+        super();
+        _game = game;
+    }
     @Override
-    public void process(TribblesGame game) {
+    public void process() {
 //        game.getGameState().sendMessage("DEBUG: Beginning TribblesTurnProcess");
-        _followingGameProcess = new TribblesPlayerPlaysOrDraws(game.getGameState().getCurrentPlayerId(),
-                new TribblesEndOfTurnGameProcess()
+        _followingGameProcess = new TribblesPlayerPlaysOrDraws(_game.getGameState().getCurrentPlayerId(),
+                new TribblesEndOfTurnGameProcess(_game), _game
         );
     }
 

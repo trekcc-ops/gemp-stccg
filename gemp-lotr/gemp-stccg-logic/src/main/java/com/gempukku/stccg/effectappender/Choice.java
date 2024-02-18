@@ -50,7 +50,7 @@ public class Choice implements EffectAppenderProducer {
                     textIndex++;
                 }
 
-                if (playableEffectAppenders.size() == 0) {
+                if (playableEffectAppenders.isEmpty()) {
                     actionContext.setValueToMemory(memorize, "");
                     return null;
                 }

@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -12,19 +13,21 @@ import java.util.List;
 
 public class ActivatePhaseActionsFromHandRule {
     private final DefaultActionsEnvironment actionsEnvironment;
+    private final DefaultGame _game;
 
     public ActivatePhaseActionsFromHandRule(DefaultActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
+        _game = actionsEnvironment.getGame();
     }
 
     public void applyRule() {
         actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends Action> getPhaseActions(String playerId, DefaultGame game) {
+                    public List<? extends Action> getPhaseActions(String playerId) {
                         List<Action> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getHand(playerId), game)) {
-                            List<? extends Action> list = activatableCard.getBlueprint().getPhaseActionsInHand(playerId, activatableCard);
+                        for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+                            List<? extends Action> list = activatableCard.getPhaseActionsFromZone(playerId, Zone.HAND);
                             if (list != null) {
                                 for (Action action : list) {
                                     action.setVirtualCardAction(true);

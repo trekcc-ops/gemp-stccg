@@ -33,7 +33,7 @@ public class LookAtOpponentsHandEffect extends DefaultEffect {
 
             _game.getGameState().sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
 
-            if (opponentHand.size() > 0) {
+            if (!opponentHand.isEmpty()) {
                 _game.getGameState().sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
 
                 _game.getUserFeedback().sendAwaitingDecision(_playerId,

@@ -137,7 +137,7 @@ public class DbTransferDAO implements TransferDAO {
     private CardCollection deserializeCollection(String collection) {
         DefaultCardCollection cardCollection = new DefaultCardCollection();
         for (String item : collection.split(",")) {
-            if (item.length() > 0) {
+            if (!item.isEmpty()) {
                 String[] itemSplit = item.split("x", 2);
                 int count = Integer.parseInt(itemSplit[0]);
                 String blueprintId = itemSplit[1];

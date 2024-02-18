@@ -22,7 +22,7 @@ public abstract class ChoosePlayerWithCardsInDeckEffect extends UnrespondableEff
     public void doPlayEffect() {
         List<String> playersWithCards = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(_game)) {
-            if (_game.getGameState().getDrawDeck(player).size() > 0)
+            if (!_game.getGameState().getDrawDeck(player).isEmpty())
                 playersWithCards.add(player);
         }
         String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);

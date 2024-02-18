@@ -3,17 +3,20 @@ package com.gempukku.stccg.processes;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
-public class TribblesStartOfRoundGameProcess extends DefaultGameProcess<TribblesGame> {
+public class TribblesStartOfRoundGameProcess extends GameProcess {
 
     private final String _firstPlayer;
+    private final TribblesGame _game;
 
-    public TribblesStartOfRoundGameProcess(String firstPlayer) {
+    public TribblesStartOfRoundGameProcess(String firstPlayer, TribblesGame game) {
+        super();
+        _game = game;
         _firstPlayer = firstPlayer;
     }
 
     @Override
-    public void process(TribblesGame game) {
-        TribblesGameState gameState = game.getGameState();
+    public void process() {
+        TribblesGameState gameState = _game.getGameState();
         gameState.advanceRound();
 
         // Draw new hands. Shuffle only on first round, since shuffling is already done at end of every round.
@@ -21,7 +24,7 @@ public class TribblesStartOfRoundGameProcess extends DefaultGameProcess<Tribbles
             if (gameState.getRoundNum() == 1) {
                 gameState.shuffleDeck(player);
             }
-            for (int i = 0; i < game.getFormat().getHandSize(); i++)
+            for (int i = 0; i < _game.getFormat().getHandSize(); i++)
                 gameState.playerDrawsCard(player);
         }
 
@@ -30,6 +33,6 @@ public class TribblesStartOfRoundGameProcess extends DefaultGameProcess<Tribbles
 
     @Override
     public GameProcess getNextProcess() {
-        return new StartOfTurnGameProcess();
+        return new TribblesStartOfTurnGameProcess(_game);
     }
 }

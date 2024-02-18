@@ -29,10 +29,10 @@ public enum RegularSkill implements Filterable {
     TAL_SHIAR("Tal Shiar", true),
     TRANSPORTER_SKILL("Transporter Skill"), TREACHERY("Treachery"),
     V_SHAR("V'Shar", true),
-    YOUTH("Youth");
+    YOUTH("Youth", false);
 
-    private String _humanReadable;
-    private boolean _isIntelligence;
+    private final String _humanReadable;
+    private final boolean _isIntelligence;
 
     RegularSkill(String humanReadable) {
         this(humanReadable, false);
@@ -42,4 +42,6 @@ public enum RegularSkill implements Filterable {
         _humanReadable = humanReadable;
         _isIntelligence = true;
     }
+
+    public String get_humanReadable() { return _humanReadable; }
 }

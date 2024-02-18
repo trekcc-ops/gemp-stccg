@@ -152,10 +152,10 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                 CardDeck deckWithErrata = format.applyErrata(deck);
                 errataValidation = format.validateDeck(deckWithErrata);
             }
-            if(validation.size() == 0) {
+            if(validation.isEmpty()) {
                 valid.append("<b>").append(format.getName()).append("</b>: <font color='green'>Valid</font><br/>");
             }
-            else if(errataValidation != null && errataValidation.size() == 0) {
+            else if(errataValidation != null && errataValidation.isEmpty()) {
                 valid.append("<b>").append(format.getName()).append("</b>: ");
                 valid.append("<font color='green'>Valid</font> ");
                 valid.append("<font color='yellow'>(with errata automatically applied)</font><br/>");

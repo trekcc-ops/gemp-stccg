@@ -8,35 +8,34 @@ import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.List;
 
-public class ST1EFacilitySeedPhaseProcess implements GameProcess<ST1EGame> {
+public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
 
     private PlayerOrder _playOrder;
     private int _consecutivePasses;
-    private ST1EGame _game;
-    public ST1EFacilitySeedPhaseProcess(int consecutivePasses) {
+    public ST1EFacilitySeedPhaseProcess(int consecutivePasses, ST1EGame game) {
+        super(game);
         _consecutivePasses = consecutivePasses;
     }
 
     @Override
-    public void process(ST1EGame game) {
-        _game = game;
-        _playOrder = game.getGameState().getPlayerOrder();
+    public void process() {
+        _playOrder = _game.getGameState().getPlayerOrder();
         String _currentPlayer = _playOrder.getCurrentPlayer();
         _game.getGameState().sendMessage("DEBUG: Beginning facility seed phase process");
 
-        final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_currentPlayer);
-        if (playableActions.isEmpty() && game.shouldAutoPass(_currentPlayer, game.getGameState().getCurrentPhase())) {
+        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
+        if (playableActions.isEmpty() && _game.shouldAutoPass(_currentPlayer, _game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
-            game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
+            _game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
                     new CardActionSelectionDecision(1, "Play " +
-                            game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+                            _game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             if (action != null) {
                                 _consecutivePasses = 0;
-                                game.getActionsEnvironment().addActionToStack(action);
+                                _game.getActionsEnvironment().addActionToStack(action);
                             } else {
                                 _consecutivePasses++;
                                 _game.getGameState().sendMessage("DEBUG: Incrementing consecutivePasses");
@@ -47,14 +46,14 @@ public class ST1EFacilitySeedPhaseProcess implements GameProcess<ST1EGame> {
     }
 
     @Override
-    public GameProcess<ST1EGame> getNextProcess() {
+    public GameProcess getNextProcess() {
         if (_consecutivePasses >= _playOrder.getPlayerCount()) {
             _game.getGameState().sendMessage("DEBUG: Exiting facility seed phase process");
             _playOrder.setCurrentPlayer(_playOrder.getFirstPlayer());
-            return new ST1EStartOfPlayPhaseProcess(_playOrder.getFirstPlayer());
+            return new ST1EStartOfPlayPhaseProcess(new ST1EStartOfTurnGameProcess(_game), _game);
         } else {
             _playOrder.advancePlayer();
-            return new ST1EFacilitySeedPhaseProcess(_consecutivePasses);
+            return new ST1EFacilitySeedPhaseProcess(_consecutivePasses, _game);
         }
     }
 }

@@ -55,7 +55,7 @@ public class ChoiceEffect extends AbstractSubActionEffect {
             SubAction subAction = new SubAction(_action);
             subAction.appendEffect(possibleEffects.get(0));
             processSubAction(_game, subAction);
-        } else if (possibleEffects.size() > 0) {
+        } else if (!possibleEffects.isEmpty()) {
             _game.getUserFeedback().sendAwaitingDecision(_choicePlayerId,
                     new MultipleChoiceAwaitingDecision(
                             1, "Choose effect to use", getEffectsText(possibleEffects)

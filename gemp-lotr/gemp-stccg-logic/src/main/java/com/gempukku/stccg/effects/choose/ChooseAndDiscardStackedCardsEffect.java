@@ -57,7 +57,7 @@ public class ChooseAndDiscardStackedCardsEffect extends AbstractSubActionEffect 
         List<PhysicalCard> discardableCards = new LinkedList<>();
 
         for (PhysicalCard stackedOnCard : Filters.filterActive(_game, _stackedOnFilter))
-            discardableCards.addAll(Filters.filter(_game.getGameState().getStackedCards(stackedOnCard), _game, _stackedCardFilter));
+            discardableCards.addAll(Filters.filter(stackedOnCard.getStackedCards(), _game, _stackedCardFilter));
 
         if (discardableCards.size() <= _minimum) {
             SubAction subAction = new SubAction(_action);

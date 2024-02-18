@@ -20,7 +20,7 @@ public class WeightedRandomPack implements PackBox {
         WeightedRandomPack box = new WeightedRandomPack();
         for (String item : items) {
             item = item.trim();
-            if (item.length() > 0) {
+            if (!item.isEmpty()) {
                 String[] result = item.split("[x%]", 3);
                 if(result.length != 3) {
                     System.out.println("Unexpected number of entries in a WeightedRandomPack! Skipping: '" + item + "'");

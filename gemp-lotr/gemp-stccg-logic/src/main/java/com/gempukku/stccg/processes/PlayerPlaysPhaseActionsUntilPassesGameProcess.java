@@ -7,32 +7,34 @@ import com.gempukku.stccg.actions.Action;
 
 import java.util.List;
 
-public class PlayerPlaysPhaseActionsUntilPassesGameProcess implements GameProcess {
+public class PlayerPlaysPhaseActionsUntilPassesGameProcess extends GameProcess {
     private final String _playerId;
     private final GameProcess _followingGameProcess;
 
     private GameProcess _nextProcess;
+    private DefaultGame _game;
 
-    public PlayerPlaysPhaseActionsUntilPassesGameProcess(String playerId, GameProcess followingGameProcess) {
+    public PlayerPlaysPhaseActionsUntilPassesGameProcess(String playerId, GameProcess followingGameProcess, DefaultGame game) {
         _playerId = playerId;
         _followingGameProcess = followingGameProcess;
+        _game = game;
     }
 
     @Override
-    public void process(final DefaultGame game) {
-        final List<Action> playableActions = game.getActionsEnvironment().getPhaseActions(_playerId);
+    public void process() {
+        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_playerId);
 
-        if (playableActions.size() == 0 && game.shouldAutoPass(_playerId, game.getGameState().getCurrentPhase())) {
+        if (playableActions.isEmpty() && _game.shouldAutoPass(_playerId, _game.getGameState().getCurrentPhase())) {
             playerPassed();
         } else {
-            game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardActionSelectionDecision(1, "Play " + game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+            _game.getUserFeedback().sendAwaitingDecision(_playerId,
+                    new CardActionSelectionDecision(1, "Play " + _game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             if (action != null) {
-                                _nextProcess = new PlayerPlaysPhaseActionsUntilPassesGameProcess(_playerId, _followingGameProcess);
-                                game.getActionsEnvironment().addActionToStack(action);
+                                _nextProcess = new PlayerPlaysPhaseActionsUntilPassesGameProcess(_playerId, _followingGameProcess, _game);
+                                _game.getActionsEnvironment().addActionToStack(action);
                             } else
                                 playerPassed();
                         }

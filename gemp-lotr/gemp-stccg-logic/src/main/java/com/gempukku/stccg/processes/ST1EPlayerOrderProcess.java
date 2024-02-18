@@ -6,17 +6,18 @@ import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.*;
 
-public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
+public class ST1EPlayerOrderProcess extends ST1EGameProcess {
     private final PlayerOrderFeedback _playerOrderFeedback;
     private final Set<String> _players;
 
-    public ST1EPlayerOrderProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
+    public ST1EPlayerOrderProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, ST1EGame game) {
+        super(game);
         _players = players;
         _playerOrderFeedback = playerOrderFeedback;
     }
 
     @Override
-    public void process(ST1EGame game) {
+    public void process() {
         Map<String, Integer> diceResults = new HashMap<>();
         for (String player: _players) diceResults.put(player, 0);
 
@@ -24,7 +25,7 @@ public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
             for (String player : _players) {
                 Random rand = new Random();
                 int diceRoll = rand.nextInt(6) + 1;
-                game.getGameState().sendMessage(player + " rolled a " + diceRoll);
+                _game.getGameState().sendMessage(player + " rolled a " + diceRoll);
                 diceResults.put(player, diceRoll);
             }
             int highestRoll = Collections.max(diceResults.values());
@@ -48,12 +49,12 @@ public class ST1EPlayerOrderProcess implements GameProcess<ST1EGame> {
             }
         }
 
-        game.getGameState().sendMessage(firstPlayer + " will go first");
+        _game.getGameState().sendMessage(firstPlayer + " will go first");
         _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
     }
 
     @Override
-    public GameProcess<ST1EGame> getNextProcess() {
-        return new ST1EStartOfGameProcess();
+    public GameProcess getNextProcess() {
+        return new ST1EStartOfGameProcess(_game);
     }
 }

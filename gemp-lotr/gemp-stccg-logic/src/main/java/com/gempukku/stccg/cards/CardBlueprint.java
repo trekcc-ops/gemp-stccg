@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
@@ -17,6 +18,8 @@ public interface CardBlueprint {
     Quadrant getQuadrant();
     String getLocation();
     Region getRegion();
+
+    String getMissionRequirements();
 
     enum Direction {
         LEFT, RIGHT
@@ -63,25 +66,15 @@ public interface CardBlueprint {
     int getTribbleValue();
     TribblePower getTribblePower();
 
-    PlayEventAction getPlayEventCardAction(PhysicalCard self);
-
-    List<? extends Modifier> getInPlayModifiers(DefaultGame game, PhysicalCard self);
-
-    List<? extends Modifier> getStackedOnModifiers(PhysicalCard self);
-
-    List<? extends Modifier> getInDiscardModifiers(PhysicalCard self);
-
     boolean playRequirementsNotMet(PhysicalCard self);
+    List<Requirement<TribblesActionContext>> getPlayInOtherPhaseConditions();
+    List<ExtraPlayCostSource> getExtraPlayCosts();
 
-    List<? extends Action> getPhaseActionsInHand(String playerId, PhysicalCard self);
-
-    List<? extends Action> getPhaseActionsFromDiscard(String playerId, DefaultGame game, PhysicalCard self);
-
-    List<? extends ActivateCardAction> getPhaseActionsInPlay(String playerId, DefaultGame game, PhysicalCard self);
-
-    List<? extends ActivateCardAction> getPhaseActionsFromStacked(String playerId, DefaultGame game, PhysicalCard self);
+    List<ActionSource> getInPlayPhaseActions();
+    List<ModifierSource> getInPlayModifiers();
 
     List<RequiredTriggerAction> getRequiredBeforeTriggers(DefaultGame game, Effect effect, PhysicalCard self);
+    List<RequiredTriggerAction> getBeforeTriggers(DefaultGame game, Effect effect, PhysicalCard self, RequiredType requiredType);
 
     List<RequiredTriggerAction> getRequiredAfterTriggers(DefaultGame game, EffectResult effectResult, PhysicalCard self);
 
@@ -89,6 +82,7 @@ public interface CardBlueprint {
     List<OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect, PhysicalCard self);
 
     List<ActionSource> getOptionalAfterTriggers();
+    List<ActionSource> getInDiscardPhaseActions();
 
     List<? extends ActivateCardAction> getOptionalInPlayBeforeActions(String playerId, DefaultGame game, Effect effect, PhysicalCard self);
 
@@ -105,8 +99,6 @@ public interface CardBlueprint {
 
     RequiredTriggerAction getDiscardedFromPlayRequiredTrigger(DefaultGame game, PhysicalCard self);
 
-    OptionalTriggerAction getDiscardedFromPlayOptionalTrigger(String playerId, DefaultGame game, PhysicalCard self);
-
 
     RequiredTriggerAction getKilledRequiredTrigger(DefaultGame game, PhysicalCard self);
 
@@ -115,8 +107,6 @@ public interface CardBlueprint {
     Set<PossessionClass> getPossessionClasses();
 
     String getDisplayableInformation(PhysicalCard self);
-
-    List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game, PhysicalCard self);
 
     int getPotentialDiscount(PhysicalCard self);
 
@@ -134,4 +124,6 @@ public interface CardBlueprint {
     boolean hasNoTransporters();
     boolean hasNoPointBox();
     int getPointsShown();
+    ActionSource getPlayEventAction();
+    ActionSource getDiscardedFromPlayOptionalTriggerAction();
 }

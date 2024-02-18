@@ -390,7 +390,6 @@ public abstract class GameState {
     public List<PhysicalCard> getRemoved(String playerId) { return Collections.unmodifiableList(_removed.get(playerId)); }
     public List<PhysicalCard> getDrawDeck(String playerId) { return Collections.unmodifiableList(_drawDecks.get(playerId)); }
     public List<PhysicalCard> getDiscard(String playerId) { return Collections.unmodifiableList(_discards.get(playerId)); }
-    public List<PhysicalCard> getStacked(String playerId) { return Collections.unmodifiableList(_stacked.get(playerId)); }
 
     public String getCurrentPlayerId() {
         return _playerOrder.getCurrentPlayer();
@@ -409,15 +408,8 @@ public abstract class GameState {
         return result;
     }
 
-    public List<PhysicalCard> getStackedCards(PhysicalCard card) {
-        List<PhysicalCard> result = new LinkedList<>();
-        for (List<PhysicalCard> physicalCardList : _stacked.values()) {
-            for (PhysicalCard physicalCard : physicalCardList) {
-                if (physicalCard.getStackedOn() == card)
-                    result.add(physicalCard);
-            }
-        }
-        return result;
+    public Map<String, List<PhysicalCard>> getStackedCards() {
+        return _stacked;
     }
 
     public void setTwilight(int twilight) {
@@ -439,7 +431,7 @@ public abstract class GameState {
         else return true;
     }
 
-    public void startAffectingCardsForCurrentPlayer(DefaultGame game) {
+    public void startAffectingCardsForCurrentPlayer() {
         // Active non-sites are affecting
         for (PhysicalCard physicalCard : _inPlay)
             if (isCardInPlayActive(physicalCard)) physicalCard.startAffectingGame();

@@ -28,7 +28,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
         // Choose any opponent who still has card(s) in their draw deck.
         List<String> playersWithCards = new ArrayList<>();
         for (String player : GameUtils.getAllPlayers(_game)) {
-            if ((_game.getGameState().getDrawDeck(player).size() > 0) && !Objects.equals(player, _activatingPlayer))
+            if ((!_game.getGameState().getDrawDeck(player).isEmpty()) && !Objects.equals(player, _activatingPlayer))
                 playersWithCards.add(player);
         }
         String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);

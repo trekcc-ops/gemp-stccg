@@ -1,21 +1,12 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.PhysicalMissionCard;
 import com.gempukku.stccg.cards.PhysicalNounCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.GameStateListener;
-import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.gamestate.UserFeedback;
-import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.ST1EPlayerOrderProcess;
-import com.gempukku.stccg.processes.TurnProcedure;
-import com.gempukku.stccg.rules.ST1ERuleSet;
+import com.gempukku.stccg.common.filterable.RegularSkill;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 public class AwayTeam {
@@ -37,10 +28,26 @@ public class AwayTeam {
         return false;
     }
 
+    public boolean hasAffiliationFromSet(Set<Affiliation> affiliations) {
+        return affiliations.stream().anyMatch(this::hasAffiliation);
+    }
+
     public boolean isOnSurface(PhysicalCard planet) {
         return _parentCard == planet;
     }
 
+    public Player getPlayer() { return _player; }
     public String getPlayerId() { return _player.getPlayerId(); }
     public Collection<PhysicalNounCard1E> getCards() { return _cardsInAwayTeam; }
+    public boolean canAttemptMission(PhysicalMissionCard missionCard) {
+        return hasAffiliationFromSet(missionCard.getAffiliationIconsForPlayer(_player));
+    }
+
+    public boolean hasSkill(RegularSkill skill) {
+        for (PhysicalNounCard1E card : _cardsInAwayTeam) {
+/*            if (card.hasSkill(skill)) // TODO - Nothing actually checks if people have the skill here
+                return true; */
+        }
+        return false;
+    }
 }

@@ -16,20 +16,22 @@ import java.util.List;
 public class TribblesOptionalTriggersRule {
 
     protected final DefaultActionsEnvironment actionsEnvironment;
+    private final DefaultGame _game;
 
     public TribblesOptionalTriggersRule(DefaultActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
+        _game = actionsEnvironment.getGame();
     }
 
     public void applyRule() {
         actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, DefaultGame game, Effect effect) {
+                    public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, Effect effect) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(), game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(), _game, getActivatableCardsFilter(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends OptionalTriggerAction> actions = activatableCard.getBlueprint().getOptionalBeforeTriggers(playerId, game, effect, activatableCard);
+                                final List<? extends OptionalTriggerAction> actions = activatableCard.getBlueprint().getOptionalBeforeTriggers(playerId, _game, effect, activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
@@ -40,14 +42,13 @@ public class TribblesOptionalTriggersRule {
 
                     @Override
                     public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId,
-                                                                                                DefaultGame game,
                                                                                                 EffectResult effectResult) {
                         List<OptionalTriggerAction> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(game.getGameState().getAllCardsInPlay(),
-                                game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(),
+                                _game, getActivatableCardsFilter(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
                                 final List<? extends OptionalTriggerAction> actions =
-                                        game.getOptionalAfterTriggerActions(playerId, effectResult,
+                                        _game.getOptionalAfterTriggerActions(playerId, effectResult,
                                                 activatableCard);
                                 if (actions != null)
                                     result.addAll(actions);

@@ -19,7 +19,8 @@ public class ST1EGameState extends GameState {
     private final ST1EGame _game;
     private final Set<AwayTeam> _awayTeams = new HashSet<>();
 
-    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST1EGame game) {
+    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
+                         GameFormat format, ST1EGame game) {
         super(players, decks, library, format, game);
         _game = game;
         _seedDecks = new HashMap<>();
@@ -237,7 +238,7 @@ public class ST1EGameState extends GameState {
                         cardIterator.remove();
                     }
                 }
-            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && cardsLeftToSend.size() > 0);
+            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
             List<PhysicalCard> hand = _hands.get(playerId);
             if (hand != null) hand.forEach(listener::putCardIntoPlay);

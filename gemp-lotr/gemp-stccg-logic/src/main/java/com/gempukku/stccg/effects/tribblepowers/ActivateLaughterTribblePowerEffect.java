@@ -29,7 +29,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         // There must be at least two players with cards in their hands
         int playersWithHands = 0;
         for (String player : GameUtils.getAllPlayers(_game)) {
-            if (_game.getGameState().getHand(player).size() > 0)
+            if (!_game.getGameState().getHand(player).isEmpty())
                 playersWithHands++;
         }
         return playersWithHands >= 2;
@@ -41,7 +41,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
             return new FullEffectResult(false);
         else {
             List<String> players = Arrays.asList(GameUtils.getAllPlayers(_game));
-            players.removeIf(player -> _game.getGameState().getHand(player).size() == 0);
+            players.removeIf(player -> _game.getGameState().getHand(player).isEmpty());
             _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision(1, "Choose a player to discard a card", players) {
                         @Override

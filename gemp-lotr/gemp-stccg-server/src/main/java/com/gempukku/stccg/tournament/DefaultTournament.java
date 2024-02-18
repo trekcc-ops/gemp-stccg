@@ -79,7 +79,7 @@ public class DefaultTournament implements Tournament {
                 }
             }
 
-            if (matchesToCreate.size() > 0)
+            if (!matchesToCreate.isEmpty())
                 _nextTask = new CreateMissingGames(matchesToCreate);
         } else if (_tournamentStage == Stage.DRAFT) {
             _draft = new DefaultDraft(collectionsManager, _collectionType, productLibrary, draftPack,
@@ -253,7 +253,7 @@ public class DefaultTournament implements Tournament {
                     }
                 }
                 if (_tournamentStage == Stage.PLAYING_GAMES) {
-                    if (_currentlyPlayingPlayers.size() == 0) {
+                    if (_currentlyPlayingPlayers.isEmpty()) {
                         if (_pairingMechanism.isFinished(_tournamentRound, _players, _droppedPlayers)) {
                             finishTournament(tournamentCallback, collectionsManager);
                         } else {
@@ -336,7 +336,7 @@ public class DefaultTournament implements Tournament {
                 createNewGame(tournamentCallback, playerOne, playerTwo);
             }
 
-            if (byeResults.size()>0)
+            if (!byeResults.isEmpty())
                 tournamentCallback.broadcastMessage("Bye awarded to: "+ StringUtils.join(byeResults, ", "));
             for (String bye : byeResults) {
                 _tournamentService.addRoundBye(_tournamentId, bye, _tournamentRound);

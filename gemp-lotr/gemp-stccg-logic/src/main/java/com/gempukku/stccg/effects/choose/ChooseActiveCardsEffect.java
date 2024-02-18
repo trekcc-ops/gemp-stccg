@@ -85,7 +85,7 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
         if (_shortcut && maximum == 0) {
             cardsSelected(_game, Collections.emptySet());
         } else if (_shortcut && matchingCards.size() == minimum) {
-            if (_source != null && matchingCards.size() > 0)
+            if (_source != null && !matchingCards.isEmpty())
                 _game.getGameState().cardAffectsCard(_playerId, _source, matchingCards);
             cardsSelected(_game, matchingCards);
         } else {
@@ -94,7 +94,7 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                            if (_source != null && selectedCards.size() > 0)
+                            if (_source != null && !selectedCards.isEmpty())
                                 _game.getGameState().cardAffectsCard(_playerId, _source, selectedCards);
                             cardsSelected(_game, selectedCards);
                         }

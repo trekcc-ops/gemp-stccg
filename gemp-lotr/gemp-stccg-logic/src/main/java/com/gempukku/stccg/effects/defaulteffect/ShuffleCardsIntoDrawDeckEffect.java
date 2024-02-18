@@ -28,7 +28,7 @@ public class ShuffleCardsIntoDrawDeckEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        if (_cards.size() == 0)
+        if (_cards.isEmpty())
             return false;
         for (PhysicalCard card : _cards) {
             if ((_fromZone == null && _validateInPlay && !card.getZone().isInPlay()) ||

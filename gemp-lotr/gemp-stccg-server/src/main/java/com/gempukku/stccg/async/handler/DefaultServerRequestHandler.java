@@ -128,7 +128,7 @@ public class DefaultServerRequestHandler {
 
     protected String getQueryParameterSafely(QueryStringDecoder queryStringDecoder, String parameterName) {
         List<String> parameterValues = queryStringDecoder.parameters().get(parameterName);
-        if (parameterValues != null && parameterValues.size() > 0)
+        if (parameterValues != null && !parameterValues.isEmpty())
             return parameterValues.get(0);
         else
             return null;

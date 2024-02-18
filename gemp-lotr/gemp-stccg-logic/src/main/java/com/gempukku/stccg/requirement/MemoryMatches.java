@@ -24,7 +24,7 @@ public class MemoryMatches extends RequirementProducer {
         return (actionContext) -> {
             final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
             final Filterable filterable = filterableSource.getFilterable(actionContext);
-            return Filters.filter(cardsFromMemory, actionContext.getGame(), filterable).size() > 0;
+            return !Filters.filter(cardsFromMemory, actionContext.getGame(), filterable).isEmpty();
         };
     }
 }

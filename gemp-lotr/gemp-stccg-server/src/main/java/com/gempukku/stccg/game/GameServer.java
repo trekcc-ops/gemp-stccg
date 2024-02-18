@@ -144,7 +144,7 @@ public class GameServer extends AbstractServer {
             StringBuilder players = new StringBuilder();
             Map<String, CardDeck> decks =  new HashMap<>();
             for (GameParticipant participant : participants) {
-                if (players.length() > 0)
+                if (!players.isEmpty())
                     players.append(", ");
                 players.append(participant.getPlayerId());
                 decks.put(participant.getPlayerId(), participant.getDeck());

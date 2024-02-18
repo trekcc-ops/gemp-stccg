@@ -7,7 +7,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.UserFeedback;
-import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.ST1EGameProcess;
 import com.gempukku.stccg.processes.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.ST1ERuleSet;
@@ -30,9 +30,9 @@ public class ST1EGame extends DefaultGame {
         _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {
             @Override
-            protected GameProcess<ST1EGame> setFirstGameProcess(ST1EGame game, Set<String> players,
-                                                      PlayerOrderFeedback playerOrderFeedback) {
-                return new ST1EPlayerOrderProcess(players, playerOrderFeedback);
+            protected ST1EGameProcess setFirstGameProcess(ST1EGame game, Set<String> players,
+                                                          PlayerOrderFeedback playerOrderFeedback) {
+                return new ST1EPlayerOrderProcess(players, playerOrderFeedback, _game);
             }
         };
     }
