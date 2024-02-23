@@ -6,7 +6,6 @@ import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.effects.utils.DiscardUtils;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.results.DiscardCardsFromPlayResult;
 
 import java.util.Collections;
@@ -51,10 +50,10 @@ public class StackCardFromPlayEffect extends DefaultEffect {
 
             // And put them in new zones (attached and stacked to discard, the card gets stacked on)
             for (PhysicalCard attachedCard : toMoveToDiscardCards)
-                gameState.addCardToZone(_game, attachedCard, Zone.DISCARD);
+                gameState.addCardToZone(attachedCard, Zone.DISCARD);
 
-            _game.getGameState().sendMessage(GameUtils.getCardLink(_card) + " is stacked on " + GameUtils.getCardLink(_stackOn));
-            _game.getGameState().stackCard(_game, _card, _stackOn);
+            _game.getGameState().sendMessage(_card.getCardLink() + " is stacked on " + _stackOn.getCardLink());
+            _game.getGameState().stackCard(_card, _stackOn);
 
             // Send the result (attached cards get discarded)
             for (PhysicalCard discardedCard : discardedFromPlayCards)

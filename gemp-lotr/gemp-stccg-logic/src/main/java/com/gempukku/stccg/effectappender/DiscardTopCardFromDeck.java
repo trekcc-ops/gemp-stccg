@@ -37,7 +37,7 @@ public class DiscardTopCardFromDeck implements EffectAppenderProducer {
                 final DefaultGame game = actionContext.getGame();
                 return game.getGameState().getDrawDeck(deckId).size() >= count
                         && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(
-                                game, actionContext.getPerformingPlayer(), actionContext.getSource()));
+                        actionContext.getPerformingPlayer(), actionContext.getSource()));
             }
 
             @Override

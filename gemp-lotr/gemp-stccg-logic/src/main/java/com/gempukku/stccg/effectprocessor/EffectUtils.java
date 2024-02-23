@@ -1,6 +1,6 @@
 package com.gempukku.stccg.effectprocessor;
 
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
@@ -10,7 +10,7 @@ import com.gempukku.stccg.effectappender.EffectAppenderFactory;
 import org.json.simple.JSONObject;
 
 public class EffectUtils {
-    public static void processRequirementsCostsAndEffects(JSONObject value, CardGenerationEnvironment environment, DefaultActionSource actionSource) throws InvalidCardDefinitionException {
+    public static void processRequirementsCostsAndEffects(JSONObject value, CardGenerationEnvironment environment, ActionSource actionSource) throws InvalidCardDefinitionException {
         final JSONObject[] requirementArray = FieldUtils.getObjectArray(value.get("requires"), "requires");
         for (JSONObject requirement : requirementArray) {
             final Requirement conditionRequirement = environment.getRequirementFactory().getRequirement(requirement, environment);
@@ -20,7 +20,7 @@ public class EffectUtils {
         processCostsAndEffects(value, environment, actionSource);
     }
 
-    public static void processCostsAndEffects(JSONObject value, CardGenerationEnvironment environment, DefaultActionSource actionSource) throws InvalidCardDefinitionException {
+    public static void processCostsAndEffects(JSONObject value, CardGenerationEnvironment environment, ActionSource actionSource) throws InvalidCardDefinitionException {
         final JSONObject[] costArray = FieldUtils.getObjectArray(value.get("cost"), "cost");
         final JSONObject[] effectArray = FieldUtils.getObjectArray(value.get("effect"), "effect");
 

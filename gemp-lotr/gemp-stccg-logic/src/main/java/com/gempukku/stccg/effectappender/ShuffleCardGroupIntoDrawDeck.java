@@ -35,12 +35,12 @@ public class ShuffleCardGroupIntoDrawDeck implements EffectAppenderProducer {
                     @Override
                     protected void doPlayEffect() {
                         List<PhysicalCard> cardGroup =
-                                new LinkedList<>(actionContext.getGame().getGameState().getZoneCards(
+                                new LinkedList<>(actionContext.getGameState().getZoneCards(
                                         cardGroupOwner, _cardGroup));
-                        actionContext.getGame().getGameState().removeCardsFromZone(
+                        actionContext.getGameState().removeCardsFromZone(
                                 actionContext.getPerformingPlayer(), cardGroup);
-                        cardGroup.forEach(actionContext.getGame().getGameState()::putCardOnBottomOfDeck);
-                        actionContext.getGame().getGameState().shuffleDeck(cardGroupOwner);
+                        cardGroup.forEach(actionContext.getGameState()::putCardOnBottomOfDeck);
+                        actionContext.getGameState().shuffleDeck(cardGroupOwner);
                     }
                 };
             }

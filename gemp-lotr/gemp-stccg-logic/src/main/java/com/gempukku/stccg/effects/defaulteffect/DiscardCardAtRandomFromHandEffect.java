@@ -7,7 +7,6 @@ import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.results.DiscardCardFromHandResult;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +33,7 @@ public class DiscardCardAtRandomFromHandEffect extends DefaultEffect {
     @Override
     public boolean isPlayableInFull() {
         return !_game.getGameState().getHand(_playerId).isEmpty()
-                && (!_forced || _game.getModifiersQuerying().canDiscardCardsFromHand(_game, _playerId, _source));
+                && (!_forced || _game.getModifiersQuerying().canDiscardCardsFromHand(_playerId, _source));
     }
 
     @Override
@@ -43,9 +42,9 @@ public class DiscardCardAtRandomFromHandEffect extends DefaultEffect {
             GameState gameState = _game.getGameState();
             List<? extends PhysicalCard> hand = gameState.getHand(_playerId);
             PhysicalCard randomCard = hand.get(ThreadLocalRandom.current().nextInt(hand.size()));
-            gameState.sendMessage(_playerId + " randomly discards " + GameUtils.getCardLink(randomCard));
+            gameState.sendMessage(_playerId + " randomly discards " + randomCard.getCardLink());
             gameState.removeCardsFromZone(_source.getOwnerName(), Collections.singleton(randomCard));
-            gameState.addCardToZone(_game, randomCard, Zone.DISCARD);
+            gameState.addCardToZone(randomCard, Zone.DISCARD);
             _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_source, randomCard, _forced));
             return new FullEffectResult(true);
         }

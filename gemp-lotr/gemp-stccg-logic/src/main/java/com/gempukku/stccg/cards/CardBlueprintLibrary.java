@@ -4,7 +4,6 @@ import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.game.ICallback;
-import com.gempukku.stccg.rules.GameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -136,22 +135,37 @@ public class CardBlueprintLibrary {
                 JSONParser parser = new JSONParser();
                 JSONArray object = (JSONArray) parser.parse(json);
                 for (Object setDefinitionObj : object) {
-                    JSONObject setDefinition = (JSONObject) setDefinitionObj;
+                    JSONObject setJsonDef = (JSONObject) setDefinitionObj;
 
-                    String setId = (String) setDefinition.get("setId");
-                    String setName = (String) setDefinition.get("setName");
-                    String rarityFile = (String) setDefinition.get("rarityFile");
+                    String setId = (String) setJsonDef.get("setId");
+                    String setName = (String) setJsonDef.get("setName");
+//                    String rarityFile = (String) setJsonDef.get("rarityFile");
 
                     Set<String> flags = new HashSet<>();
-                    determineOriginalSetFlag(setDefinition, flags);
-                    determineMerchantableFlag(setDefinition, flags);
-                    determineNeedsLoadingFlag(setDefinition, flags);
+                    determineOriginalSetFlag(setJsonDef, flags);
+                    determineMerchantableFlag(setJsonDef, flags);
+                    determineNeedsLoadingFlag(setJsonDef, flags);
 
-                    DefaultSetDefinition rarity = new DefaultSetDefinition(setId, flags);
+                    DefaultSetDefinition setDefinition = new DefaultSetDefinition(setId, setName, flags);
 
-                    readSetRarityFile(rarity, setId, rarityFile);
+/*                    BufferedReader bufferedReader =
+                            new BufferedReader(new InputStreamReader(AppConfig.getResourceStream(
+                                    "rarities/" + rarityFile), StandardCharsets.UTF_8));
+                    try {
+                        String line;
 
-                    _allSets.put(setId, rarity);
+                        while ((line = bufferedReader.readLine()) != null) {
+                            String blueprintId = setId + "_" + line.substring(setId.length() + 1);
+                            if (!line.startsWith(setId))
+                                throw new IllegalStateException("Seems the setDefinition is for some other set");
+                            String cardRarity = line.substring(setId.length(), setId.length() + 1);
+                            setDefinition.addCard(blueprintId, cardRarity);
+                        }
+                    } finally {
+                        IOUtils.closeQuietly(bufferedReader);
+                    } */
+
+                    _allSets.put(setId, setDefinition);
                 }
             } finally {
                 IOUtils.closeQuietly(reader);
@@ -206,16 +220,16 @@ public class CardBlueprintLibrary {
             final JSONObject cardsFile = (JSONObject) parser.parse(json);
             final Set<Map.Entry<String, JSONObject>> cardsInFile = cardsFile.entrySet();
             for (Map.Entry<String, JSONObject> cardEntry : cardsInFile) {
-                String blueprint = cardEntry.getKey();
+                String blueprintId = cardEntry.getKey();
                 if (validateNew)
-                    if (_blueprints.containsKey(blueprint))
-                        LOGGER.error(blueprint + " - Replacing existing card definition!");
+                    if (_blueprints.containsKey(blueprintId))
+                        LOGGER.error(blueprintId + " - Replacing existing card definition!");
                 final JSONObject cardDefinition = cardEntry.getValue();
                 try {
-                    final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(cardDefinition);
-                    _blueprints.put(blueprint, cardBlueprint);
+                    final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
+                    _blueprints.put(blueprintId, cardBlueprint);
                 } catch (InvalidCardDefinitionException exp) {
-                    LOGGER.error("Unable to load card " + blueprint, exp);
+                    LOGGER.error("Unable to load card " + blueprintId, exp);
                 }
             }
         } catch (FileNotFoundException exp) {
@@ -329,10 +343,11 @@ public class CardBlueprintLibrary {
                         card = errataMappings.get(base);
                     }
                     else {
+                        CardBlueprint blueprint = _blueprints.get(base);
                         card = new JSONDefs.ErrataInfo();
                         card.BaseID = base;
-                        card.Name = GameUtils.getFullName(_blueprints.get(base));
-                        card.LinkText = GameUtils.getDeluxeCardLink(id, _blueprints.get(base));
+                        card.Name = blueprint.getFullName();
+                        card.LinkText = blueprint.getCardLink();
                         card.ErrataIDs = new HashMap<>();
                         errataMappings.put(base, card);
                     }
@@ -363,6 +378,14 @@ public class CardBlueprintLibrary {
         } catch (InterruptedException exp) {
             throw new RuntimeException("CardBlueprintLibrary.hasAlternateInSet() interrupted: ", exp);
         }
+    }
+
+    public String getCardFullName(String blueprintId) throws CardNotFoundException {
+        return getCardBlueprint(blueprintId).getFullName();
+    }
+
+    public CardBlueprint getCardBlueprint(CardItem item) throws CardNotFoundException {
+        return getCardBlueprint(item.getBlueprintId());
     }
 
     public CardBlueprint getCardBlueprint(String blueprintId) throws CardNotFoundException {
@@ -458,29 +481,6 @@ public class CardBlueprintLibrary {
             originalSet = true;
         if (originalSet)
             flags.add("originalSet");
-    }
-
-    private void readSetRarityFile(DefaultSetDefinition rarity, String setNo, String rarityFile) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(AppConfig.getResourceStream("rarities/" + rarityFile), StandardCharsets.UTF_8));
-        try {
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                String blueprintId = setNo + "_" + line.substring(setNo.length() + 1);
-/*                if (line.endsWith("T")) {
-                    if (!line.startsWith(setNo))
-                        throw new IllegalStateException("Seems the rarity is for some other set");
-                    rarity.addTengwarCard(blueprintId);
-                } else {*/
-                if (!line.startsWith(setNo))
-                    throw new IllegalStateException("Seems the rarity is for some other set");
-                String cardRarity = line.substring(setNo.length(), setNo.length() + 1);
-                rarity.addCard(blueprintId, cardRarity);
-//                }
-            }
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
-        }
     }
 
 }

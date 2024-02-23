@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.results.DrawCardOrPutIntoHandResult;
 
 import java.util.Collections;
@@ -40,19 +39,19 @@ public class PutCardFromDeckIntoHandOrDiscardEffect extends DefaultEffect {
             var gameState = _game.getGameState();
             if ((_game.getFormat().doesNotHaveRuleOfFour() || _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _physicalCard.getOwnerName()))) {
                 if(_reveal) {
-                    gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + GameUtils.getCardLink(_physicalCard) + " from deck into their hand");
+                    gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + _physicalCard.getCardLink() + " from deck into their hand");
                 }
                 else {
                     gameState.sendMessage(_physicalCard.getOwnerName() + " puts a card from deck into their hand");
                 }
                 gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
-                gameState.addCardToZone(_game, _physicalCard, Zone.HAND);
+                gameState.addCardToZone(_physicalCard, Zone.HAND);
                 _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(_physicalCard.getOwnerName()));
                 return new FullEffectResult(true);
             } else {
-                gameState.sendMessage(_physicalCard.getOwnerName() + " discards " + GameUtils.getCardLink(_physicalCard) + " from deck due to Rule of 4");
+                gameState.sendMessage(_physicalCard.getOwnerName() + " discards " + _physicalCard.getCardLink() + " from deck due to Rule of 4");
                 gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
-                gameState.addCardToZone(_game, _physicalCard, Zone.DISCARD);
+                gameState.addCardToZone(_physicalCard, Zone.DISCARD);
             }
         }
         return new FullEffectResult(false);

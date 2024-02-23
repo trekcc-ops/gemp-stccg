@@ -64,6 +64,10 @@ public class Filters {
         return countSpottable(game, filters)>=count;
     }
 
+    public static Collection<PhysicalCard> filterYourActive(Player player, Filterable... filters) {
+        return filterActive(player.getGame(), Filters.your(player));
+    }
+
     public static Collection<PhysicalCard> filterActive(DefaultGame game, Filterable... filters) {
         Filter filter = Filters.and(filters);
         GetCardsMatchingFilterVisitor getCardsMatchingFilter = new GetCardsMatchingFilterVisitor(game, filter);
@@ -102,7 +106,7 @@ public class Filters {
         game.getGameState().iterateActiveCards(matchingFilterVisitor);
         int result = matchingFilterVisitor.getCounter();
         if (filters.length==1)
-            result+=game.getModifiersQuerying().getSpotBonus(game, filters[0]);
+            result+=game.getModifiersQuerying().getSpotBonus(filters[0]);
         return result;
     }
 
@@ -125,28 +129,20 @@ public class Filters {
         };
     }
 
-    public static Filter maxResistance(final int resistance) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getResistance(game, physicalCard) <= resistance;
-    }
-
-    public static Filter minResistance(final int resistance) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getResistance(game, physicalCard) >= resistance;
-    }
-
     public static Filter strengthEqual(final Evaluator evaluator) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(game, physicalCard) == evaluator.evaluateExpression(game, null);
+        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game, null);
     }
 
     public static Filter moreStrengthThan(final int strength) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(game, physicalCard) > strength;
+        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) > strength;
     }
 
     public static Filter lessStrengthThan(final int strength) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(game, physicalCard) < strength;
+        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < strength;
     }
 
     public static Filter lessStrengthThan(final PhysicalCard card) {
-        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(game, physicalCard) < game.getModifiersQuerying().getStrength(game, card);
+        return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < game.getModifiersQuerying().getStrength(card);
     }
 
     public static Filter attachedTo(final PhysicalCard parentCard) {
@@ -193,7 +189,7 @@ public class Filters {
     public static final Filter facility = Filters.or(CardType.FACILITY);
     public static final Filter equipment = Filters.or(CardType.EQUIPMENT);
     public static final Filter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
-    public static final Filter atLocation(final ST1ELocation location) {
+    public static Filter atLocation(final ST1ELocation location) {
         return (game, physicalCard) -> physicalCard.getLocation() == location;
     }
 
@@ -235,7 +231,7 @@ public class Filters {
             final CardBlueprint blueprint = physicalCard.getBlueprint();
             if (blueprint.getSide() != expectedSide)
                 return false;
-            return game1.checkPlayRequirements(physicalCard);
+            return physicalCard.canBePlayed();
         };
     }
 
@@ -345,7 +341,7 @@ public class Filters {
     }
 
     private static Filter keyword(final Keyword keyword) {
-        return (game, physicalCard) -> game.getModifiersQuerying().hasKeyword(game, physicalCard, keyword);
+        return (game, physicalCard) -> game.getModifiersQuerying().hasKeyword(physicalCard, keyword);
     }
 
     public static Filter and(final Filterable... filters) {
@@ -441,6 +437,20 @@ public class Filters {
             return false;
         };
     }
+
+    public static Filter attachableTo(final DefaultGame game, final Filterable... filters) {
+        return attachableTo(game, 0, filters);
+    }
+
+    public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
+        return Filters.and(Filters.playable(game, twilightModifier),
+                (Filter) (game1, physicalCard) -> {
+                    if (physicalCard.getBlueprint().getValidTargetFilter() == null)
+                        return false;
+                    return physicalCard.canBePlayed();
+                });
+    }
+
 
     public static final Filter ringBoundCompanion = Filters.and(CardType.COMPANION, Keyword.RING_BOUND);
     public static final Filter unboundCompanion = Filters.and(CardType.COMPANION, Filters.not(Keyword.RING_BOUND));

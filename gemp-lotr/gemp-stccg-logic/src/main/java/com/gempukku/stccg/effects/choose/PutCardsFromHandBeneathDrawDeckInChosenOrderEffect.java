@@ -50,7 +50,7 @@ public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends Abstract
     @Override
     public void playEffect() {
         final Collection<PhysicalCard> cards = Filters.filter(_game.getGameState().getHand(_playerId), _game, _filters);
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         subAction.appendEffect(
                 new ChooseAndPutNextCardFromHandOnBottomOfLibrary(subAction, cards));
         processSubAction(_game, subAction);

@@ -33,7 +33,7 @@ public class ChooseANumber implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 return new PlayOutDecisionEffect(actionContext.getGame(), actionContext.getPerformingPlayer(),
-                    new IntegerAwaitingDecision(1, GameUtils.SubstituteText(displayText, actionContext),
+                    new IntegerAwaitingDecision(1, actionContext.substituteText(displayText),
                         fromSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null),
                         toSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null))
                 {

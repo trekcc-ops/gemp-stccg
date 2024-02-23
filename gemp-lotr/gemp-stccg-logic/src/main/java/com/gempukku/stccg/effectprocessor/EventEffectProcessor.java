@@ -3,7 +3,7 @@ package com.gempukku.stccg.effectprocessor;
 import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 

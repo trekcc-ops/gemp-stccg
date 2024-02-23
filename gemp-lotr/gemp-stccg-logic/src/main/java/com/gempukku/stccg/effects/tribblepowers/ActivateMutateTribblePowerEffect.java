@@ -18,7 +18,7 @@ public class ActivateMutateTribblePowerEffect extends ActivateTribblePowerEffect
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         TribblesGameState gameState = _game.getGameState();
         List<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(_activatingPlayer));
 

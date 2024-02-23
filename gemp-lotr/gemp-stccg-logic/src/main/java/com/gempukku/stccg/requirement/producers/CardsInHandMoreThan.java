@@ -21,7 +21,7 @@ public class CardsInHandMoreThan extends RequirementProducer {
 
         return (actionContext) -> {
             final String playerId = playerSource.getPlayerId(actionContext);
-            return actionContext.getGame().getGameState().getHand(playerId).size() > count;
+            return actionContext.getGameState().getHand(playerId).size() > count;
         };
     }
 }

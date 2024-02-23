@@ -2,7 +2,6 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.adventure.InvalidSoloAdventureException;
 import com.gempukku.stccg.cards.PhysicalCard;
@@ -24,27 +23,24 @@ import java.util.*;
 // Action generates multiple Effects, both costs and result of an action are Effects.
 
 // Decision is also an Effect.
-public class TurnProcedure<AbstractGame extends DefaultGame> {
+public abstract class TurnProcedure {
     protected final UserFeedback _userFeedback;
-    protected final AbstractGame _game;
+    protected final DefaultGame _game;
     protected final Stack<Action> _actionStack;
     protected GameProcess _gameProcess;
     private boolean _playedGameProcess;
     protected final GameStats _gameStats;
 
-    public TurnProcedure(AbstractGame game, Set<String> players, final UserFeedback userFeedback,
+    public TurnProcedure(DefaultGame game, Set<String> players, final UserFeedback userFeedback,
                          DefaultActionsEnvironment actionsEnvironment, final PlayerOrderFeedback playerOrderFeedback) {
         _userFeedback = userFeedback;
         _game = game;
         _actionStack = actionsEnvironment.getActionStack();
-
         _gameStats = new GameStats();
-        _gameProcess = setFirstGameProcess(game, players, playerOrderFeedback);
+        _gameProcess = setFirstGameProcess(players, playerOrderFeedback);
     }
 
-    protected GameProcess setFirstGameProcess(AbstractGame game, Set<String> players, PlayerOrderFeedback playerOrderFeedback) {
-        return game.getFormat().getStartingGameProcess(players, playerOrderFeedback, game);
-    }
+    protected abstract GameProcess setFirstGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback);
 
     public GameStats getGameStats() { return _gameStats; }
 
@@ -67,7 +63,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
                     }
                 } else {
                     Action action = _actionStack.peek();
-                    Effect effect = action.nextEffect(_game);
+                    Effect effect = action.nextEffect();
                     if (effect == null) {
                         _actionStack.remove(_actionStack.lastIndexOf(action));
                     }
@@ -94,6 +90,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         private boolean _initialized;
 
         protected PlayOutEffect(Effect effect) {
+            super(_game);
             _effect = effect;
         }
 
@@ -103,7 +100,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         }
 
         @Override
-        public Effect nextEffect(DefaultGame game) {
+        public Effect nextEffect() {
             if (!_initialized) {
                 _initialized = true;
                 appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
@@ -137,11 +134,12 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         private boolean _initialized;
 
         protected PlayOutEffectResults(Set<EffectResult> effectResults) {
+            super(_game);
             _effectResults = effectResults;
         }
 
         @Override
-        public Effect nextEffect(DefaultGame game) {
+        public Effect nextEffect() {
             if (!_initialized) {
                 _initialized = true;
                 List<Action> requiredResponses = _game.getActionsEnvironment().getRequiredAfterTriggers(_effectResults);
@@ -271,7 +269,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
         public void doPlayEffect() {
             final String activePlayer = _playOrder.getNextPlayer();
 
-            final Map<OptionalTriggerAction, EffectResult> optionalAfterTriggers = _game.getActionsEnvironment().getOptionalAfterTriggers(activePlayer, _effectResults);
+            final Map<Action, EffectResult> optionalAfterTriggers = _game.getActionsEnvironment().getOptionalAfterTriggers(activePlayer, _effectResults);
 
             final List<Action> optionalAfterActions = _game.getActionsEnvironment().getOptionalAfterActions(activePlayer, _effectResults);
 
@@ -287,7 +285,7 @@ public class TurnProcedure<AbstractGame extends DefaultGame> {
                                 if (action != null) {
                                     _game.getActionsEnvironment().addActionToStack(action);
                                     if (optionalAfterTriggers.containsKey(action))
-                                        optionalAfterTriggers.get(action).optionalTriggerUsed((OptionalTriggerAction) action);
+                                        optionalAfterTriggers.get(action).optionalTriggerUsed(action);
 
                                     _action.insertEffect(new PlayOutOptionalAfterResponsesEffect(_action, _playOrder, 0, _effectResults));
                                 } else {

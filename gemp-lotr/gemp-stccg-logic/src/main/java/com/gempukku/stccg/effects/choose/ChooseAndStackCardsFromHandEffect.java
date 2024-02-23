@@ -51,7 +51,7 @@ public class ChooseAndStackCardsFromHandEffect extends DefaultEffect {
         final boolean success = hand.size() >= _minimum;
 
         if (hand.size() <= _minimum) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             for (PhysicalCard card : hand)
                 subAction.appendEffect(new StackCardFromHandEffect(_game, card, _stackOn));
             _game.getActionsEnvironment().addActionToStack(subAction);
@@ -62,7 +62,7 @@ public class ChooseAndStackCardsFromHandEffect extends DefaultEffect {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                            SubAction subAction = new SubAction(_action);
+                            SubAction subAction = _action.createSubAction();
                             for (PhysicalCard card : cards)
                                 subAction.appendEffect(new StackCardFromHandEffect(_game, card, _stackOn));
                             _game.getActionsEnvironment().addActionToStack(subAction);

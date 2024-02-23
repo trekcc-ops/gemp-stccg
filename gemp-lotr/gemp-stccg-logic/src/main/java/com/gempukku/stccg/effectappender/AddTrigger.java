@@ -3,7 +3,6 @@ package com.gempukku.stccg.effectappender;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effects.*;
@@ -67,7 +66,7 @@ public class AddTrigger implements EffectAppenderProducer {
                 return false;
             }
 
-            private void customizeTriggerAction(AbstractCostToEffectAction action, DefaultActionContext actionContext) {
+            private void customizeTriggerAction(AbstractCostToEffectAction action, ActionContext actionContext) {
                 action.setVirtualCardAction(true);
                 for (EffectAppender cost : costs)
                     cost.appendEffect(true, action, actionContext);
@@ -76,9 +75,8 @@ public class AddTrigger implements EffectAppenderProducer {
             }
 
             @Override
-            public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(Effect effect) {
-                DefaultActionContext delegateContext = new DefaultActionContext(actionContext, actionContext.getPerformingPlayer(),
-                        actionContext.getGame(), actionContext.getSource(), null, effect);
+            public List<? extends Action> getRequiredBeforeTriggers(Effect effect) {
+                ActionContext delegateContext = actionContext.createDelegateContext(effect);
                 if (trigger.isBefore() && !optional && trigger.accepts(delegateContext)) {
                     if (checkRequirements(delegateContext))
                         return null;
@@ -92,8 +90,8 @@ public class AddTrigger implements EffectAppenderProducer {
             }
 
             @Override
-            public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, Effect effect) {
-                DefaultActionContext delegateContext = new DefaultActionContext(actionContext, effect);
+            public List<? extends Action> getOptionalBeforeTriggers(String playerId, Effect effect) {
+                ActionContext delegateContext = actionContext.createDelegateContext(effect);
                 if (trigger.isBefore() && optional && trigger.accepts(delegateContext)) {
                     if (checkRequirements(delegateContext))
                         return null;
@@ -108,7 +106,7 @@ public class AddTrigger implements EffectAppenderProducer {
 
             @Override
             public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
-                DefaultActionContext delegate = new DefaultActionContext(actionContext, effectResult);
+                ActionContext delegate = actionContext.createDelegateContext(effectResult);
                 if (!trigger.isBefore() && !optional && trigger.accepts(delegate)) {
                     if (checkRequirements(delegate))
                         return null;
@@ -123,7 +121,7 @@ public class AddTrigger implements EffectAppenderProducer {
 
             @Override
             public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
-                DefaultActionContext delegate = new DefaultActionContext(actionContext, effectResult);
+                ActionContext delegate = actionContext.createDelegateContext(effectResult);
                 if (!trigger.isBefore() && optional && trigger.accepts(delegate)) {
                     if (checkRequirements(delegate))
                         return null;

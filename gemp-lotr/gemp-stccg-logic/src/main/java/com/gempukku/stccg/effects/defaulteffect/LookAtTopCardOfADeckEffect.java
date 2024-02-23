@@ -26,7 +26,7 @@ public class LookAtTopCardOfADeckEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        if(_count == _actionContext.getGame().getGameState().getDrawDeck(_playerDeckId).size())
+        if(_count == _actionContext.getGameState().getDrawDeck(_playerDeckId).size())
             return _playerId + " looks at " + _playerDeckId + "'s draw deck.";
 
         return _playerId + " looks at the top " + _count + " cards of " + _playerDeckId + "'s draw deck.";
@@ -34,7 +34,7 @@ public class LookAtTopCardOfADeckEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _actionContext.getGame().getGameState().getDrawDeck(_playerDeckId).size() >= _count;
+        return _actionContext.getGameState().getDrawDeck(_playerDeckId).size() >= _count;
     }
 
     @Override

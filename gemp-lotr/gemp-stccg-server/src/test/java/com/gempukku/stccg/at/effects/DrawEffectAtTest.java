@@ -1,7 +1,8 @@
 package com.gempukku.stccg.at.effects;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.at.AbstractAtTest;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.requirement.trigger.TriggerConditions;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -27,7 +28,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
 
@@ -65,7 +66,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
 
@@ -103,8 +104,8 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl merry2 = new PhysicalCardImpl(_game, 102, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric merry2 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
         _game.getGameState().putCardOnTopOfDeck(merry2);
@@ -144,7 +145,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
 
         _game.getGameState().putCardOnTopOfDeck(merry);
 
@@ -165,7 +166,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
 
                     @Override
-                    public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(Effect effect) {
+                    public List<? extends Action> getRequiredBeforeTriggers(Effect effect) {
                         if (TriggerConditions.isDrawingACard(effect, _game, P1)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(merry);
                             action.appendEffect(

@@ -1,0 +1,18 @@
+// Set 161: Engage
+
+{
+    161_051: {
+        title: U.S.S. Excalibur
+        type: ship
+        affiliation: federation
+        property-logo: tng
+        ship-class: AMBASSADOR CLASS
+        lore: "Refitted vessel captained by William T. Riker during Starfleet's blockade of the Klingon-Romulan border in 2368. Underwent further refit in 2373."
+        staffing: command staff staff
+        gametext: Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 9
+        image-url: https://www.trekcc.org/1e/cardimages/engage/51.jpg
+    }
+}

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -24,20 +24,20 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl gimli = new PhysicalCardImpl(_game, 100, "5_7", P1, _cardLibrary.getCardBlueprint("5_7"));
-        PhysicalCardImpl stoutAndStrong = new PhysicalCardImpl(_game, 101, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl goblinRunner = new PhysicalCardImpl(_game, 102, "1_178", P2, _cardLibrary.getCardBlueprint("1_178"));
+        PhysicalCardGeneric gimli = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("5_7"));
+        PhysicalCardGeneric stoutAndStrong = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric goblinRunner = new PhysicalCardGeneric(_game, 102, P2, _cardLibrary.getCardBlueprint("1_178"));
 
         skipMulligans();
 
-        _game.getGameState().addCardToZone(_game, gimli, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, stoutAndStrong, Zone.SUPPORT);
+        _game.getGameState().addCardToZone(gimli, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(stoutAndStrong, Zone.SUPPORT);
 
         // End fellowship phase
         assertEquals(Phase.FELLOWSHIP, _game.getGameState().getCurrentPhase());
         playerDecided(P1, "");
 
-        _game.getGameState().addCardToZone(_game, goblinRunner, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(goblinRunner, Zone.SHADOW_CHARACTERS);
 
         // End shadow phase
         assertEquals(Phase.SHADOW, _game.getGameState().getCurrentPhase());
@@ -75,24 +75,24 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl dervorin = new PhysicalCardImpl(_game, 100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
-        PhysicalCardImpl boromir = new PhysicalCardImpl(_game, 101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
-        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(_game, 102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(_game, 103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(_game, 104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(_game, 105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric dervorin = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("7_88"));
+        PhysicalCardGeneric boromir = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardGeneric cardInHand1 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand2 = new PhysicalCardGeneric(_game, 103, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand3 = new PhysicalCardGeneric(_game, 104, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand4 = new PhysicalCardGeneric(_game, 105, P1, _cardLibrary.getCardBlueprint("4_57"));
 
         skipMulligans();
 
-        _game.getGameState().addCardToZone(_game, dervorin, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(dervorin, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(boromir, Zone.FREE_CHARACTERS);
         _game.getModifiersEnvironment().addUntilEndOfTurnModifier(
                 new KeywordModifier(dervorin, dervorin, Keyword.MUSTER));
 
-        _game.getGameState().addCardToZone(_game, cardInHand1, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand2, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand3, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand4, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand1, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand2, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand3, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand4, Zone.HAND);
 
         // End fellowship phase
         playerDecided(P1, "");
@@ -116,26 +116,26 @@ public class TriggersAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl dervorin = new PhysicalCardImpl(_game, 100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
-        PhysicalCardImpl boromir = new PhysicalCardImpl(_game, 101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
-        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(_game, 102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(_game, 103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(_game, 104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(_game, 105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand5 = new PhysicalCardImpl(_game, 106, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric dervorin = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("7_88"));
+        PhysicalCardGeneric boromir = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardGeneric cardInHand1 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand2 = new PhysicalCardGeneric(_game, 103, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand3 = new PhysicalCardGeneric(_game, 104, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand4 = new PhysicalCardGeneric(_game, 105, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand5 = new PhysicalCardGeneric(_game, 106, P1, _cardLibrary.getCardBlueprint("4_57"));
 
         skipMulligans();
 
-        _game.getGameState().addCardToZone(_game, dervorin, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(dervorin, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(boromir, Zone.FREE_CHARACTERS);
         _game.getModifiersEnvironment().addUntilEndOfTurnModifier(
                 new KeywordModifier(dervorin, dervorin, Keyword.MUSTER));
 
-        _game.getGameState().addCardToZone(_game, cardInHand1, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand2, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand3, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand4, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand5, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand1, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand2, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand3, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand4, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand5, Zone.HAND);
 
         // End fellowship phase
         playerDecided(P1, "");
@@ -161,24 +161,24 @@ public class TriggersAtTest extends AbstractAtTest {
     public void userOfMusterDisablesUseOfOtherOptionalStartOfRegroupTrigger() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl dervorin = new PhysicalCardImpl(_game, 100, "7_88", P1, _cardLibrary.getCardBlueprint("7_88"));
-        PhysicalCardImpl boromir = new PhysicalCardImpl(_game, 101, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
-        PhysicalCardImpl cardInHand1 = new PhysicalCardImpl(_game, 102, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand2 = new PhysicalCardImpl(_game, 103, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand3 = new PhysicalCardImpl(_game, 104, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
-        PhysicalCardImpl cardInHand4 = new PhysicalCardImpl(_game, 105, "4_57", P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric dervorin = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("7_88"));
+        PhysicalCardGeneric boromir = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardGeneric cardInHand1 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand2 = new PhysicalCardGeneric(_game, 103, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand3 = new PhysicalCardGeneric(_game, 104, P1, _cardLibrary.getCardBlueprint("4_57"));
+        PhysicalCardGeneric cardInHand4 = new PhysicalCardGeneric(_game, 105, P1, _cardLibrary.getCardBlueprint("4_57"));
 
         skipMulligans();
 
-        _game.getGameState().addCardToZone(_game, dervorin, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(dervorin, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(boromir, Zone.FREE_CHARACTERS);
         _game.getModifiersEnvironment().addUntilEndOfTurnModifier(
                 new KeywordModifier(dervorin, dervorin, Keyword.MUSTER));
 
-        _game.getGameState().addCardToZone(_game, cardInHand1, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand2, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand3, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, cardInHand4, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand1, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand2, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand3, Zone.HAND);
+        _game.getGameState().addCardToZone(cardInHand4, Zone.HAND);
 
         // End fellowship phase
         playerDecided(P1, "");
@@ -204,13 +204,13 @@ public class TriggersAtTest extends AbstractAtTest {
     public void musterForShadowSideTriggersCorrectly() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl musterWitchKing = new PhysicalCardImpl(_game, 100, "11_226", P2, _cardLibrary.getCardBlueprint("11_226"));
-        PhysicalCardImpl musterWitchKing2 = new PhysicalCardImpl(_game, 101, "11_226", P2, _cardLibrary.getCardBlueprint("11_226"));
+        PhysicalCardGeneric musterWitchKing = new PhysicalCardGeneric(_game, 100, P2, _cardLibrary.getCardBlueprint("11_226"));
+        PhysicalCardGeneric musterWitchKing2 = new PhysicalCardGeneric(_game, 101, P2, _cardLibrary.getCardBlueprint("11_226"));
 
         skipMulligans();
 
-        _game.getGameState().addCardToZone(_game, musterWitchKing, Zone.SHADOW_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, musterWitchKing2, Zone.HAND);
+        _game.getGameState().addCardToZone(musterWitchKing, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(musterWitchKing2, Zone.HAND);
 
         // End fellowship phase
         playerDecided(P1, "");

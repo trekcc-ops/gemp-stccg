@@ -24,4 +24,19 @@
         lore: Map dust clouds and other hazards in the Expanse.
         image-url: https://www.trekcc.org/1e/cardimages/voy/catalogphenomena.jpg
     }
+    123_193: {
+        title: U.S.S. Intrepid
+        type: ship
+        affiliation: federation
+        property-logo: voy
+        ship-class: INTREPID CLASS
+        uniqueness: universal
+        lore: Prototype introduced in the early 2370s. Its bio-neural circuits respond faster than optical relays. Average crew complement of 140. Capable of a sustained warp 9.975.
+        staffing: command staff
+        gametext: Holodeck, Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/voy/ussintrepid.jpg
+    }
 }

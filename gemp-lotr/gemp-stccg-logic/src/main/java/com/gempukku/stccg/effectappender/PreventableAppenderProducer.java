@@ -40,17 +40,13 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                 if (areCostsPlayable(actionContext)) {
                     final String preventingPlayer = preventingPlayerSource.getPlayerId(actionContext);
 
-                    String textToUse = GameUtils.SubstituteText(_text, actionContext);
-
-                    SubAction subAction = new SubAction(action);
+                    SubAction subAction = action.createSubAction();
                     subAction.appendEffect(
                             new PlayOutDecisionEffect(actionContext.getGame(), preventingPlayer,
-                                    new YesNoDecision(textToUse) {
+                                    new YesNoDecision(actionContext.substituteText(_text)) {
                                         @Override
                                         protected void yes() {
-                                            DefaultActionContext delegate = new DefaultActionContext(actionContext,
-                                                    preventingPlayer, actionContext.getGame(), actionContext.getSource(), actionContext.getEffectResult(),
-                                                    actionContext.getEffect());
+                                            ActionContext delegate = actionContext.createDelegateContext(preventingPlayer);
                                             for (EffectAppender costAppender : costAppenders)
                                                 costAppender.appendEffect(false, subAction, delegate);
 
@@ -84,7 +80,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                     }));
                     return new StackActionEffect(actionContext.getGame(), subAction);
                 } else {
-                    SubAction subAction = new SubAction(action);
+                    SubAction subAction = action.createSubAction();
                     for (EffectAppender effectAppender : effectAppenders)
                         effectAppender.appendEffect(false, subAction, actionContext);
                     return new StackActionEffect(actionContext.getGame(), subAction);

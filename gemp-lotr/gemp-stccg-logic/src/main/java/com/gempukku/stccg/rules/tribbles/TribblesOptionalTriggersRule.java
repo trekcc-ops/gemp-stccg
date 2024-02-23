@@ -1,7 +1,9 @@
 package com.gempukku.stccg.rules.tribbles;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.common.filterable.RequiredType;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -27,34 +29,31 @@ public class TribblesOptionalTriggersRule {
         actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, Effect effect) {
-                        List<OptionalTriggerAction> result = new LinkedList<>();
+                    public List<? extends Action> getOptionalBeforeTriggers(String playerId, Effect effect) {
+                        List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(), _game, getActivatableCardsFilter(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends OptionalTriggerAction> actions = activatableCard.getBlueprint().getOptionalBeforeTriggers(playerId, _game, effect, activatableCard);
+                                final List<Action> actions = activatableCard.getBeforeTriggerActions(playerId, effect, RequiredType.OPTIONAL);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
                         }
-
                         return result;
                     }
 
                     @Override
-                    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId,
+                    public List<? extends Action> getOptionalAfterTriggerActions(String playerId,
                                                                                                 EffectResult effectResult) {
-                        List<OptionalTriggerAction> result = new LinkedList<>();
+                        List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(),
                                 _game, getActivatableCardsFilter(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends OptionalTriggerAction> actions =
-                                        _game.getOptionalAfterTriggerActions(playerId, effectResult,
-                                                activatableCard);
+                                final List<Action> actions =
+                                        activatableCard.getOptionalAfterTriggerActions(playerId, effectResult);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
                         }
-
                         return result;
                     }
                 }

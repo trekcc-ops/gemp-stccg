@@ -16,7 +16,7 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     public void process() {
         _game.getGameState().startAffectingCardsForCurrentPlayer();
 
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
 
         action.appendEffect(new UnrespondableEffect() {
             @Override

@@ -7,7 +7,6 @@ import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.effects.defaulteffect.PayTwilightCostEffect;
 import com.gempukku.stccg.effects.defaulteffect.PlayEventEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
 
 import java.util.Collections;
@@ -27,12 +26,14 @@ public class PlayEventAction extends AbstractCostToEffectAction {
     private boolean _discountApplied;
 
     private final Zone _playedFrom;
+    private final DefaultGame _game;
 
     public PlayEventAction(PhysicalCard card) {
         this(card, false);
     }
 
     public PlayEventAction(PhysicalCard card, boolean requiresRanger) {
+        _game = card.getGame();
         _eventPlayed = card;
         _requiresRanger = requiresRanger;
 
@@ -65,33 +66,34 @@ public class PlayEventAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _eventPlayed.getZone();
 
-            game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " plays " + GameUtils.getCardLink(_eventPlayed) + " from " + playedFromZone.getHumanReadable());
-            game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
+            _game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " plays " + _eventPlayed.getCardLink() +
+                    " from " + playedFromZone.getHumanReadable());
+            _game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
 
             if (playedFromZone == Zone.HAND)
-                game.getGameState().addCardToZone(game, _eventPlayed, Zone.VOID_FROM_HAND);
+                _game.getGameState().addCardToZone(_eventPlayed, Zone.VOID_FROM_HAND);
             else
-                game.getGameState().addCardToZone(game, _eventPlayed, Zone.VOID);
+                _game.getGameState().addCardToZone(_eventPlayed, Zone.VOID);
 
             if (playedFromZone == Zone.DRAW_DECK) {
-                game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " shuffles their deck");
-                game.getGameState().shuffleDeck(_eventPlayed.getOwnerName());
+                _game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " shuffles their deck");
+                _game.getGameState().shuffleDeck(_eventPlayed.getOwnerName());
             }
 
-            game.getGameState().eventPlayed(_eventPlayed);
+            _game.getGameState().eventPlayed(_eventPlayed);
         }
 
         if (!_discountResolved) {
             final DiscountEffect discount = getNextPotentialDiscount();
             if (discount != null) {
                 if (_eventPlayed.getBlueprint().getSide() == Side.SHADOW) {
-                    int twilightCost = game.getModifiersQuerying().getTwilightCost(game, _eventPlayed, null, 0, false);
-                    int requiredDiscount = Math.max(0, twilightCost - game.getGameState().getTwilightPool() - getProcessedDiscount() - getPotentialDiscount(game));
+                    int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _eventPlayed, null, 0, false);
+                    int requiredDiscount = Math.max(0, twilightCost - _game.getGameState().getTwilightPool() - getProcessedDiscount() - getPotentialDiscount());
                     discount.setMinimalRequiredDiscount(requiredDiscount);
                 }
                 return discount;
@@ -103,7 +105,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
         if (!_discountApplied) {
             _discountApplied = true;
             int twilightModifier = -getProcessedDiscount();
-            insertCost(new PayTwilightCostEffect(game, _eventPlayed, twilightModifier));
+            insertCost(new PayTwilightCostEffect(_game, _eventPlayed, twilightModifier));
         }
 
         if (!isCostFailed()) {
@@ -113,7 +115,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
 
             if (!_cardPlayed) {
                 _cardPlayed = true;
-                _playCardEffect = new PlayEventEffect(game,this, _playedFrom, _eventPlayed, _requiresRanger);
+                _playCardEffect = new PlayEventEffect(_game,this, _playedFrom, _eventPlayed, _requiresRanger);
                 return _playCardEffect;
             }
 
@@ -126,10 +128,13 @@ public class PlayEventAction extends AbstractCostToEffectAction {
 
         if (!_cardDiscarded && (_eventPlayed.getZone() == Zone.VOID || _eventPlayed.getZone() == Zone.VOID_FROM_HAND)) {
             _cardDiscarded = true;
-            game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
-            game.getGameState().addCardToZone(game, _eventPlayed, Zone.DISCARD);
+            _game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
+            _game.getGameState().addCardToZone(_eventPlayed, Zone.DISCARD);
         }
 
         return null;
     }
+
+    @Override
+    public DefaultGame getGame() { return _game; }
 }

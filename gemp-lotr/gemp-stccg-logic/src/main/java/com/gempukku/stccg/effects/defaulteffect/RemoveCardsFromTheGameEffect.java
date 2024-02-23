@@ -54,11 +54,11 @@ public class RemoveCardsFromTheGameEffect extends DefaultEffect {
 
         _game.getGameState().removeCardsFromZone(_playerPerforming, toRemoveFromZone);
         for (PhysicalCard removedCard : removedCards)
-            _game.getGameState().addCardToZone(_game, removedCard, Zone.REMOVED);
+            _game.getGameState().addCardToZone(removedCard, Zone.REMOVED);
         for (PhysicalCard card : toMoveFromZoneToDiscard)
-            _game.getGameState().addCardToZone(_game, card, Zone.DISCARD);
+            _game.getGameState().addCardToZone(card, Zone.DISCARD);
 
-        _game.getGameState().sendMessage(_playerPerforming + " removed " + GameUtils.getAppendedNames(removedCards) + " from the game using " + GameUtils.getCardLink(_source));
+        _game.getGameState().sendMessage(_playerPerforming + " removed " + GameUtils.getConcatenatedCardLinks(removedCards) + " from the game using " + _source.getCardLink());
 
         return new FullEffectResult(_cardsToRemove.size() == removedCards.size());
     }

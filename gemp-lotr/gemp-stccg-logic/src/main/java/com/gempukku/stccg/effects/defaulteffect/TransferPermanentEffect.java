@@ -30,7 +30,8 @@ public class TransferPermanentEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             GameState gameState = _game.getGameState();
-            gameState.sendMessage(_physicalCard.getOwnerName() + " transfers " + GameUtils.getCardLink(_physicalCard) + " to " + GameUtils.getCardLink(_targetCard));
+            gameState.sendMessage(_physicalCard.getOwnerName() + " transfers " + _physicalCard.getCardLink() + " to " +
+                    _targetCard.getCardLink());
             PhysicalCard transferredFrom = _physicalCard.getAttachedTo();
             gameState.transferCard(_physicalCard, _targetCard);
 

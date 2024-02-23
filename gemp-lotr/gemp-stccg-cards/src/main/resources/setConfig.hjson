@@ -2,97 +2,106 @@
   {
     setId: "101"
     setName: Premiere
-    rarityFile: "/set101-rarity.txt"
     needsLoading: false
   }
   {
     setId: "103"
     setName: Alternate Universe
-    rarityFile: "/set103-rarity.txt"
     needsLoading: false
   }
   {
     setId: "105"
     setName: Q Continuum
-    rarityFile: "/set105-rarity.txt"
     needsLoading: false
   }
   {
     setId: "116"
     setName: Blaze of Glory
-    rarityFile: "/set116-rarity.txt"
     needsLoading: false
   }
   {
     setId: "123"
     setName: Voyager
-    rarityFile: "/set123-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "127"
+    setName: All Good Things
     needsLoading: false
   }
   {
     setId: "128"
     setName: Enterprise Collection
-    rarityFile: "/set128-rarity.txt"
     needsLoading: false
   }
   {
     setId: "135"
     setName: Chain of Command
-    rarityFile: "/set135-rarity.txt"
     needsLoading: false
   }
   {
     setId: "144"
     setName: "More Tribbles, More Troubles"
-    rarityFile: "/set144-rarity.txt"
     needsLoading: false
   }
   {
     setId: "145"
     setName: No Tribble at All
-    rarityFile: "/set145-rarity.txt"
     needsLoading: false
   }
   {
     setId: "147"
     setName: Virtual Promos [Tribbles]
-    rarityFile: "/set147-rarity.txt"
     needsLoading: false
   }
   {
     setId: "150"
     setName: Trials and Tribble-ations
-    rarityFile: "/set150-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "155"
+    setName: The Next Generation
     needsLoading: false
   }
   {
     setId: "157"
     setName: Nothing But Tribble
-    rarityFile: "/set157-rarity.txt"
     needsLoading: false
   }
   {
     setId: "159"
     setName: Homefront III
-    rarityFile: "/set159-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "161"
+    setName: Engage
     needsLoading: false
   }
   {
     setId: "164"
     setName: "Big Tribble in Little Qo'noS"
-    rarityFile: "/set164-rarity.txt"
     needsLoading: false
   }
   {
     setId: "190"
     setName: Star Trek 50 [Tribbles]
-    rarityFile: "/set190-rarity.txt"
     needsLoading: false
   }
   {
     setId: "221"
     setName: A Tribble of a Different Color
-    rarityFile: "/set221-rarity.txt"
+    needsLoading: false
+  }
+  {
+    setId: "244"
+    setName: Ships of the Line
+    needsLoading: false
+  }
+  {
+    setId: "245"
+    setName: Showdown: Four Lights
     needsLoading: false
   }
 ]

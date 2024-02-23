@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.GenericCardTestHelper;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -29,7 +29,7 @@ public class ConcealedExposedAtTest extends AbstractAtTest {
         //Pre-game setup
         GenericCardTestHelper scn = GetScenario();
 
-        PhysicalCardImpl aragorn = scn.GetFreepsCard("aragorn");
+        PhysicalCardGeneric aragorn = scn.GetFreepsCard("aragorn");
 
         scn.FreepsMoveCharToTable(aragorn);
 
@@ -49,8 +49,8 @@ public class ConcealedExposedAtTest extends AbstractAtTest {
         //Pre-game setup
         GenericCardTestHelper scn = GetScenario();
 
-        PhysicalCardImpl aragorn = scn.GetFreepsCard("aragorn");
-        PhysicalCardImpl nostranger = scn.GetFreepsCard("nostranger");
+        PhysicalCardGeneric aragorn = scn.GetFreepsCard("aragorn");
+        PhysicalCardGeneric nostranger = scn.GetFreepsCard("nostranger");
 
         scn.FreepsMoveCardToHand(aragorn);
 
@@ -72,8 +72,8 @@ public class ConcealedExposedAtTest extends AbstractAtTest {
         //Pre-game setup
         GenericCardTestHelper scn = GetScenario();
 
-        PhysicalCardImpl aragorn = scn.GetFreepsCard("aragorn");
-        PhysicalCardImpl arwen = scn.GetFreepsCard("arwen");
+        PhysicalCardGeneric aragorn = scn.GetFreepsCard("aragorn");
+        PhysicalCardGeneric arwen = scn.GetFreepsCard("arwen");
 
         scn.FreepsMoveCardToHand(aragorn);
         scn.FreepsMoveCharToTable(arwen);
@@ -97,7 +97,7 @@ public class ConcealedExposedAtTest extends AbstractAtTest {
         //Pre-game setup
         GenericCardTestHelper scn = GetScenario();
 
-        PhysicalCardImpl aragorn = scn.GetFreepsCard("aragorn");
+        PhysicalCardGeneric aragorn = scn.GetFreepsCard("aragorn");
 
         scn.FreepsMoveCardToHand(aragorn);
 

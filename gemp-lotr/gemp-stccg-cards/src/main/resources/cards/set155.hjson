@@ -176,7 +176,7 @@
         affiliation-icons: federation,klingon,non-aligned,ferengi
         lore: "Test revolutionary shield design within star's superdense corona."
         mission-requirements: Diplomacy + ENGINEER + Navigation + SCIENCE
-        game-text: When you solve, may download Metaphasic Shields here.
+        gametext: When you solve, may download Metaphasic Shields here.
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
@@ -188,7 +188,7 @@
         affiliation-icons: federation,romulan,klingon,non-aligned
         lore: Protect colonies from returning Klingon sleeper ship.
         mission-requirements: "Leadership x2 + WEAPONS >8 OR Any K'Ehleyr + INTEGRITY >35"
-        game-text: "I.K.S. T'Ong may report here (with up to 3 personnel)"
+        gametext: "I.K.S. T'Ong may report here (with up to 3 personnel)"
         point-box: 40
         span: 5
         image-url: https://www.trekcc.org/1e/cardimages/tng/40V.jpg
@@ -212,7 +212,7 @@
         affiliation-icons: non-aligned
         lore: Seek ancient Debrune artifacts near Sakethan burial mounds.
         mission-requirements: Archaeology + SECURITY + Treachery + STRENGTH >50
-        game-text: May seed one Mercenary Ship face up here.
+        gametext: May seed one Mercenary Ship face up here.
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
@@ -234,7 +234,7 @@
         location: Small Moon
         affiliation-icons: federation,romulan,klingon,cardassian,ferengi
         mission-requirements: Astrophysics + ENGINEER + MEDICAL + Computer Skill
-        game-text: "*+10 if a {BORG} card in play."
+        gametext: "*+10 if a {BORG} card in play."
         point-box: 35*
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/44V.jpg
@@ -246,7 +246,7 @@
         location: Near Talarian Shipping Lane
         affiliation-icons: klingon
         mission-requirements: OFFICER x2 + Honor + Navigation
-        game-text: *+5 if Korris or Konmel in crew.
+        gametext: *+5 if Korris or Konmel in crew.
         point-box: 25*
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/45V.jpg
@@ -257,7 +257,7 @@
         location: Gamma Tauri IV
         affiliation-icons: romulan,klingon,non-aligned,cardassian,ferengi
         mission-requirements: OFFICER + Greed + Transporter Skill + Treachery
-        game-text: When you solve, may download (or steal) an equipment here.
+        gametext: When you solve, may download (or steal) an equipment here.
         point-box: 35
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/46V.jpg
@@ -279,7 +279,7 @@
         lore: Provide medical assistance to last members of disease-ravaged culture.
         affiliation-icons: federation,romulan,non-aligned,bajoran
         mission-requirements: Biology + CUNNING >26 + discard one MEDICAL personnel
-        game-text: *+10 if Plague Planet complete.
+        gametext: *+10 if Plague Planet complete.
         point-box: 25*
         span: 2
         image-url: https://www.trekcc.org/1e/cardimages/tng/48V.jpg

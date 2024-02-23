@@ -41,7 +41,7 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
 
     @Override
     public void playEffect() {
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         final List<DrawOneCardEffect> drawEffects = new LinkedList<>();
         for (int i = 0; i < _count; i++) {
             final DrawOneCardEffect effect = new DrawOneCardEffect(_game, _playerId);

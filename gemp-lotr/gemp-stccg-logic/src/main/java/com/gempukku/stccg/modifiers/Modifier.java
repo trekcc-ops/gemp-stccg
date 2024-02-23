@@ -14,7 +14,7 @@ import java.util.Set;
 public interface Modifier {
     PhysicalCard getSource();
 
-    String getText(DefaultGame game, PhysicalCard self);
+    String getText(PhysicalCard self);
 
     ModifierEffect getModifierEffect();
 
@@ -25,31 +25,31 @@ public interface Modifier {
     String getForPlayer();
     boolean isForPlayer(String playerId);
 
-    boolean affectsCard(DefaultGame game, PhysicalCard physicalCard);
+    boolean affectsCard(PhysicalCard physicalCard);
 
     boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard);
 
-    boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
+    boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword);
 
-    int getKeywordCountModifier(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
+    int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword);
 
     boolean appliesKeywordModifier(DefaultGame game, PhysicalCard modifierSource, Keyword keyword);
 
     boolean isKeywordRemoved(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
 
-    int getStrengthModifier(DefaultGame game, PhysicalCard physicalCard);
+    int getStrengthModifier(PhysicalCard physicalCard);
 
     boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTaget);
 
     int getVitalityModifier(DefaultGame game, PhysicalCard physicalCard);
 
-    int getResistanceModifier(DefaultGame game, PhysicalCard physicalCard);
+    int getResistanceModifier(PhysicalCard physicalCard);
 
     int getMinionSiteNumberModifier(DefaultGame game, PhysicalCard physicalCard);
 
     boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType);
 
-    int getTwilightCostModifier(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty);
+    int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty);
 
     int getRoamingPenaltyModifier(DefaultGame game, PhysicalCard physicalCard);
 
@@ -73,7 +73,7 @@ public interface Modifier {
 
     int getArcheryTotalModifier(DefaultGame game, Side side);
 
-    int getMoveLimitModifier(DefaultGame game);
+    int getMoveLimitModifier();
 
     boolean addsTwilightForCompanionMove(DefaultGame game, PhysicalCard companion);
 
@@ -120,11 +120,11 @@ public interface Modifier {
     boolean canDiscardCardsFromHand(DefaultGame game, String playerId, PhysicalCard source);
 
     boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, PhysicalCard source);
-    boolean canPlayCardOutOfSequence(DefaultGame game, PhysicalCard source);
+    boolean canPlayCardOutOfSequence(PhysicalCard source);
 
     int getSpotCountModifier(DefaultGame game, Filterable filter);
 
-    boolean hasFlagActive(DefaultGame game, ModifierFlag modifierFlag);
+    boolean hasFlagActive(ModifierFlag modifierFlag);
 
     boolean isSiteReplaceable(DefaultGame game, String playerId);
 
@@ -132,7 +132,7 @@ public interface Modifier {
 
     boolean shadowCanHaveInitiative(DefaultGame game);
 
-    Side hasInitiative(DefaultGame game);
+    Side hasInitiative();
 
     int getInitiativeHandSizeModifier(DefaultGame game);
 

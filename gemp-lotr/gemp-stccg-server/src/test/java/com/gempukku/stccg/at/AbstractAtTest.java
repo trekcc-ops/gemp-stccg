@@ -7,7 +7,7 @@ import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
@@ -30,8 +30,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     public static final String P1 = "player1";
     public static final String P2 = "player2";
 
-    protected PhysicalCardImpl createCard(String owner, String blueprintId) throws CardNotFoundException {
-        return (PhysicalCardImpl) _game.getGameState().createPhysicalCard(owner, _cardLibrary, blueprintId);
+    protected PhysicalCardGeneric createCard(String owner, String blueprintId) throws CardNotFoundException {
+        return (PhysicalCardGeneric) _game.getGameState().createPhysicalCard(owner, _cardLibrary, blueprintId);
     }
 
     protected void initializeSimplestGame() throws DecisionResultInvalidException {
@@ -141,8 +141,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(player, deck);
     }
 
-    protected void moveCardToZone(PhysicalCardImpl card, Zone zone) {
-        _game.getGameState().addCardToZone(_game, card, zone);
+    protected void moveCardToZone(PhysicalCardGeneric card, Zone zone) {
+        _game.getGameState().addCardToZone(card, zone);
     }
 
     protected void playerDecided(String player, String answer) throws DecisionResultInvalidException {
@@ -158,7 +158,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
         action.appendEffect(effect);
         carryOutEffectInPhaseActionByPlayer(playerId, action);
     }
@@ -171,7 +171,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected CardDeck createSimplestDeck() {
-        CardDeck CardDeck = new CardDeck("Some deck");
-        return CardDeck;
+        return new CardDeck("Some deck");
     }
 }

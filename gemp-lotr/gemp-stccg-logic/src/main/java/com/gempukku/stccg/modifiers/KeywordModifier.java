@@ -3,7 +3,6 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Keyword;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
@@ -36,23 +35,23 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
     }
 
     @Override
-    public String getText(DefaultGame game, PhysicalCard self) {
+    public String getText(PhysicalCard self) {
         if (_keyword.isMultiples()) {
-            int count = _evaluator.evaluateExpression(game, self);
+            int count = _evaluator.evaluateExpression(_game, self);
             return _keyword.getHumanReadable() + " +" + count;
         }
         return _keyword.getHumanReadable();
     }
 
     @Override
-    public boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
-        return (keyword == _keyword && _evaluator.evaluateExpression(game, physicalCard) > 0);
+    public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
+        return (keyword == _keyword && _evaluator.evaluateExpression(_game, physicalCard) > 0);
     }
 
     @Override
-    public int getKeywordCountModifier(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
+    public int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword) {
         if (keyword == _keyword)
-            return _evaluator.evaluateExpression(game, physicalCard);
+            return _evaluator.evaluateExpression(_game, physicalCard);
         else
             return 0;
     }

@@ -3,7 +3,8 @@ package com.gempukku.stccg.effectprocessor;
 import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.actions.sources.DefaultActionSource;
+import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
@@ -17,17 +18,13 @@ public class ResponseEventEffectProcessor implements EffectProcessor {
 
         for (JSONObject trigger : triggerArray) {
             final TriggerChecker triggerChecker = environment.getTriggerCheckerFactory().getTriggerChecker(trigger, environment);
-            final boolean before = triggerChecker.isBefore();
+            TriggerTiming timing = triggerChecker.isBefore() ? TriggerTiming.BEFORE : TriggerTiming.AFTER;
 
             DefaultActionSource triggerActionSource = new DefaultActionSource();
             triggerActionSource.addPlayRequirement(triggerChecker);
             EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
 
-            if (before) {
-                blueprint.appendOptionalInHandBeforeAction(triggerActionSource);
-            } else {
-                blueprint.appendOptionalInHandAfterAction(triggerActionSource);
-            }
+            blueprint.appendOptionalInHandTrigger(triggerActionSource, timing);
         }
     }
 }

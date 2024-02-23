@@ -1,9 +1,12 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.gempukku.stccg.actions.sources.ActionSource;
+import com.gempukku.stccg.actions.sources.OptionalTriggerActionSource;
+import com.gempukku.stccg.actions.sources.RequiredTriggerActionSource;
 import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.common.filterable.RequiredType;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
@@ -12,13 +15,12 @@ public class DiscardedFromPlayTriggerEffectProcessor implements EffectProcessor 
     public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(value, "optional", "requires", "cost", "effect");
 
-        final boolean optional = FieldUtils.getBoolean(value.get("optional"), "optional", false);
+        RequiredType requiredType = FieldUtils.getBoolean(value.get("optional"), "optional", false) ?
+                RequiredType.OPTIONAL : RequiredType.REQUIRED;
 
-        DefaultActionSource triggerActionSource = new DefaultActionSource();
+        ActionSource triggerActionSource = requiredType == RequiredType.OPTIONAL ?
+                new OptionalTriggerActionSource() : new RequiredTriggerActionSource();
         EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
-        if (optional)
-            blueprint.setDiscardedFromPlayOptionalTriggerAction(triggerActionSource);
-        else
-            blueprint.setDiscardedFromPlayRequiredTriggerAction(triggerActionSource);
+        blueprint.setDiscardedFromPlayTrigger(requiredType, triggerActionSource);
     }
 }

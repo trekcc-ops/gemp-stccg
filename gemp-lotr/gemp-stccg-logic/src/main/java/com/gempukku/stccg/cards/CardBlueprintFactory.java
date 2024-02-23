@@ -51,26 +51,30 @@ public class CardBlueprintFactory implements CardGenerationEnvironment {
         fieldProcessors.put("keyword", new KeywordFieldProcessor());
         fieldProcessors.put("keywords", new KeywordFieldProcessor());
         fieldProcessors.put("twilight", new CostFieldProcessor());
-        fieldProcessors.put("direction", new DirectionFieldProcessor());
         fieldProcessors.put("target", new TargetFieldProcessor());
         fieldProcessors.put("requires", new RequirementFieldProcessor());
         fieldProcessors.put("effects", new EffectFieldProcessor());
 
         // Fields in the JSON, but not yet implemented
-        fieldProcessors.put("game-text", new NullProcessor());
+        fieldProcessors.put("gametext", new NullProcessor());
         fieldProcessors.put("span", new NullProcessor());
         fieldProcessors.put("classification", new NullProcessor());
+        fieldProcessors.put("ship-class", new NullProcessor());
+        fieldProcessors.put("staffing", new NullProcessor());
         fieldProcessors.put("icons", new NullProcessor()); // For misc personnel icons
         fieldProcessors.put("skill-box", new NullProcessor());
         fieldProcessors.put("restriction-box", new NullProcessor());
         fieldProcessors.put("integrity", new NullProcessor());
         fieldProcessors.put("cunning", new NullProcessor());
         fieldProcessors.put("strength", new NullProcessor());
+        fieldProcessors.put("range", new NullProcessor());
+        fieldProcessors.put("weapons", new NullProcessor());
+        fieldProcessors.put("shields", new NullProcessor());
     }
 
-    public CardBlueprint buildFromJson(JSONObject json) throws InvalidCardDefinitionException {
+    public CardBlueprint buildFromJson(String blueprintId, JSONObject json) throws InvalidCardDefinitionException {
 //        LOGGER.debug("Calling buildFromJson");
-        BuiltCardBlueprint result = new BuiltCardBlueprint();
+        BuiltCardBlueprint result = new BuiltCardBlueprint(blueprintId);
 
         Set<Map.Entry<String, Object>> values = json.entrySet();
         for (Map.Entry<String, Object> value : values) {

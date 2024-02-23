@@ -15,16 +15,13 @@ public class PreventSubAction extends SubAction {
     private final Effect _insteadEffect;
 
     private Effect _playerPreventionCost;
-    private final DefaultGame _game;
 
     public PreventSubAction(DefaultGame game, Action action, Effect effectToExecute, Iterator<String> choicePlayers, PreventionCost preventionCost, Effect insteadEffect) {
-        super(action);
+        super(action, game);
         _effectToExecute = effectToExecute;
         _choicePlayers = choicePlayers;
         _preventionCost = preventionCost;
         _insteadEffect = insteadEffect;
-        _game = game;
-
         appendEffect(new DecideIfPossible());
     }
 

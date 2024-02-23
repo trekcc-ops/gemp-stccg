@@ -23,7 +23,7 @@ public class HasCardInHand extends RequirementProducer {
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
         return (actionContext) -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);
-            return actionContext.getGame().getGameState().getPlayer(playerSource.getPlayerId(actionContext))
+            return actionContext.getGameState().getPlayer(playerSource.getPlayerId(actionContext))
                     .hasCardInZone(Zone.HAND, count, filterable);
         };
     }

@@ -17,7 +17,7 @@ public class ConditionEvaluator implements Evaluator {
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        if (_condition.isFulfilled(game))
+        if (_condition.isFulfilled(self.getGame()))
             return _conditionFulfilled;
         return _default;
     }

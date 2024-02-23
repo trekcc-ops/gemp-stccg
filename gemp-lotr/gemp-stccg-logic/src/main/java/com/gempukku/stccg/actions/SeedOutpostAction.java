@@ -9,11 +9,9 @@ import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.effects.defaulteffect.SeedOutpostEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.gempukku.stccg.rules.GameUtils;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -49,12 +47,15 @@ public class SeedOutpostAction extends AbstractPlayCardAction {
     }
 
     @Override
+    public ST1EGame getGame() { return _game; }
+
+    @Override
     public PhysicalFacilityCard getPlayedCard() { return _seedCard; }
     
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
     
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
             String playerId = getPerformingPlayer();
         ST1EGameState gameState = _game.getGameState();
 
@@ -67,7 +68,8 @@ public class SeedOutpostAction extends AbstractPlayCardAction {
         }
 
         if (!_placementChosen) {
-            appendCost(new ChooseCardsOnTableEffect(_game, _thisAction, getPerformingPlayer(), "Choose a mission to seed " + GameUtils.getCardLink(_seedCard) + " at", availableMissions) {
+            appendCost(new ChooseCardsOnTableEffect(_thisAction, getPerformingPlayer(),
+                    "Choose a mission to seed " + _seedCard.getCardLink() + " at", availableMissions) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                     assert selectedCards.size() == 1;

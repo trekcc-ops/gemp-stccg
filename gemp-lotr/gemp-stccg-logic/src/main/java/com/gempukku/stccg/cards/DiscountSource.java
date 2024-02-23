@@ -6,5 +6,5 @@ import com.gempukku.stccg.effects.DiscountEffect;
 public interface DiscountSource {
     int getPotentialDiscount(ActionContext actionContext);
 
-    DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext);
+    DiscountEffect getDiscountEffect(CostToEffectAction action, ActionContext actionContext);
 }

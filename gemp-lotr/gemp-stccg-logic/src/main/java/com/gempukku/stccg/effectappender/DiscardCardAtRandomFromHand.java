@@ -42,7 +42,7 @@ public class DiscardCardAtRandomFromHand implements EffectAppenderProducer {
                 final String playerId = playerSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(game, null);
                 return game.getGameState().getHand(playerId).size() >= count
-                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromHand(game, playerId, actionContext.getSource()));
+                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromHand(playerId, actionContext.getSource()));
             }
         };
     }

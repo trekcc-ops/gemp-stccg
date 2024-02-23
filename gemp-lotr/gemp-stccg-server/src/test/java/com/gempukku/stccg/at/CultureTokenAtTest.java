@@ -2,7 +2,7 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import org.junit.Test;
 
@@ -13,9 +13,9 @@ public class CultureTokenAtTest extends AbstractAtTest {
     public void removeCultureTokenWithoutOne() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl sauronsMight = createCard(P2, "19_27");
+        PhysicalCardGeneric sauronsMight = createCard(P2, "19_27");
 
-        _game.getGameState().addCardToZone(_game, sauronsMight, Zone.HAND);
+        _game.getGameState().addCardToZone(sauronsMight, Zone.HAND);
 
         skipMulligans();
 

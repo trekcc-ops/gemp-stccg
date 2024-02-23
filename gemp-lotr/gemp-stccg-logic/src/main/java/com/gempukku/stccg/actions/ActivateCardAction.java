@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.defaulteffect.ActivateCardEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
 
 public class ActivateCardAction extends AbstractCostToEffectAction {
@@ -15,11 +14,14 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     protected boolean _prevented;
     protected final DefaultGame _game;
 
-    public ActivateCardAction(DefaultGame game, PhysicalCard physicalCard) {
+    public ActivateCardAction(PhysicalCard physicalCard) {
+        _game = physicalCard.getGame();
         _physicalCard = physicalCard;
-        _game = game;
         setText("Use " + _physicalCard.getFullName());
     }
+
+    @Override
+    public boolean canBeInitiated() { return true; }
 
     @Override
     public ActionType getActionType() {
@@ -41,12 +43,12 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
-                game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
-                game.getGameState().sendMessage(GameUtils.getCardLink(_physicalCard) + " is used");
+                _game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
+                _game.getGameState().sendMessage(_physicalCard.getCardLink() + " is used");
             }
         }
 
@@ -57,7 +59,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
 
             if (!_activated) {
                 _activated = true;
-                _activateCardEffect = new ActivateCardEffect(game, _physicalCard);
+                _activateCardEffect = new ActivateCardEffect(_game, _physicalCard);
                 return _activateCardEffect;
             }
 
@@ -68,4 +70,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
         }
         return null;
     }
+
+    @Override
+    public DefaultGame getGame() { return _game; }
 }

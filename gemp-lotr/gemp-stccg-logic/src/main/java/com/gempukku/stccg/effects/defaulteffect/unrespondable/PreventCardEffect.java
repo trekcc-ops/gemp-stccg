@@ -21,7 +21,7 @@ public class PreventCardEffect extends UnrespondableEffect {
 
     @Override
     protected void doPlayEffect() {
-        for (PhysicalCard affectedCard : _effect.getAffectedCardsMinusPrevented(_game)) {
+        for (PhysicalCard affectedCard : _effect.getAffectedCardsMinusPrevented()) {
             if (_filter.accepts(_game, affectedCard))
                 _effect.preventEffect(_game, affectedCard);
         }

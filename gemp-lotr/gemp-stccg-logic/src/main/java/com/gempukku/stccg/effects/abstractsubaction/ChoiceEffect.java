@@ -52,7 +52,7 @@ public class ChoiceEffect extends AbstractSubActionEffect {
         }
 
         if (possibleEffects.size() == 1) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             subAction.appendEffect(possibleEffects.get(0));
             processSubAction(_game, subAction);
         } else if (!possibleEffects.isEmpty()) {
@@ -62,7 +62,7 @@ public class ChoiceEffect extends AbstractSubActionEffect {
                     ) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            SubAction subAction = new SubAction(_action);
+                            SubAction subAction = _action.createSubAction();
                             subAction.appendEffect(possibleEffects.get(index));
                             processSubAction(_game, subAction);
                         }

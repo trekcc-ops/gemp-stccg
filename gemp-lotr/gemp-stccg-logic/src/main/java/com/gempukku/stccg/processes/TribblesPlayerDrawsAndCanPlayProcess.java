@@ -1,9 +1,9 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TribblesPlayPermanentAction;
+import com.gempukku.stccg.actions.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.cards.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.game.TribblesGame;
@@ -31,8 +31,8 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
             List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(_playerId);
             PhysicalCard cardDrawn = playerHand.get(playerHand.size() - 1);
             final List<Action> playableActions = new LinkedList<>();
-            if (_game.checkPlayRequirements(cardDrawn)) {
-                TribblesPlayPermanentAction action = new TribblesPlayPermanentAction(_game, cardDrawn, Zone.PLAY_PILE);
+            if (cardDrawn.canBePlayed()) {
+                TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);
             }
 

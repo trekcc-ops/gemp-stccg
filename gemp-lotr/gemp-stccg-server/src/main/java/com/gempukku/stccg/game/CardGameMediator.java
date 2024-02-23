@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
+public abstract class CardGameMediator {
     protected static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     protected final Map<String, GameCommunicationChannel> _communicationChannels = Collections.synchronizedMap(new HashMap<>());
     protected final DefaultUserFeedback _userFeedback;
@@ -78,7 +78,7 @@ public abstract class CardGameMediator<AbstractGame extends DefaultGame> {
         return _gameId;
     }
 
-    public abstract AbstractGame getGame();
+    public abstract DefaultGame getGame();
 
     public boolean isAllowSpectators() {
         return _allowSpectators;

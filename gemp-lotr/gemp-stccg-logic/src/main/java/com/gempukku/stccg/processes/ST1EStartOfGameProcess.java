@@ -24,7 +24,7 @@ public class ST1EStartOfGameProcess extends ST1EGameProcess {
             }
             for (PhysicalCard card : doorwaySeeds) {
                 _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
-                _game.getGameState().addCardToZone(_game, card, Zone.HAND);
+                _game.getGameState().addCardToZone(card, Zone.HAND);
             }
         }
     }

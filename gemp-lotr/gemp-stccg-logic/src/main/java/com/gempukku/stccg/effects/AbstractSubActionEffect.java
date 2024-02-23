@@ -16,7 +16,7 @@ public abstract class AbstractSubActionEffect implements Effect {
     }
 
     protected final String getAppendedNames(Collection<? extends PhysicalCard> cards) {
-        return GameUtils.getAppendedNames(cards);
+        return GameUtils.concatenateStrings(cards.stream().map(PhysicalCard::getCardLink));
     }
 
     @Override

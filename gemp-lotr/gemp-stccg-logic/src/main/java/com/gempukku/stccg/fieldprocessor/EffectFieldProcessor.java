@@ -17,7 +17,6 @@ public class EffectFieldProcessor implements FieldProcessor {
         effectProcessors.put("activated", new ActivatedEffectProcessor());
         effectProcessors.put("activatedindiscard", new ActivatedInDiscardEffectProcessor());
         effectProcessors.put("activatedtrigger", new ActivatedTriggerEffectProcessor());
-        effectProcessors.put("copycard", new CopyCard());
         effectProcessors.put("discardedfromplaytrigger", new DiscardedFromPlayTriggerEffectProcessor());
         effectProcessors.put("discount", new PotentialDiscount());
         effectProcessors.put("event", new EventEffectProcessor());

@@ -2,7 +2,6 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
@@ -39,13 +38,13 @@ public class ResistanceModifier extends AbstractModifier {
     }
 
     @Override
-    public String getText(DefaultGame game, PhysicalCard self) {
-        int modifier = evaluator.evaluateExpression(game, self);
+    public String getText(PhysicalCard self) {
+        int modifier = evaluator.evaluateExpression(_game, self);
         return "Resistance " + ((modifier < 0) ? modifier : ("+" + modifier));
     }
 
     @Override
-    public int getResistanceModifier(DefaultGame game, PhysicalCard physicalCard) {
-        return evaluator.evaluateExpression(game, physicalCard);
+    public int getResistanceModifier(PhysicalCard physicalCard) {
+        return evaluator.evaluateExpression(_game, physicalCard);
     }
 }

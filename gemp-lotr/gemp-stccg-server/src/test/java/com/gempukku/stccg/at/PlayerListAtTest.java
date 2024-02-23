@@ -12,7 +12,7 @@ public class PlayerListAtTest extends AbstractAtTest {
         initializeSimplestGame();
         skipMulligans();
 
-        final String[] allPlayers = GameUtils.getAllPlayers(_game);
+        final String[] allPlayers = _game.getAllPlayers();
         assertEquals(2, allPlayers.length);
         assertEquals(P1, allPlayers[0]);
         assertEquals(P2, allPlayers[1]);

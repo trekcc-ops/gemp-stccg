@@ -2,7 +2,7 @@ package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,11 +14,11 @@ public class PlayCardFromStackedAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl goblinSwarms = createCard(P2, "1_183");
-        _game.getGameState().addCardToZone(_game, goblinSwarms, Zone.SUPPORT);
+        final PhysicalCardGeneric goblinSwarms = createCard(P2, "1_183");
+        _game.getGameState().addCardToZone(goblinSwarms, Zone.SUPPORT);
 
-        final PhysicalCardImpl goblinRunner = createCard(P2, "1_178");
-        _game.getGameState().stackCard(_game, goblinRunner, goblinSwarms);
+        final PhysicalCardGeneric goblinRunner = createCard(P2, "1_178");
+        _game.getGameState().stackCard(goblinRunner, goblinSwarms);
 
         _game.getGameState().setTwilight(20);
 

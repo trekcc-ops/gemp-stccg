@@ -49,7 +49,7 @@ public abstract class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
                         });
             }
 
-            _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " revealed cards from bottom of " + _playerId + " deck - " + GameUtils.getAppendedNames(bottomCards));
+            _game.getGameState().sendMessage(_source.getCardLink() + " revealed cards from bottom of " + _playerId + " deck - " + GameUtils.getConcatenatedCardLinks(bottomCards));
         }
         cardsRevealed(bottomCards);
         return new FullEffectResult(bottomCards.size() == _count);

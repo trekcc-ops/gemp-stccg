@@ -5,7 +5,6 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.requirement.Requirement;
 import org.json.simple.JSONObject;
@@ -32,9 +31,9 @@ public class ModifyPlayOnCost implements ModifierSourceProducer {
             return new AbstractModifier(actionContext.getSource(), "Cost to play on is modified", filterable,
                     requirementCondition, ModifierEffect.TWILIGHT_COST_MODIFIER) {
                 @Override
-                public int getTwilightCostModifier(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
-                    if (target != null && Filters.and(onFilterable).accepts(game, target))
-                        return evaluator.evaluateExpression(game, null);
+                public int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
+                    if (target != null && Filters.and(onFilterable).accepts(_game, target))
+                        return evaluator.evaluateExpression(_game, null);
                     return 0;
                 }
             };

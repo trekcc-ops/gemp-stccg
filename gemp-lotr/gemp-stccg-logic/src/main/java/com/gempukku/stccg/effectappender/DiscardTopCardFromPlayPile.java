@@ -27,20 +27,20 @@ public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
 
         return new TribblesDelayedAppender() {
             @Override
-            public boolean isPlayableInFull(TribblesActionContext actionContext) {
-                final String deckId = playerSource.getPlayerId(actionContext);
+            public boolean isPlayableInFull(ActionContext actionContext) {
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-
-                final TribblesGame game = actionContext.getGame();
-                return game.getGameState().getPlayPile(deckId).size() >= count;
+                return actionContext.getGameState().getZoneCards(
+                        playerSource.getPlayerId(actionContext), Zone.PLAY_PILE).size() >= count;
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, TribblesActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String deckId = playerSource.getPlayerId(actionContext);
-                final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+                final int count = countSource.getEvaluator(actionContext).evaluateExpression(
+                        actionContext.getGame(), null);
 
-                return new DiscardCardsFromEndOfCardPileEffect(actionContext.getGame(), actionContext.getSource(), Zone.PLAY_PILE, EndOfPile.TOP,
+                return new DiscardCardsFromEndOfCardPileEffect(
+                        actionContext.getGame(), actionContext.getSource(), Zone.PLAY_PILE, EndOfPile.TOP,
                         deckId, count, true) {
                     @Override
                     protected void cardsDiscardedCallback(Collection<PhysicalCard> cards) {

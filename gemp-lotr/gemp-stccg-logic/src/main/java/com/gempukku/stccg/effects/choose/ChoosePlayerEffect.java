@@ -17,7 +17,7 @@ public abstract class ChoosePlayerEffect extends UnrespondableEffect {
 
     @Override
     public void doPlayEffect() {
-        String[] players = GameUtils.getAllPlayers(_game);
+        String[] players = _game.getAllPlayers();
         if (players.length == 1)
             playerChosen(players[0]);
         else

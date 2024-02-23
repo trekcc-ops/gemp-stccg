@@ -74,6 +74,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             getDeckStats(request, responseWriter);
         } else if (uri.equals("/formats") && request.method() == HttpMethod.POST) {
             getAllFormats(request, responseWriter);
+        } else if (uri.equals("/sets") && request.method() == HttpMethod.POST) {
+            getSets(request, responseWriter);
         } else {
             throw new HttpProcessingException(404);
         }
@@ -113,6 +115,26 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
                 json = JSON.toJSONString(output);
             }
+
+            responseWriter.writeJsonResponse(json);
+        } finally {
+            postDecoder.destroy();
+        }
+    }
+
+    private void getSets(HttpRequest request, ResponseWriter responseWriter) throws IOException {
+        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        try {
+            String format = getFormParameterSafely(postDecoder, "format");
+            GameFormat currentFormat = _formatLibrary.getFormat(format);
+
+            String json;
+            Map<String, String> sets = currentFormat.getValidSets();
+            Object[] output = sets.entrySet().stream()
+                    .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue()))
+                    .toArray();
+
+            json = JSON.toJSONString(output);
 
             responseWriter.writeJsonResponse(json);
         } finally {

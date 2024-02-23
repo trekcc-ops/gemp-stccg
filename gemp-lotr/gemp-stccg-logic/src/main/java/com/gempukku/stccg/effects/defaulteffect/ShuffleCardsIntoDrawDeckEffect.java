@@ -45,7 +45,7 @@ public class ShuffleCardsIntoDrawDeckEffect extends DefaultEffect {
         } else  {
                 _game.getGameState().removeCardsFromZone(_source.getOwnerName(), _cards);
                 _game.getGameState().shuffleCardsIntoDeck(_cards, _shufflingPlayer);
-                _game.getGameState().sendMessage(GameUtils.getAppendedNames(_cards) + " " + GameUtils.be(_cards) + " shuffled into " + _shufflingPlayer + " deck");
+                _game.getGameState().sendMessage(GameUtils.concatenateStrings(_cards.stream().map(PhysicalCard::getCardLink)) + " " + GameUtils.be(_cards) + " shuffled into " + _shufflingPlayer + " deck");
             return new FullEffectResult(true);
         }
     }

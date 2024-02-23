@@ -1,33 +1,22 @@
 package com.gempukku.stccg.rules;
 
-import com.gempukku.stccg.adventure.InvalidSoloAdventureException;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayOrder;
-import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
 public class GameUtils {
-
-    public static String getFullName(CardBlueprint blueprint) { return blueprint.getFullName(); }
-    public static String getCardLink(PhysicalCard card) { return card.getCardLink(); }
-    public static String[] getAllPlayers(DefaultGame game) { return game.getAllPlayers(); }
 
     public static <T> void addAllNotNull(List<T> list, List<? extends T> possiblyNullList) {
         if (possiblyNullList != null)
             list.addAll(possiblyNullList);
     }
 
-    public static List<PhysicalCard> getRandomCards(List<? extends PhysicalCard> cards, int count) {
-        List<PhysicalCard> randomizedCards = new ArrayList<>(cards);
-        Collections.shuffle(randomizedCards, ThreadLocalRandom.current());
-
-        return new LinkedList<>(randomizedCards.subList(0, Math.min(count, randomizedCards.size())));
+    public static <T> List<T> getRandomFromList(List<? extends T> list, int count) {
+        List<T> randomizedList = new ArrayList<>(list);
+        Collections.shuffle(randomizedList, ThreadLocalRandom.current());
+        return new LinkedList<>(randomizedList.subList(0, Math.min(count, randomizedList.size())));
     }
 
     public static String plural(int count, String noun) {
@@ -38,65 +27,31 @@ public class GameUtils {
         return sb.toString();
     }
 
-    public static String be(Collection<PhysicalCard> cards) {
-        if (cards.size() > 1)
-            return "are";
-        return "is";
+    public static <T> String be(Collection<T> collection) { return collection.size() > 1 ? "are" : "is"; }
+
+    public static String concatenateStrings(Stream<String> strings) {
+        return concatenateStrings(strings.toList());
+    }
+
+    public static String concatenateStrings(Collection<String> strings) {
+        StringJoiner sj = new StringJoiner(", ");
+        for (String string : strings)
+            sj.add(string);
+        if (sj.length() == 0)
+            return "none";
+        else return sj.toString();
     }
 
 
-    public static String getAppendedTextNames(Collection<? extends PhysicalCard> cards) {
+    public static String getConcatenatedCardLinks(Collection<? extends PhysicalCard> cards) {
         StringJoiner sj = new StringJoiner(", ");
         for (PhysicalCard card : cards)
-            sj.add(card.getFullName());
+            sj.add(card.getCardLink());
 
         if (sj.length() == 0)
             return "none";
         else
             return sj.toString();
-    }
-
-    public static String getAppendedNames(Collection<? extends PhysicalCard> cards) {
-        ArrayList<String> cardStrings = new ArrayList<>();
-        for (PhysicalCard card : cards) {
-            cardStrings.add(card.getCardLink());
-        }
-
-        if (cardStrings.isEmpty())
-            return "none";
-
-        return String.join(", ", cardStrings);
-    }
-
-    public static String SubstituteText(String text, ActionContext context)
-    {
-        String result = text;
-        while (result.contains("{")) {
-            int startIndex = result.indexOf("{");
-            int endIndex = result.indexOf("}");
-            String memory = result.substring(startIndex + 1, endIndex);
-            if(context != null){
-                String cardNames = getAppendedNames(context.getCardsFromMemory(memory));
-                if(cardNames.equalsIgnoreCase("none")) {
-                    try {
-                        cardNames = context.getValueFromMemory(memory);
-                    }
-                    catch(IllegalArgumentException ex) {
-                        cardNames = "none";
-                    }
-                }
-                result = result.replace("{" + memory + "}", cardNames);
-            }
-        }
-
-        return result;
-    }
-
-    // TODO - This method probably isn't doing what it should since the LotR elements were stripped out
-    public static String getDeluxeCardLink(String blueprintId, CardBlueprint blueprint) {
-        var cultureString = "";
-        return "<div class='cardHint' value='" + blueprintId + "' + card_img_url='" + blueprint.getImageUrl() + "'>" +
-                cultureString + (blueprint.isUnique() ? "·" : "") + " " + getFullName(blueprint) + "</div>";
     }
 
 }

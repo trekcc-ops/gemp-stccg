@@ -1,9 +1,6 @@
 package com.gempukku.stccg.formats;
 
-import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -154,8 +151,22 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public List<Integer> getValidSets() {
+    public List<Integer> getValidSetNums() {
         return Collections.unmodifiableList(_validSets);
+    }
+
+    @Override
+    public Map<String, String> getValidSets() {
+            // For sending to CardFilter
+        Map<String, String> sets = new LinkedHashMap<>();
+        String allSetsString = _validSets.stream().map(String::valueOf).collect(Collectors.joining(","));
+        sets.put(allSetsString, "All " + _name + " sets");
+        sets.put("disabled", "disabled");
+        Map<String, SetDefinition> librarySets = _library.getSetDefinitions();
+        for (Integer setNum : _validSets) {
+            sets.put(setNum.toString(), librarySets.get(setNum.toString()).getSetName());
+        }
+        return sets;
     }
 
     @Override
@@ -286,8 +297,7 @@ public class DefaultGameFormat implements GameFormat {
                 return null;
 
             if (!_validSets.isEmpty() && !isValidInSets(blueprintId))
-                return "Deck contains card not from valid set: " +
-                        GameUtils.getFullName(_library.getCardBlueprint(blueprintId));
+                return "Deck contains card not from valid set: " + _library.getCardFullName(blueprintId);
 
             // Banned cards
             Set<String> allAlternates = _library.getAllAlternates(blueprintId);
@@ -295,7 +305,7 @@ public class DefaultGameFormat implements GameFormat {
                 if (bannedBlueprintId.equals(blueprintId) ||
                         (allAlternates != null && allAlternates.contains(bannedBlueprintId)))
                     return "Deck contains a copy of an X-listed card: " +
-                            GameUtils.getFullName(_library.getCardBlueprint(bannedBlueprintId));
+                            _library.getCardBlueprint(bannedBlueprintId).getFullName();
             }
 
             // Errata
@@ -303,7 +313,7 @@ public class DefaultGameFormat implements GameFormat {
                 if (originalBlueprintId.equals(blueprintId) ||
                         (allAlternates != null && allAlternates.contains(originalBlueprintId)))
                     return "Deck contains cards that have been replaced with errata: " +
-                            GameUtils.getFullName(_library.getCardBlueprint(originalBlueprintId));
+                            _library.getCardBlueprint(originalBlueprintId).getFullName();
             }
 
         } catch (CardNotFoundException e) {
@@ -396,7 +406,8 @@ public class DefaultGameFormat implements GameFormat {
             for (String blueprintId : _restrictedCards) {
                 Integer count = cardCountByBaseBlueprintId.get(blueprintId);
                 if (count != null && count > 1) {
-                    result.add("Deck contains more than one copy of an R-listed card: " + GameUtils.getFullName(_library.getCardBlueprint(blueprintId)));
+                    result.add("Deck contains more than one copy of an R-listed card: " +
+                            _library.getCardFullName(blueprintId));
                 }
             }
 
@@ -404,12 +415,14 @@ public class DefaultGameFormat implements GameFormat {
             for (String blueprintId : _limit2Cards) {
                 Integer count = cardCountByBaseBlueprintId.get(blueprintId);
                 if (count != null && count > 2)
-                    result.add("Deck contains more than two copies of a 2x limited card: " + GameUtils.getFullName(_library.getCardBlueprint(blueprintId)));
+                    result.add("Deck contains more than two copies of a 2x limited card: " +
+                            _library.getCardFullName(blueprintId));
             }
             for (String blueprintId : _limit3Cards) {
                 Integer count = cardCountByBaseBlueprintId.get(blueprintId);
                 if (count != null && count > 3)
-                    result.add("Deck contains more than three copies of a 3x limited card: " + GameUtils.getFullName(_library.getCardBlueprint(blueprintId)));
+                    result.add("Deck contains more than three copies of a 3x limited card: " +
+                            _library.getCardFullName(blueprintId));
             }
         }
         catch(CardNotFoundException ex)
@@ -431,7 +444,7 @@ public class DefaultGameFormat implements GameFormat {
                 .collect(Collectors.toList());
 
     }
-
+    
     @Override
     public CardDeck applyErrata(CardDeck deck) {
         CardDeck deckWithErrata = new CardDeck(deck);

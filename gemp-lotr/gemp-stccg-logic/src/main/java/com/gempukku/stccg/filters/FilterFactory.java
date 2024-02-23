@@ -114,8 +114,8 @@ public class FilterFactory {
                                         new SingleMemoryEvaluator(
                                                 (game, cardAffected) -> {
                                                     int minStrength = Integer.MAX_VALUE;
-                                                    for (PhysicalCard card : Filters.filterActive(game, sourceFilterable))
-                                                        minStrength = Math.min(minStrength, game.getModifiersQuerying().getStrength(game, card));
+                                                    for (PhysicalCard card : Filters.filterActive(cardAffected.getGame(), sourceFilterable))
+                                                        minStrength = Math.min(minStrength, cardAffected.getGame().getModifiersQuerying().getStrength(card));
                                                     return minStrength;
                                                 }
                                         )

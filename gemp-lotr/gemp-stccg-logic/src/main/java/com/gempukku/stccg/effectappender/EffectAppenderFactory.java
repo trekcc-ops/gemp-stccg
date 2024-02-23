@@ -2,6 +2,7 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
@@ -49,8 +50,8 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard());
         effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck());
         effectAppenderProducers.put("putcardsfromdeckintohand", new PutCardsFromDeckIntoHand());
-        effectAppenderProducers.put("putcardsfromdeckontopofdeck", new PutCardsFromDeckOnTopOfDeck());
-        effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new PutCardsFromDeckOnBottomOfDeck());
+        effectAppenderProducers.put("putcardsfromdeckontopofdeck", new PutCardsFromDeckOnEndOfDrawDeck(EndOfPile.TOP));
+        effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new PutCardsFromDeckOnEndOfDrawDeck(EndOfPile.BOTTOM));
         effectAppenderProducers.put("putcardsfromdiscardintohand", new PutCardsFromDiscardIntoHand());
         effectAppenderProducers.put("putcardsfromdiscardonbottomofdeck", new PutCardsFromDiscardOnBottomOfDeck());
         effectAppenderProducers.put("putcardsfromdiscardontopofdeck", new PutCardsFromDiscardOnTopOfDeck());

@@ -30,7 +30,7 @@ public class StartOfPhaseGameProcess extends GameProcess {
     @Override
     public void process() {
         _game.getGameState().setCurrentPhase(_phase);
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("Start of " + _phase + " phase");
         action.appendEffect(
                 new TriggeringResultEffect(null, new StartOfPhaseResult(_phase, _playerId), "Start of " + _phase + " phase"));

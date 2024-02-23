@@ -1,5 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -14,21 +15,23 @@ public class CardAffectedPhaseLimitEvaluator implements Evaluator {
     private final String prefix;
     private final Evaluator evaluator;
 
-    private final PhysicalCard source;
-    private final Phase phase;
+    private final PhysicalCard _source;
+    private final Phase _phase;
     private final int limit;
+    private final DefaultGame _game;
 
-    public CardAffectedPhaseLimitEvaluator(PhysicalCard source, Phase phase, int limit, String prefix, Evaluator evaluator) {
-        this.source = source;
-        this.phase = phase;
+    public CardAffectedPhaseLimitEvaluator(ActionContext context, int limit, String prefix, Evaluator evaluator) {
+        _source = context.getSource();
+        _phase = context.getGameState().getCurrentPhase();
+        _game = context.getGame();
         this.limit = limit;
         this.prefix = prefix;
         this.evaluator = evaluator;
     }
 
-    private int evaluateOnce(DefaultGame game, PhysicalCard cardAffected) {
-        LimitCounter limitCounter = game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(source, prefix + cardAffected.getCardId() + "_", phase);
-        int internalResult = evaluator.evaluateExpression(game, cardAffected);
+    private int evaluateOnce(PhysicalCard cardAffected) {
+        LimitCounter limitCounter = _game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(_source, prefix + cardAffected.getCardId() + "_", _phase);
+        int internalResult = evaluator.evaluateExpression(_game, cardAffected);
         return limitCounter.incrementToLimit(limit, internalResult);
     }
 
@@ -36,7 +39,7 @@ public class CardAffectedPhaseLimitEvaluator implements Evaluator {
     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         Integer value = _evaluatedForCard.get(cardAffected.getCardId());
         if (value == null) {
-            value = evaluateOnce(game, cardAffected);
+            value = evaluateOnce(cardAffected);
             _evaluatedForCard.put(cardAffected.getCardId(), value);
         }
         return value;

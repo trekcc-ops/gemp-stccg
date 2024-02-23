@@ -8,10 +8,12 @@ public class DefaultSetDefinition implements SetDefinition {
     private final Map<String, String> _cardsRarity = new LinkedHashMap<>();
     private final String _setId;
     private final Set<String> _flags;
+    private final String _setName;
 
-    public DefaultSetDefinition(String setId, Set<String> flags) {
+    public DefaultSetDefinition(String setId, String setName, Set<String> flags) {
         _setId = setId;
         _flags = flags;
+        _setName = setName;
     }
 
     public void addCard(String blueprintId, String rarity) {
@@ -24,6 +26,9 @@ public class DefaultSetDefinition implements SetDefinition {
     public String getSetId() {
         return _setId;
     }
+
+    @Override
+    public String getSetName() { return _setName; }
 
     @Override
     public boolean hasFlag(String flag) {

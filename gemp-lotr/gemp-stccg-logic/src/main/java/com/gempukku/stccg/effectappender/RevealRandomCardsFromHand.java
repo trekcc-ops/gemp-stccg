@@ -41,7 +41,7 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String handPlayer = handSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-                if (actionContext.getGame().getGameState().getHand(handPlayer).size() < count)
+                if (actionContext.getGameState().getHand(handPlayer).size() < count)
                     return false;
                 return !forced
                         || actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(actionContext.getGame(), handPlayer, actionContext.getPerformingPlayer());

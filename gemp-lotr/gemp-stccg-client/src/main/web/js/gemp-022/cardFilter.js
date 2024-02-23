@@ -26,16 +26,21 @@ var CardFilter = Class.extend({
     nameInput: null,
     sortSelect: null,
     raritySelect: null,
+    format: null,
+    comm: null,
 
-    init: function (pageElem, getCollectionFunc, clearCollectionFunc, addCardFunc, finishCollectionFunc) {
+    init: function (pageElem, getCollectionFunc, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
+        var that = this;
         this.getCollectionFunc = getCollectionFunc;
         this.clearCollectionFunc = clearCollectionFunc;
         this.addCardFunc = addCardFunc;
         this.finishCollectionFunc = finishCollectionFunc;
-
         this.filter = "";
+        this.format = format;
+        this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
         this.buildUi(pageElem);
+        this.updateSetOptions();
     },
 
     enableDetailFilters: function (enable) {
@@ -55,8 +60,42 @@ var CardFilter = Class.extend({
         this.getCollection();
     },
 
+    setFormat: function (format) {
+        this.format = format;
+    },
+
     setType: function (typeValue) {
         $("#type").val(typeValue);
+    },
+
+    updateSetOptions:function() {
+        var that = this;
+        var currentSet = that.setSelect.val();
+
+        this.comm.getSets(that.format,
+            function (json)
+            {
+                that.setSelect.empty();
+                $(json).each(function (index, o) {
+                    if (o.code == "disabled") {
+                        that.setSelect.append("<option disabled>----------</option>")
+                    } else {
+                        var $option = $("<option/>")
+                            .attr("value", o.code)
+                            .text(o.name);
+                        that.setSelect.append($option);
+                    }
+                });
+
+                that.setSelect.val(currentFormat);
+
+            },
+            {
+                "400":function ()
+                {
+                    alert("Could not retrieve sets.");
+                }
+            });
     },
 
     buildUi: function (pageElem) {

@@ -24,6 +24,6 @@ public class CardMatchesEvaluator implements Evaluator {
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        return Filters.and(_filters).accepts(game, self) ? _matches.evaluateExpression(game, self) : _default;
+        return Filters.and(_filters).accepts(self.getGame(), self) ? _matches.evaluateExpression(self.getGame(), self) : _default;
     }
 }

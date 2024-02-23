@@ -63,9 +63,9 @@ public class PlayCardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         _game.getGameState().removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
         if (_attachedToCard != null) {
-            _game.getGameState().attachCard(_game, _cardPlayed, _attachedToCard);
+            _game.getGameState().attachCard(_cardPlayed, _attachedToCard);
         } else {
-            _game.getGameState().addCardToZone(_game, _cardPlayed, _zone);
+            _game.getGameState().addCardToZone(_cardPlayed, _zone);
         }
 
         _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(_playedFrom, _cardPlayed, _attachedToCard, _attachedOrStackedPlayedFrom));

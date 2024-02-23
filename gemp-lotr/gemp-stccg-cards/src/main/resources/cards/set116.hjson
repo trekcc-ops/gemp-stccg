@@ -31,4 +31,33 @@
         lore: Perform long-distance overview survey of this region of the Gamma Quadrant.
         image-url: https://www.trekcc.org/1e/cardimages/bog/chartstellarcluster.gif
     }
+    116_070: {
+        title: Enrique Muniz
+        type: personnel
+        affiliation: federation
+        property-logo: ds9
+        classification: ENGINEER
+        icons: staff
+        lore: "Highly valued assistant to Chief O'Brien. Called \"Quique\" by his friends. Joked that he wants to grow up to be O'Brien - just not as old and grizzled."
+        skill-box: "{SKILL} Computer Skill x2 {SKILL} Honor {SKILL} Navigation {SKILL} Geology"
+        integrity: 8
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/55.jpg
+    }
+    116_072: {
+        title: Sarita Carson
+        type: personnel
+        affiliation: federation
+        property-logo: ds9
+        classification: SECURITY
+        uniqueness: universal
+        icons: staff
+        lore: Ensign Carson is one of the many talented navigators serving Starfleet. Former member of Nova Squadron. Assigned to bridge duty aboard U.S.S. Defiant.
+        skill-box: "{SKILL} Navigation {SKILL} SCIENCE"
+        integrity: 6
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/61.jpg
+    }
 }

@@ -123,24 +123,13 @@ public class ReplayMetadata {
                 var cardID = event.getCardId();
                 var participantID = event.getParticipantId();
                 var zone = event.getZone();
-                var targetCardID = event.getTargetCardId();
 
                 if (bpID != null && cardID != null && participantID != null && participantID.equals(player)) {
-                    if (!GameStarted && (zone.equals(Zone.FREE_CHARACTERS)) || zone.equals(Zone.ATTACHED)) {
-                        Decks.get(player).StartingFellowship.add(bpID);
-                    }
+                    AllCards.put(cardID.toString(), bpID);
+                    SeenCards.add(cardID);
+                    if (zone.isInPlay())
+                        PlayedCards.add(cardID);
 
-                    switch (zone) {
-                        case FREE_CHARACTERS, SUPPORT, SHADOW_CHARACTERS, ADVENTURE_PATH, VOID_FROM_HAND, VOID -> {
-                            AllCards.put(cardID.toString(), bpID);
-                            SeenCards.add(cardID);
-                            PlayedCards.add(cardID);
-                        }
-                        case ATTACHED, HAND, STACKED, DEAD, DISCARD, ADVENTURE_DECK, DECK, REMOVED -> {
-                            AllCards.put(cardID.toString(), bpID);
-                            SeenCards.add(cardID);
-                        }
-                    }
                 }
             }
         }

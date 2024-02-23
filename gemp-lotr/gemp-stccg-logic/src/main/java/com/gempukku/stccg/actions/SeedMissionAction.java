@@ -10,10 +10,8 @@ import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.PlayOutDecisionEffect;
 import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.effects.defaulteffect.PlayMissionEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.rules.GameUtils;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -41,12 +39,15 @@ public class SeedMissionAction extends AbstractPlayCardAction {
     }
 
     @Override
+    public ST1EGame getGame() { return _game; }
+
+    @Override
     public PhysicalMissionCard getPlayedCard() { return _cardToPlay; }
     
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
     
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
         Quadrant quadrant = _cardToPlay.getBlueprint().getQuadrant();
         String missionLocation = _cardToPlay.getBlueprint().getLocation();
         Region region = _cardToPlay.getBlueprint().getRegion();
@@ -64,7 +65,7 @@ public class SeedMissionAction extends AbstractPlayCardAction {
                     _directionChosen = true;
                     _locationZoneIndex = 0;
                 } else {
-                    appendCost(new PlayOutDecisionEffect(game, playerId,
+                    appendCost(new PlayOutDecisionEffect(_game, playerId,
                             new MultipleChoiceAwaitingDecision(1, "Add new quadrant to which end of the table?", directions) {
                                 @Override
                                 protected void validDecisionMade(int index, String result) {
@@ -84,7 +85,7 @@ public class SeedMissionAction extends AbstractPlayCardAction {
                 _placementChosen = true;
                 _directionChosen = true;
             } else if (gameState.firstInRegion(region, quadrant) != null) {
-                appendCost(new PlayOutDecisionEffect(game, playerId,
+                appendCost(new PlayOutDecisionEffect(_game, playerId,
                         new MultipleChoiceAwaitingDecision(1, "Insert on which end of the region?", directions) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
@@ -101,7 +102,8 @@ public class SeedMissionAction extends AbstractPlayCardAction {
             } else if (_cardToPlay.canInsertIntoSpaceline() && gameState.getQuadrantLocationsSize(quadrant) >= 2) {
                 // TODO: canInsertIntoSpaceline method not defined
                 Set<PhysicalCard> otherCards = _game.getGameState().getQuadrantLocationCards(quadrant);
-                appendCost(new ChooseCardsOnTableEffect(_game, _thisAction, getPerformingPlayer(), "Choose a location to seed " + GameUtils.getCardLink(_cardToPlay) + " next to", otherCards) {
+                appendCost(new ChooseCardsOnTableEffect(_thisAction, getPerformingPlayer(),
+                        "Choose a location to seed " + _cardToPlay.getCardLink() + " next to", otherCards) {
                     @Override
                     protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                         assert selectedCards.size() == 1;
@@ -111,7 +113,7 @@ public class SeedMissionAction extends AbstractPlayCardAction {
                 });
                 return getNextCost();
             } else {
-                appendCost(new PlayOutDecisionEffect(game, getPerformingPlayer(),
+                appendCost(new PlayOutDecisionEffect(_game, getPerformingPlayer(),
                         new MultipleChoiceAwaitingDecision(1, "Insert on which end of the quadrant?", directions) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
@@ -128,7 +130,7 @@ public class SeedMissionAction extends AbstractPlayCardAction {
             }
         }
         if (!_directionChosen) {
-            appendCost(new PlayOutDecisionEffect(game, playerId,
+            appendCost(new PlayOutDecisionEffect(_game, playerId,
                     new MultipleChoiceAwaitingDecision(1, "Insert on which side of " + _neighborCard.getTitle(), directions) {
                         @Override
                         protected void validDecisionMade(int index, String result) {

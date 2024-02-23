@@ -2,14 +2,12 @@ package com.gempukku.stccg.effects.choose;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalFacilityCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,28 +33,29 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
     /**
      * Creates an effect that causes the player to choose cards from the specified collection of cards on the table accepted
      * by the specified filter.
-     * @param action the action performing this effect
-     * @param playerId the player
-     * @param choiceText the text shown to the player choosing the cards
-     * @param minimum the minimum number of cards to choose
-     * @param maximum the maximum number of cards to choose
-     * @param maximumAcceptsCount the maximum number of times cards may be accepted by the filter, which will further limit
-     *                            cards that can be selected when cards with multiple model types accept filter multiple times
+     *
+     * @param minimum               the minimum number of cards to choose
+     * @param maximum               the maximum number of cards to choose
+     * @param maximumAcceptsCount   the maximum number of times cards may be accepted by the filter, which will further limit
+     *                              cards that can be selected when cards with multiple model types accept filter multiple times
      * @param matchPartialModelType true if card with multiple model types (i.e. squadrons) match if any model type
      *                              matches the filter otherwise card only matches if all model types match the filter
-     * @param cards the cards to choose from
-     * @param filters the filter
+     * @param filters               the filter
+     * @param action                the action performing this effect
+     * @param playerId              the player
+     * @param choiceText            the text shown to the player choosing the cards
+     * @param cards                 the cards to choose from
      */
-    public ChooseCardsOnTableEffect(DefaultGame game, Action action, String playerId, String choiceText, Collection<PhysicalCard> cards) {
-        this(game, action, playerId, choiceText, 1,1,cards,Filters.any);
+    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, Collection<PhysicalCard> cards) {
+        this(action, playerId, choiceText, 1,1,cards,Filters.any);
     }
 
-    public ChooseCardsOnTableEffect(DefaultGame game, Action action, String playerId, String choiceText,
+    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
                                     int minimum, int maximum, Collection<PhysicalCard> cards) {
-        this(game, action, playerId, choiceText, minimum, maximum, cards, Filters.any);
+        this(action, playerId, choiceText, minimum, maximum, cards, Filters.any);
     }
 
-    public ChooseCardsOnTableEffect(DefaultGame game, Action action, String playerId, String choiceText, int minimum, int maximum, Collection<PhysicalCard> cards, Filterable filters) {
+    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, int minimum, int maximum, Collection<PhysicalCard> cards, Filterable filters) {
         _action = action;
         _playerId = playerId;
         _choiceText = choiceText;
@@ -64,7 +63,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         _maximum = maximum;
         _cards = cards;
         _filters = Filters.and(Filters.onTable, filters);
-        _game = game;
+        _game = action.getGame();
     }
 
     @Override

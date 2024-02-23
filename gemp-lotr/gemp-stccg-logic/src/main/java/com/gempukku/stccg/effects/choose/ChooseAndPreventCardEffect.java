@@ -11,17 +11,17 @@ public class ChooseAndPreventCardEffect extends ChooseActiveCardEffect {
     private final PreventableCardEffect _effect;
 
     public ChooseAndPreventCardEffect(DefaultGame game, PhysicalCard source, PreventableCardEffect effect, String playerId, String choiceText, Filterable... filters) {
-        super(game, source, playerId, choiceText, filters);
+        super(source, playerId, choiceText, filters);
         _effect = effect;
     }
 
     @Override
-    protected Filter getExtraFilterForPlaying(DefaultGame game) {
-        return Filters.in(_effect.getAffectedCardsMinusPrevented(game));
+    protected Filter getExtraFilterForPlaying() {
+        return Filters.in(_effect.getAffectedCardsMinusPrevented());
     }
 
     @Override
-    protected void cardSelected(DefaultGame game, PhysicalCard card) {
-        _effect.preventEffect(game, card);
+    protected void cardSelected(PhysicalCard card) {
+        _effect.preventEffect(_game, card);
     }
 }

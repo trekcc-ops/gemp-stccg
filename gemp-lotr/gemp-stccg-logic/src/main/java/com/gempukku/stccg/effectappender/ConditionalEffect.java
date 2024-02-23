@@ -27,7 +27,7 @@ public class ConditionalEffect implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 if (checkConditions(actionContext)) {
-                    SubAction subAction = new SubAction(action);
+                    SubAction subAction = action.createSubAction();
                     for (EffectAppender effectAppender : effectAppenders)
                         effectAppender.appendEffect(cost, subAction, actionContext);
 

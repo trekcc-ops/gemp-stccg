@@ -20,20 +20,20 @@ public abstract class AbstractActionProxy implements ActionProxy {
     }
 
     @Override
-    public List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(Effect effect) { return null; }
+    public List<? extends Action> getRequiredBeforeTriggers(Effect effect) { return null; }
 
     @Override
-    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
+    public List<? extends Action> getRequiredAfterTriggers(EffectResult effectResult) {
         return null;
     }
 
     @Override
-    public List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
+    public List<? extends Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
         return null;
     }
 
     @Override
-    public List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, Effect effect) {
+    public List<? extends Action> getOptionalBeforeTriggers(String playerId, Effect effect) {
         return null;
     }
 }

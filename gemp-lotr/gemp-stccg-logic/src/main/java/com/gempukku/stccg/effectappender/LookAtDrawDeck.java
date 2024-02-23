@@ -28,7 +28,7 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String deckId = playerSource.getPlayerId(actionContext);
-                final int count = actionContext.getGame().getGameState().getDrawDeck(deckId).size();
+                final int count = actionContext.getGameState().getDrawDeck(deckId).size();
 
                 return new LookAtTopCardOfADeckEffect(actionContext, count, deckId) {
                     @Override

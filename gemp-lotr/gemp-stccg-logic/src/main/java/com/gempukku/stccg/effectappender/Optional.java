@@ -12,6 +12,8 @@ import com.gempukku.stccg.effects.StackActionEffect;
 import com.gempukku.stccg.rules.GameUtils;
 import org.json.simple.JSONObject;
 
+import java.util.Arrays;
+
 public class Optional implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
@@ -31,18 +33,15 @@ public class Optional implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayerId(actionContext);
-                SubAction subAction = new SubAction(action);
+                SubAction subAction = action.createSubAction();
                 subAction.appendCost(
                         new PlayOutDecisionEffect(actionContext.getGame(), choosingPlayer,
-                        new YesNoDecision(GameUtils.SubstituteText(_text, actionContext)) {
+                        new YesNoDecision(actionContext.substituteText(_text)) {
                             @Override
                             protected void yes() {
-                                DefaultActionContext delegate = new DefaultActionContext(actionContext,
-                                        choosingPlayer, actionContext.getGame(), actionContext.getSource(),
-                                        actionContext.getEffectResult(), actionContext.getEffect());
-                                for (EffectAppender effectAppender : effectAppenders) {
-                                    effectAppender.appendEffect(cost, subAction, delegate);
-                                }
+                                Arrays.stream(effectAppenders).forEach(effectAppender ->
+                                        effectAppender.appendEffect(
+                                                cost, subAction, actionContext.createDelegateContext(choosingPlayer)));
                             }
                         }));
                 return new StackActionEffect(actionContext.getGame(), subAction);
@@ -51,11 +50,8 @@ public class Optional implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayerId(actionContext);
-                DefaultActionContext delegate = new DefaultActionContext(actionContext,
-                        choosingPlayer, actionContext.getGame(), actionContext.getSource(),
-                        actionContext.getEffectResult(), actionContext.getEffect());
                 for (EffectAppender effectAppender : effectAppenders) {
-                    if (!effectAppender.isPlayableInFull(delegate))
+                    if (!effectAppender.isPlayableInFull(actionContext.createDelegateContext(choosingPlayer)))
                         return false;
                 }
 
@@ -64,11 +60,7 @@ public class Optional implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayabilityCheckedForEffect() {
-                for (EffectAppender effectAppender : effectAppenders) {
-                    if (effectAppender.isPlayabilityCheckedForEffect())
-                        return true;
-                }
-                return false;
+                return Arrays.stream(effectAppenders).anyMatch(EffectAppender::isPlayabilityCheckedForEffect);
             }
         };
     }

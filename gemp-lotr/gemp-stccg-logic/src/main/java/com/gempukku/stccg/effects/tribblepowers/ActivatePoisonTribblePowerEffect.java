@@ -27,7 +27,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
     protected FullEffectResult playEffectReturningResult() {
         // Choose any opponent who still has card(s) in their draw deck.
         List<String> playersWithCards = new ArrayList<>();
-        for (String player : GameUtils.getAllPlayers(_game)) {
+        for (String player : _game.getAllPlayers()) {
             if ((!_game.getGameState().getDrawDeck(player).isEmpty()) && !Objects.equals(player, _activatingPlayer))
                 playersWithCards.add(player);
         }
@@ -48,7 +48,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
         // That opponent must discard the top card
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         subAction.appendEffect(new DiscardCardsFromEndOfCardPileEffect(_game, _source, Zone.DRAW_DECK, EndOfPile.TOP,
                 chosenPlayer, 1, true) {
             @Override

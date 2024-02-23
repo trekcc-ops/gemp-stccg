@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Arrays;
 
@@ -39,7 +38,7 @@ public class PutCardsFromZoneOnEndOfPileEffect extends DefaultEffect {
     }
 
     public String chatMessage(PhysicalCard card) {
-        String cardInfoToShow = _reveal ? GameUtils.getCardLink(card) : "a card";
+        String cardInfoToShow = _reveal ? card.getCardLink() : "a card";
         return card.getOwnerName() + " puts " + cardInfoToShow + " from " + _fromZone.getHumanReadable() + " on " +
                 _toEndOfPile.name().toLowerCase() + " of their " + _toZone.getHumanReadable();
     }
@@ -51,7 +50,7 @@ public class PutCardsFromZoneOnEndOfPileEffect extends DefaultEffect {
             gameState.removeCardsFromZone(physicalCards[0].getOwnerName(), Arrays.asList(physicalCards));
             for (PhysicalCard physicalCard : physicalCards) {
                 gameState.sendMessage(chatMessage(physicalCard));
-                gameState.addCardToZone(_game, physicalCard, _toZone, _toEndOfPile);
+                gameState.addCardToZone(physicalCard, _toZone, _toEndOfPile);
             }
             return new FullEffectResult(true);
         }

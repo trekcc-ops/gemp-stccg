@@ -10,13 +10,13 @@ public interface ActionProxy {
 
     List<? extends Action> getOptionalBeforeActions(String playerId, Effect effect);
 
-    List<? extends RequiredTriggerAction> getRequiredBeforeTriggers(Effect effect);
+    List<? extends Action> getRequiredBeforeTriggers(Effect effect);
 
-    List<? extends OptionalTriggerAction> getOptionalBeforeTriggers(String playerId, Effect effect);
+    List<? extends Action> getOptionalBeforeTriggers(String playerId, Effect effect);
 
     List<? extends Action> getOptionalAfterActions(String playerId, EffectResult effectResult);
 
-    List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult);
+    List<? extends Action> getRequiredAfterTriggers(EffectResult effectResult);
 
-    List<? extends OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult);
+    List<? extends Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult);
 }

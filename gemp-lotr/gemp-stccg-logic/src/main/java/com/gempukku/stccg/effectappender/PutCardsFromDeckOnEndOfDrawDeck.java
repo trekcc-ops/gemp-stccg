@@ -15,14 +15,22 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PutCardsFromDeckOnBottomOfDeck implements EffectAppenderProducer {
+public class PutCardsFromDeckOnEndOfDrawDeck implements EffectAppenderProducer {
+    private final EndOfPile _endOfDeck;
+    private final Zone _fromZone;
+    public PutCardsFromDeckOnEndOfDrawDeck(EndOfPile endOfDeck) {
+        _endOfDeck = endOfDeck;
+        _fromZone = Zone.DRAW_DECK;
+    }
     @Override
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(effectObject, "count", "filter", "reveal");
 
+        final boolean defaultReveal = true;
+
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final boolean reveal = FieldUtils.getBoolean(effectObject.get("reveal"), "reveal", true);
+        final boolean reveal = FieldUtils.getBoolean(effectObject.get("reveal"), "reveal", defaultReveal);
 
         MultiEffectAppender result = new MultiEffectAppender();
 
@@ -35,7 +43,8 @@ public class PutCardsFromDeckOnBottomOfDeck implements EffectAppenderProducer {
                         final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard card : cards) {
-                            result.add(new PutCardsFromZoneOnEndOfPileEffect(actionContext.getGame(), reveal, Zone.DRAW_DECK, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
+                            result.add(new PutCardsFromZoneOnEndOfPileEffect(
+                                    actionContext.getGame(), reveal, _fromZone, Zone.DRAW_DECK, _endOfDeck, card));
                         }
 
                         return result;

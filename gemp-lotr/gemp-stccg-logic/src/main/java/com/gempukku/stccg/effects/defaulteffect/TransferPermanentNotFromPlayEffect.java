@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
 
@@ -30,9 +29,10 @@ public class TransferPermanentNotFromPlayEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             GameState gameState = _game.getGameState();
-            gameState.sendMessage(_physicalCard.getOwnerName() + " transfers " + GameUtils.getCardLink(_physicalCard) + " to " + GameUtils.getCardLink(_targetCard));
+            gameState.sendMessage(_physicalCard.getOwnerName() + " transfers " + _physicalCard.getCardLink() + " to " +
+                    _targetCard.getCardLink());
             gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
-            gameState.attachCard(_game, _physicalCard, _targetCard);
+            gameState.attachCard(_physicalCard, _targetCard);
 
             return new FullEffectResult(true);
         }

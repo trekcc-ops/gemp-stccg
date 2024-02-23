@@ -31,13 +31,13 @@ public class ReturnCardsToHandEffect extends DefaultEffect {
     @Override
     public String getText() {
         Collection<PhysicalCard> cards = Filters.filterActive(_game, _filter);
-        return "Return " + GameUtils.getAppendedNames(cards) + " to hand";
+        return "Return " + GameUtils.concatenateStrings(cards.stream().map(PhysicalCard::getCardLink)) + " to hand";
     }
 
     @Override
     public boolean isPlayableInFull() {
         return !Filters.filterActive(_game, _filter,
-                (Filter) (game1, physicalCard) -> (_source == null || game1.getModifiersQuerying().canBeReturnedToHand(game1, physicalCard, _source))).isEmpty();
+                (Filter) (game1, physicalCard) -> (_source == null || game1.getModifiersQuerying().canBeReturnedToHand(physicalCard, _source))).isEmpty();
     }
 
     @Override
@@ -59,14 +59,14 @@ public class ReturnCardsToHandEffect extends DefaultEffect {
 
         // Add cards to hand
         for (PhysicalCard card : cardsToReturnToHand)
-            gameState.addCardToZone(_game, card, Zone.HAND);
+            gameState.addCardToZone(card, Zone.HAND);
 
         // Add discarded to discard
         for (PhysicalCard card : toGoToDiscardCards)
-            gameState.addCardToZone(_game, card, Zone.DISCARD);
+            gameState.addCardToZone(card, Zone.DISCARD);
 
         if (!cardsToReturnToHand.isEmpty())
-            gameState.sendMessage(GameUtils.getCardLink(_source) + " returns " + GameUtils.getAppendedNames(cardsToReturnToHand) + " to hand");
+            gameState.sendMessage(_source.getCardLink() + " returns " + GameUtils.getConcatenatedCardLinks(cardsToReturnToHand) + " to hand");
 
         for (PhysicalCard discardedCard : discardedFromPlay)
             _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));

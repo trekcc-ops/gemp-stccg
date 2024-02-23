@@ -2,7 +2,7 @@ package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -53,7 +53,7 @@ public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
                         });
             }
             actionSource.addPlayRequirement(
-                    (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase);
+                    (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
             EffectUtils.processRequirementsCostsAndEffects(value, environment, actionSource);
 
             blueprint.appendInDiscardPhaseAction(actionSource);

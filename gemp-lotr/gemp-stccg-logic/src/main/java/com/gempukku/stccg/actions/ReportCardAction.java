@@ -9,11 +9,9 @@ import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.effects.defaulteffect.ReportCardEffect;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.gempukku.stccg.rules.GameUtils;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -51,12 +49,24 @@ public class ReportCardAction extends AbstractPlayCardAction {
     }
 
     @Override
+    public boolean canBeInitiated() {
+        if (!_cardToReport.canBePlayed())
+            return false;
+        for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
+            for (PhysicalFacilityCard facility : location.getOutposts())
+                if (_cardToReport.canReportToFacility(facility))
+                    return true;
+        }
+        return false;
+    }
+
+    @Override
     public PhysicalReportableCard1E getPlayedCard() { return _cardToReport; }
     
     public ActionType getActionType() { return ActionType.PLAY_CARD; }
     
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
         // TODO - Add affiliation of personnel to affiliations player is playing
         String playerId = getPerformingPlayer();
         ST1EGameState gameState = _game.getGameState();
@@ -71,8 +81,8 @@ public class ReportCardAction extends AbstractPlayCardAction {
 
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
-                    _game, _thisAction, getPerformingPlayer(),
-                    "Choose a facility to report " + GameUtils.getCardLink(_cardToReport) + " to", availableFacilities
+                    _thisAction, getPerformingPlayer(),
+                    "Choose a facility to report " + _cardToReport.getCardLink() + " to", availableFacilities
             ) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
@@ -116,4 +126,7 @@ public class ReportCardAction extends AbstractPlayCardAction {
     public boolean wasCarriedOut() {
         return _cardPlayed && _playCardEffect.wasCarriedOut();
     }
+
+    @Override
+    public ST1EGame getGame() { return _game; }
 }

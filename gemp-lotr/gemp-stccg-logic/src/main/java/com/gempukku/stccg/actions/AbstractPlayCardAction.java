@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction {
 
@@ -20,6 +19,11 @@ public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction 
     public AbstractPlayCardAction(PhysicalCard actionSource) {
         _actionSource = actionSource;
         _thisAction = this;
+    }
+
+    @Override
+    public boolean canBeInitiated() {
+        return _actionSource.canBePlayed();
     }
 
     public ActionType getType() {
@@ -74,7 +78,7 @@ public abstract class AbstractPlayCardAction extends AbstractCostToEffectAction 
         return _placeOutOfPlay;
     }
 
-    public abstract Effect nextEffect(DefaultGame game);
+    public abstract Effect nextEffect();
     public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }
     public boolean isVirtualCardAction() { return _virtualCardAction; }
 

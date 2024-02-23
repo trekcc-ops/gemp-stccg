@@ -1,9 +1,10 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.gempukku.stccg.actions.sources.OptionalTriggerActionSource;
 import com.gempukku.stccg.cards.BuiltCardBlueprint;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
@@ -21,11 +22,12 @@ public class InHandTriggerEffectProcessor implements EffectProcessor {
             if (before)
                 throw new InvalidCardDefinitionException("Only after triggers from hand are supported");
 
-            DefaultActionSource triggerActionSource = new DefaultActionSource();
+            // TODO - Assumes it is optional
+            OptionalTriggerActionSource triggerActionSource = new OptionalTriggerActionSource();
             triggerActionSource.addPlayRequirement(triggerChecker);
             EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
 
-            blueprint.appendOptionalInHandAfterTrigger(triggerActionSource);
+            blueprint.appendOptionalInHandTrigger(triggerActionSource, TriggerTiming.AFTER);
         }
     }
 }

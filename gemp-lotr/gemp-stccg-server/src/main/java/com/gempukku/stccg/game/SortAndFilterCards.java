@@ -233,7 +233,7 @@ public class SortAndFilterCards {
 
     private boolean containsAllWords(CardBlueprint blueprint, List<String> words) {
         for (String word : words) {
-            if (blueprint == null || !replaceSpecialCharacters(GameUtils.getFullName(blueprint).toLowerCase()).contains(word))
+            if (blueprint == null || !replaceSpecialCharacters(blueprint.getFullName().toLowerCase()).contains(word))
                 return false;
         }
         return true;
@@ -257,8 +257,7 @@ public class SortAndFilterCards {
                     Set<T> cardTypes = new HashSet<>(Arrays.asList(enumValues));
                     for (String v : values.split(",")) {
                         T t = (T) Enum.valueOf(enumType, v);
-                        if (t != null)
-                            cardTypes.remove(t);
+                        cardTypes.remove(t);
                     }
                     return cardTypes;
                 } else {
@@ -307,7 +306,7 @@ public class SortAndFilterCards {
 
         @Override
         public int compare(CardItem o1, CardItem o2) {
-            return GameUtils.getFullName(_cardBlueprintMap.get(o1.getBlueprintId())).compareTo(GameUtils.getFullName(_cardBlueprintMap.get(o2.getBlueprintId())));
+            return _cardBlueprintMap.get(o1.getBlueprintId()).getFullName().compareTo(_cardBlueprintMap.get(o2.getBlueprintId()).getFullName());
         }
     }
 

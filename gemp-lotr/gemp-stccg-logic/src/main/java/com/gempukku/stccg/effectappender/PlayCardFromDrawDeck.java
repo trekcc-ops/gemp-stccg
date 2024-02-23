@@ -12,7 +12,6 @@ import com.gempukku.stccg.effects.StackActionEffect;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.filters.ExtraFilters;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -49,7 +48,7 @@ public class PlayCardFromDrawDeck implements EffectAppenderProducer {
                             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
                             if (onFilterableSource != null) {
                                 final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
-                                return Filters.and(Filters.playable(game, costModifier), ExtraFilters.attachableTo(game, onFilterable));
+                                return Filters.and(Filters.playable(game, costModifier), Filters.attachableTo(game, onFilterable));
                             }
                             return Filters.playable(costModifier, false, false, true);
                         },

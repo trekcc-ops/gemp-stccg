@@ -29,7 +29,7 @@ public class LookAtRandomCardsFromHand implements EffectAppenderProducer {
                 final String handPlayer = handSource.getPlayerId(actionContext);
                 final int count = countSource.getEvaluator(actionContext).evaluateExpression(game, null);
 
-                if (actionContext.getGame().getGameState().getHand(handPlayer).size() < count)
+                if (actionContext.getGameState().getHand(handPlayer).size() < count)
                     return false;
 
                 return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, handPlayer, actionContext.getPerformingPlayer());

@@ -7,9 +7,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public interface Action {
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
-        MOVE_CARDS,
-        TRIBBLE_POWER,
-        ATTEMPT_MISSION
+        MOVE_CARDS, TRIBBLE_POWER, ATTEMPT_MISSION
     }
 
     ActionType getActionType();
@@ -28,5 +26,8 @@ public interface Action {
 
     String getText();
 
-    Effect nextEffect(DefaultGame game);
+    Effect nextEffect();
+    SubAction createSubAction();
+    DefaultGame getGame();
+    boolean canBeInitiated();
 }

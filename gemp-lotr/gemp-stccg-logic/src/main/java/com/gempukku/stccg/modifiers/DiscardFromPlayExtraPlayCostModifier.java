@@ -21,7 +21,7 @@ public class DiscardFromPlayExtraPlayCostModifier extends AbstractExtraPlayCostM
     @Override
     public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
         action.appendCost(
-                new ChooseAndDiscardCardsFromPlayEffect(game, action, card.getOwnerName(), count, count, cardFilter));
+                new ChooseAndDiscardCardsFromPlayEffect(action, card.getOwnerName(), count, count, cardFilter));
     }
 
     @Override

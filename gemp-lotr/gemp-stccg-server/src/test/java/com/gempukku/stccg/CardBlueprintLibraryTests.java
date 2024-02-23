@@ -20,7 +20,7 @@ public class CardBlueprintLibraryTests extends AbstractLogicTest {
                     if (blueprintId.equals(_cardLibrary.getBaseBlueprintId(blueprintId))) {
                         try {
                             CardBlueprint cardBlueprint = _cardLibrary.getCardBlueprint(blueprintId);
-                            String cardName = GameUtils.getFullName(cardBlueprint);
+                            String cardName = cardBlueprint.getFullName();
                             if (cardNames.containsKey(cardName) && cardBlueprint.getCardType() != CardType.SITE)
                                 System.out.println("Multiple detected - " + cardName + ": " + cardNames.get(cardName) + " and " + blueprintId);
                             else

@@ -18,7 +18,7 @@ public class EndOfTurnGameProcess extends GameProcess {
     @Override
     public void process() {
         _game.getGameState().sendMessage("DEBUG: Beginning EndOfTurnGameProcess");
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of turn");
         action.appendEffect(
                 new TriggeringResultEffect(null, new EndOfTurnResult(), "End of turn"));

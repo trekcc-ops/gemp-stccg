@@ -119,7 +119,7 @@ public class ValueResolver {
                 return (actionContext) -> (game, cardAffected) -> {
                     int count = 0;
                     for (PhysicalCard physicalCard : Filters.filterActive(game, filterableSource.getFilterable(actionContext))) {
-                        count += game.getModifiersQuerying().getKeywordCount(game, physicalCard, keyword);
+                        count += game.getModifiersQuerying().getKeywordCount(physicalCard, keyword);
                     }
                     return count;
                 };
@@ -135,7 +135,7 @@ public class ValueResolver {
                     int count = 0;
                     final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
                     for (PhysicalCard cardFromMemory : cardsFromMemory) {
-                        count += game.getModifiersQuerying().getKeywordCount(game, cardFromMemory, keyword);
+                        count += game.getModifiersQuerying().getKeywordCount(cardFromMemory, keyword);
                     }
                     return new ConstantEvaluator(count);
                 };
@@ -149,7 +149,7 @@ public class ValueResolver {
                 ValueSource limitSource = resolveEvaluator(object.get("limit"), 0, environment);
                 ValueSource valueSource = resolveEvaluator(object.get("amount"), 0, environment);
                 return (actionContext) -> new CardPhaseLimitEvaluator(actionContext.getSource(),
-                        actionContext.getGame().getGameState().getCurrentPhase(), limitSource.getEvaluator(actionContext),
+                        actionContext.getGameState().getCurrentPhase(), limitSource.getEvaluator(actionContext),
                         valueSource.getEvaluator(actionContext));
             } else if (type.equalsIgnoreCase("countStacked")) {
                 FieldUtils.validateAllowedFields(object, "on", "filter");
@@ -180,7 +180,8 @@ public class ValueResolver {
                                 // Lines below commented out since this code originally counted ALL discard piles
 //                        int count = 0;
 //                        for (String player : game.getGameState().getPlayerOrder().getAllPlayers())
-                        int count = Filters.filter(game.getGameState().getDiscard(player), game, filterable).size();
+                        int count = Filters.filter(game.getGameState().getDiscard(player),
+                                game, filterable).size();
                         return Math.min(limit, count);
                     }
                 });
@@ -198,8 +199,13 @@ public class ValueResolver {
                 final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
                 final PlayerSource player = PlayerResolver.resolvePlayer(owner);
                 final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-                return actionContext -> (Evaluator) (game, cardAffected) -> Filters.filter(game.getGameState().getZoneCards(player.getPlayerId(actionContext), Zone.PLAY_PILE),
-                        game, filterableSource.getFilterable(actionContext)).size();
+                return actionContext -> {
+                    Evaluator evaluator = (game, cardAffected) -> {
+                        return Filters.filter(game.getGameState().getZoneCards(player.getPlayerId(actionContext), Zone.PLAY_PILE),
+                                game, filterableSource.getFilterable(actionContext)).size();
+                    };
+                    return evaluator;
+                };
             } else if (type.equalsIgnoreCase("countCardsInPlayPile")) {
                 FieldUtils.validateAllowedFields(object, "owner");
                 final String owner = FieldUtils.getString(object.get("owner"), "owner", "you");
@@ -226,9 +232,7 @@ public class ValueResolver {
                 final String prefix = FieldUtils.getString(object.get("prefix"), "prefix", "");
                 final ValueSource valueSource = ValueResolver.resolveEvaluator(object.get("source"), 0, environment);
                 return (actionContext -> new CardAffectedPhaseLimitEvaluator(
-                        actionContext.getSource(),
-                        actionContext.getGame().getGameState().getCurrentPhase(),
-                        limit, prefix, valueSource.getEvaluator(actionContext)));
+                        actionContext, limit, prefix, valueSource.getEvaluator(actionContext)));
             } else if (type.equalsIgnoreCase("forEachStrength")) {
                 FieldUtils.validateAllowedFields(object, "multiplier", "over", "filter");
                 final int multiplier = FieldUtils.getInteger(object.get("multiplier"), "multiplier", 1);
@@ -240,14 +244,14 @@ public class ValueResolver {
                 return (actionContext) -> {
                     if (filter.equals("any")) {
                         return new MultiplyEvaluator(multiplier,
-                                (game, cardAffected) -> Math.max(0, game.getModifiersQuerying().getStrength(game, cardAffected) - over));
+                                (game, cardAffected) -> Math.max(0, game.getModifiersQuerying().getStrength(cardAffected) - over));
                     } else {
                         return new MultiplyEvaluator(multiplier,
                                 (game, cardAffected) -> {
                                     final Filterable filterable = vitalitySource.getFilterable(actionContext);
                                     int strength = 0;
                                     for (PhysicalCard physicalCard : Filters.filterActive(game, filterable)) {
-                                        strength += game.getModifiersQuerying().getStrength(game, physicalCard);
+                                        strength += game.getModifiersQuerying().getStrength(physicalCard);
                                     }
 
                                     return Math.max(0, strength - over);
@@ -272,7 +276,7 @@ public class ValueResolver {
                 return actionContext -> (Evaluator) (game, cardAffected) -> {
                     int result = 0;
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(memory)) {
-                        result += game.getModifiersQuerying().getStrength(game, physicalCard);
+                        result += game.getModifiersQuerying().getStrength(physicalCard);
                     }
                     return result;
                 };

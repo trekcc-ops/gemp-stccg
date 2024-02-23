@@ -1,10 +1,7 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalMissionCard;
-import com.gempukku.stccg.cards.PhysicalFacilityCard;
-import com.gempukku.stccg.cards.PhysicalPersonnelCard;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -34,7 +31,7 @@ public class ST1EPlayCardInPhaseRule {
                         if (phase == Phase.SEED_DOORWAY) {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                                if (_game.checkPlayRequirements(card)) {
+                                if (card.canBePlayed()) {
                                     result.add(new PlayPermanentForFreeAction(card, Zone.TABLE));
                                 }
                             }
@@ -49,9 +46,9 @@ public class ST1EPlayCardInPhaseRule {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
                                 if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
-                                    if (_game.checkPlayRequirements(card)) {
+                                    if (card.canBePlayed()) {
                                         if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
-                                            result.add(new SeedOutpostAction((PhysicalFacilityCard) card));
+                                            result.add(((PhysicalFacilityCard) card).createSeedCardAction());
                                     }
                                 }
                             }
@@ -60,9 +57,9 @@ public class ST1EPlayCardInPhaseRule {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
                                 if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
-                                    if (_game.checkPlayRequirements(card)) {
+                                    if (card.canBePlayed()) {
                                         if (card.getCardType() == CardType.PERSONNEL || card.getCardType() == CardType.SHIP)
-                                            result.add(new ReportCardAction((PhysicalPersonnelCard) card));
+                                            result.add(((PhysicalReportableCard1E) card).createReportCardAction());
                                     }
                                 }
                             }

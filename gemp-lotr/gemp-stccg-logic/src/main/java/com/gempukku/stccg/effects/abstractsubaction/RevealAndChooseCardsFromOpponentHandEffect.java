@@ -43,14 +43,14 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
     @Override
     public boolean isPlayableInFull() {
         return (_actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(_actionContext.getGame(), _opponentId, _playerId))
-                && _actionContext.getGame().getGameState().getHand(_opponentId).size() >= _minChosen;
+                && _actionContext.getGameState().getHand(_opponentId).size() >= _minChosen;
     }
 
     @Override
     public void playEffect() {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _opponentId, _playerId)) {
             List<PhysicalCard> opponentHand = new LinkedList<>(_game.getGameState().getHand(_opponentId));
-            _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " revealed " + _opponentId + " cards in hand - " + getAppendedNames(opponentHand));
+            _game.getGameState().sendMessage(_source.getCardLink() + " revealed " + _opponentId + " cards in hand - " + getAppendedNames(opponentHand));
 
             final PlayOrder playOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_opponentId, false);
             // Skip hand owner (opponent)

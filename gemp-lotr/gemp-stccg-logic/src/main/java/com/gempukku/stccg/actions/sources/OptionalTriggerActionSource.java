@@ -1,0 +1,40 @@
+package com.gempukku.stccg.actions.sources;
+
+import com.gempukku.stccg.actions.OptionalTriggerAction;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.common.filterable.TriggerTiming;
+import com.gempukku.stccg.common.filterable.RequiredType;
+
+public class OptionalTriggerActionSource extends TriggerActionSource {
+    private final TriggerTiming _triggerTiming;
+    private final RequiredType _requiredType = RequiredType.OPTIONAL;
+
+    public OptionalTriggerActionSource() {
+        _triggerTiming = null;
+    }
+
+    public OptionalTriggerActionSource(TriggerTiming triggerTiming) {
+        super();
+        _triggerTiming = triggerTiming;
+    }
+
+    @Override
+    public OptionalTriggerAction createAction(PhysicalCard card) {
+        return new OptionalTriggerAction(card);
+    }
+
+    @Override
+    public OptionalTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
+        if (isValid(actionContext)) {
+            OptionalTriggerAction action = createAction(card);
+            appendActionToContext(action, actionContext);
+            return action;
+        }
+        return null;
+    }
+
+    public TriggerTiming getTiming() { return _triggerTiming; }
+    public RequiredType getRequiredType() { return _requiredType; }
+
+}

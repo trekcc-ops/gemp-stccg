@@ -18,7 +18,7 @@ public class ActivateKillTribblePowerEffect extends ActivateTribblePowerEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         // Choose a player...
-        String[] players = GameUtils.getAllPlayers(_game);
+        String[] players = _game.getAllPlayers();
         if (players.length == 1)
             playerChosen(players[0], _game);
         else

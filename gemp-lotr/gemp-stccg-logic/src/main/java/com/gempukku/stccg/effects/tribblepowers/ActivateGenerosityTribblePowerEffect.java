@@ -21,7 +21,7 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
     protected FullEffectResult playEffectReturningResult() {
         // You and one other player (your choice) each score 25,000 points.
         List<String> opponents = new ArrayList<>();
-        for (String player : GameUtils.getAllPlayers(_game)) {
+        for (String player : _game.getAllPlayers()) {
             if (!Objects.equals(player, _activatingPlayer))
                 opponents.add(player);
         }

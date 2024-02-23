@@ -27,7 +27,7 @@ public class Repeat implements EffectAppenderProducer {
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final int count = amountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
                 if (count > 0) {
-                    SubAction subAction = new SubAction(action);
+                    SubAction subAction = action.createSubAction();
                     for (int i = 0; i < count; i++)
                         effectAppender.appendEffect(cost, subAction, actionContext);
                     return new StackActionEffect(actionContext.getGame(), subAction);

@@ -37,7 +37,7 @@ public class MulliganProcess extends GameProcess {
                                 Set<PhysicalCard> hand = new HashSet<>(gameState.getHand(nextPlayer));
                                 gameState.removeCardsFromZone(nextPlayer, hand);
                                 for (PhysicalCard card : hand)
-                                    gameState.addCardToZone(_game, card, Zone.DRAW_DECK);
+                                    gameState.addCardToZone(card, Zone.DRAW_DECK);
 
                                 gameState.shuffleDeck(nextPlayer);
                                 for (int i = 0; i < handSize - 2; i++)

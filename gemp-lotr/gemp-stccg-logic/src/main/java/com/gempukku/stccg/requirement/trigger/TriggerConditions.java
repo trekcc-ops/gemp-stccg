@@ -89,7 +89,7 @@ public class TriggerConditions {
     public static boolean isDrawingACard(Effect effect, DefaultGame game, String playerId) {
         if (effect.getType() == EffectType.BEFORE_DRAW_CARD) {
             DrawOneCardEffect drawEffect = (DrawOneCardEffect) effect;
-            return effect.getPerformingPlayer().equals(playerId) && drawEffect.canDrawCard(game);
+            return effect.getPerformingPlayer().equals(playerId) && drawEffect.canDrawCard();
         }
         return false;
     }
@@ -106,7 +106,7 @@ public class TriggerConditions {
         if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
             if (effect.getSource() != null && Filters.and(sourceFilter).accepts(game, effect.getSource()))
-                return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(game), game, filters).isEmpty();
+                return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
         return false;
     }
@@ -115,7 +115,7 @@ public class TriggerConditions {
         if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
             if (effect.getSource() != null && !effect.getPerformingPlayer().equals(playerId))
-                return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(game), game, filters).isEmpty();
+                return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
         return false;
     }
@@ -123,7 +123,7 @@ public class TriggerConditions {
     public static boolean isGettingDiscarded(Effect effect, DefaultGame game, Filterable... filters) {
         if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect discardEffect = (PreventableCardEffect) effect;
-            return !Filters.filter(discardEffect.getAffectedCardsMinusPrevented(game), game, filters).isEmpty();
+            return !Filters.filter(discardEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
         return false;
     }

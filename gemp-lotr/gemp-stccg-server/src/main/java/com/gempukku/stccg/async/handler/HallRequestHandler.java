@@ -19,7 +19,6 @@ import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.hall.*;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
-import com.gempukku.stccg.rules.GameUtils;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -306,7 +305,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         result.append("<b>").append(gameFormat.getName()).append("</b>");
         result.append("<ul>");
         result.append("<li>valid sets: ");
-        for (Integer integer : gameFormat.getValidSets())
+        for (Integer integer : gameFormat.getValidSetNums())
             result.append(integer).append(", ");
         result.append("</li>");
         result.append("<li>Ring-bearer skirmish can be cancelled: ");
@@ -361,7 +360,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
         if (!additionalValidCards.isEmpty()) {
             for (String blueprintId : additionalValidCards)
-                result.append(_library.getCardBlueprint(blueprintId).getCardLink(blueprintId)).append(", ");
+                result.append(_library.getCardBlueprint(blueprintId).getCardLink()).append(", ");
             if (additionalValidCards.isEmpty())
                 result.append("none,");
         }

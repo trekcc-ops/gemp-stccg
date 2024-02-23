@@ -2,7 +2,7 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecisionType;
@@ -18,14 +18,14 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void reduceArcheryTotal() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl legolas = new PhysicalCardImpl(_game, 100, "40_52", P1, _cardLibrary.getCardBlueprint("40_52"));
-        PhysicalCardImpl arrowsOfLight = new PhysicalCardImpl(_game, 100, "40_33", P1, _cardLibrary.getCardBlueprint("40_33"));
-        PhysicalCardImpl inquisitor = new PhysicalCardImpl(_game, 100, "1_268", P2, _cardLibrary.getCardBlueprint("1_268"));
+        PhysicalCardGeneric legolas = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("40_52"));
+        PhysicalCardGeneric arrowsOfLight = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("40_33"));
+        PhysicalCardGeneric inquisitor = new PhysicalCardGeneric(_game, 100, P2, _cardLibrary.getCardBlueprint("1_268"));
 
-        _game.getGameState().addCardToZone(_game, inquisitor, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(inquisitor, Zone.SHADOW_CHARACTERS);
 
-        _game.getGameState().addCardToZone(_game, legolas, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, arrowsOfLight, Zone.HAND);
+        _game.getGameState().addCardToZone(legolas, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(arrowsOfLight, Zone.HAND);
 
         skipMulligans();
 
@@ -48,13 +48,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void playedTrigger() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl bruinenUnleashed = new PhysicalCardImpl(_game, 100, "40_37", P1, _cardLibrary.getCardBlueprint("40_37"));
-        PhysicalCardImpl legolas = new PhysicalCardImpl(_game, 100, "40_52", P1, _cardLibrary.getCardBlueprint("40_52"));
-        PhysicalCardImpl nazgul = new PhysicalCardImpl(_game, 100, "40_211", P2, _cardLibrary.getCardBlueprint("40_211"));
+        PhysicalCardGeneric bruinenUnleashed = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("40_37"));
+        PhysicalCardGeneric legolas = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("40_52"));
+        PhysicalCardGeneric nazgul = new PhysicalCardGeneric(_game, 100, P2, _cardLibrary.getCardBlueprint("40_211"));
 
-        _game.getGameState().addCardToZone(_game, legolas, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, bruinenUnleashed, Zone.SUPPORT);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.HAND);
+        _game.getGameState().addCardToZone(legolas, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(bruinenUnleashed, Zone.SUPPORT);
+        _game.getGameState().addCardToZone(nazgul, Zone.HAND);
 
         skipMulligans();
 
@@ -73,13 +73,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void choiceEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl getOutOfTheShire = createCard(P1, "40_320");
-        PhysicalCardImpl merry = createCard(P1, "40_256");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardGeneric getOutOfTheShire = createCard(P1, "40_320");
+        PhysicalCardGeneric merry = createCard(P1, "40_256");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, getOutOfTheShire, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(getOutOfTheShire, Zone.HAND);
+        _game.getGameState().addCardToZone(merry, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -120,11 +120,11 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void conditionalEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl getOutOfTheShire = createCard(P1, "40_320");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardGeneric getOutOfTheShire = createCard(P1, "40_320");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, getOutOfTheShire, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(getOutOfTheShire, Zone.HAND);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         final PhysicalCard frodo = null;
 
@@ -163,13 +163,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void preventableEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl boromir = createCard(P1, "40_101");
-        PhysicalCardImpl gauntlets = createCard(P1, "40_103");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardGeneric boromir = createCard(P1, "40_101");
+        PhysicalCardGeneric gauntlets = createCard(P1, "40_103");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, boromir, Zone.SUPPORT);
-        _game.getGameState().attachCard(_game, gauntlets, boromir);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(boromir, Zone.SUPPORT);
+        _game.getGameState().attachCard(gauntlets, boromir);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -209,13 +209,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void costToEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl celeborn = createCard(P1, "40_38");
-        PhysicalCardImpl celebornInDeck = createCard(P1, "40_38");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardGeneric celeborn = createCard(P1, "40_38");
+        PhysicalCardGeneric celebornInDeck = createCard(P1, "40_38");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, celeborn, Zone.SUPPORT);
+        _game.getGameState().addCardToZone(celeborn, Zone.SUPPORT);
         _game.getGameState().putCardOnTopOfDeck(celebornInDeck);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -242,13 +242,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void costToEffectPass() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        PhysicalCardImpl celeborn = createCard(P1, "40_38");
-        PhysicalCardImpl celebornInDeck = createCard(P1, "40_38");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        PhysicalCardGeneric celeborn = createCard(P1, "40_38");
+        PhysicalCardGeneric celebornInDeck = createCard(P1, "40_38");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, celeborn, Zone.SUPPORT);
+        _game.getGameState().addCardToZone(celeborn, Zone.SUPPORT);
         _game.getGameState().putCardOnTopOfDeck(celebornInDeck);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -274,14 +274,14 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void checkingEventCostsAsRequirements() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl battleFever = createCard(P1, "40_5");
-        final PhysicalCardImpl gimli = createCard(P1, "40_18");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardGeneric battleFever = createCard(P1, "40_5");
+        final PhysicalCardGeneric gimli = createCard(P1, "40_18");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
 
-        _game.getGameState().addCardToZone(_game, gimli, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, battleFever, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(gimli, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(battleFever, Zone.HAND);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -313,15 +313,15 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void discardCardEffect() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl blackBreath = createCard(P2, "40_183");
-        final PhysicalCardImpl athelas = createCard(P1, "40_313");
-        final PhysicalCardImpl athelasInHand = createCard(P1, "40_313");
-        PhysicalCardImpl aragorn = createCard(P1, "40_94");
+        final PhysicalCardGeneric blackBreath = createCard(P2, "40_183");
+        final PhysicalCardGeneric athelas = createCard(P1, "40_313");
+        final PhysicalCardGeneric athelasInHand = createCard(P1, "40_313");
+        PhysicalCardGeneric aragorn = createCard(P1, "40_94");
 
-        _game.getGameState().addCardToZone(_game, aragorn, Zone.FREE_CHARACTERS);
-        _game.getGameState().attachCard(_game, blackBreath, aragorn);
-        _game.getGameState().addCardToZone(_game, athelas, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, athelasInHand, Zone.HAND);
+        _game.getGameState().addCardToZone(aragorn, Zone.FREE_CHARACTERS);
+        _game.getGameState().attachCard(blackBreath, aragorn);
+        _game.getGameState().addCardToZone(athelas, Zone.HAND);
+        _game.getGameState().addCardToZone(athelasInHand, Zone.HAND);
 
         skipMulligans();
 
@@ -341,13 +341,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void strengthBonusDependingOnCharacterPlayedOn() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final PhysicalCardImpl bolsteredSpirits = createCard(P1, "40_67");
-        PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardGeneric gandalf = createCard(P1, "40_70");
+        final PhysicalCardGeneric bolsteredSpirits = createCard(P1, "40_67");
+        PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, bolsteredSpirits, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(gandalf, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(bolsteredSpirits, Zone.HAND);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -375,22 +375,22 @@ public class NewCardsAtTest extends AbstractAtTest {
         playerDecided(P1, "0");
         playerDecided(P1, "");
 
-        assertEquals(7 + 3, _game.getModifiersQuerying().getStrength(_game, gandalf));
+        assertEquals(7 + 3, _game.getModifiersQuerying().getStrength(gandalf));
     }
 
     @Test
     public void strengthBonusDependingOnCharacterPlayedOn2() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final PhysicalCardImpl boromir = createCard(P1, "40_101");
-        final PhysicalCardImpl goBackToTheShadows = createCard(P1, "40_312");
-        final PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardGeneric gandalf = createCard(P1, "40_70");
+        final PhysicalCardGeneric boromir = createCard(P1, "40_101");
+        final PhysicalCardGeneric goBackToTheShadows = createCard(P1, "40_312");
+        final PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, goBackToTheShadows, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(gandalf, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(boromir, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(goBackToTheShadows, Zone.HAND);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
 
         skipMulligans();
 
@@ -417,22 +417,22 @@ public class NewCardsAtTest extends AbstractAtTest {
 
         playerDecided(P1, "0");
 
-        assertEquals(14 - 3, _game.getModifiersQuerying().getStrength(_game, nazgul));
+        assertEquals(14 - 3, _game.getModifiersQuerying().getStrength(nazgul));
     }
 
     @Test
     public void mathProgrammingDiscardBoth() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final PhysicalCardImpl discerment = createCard(P1, "40_68");
-        final PhysicalCardImpl blackBreath = createCard(P2, "40_183");
-        final PhysicalCardImpl blackBreath2 = createCard(P2, "40_183");
+        final PhysicalCardGeneric gandalf = createCard(P1, "40_70");
+        final PhysicalCardGeneric discerment = createCard(P1, "40_68");
+        final PhysicalCardGeneric blackBreath = createCard(P2, "40_183");
+        final PhysicalCardGeneric blackBreath2 = createCard(P2, "40_183");
 
-        _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, discerment, Zone.HAND);
-        _game.getGameState().attachCard(_game, blackBreath, gandalf);
-        _game.getGameState().attachCard(_game, blackBreath2, gandalf);
+        _game.getGameState().addCardToZone(gandalf, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(discerment, Zone.HAND);
+        _game.getGameState().attachCard(blackBreath, gandalf);
+        _game.getGameState().attachCard(blackBreath2, gandalf);
 
         skipMulligans();
 
@@ -451,15 +451,15 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void mathProgrammingDiscardOne() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl gandalf = createCard(P1, "40_70");
-        final PhysicalCardImpl discerment = createCard(P1, "40_68");
-        final PhysicalCardImpl blackBreath = createCard(P2, "40_183");
-        final PhysicalCardImpl blackBreath2 = createCard(P2, "40_183");
+        final PhysicalCardGeneric gandalf = createCard(P1, "40_70");
+        final PhysicalCardGeneric discerment = createCard(P1, "40_68");
+        final PhysicalCardGeneric blackBreath = createCard(P2, "40_183");
+        final PhysicalCardGeneric blackBreath2 = createCard(P2, "40_183");
 
-        _game.getGameState().addCardToZone(_game, gandalf, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, discerment, Zone.HAND);
-        _game.getGameState().attachCard(_game, blackBreath, gandalf);
-        _game.getGameState().attachCard(_game, blackBreath2, gandalf);
+        _game.getGameState().addCardToZone(gandalf, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(discerment, Zone.HAND);
+        _game.getGameState().attachCard(blackBreath, gandalf);
+        _game.getGameState().attachCard(blackBreath2, gandalf);
 
         skipMulligans();
 
@@ -478,13 +478,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void strengthBonus() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl grimbeorn = createCard(P1, "14_6");
-        final PhysicalCardImpl nazgulInHand = createCard(P1, "40_211");
-        final PhysicalCardImpl nazgul = createCard(P2, "40_211");
+        final PhysicalCardGeneric grimbeorn = createCard(P1, "14_6");
+        final PhysicalCardGeneric nazgulInHand = createCard(P1, "40_211");
+        final PhysicalCardGeneric nazgul = createCard(P2, "40_211");
 
-        _game.getGameState().addCardToZone(_game, grimbeorn, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, nazgul, Zone.SHADOW_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, nazgulInHand, Zone.HAND);
+        _game.getGameState().addCardToZone(grimbeorn, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(nazgul, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(nazgulInHand, Zone.HAND);
 
         skipMulligans();
 
@@ -499,11 +499,11 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void roamingDiscount() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl orcAssassin1 = createCard(P2, "1_262");
-        final PhysicalCardImpl orcAssassin2 = createCard(P2, "1_262");
+        final PhysicalCardGeneric orcAssassin1 = createCard(P2, "1_262");
+        final PhysicalCardGeneric orcAssassin2 = createCard(P2, "1_262");
 
-        _game.getGameState().addCardToZone(_game, orcAssassin1, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, orcAssassin2, Zone.HAND);
+        _game.getGameState().addCardToZone(orcAssassin1, Zone.HAND);
+        _game.getGameState().addCardToZone(orcAssassin2, Zone.HAND);
 
         skipMulligans();
 
@@ -526,13 +526,13 @@ public class NewCardsAtTest extends AbstractAtTest {
     public void spotCountChange() throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimplestGame();
 
-        final PhysicalCardImpl merry = createCard(P1, "40_257");
-        final PhysicalCardImpl bilbosPipe = createCard(P1, "40_244");
-        final PhysicalCardImpl pipeweed = createCard(P1, "40_255");
+        final PhysicalCardGeneric merry = createCard(P1, "40_257");
+        final PhysicalCardGeneric bilbosPipe = createCard(P1, "40_244");
+        final PhysicalCardGeneric pipeweed = createCard(P1, "40_255");
 
-        _game.getGameState().addCardToZone(_game, merry, Zone.HAND);
-        _game.getGameState().addCardToZone(_game, pipeweed, Zone.SUPPORT);
-        _game.getGameState().addCardToZone(_game, bilbosPipe, Zone.HAND);
+        _game.getGameState().addCardToZone(merry, Zone.HAND);
+        _game.getGameState().addCardToZone(pipeweed, Zone.SUPPORT);
+        _game.getGameState().addCardToZone(bilbosPipe, Zone.HAND);
 
         skipMulligans();
 

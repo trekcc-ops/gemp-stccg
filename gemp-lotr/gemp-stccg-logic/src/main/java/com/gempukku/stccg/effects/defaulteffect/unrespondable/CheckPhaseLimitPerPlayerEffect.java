@@ -38,7 +38,7 @@ public class CheckPhaseLimitPerPlayerEffect extends UnrespondableEffect {
 
         int incrementedBy = _game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(_card, _playerId + "-" + _limitPrefix, phase).incrementToLimit(_limit, 1);
         if (incrementedBy > 0) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             subAction.appendEffect(
                     _limitedEffect);
             _game.getActionsEnvironment().addActionToStack(subAction);

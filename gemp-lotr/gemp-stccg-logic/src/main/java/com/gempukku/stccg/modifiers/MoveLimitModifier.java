@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
 
@@ -14,7 +13,7 @@ public class MoveLimitModifier extends AbstractModifier {
     }
 
     @Override
-    public int getMoveLimitModifier(DefaultGame game) {
-        return _moveLimitModifier.evaluateExpression(game, null);
+    public int getMoveLimitModifier() {
+        return _moveLimitModifier.evaluateExpression(_game, null);
     }
 }

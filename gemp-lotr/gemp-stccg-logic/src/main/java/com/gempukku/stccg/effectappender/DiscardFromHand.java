@@ -51,7 +51,7 @@ public class DiscardFromHand implements EffectAppenderProducer {
                                 && !game.getModifiersQuerying().canLookOrRevealCardsInHand(game, handPlayer, choosingPlayer))
                             return false;
 
-                        return (!forced || game.getModifiersQuerying().canDiscardCardsFromHand(game, handPlayer, actionContext.getSource()));
+                        return (!forced || game.getModifiersQuerying().canDiscardCardsFromHand(handPlayer, actionContext.getSource()));
                     }
                 });
 

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.game;
 
+import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -64,6 +65,14 @@ public class Player {
 
     public boolean canDiscardFromHand(int count, Filterable... cardFilter) {
         return hasCardInZone(Zone.HAND, count, cardFilter);
+    }
+
+    public boolean hasACopyOfCardInPlay(PhysicalCard card) {
+        for (PhysicalCard cardInPlay : _game.getGameState().getAllCardsInPlay()) {
+            if (cardInPlay.getBlueprint() == card.getBlueprint() && cardInPlay.getOwner() == this)
+                return true;
+        }
+        return false;
     }
 
 }

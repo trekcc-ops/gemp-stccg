@@ -24,20 +24,20 @@ public interface ModifiersQuerying {
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
 
-    Collection<Modifier> getModifiersAffecting(DefaultGame game, PhysicalCard card);
+    Collection<Modifier> getModifiersAffecting(PhysicalCard card);
 
     // Keywords
-    boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
+    boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword);
 
-    int getKeywordCount(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
+    int getKeywordCount(PhysicalCard physicalCard, Keyword keyword);
 
     // Archery
-    int getArcheryTotal(DefaultGame game, Side side, int baseArcheryTotal);
+    int getArcheryTotal(Side side, int baseArcheryTotal);
 
     // Movement
-    int getMoveLimit(DefaultGame game, int baseMoveLimit);
+    int getMoveLimit(int baseMoveLimit);
 
-    boolean addsTwilightForCompanionMove(DefaultGame game, PhysicalCard companion);
+    boolean addsTwilightForCompanionMove(PhysicalCard companion);
 
     // Twilight cost
     int getTwilightCost(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, int twilightCostModifier, boolean ignoreRoamingPenalty);
@@ -45,13 +45,9 @@ public interface ModifiersQuerying {
     int getRoamingPenalty(DefaultGame game, PhysicalCard physicalCard);
 
     // Stats
-    int getStrength(DefaultGame game, PhysicalCard physicalCard);
+    int getStrength(PhysicalCard physicalCard);
 
-    boolean appliesStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget);
-
-    int getResistance(DefaultGame game, PhysicalCard physicalCard);
-
-    int getOverwhelmMultiplier(DefaultGame game, PhysicalCard card);
+    boolean appliesStrengthBonusModifier(PhysicalCard modifierSource, PhysicalCard modifierTarget);
 
     boolean isAdditionalCardType(DefaultGame game, PhysicalCard card, CardType cardType);
 
@@ -62,7 +58,7 @@ public interface ModifiersQuerying {
 
     boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
 
-    boolean canBeHealed(DefaultGame game, PhysicalCard card);
+    boolean canBeHealed(PhysicalCard card);
 
     boolean canAddBurden(DefaultGame game, String performingPlayer, PhysicalCard source);
 
@@ -75,9 +71,9 @@ public interface ModifiersQuerying {
     boolean isValidAssignments(DefaultGame game, Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments);
 
     // Playing actions
-    boolean canPlayAction(DefaultGame game, String performingPlayer, Action action);
+    boolean canPlayAction(String performingPlayer, Action action);
 
-    boolean canNotPlayCard(DefaultGame game, String performingPlayer, PhysicalCard card);
+    boolean canNotPlayCard(String performingPlayer, PhysicalCard card);
 
     boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
 
@@ -98,32 +94,32 @@ public interface ModifiersQuerying {
     // Others
     boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source);
 
-    boolean canBeReturnedToHand(DefaultGame game, PhysicalCard card, PhysicalCard source);
+    boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
     boolean canDrawCardNoIncrement(DefaultGame game, String playerId);
     boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId);
 
     boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
 
-    boolean canDiscardCardsFromHand(DefaultGame game, String playerId, PhysicalCard source);
+    boolean canDiscardCardsFromHand(String playerId, PhysicalCard source);
 
-    boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, PhysicalCard source);
+    boolean canDiscardCardsFromTopOfDeck(String playerId, PhysicalCard source);
 
     boolean canBeLiberated(DefaultGame game, String playerId, PhysicalCard card, PhysicalCard source);
 
-    Side hasInitiative(DefaultGame game);
+    Side hasInitiative();
 
     int getNumberOfSpottableFPCultures(DefaultGame game, String playerId);
 
     int getNumberOfSpottableShadowCultures(DefaultGame game, String playerId);
 
-    int getSpotBonus(DefaultGame game, Filterable filter);
+    int getSpotBonus(Filterable filter);
 
     boolean hasFlagActive(DefaultGame game, ModifierFlag modifierFlag);
 
-    boolean canReplaceSite(DefaultGame game, String playerId, PhysicalCard siteToReplace);
+    boolean canReplaceSite(String playerId, PhysicalCard siteToReplace);
 
-    boolean canPlaySite(DefaultGame game, String playerId);
+    boolean canPlaySite(String playerId);
 
     int getPotentialDiscount(PhysicalCard playedCard);
 

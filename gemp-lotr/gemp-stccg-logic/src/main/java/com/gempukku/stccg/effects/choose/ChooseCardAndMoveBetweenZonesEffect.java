@@ -28,7 +28,7 @@ public class ChooseCardAndMoveBetweenZonesEffect extends ChooseCardsFromZoneEffe
         // ChooseAndPutCardsFromDeckIntoHandEffect
         // ChooseAndPutCardFromDiscardIntoHandEffect
         if (!cards.isEmpty() && _toZone == Zone.HAND) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             for (PhysicalCard card : cards)
                 subAction.appendEffect(new PutCardFromZoneIntoHandEffect(game, card, _fromZone, _reveal));
             game.getActionsEnvironment().addActionToStack(subAction);

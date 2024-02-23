@@ -1,12 +1,9 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.actions.ActionSource;
 import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.actions.OptionalTriggerAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
@@ -15,7 +12,6 @@ import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.processes.TurnProcedure;
-import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.rules.WinConditionRule;
 
 import java.util.*;
@@ -35,7 +31,7 @@ public abstract class DefaultGame {
     // Game code infrastructure
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
-    protected final ModifiersLogic _modifiersLogic = new ModifiersLogic();
+    protected final ModifiersLogic _modifiersLogic = new ModifiersLogic(this);
     protected final DefaultActionsEnvironment _actionsEnvironment;
     protected final UserFeedback _userFeedback;
 
@@ -64,7 +60,7 @@ public abstract class DefaultGame {
     public GameFormat getFormat() {
         return _format;
     }
-    public abstract boolean checkPlayRequirements(PhysicalCard card);
+
     public Set<String> getPlayerIds() { return _allPlayers; }
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
     public boolean isCancelled() { return _cancelled; }
@@ -205,54 +201,6 @@ public abstract class DefaultGame {
             getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
     }
 
-    public CardBlueprintLibrary getCardBlueprintLibrary() { return _library; }
-
-    protected <T> void addAllNotNull(List<T> list, List<? extends T> possiblyNullList) {
-        if (possiblyNullList != null)
-            list.addAll(possiblyNullList);
-    }
-
-    public List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult,
-                                                                      PhysicalCard card) {
-        return getOptionalAfterTriggerActions(playerId, effectResult, card, card);
-    }
-
-    public List<OptionalTriggerAction> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult,
-                                                                      PhysicalCard copyFilterCard, PhysicalCard origCard) {
-        List<OptionalTriggerAction> result = null;
-
-        if (copyFilterCard.getBlueprint().getOptionalAfterTriggers() != null) {
-            result = new LinkedList<>();
-            for (ActionSource optionalAfterTrigger : copyFilterCard.getBlueprint().getOptionalAfterTriggers()) {
-                DefaultActionContext actionContext = new DefaultActionContext(
-                        playerId, this, copyFilterCard, effectResult,null);
-                if (optionalAfterTrigger.isValid(actionContext)) {
-                    OptionalTriggerAction action = new OptionalTriggerAction(origCard);
-                    optionalAfterTrigger.createAction(action, actionContext);
-                    result.add(action);
-                }
-            }
-
-        }
-
-        if (copyFilterCard.getBlueprint().getCopiedFilters() != null) {
-            if (result == null)
-                result = new LinkedList<>();
-            for (FilterableSource copiedFilter : copyFilterCard.getBlueprint().getCopiedFilters()) {
-                DefaultActionContext actionContext = new DefaultActionContext(
-                        playerId, this, copyFilterCard, effectResult,null);
-                final PhysicalCard firstActive = Filters.findFirstActive(
-                        this, copiedFilter.getFilterable(actionContext)
-                );
-                if (firstActive != null)
-                    addAllNotNull(result, getOptionalAfterTriggerActions(playerId, effectResult,
-                            firstActive, origCard));
-            }
-        }
-
-        return result;
-    }
-
     public String[] getAllPlayers() {
         final GameState gameState = getGameState();
         final PlayerOrder playerOrder = gameState.getPlayerOrder();
@@ -267,6 +215,5 @@ public abstract class DefaultGame {
         }
         return result;
     }
-
 
 }

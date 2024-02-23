@@ -20,6 +20,7 @@ public abstract class AbstractModifier implements Modifier {
     protected final Filter _affectFilter;
     protected final Condition _condition;
     private final ModifierEffect _effect;
+    protected final DefaultGame _game;
 
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
@@ -32,6 +33,7 @@ public abstract class AbstractModifier implements Modifier {
         _affectFilter = (affectFilter != null) ? Filters.and(affectFilter) : null;
         _condition = condition;
         _effect = effect;
+        _game = source.getGame();
     }
 
     @Override
@@ -50,7 +52,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public String getText(DefaultGame game, PhysicalCard self) {
+    public String getText(PhysicalCard self) {
         return _text;
     }
 
@@ -60,8 +62,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean affectsCard(DefaultGame game, PhysicalCard physicalCard) {
-        return (_affectFilter != null && _affectFilter.accepts(game, physicalCard));
+    public boolean affectsCard(PhysicalCard physicalCard) {
+        return (_affectFilter != null && _affectFilter.accepts(_game, physicalCard));
     }
 
     @Override
@@ -75,12 +77,12 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean hasKeyword(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
+    public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
         return false;
     }
 
     @Override
-    public int getKeywordCountModifier(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
+    public int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword) {
         return 0;
     }
 
@@ -90,7 +92,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getStrengthModifier(DefaultGame game, PhysicalCard physicalCard) {
+    public int getStrengthModifier(PhysicalCard physicalCard) {
         return 0;
     }
 
@@ -105,7 +107,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getResistanceModifier(DefaultGame game, PhysicalCard physicalCard) {
+    public int getResistanceModifier(PhysicalCard physicalCard) {
         return 0;
     }
 
@@ -120,7 +122,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getTwilightCostModifier(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
+    public int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
         return 0;
     }
 
@@ -173,7 +175,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getMoveLimitModifier(DefaultGame game) {
+    public int getMoveLimitModifier() {
         return 0;
     }
 
@@ -292,7 +294,7 @@ public abstract class AbstractModifier implements Modifier {
         return true;
     }
 
-    public boolean canPlayCardOutOfSequence(DefaultGame game, PhysicalCard source) { return false; }
+    public boolean canPlayCardOutOfSequence(PhysicalCard source) { return false; }
     @Override
     public boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, PhysicalCard source) {
         return true;
@@ -304,7 +306,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean hasFlagActive(DefaultGame game, ModifierFlag modifierFlag) {
+    public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return false;
     }
 
@@ -324,7 +326,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public Side hasInitiative(DefaultGame game) {
+    public Side hasInitiative() {
         return null;
     }
 

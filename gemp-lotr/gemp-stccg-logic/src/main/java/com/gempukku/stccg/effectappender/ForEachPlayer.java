@@ -12,6 +12,8 @@ import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.rules.GameUtils;
 import org.json.simple.JSONObject;
 
+import java.util.Arrays;
+
 public class ForEachPlayer implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
@@ -23,30 +25,22 @@ public class ForEachPlayer implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                SubAction subAction = new SubAction(action);
-                for (String playerId : GameUtils.getAllPlayers(actionContext.getGame())) {
-                    for (EffectAppender effectAppender : effectAppenders) {
-                        DefaultActionContext playerActionContext = new DefaultActionContext(actionContext, playerId,
-                                actionContext.getGame(), actionContext.getSource(), actionContext.getEffectResult(),
-                                actionContext.getEffect());
-                        effectAppender.appendEffect(cost, action, playerActionContext);
-                    }
+                SubAction subAction = action.createSubAction();
+                for (String playerId : actionContext.getGame().getAllPlayers()) {
+                    Arrays.stream(effectAppenders).forEach(effectAppender ->
+                            effectAppender.appendEffect(cost, action, actionContext.createDelegateContext(playerId)));
                 }
                 return new StackActionEffect(actionContext.getGame(), subAction);
             }
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                for (String playerId : GameUtils.getAllPlayers(actionContext.getGame())) {
+                for (String playerId : actionContext.getGame().getAllPlayers()) {
                     for (EffectAppender effectAppender : effectAppenders) {
-                        DefaultActionContext playerActionContext = new DefaultActionContext(actionContext, playerId,
-                                actionContext.getGame(), actionContext.getSource(), actionContext.getEffectResult(),
-                                actionContext.getEffect());
-                        if (!effectAppender.isPlayableInFull(playerActionContext))
+                        if (!effectAppender.isPlayableInFull(actionContext.createDelegateContext(playerId)))
                             return false;
                     }
                 }
-
                 return true;
             }
         };

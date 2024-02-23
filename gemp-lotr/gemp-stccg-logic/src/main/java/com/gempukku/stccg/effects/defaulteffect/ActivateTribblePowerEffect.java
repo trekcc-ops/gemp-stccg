@@ -36,7 +36,7 @@ public abstract class ActivateTribblePowerEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Activated " + GameUtils.getCardLink(_source);
+        return "Activated " + _source.getCardLink();
     }
 
     public PhysicalCard getSource() {

@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.actions.PlayEventAction;
 
 import java.util.Collections;
@@ -35,9 +34,10 @@ public class StackPlayedEventOnACardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             PhysicalCard eventPlayed = _action.getEventPlayed();
-            _game.getGameState().sendMessage(_action.getPerformingPlayer() + " stacks " + GameUtils.getCardLink(eventPlayed) + " on " + GameUtils.getCardLink(_stackOn));
+            _game.getGameState().sendMessage(_action.getPerformingPlayer() + " stacks " + eventPlayed.getCardLink() +
+                    " on " + _stackOn.getCardLink());
             _game.getGameState().removeCardsFromZone(eventPlayed.getOwnerName(), Collections.singletonList(eventPlayed));
-            _game.getGameState().stackCard(_game, eventPlayed, _stackOn);
+            _game.getGameState().stackCard(eventPlayed, _stackOn);
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);

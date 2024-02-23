@@ -62,13 +62,13 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
     @Override
     public boolean isPlayableInFull() {
         return Filters.filter(
-                _actionContext.getGame().getGameState().getDiscard(_playerId), _actionContext.getGame(), _cardFilter
+                _actionContext.getGameState().getDiscard(_playerId), _actionContext.getGame(), _cardFilter
         ).size() >= _count;
     }
 
     @Override
-    public int getMaximumPossibleDiscount(DefaultGame game) {
-        return Filters.filter(game.getGameState().getDiscard(_playerId), game, _cardFilter).size();
+    public int getMaximumPossibleDiscount() {
+        return Filters.filter(_actionContext.getGameState().getDiscard(_playerId), _actionContext.getGame(), _cardFilter).size();
     }
 
     @Override
@@ -108,9 +108,9 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
 
         game.getGameState().removeCardsFromZone(_playerId, removedCards);
         for (PhysicalCard removedCard : removedCards)
-            game.getGameState().addCardToZone(game, removedCard, Zone.REMOVED);
+            game.getGameState().addCardToZone(removedCard, Zone.REMOVED);
 
-        game.getGameState().sendMessage(_playerId + " removed " + GameUtils.getAppendedNames(removedCards) + " from discard using " + GameUtils.getCardLink(_source));
+        game.getGameState().sendMessage(_playerId + " removed " + GameUtils.getConcatenatedCardLinks(removedCards) + " from discard using " + _source.getCardLink());
         discountPaidCallback(removedCards.size());
     }
 

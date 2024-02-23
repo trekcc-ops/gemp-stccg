@@ -10,21 +10,18 @@ import com.google.common.collect.Iterables;
 
 import java.util.Set;
 
-public class PhysicalNounCard1E extends PhysicalCard {
+public class PhysicalNounCard1E extends ST1EPhysicalCard {
     protected Set<Affiliation> _affiliationOptions;
     protected Affiliation _currentAffiliation; // TODO - NounCard class may include Equipment or other cards with no affiliation
     protected Quadrant _nativeQuadrant;
-    protected final ST1EGame _game;
-    public PhysicalNounCard1E(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
-        super(cardId, blueprintId, owner, blueprint);
+    public PhysicalNounCard1E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+        super(game, cardId, owner, blueprint);
         _affiliationOptions = blueprint.getAffiliations();
         if (_affiliationOptions.size() == 1)
             _currentAffiliation = Iterables.getOnlyElement(_affiliationOptions);
         _nativeQuadrant = blueprint.getQuadrant();
-        _game = game;
     }
-    @Override
-    public ST1EGame getGame() { return _game; }
+
     public boolean isMultiAffiliation() { return _affiliationOptions.size() > 1; }
     public Affiliation getCurrentAffiliation() { return _currentAffiliation; }
     public void setCurrentAffiliation(Affiliation affiliation) { _currentAffiliation = affiliation; }

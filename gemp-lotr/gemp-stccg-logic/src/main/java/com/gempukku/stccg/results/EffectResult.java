@@ -1,12 +1,13 @@
 package com.gempukku.stccg.results;
 
 import com.gempukku.stccg.actions.OptionalTriggerAction;
+import com.gempukku.stccg.actions.Action;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class EffectResult {
-    private final Set<String> _optionalTriggersUsed = new HashSet<>();
+    private final Set<Action> _optionalTriggersUsed = new HashSet<>();
 
     public enum Type {
         // May be relevant to multiple games
@@ -39,12 +40,12 @@ public abstract class EffectResult {
         return _type;
     }
 
-    public void optionalTriggerUsed(OptionalTriggerAction action) {
-        _optionalTriggersUsed.add(action.getTriggerIdentifier());
+    public void optionalTriggerUsed(Action action) {
+        _optionalTriggersUsed.add(action);
     }
 
-    public boolean wasOptionalTriggerUsed(OptionalTriggerAction action) {
-        return _optionalTriggersUsed.contains(action.getTriggerIdentifier());
+    public boolean wasOptionalTriggerUsed(Action action) {
+        return _optionalTriggersUsed.contains(action);
     }
 
     public String getPlayer() { return _playerId; }

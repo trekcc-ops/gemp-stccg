@@ -26,7 +26,7 @@ public class LookAtTopCardsOfDrawDeck implements EffectAppenderProducer {
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String deckId = playerSource.getPlayerId(actionContext);
 
-                return actionContext.getGame().getGameState().getDrawDeck(deckId).size() >= count;
+                return actionContext.getGameState().getDrawDeck(deckId).size() >= count;
             }
 
             @Override

@@ -21,7 +21,7 @@ public class CardsInDeckCount extends RequirementProducer {
             final String player = playerSource.getPlayerId(actionContext);
             final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-            return actionContext.getGame().getGameState().getDrawDeck(player).size() == count;
+            return actionContext.getGameState().getDrawDeck(player).size() == count;
         };
     }
 }

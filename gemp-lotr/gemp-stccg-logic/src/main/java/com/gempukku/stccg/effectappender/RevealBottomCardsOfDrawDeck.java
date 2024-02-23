@@ -28,7 +28,7 @@ public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
                 final String deckId = playerSource.getPlayerId(actionContext);
                 final int count = valueSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                return actionContext.getGame().getGameState().getDrawDeck(deckId).size() >= count;
+                return actionContext.getGameState().getDrawDeck(deckId).size() >= count;
             }
 
             @Override

@@ -26,7 +26,7 @@ public class ActivatePhaseActionsRule {
                         List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard : Filters.filter(actionsEnvironment.getGame().getGameState().getAllCardsInPlay(), actionsEnvironment.getGame(), getActivatableCardsFilter(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends ActivateCardAction> actions = activatableCard.getPhaseActionsInPlay(playerId);
+                                final List<? extends Action> actions = activatableCard.getPhaseActionsInPlay(playerId);
                                 if (actions != null)
                                     result.addAll(actions);
 

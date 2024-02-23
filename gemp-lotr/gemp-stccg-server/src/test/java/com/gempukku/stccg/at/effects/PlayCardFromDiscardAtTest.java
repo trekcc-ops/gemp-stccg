@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import org.junit.Test;
@@ -16,15 +16,15 @@ public class PlayCardFromDiscardAtTest extends AbstractAtTest {
     public void cantPlayCardDiscardedWithTheyAreComing() throws Exception {
         initializeSimplestGame();
 
-        final PhysicalCardImpl theyAreComing = createCard(P2,  "1_196");
-        final PhysicalCardImpl goblinSneakInDiscard = createCard(P2, "1_181");
+        final PhysicalCardGeneric theyAreComing = createCard(P2,  "1_196");
+        final PhysicalCardGeneric goblinSneakInDiscard = createCard(P2, "1_181");
 
-        _game.getGameState().addCardToZone(_game, theyAreComing, Zone.SUPPORT);
-        _game.getGameState().addCardToZone(_game, goblinSneakInDiscard, Zone.DISCARD);
+        _game.getGameState().addCardToZone(theyAreComing, Zone.SUPPORT);
+        _game.getGameState().addCardToZone(goblinSneakInDiscard, Zone.DISCARD);
 
         for (int i = 0; i < 3; i++) {
-            final PhysicalCardImpl goblinRunner = createCard(P2, "1_178");
-            _game.getGameState().addCardToZone(_game, goblinRunner, Zone.HAND);
+            final PhysicalCardGeneric goblinRunner = createCard(P2, "1_178");
+            _game.getGameState().addCardToZone(goblinRunner, Zone.HAND);
         }
 
         skipMulligans();
@@ -59,14 +59,14 @@ public class PlayCardFromDiscardAtTest extends AbstractAtTest {
         playerDecided(P1, "");
         playerDecided(P2, "");
 
-        final PhysicalCardImpl goblinRunner = createCard(P2, "1_178");
-        _game.getGameState().addCardToZone(_game, goblinRunner, Zone.HAND);
+        final PhysicalCardGeneric goblinRunner = createCard(P2, "1_178");
+        _game.getGameState().addCardToZone(goblinRunner, Zone.HAND);
 
-        final PhysicalCardImpl balrog = createCard(P2,  "2_52");
-        _game.getGameState().addCardToZone(_game, balrog, Zone.HAND);
+        final PhysicalCardGeneric balrog = createCard(P2,  "2_52");
+        _game.getGameState().addCardToZone(balrog, Zone.HAND);
 
-        final PhysicalCardImpl goblinSneakInDiscard = createCard(P2, "1_181");
-        _game.getGameState().addCardToZone(_game, goblinSneakInDiscard, Zone.DISCARD);
+        final PhysicalCardGeneric goblinSneakInDiscard = createCard(P2, "1_181");
+        _game.getGameState().addCardToZone(goblinSneakInDiscard, Zone.DISCARD);
 
         _game.getGameState().setTwilight(18);
 
@@ -95,14 +95,14 @@ public class PlayCardFromDiscardAtTest extends AbstractAtTest {
         playerDecided(P1, "");
         playerDecided(P2, "");
 
-        final PhysicalCardImpl goblinRunner = createCard(P2, "1_178");
-        _game.getGameState().addCardToZone(_game, goblinRunner, Zone.HAND);
+        final PhysicalCardGeneric goblinRunner = createCard(P2, "1_178");
+        _game.getGameState().addCardToZone(goblinRunner, Zone.HAND);
 
-        final PhysicalCardImpl balrog = createCard(P2,  "2_52");
-        _game.getGameState().addCardToZone(_game, balrog, Zone.HAND);
+        final PhysicalCardGeneric balrog = createCard(P2,  "2_52");
+        _game.getGameState().addCardToZone(balrog, Zone.HAND);
 
-        final PhysicalCardImpl goblinSneakInDiscard = createCard(P2, "1_181");
-        _game.getGameState().addCardToZone(_game, goblinSneakInDiscard, Zone.DISCARD);
+        final PhysicalCardGeneric goblinSneakInDiscard = createCard(P2, "1_181");
+        _game.getGameState().addCardToZone(goblinSneakInDiscard, Zone.DISCARD);
 
         _game.getGameState().setTwilight(20);
 

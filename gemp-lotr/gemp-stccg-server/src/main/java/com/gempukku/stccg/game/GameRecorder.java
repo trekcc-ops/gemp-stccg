@@ -43,7 +43,7 @@ public class GameRecorder {
     }
 
 
-    public GameRecordingInProgress recordGame(CardGameMediator<DefaultGame> game, GameFormat format,
+    public GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
                                               final String tournamentName, final Map<String, CardDeck> decks) {
         final ZonedDateTime startDate = ZonedDateTime.now(ZoneOffset.UTC);
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();

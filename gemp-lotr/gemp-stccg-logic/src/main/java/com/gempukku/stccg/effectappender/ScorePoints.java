@@ -28,7 +28,7 @@ public class ScorePoints implements EffectAppenderProducer {
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect() {
-                        actionContext.getGame().getGameState().addToPlayerScore(scoringPlayer, points);
+                        actionContext.getGameState().addToPlayerScore(scoringPlayer, points);
                     }
                 };
             }

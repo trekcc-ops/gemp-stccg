@@ -10,11 +10,13 @@ public class CancelActivatedEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final ActivateCardResult _effect;
     private final DefaultGame _game;
+    private final PhysicalCard _effectSource;
 
     public CancelActivatedEffect(DefaultGame game, PhysicalCard source, ActivateCardResult effect) {
         _source = source;
         _effect = effect;
         _game = game;
+        _effectSource = effect.getSource();
     }
 
     @Override
@@ -23,14 +25,13 @@ public class CancelActivatedEffect extends DefaultEffect {
     }
 
     @Override
-    public String getText() {
-        return "Cancel effect of " + _effect.getSource().getFullName();
-    }
+    public String getText() { return "Cancel effect of " + _effectSource.getFullName(); }
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " cancels effect - " + GameUtils.getCardLink(_effect.getSource()));
+            _game.getGameState().sendMessage(_source.getCardLink() + " cancels effect - " +
+                    _effectSource.getCardLink());
             _effect.cancelEffect();
             return new FullEffectResult(true);
         }

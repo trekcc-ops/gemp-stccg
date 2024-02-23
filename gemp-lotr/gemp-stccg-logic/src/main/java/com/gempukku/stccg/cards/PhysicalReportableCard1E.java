@@ -1,14 +1,15 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ReportCardAction;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.ST1ELocation;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
-    public PhysicalReportableCard1E(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, blueprintId, owner, blueprint);
+    public PhysicalReportableCard1E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+        super(game, cardId, owner, blueprint);
     }
     public boolean canReportToFacility(PhysicalFacilityCard facility) {
         for (Affiliation affiliation : _affiliationOptions)
@@ -27,18 +28,12 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
             return false;
     }
 
-    @Override
-    public boolean canBePlayed() {
-        for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
-            for (PhysicalFacilityCard facility : location.getOutposts())
-                if (this.canReportToFacility(facility))
-                    return true;
-        }
-        return false;
-    }
-
     public void reportToFacility(PhysicalFacilityCard facility) {
         setCurrentLocation(facility.getLocation());
-        _game.getGameState().attachCard(_game, this, facility);
+        _game.getGameState().attachCard(this, facility);
+    }
+
+    public Action createReportCardAction() {
+        return new ReportCardAction(this);
     }
 }

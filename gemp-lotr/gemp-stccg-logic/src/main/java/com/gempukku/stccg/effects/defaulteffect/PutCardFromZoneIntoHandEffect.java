@@ -6,7 +6,6 @@ import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.results.DrawCardOrPutIntoHandResult;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
 
@@ -39,7 +38,7 @@ public class PutCardFromZoneIntoHandEffect extends DefaultEffect {
     }
 
     public String chatMessage(PhysicalCard card) {
-        String cardInfoToShow = _reveal ? GameUtils.getCardLink(card) : "a card";
+        String cardInfoToShow = _reveal ? card.getCardLink() : "a card";
         return card.getOwnerName() + " puts " + cardInfoToShow + " from " + _fromZone.getHumanReadable() + " into their hand";
     }
 
@@ -49,7 +48,7 @@ public class PutCardFromZoneIntoHandEffect extends DefaultEffect {
             GameState gameState = _game.getGameState();
             gameState.sendMessage(chatMessage(_card));
             gameState.removeCardsFromZone(_card.getOwnerName(), Collections.singleton(_card));
-            gameState.addCardToZone(_game, _card, Zone.HAND);
+            gameState.addCardToZone(_card, Zone.HAND);
             _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(_card.getOwnerName()));
 
             return new FullEffectResult(true);

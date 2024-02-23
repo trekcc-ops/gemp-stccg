@@ -33,22 +33,12 @@ public class ST2EGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        if (zone == Zone.DRAW_DECK)
-            return this._drawDecks.get(playerId);
-        else if (zone == Zone.DISCARD)
-            return _discards.get(playerId);
-        else if (zone == Zone.HAND)
-            return _hands.get(playerId);
-        else if (zone == Zone.REMOVED)
-            return _removed.get(playerId);
+        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.DISCARD || zone == Zone.REMOVED)
+            return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);
-        else if (zone == Zone.MISSIONS_PILE)
-            return _missionPiles.get(playerId);
         else if (zone == Zone.TABLE)
             return _tableCards.get(playerId);
-        else if (zone == Zone.SEED_DECK)
-            return _seedDecks.get(playerId);
         else // This should never be accessed
             return _inPlay;
     }
@@ -61,15 +51,15 @@ public class ST2EGameState extends GameState {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
-                        subDeck.add(new PhysicalCardImpl(_game, _nextCardId, blueprintId, player, blueprint));
+                        subDeck.add(_library.getCardBlueprint(blueprintId).createPhysicalCard(getGame(),
+                                _nextCardId, player));
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");
                     }
                 }
                 if (entry.getKey() == SubDeck.DRAW_DECK) {
-                    _drawDecks.put(playerId, subDeck);
+                    _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
                     subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
                 } else if (entry.getKey() == SubDeck.SEED_DECK) {
                     _seedDecks.put(playerId, subDeck);
@@ -109,19 +99,19 @@ public class ST2EGameState extends GameState {
             _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));
         }
         refreshSpacelineIndices();
-        addCardToZone(_game, missionCard, Zone.SPACELINE, true, eventType);
+        addCardToZone(missionCard, Zone.SPACELINE, true, eventType);
     }
 
     public void seedFacilityAtLocation(PhysicalFacilityCard card, int spacelineIndex) {
         card.setLocationZoneIndex(spacelineIndex);
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setCurrentLocation(getSpacelineLocations().get(spacelineIndex));
-        addCardToZone(_game, card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
+        addCardToZone(card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
     }
 
     public void reportCardToFacility(PhysicalReportableCard1E cardReported, PhysicalFacilityCard facility) {
         cardReported.setCurrentLocation(facility.getLocation());
-        attachCard(_game, cardReported, facility);
+        attachCard(cardReported, facility);
     }
 
     public void refreshSpacelineIndices() {
@@ -193,7 +183,7 @@ public class ST2EGameState extends GameState {
     }
 
     @Override
-    protected void sendStateToPlayer(String playerId, GameStateListener listener, GameStats gameStats) {
+    protected void sendStateToPlayer(String playerId, GameStateListener listener) {
         if (_playerOrder != null) {
             listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
             if (_currentPlayerId != null)
@@ -234,16 +224,14 @@ public class ST2EGameState extends GameState {
                 }
             } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
-            List<PhysicalCard> hand = _hands.get(playerId);
-            if (hand != null) hand.forEach(listener::putCardIntoPlay);
+            _cardGroups.get(Zone.HAND).get(playerId).forEach(listener::putCardIntoPlay);
 
             List<PhysicalCard> missionPile = _missionPiles.get(playerId);
             if (missionPile != null) missionPile.forEach(listener::putCardIntoPlay);
 
-            List<PhysicalCard> discard = _discards.get(playerId);
-            if (discard != null) discard.forEach(listener::putCardIntoPlay);
+            _cardGroups.get(Zone.DISCARD).get(playerId).forEach(listener::putCardIntoPlay);
 
-            listener.sendGameStats(gameStats);
+            listener.sendGameStats(getGame().getTurnProcedure().getGameStats());
         }
 
         for (String lastMessage : _lastMessages)

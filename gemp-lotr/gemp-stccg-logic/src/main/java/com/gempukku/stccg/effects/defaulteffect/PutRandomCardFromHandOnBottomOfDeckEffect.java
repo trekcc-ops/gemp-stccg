@@ -32,7 +32,7 @@ public class PutRandomCardFromHandOnBottomOfDeckEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             GameState gameState = _game.getGameState();
-            final List<PhysicalCard> randomCards = GameUtils.getRandomCards(gameState.getHand(_playerId), 1);
+            final List<PhysicalCard> randomCards = GameUtils.getRandomFromList(gameState.getHand(_playerId), 1);
             for (PhysicalCard randomCard : randomCards) {
                 gameState.sendMessage(randomCard.getOwnerName() + " puts a card at random from hand on bottom of their deck");
                 gameState.removeCardsFromZone(randomCard.getOwnerName(), Collections.singleton(randomCard));

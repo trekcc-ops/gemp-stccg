@@ -48,8 +48,8 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends DefaultEffect i
         while ((drawn < _count) && (!_prevented) && (!_game.getGameState().getDrawDeck(_playerId).isEmpty())) {
             PhysicalCard card = _game.getGameState().getDrawDeck(_playerId).get(0);
             _game.getGameState().removeCardsFromZone(null, Collections.singleton(card));
-            _game.getGameState().addCardToZone(_game, card, Zone.PLAY_PILE);
-            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + GameUtils.getCardLink(card) + " from the top of their draw deck on top of their play pile");
+            _game.getGameState().addCardToZone(card, Zone.PLAY_PILE);
+            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + card.getCardLink() + " from the top of their draw deck on top of their play pile");
             drawn++;
         }
 
@@ -65,7 +65,7 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect extends DefaultEffect i
     }
 
     @Override
-    public boolean isPrevented(DefaultGame game) {
+    public boolean isPrevented() {
         return _prevented;
     }
 }

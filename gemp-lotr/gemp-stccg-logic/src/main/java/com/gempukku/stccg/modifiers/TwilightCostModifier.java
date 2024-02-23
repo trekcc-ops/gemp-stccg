@@ -2,7 +2,6 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.evaluator.Evaluator;
@@ -24,8 +23,8 @@ public class TwilightCostModifier extends AbstractModifier {
     }
 
     @Override
-    public String getText(DefaultGame game, PhysicalCard self) {
-        final int value = _evaluator.evaluateExpression(game, self);
+    public String getText(PhysicalCard self) {
+        final int value = _evaluator.evaluateExpression(_game, self);
         if (value >= 0)
             return "Twilight cost +" + value;
         else
@@ -33,7 +32,7 @@ public class TwilightCostModifier extends AbstractModifier {
     }
 
     @Override
-    public int getTwilightCostModifier(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
-        return _evaluator.evaluateExpression(game, physicalCard);
+    public int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
+        return _evaluator.evaluateExpression(_game, physicalCard);
     }
 }

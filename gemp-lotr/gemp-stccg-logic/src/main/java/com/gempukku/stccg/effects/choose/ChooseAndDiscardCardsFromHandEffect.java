@@ -66,7 +66,7 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
 
     @Override
     public void playEffect() {
-        if (_forced && !_game.getModifiersQuerying().canDiscardCardsFromHand(_game, _playerId, _action.getActionSource()))
+        if (_forced && !_game.getModifiersQuerying().canDiscardCardsFromHand(_playerId, _action.getActionSource()))
             return;
 
         Collection<PhysicalCard> hand = Filters.filter(_game.getGameState().getHand(_playerId), _game, _filter);
@@ -76,7 +76,7 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
         if (maximum == 0) {
             cardsBeingDiscardedCallback(Collections.emptySet());
         } else if (hand.size() <= minimum) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             subAction.appendEffect(new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.HAND, _playerId, hand, _forced));
             processSubAction(_game, subAction);
             cardsBeingDiscardedCallback(hand);
@@ -86,7 +86,7 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                            SubAction subAction = new SubAction(_action);
+                            SubAction subAction = _action.createSubAction();
                             subAction.appendEffect(new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.HAND, _playerId, cards, _forced));
                             processSubAction(_game, subAction);
                             cardsBeingDiscardedCallback(cards);

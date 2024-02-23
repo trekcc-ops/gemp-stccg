@@ -29,7 +29,7 @@ public class CanPlayStackedCards implements ModifierSourceProducer {
                 new RequirementCondition(requirements, actionContext), ModifierEffect.EXTRA_ACTION_MODIFIER) {
             @Override
             public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card) {
-                if (game.checkPlayRequirements(card))
+                if (card.canBePlayed())
                     return Collections.singletonList(
                             card.getPlayCardAction(0, Filters.any, false));
                 return null;

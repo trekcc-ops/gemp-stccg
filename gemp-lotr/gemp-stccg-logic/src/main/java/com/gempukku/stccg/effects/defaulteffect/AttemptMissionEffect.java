@@ -10,15 +10,9 @@ import com.gempukku.stccg.game.Player;
 import java.util.*;
 
 public class AttemptMissionEffect extends DefaultEffect {
-    private final Player _player;
-    private final AwayTeam _awayTeam;
-    private final PhysicalMissionCard _missionCard;
     private final DefaultGame _game;
 
     public AttemptMissionEffect(Player player, AwayTeam awayTeam, PhysicalMissionCard missionCard) {
-        _player = player;
-        _awayTeam = awayTeam;
-        _missionCard = missionCard;
         _game = player.getGame();
     }
 
@@ -77,5 +71,19 @@ public class AttemptMissionEffect extends DefaultEffect {
             return false;
         }
     }
+    /* NOTES FOR mission req AND/OR
+
+    orCondition(andCondition(Diplomacy,orCondition(Sarek,Spock),Mindmeld),Guinan)
+
+    REQ 1 - andCondition(Diplomacy,orCondition(Sarek,Spock),Mindmeld)
+    REQ 2 - Guinan
+
+    REQ 1 - [Diplomacy, orCondition(Sarek,Spock), Mindmeld]
+    REQ 2 - Guinan
+
+    for (Condition : REQ 1)
+
+
+     */
 
 }

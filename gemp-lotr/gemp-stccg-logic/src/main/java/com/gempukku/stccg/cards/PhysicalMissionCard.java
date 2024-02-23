@@ -13,27 +13,21 @@ import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PhysicalMissionCard extends PhysicalCard {
+public class PhysicalMissionCard extends ST1EPhysicalCard {
     private Quadrant _quadrant;
     private ST1ELocation _location = null;
-    private final ST1EGame _game;
     private final int _pointsShown;
     private MissionType _missionType;
     private final boolean _hasNoPointBox;
-    public PhysicalMissionCard(ST1EGame game, int cardId, String blueprintId, Player owner, CardBlueprint blueprint) {
-        super(cardId, blueprintId, owner, blueprint);
+    public PhysicalMissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+        super(game, cardId, owner, blueprint);
         _quadrant = blueprint.getQuadrant();
-        _game = game;
         _missionType = blueprint.getMissionType();
         _hasNoPointBox = blueprint.hasNoPointBox();
         _pointsShown = blueprint.getPointsShown();
     }
-
-    @Override
-    public ST1EGame getGame() { return _game; }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {
         if (Objects.equals(playerId, _ownerName)) {
@@ -121,7 +115,7 @@ public class PhysicalMissionCard extends PhysicalCard {
             if (awayTeamCount > 0) {
                 getAwayTeamsOnSurface().forEach(awayTeam -> {
                             sb.append("<br><b>Away Team:</b> (").append(awayTeam.getPlayerId()).append(") ");
-                            sb.append(GameUtils.getAppendedNames(awayTeam.getCards()));
+                            sb.append(GameUtils.getConcatenatedCardLinks(awayTeam.getCards()));
                         }
                         );
             }
@@ -140,8 +134,9 @@ public class PhysicalMissionCard extends PhysicalCard {
     public List<? extends Action> getPhaseActionsInPlay(Player player) {
         List<Action> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
-            if (mayBeAttemptedByPlayer(player))
-                actions.add(new AttemptMissionAction(player, this));
+            Action action = new AttemptMissionAction(player, this);
+            if (action.canBeInitiated())
+                actions.add(action);
         }
         return actions;
     }

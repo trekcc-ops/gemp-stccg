@@ -39,7 +39,7 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
             for (Map.Entry<String, Integer> playerBid : _bids.entrySet())
                 _game.getGameState().sendMessage(playerBid.getKey() + " bid " + playerBid.getValue());
         }
-        checkForNextSeating(_game);
+        checkForNextSeating();
     }
 
     private int getLastEmptySeat() {
@@ -56,10 +56,10 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
         return emptySeatIndex;
     }
 
-    private void checkForNextSeating(DefaultGame game) {
+    private void checkForNextSeating() {
         int lastEmptySeat = getLastEmptySeat();
         if (lastEmptySeat == -1)
-            askNextPlayerToChoosePlace(game);
+            askNextPlayerToChoosePlace();
         else {
             _orderedPlayers[lastEmptySeat] = _biddingOrderPlayers.next();
             _playerOrderFeedback.setPlayerOrder(new PlayerOrder(Arrays.asList(_orderedPlayers)), _orderedPlayers[0]);
@@ -74,20 +74,20 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
         return result.toArray(new String[0]);
     }
 
-    private void participantHasChosenSeat(DefaultGame game, String participant, int placeIndex) {
+    private void participantHasChosenSeat(String participant, int placeIndex) {
         _orderedPlayers[placeIndex] = participant;
 
-        checkForNextSeating(game);
+        checkForNextSeating();
     }
 
-    private void askNextPlayerToChoosePlace(final DefaultGame game) {
+    private void askNextPlayerToChoosePlace() {
         final String playerId = _biddingOrderPlayers.next();
-        game.getUserFeedback().sendAwaitingDecision(playerId,
+        _game.getUserFeedback().sendAwaitingDecision(playerId,
                 new MultipleChoiceAwaitingDecision(1, "Choose one", getEmptySeatNumbers()) {
                     @Override
                     protected void validDecisionMade(int index, String result) {
-                        game.getGameState().sendMessage(playerId + " has chosen to go " + _choices[index]);
-                        participantHasChosenSeat(game, playerId, index);
+                        _game.getGameState().sendMessage(playerId + " has chosen to go " + _choices[index]);
+                        participantHasChosenSeat(playerId, index);
                     }
                 }
         );

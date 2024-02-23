@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 
 public class HasCardInPlayPile extends RequirementProducer {
     @Override
-    public Requirement<TribblesActionContext> getPlayRequirement(JSONObject object, CardGenerationEnvironment environment)
+    public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment)
             throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(object, "player", "count", "filter");
 
@@ -26,7 +26,7 @@ public class HasCardInPlayPile extends RequirementProducer {
         return (actionContext) -> {
             final String playerId = playerSource.getPlayerId(actionContext);
             final Filterable filterable = filterableSource.getFilterable(actionContext);
-            return actionContext.getGame().getGameState().getPlayer(playerId).hasCardInZone(Zone.PLAY_PILE, count, filterable);
+            return actionContext.getGameState().getPlayer(playerId).hasCardInZone(Zone.PLAY_PILE, count, filterable);
         };
     }
 }

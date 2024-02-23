@@ -3,206 +3,57 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.choose.ChooseCardsOnTableEffect;
-import com.gempukku.stccg.effects.defaulteffect.BeamCardsEffect;
-import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.effects.defaulteffect.BeamOrWalkCardsEffect;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.filters.Filters;
-import com.google.common.collect.Iterables;
 
 import java.util.*;
 
-public class BeamCardsAction extends AbstractCostToEffectAction {
-    private Collection<PhysicalCard> _cardsToBeam;
-    private String _playerId;
-    private PhysicalNounCard1E _cardUsingTransporters;
-    private PhysicalCard _fromCard, _toCard;
-    // TODO - The effects below were TargetingEffects in SWCCG. Do they need to be?
-    private Effect _chooseFromCardEffect, _chooseToCardEffect, _chooseCardsToBeamEffect;
-    private boolean _fromCardChosen, _toCardChosen, _cardsToBeamChosen;
-    private boolean _cardsBeamed;
-    private Effect _beamCardsEffect;
-    private Action _thisAction;
-    Collection<PhysicalCard> _destinationOptions;
+public class BeamCardsAction extends BeamOrWalkAction {
 
-    /**
-     * Creates an action to move cards by beaming.
-     *
-     * @param playerId              the player
-     * @param game                  the game
-     * @param cardUsingTransporters the card whose transporters are being used to beam
-     */
     public BeamCardsAction(Player player, PhysicalNounCard1E cardUsingTransporters) {
-        _performingPlayer = player.getPlayerId();
-        _playerId = _performingPlayer;
-        _cardUsingTransporters = cardUsingTransporters;
-        _thisAction = this;
-        DefaultGame game = player.getGame();
+        super(player, cardUsingTransporters);
+    }
 
-        final GameState gameState = game.getGameState();
-        final ModifiersQuerying modifiersQuerying = game.getModifiersQuerying();
-
-
-        // Get cards that can be beamed
-/*        Filter cardFilter = Filters.and(Filters.your(playerId), Filters.or(Filters.personnel, Filters.equipment),
-                Filters.presentWith(cardUsingTransporters));
-        Collection<PhysicalCard> cardsWithTransporter = Filters.filterActive(game, cardFilter);
-        Collection<PhysicalCard> cardsAtSameLocationNotWithTransporter = Filters.filterActive(
-                game,
-                Filters.your(playerId),
-                Filters.or(Filters.personnel, Filters.equipment),
-                Filters.atSameLocationAs(cardUsingTransporters),
-                Filters.not(Filters.presentWith(cardUsingTransporters))
-        );*/
-
-        // Get potential targets to beam to/from
-        _destinationOptions = Filters.filterActive(
-                game,
-                Filters.atLocation(_cardUsingTransporters.getLocation()),
+    @Override
+    protected Collection<PhysicalCard> getDestinationOptions() {
+            // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
+        return Filters.filterActive(
+                _game,
+                Filters.atLocation(_cardSource.getLocation()),
                 Filters.or(
                         Filters.planetLocation,
                         Filters.and(
                                 Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                Filters.or(Filters.your(player)) // TODO - Add unshielded
+                                Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
                         )
                 )
         );
+    }
 
-        List<PhysicalCard> validFromCards = new ArrayList<>();
+    @Override
+    protected List<PhysicalCard> getValidFromCards() {
+            // Destination options filtered to remove cards with none of your personnel or equipment aboard
+        List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
-            if (!Filters.filter(gameState.getAttachedCards(destinationCard), game, Filters.your(player)).isEmpty())
-                validFromCards.add(destinationCard);
+            if (!Filters.filter(_game.getGameState().getAttachedCards(destinationCard), _game,
+                    Filters.your(_performingPlayer), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
+                // TODO - Doesn't do a compatibility or beamable check, does it need to?
+                cards.add(destinationCard);
         }
-/*
-        // Find all cards that can be beamed using the specified transporters
-        Map<PhysicalCard, List<PhysicalCard>> beamableCards = new HashMap<>();
-        for (PhysicalCard destinationCard : _destinationOptions) {
-            List<PhysicalCard> beamableCardsAtDestination = new ArrayList<>();
-            if (destinationCard.isLocation())
-                beamableCardsAtDestination = Filters.filter(destinationCard.getCardsOnSurface(),
-                        Filters.your(playerId),
-                        Filters.or(Filters.personnel, Filters.equipment));
-            else
-                beamableCardsAtDestination = Filters.filter(destinationCard.getCardsAboard(), Filters.your(playerId),
-                        Filters.or(Filters.personnel, Filters.equipment));
-            beamableCards.put(destinationCard, beamableCardsAtDestination);
-        }
-
-        // Remove any destinations if no cards can be beamed to/from there
-        for (PhysicalCard destination : beamableCards.keySet()) {
-            if (destination == _cardUsingTransporters)
-
-            // TODO - Incomplete logic here
-
-        }
-
-
-        // Figure out which docking bays any of the cards can transit to
-        for (PhysicalCard otherDockingBay : otherDockingBays) {
-            for (PhysicalCard cardAtDockingBay : cardsAtDockingBay) {
-                // Check if card can move to destination card
-                if (Filters.canMoveToUsingDockingBayTransit(cardAtDockingBay, false, 0).accepts(gameState, modifiersQuerying, otherDockingBay)) {
-                    validDockingBays.add(otherDockingBay);
-                    break;
-                }
-            }
-        }
-*/
-        // Choose card beaming from
-        _chooseFromCardEffect = new ChooseCardsOnTableEffect(game, _thisAction, _playerId, "Choose card to beam from",
-                validFromCards) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
-                _fromCardChosen = true;
-                _fromCard = Iterables.getOnlyElement(cardSelected);
-
-                if (_fromCard != _cardUsingTransporters) {
-                    _destinationOptions.clear();
-                    _destinationOptions.add(_cardUsingTransporters);
-                } else {
-                    _destinationOptions.remove(_fromCard);
-                }
-
-                    // Choose card beaming to
-                    _chooseToCardEffect = new ChooseCardsOnTableEffect(game, _thisAction, _playerId, "Choose card to beam to",
-                            _destinationOptions) {
-                        @Override
-                        protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
-                            _toCard = Iterables.getOnlyElement(cardSelected);
-                            _toCardChosen = true;
-
-                            // TODO - No checks here yet to make sure cards can be beamed (compatibility, etc.)
-                            Collection<PhysicalCard> beamableCards =
-                                    Filters.filter(gameState.getAttachedCards(_fromCard), game, Filters.your(player));
-
-                            // Choose cards to transit
-                            _chooseCardsToBeamEffect = new ChooseCardsOnTableEffect(game, _thisAction, _playerId,
-                                    "Choose cards to beam to " + _toCard.getCardLink(), 1,
-                                    Integer.MAX_VALUE, beamableCards) {
-                                @Override
-                                protected void cardsSelected(Collection<PhysicalCard> cards) {
-                                    _cardsToBeamChosen = true;
-                                    _cardsToBeam = cards;
-
-                                    // Transit cards
-                                    _beamCardsEffect = new BeamCardsEffect(_cardsToBeam, _fromCard, _toCard);
-                                }
-                            };
-                        }
-
-                    };
-                }
-        };
+        return cards;
     }
 
     @Override
     public String getText() { return "Beam"; }
 
     @Override
-    public ActionType getActionType() {
-        return ActionType.MOVE_CARDS;
+    protected Effect finalEffect() {
+        return new BeamOrWalkCardsEffect(_cardsToMove, _fromCard, _toCard, _performingPlayerId, getText());
     }
-
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _cardUsingTransporters; }
-    @Override
-    public PhysicalCard getActionSource() { return _cardUsingTransporters; }
-
-    @Override
-    public Effect nextEffect(DefaultGame game) {
-//        if (!isAnyCostFailed()) {
-
-        Effect cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        if (!_fromCardChosen) {
-            appendTargeting(_chooseFromCardEffect);
-            return getNextCost();
-        }
-
-        if (!_toCardChosen) {
-            appendTargeting(_chooseToCardEffect);
-            return getNextCost();
-        }
-
-        if (!_cardsToBeamChosen) {
-            appendTargeting(_chooseCardsToBeamEffect);
-            return getNextCost();
-        }
-
-        if (!_cardsBeamed) {
-            _cardsBeamed = true;
-            return _beamCardsEffect;
-        }
-
-        return getNextEffect();
-    }
-
-    public boolean wasActionCarriedOut() {
-        return _cardsBeamed;
+    public boolean canBeInitiated() {
+        return (!_validFromCards.isEmpty());
     }
 
 }

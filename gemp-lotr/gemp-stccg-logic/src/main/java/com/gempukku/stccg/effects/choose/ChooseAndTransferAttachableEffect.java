@@ -94,7 +94,7 @@ public class ChooseAndTransferAttachableEffect extends DefaultEffect {
                                                 final Set<PhysicalCard> selectedTargets = getSelectedCardsByResponse(result);
                                                 if (selectedTargets.size() == 1) {
                                                     final PhysicalCard selectedTarget = selectedTargets.iterator().next();
-                                                    SubAction subAction = new SubAction(_action);
+                                                    SubAction subAction = _action.createSubAction();
                                                     subAction.appendEffect(
                                                             new TransferPermanentEffect(_game, attachment, selectedTarget) {
                                                                 @Override

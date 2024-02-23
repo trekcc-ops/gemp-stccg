@@ -41,7 +41,7 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
     @Override
     public boolean isPlayableInFull() {
         if (_fromZone == Zone.DRAW_DECK) {
-            if (_forced && !_game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(_game, _playerId, _source))
+            if (_forced && !_game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(_playerId, _source))
                 return false;
         }
         return _game.getGameState().getZoneCards(_playerId, _fromZone).size() >= _count;
@@ -56,12 +56,12 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
                 PhysicalCard card = gameState.removeCardFromEndOfPile(_playerId, _fromZone, _endOfPile);
                 if (card != null) {
                     cardsDiscarded.add(card);
-                    gameState.addCardToZone(_game, card, Zone.DISCARD);
+                    gameState.addCardToZone(card, Zone.DISCARD);
                 }
             }
             if (!cardsDiscarded.isEmpty()) {
                 gameState.sendMessage(_playerId + " discards " + _endOfPile.name().toLowerCase() +
-                        " cards from their " + _fromZone.getHumanReadable() + " - " + GameUtils.getAppendedNames(cardsDiscarded));
+                        " cards from their " + _fromZone.getHumanReadable() + " - " + GameUtils.getConcatenatedCardLinks(cardsDiscarded));
                 cardsDiscardedCallback(cardsDiscarded);
             }
 

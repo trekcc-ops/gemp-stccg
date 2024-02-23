@@ -24,6 +24,6 @@ public class PreventEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return !_preventable.isPrevented(_game);
+        return !_preventable.isPrevented();
     }
 }

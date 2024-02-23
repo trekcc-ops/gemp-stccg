@@ -1,0 +1,33 @@
+// Set 245: Showdown: Four Lights
+
+{
+    245_019: {
+        title: Belcalis
+        type: personnel
+        affiliation: cardassian
+        uniqueness: universal
+        property-logo: tng
+        classification: OFFICER
+        icons: command
+        lore: Typical Cardassian intelligence asset. His undercover team, dressed as monks, attacked a Maquis cell at the Juhraya colony. Later promoted to legate.
+        skill-box: "{SKILL} Leadership {SKILL} Obsidian Order"
+        integrity: 3
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/sfl/19.jpg
+    }
+    245_025: {
+        title: Mekar
+        type: personnel
+        affiliation: cardassian
+        uniqueness: universal
+        property-logo: tng
+        classification: MEDICAL
+        lore: Typical Cardassian working for Gul Madred. Cook and field medic. He provides taspar eggs for nutrition: boiled for the officers, live for the prisoners.
+        skill-box: "{SKILL} Biology {SKILL} Acquisition {SD} Taspar Egg"
+        integrity: 5
+        cunning: 5
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/sfl/25.jpg
+    }
+}

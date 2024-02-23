@@ -33,7 +33,7 @@ public class PotentialDiscount implements EffectProcessor {
                     }
 
                     @Override
-                    public DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext) {
+                    public DiscountEffect getDiscountEffect(CostToEffectAction action, ActionContext actionContext) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
                         return new DiscardCardFromHandDiscountEffect(actionContext, action, filterable) {
                             @Override
@@ -60,7 +60,7 @@ public class PotentialDiscount implements EffectProcessor {
                     }
 
                     @Override
-                    public DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext) {
+                    public DiscountEffect getDiscountEffect(CostToEffectAction action, ActionContext actionContext) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
                         final int max = maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         final int discardCount = discardCountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
@@ -90,7 +90,7 @@ public class PotentialDiscount implements EffectProcessor {
                     }
 
                     @Override
-                    public DiscountEffect getDiscountEffect(CostToEffectAction action, DefaultActionContext actionContext) {
+                    public DiscountEffect getDiscountEffect(CostToEffectAction action, ActionContext actionContext) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
                         final int max = maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
                         final int removeCount = removeCountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());

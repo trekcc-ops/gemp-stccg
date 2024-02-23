@@ -23,7 +23,7 @@ public class ChooseAndPutCardFromStackedOnTopOfDeckEffect extends ChooseStackedC
     @Override
     protected void cardsChosen(DefaultGame game, Collection<PhysicalCard> stackedCards) {
         if (!stackedCards.isEmpty()) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             for (PhysicalCard card : stackedCards)
                 subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(game,true, Zone.STACKED, Zone.DRAW_DECK, EndOfPile.TOP, card));
             game.getActionsEnvironment().addActionToStack(subAction);

@@ -112,4 +112,60 @@
         span: 5
         image-url: https://www.trekcc.org/1e/cardimages/errata/Investigate-Shattered-Space.jpg
     }
+    101_198: {
+        title: Alyssa Ogawa
+        type: personnel
+        affiliation: federation
+        property-logo: tng
+        classification: MEDICAL
+        icons: staff
+        lore: Nurse Alyssa Ogawa is a medical assistant and friend to Dr. Beverly Crusher.
+        skill-box: "{SKILL} Biology"
+        integrity: 7
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/8.jpg
+    }
+    101_199: {
+        title: Benjamin Maxwell
+        type: personnel
+        affiliation: federation
+        property-logo: tng
+        classification: OFFICER
+        icons: command
+        lore: Captain Benjamin Maxwell of the U.S.S. Phoenix is a bitter enemy of the Cardassians.
+        skill-box: "{SKILL} Leadership"
+        integrity: 9
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/18.jpg
+    }
+    101_212: {
+        title: Geordi La Forge
+        type: personnel
+        affiliation: federation
+        property-logo: tng
+        classification: ENGINEER
+        icons: command
+        lore: Lt. Commander Geordi La Forge is chief engineer aboard the U.S.S. Enterprise. Great sense of humor. Fortuitous holodeck programmer.
+        skill-box: "{SKILL} ENGINEER {SKILL} Navigation {SKILL} Physics {SKILL} Computer Skill"
+        integrity: 8
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/21.jpg
+    }
+    101_215: {
+        title: Jean-Luc Picard
+        type: personnel
+        affiliation: federation
+        property-logo: tng
+        classification: OFFICER
+        icons: command
+        lore: Captain Jean-Luc Picard of the U.S.S. Enterprise. Born in LaBarre, France. Has an artificial heart. Reads Shakespeare. Something of a Renaissance man.
+        skill-box: "{SKILL} Diplomacy x2 {SKILL} Leadership {SKILL} Honor {SKILL} Archaeology {SKILL} Navigation {SKILL} Music"
+        integrity: 9
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/82VP.jpg
+    }
 }

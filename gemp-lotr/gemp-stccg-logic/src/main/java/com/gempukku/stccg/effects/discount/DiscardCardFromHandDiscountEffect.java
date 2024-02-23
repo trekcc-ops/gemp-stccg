@@ -10,7 +10,6 @@ import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.effects.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
@@ -51,19 +50,19 @@ public class DiscardCardFromHandDiscountEffect extends AbstractSubActionEffect i
     }
 
     @Override
-    public int getMaximumPossibleDiscount(DefaultGame game) {
-        return Filters.filter(_actionContext.getGame().getGameState().getHand(_playerId), _actionContext.getGame(), _discardedCardFilter).size();
+    public int getMaximumPossibleDiscount() {
+        return Filters.filter(_actionContext.getGameState().getHand(_playerId), _actionContext.getGame(), _discardedCardFilter).size();
     }
 
     @Override
     public boolean isPlayableInFull() {
-        return Filters.filter(_actionContext.getGame().getGameState().getHand(_playerId), _actionContext.getGame(), _discardedCardFilter).size() >= _minimalDiscount;
+        return Filters.filter(_actionContext.getGameState().getHand(_playerId), _actionContext.getGame(), _discardedCardFilter).size() >= _minimalDiscount;
     }
 
     @Override
     public void playEffect() {
         if (isPlayableInFull()) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             subAction.appendEffect(
                     new ChooseAndDiscardCardsFromHandEffect(_actionContext.getGame(), _action, _playerId, false, _minimalDiscount, Integer.MAX_VALUE, _discardedCardFilter) {
                         @Override

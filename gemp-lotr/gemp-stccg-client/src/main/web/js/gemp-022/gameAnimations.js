@@ -238,11 +238,11 @@ var GameAnimations = Class.extend({
 
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[participantId].append(cardDiv);
-                else if (zone == "ADVENTURE_DECK")
+                else if (zone == "ADVENTURE_DECK") // Todo - Safe to remove? Have removed the ADVENTURE_DECK zone from server
                     that.game.adventureDeckDialogs[participantId].append(cardDiv);
                 else if (zone == "REMOVED")
                     that.game.removedPileDialogs[participantId].append(cardDiv);
-                else if (zone == "DECK") {
+                else if (zone == "DRAW_DECK") {
                     that.game.miscPileDialogs[participantId].append(cardDiv);
                     animate = false;
                 }
@@ -264,7 +264,7 @@ var GameAnimations = Class.extend({
             });
 
         if (animate && (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId))
-            && zone != "DISCARD" && zone != "HAND" && zone != "ADVENTURE_DECK" && zone != "DECK") {
+            && zone != "DISCARD" && zone != "HAND" && zone != "DRAW_DECK") {
             var oldValues = {};
 
             $("#main").queue(
@@ -569,8 +569,8 @@ var GameAnimations = Class.extend({
                     var playerId = playerZone.getAttribute("name");
                     var hand = playerZone.getAttribute("HAND");
                     var discard = playerZone.getAttribute("DISCARD");
-                    var adventureDeck = playerZone.getAttribute("ADVENTURE_DECK");
-                    var deck = playerZone.getAttribute("DECK");
+                    var adventureDeck = playerZone.getAttribute("ADVENTURE_DECK"); // TODO - Safe to remove? Have removed Zone.ADVENTURE_DECK from server
+                    var deck = playerZone.getAttribute("DRAW_DECK");
                     var removed = playerZone.getAttribute("REMOVED");
 
                     $("#deck" + that.game.getPlayerIndex(playerId)).text(deck);

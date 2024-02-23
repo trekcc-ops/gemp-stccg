@@ -34,7 +34,7 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
 
                 final DefaultGame game = actionContext.getGame();
                 return game.getGameState().getDrawDeck(deckId).size() >= count
-                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(game, actionContext.getPerformingPlayer(), actionContext.getSource()));
+                        && (!forced || game.getModifiersQuerying().canDiscardCardsFromTopOfDeck(actionContext.getPerformingPlayer(), actionContext.getSource()));
             }
 
             @Override

@@ -21,20 +21,22 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
     private final int _minimum;
     private final int _maximum;
     private final Filterable[] _filters;
-    private final DefaultGame _game;
+    protected final DefaultGame _game;
     private boolean _shortcut = true;
 
-    public ChooseActiveCardsEffect(DefaultGame game, PhysicalCard source, String playerId, String choiceText, int minimum, int maximum, Filterable... filters) {
+    public ChooseActiveCardsEffect(PhysicalCard source, String playerId, String choiceText, int minimum, int maximum,
+                                   Filterable... filters) {
         _source = source;
         _playerId = playerId;
         _choiceText = choiceText;
         _minimum = minimum;
         _maximum = maximum;
         _filters = filters;
-        _game = game;
+        _game = source.getGame();
     }
 
-    public ChooseActiveCardsEffect(ActionContext actionContext, String playerId, String choiceText, int minimum, int maximum, Filterable... filters) {
+    public ChooseActiveCardsEffect(ActionContext actionContext, String playerId, String choiceText, int minimum,
+                                   int maximum, Filterable... filters) {
         _source = actionContext.getSource();
         _game = actionContext.getGame();
         _playerId = playerId;
@@ -52,18 +54,18 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
         _choiceText = choiceText;
     }
 
-    protected Filter getExtraFilterForPlaying(DefaultGame game) {
+    protected Filter getExtraFilterForPlaying() {
         return Filters.any;
     }
 
-    protected Filter getExtraFilterForPlayabilityCheck(DefaultGame game) {
-        return getExtraFilterForPlaying(game);
+    protected Filter getExtraFilterForPlayabilityCheck() {
+        return getExtraFilterForPlaying();
     }
 
     @Override
     public boolean isPlayableInFull() {
         return Filters.countActive(_game, Filters.and(
-                _filters, getExtraFilterForPlayabilityCheck(_game))) >= _minimum;
+                _filters, getExtraFilterForPlayabilityCheck())) >= _minimum;
     }
 
     @Override
@@ -74,7 +76,7 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         final Collection<PhysicalCard> matchingCards = Filters.filterActive(_game, Filters.and(_filters,
-                getExtraFilterForPlaying(_game)));
+                getExtraFilterForPlaying()));
         // Let's get the count realistic
         int maximum = Math.min(_maximum, matchingCards.size());
 
@@ -83,11 +85,11 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
             minimum = matchingCards.size();
 
         if (_shortcut && maximum == 0) {
-            cardsSelected(_game, Collections.emptySet());
+            cardsSelected(Collections.emptySet());
         } else if (_shortcut && matchingCards.size() == minimum) {
             if (_source != null && !matchingCards.isEmpty())
                 _game.getGameState().cardAffectsCard(_playerId, _source, matchingCards);
-            cardsSelected(_game, matchingCards);
+            cardsSelected(matchingCards);
         } else {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardsSelectionDecision(1, _choiceText, matchingCards, minimum, maximum) {
@@ -96,7 +98,7 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             if (_source != null && !selectedCards.isEmpty())
                                 _game.getGameState().cardAffectsCard(_playerId, _source, selectedCards);
-                            cardsSelected(_game, selectedCards);
+                            cardsSelected(selectedCards);
                         }
                     });
         }
@@ -104,6 +106,6 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
         return new FullEffectResult(matchingCards.size() >= _minimum);
     }
 
-    protected abstract void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards);
+    protected abstract void cardsSelected(Collection<PhysicalCard> cards);
 
 }

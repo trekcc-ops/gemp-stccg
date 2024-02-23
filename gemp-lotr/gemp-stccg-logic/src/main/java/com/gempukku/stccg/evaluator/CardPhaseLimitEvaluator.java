@@ -21,17 +21,17 @@ public class CardPhaseLimitEvaluator implements Evaluator {
         _amount = amount;
     }
 
-    private int evaluateOnce(DefaultGame game, PhysicalCard cardAffected) {
-        LimitCounter limitCounter = game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(_source, _phase);
-        int amountResult = _amount.evaluateExpression(game, cardAffected);
-        int limitResult = _limit.evaluateExpression(game, cardAffected);
+    private int evaluateOnce(PhysicalCard cardAffected) {
+        LimitCounter limitCounter = cardAffected.getGame().getModifiersQuerying().getUntilEndOfPhaseLimitCounter(_source, _phase);
+        int amountResult = _amount.evaluateExpression(cardAffected.getGame(), cardAffected);
+        int limitResult = _limit.evaluateExpression(cardAffected.getGame(), cardAffected);
         return limitCounter.incrementToLimit(limitResult, amountResult);
     }
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         if (_evaluated == null)
-            _evaluated = evaluateOnce(game, cardAffected);
+            _evaluated = evaluateOnce(cardAffected);
         return _evaluated;
     }
 }

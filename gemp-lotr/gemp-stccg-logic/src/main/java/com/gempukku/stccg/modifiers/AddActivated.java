@@ -1,9 +1,9 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.actions.ActionSource;
+import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
@@ -66,7 +66,7 @@ public class AddActivated implements ModifierSourceProducer {
                         });
             }
             actionSource.addPlayRequirement(
-                    (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase);
+                    (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
             EffectUtils.processRequirementsCostsAndEffects(object, environment, actionSource);
 
             actionSources.add(actionSource);
@@ -77,10 +77,10 @@ public class AddActivated implements ModifierSourceProducer {
             public List<? extends ActivateCardAction> getExtraPhaseAction(DefaultGame game, PhysicalCard card) {
                 LinkedList<ActivateCardAction> result = new LinkedList<>();
                 for (ActionSource inPlayPhaseAction : actionSources) {
-                    DefaultActionContext actionContext = new DefaultActionContext(card);
+                    ActionContext actionContext = card.createActionContext();
                     if (inPlayPhaseAction.isValid(actionContext)) {
-                        ActivateCardAction action = new ActivateCardAction(game, card);
-                        inPlayPhaseAction.createAction(action, actionContext);
+                        ActivateCardAction action = new ActivateCardAction(card);
+                        inPlayPhaseAction.appendActionToContext(action, actionContext);
                         result.add(action);
                     }
                 }

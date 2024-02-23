@@ -40,12 +40,10 @@ public class SeedOutpostEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         ST1EGameState gameState = _game.getGameState();
 
-        _game.getGameState().sendMessage(_cardSeeded.getOwnerName() + " seeded " +
-                GameUtils.getCardLink(_cardSeeded));
-
+        gameState.sendMessage(_cardSeeded.getOwnerName() + " seeded " + _cardSeeded.getCardLink());
         gameState.removeCardFromZone(_cardSeeded);
-        _game.getGameState().getPlayer(_cardSeeded.getOwnerName()).addPlayedAffiliation(_cardSeeded.getCurrentAffiliation());
-        _game.getGameState().seedFacilityAtLocation(_cardSeeded, _spacelineIndex);
+        gameState.getPlayer(_cardSeeded.getOwnerName()).addPlayedAffiliation(_cardSeeded.getCurrentAffiliation());
+        gameState.seedFacilityAtLocation(_cardSeeded, _spacelineIndex);
         _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(_playedFrom, _cardSeeded));
 
         return new FullEffectResult(true);

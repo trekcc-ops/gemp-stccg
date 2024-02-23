@@ -21,7 +21,7 @@ public class StatModifiersRule {
                             int sum = 0;
                             for (PhysicalCard attachedCard : game.getGameState().getAttachedCards(cardAffected)) {
                                 final int strength = attachedCard.getBlueprint().getStrength();
-                                if (strength <= 0 || modifiersLogic.appliesStrengthBonusModifier(game, attachedCard, cardAffected))
+                                if (strength <= 0 || modifiersLogic.appliesStrengthBonusModifier(attachedCard, cardAffected))
                                     sum += strength;
                             }
 

@@ -42,7 +42,7 @@ public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
 
-            for (String player : GameUtils.getAllPlayers(_game)) {
+            for (String player : _game.getAllPlayers()) {
                 Collection<PhysicalCard> hand = Filters.filter(_game.getGameState().getHand(player), _game, Filters.any);
                 if (hand.size() == 1) {
                     new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.HAND, player, hand, _forced).playEffect();

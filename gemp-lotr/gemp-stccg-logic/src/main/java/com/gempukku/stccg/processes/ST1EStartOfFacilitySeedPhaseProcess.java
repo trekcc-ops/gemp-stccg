@@ -21,7 +21,7 @@ public class ST1EStartOfFacilitySeedPhaseProcess extends ST1EGameProcess {
             List<PhysicalCard> facilitySeeds = new LinkedList<>(_game.getGameState().getSeedDeck(player));
             for (PhysicalCard card : facilitySeeds) {
                 _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
-                _game.getGameState().addCardToZone(_game, card, Zone.HAND);
+                _game.getGameState().addCardToZone(card, Zone.HAND);
             }
         }
 

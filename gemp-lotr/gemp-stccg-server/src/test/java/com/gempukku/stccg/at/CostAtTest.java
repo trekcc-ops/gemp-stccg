@@ -2,7 +2,7 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import org.junit.Test;
@@ -23,9 +23,9 @@ public class CostAtTest extends AbstractAtTest {
 
         initializeGameWithDecks(decks);
 
-        PhysicalCardImpl hobbitSword = createCard(P1, "1_299");
+        PhysicalCardGeneric hobbitSword = createCard(P1, "1_299");
 
-        _game.getGameState().addCardToZone(_game, hobbitSword, Zone.HAND);
+        _game.getGameState().addCardToZone(hobbitSword, Zone.HAND);
 
         skipMulligans();
 

@@ -15,9 +15,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.results.DiscardCardsFromPlayResult;
 import com.gempukku.stccg.rules.GameUtils;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DiscardCardsFromPlayEffect extends DefaultEffect implements PreventableCardEffect {
     private final PhysicalCard _source;
@@ -67,8 +65,8 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
 
     @Override
     public String getText() {
-        Collection<PhysicalCard> cards = getAffectedCardsMinusPrevented(_game);
-        return "Discard " + GameUtils.getAppendedTextNames(cards);
+        return "Discard " + GameUtils.concatenateStrings(
+                getAffectedCardsMinusPrevented().stream().map(PhysicalCard::getFullName));
     }
 
     protected void forEachDiscardedByEffectCallback(Collection<PhysicalCard> discardedCards) {
@@ -77,22 +75,22 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
 
     @Override
     public FullEffectResult playEffectReturningResult() {
-        Collection<PhysicalCard> affectedMinusPreventedCards = getAffectedCardsMinusPrevented(_game);
+        Collection<PhysicalCard> affectedMinusPreventedCards = getAffectedCardsMinusPrevented();
         playOutEffectOn(_game, affectedMinusPreventedCards);
         return new FullEffectResult(affectedMinusPreventedCards.size() >= _requiredTargets);
     }
 
     @Override
     public boolean isPlayableInFull() {
-        return getAffectedCardsMinusPrevented(_game).size() >= _requiredTargets;
+        return getAffectedCardsMinusPrevented().size() >= _requiredTargets;
     }
 
-    protected final Collection<PhysicalCard> getAffectedCards(DefaultGame game) {
-        return Filters.filterActive(game, _filter, getExtraAffectableFilter());
+    protected final Collection<PhysicalCard> getAffectedCards() {
+        return Filters.filterActive(_game, _filter, getExtraAffectableFilter());
     }
 
-    public final Collection<PhysicalCard> getAffectedCardsMinusPrevented(DefaultGame game) {
-        Collection<PhysicalCard> affectedCards = getAffectedCards(game);
+    public final Collection<PhysicalCard> getAffectedCardsMinusPrevented() {
+        Collection<PhysicalCard> affectedCards = getAffectedCards();
         affectedCards.removeAll(_preventedTargets);
         return affectedCards;
     }
@@ -112,10 +110,10 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
         gameState.removeCardsFromZone(_performingPlayer, toMoveFromZoneToDiscard);
 
         for (PhysicalCard card : toMoveFromZoneToDiscard)
-            gameState.addCardToZone(game, card, Zone.DISCARD);
+            gameState.addCardToZone(card, Zone.DISCARD);
 
         if (_source != null && !discardedCards.isEmpty())
-            game.getGameState().sendMessage(_performingPlayer + " discards " + GameUtils.getAppendedNames(cards) + " from play using " + GameUtils.getCardLink(_source));
+            game.getGameState().sendMessage(_performingPlayer + " discards " + GameUtils.concatenateStrings(cards.stream().map(PhysicalCard::getCardLink)) + " from play using " + _source.getCardLink());
 
         for (PhysicalCard discardedCard : discardedCards)
             game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(_source, getPerformingPlayer(), discardedCard));

@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,9 +17,11 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private final LinkedList<Effect> _processedEffects = new LinkedList<>();
     private String text;
 
-    protected String _performingPlayer;
+    protected String _performingPlayerId;
+    private final Action _thisAction = this;
 
     private boolean _virtualCardAction = false;
+
 
     @Override
     public void setVirtualCardAction(boolean virtualCardAction) {
@@ -34,12 +35,12 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
 
     @Override
     public void setPerformingPlayer(String playerId) {
-        _performingPlayer = playerId;
+        _performingPlayerId = playerId;
     }
 
     @Override
     public String getPerformingPlayer() {
-        return _performingPlayer;
+        return _performingPlayerId;
     }
 
     @Override
@@ -96,10 +97,10 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return discount;
     }
 
-    protected int getPotentialDiscount(DefaultGame game) {
+    protected int getPotentialDiscount() {
         int sum = 0;
         for (DiscountEffect potentialDiscount : _potentialDiscounts) {
-            sum += potentialDiscount.getMaximumPossibleDiscount(game);
+            sum += potentialDiscount.getMaximumPossibleDiscount();
         }
         return sum;
     }
@@ -143,4 +144,11 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return true;
     }
 
+    public abstract DefaultGame getGame();
+
+    public SubAction createSubAction() {
+        return new SubAction(_thisAction, getGame());
+    }
+
+    public boolean canBeInitiated() { return true; }
 }

@@ -63,10 +63,10 @@ public class AddKeyword implements EffectAppenderProducer {
                                     new KeywordModifier(actionContext.getSource(), physicalCard, keywordFunction.apply(actionContext), keywordCount), until));
                         }
 
-                        actionContext.getGame().getGameState().sendMessage(
-                                GameUtils.getCardLink(actionContext.getSource())
+                        actionContext.getGameState().sendMessage(
+                                actionContext.getSource().getCardLink()
                                         + " adds " + keywordFunction.apply(actionContext).getHumanReadableGeneric()
-                                        + " to " + GameUtils.getAppendedNames(cardsFromMemory)
+                                        + " to " + GameUtils.getConcatenatedCardLinks(cardsFromMemory)
                                         + " until " + until.getHumanReadable());
                         return result;
                     }

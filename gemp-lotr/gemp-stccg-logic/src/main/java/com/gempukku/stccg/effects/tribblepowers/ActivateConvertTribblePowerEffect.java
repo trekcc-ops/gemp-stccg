@@ -14,7 +14,7 @@ public class ActivateConvertTribblePowerEffect extends ActivateTribblePowerEffec
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         subAction.appendEffect(new PlacePlayedCardBeneathDrawDeckEffect(_game, _source));
         subAction.appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(_game, _activatingPlayer, 1));
         return addActionAndReturnResult(_game, subAction);

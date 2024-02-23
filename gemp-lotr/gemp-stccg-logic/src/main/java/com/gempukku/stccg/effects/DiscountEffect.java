@@ -1,9 +1,7 @@
 package com.gempukku.stccg.effects;
 
-import com.gempukku.stccg.game.DefaultGame;
-
 public interface DiscountEffect extends Effect {
-    int getMaximumPossibleDiscount(DefaultGame game);
+    int getMaximumPossibleDiscount();
 
     void setMinimalRequiredDiscount(int minimalDiscount);
 

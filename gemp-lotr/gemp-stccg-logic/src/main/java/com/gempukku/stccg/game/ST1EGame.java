@@ -2,7 +2,6 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -17,22 +16,24 @@ import java.util.Set;
 
 public class ST1EGame extends DefaultGame {
     private final ST1EGameState _gameState;
-    private final TurnProcedure<ST1EGame> _turnProcedure;
+    private final TurnProcedure _turnProcedure;
+    private final ST1EGame _thisGame;
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                     final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
-
-        new ST1ERuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
+        _thisGame = this;
 
         _gameState = new ST1EGameState(_allPlayers, decks, library, _format, this);
+        new ST1ERuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
+
         _gameState.createPhysicalCards();
-        _turnProcedure = new TurnProcedure<>(this, _allPlayers, userFeedback, _actionsEnvironment,
+        _turnProcedure = new TurnProcedure(this, _allPlayers, userFeedback, _actionsEnvironment,
                 _gameState::init) {
             @Override
-            protected ST1EGameProcess setFirstGameProcess(ST1EGame game, Set<String> players,
+            protected ST1EGameProcess setFirstGameProcess(Set<String> players,
                                                           PlayerOrderFeedback playerOrderFeedback) {
-                return new ST1EPlayerOrderProcess(players, playerOrderFeedback, _game);
+                return new ST1EPlayerOrderProcess(players, playerOrderFeedback, _thisGame);
             }
         };
     }
@@ -42,21 +43,10 @@ public class ST1EGame extends DefaultGame {
         return _gameState;
     }
 
-    public TurnProcedure<ST1EGame> getTurnProcedure() { return _turnProcedure; }
+    public TurnProcedure getTurnProcedure() { return _turnProcedure; }
     @Override
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
         getGameState().addGameStateListener(playerId, gameStateListener, _turnProcedure.getGameStats());
-    }
-
-    public boolean checkPlayRequirements(PhysicalCard card) {
-//        _gameState.sendMessage("Calling game.checkPlayRequirements for card " + card.getBlueprint().getTitle());
-
-        // Check if card's own play requirements are met
-        if (card.getBlueprint().playRequirementsNotMet(card))
-            return false;
-        // Check if the card's playability has been modified in the current game state
-        return !_modifiersLogic.canNotPlayCard(this, card.getOwnerName(), card);
-
     }
 
 }

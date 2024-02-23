@@ -39,8 +39,8 @@ public class TribblesPlayCardEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         TribblesGameState gameState = _game.getGameState();
-        gameState.removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
-        gameState.addCardToZone(_game, _cardPlayed, _zone);
+/*        gameState.removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
+        gameState.addCardToZone(_game, _cardPlayed, _zone); */
 
         int tribbleValue = _cardPlayed.getBlueprint().getTribbleValue();
 

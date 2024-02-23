@@ -32,7 +32,6 @@ public enum RegularSkill implements Filterable {
     YOUTH("Youth", false);
 
     private final String _humanReadable;
-    private final boolean _isIntelligence;
 
     RegularSkill(String humanReadable) {
         this(humanReadable, false);
@@ -40,7 +39,7 @@ public enum RegularSkill implements Filterable {
 
     RegularSkill(String humanReadable, boolean isIntelligence) {
         _humanReadable = humanReadable;
-        _isIntelligence = true;
+        boolean _isIntelligence = true;
     }
 
     public String get_humanReadable() { return _humanReadable; }

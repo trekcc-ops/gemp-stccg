@@ -7,7 +7,10 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.RegularSkill;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AwayTeam {
     private Player _player;
@@ -50,4 +53,6 @@ public class AwayTeam {
         }
         return false;
     }
+
+    public List<String> getListOfAwayTeamCards() { return getCards().stream().map(PhysicalCard::getFullName).toList(); }
 }

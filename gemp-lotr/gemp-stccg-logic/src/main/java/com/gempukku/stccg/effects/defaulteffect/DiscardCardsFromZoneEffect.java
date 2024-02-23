@@ -54,7 +54,8 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return "Discard from " + _fromZone.getHumanReadable() + " - " + GameUtils.getAppendedTextNames(_cards);
+        return "Discard from " + _fromZone.getHumanReadable() + " - " +
+                GameUtils.concatenateStrings(_cards.stream().map(PhysicalCard::getFullName));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
             }
         }
 
-        if (_forced && !_game.getModifiersQuerying().canDiscardCardsFromHand(_game, _playerId, _source) &&
+        if (_forced && !_game.getModifiersQuerying().canDiscardCardsFromHand(_playerId, _source) &&
                 _fromZone == Zone.HAND)
             playable = false;
         return playable;
@@ -81,7 +82,7 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
 
             gameState.removeCardsFromZone(_playerId, discardedCards);
             for (PhysicalCard card : discardedCards) {
-                gameState.addCardToZone(_game, card, Zone.DISCARD);
+                gameState.addCardToZone(card, Zone.DISCARD);
                 if (_fromZone == Zone.HAND) {
                     _game.getActionsEnvironment().emitEffectResult(
                             new DiscardCardFromHandResult(_source, card, _forced)
@@ -90,7 +91,7 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
             }
 
             if (!discardedCards.isEmpty())
-                gameState.sendMessage(_playerId + " discarded " + GameUtils.getAppendedNames(discardedCards) + " from " +
+                gameState.sendMessage(_playerId + " discarded " + GameUtils.getConcatenatedCardLinks(discardedCards) + " from " +
                         _fromZone.getHumanReadable());
 
             return new FullEffectResult(discardedCards.size() == _cards.size());

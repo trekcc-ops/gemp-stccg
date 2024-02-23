@@ -1,10 +1,7 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
@@ -18,15 +15,19 @@ public class SetNextTribble implements EffectAppenderProducer {
         return new TribblesDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action,
-                                          TribblesActionContext actionContext) {
-                int value = amount.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+                                          ActionContext actionContext) {
+                if (actionContext instanceof TribblesActionContext) {
+                    int value = amount.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
 
-                return new UnrespondableEffect() {
-                    @Override
-                    protected void doPlayEffect() {
-                        actionContext.getGame().getGameState().setNextTribbleInSequence(value);
-                    }
-                };
+                    return new UnrespondableEffect() {
+                        @Override
+                        protected void doPlayEffect() {
+                            ((TribblesActionContext) actionContext).getGame().getGameState().setNextTribbleInSequence(value);
+                        }
+                    };
+                } else {
+                    return null;
+                }
             }
         };
     }

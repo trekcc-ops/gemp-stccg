@@ -73,7 +73,7 @@ public class ChooseAndRemoveFromTheGameCardsInDiscardEffect extends AbstractSubA
     }
 
     private void processForCards(DefaultGame game, Collection<PhysicalCard> cards) {
-        CostToEffectAction _resultSubAction = new SubAction(_action);
+        CostToEffectAction _resultSubAction = _action.createSubAction();
         _resultSubAction.appendEffect(
                 new RemoveCardsFromZoneEffect(game, _playerId, _source, cards, Zone.DISCARD));
         processSubAction(game, _resultSubAction);

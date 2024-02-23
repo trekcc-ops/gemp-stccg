@@ -1,10 +1,7 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.effects.tribblepowers.*;
@@ -14,17 +11,23 @@ import org.json.simple.JSONObject;
 public class ActivateTribblePowerAppender implements EffectAppenderProducer {
 
     @Override
-    public EffectAppender<TribblesActionContext> createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment)
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment)
             throws InvalidCardDefinitionException {
         FieldUtils.validateAllowedFields(effectObject);
 
         return new TribblesDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, TribblesActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
 //                final Map<TribblePower, ActivateTribblePowerEffect> activateEffects = new HashMap<>();
 
                 TribblePower tribblePower = actionContext.getSource().getBlueprint().getTribblePower();
-                PhysicalCard actionSource = actionContext.getSource();
+                if (actionContext instanceof TribblesActionContext)
+                    return createTribblePowerEffect(tribblePower, (TribblesActionContext) actionContext, action);
+                else return null;
+            }
+
+            private Effect createTribblePowerEffect(TribblePower tribblePower, TribblesActionContext actionContext,
+                                                    CostToEffectAction action) {
 
                 if (tribblePower == TribblePower.AVALANCHE)
                     return new ActivateAvalancheTribblePowerEffect(action, actionContext);

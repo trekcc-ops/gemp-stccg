@@ -35,9 +35,7 @@ public class Choice implements EffectAppenderProducer {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayerId(actionContext);
-                DefaultActionContext delegateActionContext = new DefaultActionContext(actionContext,
-                        choosingPlayer, actionContext.getGame(), actionContext.getSource(),
-                        actionContext.getEffectResult(), actionContext.getEffect());
+                ActionContext delegateActionContext = actionContext.createDelegateContext(choosingPlayer);
 
                 int textIndex = 0;
                 List<EffectAppender> playableEffectAppenders = new LinkedList<>();
@@ -56,13 +54,13 @@ public class Choice implements EffectAppenderProducer {
                 }
 
                 if (playableEffectAppenders.size() == 1) {
-                    SubAction subAction = new SubAction(action);
+                    SubAction subAction = action.createSubAction();
                     playableEffectAppenders.get(0).appendEffect(cost, subAction, delegateActionContext);
                     actionContext.setValueToMemory(memorize, textArray[0]);
                     return new StackActionEffect(actionContext.getGame(), subAction);
                 }
 
-                SubAction subAction = new SubAction(action);
+                SubAction subAction = action.createSubAction();
                 subAction.appendCost(
                         new PlayOutDecisionEffect(actionContext.getGame(), choosingPlayer,
                                 new MultipleChoiceAwaitingDecision(1, "Choose action to perform", effectTexts.toArray(new String[0])) {
@@ -78,12 +76,8 @@ public class Choice implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayerId(actionContext);
-                DefaultActionContext delegateActionContext = new DefaultActionContext(actionContext,
-                        choosingPlayer, actionContext.getGame(), actionContext.getSource(),
-                        actionContext.getEffectResult(), actionContext.getEffect());
-
                 for (EffectAppender possibleEffectAppender : possibleEffectAppenders) {
-                    if (possibleEffectAppender.isPlayableInFull(delegateActionContext))
+                    if (possibleEffectAppender.isPlayableInFull(actionContext.createDelegateContext(choosingPlayer)))
                         return true;
                 }
                 return false;

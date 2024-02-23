@@ -6,7 +6,6 @@ import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.effects.utils.DiscardUtils;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.results.DiscardCardsFromPlayResult;
 
 import java.util.Collections;
@@ -47,9 +46,9 @@ public class PutCardFromPlayOnBottomOfDeckEffect extends DefaultEffect {
                 _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
             }
             for (PhysicalCard toGoToDiscardCard : toGoToDiscardCards)
-                gameState.addCardToZone(_game, toGoToDiscardCard, Zone.DISCARD);
+                gameState.addCardToZone(toGoToDiscardCard, Zone.DISCARD);
 
-            gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + GameUtils.getCardLink(_physicalCard) + " from play on the bottom of deck");
+            gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + _physicalCard.getCardLink() + " from play on the bottom of deck");
 
             return new FullEffectResult(true);
         }

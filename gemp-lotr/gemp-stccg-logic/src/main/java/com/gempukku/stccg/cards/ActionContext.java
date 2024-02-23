@@ -3,11 +3,14 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.results.EffectResult;
 import com.google.common.collect.Multimap;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public interface ActionContext {
     Map<String, String> getValueMemory();
@@ -24,4 +27,12 @@ public interface ActionContext {
     PhysicalCard getSource();
     EffectResult getEffectResult();
     Effect getEffect();
+    boolean acceptsAllRequirements(Stream<Requirement> requirements);
+    boolean acceptsAllRequirements(Requirement[] requirementArray);
+    boolean acceptsAllRequirements(List<Requirement> requirementList);
+    boolean acceptsAnyRequirements(Requirement[] requirementArray);
+    ActionContext createDelegateContext(Effect effect);
+    ActionContext createDelegateContext(EffectResult effectResult);
+    ActionContext createDelegateContext(String playerId);
+    String substituteText(String text);
 }

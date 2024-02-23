@@ -1,7 +1,8 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.DefaultActionSource;
+import com.gempukku.stccg.actions.sources.ActivateCardActionSource;
+import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
@@ -28,7 +29,7 @@ public class ActivatedEffectProcessor implements EffectProcessor {
         for (String phaseString : phaseArray) {
             final Phase phase = Phase.valueOf(phaseString.toUpperCase());
 
-            DefaultActionSource actionSource = new DefaultActionSource();
+            DefaultActionSource actionSource = new ActivateCardActionSource();
             actionSource.setText(text);
             if (limitPerPhase > 0) {
                 actionSource.addPlayRequirement(
@@ -53,7 +54,7 @@ public class ActivatedEffectProcessor implements EffectProcessor {
                         });
             }
             actionSource.addPlayRequirement(
-                    (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase);
+                    (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
             EffectUtils.processRequirementsCostsAndEffects(value, environment, actionSource);
 
             blueprint.appendInPlayPhaseAction(actionSource);

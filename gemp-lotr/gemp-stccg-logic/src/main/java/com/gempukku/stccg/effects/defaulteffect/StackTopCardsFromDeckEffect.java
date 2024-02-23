@@ -31,7 +31,7 @@ public class StackTopCardsFromDeckEffect extends DefaultEffect {
             for (int i = 0; i < _count; i++) {
                 final PhysicalCard card = _game.getGameState().removeCardFromEndOfPile(_playerId, Zone.DRAW_DECK, EndOfPile.TOP);
                 if (card != null) {
-                    _game.getGameState().stackCard(_game, card, _target);
+                    _game.getGameState().stackCard(card, _target);
                     stacked++;
                 }
             }

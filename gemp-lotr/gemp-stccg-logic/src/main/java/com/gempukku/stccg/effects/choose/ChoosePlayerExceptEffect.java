@@ -21,7 +21,7 @@ public abstract class ChoosePlayerExceptEffect extends UnrespondableEffect {
 
     @Override
     public void doPlayEffect() {
-        String[] allPlayers = GameUtils.getAllPlayers(_game);
+        String[] allPlayers = _game.getAllPlayers();
         String[] includedPlayers = new String[allPlayers.length - 1];
         int j = 0;
         for (String allPlayer : allPlayers) {

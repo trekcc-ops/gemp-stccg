@@ -2,9 +2,9 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.effects.Effect;
 import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.filters.Filter;
@@ -30,12 +30,11 @@ public class ActivateResponseAbilitiesRule {
                     public List<? extends Action> getOptionalBeforeActions(String playerId, Effect effect) {
                         List<Action> result = new LinkedList<>();
                         for (PhysicalCard activatableCard :
-                                Filters.filter(actionsEnvironment.getGame().getGameState().getAllCardsInPlay(),
-                                        actionsEnvironment.getGame(), getActivatableCardsFilter(playerId))) {
+                                Filters.filter(_game.getGameState().getAllCardsInPlay(), _game,
+                                        getActivatableCardsOwnedByPlayer(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends ActivateCardAction> actions =
-                                        activatableCard.getBlueprint().getOptionalInPlayBeforeActions(
-                                                playerId, actionsEnvironment.getGame(), effect, activatableCard);
+                                final List<Action> actions =
+                                        activatableCard.getOptionalInPlayActions(effect, TriggerTiming.BEFORE);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
@@ -47,9 +46,11 @@ public class ActivateResponseAbilitiesRule {
                     @Override
                     public List<? extends Action> getOptionalAfterActions(String playerId, EffectResult effectResult) {
                         List<Action> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(), _game, getActivatableCardsFilter(playerId))) {
+                        for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(),
+                                _game, getActivatableCardsOwnedByPlayer(playerId))) {
                             if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends ActivateCardAction> actions = activatableCard.getBlueprint().getOptionalInPlayAfterActions(playerId, _game, effectResult, activatableCard);
+                                final List<Action> actions =
+                                        activatableCard.getOptionalInPlayActions(effectResult, TriggerTiming.AFTER);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
@@ -61,7 +62,7 @@ public class ActivateResponseAbilitiesRule {
         );
     }
 
-    private Filter getActivatableCardsFilter(String playerId) {
+    private Filter getActivatableCardsOwnedByPlayer(String playerId) {
         return Filters.and(Filters.owner(playerId), Filters.active);
     }
 }

@@ -45,7 +45,7 @@ public class PlayMissionEffect extends DefaultEffect {
 
         final Zone playedFromZone = _cardPlayed.getZone();
         _game.getGameState().sendMessage(_cardPlayed.getOwnerName() + " played " +
-                GameUtils.getCardLink(_cardPlayed) +  " from " + playedFromZone.getHumanReadable());
+                _cardPlayed.getCardLink() +  " from " + playedFromZone.getHumanReadable());
 
         gameState.removeCardFromZone(_cardPlayed);
         _game.getGameState().addToSpaceline(_cardPlayed, _spacelineIndex, _sharedMission);

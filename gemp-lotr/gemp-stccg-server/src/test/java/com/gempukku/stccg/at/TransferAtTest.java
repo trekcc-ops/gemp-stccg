@@ -1,6 +1,6 @@
 package com.gempukku.stccg.at;
 
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
@@ -18,13 +18,13 @@ public class TransferAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl athelas= new PhysicalCardImpl(_game, 100, "1_94", P1, _cardLibrary.getCardBlueprint("1_94"));
-        PhysicalCardImpl aragorn= new PhysicalCardImpl(_game, 101, "1_89", P1, _cardLibrary.getCardBlueprint("1_89"));
-        PhysicalCardImpl boromir= new PhysicalCardImpl(_game, 102, "1_96", P1, _cardLibrary.getCardBlueprint("1_96"));
+        PhysicalCardGeneric athelas= new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("1_94"));
+        PhysicalCardGeneric aragorn= new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_89"));
+        PhysicalCardGeneric boromir= new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("1_96"));
 
-        _game.getGameState().addCardToZone(_game, aragorn, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, boromir, Zone.FREE_CHARACTERS);
-        _game.getGameState().addCardToZone(_game, athelas, Zone.ATTACHED);
+        _game.getGameState().addCardToZone(aragorn, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(boromir, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(athelas, Zone.ATTACHED);
         athelas.attachTo(aragorn);
 
         skipMulligans();

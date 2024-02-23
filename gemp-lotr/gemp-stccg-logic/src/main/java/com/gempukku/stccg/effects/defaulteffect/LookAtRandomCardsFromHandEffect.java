@@ -40,7 +40,7 @@ public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer)) {
-            List<PhysicalCard> randomCards = GameUtils.getRandomCards(_game.getGameState().getHand(_playerHand), _count);
+            List<PhysicalCard> randomCards = GameUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
                 _game.getUserFeedback().sendAwaitingDecision(_actingPlayer,
@@ -50,7 +50,7 @@ public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
                             }
                         });
 
-                _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " looked at " + randomCards.size() + " cards from " + _playerHand + " hand at random");
+                _game.getGameState().sendMessage(_source.getCardLink() + " looked at " + randomCards.size() + " cards from " + _playerHand + " hand at random");
             }
             else {
                 _game.getGameState().sendMessage("No cards in " + _playerHand + " hand to look at");

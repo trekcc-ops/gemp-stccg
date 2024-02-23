@@ -26,7 +26,7 @@ public class ReturnToHand implements EffectAppenderProducer {
 
         result.addEffectAppender(
                 CardResolver.resolveCards(filter,
-                        actionContext -> (Filter) (game, physicalCard) -> game.getModifiersQuerying().canBeReturnedToHand(game, physicalCard, actionContext.getSource()),
+                        actionContext -> (Filter) (game, physicalCard) -> game.getModifiersQuerying().canBeReturnedToHand(physicalCard, actionContext.getSource()),
                         valueSource, "_temp", player, "Choose cards to return to hand", environment));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {

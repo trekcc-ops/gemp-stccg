@@ -45,7 +45,7 @@ public class ChooseAndStackCardsFromDiscardEffect extends DefaultEffect {
         final boolean success = discard.size() >= _minimum;
 
         if (discard.size() <= _minimum) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             for (PhysicalCard card : discard)
                 subAction.appendEffect(new StackCardFromDiscardEffect(_game, card, _stackOn));
             _game.getActionsEnvironment().addActionToStack(subAction);
@@ -56,7 +56,7 @@ public class ChooseAndStackCardsFromDiscardEffect extends DefaultEffect {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             List<PhysicalCard> cards = getSelectedCardsByResponse(result);
-                            SubAction subAction = new SubAction(_action);
+                            SubAction subAction = _action.createSubAction();
                             for (PhysicalCard card : cards)
                                 subAction.appendEffect(new StackCardFromDiscardEffect(_game, card, _stackOn));
                             _game.getActionsEnvironment().addActionToStack(subAction);

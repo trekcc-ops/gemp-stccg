@@ -515,12 +515,25 @@ var GempClientCommunication = Class.extend({
             dataType:"html"
         });
     },
+    getSets:function (format, callback, errorMap) {
+        $.ajax({
+            type:"POST",
+            url:this.url + "/deck/sets",
+            cache:true,
+            data:{ 
+                format:format
+            },
+            success:this.deliveryCheck(callback),
+            error:this.errorCheck(errorMap),
+            dataType:"json"
+        });
+    },
     getFormats:function (includeEvents, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck/formats",
             cache:true,
-            data:{ 
+            data:{
                 includeEvents:includeEvents
             },
             success:this.deliveryCheck(callback),

@@ -3,9 +3,8 @@ package com.gempukku.stccg.rules.tribbles;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.actions.TribblesPlayPermanentAction;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.cards.TribblesPhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.TribblesGame;
 
@@ -29,8 +28,8 @@ public class TribblesPlayCardRule {
                         if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                                if (_game.checkPlayRequirements(card)) {
-                                    result.add(new TribblesPlayPermanentAction(_game, card, Zone.PLAY_PILE));
+                                if (card.canBePlayed()) {
+                                    result.add(((TribblesPhysicalCard) card).createPlayCardAction());
                                 }
                             }
                             return result;

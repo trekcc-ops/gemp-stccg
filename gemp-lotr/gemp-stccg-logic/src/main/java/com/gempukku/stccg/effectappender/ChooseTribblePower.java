@@ -1,6 +1,7 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -18,7 +19,7 @@ public class ChooseTribblePower implements EffectAppenderProducer {
 
         return new TribblesDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, TribblesActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                 return new ChooseTribblePowerEffect(actionContext) {
                     @Override
                     protected void powerChosen(String playerId) {

@@ -7,7 +7,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromPlayEffect;
@@ -29,11 +29,11 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(_game, 101, "1_299", P1, _cardLibrary.getCardBlueprint("1_299"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric hobbitSword = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_299"));
 
-        _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
-        _game.getGameState().attachCard(_game, hobbitSword, merry);
+        _game.getGameState().addCardToZone(merry, Zone.FREE_CHARACTERS);
+        _game.getGameState().attachCard(hobbitSword, merry);
 
         final Set<PhysicalCard> discardedFromPlay = new HashSet<>();
 
@@ -70,13 +70,13 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl alatar = new PhysicalCardImpl(_game, 101, "13_28", P1, _cardLibrary.getCardBlueprint("13_28"));
-        final PhysicalCardImpl whisperInTheDark = new PhysicalCardImpl(_game, 101, "18_77", P1, _cardLibrary.getCardBlueprint("18_77"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric alatar = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("13_28"));
+        final PhysicalCardGeneric whisperInTheDark = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("18_77"));
 
-        _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
-        _game.getGameState().attachCard(_game, alatar, merry);
-        _game.getGameState().attachCard(_game, whisperInTheDark, alatar);
+        _game.getGameState().addCardToZone(merry, Zone.FREE_CHARACTERS);
+        _game.getGameState().attachCard(alatar, merry);
+        _game.getGameState().attachCard(whisperInTheDark, alatar);
 
         final Set<PhysicalCard> discardedFromPlay = new HashSet<>();
 
@@ -115,11 +115,11 @@ public class DiscardEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardImpl merry = new PhysicalCardImpl(_game, 101, "1_303", P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardImpl hobbitSword = new PhysicalCardImpl(_game, 101, "1_299", P1, _cardLibrary.getCardBlueprint("1_299"));
+        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric hobbitSword = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_299"));
 
-        _game.getGameState().addCardToZone(_game, merry, Zone.FREE_CHARACTERS);
-        _game.getGameState().stackCard(_game, hobbitSword, merry);
+        _game.getGameState().addCardToZone(merry, Zone.FREE_CHARACTERS);
+        _game.getGameState().stackCard(hobbitSword, merry);
 
         final Set<PhysicalCard> discardedFromPlay = new HashSet<>();
 

@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 
 public class SpecialFlagModifier extends AbstractModifier {
@@ -17,7 +16,7 @@ public class SpecialFlagModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean hasFlagActive(DefaultGame game, ModifierFlag modifierFlag) {
+    public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return modifierFlag == _modifierFlag;
     }
 }

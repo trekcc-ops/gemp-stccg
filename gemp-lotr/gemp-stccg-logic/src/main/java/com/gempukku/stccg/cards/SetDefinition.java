@@ -6,6 +6,7 @@ import java.util.Set;
 public interface SetDefinition {
 
     String getSetId();
+    String getSetName();
 
     boolean hasFlag(String flag);
 

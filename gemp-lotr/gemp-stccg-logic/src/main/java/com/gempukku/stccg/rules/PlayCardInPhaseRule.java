@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 public class PlayCardInPhaseRule {
     private final DefaultActionsEnvironment actionsEnvironment;
+    private final DefaultGame _game;
 
     private static final Map<Phase, Keyword> PhaseKeywordMap = ImmutableMap.copyOf(new HashMap<>() {{
         put(Phase.FELLOWSHIP, Keyword.FELLOWSHIP);
@@ -30,6 +32,7 @@ public class PlayCardInPhaseRule {
 
     public PlayCardInPhaseRule(DefaultActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
+        _game = actionsEnvironment.getGame();
     }
 
     public void applyRule() {
@@ -37,13 +40,17 @@ public class PlayCardInPhaseRule {
                 new AbstractActionProxy() {
                     @Override
                     public List<? extends Action> getPhaseActions(String playerId) {
-                        final Keyword phaseKeyword = PhaseKeywordMap.get(actionsEnvironment.getGame().getGameState().getCurrentPhase());
+                        final Keyword phaseKeyword = PhaseKeywordMap.get(_game.getGameState().getCurrentPhase());
                         if (phaseKeyword != null) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(actionsEnvironment.getGame().getGameState().getHand(playerId), actionsEnvironment.getGame(),
+                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game,
                                     Filters.and(CardType.EVENT, phaseKeyword))) {
-                                if (actionsEnvironment.getGame().checkPlayRequirements(card))
-                                    result.add(card.getPlayCardAction(0, Filters.any, false));
+                                if (card.canBePlayed()) {
+                                    Action action =
+                                            card.getPlayCardAction(0, Filters.any, false);
+                                    if (action.canBeInitiated())
+                                        result.add(action);
+                                }
                             }
                             return result;
                         }

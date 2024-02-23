@@ -279,8 +279,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
                             CardBlueprint blueprint = cardBlueprint.getValue();
 
                             if (blueprint != null &&
-                                    SortAndFilterCards.replaceSpecialCharacters(
-                                                    GameUtils.getFullName(blueprint).toLowerCase())
+                                    SortAndFilterCards.replaceSpecialCharacters(blueprint.getFullName().toLowerCase())
                                             .equals(cardCount.name())
                             ) {
                                 result.add(CardCollection.Item.createItem(id, cardCount.count(), currentSubDeck));

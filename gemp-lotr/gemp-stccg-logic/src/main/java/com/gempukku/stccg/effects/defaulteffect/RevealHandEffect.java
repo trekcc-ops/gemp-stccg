@@ -41,8 +41,8 @@ public class RevealHandEffect extends DefaultEffect {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _handPlayerId, _actingPlayer)) {
             final List<? extends PhysicalCard> hand = _game.getGameState().getHand(_handPlayerId);
             _game.getGameState().sendMessage(
-                    GameUtils.getCardLink(_source) + " revealed " + _handPlayerId + " cards in hand - " +
-                            GameUtils.getAppendedNames(hand)
+                    _source.getCardLink() + " revealed " + _handPlayerId + " cards in hand - " +
+                            GameUtils.getConcatenatedCardLinks(hand)
             );
 
             final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_handPlayerId, false);

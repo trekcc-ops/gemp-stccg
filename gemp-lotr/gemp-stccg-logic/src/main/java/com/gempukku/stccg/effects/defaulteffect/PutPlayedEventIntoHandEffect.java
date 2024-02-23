@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effects.DefaultEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collections;
 
@@ -32,9 +31,9 @@ public class PutPlayedEventIntoHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + GameUtils.getCardLink(card) + " into hand");
+            _game.getGameState().sendMessage(card.getOwnerName() + " puts " + card.getCardLink() + " into hand");
             _game.getGameState().removeCardsFromZone(card.getOwnerName(), Collections.singletonList(card));
-            _game.getGameState().addCardToZone(_game, card, Zone.HAND);
+            _game.getGameState().addCardToZone(card, Zone.HAND);
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);

@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.CardGenerationEnvironment;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
 public class PhaseRequirement extends RequirementProducer {
@@ -13,6 +12,6 @@ public class PhaseRequirement extends RequirementProducer {
         FieldUtils.validateAllowedFields(object, "phase");
 
         final Phase phase = FieldUtils.getEnum(Phase.class, object.get("phase"), "phase");
-        return (actionContext) -> actionContext.getGame().getGameState().getCurrentPhase() == phase;
+        return (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase;
     }
 }

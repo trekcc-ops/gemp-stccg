@@ -42,7 +42,7 @@ public class ReportCardEffect extends DefaultEffect {
         ST1EGameState gameState = _game.getGameState();
 
         _game.getGameState().sendMessage(_cardPlayed.getOwnerName() + " played " +
-                GameUtils.getCardLink(_cardPlayed));
+                _cardPlayed.getCardLink());
 
         gameState.removeCardFromZone(_cardPlayed);
         _game.getGameState().getPlayer(_cardPlayed.getOwnerName()).addPlayedAffiliation(_cardPlayed.getCurrentAffiliation());

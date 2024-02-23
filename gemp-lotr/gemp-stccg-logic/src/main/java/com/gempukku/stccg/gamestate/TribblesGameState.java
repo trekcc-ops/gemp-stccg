@@ -33,16 +33,10 @@ public class TribblesGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        if (zone == Zone.DRAW_DECK)
-            return this._drawDecks.get(playerId);
+        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD || zone == Zone.VOID || zone == Zone.VOID_FROM_HAND)
+            return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.PLAY_PILE)
             return _playPiles.get(playerId);
-        else if (zone == Zone.DISCARD)
-            return _discards.get(playerId);
-        else if (zone == Zone.HAND)
-            return _hands.get(playerId);
-        else if (zone == Zone.REMOVED)
-            return _removed.get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);
         else // This should never be accessed
@@ -51,21 +45,21 @@ public class TribblesGameState extends GameState {
 
     @Override
     public void createPhysicalCards() {
-        int cardId = 1;
         for (Player player : _players.values()) {
             String playerId = player.getPlayerId();
             for (Map.Entry<String,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(new PhysicalCardImpl(_game, cardId, blueprintId, player, _library.getCardBlueprint(blueprintId)));
-                        cardId++;
+                        subDeck.add(_library.getCardBlueprint(blueprintId).createPhysicalCard(getGame(),
+                                _nextCardId, player));
+                        _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");
                     }
                 }
                 if (Objects.equals(entry.getKey(), "DRAW_DECK")) {
-                    this._drawDecks.put(playerId, subDeck);
+                    _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
                     subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
                 }
             }
@@ -77,7 +71,7 @@ public class TribblesGameState extends GameState {
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
         removeCardsFromZone(playerId, playPile);
         for (PhysicalCard card : playPile) {
-            addCardToZone(game, card, Zone.DRAW_DECK);
+            addCardToZone(card, Zone.DRAW_DECK);
         }
         shuffleDeck(playerId);
     }

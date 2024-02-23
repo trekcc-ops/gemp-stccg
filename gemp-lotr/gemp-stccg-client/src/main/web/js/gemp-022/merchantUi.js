@@ -35,7 +35,8 @@ var GempLotrMerchantUI = Class.extend({
                 },
                 function () {
                     that.finishList();
-                });
+                },
+                this);
         this.cardFilter.setType("card");
         this.cardFilter.setFilter("type:card");
 

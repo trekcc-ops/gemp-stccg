@@ -19,7 +19,7 @@ public class ST1EStartOfMissionPhaseProcess extends ST1EGameProcess {
             List<PhysicalCard> missionSeeds = new LinkedList<>(_game.getGameState().getMissionPile(player));
             for (PhysicalCard card : missionSeeds) {
                 _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
-                _game.getGameState().addCardToZone(_game, card, Zone.HAND);
+                _game.getGameState().addCardToZone(card, Zone.HAND);
             }
         }
 

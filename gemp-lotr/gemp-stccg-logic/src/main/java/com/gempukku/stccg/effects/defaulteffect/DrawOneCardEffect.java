@@ -31,8 +31,9 @@ public class DrawOneCardEffect extends DefaultEffect implements Preventable {
         return !_game.getGameState().getDrawDeck(_playerId).isEmpty();
     }
 
-    public boolean canDrawCard(DefaultGame game) {
-        return (!_prevented && !game.getGameState().getDrawDeck(_playerId).isEmpty()) && game.getModifiersQuerying().canDrawCardNoIncrement(game, _playerId);
+    public boolean canDrawCard() {
+        return (!_prevented && !_game.getGameState().getDrawDeck(_playerId).isEmpty()) &&
+                _game.getModifiersQuerying().canDrawCardNoIncrement(_game, _playerId);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class DrawOneCardEffect extends DefaultEffect implements Preventable {
     }
 
     @Override
-    public boolean isPrevented(DefaultGame game) {
+    public boolean isPrevented() {
         return _prevented;
     }
 }

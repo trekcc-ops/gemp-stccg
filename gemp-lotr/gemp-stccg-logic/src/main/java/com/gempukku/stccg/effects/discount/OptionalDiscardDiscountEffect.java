@@ -10,7 +10,6 @@ import com.gempukku.stccg.effects.DiscountEffect;
 import com.gempukku.stccg.effects.abstractsubaction.OptionalEffect;
 import com.gempukku.stccg.effects.choose.ChooseAndDiscardCardsFromPlayEffect;
 import com.gempukku.stccg.effects.utils.EffectType;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayConditions;
 
 import java.util.Collection;
@@ -63,18 +62,20 @@ public class OptionalDiscardDiscountEffect extends AbstractSubActionEffect imple
     }
 
     @Override
-    public int getMaximumPossibleDiscount(DefaultGame game) {
-        return PlayConditions.canDiscardFromPlay(_action.getActionSource(), game, _discardCount, _discardFilters) ? _discount : 0;
+    public int getMaximumPossibleDiscount() {
+        return PlayConditions.canDiscardFromPlay(_action.getActionSource(), _actionContext.getGame(),
+                _discardCount, _discardFilters) ?
+                    _discount : 0;
     }
 
     @Override
     public void playEffect() {
         if (isPlayableInFull()) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             if (PlayConditions.canDiscardFromPlay(_action.getActionSource(), _actionContext.getGame(), _discardCount, _discardFilters))
                 subAction.appendEffect(
                         new OptionalEffect(_actionContext.getGame(), subAction, _playerId,
-                                new ChooseAndDiscardCardsFromPlayEffect(_actionContext.getGame(), subAction, _playerId, _discardCount, _discardCount, _discardFilters) {
+                                new ChooseAndDiscardCardsFromPlayEffect(subAction, _playerId, _discardCount, _discardCount, _discardFilters) {
                                     @Override
                                     protected void cardsToBeDiscardedCallback(Collection<PhysicalCard> cards) {
                                         if (cards.size() == _discardCount) {

@@ -6,6 +6,5 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import org.json.simple.JSONObject;
 
 public interface EffectAppenderProducer {
-    <AbstractContext extends ActionContext> EffectAppender<AbstractContext> createEffectAppender(
-            JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException;
+    EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException;
 }

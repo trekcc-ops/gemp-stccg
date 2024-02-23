@@ -28,7 +28,7 @@ public class CheckTurnLimitPerPlayerEffect extends UnrespondableEffect {
     public void doPlayEffect() {
         int incrementedBy = _game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _playerId +"-").incrementToLimit(_limit, 1);
         if (incrementedBy > 0) {
-            SubAction subAction = new SubAction(_action);
+            SubAction subAction = _action.createSubAction();
             subAction.appendEffect(
                     _limitedEffect);
             _game.getActionsEnvironment().addActionToStack(subAction);

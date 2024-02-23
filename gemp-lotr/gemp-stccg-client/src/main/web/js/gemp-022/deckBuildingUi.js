@@ -17,11 +17,18 @@ var GempLotrDeckBuildingUI = Class.extend({
     deckImportDialog:null,
     notesDialog:null,
     collectionType:null,
+    formatSelect:null,
 
     init:function () {
         var that = this;
 
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
+
+        this.collectionType = "default";
+        this.deckDiv = $("#deckDiv");
+        this.manageDecksDiv = $("#manageDecks");
+        this.formatSelect = $("#formatSelect");
+
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
                 function (filter, start, count, callback) {
@@ -42,15 +49,14 @@ var GempLotrDeckBuildingUI = Class.extend({
                 },
                 function () {
                     that.finishCollection();
-                });
-        this.collectionType = "default";
-        this.deckDiv = $("#deckDiv");
-        this.manageDecksDiv = $("#manageDecks");
-        this.formatSelect = $("#formatSelect");
+                },
+                that.formatSelect.val());
 
         $("#formatSelect").change(
                 function () {
                     that.deckModified(true);
+                    that.cardFilter.setFormat(that.formatSelect.val());
+                    that.cardFilter.updateSetOptions();
                 });
 
         var collectionSelect = $("#collectionSelect");

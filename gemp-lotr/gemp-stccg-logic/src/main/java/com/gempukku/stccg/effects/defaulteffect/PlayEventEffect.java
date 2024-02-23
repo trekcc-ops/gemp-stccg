@@ -27,7 +27,7 @@ public class PlayEventEffect extends PlayCardEffect {
         if (_cardPlayed.getZone() == Zone.VOID_FROM_HAND) {
             // At this point, card should change initiative if played
             _game.getGameState().removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
-            _game.getGameState().addCardToZone(_game, _cardPlayed, Zone.VOID);
+            _game.getGameState().addCardToZone(_cardPlayed, Zone.VOID);
         }
 
         _game.getActionsEnvironment().emitEffectResult(_playEventResult);

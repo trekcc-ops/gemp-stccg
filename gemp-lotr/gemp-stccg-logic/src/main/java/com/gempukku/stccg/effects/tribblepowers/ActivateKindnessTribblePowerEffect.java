@@ -11,7 +11,6 @@ import com.gempukku.stccg.effects.choose.PutCardsFromHandBeneathDrawDeckInChosen
 import com.gempukku.stccg.effects.defaulteffect.ActivateTribblePowerEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.Collection;
 
@@ -26,7 +25,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         subAction.appendEffect(new DrawCardsEffect(_game, _action, _activatingPlayer, 1));
             // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (String player : _game.getPlayerIds()) {
@@ -36,8 +35,8 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
                         game.getGameState().removeCardsFromZone(player, selectedCards);
                         for (PhysicalCard card : selectedCards) {
-                            game.getGameState().sendMessage(player + " puts " + GameUtils.getCardLink(card) + " from hand on bottom of their play pile");
-                            game.getGameState().addCardToZone(null, card, Zone.PLAY_PILE, false);
+                            game.getGameState().sendMessage(player + " puts " + card.getCardLink() + " from hand on bottom of their play pile");
+                            game.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
                         }
                     }
                 });

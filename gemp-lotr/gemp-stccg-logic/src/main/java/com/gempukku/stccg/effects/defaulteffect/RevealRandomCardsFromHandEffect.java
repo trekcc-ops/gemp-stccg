@@ -35,7 +35,7 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (_actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer)) {
-            List<PhysicalCard> randomCards = GameUtils.getRandomCards(_game.getGameState().getHand(_playerHand), _count);
+            List<PhysicalCard> randomCards = GameUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
                 final PlayOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_source.getOwnerName(), false);
@@ -50,7 +50,7 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
                             });
                 }
 
-                _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " revealed cards from " + _playerHand + " hand at random - " + GameUtils.getAppendedNames(randomCards));
+                _game.getGameState().sendMessage(_source.getCardLink() + " revealed cards from " + _playerHand + " hand at random - " + GameUtils.getConcatenatedCardLinks(randomCards));
             }
             else {
                 _game.getGameState().sendMessage("No cards in " + _playerHand + " hand to reveal");

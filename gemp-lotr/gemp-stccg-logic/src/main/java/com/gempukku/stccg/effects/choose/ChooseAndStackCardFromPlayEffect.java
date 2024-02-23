@@ -9,7 +9,6 @@ import com.gempukku.stccg.effects.defaulteffect.StackCardFromPlayEffect;
 import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayConditions;
 
 public class ChooseAndStackCardFromPlayEffect extends AbstractSubActionEffect {
     private final Action _action;
@@ -43,17 +42,17 @@ public class ChooseAndStackCardFromPlayEffect extends AbstractSubActionEffect {
 
     @Override
     public void playEffect() {
-        final SubAction subAction = new SubAction(_action);
+        final SubAction subAction = _action.createSubAction();
         subAction.appendEffect(
-                new ChooseActiveCardEffect(_game, _action.getActionSource(), _playerId, "Choose card to stack", _cardFilter) {
+                new ChooseActiveCardEffect(_action.getActionSource(), _playerId, "Choose card to stack", _cardFilter) {
                     @Override
-                    protected void cardSelected(DefaultGame game, final PhysicalCard cardToStack) {
+                    protected void cardSelected(final PhysicalCard cardToStack) {
                         subAction.appendEffect(
-                                new ChooseActiveCardEffect(_game, _action.getActionSource(), _playerId, "Choose card to stack on", _stackOnFilter) {
+                                new ChooseActiveCardEffect(_action.getActionSource(), _playerId, "Choose card to stack on", _stackOnFilter) {
                                     @Override
-                                    protected void cardSelected(DefaultGame game, PhysicalCard cardToStackOn) {
+                                    protected void cardSelected(PhysicalCard cardToStackOn) {
                                         subAction.appendEffect(
-                                                new StackCardFromPlayEffect(game, cardToStack, cardToStackOn));
+                                                new StackCardFromPlayEffect(_game, cardToStack, cardToStackOn));
                                     }
                                 });
                     }

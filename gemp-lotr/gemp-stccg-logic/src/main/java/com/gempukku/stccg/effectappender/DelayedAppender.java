@@ -8,7 +8,7 @@ import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class DelayedAppender<AbstractContext extends ActionContext> implements EffectAppender<AbstractContext> {
+public abstract class DelayedAppender implements EffectAppender {
     protected String _text;
 
     public DelayedAppender() {
@@ -19,7 +19,7 @@ public abstract class DelayedAppender<AbstractContext extends ActionContext> imp
     }
 
     @Override
-    public final void appendEffect(boolean cost, CostToEffectAction action, AbstractContext actionContext) {
+    public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         final UnrespondableEffect effect = new UnrespondableEffect() {
             @Override
             protected void doPlayEffect() {
@@ -48,11 +48,11 @@ public abstract class DelayedAppender<AbstractContext extends ActionContext> imp
         }
     }
 
-    protected Effect createEffect(boolean cost, CostToEffectAction action, AbstractContext actionContext) {
+    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 
-    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, AbstractContext actionContext) {
+    protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         final Effect effect = createEffect(cost, action, actionContext);
         if (effect == null)
             return null;
@@ -60,7 +60,7 @@ public abstract class DelayedAppender<AbstractContext extends ActionContext> imp
     }
 
     @Override
-    public boolean isPlayableInFull(AbstractContext actionContext) {
+    public boolean isPlayableInFull(ActionContext actionContext) {
         return true;
     }
 }

@@ -17,6 +17,20 @@
         property-logo: voy
         image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/kathrynjaneway.jpg
     }
+    135_006: {
+        title: William T. Riker
+        type: personnel
+        affiliation: federation
+        property-logo: tng
+        classification: OFFICER
+        icons: ee
+        lore: "While in command of the U.S.S. Enterprise-E, Riker defended the ship against attack by the Son'a. Reminded Picard, \"No uniform, no orders.\""
+        skill-box: "{SKILL} Leadership {SKILL} Navigation x2 {SKILL} Honor {SD} Federation Flagship: Renewed {SD} Riker Maneuver"
+        integrity: 8
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/williamtriker.jpg
+    }
     135_009: {
         title: Starship Enterprise
         type: ship

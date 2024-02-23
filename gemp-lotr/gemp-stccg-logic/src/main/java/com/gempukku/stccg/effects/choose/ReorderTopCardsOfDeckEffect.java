@@ -54,7 +54,7 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
 
         _game.getGameState().sendMessage(_playerId + " reorders top " + count + " cards of draw deck");
 
-        SubAction subAction = new SubAction(_action);
+        SubAction subAction = _action.createSubAction();
         subAction.appendEffect(
                 new ChooseAndPutNextCardFromDeckOnTopOfDeck(subAction, cards));
         processSubAction(_game, subAction);

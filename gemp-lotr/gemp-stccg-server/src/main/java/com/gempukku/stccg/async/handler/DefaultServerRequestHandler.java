@@ -213,7 +213,7 @@ public class DefaultServerRequestHandler {
 
         String id = "LOTR-EN" + set + subset + String.format("%03d", cardNum) + "." + String.format("%01d", version);
 
-        return "<span class=\"tooltip\">" + GameUtils.getFullName(bp)
+        return "<span class=\"tooltip\">" + bp.getFullName()
                 + "<span><img class=\"ttimage\" src=\"https://wiki.lotrtcgpc.net/images/" + id + "_card.jpg\" ></span></span>";
     }
 
@@ -233,7 +233,7 @@ public class DefaultServerRequestHandler {
             if (showToolTip)
                 cardText = generateCardTooltip(item);
             else
-                cardText = GameUtils.getFullName(_library.getCardBlueprint(item.getBlueprintId()));
+                cardText = _library.getCardBlueprint(item).getFullName();
             sb.append(cardText).append("<br/>");
         }
         return sb.toString();

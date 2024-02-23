@@ -2,7 +2,7 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.AwaitingDecisionType;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
@@ -20,17 +20,17 @@ public class AmbushAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardImpl gimli = new PhysicalCardImpl(_game, 100, "5_7", P1, _cardLibrary.getCardBlueprint("5_7"));
-        PhysicalCardImpl desertLegion = new PhysicalCardImpl(_game, 101, "4_218", P2, _cardLibrary.getCardBlueprint("4_218"));
+        PhysicalCardGeneric gimli = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("5_7"));
+        PhysicalCardGeneric desertLegion = new PhysicalCardGeneric(_game, 101, P2, _cardLibrary.getCardBlueprint("4_218"));
 
         skipMulligans();
 
         // Fellowship phase
-        _game.getGameState().addCardToZone(_game, gimli, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(gimli, Zone.FREE_CHARACTERS);
         playerDecided(P1, "");
 
         // Shadow phase
-        _game.getGameState().addCardToZone(_game, desertLegion, Zone.SHADOW_CHARACTERS);
+        _game.getGameState().addCardToZone(desertLegion, Zone.SHADOW_CHARACTERS);
         playerDecided(P2, "");
 
         // End maneuver phase

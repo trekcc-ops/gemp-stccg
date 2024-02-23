@@ -35,7 +35,7 @@ public class CardResolver {
                                                      String memory, String choicePlayer, String choiceText, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
             final Filterable stackedOnFilter = stackedOn.getFilterable(actionContext);
-            return Filters.filter(actionContext.getGame().getGameState().getAllCardsInGame(), actionContext.getGame(), Filters.stackedOn(stackedOnFilter));
+            return Filters.filter(actionContext.getGameState().getAllCardsInGame(), actionContext.getGame(), Filters.stackedOn(stackedOnFilter));
         };
 
         if (type.startsWith("memory(") && type.endsWith(")")) {
@@ -53,7 +53,7 @@ public class CardResolver {
 
                     @Override
                     public String getText() {
-                        return GameUtils.SubstituteText(choiceText, actionContext);
+                        return actionContext.substituteText(choiceText);
                     }
                 };
             };
@@ -75,7 +75,7 @@ public class CardResolver {
         final PlayerSource handSource = PlayerResolver.resolvePlayer(handPlayer);
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
             String handPlayer1 = handSource.getPlayerId(actionContext);
-            return actionContext.getGame().getGameState().getHand(handPlayer1);
+            return actionContext.getGameState().getHand(handPlayer1);
         };
 
         if (type.startsWith("random(") && type.endsWith(")")) {
@@ -84,7 +84,7 @@ public class CardResolver {
                 @Override
                 public boolean isPlayableInFull(ActionContext actionContext) {
                     final String handPlayer = handSource.getPlayerId(actionContext);
-                    return actionContext.getGame().getGameState().getHand(handPlayer).size() >= count;
+                    return actionContext.getGameState().getHand(handPlayer).size() >= count;
                 }
 
                 @Override
@@ -93,8 +93,8 @@ public class CardResolver {
                     return new UnrespondableEffect() {
                         @Override
                         protected void doPlayEffect() {
-                            List<? extends PhysicalCard> hand = actionContext.getGame().getGameState().getHand(handPlayer);
-                            List<PhysicalCard> randomCardsFromHand = GameUtils.getRandomCards(hand, 2);
+                            List<? extends PhysicalCard> hand = actionContext.getGameState().getHand(handPlayer);
+                            List<PhysicalCard> randomCardsFromHand = GameUtils.getRandomFromList(hand, 2);
                             actionContext.setCardMemory(memory, randomCardsFromHand);
                         }
                     };
@@ -119,13 +119,13 @@ public class CardResolver {
                         }
 
                         @Override
-                        public String getText() {
-                            return GameUtils.SubstituteText(choiceText, actionContext);
-                        }
+                        public String getText() { return actionContext.substituteText(choiceText); }
                     };
                 } else {
-                    List<? extends PhysicalCard> cardsInHand = actionContext.getGame().getGameState().getHand(handId);
-                    return new ChooseArbitraryCardsEffect(actionContext.getGame(), choicePlayerId, GameUtils.SubstituteText(choiceText, actionContext), cardsInHand, Filters.in(possibleCards), min, max, showMatchingOnly) {
+                    List<? extends PhysicalCard> cardsInHand = actionContext.getGameState().getHand(handId);
+                    return new ChooseArbitraryCardsEffect(actionContext.getGame(), choicePlayerId,
+                            actionContext.substituteText(choiceText), cardsInHand, Filters.in(possibleCards),
+                            min, max, showMatchingOnly) {
                         @Override
                         protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
                             actionContext.setCardMemory(memory, selectedCards);
@@ -166,7 +166,7 @@ public class CardResolver {
 
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
             String targetPlayerId = targetPlayerDiscardSource.getPlayerId(actionContext);
-            return actionContext.getGame().getGameState().getDiscard(targetPlayerId);
+            return actionContext.getGameState().getDiscard(targetPlayerId);
         };
 
         if (type.equals("self")) {
@@ -187,7 +187,7 @@ public class CardResolver {
 
                     @Override
                     public String getText() {
-                        return GameUtils.SubstituteText(choiceText, actionContext);
+                        return actionContext.substituteText(choiceText);
                     }
                 };
             };
@@ -207,7 +207,7 @@ public class CardResolver {
 
         Function<ActionContext, Iterable<? extends PhysicalCard>> cardSource = actionContext -> {
             String deckId = deckSource.getPlayerId(actionContext);
-            return actionContext.getGame().getGameState().getDrawDeck(deckId);
+            return actionContext.getGameState().getDrawDeck(deckId);
         };
 
         if (type.startsWith("memory(") && type.endsWith(")")) {
@@ -227,7 +227,7 @@ public class CardResolver {
 
                     @Override
                     public String getText() {
-                        return GameUtils.SubstituteText(choiceText, actionContext);
+                        return actionContext.substituteText(choiceText);
                     }
                 };
             };
@@ -310,9 +310,10 @@ public class CardResolver {
             final PlayerSource playerSource = PlayerResolver.resolvePlayer(choicePlayer);
             ChoiceEffectSource effectSource = (possibleCards, action, actionContext, min, max) -> {
                 String choicePlayerId = playerSource.getPlayerId(actionContext);
-                return new ChooseActiveCardsEffect(actionContext, choicePlayerId, GameUtils.SubstituteText(choiceText, actionContext), min, max, Filters.in(possibleCards)) {
+                return new ChooseActiveCardsEffect(actionContext, choicePlayerId,
+                        actionContext.substituteText(choiceText), min, max, Filters.in(possibleCards)) {
                     @Override
-                    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
+                    protected void cardsSelected(Collection<PhysicalCard> cards) {
                         actionContext.setCardMemory(memory, cards);
                     }
                 };

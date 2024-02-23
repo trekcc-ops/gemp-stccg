@@ -32,7 +32,7 @@ public class CostToEffect implements EffectAppenderProducer {
                 if(requirementsNotMet(actionContext))
                     return null;
 
-                SubAction subAction = new SubAction(action);
+                SubAction subAction = action.createSubAction();
 
                 for (EffectAppender costAppender : costAppenders)
                     costAppender.appendEffect(true, subAction, actionContext);

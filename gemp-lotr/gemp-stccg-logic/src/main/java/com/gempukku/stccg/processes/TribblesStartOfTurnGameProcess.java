@@ -17,7 +17,7 @@ public class TribblesStartOfTurnGameProcess extends GameProcess {
     public void process() {
         _game.getGameState().startAffectingCardsForCurrentPlayer();
 
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
 
         action.appendEffect(new UnrespondableEffect() {
             @Override

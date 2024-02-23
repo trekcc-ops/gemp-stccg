@@ -39,7 +39,8 @@ public interface GameFormat {
 
     CardDeck applyErrata(CardDeck deck);
 
-    List<Integer> getValidSets();
+    List<Integer> getValidSetNums();
+    Map<String, String> getValidSets();
 
     List<String> getBannedCards();
 

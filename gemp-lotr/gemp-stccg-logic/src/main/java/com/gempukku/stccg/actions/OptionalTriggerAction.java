@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
 
 public class OptionalTriggerAction extends AbstractCostToEffectAction {
@@ -13,18 +12,21 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
 
     private boolean _sentMessage;
     private String _triggerIdentifier;
+    private final DefaultGame _game;
 
     public OptionalTriggerAction(String triggerIdentifier, PhysicalCard attachedToCard) {
+        _game = attachedToCard.getGame();
         _actionAttachedToCard = attachedToCard;
         _triggerIdentifier = triggerIdentifier;
     }
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
+        _game = physicalCard.getGame();
         _physicalCard = physicalCard;
         _actionAttachedToCard = physicalCard;
 
-        setText("Optional trigger from " + GameUtils.getCardLink(_physicalCard));
-        _message = GameUtils.getCardLink(_physicalCard) + " optional triggered effect is used";
+        setText("Optional trigger from " + _physicalCard.getCardLink());
+        _message = _physicalCard.getCardLink() + " optional triggered effect is used";
         _triggerIdentifier = String.valueOf(physicalCard.getCardId());
     }
 
@@ -56,13 +58,13 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
+                _game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
             if (_message != null)
-                game.getGameState().sendMessage(_message);
+                _game.getGameState().sendMessage(_message);
         }
 
         if (!isCostFailed()) {
@@ -74,4 +76,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
         }
         return null;
     }
+
+    @Override
+    public DefaultGame getGame() { return _game; }
 }

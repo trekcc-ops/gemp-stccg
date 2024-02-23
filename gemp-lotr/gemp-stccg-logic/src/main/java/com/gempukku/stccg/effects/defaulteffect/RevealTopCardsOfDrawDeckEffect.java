@@ -49,7 +49,7 @@ public abstract class RevealTopCardsOfDrawDeckEffect extends DefaultEffect {
                         });
             }
 
-            _game.getGameState().sendMessage(GameUtils.getCardLink(_source) + " revealed cards from top of " + _playerId + " deck - " + GameUtils.getAppendedNames(topCards));
+            _game.getGameState().sendMessage(_source.getCardLink() + " revealed cards from top of " + _playerId + " deck - " + GameUtils.getConcatenatedCardLinks(topCards));
             for (PhysicalCard topCard : topCards) {
                 _game.getActionsEnvironment().emitEffectResult(
                         new RevealCardFromTopOfDeckResult(_playerId, topCard));

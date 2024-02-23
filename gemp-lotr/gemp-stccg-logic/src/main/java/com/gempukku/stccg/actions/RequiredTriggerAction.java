@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.effects.Effect;
 
 public class RequiredTriggerAction extends AbstractCostToEffectAction {
@@ -10,14 +9,17 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
 
     private boolean _sentMessage;
     private String _message;
+    private final DefaultGame _game;
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
+        _game = physicalCard.getGame();
         _physicalCard = physicalCard;
-        if (physicalCard != null) {
-            setText("Required trigger from " + GameUtils.getCardLink(_physicalCard));
-            _message = GameUtils.getCardLink(_physicalCard) + " required triggered effect is used";
-        }
+        setText("Required trigger from " + _physicalCard.getCardLink());
+        _message = _physicalCard.getCardLink() + " required triggered effect is used";
     }
+
+    @Override
+    public DefaultGame getGame() { return _game; }
 
     @Override
     public ActionType getActionType() {
@@ -39,13 +41,13 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame game) {
+    public Effect nextEffect() {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
+                _game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
             if (_message != null)
-                game.getGameState().sendMessage(_message);
+                _game.getGameState().sendMessage(_message);
         }
 
         if (isCostFailed()) {

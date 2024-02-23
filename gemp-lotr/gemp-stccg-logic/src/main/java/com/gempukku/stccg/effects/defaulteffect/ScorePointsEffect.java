@@ -19,7 +19,7 @@ public class ScorePointsEffect extends DefaultEffect {
 
     @Override
     public String getText() {
-        return _scoringPlayer + " scored " + _points + " from " + GameUtils.getCardLink(_source);
+        return _scoringPlayer + " scored " + _points + " from " + _source.getCardLink();
     }
     @Override
     public boolean isPlayableInFull() { return true; }

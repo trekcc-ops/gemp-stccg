@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
-import com.gempukku.stccg.cards.PhysicalCardImpl;
+import com.gempukku.stccg.cards.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Zone;
 import org.junit.Test;
 
@@ -12,14 +12,14 @@ public class DiscardFromHandAtTest extends AbstractAtTest {
     public void foulCreationDiscardsCardAndDrawsCards() throws Exception {
         initializeSimplestGame();
 
-        final PhysicalCardImpl legolas = createCard(P1, "1_50");
-        _game.getGameState().addCardToZone(_game, legolas, Zone.FREE_CHARACTERS);
+        final PhysicalCardGeneric legolas = createCard(P1, "1_50");
+        _game.getGameState().addCardToZone(legolas, Zone.FREE_CHARACTERS);
 
-        PhysicalCardImpl foulCreation = createCard(P1, "1_44");
-        _game.getGameState().addCardToZone(_game, foulCreation, Zone.HAND);
+        PhysicalCardGeneric foulCreation = createCard(P1, "1_44");
+        _game.getGameState().addCardToZone(foulCreation, Zone.HAND);
 
-        PhysicalCardImpl lurtz = createCard(P2, "1_127");
-        _game.getGameState().addCardToZone(_game, lurtz, Zone.HAND);
+        PhysicalCardGeneric lurtz = createCard(P2, "1_127");
+        _game.getGameState().addCardToZone(lurtz, Zone.HAND);
 
         skipMulligans();
 
