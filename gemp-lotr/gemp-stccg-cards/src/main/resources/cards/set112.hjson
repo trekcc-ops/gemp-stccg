@@ -1,0 +1,217 @@
+// Set 112: Deep Space 9
+
+{
+    112_206: {
+        title: Graham Davis
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: ENGINEER
+        uniqueness: universal
+        lore: "Representative of Starfleet engineers stationed aboard Deep Space 9. Assisted Miles O'Brien during repair and retrofit of the station."
+        skill-box: "[*] Astrophysics [*] Computer Skill"
+        integrity: 7
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/grahamdavis.gif
+    }
+    112_207: {
+        title: Jace Michaels
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: OFFICER
+        icons: command
+        uniqueness: universal
+        lore: "Representative of first officers serving in Starfleet. Assigned to the U.S.S. Odyssey. Courageously fought against the Jem'Hadar in 2370."
+        skill-box: "[*] Diplomacy [*] Physics [*] Honor"
+        integrity: 6
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/58.jpg
+    }
+    112_208: {
+        title: Jadzia Dax
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: SCIENCE
+        icons: command
+        lore: "Lt. Commander Jadzia Dax is the eighth Trill host of the Dax symbiont. Underwent zhian'tara closure rite in 2371. Level 3 pilot. Married to Worf. Likes tongo."
+        skill-box: "[*] Archaeology [*] Astrophysics [*] Exobiology [*] Navigation x2 [*] Anthropology"
+        integrity: 7
+        cunning: 9
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif
+    }
+    112_210: {
+        title: Karen Loews
+        type: personnel
+        uniqueness: universal
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: MEDICAL
+        lore: Starfleet psychiatrist representative of Federation medical personnel. Came to Deep Space 9 in 2374 with a group of genetically engineered misfits.
+        skill-box: "[*] Biology [*] Anthropology"
+        integrity: 7
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/karenloews.gif
+    }
+    112_213: {
+        title: Paxton Reese
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: SCIENCE
+        uniqueness: universal
+        lore: Stellar cartographer characteristic of Starfleet science personnel. Served aboard Deep Space 9 in 2372. Studied effects of the wormhole on the Denorios Belt.
+        skill-box: "[*] Navigation [*] Stellar Cartography"
+        integrity: 6
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/paxtonreese.gif
+    }
+    112_215: {
+        title: Taylor Moore
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: SECURITY
+        icons: staff
+        uniqueness: universal
+        lore: Typical of Federation security specialists serving aboard Deep Space 9. Had an encounter with an alien entity personifying Rumpelstiltskin. Likes dabo.
+        skill-box: "[*] Leadership [*] Archaeology"
+        integrity: 7
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/taylormoore.gif
+    }
+    112_217: {
+        title: "Bo'rak"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff
+        lore: "Operative sent to Deep Space 9 in 2371 to spy on Romulan delegates. Modified a replicator to beam a surveillance device near the Romulans' quarters."
+        skill-box: "[*] Cybernetics [*] Transporter Skill [*] Astrophysics [*] Klingon Intelligence"
+        integrity: 5
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/borak.gif
+    }
+    112_221: {
+        title: "T'Kar"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SECURITY
+        icons: staff
+        lore: Klingon mercenary used by Verad. Helped capture Jadzia in an attempt to steal the Dax symbiont.
+        skill-box: "[*] Navigation x2 [*] ENGINEER [*] Treachery"
+        integrity: 3
+        cunning: 7
+        strength: 9
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/67.jpg
+    }
+    112_222: {
+        title: Yeto
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SCIENCE
+        icons: staff
+        lore: "Particularly brusque Klingon who aided Verad's takeover of Deep Space 9 in 2370. Immobilized Odo in a containment device."
+        skill-box: "[*] Treachery [*] Stellar Cartography [*] Transporter Skill"
+        integrity: 4
+        cunning: 5
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/68.jpg
+    }
+    112_224: {
+        title: Amaros
+        type: personnel
+        affiliation: non-aligned
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff,maquis
+        uniqueness: universal
+        lore: "Maquis terrorist. Cal Hudson's co-pilot. Helped abduct Gul Dukat, blaming him for supplying illegal weapons to Cardassians in the Demilitarized Zone."
+        skill-box: "[*] Navigation [*] Physics"
+        integrity: 6
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/69.jpg
+    }
+    112_232: {
+        title: Retaya
+        type: personnel
+        affiliation: non-aligned
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: 'Flaxian. Posed as a perfume salesman. In reality an assassin who mixes his "fragrances" to create deadly toxins. Hired to kill Garak in 2371.'
+        skill-box: "[*] SCIENCE [*] Biology [*] Treachery [*] Physics"
+        integrity: 2
+        cunning: 8
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/retaya.gif
+    }
+    112_234: {
+        title: Sakonna
+        type: personnel
+        affiliation: non-aligned
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff,maquis
+        lore: Female Vulcan. Gunrunner. Bought weapons from Quark in 2370. Helped the Maquis abduct Gul Dukat, but failed to establish a forced mindmeld with him.
+        skill-box: "[*] Treachery [*] Mindmeld [*] Physics [*] Acquisition"
+        integrity: 5
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/72.jpg
+    }
+    112_235: {
+        title: Sharat
+        type: personnel
+        affiliation: non-aligned
+        property-logo: ds9-logo
+        classification: V.I.P.
+        icons: staff
+        lore: "Kellerun ambassador. Helped negotiate cease fire with the T'Lani. Worked on project to eliminate harvester virus and associated technology in 2370."
+        skill-box: "[*] Diplomacy [*] Exobiology [*] Treachery [*] Computer Skill"
+        integrity: 4
+        cunning: 5
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/73.jpg
+    }
+    112_261: {
+        title: Flaxian Scout Vessel
+        type: ship
+        affiliation: non-aligned
+        uniqueness: universal
+        property-logo: ds9-logo
+        ship-class: SCOUT CLASS
+        lore: Scout ship of Flaxian registry. Retaya commanded one in 2371 during a Tal Shiar assignment to assassinate Garak.
+        range: 8
+        weapons: 3
+        shields: 5
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/flaxianscoutvessel.gif
+    }
+    112_264: {
+        title: Xepolite Freighter
+        type: ship
+        affiliation: non-aligned
+        uniqueness: universal
+        property-logo: ds9-logo
+        ship-class: MERCHANT FREIGHTER
+        lore: Xepolite merchants are suspected as fronts for secret Cardassian operations. They maintain their privacy via particle-diffusing hull alloys.
+        staffing: command,staff
+        gametext: Long-Range Scan Shielding, Tractor Beam
+        range: 9
+        weapons: 5
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/xepolitefreighter.gif
+    }
+}

@@ -2,7 +2,7 @@ package com.gempukku.stccg.decisions;
 
 public class YesNoDecision extends MultipleChoiceAwaitingDecision {
     public YesNoDecision(String text) {
-        super(1, text, new String[]{"Yes", "No"});
+        super(text, new String[]{"Yes", "No"});
     }
 
     @Override

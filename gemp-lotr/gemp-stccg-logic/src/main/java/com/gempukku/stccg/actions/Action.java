@@ -1,13 +1,13 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public interface Action {
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
-        MOVE_CARDS, TRIBBLE_POWER, ATTEMPT_MISSION
+        MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,
+        SEED_CARD
     }
 
     ActionType getActionType();
@@ -20,9 +20,7 @@ public interface Action {
 
     boolean isVirtualCardAction();
 
-    void setPerformingPlayer(String playerId);
-
-    String getPerformingPlayer();
+    String getPerformingPlayerId();
 
     String getText();
 

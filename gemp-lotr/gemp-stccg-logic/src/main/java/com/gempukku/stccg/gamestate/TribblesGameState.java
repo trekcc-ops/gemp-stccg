@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;

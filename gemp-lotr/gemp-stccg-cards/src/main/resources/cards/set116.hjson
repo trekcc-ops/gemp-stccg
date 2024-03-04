@@ -4,42 +4,18 @@
     116_011: {
         title: Battle Bridge Door
         type: doorway
-        seedPhase: doorway
-        property-logo: tng
+        property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
-    }
-    116_046: {
-        title: "Bat'leth Tournament"
-        type: mission
-        seedPhase: mission
-        quadrant: alpha
-        uniqueness: universal
-        location: Klingon planet
-        affiliation-icons: klingon
-        mission-type: planet
-        lore: "Participate in bat'leth competition held at this Klingon settlement."
-        image-url: https://www.trekcc.org/1e/cardimages/bog/batlethtournament.gif
-    }
-    116_047: {
-        title: Chart Stellar Cluster
-        type: mission
-        seedPhase: mission
-        quadrant: gamma
-        location: Edge of Denkiri Arm
-        affiliation-icons: federation,romulan,cardassian
-        mission-type: space
-        lore: Perform long-distance overview survey of this region of the Gamma Quadrant.
-        image-url: https://www.trekcc.org/1e/cardimages/bog/chartstellarcluster.gif
     }
     116_070: {
         title: Enrique Muniz
         type: personnel
         affiliation: federation
-        property-logo: ds9
+        property-logo: ds9-logo
         classification: ENGINEER
         icons: staff
         lore: "Highly valued assistant to Chief O'Brien. Called \"Quique\" by his friends. Joked that he wants to grow up to be O'Brien - just not as old and grizzled."
-        skill-box: "{SKILL} Computer Skill x2 {SKILL} Honor {SKILL} Navigation {SKILL} Geology"
+        skill-box: "[*] Computer Skill x2 [*] Honor [*] Navigation [*] Geology"
         integrity: 8
         cunning: 7
         strength: 5
@@ -49,15 +25,88 @@
         title: Sarita Carson
         type: personnel
         affiliation: federation
-        property-logo: ds9
+        property-logo: ds9-logo
         classification: SECURITY
         uniqueness: universal
         icons: staff
         lore: Ensign Carson is one of the many talented navigators serving Starfleet. Former member of Nova Squadron. Assigned to bridge duty aboard U.S.S. Defiant.
-        skill-box: "{SKILL} Navigation {SKILL} SCIENCE"
+        skill-box: "[*] Navigation [*] SCIENCE"
         integrity: 6
         cunning: 7
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/emissarysup/61.jpg
+    }
+    116_080: {
+        title: "N'Garen"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SECURITY
+        uniqueness: universal
+        icons: staff
+        lore: "Typical of young Klingons serving the Empire. Daughter of Tse'Dek. Assigned to tactical/weapons station on I.K.C. Rotarran by General Martok."
+        skill-box: "[*] Astrophysics [*] SCIENCE [*] Youth"
+        integrity: 7
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ngaren.jpg
+    }
+    116_082: {
+        title: "Wo'Din"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SCIENCE
+        uniqueness: universal
+        icons: staff
+        lore: Typical Klingon inspired by tales of glorious battle against the Dominion. Learned diplomatic skills from his father, a former Klingon negotiator.
+        skill-box: "[*] Diplomacy [*] Stellar Cartography"
+        integrity: 5
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/TWT-wodin.jpg
+    }
+    116_084: {
+        title: Zetal
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SCIENCE
+        uniqueness: universal
+        icons: staff
+        lore: Typical skilled Klingon serving in the fleet during the war with Cardassia. Her ship took part in a raid which destroyed an outpost on Korma in 2372.
+        skill-box: "[*] Biology"
+        integrity: 6
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/bog/zetal.gif
+    }
+    116_090: {
+        title: Dr. Koramar
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Brilliant Romulan astro-archaeologist. Member of the Romulan underground. Works closely with Spock for reunification of the Vulcan and Romulan peoples.
+        skill-box: "[*] ENGINEER [*] Archaeology [*] Honor [*] Stellar Cartography"
+        integrity: 8
+        cunning: 9
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/bog/drkoramar.gif
+    }
+    116_105: {
+        title: I.K.C. Lukara
+        type: ship
+        affiliation: klingon
+        property-logo: ds9-logo
+        lore: Bird-of-Prey commanded by Kang. Transported its commander and his comrades to Secarus IV in 2370, to confront the Albino in his stronghold.
+        ship-class: "K'VORT CLASS"
+        staffing: staff
+        gametext: Cloaking Device, Tractor Beam
+        range: 7
+        weapons: 7
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/173VP.jpg
     }
 }

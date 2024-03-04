@@ -1,7 +1,9 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
+import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -15,7 +17,7 @@ import java.util.Set;
 
 public abstract class AbstractModifier implements Modifier {
     protected String _playerId;
-    protected final PhysicalCard _physicalCard;
+    protected final PhysicalCard _cardSource;
     private final String _text;
     protected final Filter _affectFilter;
     protected final Condition _condition;
@@ -26,9 +28,18 @@ public abstract class AbstractModifier implements Modifier {
         this(source, text, affectFilter, null, effect);
     }
 
+    protected AbstractModifier(DefaultGame game, Filterable affectFilter, Condition condition, ModifierEffect effect) {
+        _cardSource = null;
+        _text = null;
+        _affectFilter = (affectFilter != null) ? Filters.and(affectFilter) : null;
+        _condition = null;
+        _effect = effect;
+        _game = game;
+    }
+
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
                                Condition condition, ModifierEffect effect) {
-        _physicalCard = source;
+        _cardSource = source;
         _text = text;
         _affectFilter = (affectFilter != null) ? Filters.and(affectFilter) : null;
         _condition = condition;
@@ -48,11 +59,11 @@ public abstract class AbstractModifier implements Modifier {
 
     @Override
     public PhysicalCard getSource() {
-        return _physicalCard;
+        return _cardSource;
     }
 
     @Override
-    public String getText(PhysicalCard self) {
+    public String getCardInfoText(PhysicalCard affectedCard) {
         return _text;
     }
 
@@ -78,6 +89,10 @@ public abstract class AbstractModifier implements Modifier {
 
     @Override
     public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
+        return false;
+    }
+    @Override
+    public boolean hasIcon(PhysicalCard physicalCard, Icon1E icon) {
         return false;
     }
 
@@ -230,7 +245,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canBeTransferred(DefaultGame game, PhysicalCard attachment) {
+    public boolean canBeTransferred(PhysicalCard attachment) {
         return true;
     }
 

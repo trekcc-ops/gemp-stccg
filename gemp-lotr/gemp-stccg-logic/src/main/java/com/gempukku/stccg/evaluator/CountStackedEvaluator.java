@@ -1,30 +1,27 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class CountStackedEvaluator implements Evaluator {
+public class CountStackedEvaluator extends Evaluator {
     private final Filterable _stackedOn;
     private final Filterable[] _stackedCard;
     private Integer _limit;
 
-    public CountStackedEvaluator(Filterable stackedOn, Filterable... stackedCard) {
+    public CountStackedEvaluator(DefaultGame game, Filterable stackedOn, Filterable... stackedCard) {
+        super(game);
         _stackedOn = stackedOn;
         _stackedCard = stackedCard;
     }
 
-    public CountStackedEvaluator(int limit, Filterable stackedOn, Filterable... stackedCard) {
-        this(stackedOn, stackedCard);
-        _limit = limit;
-    }
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
         int count = 0;
-        for (PhysicalCard card : Filters.filterActive(game, _stackedOn)) {
-            count += Filters.filter(card.getStackedCards(), game, _stackedCard).size();
+        for (PhysicalCard card : Filters.filterActive(_game, _stackedOn)) {
+            count += Filters.filter(card.getStackedCards(), _game, _stackedCard).size();
         }
         if (_limit != null)
             return Math.min(_limit, count);

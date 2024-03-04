@@ -16,7 +16,7 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
     private final Iterator<String> _biddingOrderPlayers;
     private final String[] _orderedPlayers;
     private boolean _sentBids;
-    private DefaultGame _game;
+    private final DefaultGame _game;
 
     public ChooseSeatingOrderGameProcess(Map<String, Integer> bids, PlayerOrderFeedback playerOrderFeedback, DefaultGame game) {
         _game = game;
@@ -83,7 +83,7 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
     private void askNextPlayerToChoosePlace() {
         final String playerId = _biddingOrderPlayers.next();
         _game.getUserFeedback().sendAwaitingDecision(playerId,
-                new MultipleChoiceAwaitingDecision(1, "Choose one", getEmptySeatNumbers()) {
+                new MultipleChoiceAwaitingDecision("Choose one", getEmptySeatNumbers()) {
                     @Override
                     protected void validDecisionMade(int index, String result) {
                         _game.getGameState().sendMessage(playerId + " has chosen to go " + _choices[index]);

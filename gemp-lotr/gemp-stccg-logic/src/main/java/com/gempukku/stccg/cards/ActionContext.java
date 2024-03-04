@@ -1,10 +1,13 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.results.EffectResult;
+import com.gempukku.stccg.actions.EffectResult;
 import com.google.common.collect.Multimap;
 
 import java.util.Collection;
@@ -23,7 +26,8 @@ public interface ActionContext {
     void setCardMemory(String memory, Collection<? extends PhysicalCard> cards);
     Collection<PhysicalCard> getCardsFromMemory(String memory);
     PhysicalCard getCardFromMemory(String memory);
-    String getPerformingPlayer();
+    Player getPerformingPlayer();
+    String getPerformingPlayerId();
     PhysicalCard getSource();
     EffectResult getEffectResult();
     Effect getEffect();
@@ -35,4 +39,5 @@ public interface ActionContext {
     ActionContext createDelegateContext(EffectResult effectResult);
     ActionContext createDelegateContext(String playerId);
     String substituteText(String text);
+    List<PhysicalCard> getZoneCards(PlayerSource playerSource, Zone zone);
 }

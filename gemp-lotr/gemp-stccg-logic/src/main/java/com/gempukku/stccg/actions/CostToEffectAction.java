@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.actions.discard.DiscountEffect;
 
 public interface CostToEffectAction extends Action {
     void appendPotentialDiscount(DiscountEffect cost);

@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.actions.discard.DiscountEffect;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,12 +15,28 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private final LinkedList<Effect> _processedCosts = new LinkedList<>();
     private final LinkedList<Effect> _effects = new LinkedList<>();
     private final LinkedList<Effect> _processedEffects = new LinkedList<>();
-    private String text;
+    protected String text;
 
-    protected String _performingPlayerId;
-    private final Action _thisAction = this;
-
+    protected final String _performingPlayerId;
+    protected final Action _thisAction = this;
     private boolean _virtualCardAction = false;
+    protected final ActionType _actionType;
+    public ActionType getActionType() { return _actionType; }
+
+    protected AbstractCostToEffectAction(String performingPlayerId, ActionType actionType) {
+        _performingPlayerId = performingPlayerId;
+        _actionType = actionType;
+    }
+    protected AbstractCostToEffectAction(Player player, ActionType actionType) {
+        this(player.getPlayerId(), actionType);
+    }
+    protected AbstractCostToEffectAction(Action action) {
+        this(action.getPerformingPlayerId(), action.getActionType());
+    }
+    protected AbstractCostToEffectAction() {
+        _performingPlayerId = null;
+        _actionType = ActionType.OTHER;
+    }
 
 
     @Override
@@ -34,12 +50,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     @Override
-    public void setPerformingPlayer(String playerId) {
-        _performingPlayerId = playerId;
-    }
-
-    @Override
-    public String getPerformingPlayer() {
+    public String getPerformingPlayerId() {
         return _performingPlayerId;
     }
 
@@ -147,7 +158,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     public abstract DefaultGame getGame();
 
     public SubAction createSubAction() {
-        return new SubAction(_thisAction, getGame());
+        return new SubAction(_thisAction);
     }
 
     public boolean canBeInitiated() { return true; }

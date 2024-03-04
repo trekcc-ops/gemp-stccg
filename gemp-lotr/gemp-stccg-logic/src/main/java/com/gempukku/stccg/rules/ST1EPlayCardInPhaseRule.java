@@ -1,23 +1,27 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.playcard.SeedMissionAction;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 public class ST1EPlayCardInPhaseRule {
-    private final DefaultActionsEnvironment actionsEnvironment;
+    private final ActionsEnvironment actionsEnvironment;
     private final DefaultGame _game;
 
-    public ST1EPlayCardInPhaseRule(DefaultActionsEnvironment actionsEnvironment) {
+    public ST1EPlayCardInPhaseRule(ActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
         _game = actionsEnvironment.getGame();
     }
@@ -27,28 +31,33 @@ public class ST1EPlayCardInPhaseRule {
                 new AbstractActionProxy() {
                     @Override
                     public List<Action> getPhaseActions(String playerId) {
+                        final List<PhysicalCard> cardsInHand = _game.getGameState().getHand(playerId);
+                        final Player player = _game.getGameState().getPlayer(playerId);
+                        final String currentPlayerId = _game.getGameState().getCurrentPlayerId();
+
                         final Phase phase = _game.getGameState().getCurrentPhase();
                         if (phase == Phase.SEED_DOORWAY) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                                if (card.canBePlayed()) {
-                                    result.add(new PlayPermanentForFreeAction(card, Zone.TABLE));
-                                }
+                            for (PhysicalCard card : cardsInHand) {
+                                Action action = new STCCGPlayCardAction(card, Zone.TABLE, player);
+                                if (action.canBeInitiated())
+                                    result.add(action);
                             }
                             return result;
-                        } else if (phase == Phase.SEED_MISSION && !_game.getGameState().getHand(playerId).isEmpty()) {
-                            if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
+                        } else if (phase == Phase.SEED_MISSION && !cardsInHand.isEmpty()) {
+                            if (Objects.equals(playerId, currentPlayerId)) {
                                 List<Action> actionList = new LinkedList<>();
-                                actionList.add(new SeedMissionAction((PhysicalMissionCard) _game.getGameState().getHand(playerId).get(0)));
+                                actionList.add(new SeedMissionAction((PhysicalMissionCard) cardsInHand.get(0)));
                                 return actionList;
                             }
                         } else if (phase == Phase.SEED_FACILITY) {
                             List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                                if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
-                                    if (card.canBePlayed()) {
-                                        if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
-                                            result.add(((PhysicalFacilityCard) card).createSeedCardAction());
+                            for (PhysicalCard card : cardsInHand) {
+                                if (Objects.equals(playerId, currentPlayerId)) {
+                                    if (card.canBeSeeded()) {
+                                        Action action = card.createSeedCardAction();
+                                        if (action != null && action.canBeInitiated())
+                                            result.add(action);
                                     }
                                 }
                             }
@@ -58,8 +67,11 @@ public class ST1EPlayCardInPhaseRule {
                             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
                                 if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
                                     if (card.canBePlayed()) {
-                                        if (card.getCardType() == CardType.PERSONNEL || card.getCardType() == CardType.SHIP)
-                                            result.add(((PhysicalReportableCard1E) card).createReportCardAction());
+                                        if (card.getCardType() == CardType.PERSONNEL || card.getCardType() == CardType.SHIP) {
+                                            Action action = ((PhysicalReportableCard1E) card).createReportCardAction();
+                                            if (action != null && action.canBeInitiated())
+                                                result.add(action);
+                                        }
                                     }
                                 }
                             }

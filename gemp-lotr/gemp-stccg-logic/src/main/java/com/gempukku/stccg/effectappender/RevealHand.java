@@ -1,11 +1,14 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.revealcards.RevealHandEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.RevealHandEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
@@ -13,30 +16,30 @@ import java.util.Collection;
 
 public class RevealHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "hand", "memorize");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "hand", "memorize");
 
-        final String player = FieldUtils.getString(effectObject.get("hand"), "hand", "you");
+        final String player = environment.getString(effectObject.get("hand"), "hand", "you");
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
 
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final DefaultGame game = actionContext.getGame();
                 final String revealingPlayer = playerSource.getPlayerId(actionContext);
-                return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, revealingPlayer, actionContext.getPerformingPlayer());
+                return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, revealingPlayer, actionContext.getPerformingPlayerId());
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String revealingPlayer = playerSource.getPlayerId(actionContext);
-                return new RevealHandEffect(actionContext, revealingPlayer) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                final String revealingPlayer = playerSource.getPlayerId(context);
+                return new RevealHandEffect(context, revealingPlayer) {
                     @Override
                     protected void cardsRevealed(Collection<? extends PhysicalCard> cards) {
                         if (memorize != null)
-                            actionContext.setCardMemory(memorize, cards);
+                            context.setCardMemory(memorize, cards);
                     }
                 };
             }

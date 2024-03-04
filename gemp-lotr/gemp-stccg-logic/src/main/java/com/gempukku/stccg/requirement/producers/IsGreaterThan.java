@@ -1,9 +1,8 @@
 package com.gempukku.stccg.requirement.producers;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementProducer;
@@ -11,15 +10,15 @@ import org.json.simple.JSONObject;
 
 public class IsGreaterThan extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(object, "firstNumber", "secondNumber");
+    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(object, "firstNumber", "secondNumber");
 
         final ValueSource firstNumber = ValueResolver.resolveEvaluator(object.get("firstNumber"), environment);
         final ValueSource secondNumber = ValueResolver.resolveEvaluator(object.get("secondNumber"), environment);
 
         return actionContext -> {
-            final int first = firstNumber.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-            final int second = secondNumber.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+            final int first = firstNumber.evaluateExpression(actionContext, null);
+            final int second = secondNumber.evaluateExpression(actionContext, null);
             return first > second;
         };
     }

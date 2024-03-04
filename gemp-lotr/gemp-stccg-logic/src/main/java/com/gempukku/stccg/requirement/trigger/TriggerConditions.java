@@ -1,15 +1,20 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
+import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
+import com.gempukku.stccg.actions.draw.DrawOneCardEffect;
+import com.gempukku.stccg.actions.movecard.WhenMoveFromResult;
+import com.gempukku.stccg.actions.playcard.PlayCardResult;
+import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effects.*;
-import com.gempukku.stccg.effects.defaulteffect.DrawOneCardEffect;
-import com.gempukku.stccg.effects.utils.EffectType;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.results.*;
 
 import java.util.Objects;
 
@@ -36,10 +41,6 @@ public class TriggerConditions {
     public static boolean playerGoesOut(EffectResult effectResult, String playerId) {
         return (effectResult.getType() == EffectResult.Type.PLAYER_WENT_OUT &&
                 Objects.equals(effectResult.getPlayer(), playerId));
-    }
-
-    public static boolean reconciles(EffectResult effectResult, String playerId) {
-        return effectResult.getType() == EffectResult.Type.RECONCILE && (playerId == null || ((ReconcileResult) effectResult).getPlayerId().equals(playerId));
     }
 
     public static boolean forEachCardDrawn(EffectResult effectResult, String playerId) {
@@ -89,7 +90,7 @@ public class TriggerConditions {
     public static boolean isDrawingACard(Effect effect, DefaultGame game, String playerId) {
         if (effect.getType() == EffectType.BEFORE_DRAW_CARD) {
             DrawOneCardEffect drawEffect = (DrawOneCardEffect) effect;
-            return effect.getPerformingPlayer().equals(playerId) && drawEffect.canDrawCard();
+            return effect.getPerformingPlayerId().equals(playerId) && drawEffect.canDrawCard();
         }
         return false;
     }
@@ -114,7 +115,7 @@ public class TriggerConditions {
     public static boolean isGettingDiscardedByOpponent(Effect effect, DefaultGame game, String playerId, Filterable... filters) {
         if (effect.getType() == EffectType.BEFORE_DISCARD_FROM_PLAY) {
             PreventableCardEffect preventableEffect = (PreventableCardEffect) effect;
-            if (effect.getSource() != null && !effect.getPerformingPlayer().equals(playerId))
+            if (effect.getSource() != null && !effect.getPerformingPlayerId().equals(playerId))
                 return !Filters.filter(preventableEffect.getAffectedCardsMinusPrevented(), game, filters).isEmpty();
         }
         return false;
@@ -144,6 +145,16 @@ public class TriggerConditions {
         return false;
     }
 
+    public static boolean played(String playerId, EffectResult effectResult, Filterable... filters) {
+        if (effectResult.getType() == EffectResult.Type.PLAY) {
+            if (effectResult.getPerformingPlayerId().equals(playerId)) {
+                PhysicalCard playedCard = ((PlayCardResult) effectResult).getPlayedCard();
+                return Filters.and(filters).accepts(effectResult.getGame(), playedCard);
+            }
+        }
+        return false;
+    }
+
     public static boolean playedFromZone(DefaultGame game, EffectResult effectResult, Zone zone, Filterable... filters) {
         if (effectResult.getType() == EffectResult.Type.PLAY) {
             final PlayCardResult playResult = (PlayCardResult) effectResult;
@@ -164,22 +175,22 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean playedOn(DefaultGame game, EffectResult effectResult, Filterable targetFilter, Filterable... filters) {
+    public static boolean playedOn(EffectResult effectResult, Filterable targetFilter, Filterable... filters) {
         if (effectResult.getType() == EffectResult.Type.PLAY) {
             final PlayCardResult playResult = (PlayCardResult) effectResult;
             final PhysicalCard attachedTo = playResult.getAttachedTo();
             if (attachedTo == null)
                 return false;
             PhysicalCard playedCard = playResult.getPlayedCard();
-            return Filters.and(filters).accepts(game, playedCard)
-                    && Filters.and(targetFilter).accepts(game, attachedTo);
+            return Filters.and(filters).accepts(effectResult.getGame(), playedCard)
+                    && Filters.and(targetFilter).accepts(effectResult.getGame(), attachedTo);
         }
         return false;
     }
 
     public static boolean movesFrom(DefaultGame game, EffectResult effectResult, Filterable... filters) {
         return effectResult.getType() == EffectResult.Type.WHEN_MOVE_FROM
-                && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getSite());
+                && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getMovedFromCard());
     }
 
     public static boolean moves(EffectResult effectResult) {

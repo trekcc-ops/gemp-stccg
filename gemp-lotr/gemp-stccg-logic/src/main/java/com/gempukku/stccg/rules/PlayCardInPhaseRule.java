@@ -2,10 +2,10 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayCardInPhaseRule {
-    private final DefaultActionsEnvironment actionsEnvironment;
+    private final ActionsEnvironment actionsEnvironment;
     private final DefaultGame _game;
 
     private static final Map<Phase, Keyword> PhaseKeywordMap = ImmutableMap.copyOf(new HashMap<>() {{
@@ -30,7 +30,7 @@ public class PlayCardInPhaseRule {
         put(Phase.REGROUP, Keyword.REGROUP);
     }});
 
-    public PlayCardInPhaseRule(DefaultActionsEnvironment actionsEnvironment) {
+    public PlayCardInPhaseRule(ActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
         _game = actionsEnvironment.getGame();
     }

@@ -1,8 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.results.EffectResult;
-
 import java.util.List;
 
 public abstract class AbstractActionProxy implements ActionProxy {
@@ -28,12 +25,7 @@ public abstract class AbstractActionProxy implements ActionProxy {
     }
 
     @Override
-    public List<? extends Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
-        return null;
-    }
-
-    @Override
-    public List<? extends Action> getOptionalBeforeTriggers(String playerId, Effect effect) {
+    public List<? extends Action> getOptionalBeforeTriggerActions(String playerId, Effect effect) {
         return null;
     }
 }

@@ -1,26 +1,21 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.Requirement;
 import org.json.simple.JSONObject;
 
 public class CantBeDiscarded implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JSONObject object, CardGenerationEnvironment environment)
+    public ModifierSource getModifierSource(JSONObject object, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(object, "filter", "requires", "by");
-
-        final JSONObject[] conditionArray = FieldUtils.getObjectArray(object.get("requires"), "requires");
-        final String filter = FieldUtils.getString(object.get("filter"), "filter");
-        final String byFilter = FieldUtils.getString(object.get("by"), "by", "any");
+        environment.validateAllowedFields(object, "filter", "requires", "by");
 
         final FilterableSource filterableSource =
-                environment.getFilterFactory().generateFilter(filter, environment);
+                environment.getFilterFactory().generateFilter(environment.getString(object.get("filter"), "filter"));
         final FilterableSource byFilterableSource =
-                environment.getFilterFactory().generateFilter(byFilter, environment);
+                environment.getFilterFactory().generateFilter(environment.getString(object.get("by"), "by", "any"));
         final Requirement[] requirements =
-                environment.getRequirementFactory().getRequirements(conditionArray, environment);
+                environment.getRequirementsFromJSON(object);
 
         return (actionContext) -> new CantDiscardFromPlayModifier(actionContext.getSource(),
                 "Can't be discarded",

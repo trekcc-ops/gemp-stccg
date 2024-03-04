@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -56,7 +56,7 @@ public class PlayConditions {
     }
 
     public static boolean canPlayFromDeck(String playerId, DefaultGame game, Filterable... filters) {
-        return !game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
+        return !game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
     }
 
     public static boolean canPlayFromHand(String playerId, DefaultGame game, Filterable... filters) {
@@ -110,34 +110,44 @@ public class PlayConditions {
     }
 
     public static boolean canPlayFromDiscard(String playerId, DefaultGame game, Filterable... filters) {
-        if (game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
+        if (game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
             return false;
         return !Filters.filter(game.getGameState().getDiscard(playerId), game, Filters.and(filters, Filters.playable(game))).isEmpty();
     }
 
     public static boolean canPlayFromDiscard(String playerId, DefaultGame game, int modifier, Filterable... filters) {
-        if (game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
+        if (game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
             return false;
         return !Filters.filter(game.getGameState().getDiscard(playerId), game, Filters.and(filters, Filters.playable(game, modifier))).isEmpty();
     }
 
     public static boolean canPlayFromDiscard(String playerId, DefaultGame game, int withTwilightRemoved, int modifier, Filterable... filters) {
-        if (game.getModifiersQuerying().hasFlagActive(game, ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
+        if (game.getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK))
             return false;
         return !Filters.filter(game.getGameState().getDiscard(playerId), game, Filters.and(filters, Filters.playable(withTwilightRemoved, modifier, false, false, false))).isEmpty();
     }
 
     public static boolean canDiscardFromPlay(final PhysicalCard source, DefaultGame game, int count, final Filterable... filters) {
         return Filters.countActive(game, Filters.and(filters,
-                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canBeDiscardedFromPlay(game1, source.getOwnerName(), physicalCard, source))) >= count;
+                (Filter) (game1, physicalCard) -> game1.getModifiersQuerying().canBeDiscardedFromPlay(source.getOwnerName(), physicalCard, source))) >= count;
     }
 
     public static boolean checkTurnLimit(DefaultGame game, PhysicalCard card, int max) {
         return game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(card).getUsedLimit() < max;
     }
 
+    public static boolean checkTurnLimit(PhysicalCard card, int max) {
+        return card.getGame().getModifiersQuerying().getUntilEndOfTurnLimitCounter(card).getUsedLimit() < max;
+    }
+
+
     public static boolean checkPhaseLimit(DefaultGame game, PhysicalCard card, int max) {
         return game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(card, game.getGameState().getCurrentPhase()).getUsedLimit() < max;
+    }
+
+    public static boolean checkPhaseLimit(PhysicalCard card, int max) {
+        return card.getGame().getModifiersQuerying().getUntilEndOfPhaseLimitCounter(
+                card, card.getGame().getGameState().getCurrentPhase()).getUsedLimit() < max;
     }
 
     public static boolean checkPhaseLimit(DefaultGame game, PhysicalCard card, Phase phase, int max) {

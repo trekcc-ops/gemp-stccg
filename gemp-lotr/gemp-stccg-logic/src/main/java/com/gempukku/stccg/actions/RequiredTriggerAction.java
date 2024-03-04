@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.Effect;
 
 public class RequiredTriggerAction extends AbstractCostToEffectAction {
     private final PhysicalCard _physicalCard;
@@ -12,6 +11,7 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
     private final DefaultGame _game;
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
+        super(physicalCard.getOwner(), ActionType.TRIGGER);
         _game = physicalCard.getGame();
         _physicalCard = physicalCard;
         setText("Required trigger from " + _physicalCard.getCardLink());
@@ -20,11 +20,6 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
 
     @Override
     public DefaultGame getGame() { return _game; }
-
-    @Override
-    public ActionType getActionType() {
-        return ActionType.TRIGGER;
-    }
 
     @Override
     public PhysicalCard getActionSource() {
@@ -45,7 +40,7 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                _game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
+                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
             if (_message != null)
                 _game.getGameState().sendMessage(_message);
         }

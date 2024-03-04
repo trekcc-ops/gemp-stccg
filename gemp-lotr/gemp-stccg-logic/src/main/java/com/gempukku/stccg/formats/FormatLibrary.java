@@ -29,10 +29,10 @@ public class FormatLibrary {
     private final Semaphore collectionReady = new Semaphore(1);
 
     public FormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary) {
-        this(adventureLibrary, bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
+        this(bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
     }
 
-    public FormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary, File formatPath,
+    public FormatLibrary(CardBlueprintLibrary bpLibrary, File formatPath,
                          File sealedPath) {
         _cardLibrary = bpLibrary;
         _formatPath = formatPath;

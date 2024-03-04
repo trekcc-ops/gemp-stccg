@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.Effect;
 
 public class SystemQueueAction extends AbstractCostToEffectAction {
     private final DefaultGame _game;
@@ -12,11 +11,6 @@ public class SystemQueueAction extends AbstractCostToEffectAction {
 
     @Override
     public DefaultGame getGame() { return _game; }
-    @Override
-    public ActionType getActionType() {
-        return ActionType.OTHER;
-    }
-
     @Override
     public PhysicalCard getActionSource() {
         return null;

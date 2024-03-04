@@ -2,8 +2,10 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
+import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -14,7 +16,7 @@ import java.util.Set;
 public interface Modifier {
     PhysicalCard getSource();
 
-    String getText(PhysicalCard self);
+    String getCardInfoText(PhysicalCard affectedCard);
 
     ModifierEffect getModifierEffect();
 
@@ -95,7 +97,7 @@ public interface Modifier {
 
     boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
 
-    boolean canBeTransferred(DefaultGame game, PhysicalCard attachment);
+    boolean canBeTransferred(PhysicalCard attachment);
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
 
@@ -131,6 +133,7 @@ public interface Modifier {
     boolean canPlaySite(DefaultGame game, String playerId);
 
     boolean shadowCanHaveInitiative(DefaultGame game);
+    boolean hasIcon(PhysicalCard card, Icon1E icon);
 
     Side hasInitiative();
 

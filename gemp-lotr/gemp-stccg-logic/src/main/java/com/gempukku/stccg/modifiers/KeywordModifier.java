@@ -1,32 +1,37 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
+import com.gempukku.stccg.cards.DefaultActionContext;
+import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
-import com.gempukku.stccg.evaluator.Evaluator;
 
 public class KeywordModifier extends AbstractModifier implements KeywordAffectingModifier {
     private final Keyword _keyword;
-    private final Evaluator _evaluator;
+    private final ValueSource _valueSource;
+    private final ActionContext _context;
 
     public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Keyword keyword) {
-        this(physicalCard, affectFilter, keyword, 1);
-    }
-
-    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Keyword keyword, int count) {
-        this(physicalCard, affectFilter, null, keyword, count);
-    }
-
-    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Condition condition, Keyword keyword, int count) {
-        this(physicalCard, affectFilter, condition, keyword, new ConstantEvaluator(count));
-    }
-
-    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Condition condition, Keyword keyword, Evaluator evaluator) {
-        super(physicalCard, null, affectFilter, condition, ModifierEffect.GIVE_KEYWORD_MODIFIER);
+        super(physicalCard, null, affectFilter, null, ModifierEffect.GIVE_KEYWORD_MODIFIER);
         _keyword = keyword;
-        _evaluator = evaluator;
+        _valueSource = new ConstantValueSource(1);
+        _context = new DefaultActionContext(
+                physicalCard.getOwnerName(), physicalCard.getGame(), physicalCard, null, null);
+    }
+
+    public KeywordModifier(ActionContext context, Filterable affectFilter, Keyword keyword, int count) {
+        this(context, affectFilter, null, keyword, new ConstantValueSource(count));
+    }
+
+    public KeywordModifier(ActionContext context, Filterable affectFilter, Condition condition, Keyword keyword,
+                           ValueSource evaluator) {
+        super(context.getSource(), null, affectFilter, condition, ModifierEffect.GIVE_KEYWORD_MODIFIER);
+        _context = context;
+        _keyword = keyword;
+        _valueSource = evaluator;
     }
 
     @Override
@@ -35,9 +40,9 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
     }
 
     @Override
-    public String getText(PhysicalCard self) {
+    public String getCardInfoText(PhysicalCard affectedCard) {
         if (_keyword.isMultiples()) {
-            int count = _evaluator.evaluateExpression(_game, self);
+            int count = _valueSource.evaluateExpression(_context, affectedCard);
             return _keyword.getHumanReadable() + " +" + count;
         }
         return _keyword.getHumanReadable();
@@ -45,13 +50,13 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
 
     @Override
     public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
-        return (keyword == _keyword && _evaluator.evaluateExpression(_game, physicalCard) > 0);
+        return (keyword == _keyword && _valueSource.evaluateExpression(_context, physicalCard) > 0);
     }
 
     @Override
     public int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword) {
         if (keyword == _keyword)
-            return _evaluator.evaluateExpression(_game, physicalCard);
+            return _valueSource.evaluateExpression(_context, physicalCard);
         else
             return 0;
     }

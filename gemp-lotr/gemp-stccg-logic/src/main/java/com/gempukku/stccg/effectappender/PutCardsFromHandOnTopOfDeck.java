@@ -1,14 +1,17 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.PutCardsFromZoneOnEndOfPileEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.PutCardsFromZoneOnEndOfPileEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,15 +23,15 @@ import java.util.Objects;
 
 public class PutCardsFromHandOnTopOfDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "player", "hand", "optional", "filter", "count", "reveal");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "player", "hand", "optional", "filter", "count", "reveal");
 
-        final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
-        final String hand = FieldUtils.getString(effectObject.get("hand"), "hand", "you");
-        final boolean optional = FieldUtils.getBoolean(effectObject.get("optional"), "optional", false);
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String player = environment.getString(effectObject.get("player"), "player", "you");
+        final String hand = environment.getString(effectObject.get("hand"), "hand", "you");
+        final boolean optional = environment.getBoolean(effectObject.get("optional"), "optional", false);
+        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
         final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean reveal = FieldUtils.getBoolean(effectObject.get("reveal"), "reveal", true);
+        final boolean reveal = environment.getBoolean(effectObject.get("reveal"), "reveal", true);
 
         var countObj = (JSONObject)effectObject.get("count");
 

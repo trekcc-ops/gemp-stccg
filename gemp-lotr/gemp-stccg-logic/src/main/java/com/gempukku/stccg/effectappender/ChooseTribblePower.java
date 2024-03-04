@@ -2,28 +2,26 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.choose.ChooseTribblePowerEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.choose.ChooseTribblePowerEffect;
 import org.json.simple.JSONObject;
 
 public class ChooseTribblePower implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "memorize");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "memorize");
 
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
 
         return new TribblesDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                return new ChooseTribblePowerEffect(actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                return new ChooseTribblePowerEffect(context) {
                     @Override
                     protected void powerChosen(String playerId) {
-                        actionContext.setValueToMemory(memorize, playerId);
+                        context.setValueToMemory(memorize, playerId);
                     }
                 };
             }

@@ -1,22 +1,18 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import org.json.simple.JSONObject;
 
 public class Transferred implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "filter", "to");
+    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "filter", "to");
 
-        final String filter = FieldUtils.getString(value.get("filter"), "filter", "any");
-        final String toFilter = FieldUtils.getString(value.get("to"), "to", "any");
+        final String filter = environment.getString(value.get("filter"), "filter", "any");
+        final String toFilter = environment.getString(value.get("to"), "to", "any");
 
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
-        final FilterableSource toFilterableSource = environment.getFilterFactory().generateFilter(toFilter, environment);
+        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
+        final FilterableSource toFilterableSource = environment.getFilterFactory().generateFilter(toFilter);
 
         return new TriggerChecker() {
             @Override

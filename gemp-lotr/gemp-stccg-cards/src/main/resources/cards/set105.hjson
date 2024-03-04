@@ -1,43 +1,10 @@
 // Set 105: Q-Continuum
 
 {
-    105_001: {
-        title: Blade of Tkon
-        type: artifact
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/qc/bladeoftkon.gif
-    }
-    105_002: {
-        title: Canar
-        type: artifact
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/qc/canar.gif
-    }
-    105_003: {
-        title: Mona Lisa
-        type: artifact
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/qc/monalisa.gif
-    }
     105_015: {
         title: Q-Flash
         type: doorway
-        seedPhase: doorway
-        property-logo: tng
+        property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg
-    }
-    105_046: {
-        title: Space
-        type: mission
-        seedPhase: mission
-        quadrant: alpha
-        canInsertIntoSpaceline: true
-        uniqueness: universal
-        mission-type: space
-        lore: The final frontier...
-        image-url: https://www.trekcc.org/1e/cardimages/errata/Space.jpg
     }
 }

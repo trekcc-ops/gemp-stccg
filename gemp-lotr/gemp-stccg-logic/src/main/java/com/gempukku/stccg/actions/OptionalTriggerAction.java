@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.sources.ActionSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.Effect;
 
 public class OptionalTriggerAction extends AbstractCostToEffectAction {
     private PhysicalCard _physicalCard;
@@ -13,6 +13,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     private boolean _sentMessage;
     private String _triggerIdentifier;
     private final DefaultGame _game;
+    private ActionSource _actionSource;
 
     public OptionalTriggerAction(String triggerIdentifier, PhysicalCard attachedToCard) {
         _game = attachedToCard.getGame();
@@ -21,6 +22,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     }
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
+        super(physicalCard.getOwner(), ActionType.TRIGGER);
         _game = physicalCard.getGame();
         _physicalCard = physicalCard;
         _actionAttachedToCard = physicalCard;
@@ -28,6 +30,11 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
         setText("Optional trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " optional triggered effect is used";
         _triggerIdentifier = String.valueOf(physicalCard.getCardId());
+    }
+
+    public OptionalTriggerAction(PhysicalCard physicalCard, ActionSource actionSource) {
+        this(physicalCard);
+        _actionSource = actionSource;
     }
 
     public void setTriggerIdentifier(String triggerIdentifier) {
@@ -40,11 +47,6 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
 
     public void setMessage(String message) {
         _message = message;
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return ActionType.TRIGGER;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                _game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
+                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
             if (_message != null)
                 _game.getGameState().sendMessage(_message);
         }
@@ -72,6 +74,9 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
             if (cost != null)
                 return cost;
 
+            if (_actionSource != null) {
+                _game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
+            }
             return getNextEffect();
         }
         return null;

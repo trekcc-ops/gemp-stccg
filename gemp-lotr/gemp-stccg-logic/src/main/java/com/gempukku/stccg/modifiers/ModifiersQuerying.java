@@ -1,7 +1,10 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.sources.ActionSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
+import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Action;
@@ -23,6 +26,10 @@ public interface ModifiersQuerying {
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card);
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
+
+    boolean hasIcon(PhysicalCard physicalCard, Icon1E icon);
+
+    boolean hasTextRemoved(PhysicalCard card);
 
     Collection<Modifier> getModifiersAffecting(PhysicalCard card);
 
@@ -68,7 +75,7 @@ public interface ModifiersQuerying {
 
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);
 
-    boolean isValidAssignments(DefaultGame game, Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments);
+    boolean isValidAssignments(Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments);
 
     // Playing actions
     boolean canPlayAction(String performingPlayer, Action action);
@@ -79,7 +86,7 @@ public interface ModifiersQuerying {
 
     boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
 
-    boolean canBeTransferred(DefaultGame game, PhysicalCard attachment);
+    boolean canBeTransferred(PhysicalCard attachment);
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
 
@@ -92,7 +99,7 @@ public interface ModifiersQuerying {
     void appendExtraCosts(CostToEffectAction action, PhysicalCard target);
 
     // Others
-    boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source);
+    boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source);
 
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
@@ -115,7 +122,7 @@ public interface ModifiersQuerying {
 
     int getSpotBonus(Filterable filter);
 
-    boolean hasFlagActive(DefaultGame game, ModifierFlag modifierFlag);
+    boolean hasFlagActive(ModifierFlag modifierFlag);
 
     boolean canReplaceSite(String playerId, PhysicalCard siteToReplace);
 
@@ -124,6 +131,9 @@ public interface ModifiersQuerying {
     int getPotentialDiscount(PhysicalCard playedCard);
 
     void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard);
+
+    LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource);
+
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
 
 }

@@ -4,7 +4,7 @@ public enum RegularSkill implements Filterable {
     // Classifications
     ANIMAL("ANIMAL"), CIVILIAN("CIVILIAN"), ENGINEER("ENGINEER"),
     MEDICAL("MEDICAL"), OFFICER("OFFICER"), SCIENCE("SCIENCE"),
-    SECURITY("SECURITY"), VIP("V.I.P."),
+    SECURITY("SECURITY"), V_I_P_("V.I.P."),
 
     // Other skills
     ANTHROPOLOGY("Anthropology"), ACQUISITION("Acquisition"),

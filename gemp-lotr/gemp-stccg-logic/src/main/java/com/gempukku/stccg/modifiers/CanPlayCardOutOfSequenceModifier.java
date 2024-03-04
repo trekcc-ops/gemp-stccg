@@ -1,6 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.filters.Filter;
@@ -16,7 +16,7 @@ public class CanPlayCardOutOfSequenceModifier extends AbstractModifier {
 
     @Override
     public boolean canPlayCardOutOfSequence(PhysicalCard source) {
-        return _condition.isFulfilled(_game);
+        return _condition.isFulfilled();
     }
 
     @Override

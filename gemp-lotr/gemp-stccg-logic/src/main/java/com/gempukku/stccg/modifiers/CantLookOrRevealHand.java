@@ -1,21 +1,17 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ModifierSource;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
 
 public class CantLookOrRevealHand implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(object, "player", "hand");
+    public ModifierSource getModifierSource(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(object, "player", "hand");
 
-        final String player = FieldUtils.getString(object.get("player"), "player");
-        final String hand = FieldUtils.getString(object.get("hand"), "hand");
+        final String player = environment.getString(object.get("player"), "player");
+        final String hand = environment.getString(object.get("hand"), "hand");
 
         PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
         PlayerSource handSource = PlayerResolver.resolvePlayer(hand);

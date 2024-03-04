@@ -3,20 +3,20 @@ package com.gempukku.stccg.processes;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.TriggeringResultEffect;
-import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
+import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.results.EndOfPhaseResult;
+import com.gempukku.stccg.actions.turn.EndOfPhaseResult;
 
 public class EndOfPhaseGameProcess extends GameProcess {
     private final Phase _phase;
     private final GameProcess _followingGameProcess;
     private final DefaultGame _game;
 
-    public EndOfPhaseGameProcess(Phase phase, GameProcess followingGameProcess, DefaultGame game) {
-        _phase = phase;
+    public EndOfPhaseGameProcess(DefaultGame game, GameProcess followingGameProcess) {
+        _phase = game.getGameState().getCurrentPhase();
         _game = game;
         _followingGameProcess = followingGameProcess;
     }
@@ -27,13 +27,15 @@ public class EndOfPhaseGameProcess extends GameProcess {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of " + _phase + " phase");
         action.appendEffect(
-                new TriggeringResultEffect(null, new EndOfPhaseResult(_phase), "End of " + _phase + " phase"));
+                new TriggeringResultEffect(null, new EndOfPhaseResult(_phase, _game), "End of " + _phase + " phase"));
         action.appendEffect(
                 new Effect() {
                     @Override
                     public String getText() {
                         return null;
                     }
+                    @Override
+                    public String getPerformingPlayerId() { return null; }
                     @Override
                     public boolean isPlayableInFull() {
                         return true;

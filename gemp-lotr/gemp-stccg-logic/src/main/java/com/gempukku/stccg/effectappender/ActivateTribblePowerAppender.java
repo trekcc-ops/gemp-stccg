@@ -1,28 +1,27 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.tribblepower.*;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.tribblepowers.*;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
 import org.json.simple.JSONObject;
 
 public class ActivateTribblePowerAppender implements EffectAppenderProducer {
 
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment)
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject);
+        environment.validateAllowedFields(effectObject);
 
         return new TribblesDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
 //                final Map<TribblePower, ActivateTribblePowerEffect> activateEffects = new HashMap<>();
 
-                TribblePower tribblePower = actionContext.getSource().getBlueprint().getTribblePower();
-                if (actionContext instanceof TribblesActionContext)
-                    return createTribblePowerEffect(tribblePower, (TribblesActionContext) actionContext, action);
+                TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
+                if (context instanceof TribblesActionContext)
+                    return createTribblePowerEffect(tribblePower, (TribblesActionContext) context, action);
                 else return null;
             }
 

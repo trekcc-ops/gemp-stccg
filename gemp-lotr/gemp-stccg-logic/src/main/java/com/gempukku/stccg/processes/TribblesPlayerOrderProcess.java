@@ -18,7 +18,7 @@ public class TribblesPlayerOrderProcess extends GameProcess {
     private final Map<String, CardDeck> _decks;
     private final CardBlueprintLibrary _library;
     private String _firstPlayer;
-    private TribblesGame _game;
+    private final TribblesGame _game;
 
     public TribblesPlayerOrderProcess(Map<String, CardDeck> decks, CardBlueprintLibrary library,
                                       PlayerOrderFeedback playerOrderFeedback, TribblesGame game) {

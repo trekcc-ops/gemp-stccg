@@ -12,9 +12,6 @@ public enum ShipSpecialEquipment implements Filterable {
     SOLAR_SAIL("Solar Sail"),
     TRACTOR_BEAM("Tractor Beam");
 
-    private final String _humanReadable;
-
     ShipSpecialEquipment(String humanReadable) {
-        _humanReadable = humanReadable;
     }
 }

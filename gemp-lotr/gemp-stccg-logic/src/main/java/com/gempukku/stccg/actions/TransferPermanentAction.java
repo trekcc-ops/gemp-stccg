@@ -1,12 +1,10 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.choose.ChooseActiveCardsEffect;
-import com.gempukku.stccg.effects.defaulteffect.PayTwilightCostEffect;
-import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
+import com.gempukku.stccg.actions.choose.ChooseActiveCardsEffect;
+import com.gempukku.stccg.actions.lotr.PayTwilightCostEffect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.modifiers.ModifierFlag;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 
 import java.util.Collection;
 
@@ -20,7 +18,7 @@ public class TransferPermanentAction extends ActivateCardAction {
                 new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect() {
-                        if (!_game.getModifiersQuerying().hasFlagActive(_game, ModifierFlag.TRANSFERS_FOR_FREE))
+                        if (!_game.getModifiersQuerying().hasFlagActive(ModifierFlag.TRANSFERS_FOR_FREE))
                             insertCost(new PayTwilightCostEffect(_game, card));
                     }
                 });

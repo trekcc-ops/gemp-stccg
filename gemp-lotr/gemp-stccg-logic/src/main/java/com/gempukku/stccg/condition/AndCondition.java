@@ -4,15 +4,17 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class AndCondition implements Condition {
     private final Condition[] _conditions;
+    private final DefaultGame _game;
 
-    public AndCondition(Condition... conditions) {
+    public AndCondition(DefaultGame game, Condition... conditions) {
         _conditions = conditions;
+        _game = game;
     }
 
     @Override
-    public boolean isFulfilled(DefaultGame game) {
+    public boolean isFulfilled() {
         for (Condition condition : _conditions) {
-            if (condition != null && !condition.isFulfilled(game))
+            if (condition != null && !condition.isFulfilled())
                 return false;
         }
 

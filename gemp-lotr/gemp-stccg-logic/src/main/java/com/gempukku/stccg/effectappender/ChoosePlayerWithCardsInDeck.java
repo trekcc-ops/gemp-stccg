@@ -2,28 +2,27 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.choose.ChoosePlayerWithCardsInDeckEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.choose.ChoosePlayerWithCardsInDeckEffect;
 import org.json.simple.JSONObject;
 
 public class ChoosePlayerWithCardsInDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment)
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "memorize");
+        environment.validateAllowedFields(effectObject, "memorize");
 
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                return new ChoosePlayerWithCardsInDeckEffect(actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                return new ChoosePlayerWithCardsInDeckEffect(context) {
                     @Override
                     protected void playerChosen(String playerId) {
-                        actionContext.setValueToMemory(memorize, playerId);
+                        context.setValueToMemory(memorize, playerId);
                     }
                 };
             }

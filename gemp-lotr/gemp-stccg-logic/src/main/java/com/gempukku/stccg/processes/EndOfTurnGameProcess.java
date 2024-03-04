@@ -1,17 +1,15 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.TriggeringResultEffect;
-import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
+import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.results.EndOfTurnResult;
+import com.gempukku.stccg.actions.turn.EndOfTurnResult;
 
 public class EndOfTurnGameProcess extends GameProcess {
-    private DefaultGame _game;
+    private final DefaultGame _game;
     public EndOfTurnGameProcess(DefaultGame game) {
         _game = game;
     }
@@ -21,13 +19,15 @@ public class EndOfTurnGameProcess extends GameProcess {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of turn");
         action.appendEffect(
-                new TriggeringResultEffect(null, new EndOfTurnResult(), "End of turn"));
+                new TriggeringResultEffect(null, new EndOfTurnResult(_game), "End of turn"));
         action.appendEffect(
                 new Effect() {
                     @Override
                     public String getText() {
                         return null;
                     }
+                    @Override
+                    public String getPerformingPlayerId() { return null; }
 
                     @Override
                     public EffectType getType() {
@@ -45,8 +45,8 @@ public class EndOfTurnGameProcess extends GameProcess {
 
                     @Override
                     public void playEffect() {
-                        ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfTurn();
-                        ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalEndOfTurn();
+                        _game.getModifiersEnvironment().signalEndOfTurn();
+                        _game.getActionsEnvironment().signalEndOfTurn();
                         _game.getGameState().stopAffectingCardsForCurrentPlayer();
                         _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
                         _game.getGameState().sendMessage("End of turn, players swap roles.");

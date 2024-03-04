@@ -2,53 +2,65 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.actions.sources.TriggerActionSource;
-import com.gempukku.stccg.common.filterable.TriggerTiming;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.lotr.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.*;
 
 public class CardBlueprint {
-    private String _blueprintId;
+    private final String _blueprintId;
     private String title;
     private String subtitle;
-    private CardType _cardType;
+    protected CardType _cardType;
     private String imageUrl;
     private PropertyLogo _propertyLogo;
     private String _lore;
     private Uniqueness uniqueness = null;
+    private List<Icon1E> _icons;
     private Quadrant quadrant;
     private String location;
     private int _pointsShown;
+    private int _skillDots;
     private boolean _hasPointBox;
     private Side side;
+    private MissionRequirement _missionRequirements;
+    final List<Skill> _skills = new LinkedList<>();
     private final Set<Affiliation> _affiliations = new HashSet<>();
     private Region region;
+    private RegularSkill _classification;
     private boolean _canInsertIntoSpaceline;
     private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
     private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
+    private int _span;
+    private Integer _opponentSpan;
     private MissionType _missionType;
     private FacilityType _facilityType;
     private Culture culture;
     private Race race;
     private Map<Keyword, Integer> keywords;
     private int cost = -1;
+    private int _range;
+    private final Map<CardAttribute, Integer> _cardAttributes = new HashMap<>();
     private int strength;
     private int vitality;
     private int resistance;
     private int tribbleValue;
-    private String _missionRequirements;
+    private List<Icon1E> _staffing;
+    private String _missionRequirementsText;
     private TribblePower tribblePower;
     private Set<PossessionClass> possessionClasses;
-    private List<Phase> seedPhases;
-
+    private List<Requirement> _seedRequirements;
     private List<Requirement> _playRequirements;
     private List<FilterableSource> targetFilters;
+    private final Map<Affiliation, String> _imageOptions = new HashMap<>();
     private final Map<RequiredType, List<ActionSource>> _beforeTriggers = new HashMap<>();
     private final Map<RequiredType, List<ActionSource>> _afterTriggers = new HashMap<>();
     private final Map<RequiredType, ActionSource> _discardedFromPlayTriggers = new HashMap<>();
@@ -70,6 +82,7 @@ public class CardBlueprint {
     private List<Requirement> playOutOfSequenceConditions;
 
     private ActionSource _playEventAction;
+    private ActionSource _seedCardActionSource;
 
     public CardBlueprint(String blueprintId) {
         _blueprintId = blueprintId;
@@ -95,13 +108,25 @@ public class CardBlueprint {
     public CardType getCardType() { return _cardType; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getImageUrl() { return imageUrl; }
+    public void addImageOption(Affiliation affiliation, String imageUrl) { _imageOptions.put(affiliation, imageUrl); }
+    public String getAffiliationImageUrl(Affiliation affiliation) { return _imageOptions.get(affiliation); }
     public void setPropertyLogo(PropertyLogo propertyLogo) { _propertyLogo = propertyLogo; }
+    public PropertyLogo getPropertyLogo() { return _propertyLogo; }
     public void setLore(String lore) { _lore = lore; }
     public String getLore() { return _lore; }
     public void setUniqueness(Uniqueness uniqueness) { this.uniqueness = uniqueness;}
     public Uniqueness getUniqueness() { return this.uniqueness;}
     public boolean isUnique() { return this.uniqueness == Uniqueness.UNIQUE; }
     public boolean isUniversal() { return this.uniqueness == Uniqueness.UNIVERSAL; }
+    public void setIcons(List<Icon1E> icons) { _icons = icons; }
+    public void addIcons(Icon1E... icons) {
+        if (_icons == null) {
+            _icons = new LinkedList<>();
+        }
+        Collections.addAll(_icons, icons);
+    }
+    public List<Icon1E> getIcons() { return _icons; }
+    public boolean hasIcon(Icon1E icon) { return _icons != null && _icons.contains(icon); }
     public void setQuadrant(Quadrant quadrant) {
         this.quadrant = quadrant;
     }
@@ -116,8 +141,10 @@ public class CardBlueprint {
         this.location = location;
     }
     public String getLocation() { return location; }
-    public void setMissionRequirements(String requirements) { _missionRequirements = requirements;}
-    public String getMissionRequirements() { return _missionRequirements; }
+    public void setMissionRequirements(MissionRequirement requirement) { _missionRequirements = requirement; }
+    public MissionRequirement getMissionRequirements() { return _missionRequirements; }
+    public void setMissionRequirementsText(String requirements) { _missionRequirementsText = requirements;}
+    public String getMissionRequirementsText() { return _missionRequirementsText; }
     public void setPointsShown(int pointsShown) { _pointsShown = pointsShown; }
     public int getPointsShown() { return _pointsShown; }
     public void setHasPointBox(boolean hasPointBox) { _hasPointBox = hasPointBox; }
@@ -125,16 +152,34 @@ public class CardBlueprint {
     public void addOwnerAffiliationIcon(Affiliation affiliation) { _ownerAffiliationIcons.add(affiliation); }
     public Set<Affiliation> getOwnerAffiliationIcons() { return _ownerAffiliationIcons; }
     public Set<Affiliation> getOpponentAffiliationIcons() { return _opponentAffiliationIcons; }
+    public void setSpan(int span) { _span = span; }
+    public void setOpponentSpan(int span) { _opponentSpan = span; }
+    public int getOwnerSpan() { return _span; }
+    public int getOpponentSpan() {
+        if (_opponentSpan == null)
+            return _span;
+        else return _opponentSpan;
+    }
 
     // Noun cards
     public void setFacilityType(FacilityType facilityType) { _facilityType = facilityType; }
     public FacilityType getFacilityType() { return _facilityType; }
     public void addAffiliation(Affiliation affiliation) { _affiliations.add(affiliation); }
     public Set<Affiliation> getAffiliations() { return _affiliations; }
-    public void setStrength(int strength) {
-        this.strength = strength;
+    public void setAttribute(CardAttribute attribute, int attributeValue) { _cardAttributes.put(attribute, attributeValue); }
+    public int getAttribute(CardAttribute attribute) { return _cardAttributes.get(attribute); }
+    public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
+    public void setStaffing(List<Icon1E> staffing) { _staffing = staffing; }
+    public List<Icon1E> getStaffing() { return _staffing; }
+    public void setClassification(RegularSkill classification) { _classification = classification; }
+    public RegularSkill getClassification() { return _classification; }
+    public void addSkill(Skill skill) {
+        _skills.add(skill);
     }
-    public int getStrength() { return strength; }
+    public List<Skill> getSkills() { return _skills; }
+    public void setSkillDotIcons(int dots) { _skillDots = dots; }
+    public int getSkillDotCount() { return _skillDots; }
+    public int getSpecialDownloadIconCount() { return 0; } // TODO - Only 0 because no cards have implemented this yet
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) {
@@ -185,9 +230,6 @@ public class CardBlueprint {
     public Set<PossessionClass> getPossessionClasses() { return possessionClasses; }
 
 
-    // Gametext features
-    public void setSeedPhase(List<Phase> seedPhases) { this.seedPhases = seedPhases; }
-    public List<Phase> getSeedPhases() { return this.seedPhases; }
     public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
     public void setAnyCrewOrAwayTeamCanAttempt(boolean canAttempt) { }
@@ -206,6 +248,8 @@ public class CardBlueprint {
 
 
     // Building methods
+    public void setSeedCardActionSource(ActionSource actionSource) { _seedCardActionSource = actionSource; }
+    public ActionSource getSeedCardActionSource() { return _seedCardActionSource; }
 
     public void appendPlayInOtherPhaseCondition(Requirement requirement) {
         if (playInOtherPhaseConditions == null)
@@ -261,6 +305,12 @@ public class CardBlueprint {
         _playRequirements.add(requirement);
     }
 
+    public void appendSeedRequirement(Requirement requirement) {
+        if (_seedRequirements == null)
+            _seedRequirements = new LinkedList<>();
+        _seedRequirements.add(requirement);
+    }
+
     public void appendInPlayModifier(ModifierSource modifierSource) {
         if (inPlayModifiers == null)
             inPlayModifiers = new LinkedList<>();
@@ -291,11 +341,11 @@ public class CardBlueprint {
         _twilightCostModifierSources.add(twilightCostModifierSource);
     }
 
-    public void setPlayEventAction(ActionSource playEventAction) { _playEventAction = playEventAction; }
     public ActionSource getPlayEventAction() { return _playEventAction; }
     public void setKilledTrigger(RequiredType requiredType, ActionSource actionSource) { _killedTriggers.put(requiredType, actionSource); }
     public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) { _discardedFromPlayTriggers.put(requiredType, actionSource); }
     public ActionSource getDiscardedFromPlayTrigger(RequiredType requiredType) { return _discardedFromPlayTriggers.get(requiredType); }
+    public List<Requirement> getSeedRequirements() { return _seedRequirements; }
     public List<Requirement> getPlayRequirements() { return _playRequirements; }
     public List<ActionSource> getOptionalInHandTriggers(TriggerTiming timing) { return _optionalInHandTriggers.get(timing); }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
@@ -384,7 +434,7 @@ public class CardBlueprint {
                 Arrays.asList(CardType.MISSION, CardType.SHIP, CardType.PERSONNEL, CardType.SITE);
         boolean showUniversalSymbol = typesWithUniversalSymbol.contains(getCardType()) && isUniversal();
         return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + getImageUrl() + "'>" +
-                (showUniversalSymbol ? "&#x2756 " : "") + " " + getFullName() + "</div>";
+                (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
 
     public boolean hasNoTransporters() {
@@ -392,7 +442,7 @@ public class CardBlueprint {
         return false;
     }
 
-    public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
+    public List<ActionSource> getInPlayPhaseActions(DefaultGame game) { return inPlayPhaseActions; }
     public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
     public PhysicalCard createPhysicalCard(DefaultGame game, int cardId, Player player) {
@@ -409,5 +459,9 @@ public class CardBlueprint {
         } else if (game instanceof TribblesGame) {
             return new TribblesPhysicalCard((TribblesGame) game, cardId, player, this);
         } else return new PhysicalCardGeneric(game, cardId, player, this);
+    }
+
+    public <T extends DefaultGame> List<ActionSource> getObnoxiousInPlayPhaseActions(T game) {
+        return null;
     }
 }

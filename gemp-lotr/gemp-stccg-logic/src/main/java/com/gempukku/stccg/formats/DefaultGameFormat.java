@@ -8,7 +8,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.processes.BiddingGameProcess;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.rules.GameUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

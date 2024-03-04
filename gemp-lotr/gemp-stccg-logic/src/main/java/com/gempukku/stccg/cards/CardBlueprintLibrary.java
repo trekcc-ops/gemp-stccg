@@ -1,8 +1,10 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ICallback;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -81,6 +83,11 @@ public class CardBlueprintLibrary {
         return true;
     }
 
+    public PhysicalCard createPhysicalCard(DefaultGame game, String blueprintId, int cardId, String playerId)
+            throws CardNotFoundException {
+        return getCardBlueprint(blueprintId).createPhysicalCard(game, cardId, game.getGameState().getPlayer(playerId));
+    }
+
     public Map<String, SetDefinition> getSetDefinitions() {
         return Collections.unmodifiableMap(_allSets);
     }
@@ -89,8 +96,9 @@ public class CardBlueprintLibrary {
         reloadSets();
         reloadMappings();
         reloadCards();
-        errataMappings = null;
-        getErrata();
+            // TODO - Removing getErrata functionality. Undecided about long-term STCCG goals for this, but for now there are none in Gemp.
+/*        errataMappings = null;
+        getErrata(); */
 
         for(var callback : _refreshCallbacks) {
             callback.Invoke();
@@ -146,7 +154,7 @@ public class CardBlueprintLibrary {
                     determineMerchantableFlag(setJsonDef, flags);
                     determineNeedsLoadingFlag(setJsonDef, flags);
 
-                    DefaultSetDefinition setDefinition = new DefaultSetDefinition(setId, setName, flags);
+                    SetDefinition setDefinition = new SetDefinition(setId, setName, flags);
 
 /*                    BufferedReader bufferedReader =
                             new BufferedReader(new InputStreamReader(AppConfig.getResourceStream(
@@ -226,8 +234,13 @@ public class CardBlueprintLibrary {
                         LOGGER.error(blueprintId + " - Replacing existing card definition!");
                 final JSONObject cardDefinition = cardEntry.getValue();
                 try {
-                    final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
-                    _blueprints.put(blueprintId, cardBlueprint);
+                            // TODO - Very jank for 155_021 testing
+                    if (blueprintId.equals("155_021")) {
+                        _blueprints.put(blueprintId, new Blueprint155_021());
+                    } else {
+                        final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
+                        _blueprints.put(blueprintId, cardBlueprint);
+                    }
                 } catch (InvalidCardDefinitionException exp) {
                     LOGGER.error("Unable to load card " + blueprintId, exp);
                 }

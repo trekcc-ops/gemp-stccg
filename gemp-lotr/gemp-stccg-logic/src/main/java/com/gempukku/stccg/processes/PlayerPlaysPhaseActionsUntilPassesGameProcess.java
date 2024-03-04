@@ -12,7 +12,7 @@ public class PlayerPlaysPhaseActionsUntilPassesGameProcess extends GameProcess {
     private final GameProcess _followingGameProcess;
 
     private GameProcess _nextProcess;
-    private DefaultGame _game;
+    private final DefaultGame _game;
 
     public PlayerPlaysPhaseActionsUntilPassesGameProcess(String playerId, GameProcess followingGameProcess, DefaultGame game) {
         _playerId = playerId;

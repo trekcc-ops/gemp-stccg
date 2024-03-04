@@ -1,23 +1,23 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayOrder;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class MulliganProcess extends GameProcess {
-    private final PlayOrder _playOrder;
+    private final ActionOrder _actionOrder;
 
     private GameProcess _nextProcess;
-    private DefaultGame _game;
+    private final DefaultGame _game;
 
-    public MulliganProcess(PlayOrder playOrder, DefaultGame game) {
-        _playOrder = playOrder;
+    public MulliganProcess(ActionOrder actionOrder, DefaultGame game) {
+        _actionOrder = actionOrder;
         _game = game;
     }
 
@@ -25,10 +25,10 @@ public class MulliganProcess extends GameProcess {
     public void process() {
         final int handSize = _game.getFormat().getHandSize();
 
-        final String nextPlayer = _playOrder.getNextPlayer();
+        final String nextPlayer = _actionOrder.getNextPlayer();
         if (nextPlayer != null) {
             _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
-                    new MultipleChoiceAwaitingDecision(1, "Do you wish to mulligan? (Shuffle cards back and draw " + (handSize - 2) + ")", new String[]{"No", "Yes"}) {
+                    new MultipleChoiceAwaitingDecision("Do you wish to mulligan? (Shuffle cards back and draw " + (handSize - 2) + ")", new String[]{"No", "Yes"}) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             if (index == 1) {
@@ -47,7 +47,7 @@ public class MulliganProcess extends GameProcess {
                             }
                         }
                     });
-            _nextProcess = new MulliganProcess(_playOrder, _game);
+            _nextProcess = new MulliganProcess(_actionOrder, _game);
         } else {
             _nextProcess = new BetweenTurnsProcess(_game, null);
         }

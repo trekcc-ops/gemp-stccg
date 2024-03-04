@@ -1,13 +1,13 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.PutCardFromZoneIntoHandEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -16,13 +16,13 @@ import java.util.List;
 
 public class PutStackedCardsIntoHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "count", "filter", "on");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "count", "filter", "on");
 
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final String on = FieldUtils.getString(effectObject.get("on"), "on", "any");
-        final FilterableSource onFilterSource = environment.getFilterFactory().generateFilter(on, environment);
+        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String on = environment.getString(effectObject.get("on"), "on", "any");
+        final FilterableSource onFilterSource = environment.getFilterFactory().generateFilter(on);
 
         MultiEffectAppender result = new MultiEffectAppender();
         result.addEffectAppender(

@@ -1,13 +1,16 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.ShuffleDeckEffect;
+import com.gempukku.stccg.actions.StackCardFromDeckEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.StackCardFromDeckEffect;
-import com.gempukku.stccg.effects.defaulteffect.unrespondable.ShuffleDeckEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -16,13 +19,13 @@ import java.util.List;
 
 public class StackCardsFromDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "filter", "where", "count", "shuffle");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "filter", "where", "count", "shuffle");
 
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final String where = FieldUtils.getString(effectObject.get("where"), "where");
+        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String where = environment.getString(effectObject.get("where"), "where");
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean shuffle = FieldUtils.getBoolean(effectObject.get("shuffle"), "shuffle", false);
+        final boolean shuffle = environment.getBoolean(effectObject.get("shuffle"), "shuffle", false);
 
         MultiEffectAppender result = new MultiEffectAppender();
 
@@ -40,7 +43,7 @@ public class StackCardsFromDeck implements EffectAppenderProducer {
 
                     List<Effect> result = new LinkedList<>();
                     for (PhysicalCard physicalCard : cardsInDeck) {
-                        result.add(new StackCardFromDeckEffect(actionContext.getGame(), physicalCard, card));
+                        result.add(new StackCardFromDeckEffect(physicalCard, card));
                     }
 
                     return result;
@@ -52,8 +55,8 @@ public class StackCardsFromDeck implements EffectAppenderProducer {
             result.addEffectAppender(
                     new DefaultDelayedAppender() {
                 @Override
-                protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                    return new ShuffleDeckEffect(actionContext.getGame(), actionContext.getPerformingPlayer());
+                protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                    return new ShuffleDeckEffect(context.getGame(), context.getPerformingPlayerId());
                 }
             });
 

@@ -2,12 +2,11 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.RequiredType;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.results.EffectResult;
-import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -15,24 +14,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class OptionalTriggersRule {
-    protected final DefaultActionsEnvironment actionsEnvironment;
+    protected final ActionsEnvironment _actionsEnvironment;
     private final DefaultGame _game;
 
-    public OptionalTriggersRule(DefaultActionsEnvironment actionsEnvironment) {
-        this.actionsEnvironment = actionsEnvironment;
+    public OptionalTriggersRule(ActionsEnvironment actionsEnvironment) {
+        _actionsEnvironment = actionsEnvironment;
         _game = actionsEnvironment.getGame();
     }
 
     public void applyRule() {
-        actionsEnvironment.addAlwaysOnActionProxy(
+        _actionsEnvironment.addAlwaysOnActionProxy(
                 new AbstractActionProxy() {
                     @Override
-                    public List<? extends Action> getOptionalBeforeTriggers(String playerId, Effect effect) {
+                    public List<? extends Action> getOptionalBeforeTriggerActions(String playerId, Effect effect) {
+                        Player player = _game.getGameState().getPlayer(playerId);
                         List<Action> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(_game.getGameState().getAllCardsInPlay(), _game, getActivatableCardsFilter(playerId))) {
-                            if (!activatableCard.hasTextRemoved()) {
+                        for (PhysicalCard card : Filters.filterYourActive(player)) {
+                            if (!card.hasTextRemoved()) {
                                 final List<? extends Action> actions =
-                                        activatableCard.getBeforeTriggerActions(playerId, effect, RequiredType.OPTIONAL);
+                                        card.getBeforeTriggerActions(playerId, effect, RequiredType.OPTIONAL);
                                 if (actions != null)
                                     result.addAll(actions);
                             }
@@ -41,24 +41,8 @@ public class OptionalTriggersRule {
                         return result;
                     }
 
-                    @Override
-                    public List<? extends Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
-                        List<Action> result = new LinkedList<>();
-                        for (PhysicalCard activatableCard : Filters.filter(actionsEnvironment.getGame().getGameState().getAllCardsInPlay(), actionsEnvironment.getGame(), getActivatableCardsFilter(playerId))) {
-                            if (!activatableCard.hasTextRemoved()) {
-                                final List<? extends Action> actions = activatableCard.getOptionalAfterTriggerActions(playerId, effectResult);
-                                if (actions != null)
-                                    result.addAll(actions);
-                            }
-                        }
-
-                        return result;
-                    }
                 }
         );
     }
 
-    private Filter getActivatableCardsFilter(String playerId) {
-        return Filters.and(Filters.owner(playerId), Filters.active);
-    }
 }

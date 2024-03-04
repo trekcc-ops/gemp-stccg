@@ -100,23 +100,7 @@ public class GameServer extends AbstractServer {
                 _chatServer.createChatRoom(getChatRoomName(gameId), false, 30, false, null);
 
             // Allow spectators for leagues, but not tournaments
-            boolean spectate = (gameSettings.getLeague() != null) ||
-                    (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
-
-            CardGameMediator cardGameMediator;
-
-            if (Objects.equals(gameSettings.getGameFormat().getGameType(), "tribbles")) {
-                cardGameMediator = new TribblesGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                        _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st1e")){
-                cardGameMediator = new ST1EGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                        _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st2e")){
-                cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
-                        _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-            } else { // TODO: This error catch should happen when the format library is created
-                throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() + "' does not belong to 1E, 2E, or Tribbles");
-            }
+            CardGameMediator cardGameMediator = getCardGameMediator(participants, gameSettings, gameId);
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
@@ -177,6 +161,27 @@ public class GameServer extends AbstractServer {
         } finally {
             _lock.writeLock().unlock();
         }
+    }
+
+    private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings, String gameId) {
+        boolean spectate = (gameSettings.getLeague() != null) ||
+                (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
+
+        CardGameMediator cardGameMediator;
+
+        if (Objects.equals(gameSettings.getGameFormat().getGameType(), "tribbles")) {
+            cardGameMediator = new TribblesGameMediator(gameId, gameSettings.getGameFormat(), participants,
+                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+        } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st1e")){
+            cardGameMediator = new ST1EGameMediator(gameId, gameSettings.getGameFormat(), participants,
+                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+        } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st2e")){
+            cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
+                    _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
+        } else { // TODO: This error catch should happen when the format library is created
+            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() + "' does not belong to 1E, 2E, or Tribbles");
+        }
+        return cardGameMediator;
     }
 
     public CardDeck getParticipantDeck(User player, String deckName) {

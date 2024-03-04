@@ -1,7 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.lotr.Token;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
@@ -14,7 +14,7 @@ import static com.gempukku.stccg.gamestate.GameEvent.Type.*;
 
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
-    private final String _self;
+    private final String _playerId;
     private long _lastConsumed = System.currentTimeMillis();
     private final int _channelNumber;
     private volatile WaitingRequest _waitingRequest;
@@ -22,7 +22,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     private final GameFormat _format;
 
     public GameCommunicationChannel(String self, int channelNumber, GameFormat format) {
-        _self = self;
+        _playerId = self;
         _channelNumber = channelNumber;
         _format = format;
     }
@@ -35,11 +35,13 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     public void initializeBoard(List<String> participants, boolean discardIsPublic) {
         List<String> participantIds = new LinkedList<>(participants);
         appendEvent(new GameEvent(PARTICIPANTS)
-                .participantId(_self)
+                .participantId(_playerId)
                 .allParticipantIds(participantIds)
                 .discardPublic(discardIsPublic)
         );
     }
+
+    public String getPlayerId() { return _playerId; }
 
     @Override
     public synchronized void deregisterRequest(WaitingRequest waitingRequest) {
@@ -81,18 +83,23 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public void cardCreated(PhysicalCard card, GameEvent.Type eventType) {
         boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
-        if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_self)))
+        if (card.getZone().isPublic() || publicDiscard ||
+                (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_playerId)))
             appendEvent(new GameEvent(eventType).card(card));
     }
 
-    public void putCardIntoPlay(PhysicalCard card) {
-        cardCreated(card, PUT_CARD_INTO_PLAY);
+    public void putCardIntoPlay(PhysicalCard card, boolean restoreSnapshot) {
+        if (restoreSnapshot)
+            cardCreated(card, PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING);
+        else cardCreated(card, PUT_CARD_INTO_PLAY);
     }
+
 
     @Override
     public void cardCreated(PhysicalCard card, boolean overridePlayerVisibility) {
         boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
-        if (card.getZone().isPublic() || publicDiscard || ((overridePlayerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(_self)))
+        if (card.getZone().isPublic() || publicDiscard || ((overridePlayerVisibility ||
+                card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(_playerId)))
             appendEvent(new GameEvent(PUT_CARD_INTO_PLAY).card(card));
     }
 
@@ -106,11 +113,13 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
         for (PhysicalCard card : cards) {
             boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
-            if (card.getZone().isPublic() || publicDiscard || (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_self)))
+            if (card.getZone().isPublic() || publicDiscard ||
+                    (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(_playerId)))
                 removedCardsVisibleByPlayer.add(card);
         }
         if (!removedCardsVisibleByPlayer.isEmpty())
-            appendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY).otherCardIds(getCardIds(removedCardsVisibleByPlayer)).participantId(playerPerforming));
+            appendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY).otherCardIds(getCardIds(removedCardsVisibleByPlayer))
+                    .participantId(playerPerforming));
     }
 
     @Override
@@ -159,8 +168,10 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void cardAffectedByCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
-        appendEvent(new GameEvent(CARD_AFFECTED_BY_CARD).card(card).participantId(playerPerforming).otherCardIds(getCardIds(affectedCards)));
+    public void cardAffectedByCard(String performingPlayerId, PhysicalCard card,
+                                   Collection<PhysicalCard> affectedCards) {
+        appendEvent(new GameEvent(CARD_AFFECTED_BY_CARD).card(card).participantId(performingPlayerId)
+                .otherCardIds(getCardIds(affectedCards)));
     }
 
     @Override
@@ -174,13 +185,13 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     public void decisionRequired(String playerId, AwaitingDecision decision) {
-        if (playerId.equals(_self))
+        if (playerId.equals(_playerId))
             appendEvent(new GameEvent(DECISION).awaitingDecision(decision).participantId(playerId));
     }
 
     @Override
     public void sendWarning(String playerId, String warning) {
-        if (playerId.equals(_self))
+        if (playerId.equals(_playerId))
             appendEvent(new GameEvent(SEND_WARNING).message(warning));
     }
 
@@ -207,5 +218,10 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public void endGame() {
         appendEvent(new GameEvent(GAME_ENDED));
+    }
+
+    @Override
+    public void cardImageUpdated(PhysicalCard card) {
+        appendEvent(new GameEvent(UPDATE_CARD_IMAGE).card(card));
     }
 }

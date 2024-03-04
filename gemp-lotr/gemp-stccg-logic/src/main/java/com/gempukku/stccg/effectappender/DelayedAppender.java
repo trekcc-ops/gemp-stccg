@@ -1,9 +1,9 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ public abstract class DelayedAppender implements EffectAppender {
         }
     }
 
-    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 

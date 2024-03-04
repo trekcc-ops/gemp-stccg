@@ -1,11 +1,14 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.results.EffectResult;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.GameUtils;
+import com.gempukku.stccg.rules.TextUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -39,11 +42,11 @@ public class DefaultActionContext implements ActionContext {
     }
 
     public ActionContext createDelegateContext(Effect effect) {
-        return new DefaultActionContext(this, getPerformingPlayer(), getGame(), getSource(), effect, null);
+        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), effect, null);
     }
 
     public ActionContext createDelegateContext(EffectResult effectResult) {
-        return new DefaultActionContext(this, getPerformingPlayer(), getGame(), getSource(), null, effectResult);
+        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), null, effectResult);
     }
 
     public ActionContext createDelegateContext(String playerId) {
@@ -51,9 +54,8 @@ public class DefaultActionContext implements ActionContext {
     }
     public Map<String, String> getValueMemory() { return _valueMemory; }
     public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
-    public String getPerformingPlayer() {
-        return performingPlayer;
-    }
+    public Player getPerformingPlayer() { return _game.getGameState().getPlayer(performingPlayer); }
+    public String getPerformingPlayerId() { return performingPlayer; }
     public PhysicalCard getSource() {
         return source;
     }
@@ -161,7 +163,7 @@ public class DefaultActionContext implements ActionContext {
             int startIndex = result.indexOf("{");
             int endIndex = result.indexOf("}");
             String memory = result.substring(startIndex + 1, endIndex);
-            String cardNames = GameUtils.getConcatenatedCardLinks(getCardsFromMemory(memory));
+            String cardNames = TextUtils.getConcatenatedCardLinks(getCardsFromMemory(memory));
             if (cardNames.equalsIgnoreCase("none")) {
                 try {
                     cardNames = getValueFromMemory(memory);
@@ -172,6 +174,10 @@ public class DefaultActionContext implements ActionContext {
             result = result.replace("{" + memory + "}", cardNames);
         }
         return result;
+    }
+
+    public List<PhysicalCard> getZoneCards(PlayerSource playerSource, Zone zone) {
+        return _game.getGameState().getZoneCards(playerSource.getPlayerId(this), zone);
     }
 
 }

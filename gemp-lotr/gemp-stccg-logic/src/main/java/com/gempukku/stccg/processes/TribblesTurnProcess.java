@@ -4,7 +4,7 @@ import com.gempukku.stccg.game.TribblesGame;
 
 public class TribblesTurnProcess extends GameProcess {
     private GameProcess _followingGameProcess;
-    private TribblesGame _game;
+    private final TribblesGame _game;
     public TribblesTurnProcess(TribblesGame game) {
         super();
         _game = game;

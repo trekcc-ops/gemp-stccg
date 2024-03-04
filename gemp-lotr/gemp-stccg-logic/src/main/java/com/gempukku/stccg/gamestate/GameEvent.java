@@ -1,9 +1,9 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.common.filterable.lotr.Token;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 
@@ -20,7 +20,9 @@ public class GameEvent {
         TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
         PLAYER_DECKED("PLAYER_DECKED"), // TODO: Not implemented in JavaScript
         PLAYER_SCORE("PLAYER_SCORE"), // TODO: Not implemented in JavaScript
-        PUT_CARD_INTO_PLAY("PCIP"), MOVE_CARD_IN_PLAY("MCIP"), REMOVE_CARD_FROM_PLAY("RCFP"),
+        PUT_CARD_INTO_PLAY("PCIP"),
+        PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PCIPAR"),
+        MOVE_CARD_IN_PLAY("MCIP"), REMOVE_CARD_FROM_PLAY("RCFP"),
         ADD_ASSIGNMENT("AA"), REMOVE_ASSIGNMENT("RA"),
         START_SKIRMISH("SS"), REMOVE_FROM_SKIRMISH("RFS"), ADD_TO_SKIRMISH("ATS"), END_SKIRMISH("ES"),
         ADD_TOKENS("AT"), REMOVE_TOKENS("RT"),
@@ -28,6 +30,7 @@ public class GameEvent {
         GAME_STATS("GS"),
         CHAT_MESSAGE("CM"),
         GAME_ENDED("EG"),
+        UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
         CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"), DECISION("D");
 
         private final String code;
@@ -212,8 +215,8 @@ public class GameEvent {
 
     public GameEvent card(PhysicalCard physicalCard) {
         GameEvent gameEvent = cardId(physicalCard.getCardId()).blueprintId(physicalCard.getBlueprintId()).participantId(physicalCard.getOwnerName()).zone(physicalCard.getZone()).imageUrl(physicalCard.getImageUrl());
-        if (physicalCard.getCardController() != null)
-            gameEvent = gameEvent.controllerId(physicalCard.getCardController());
+        if (physicalCard.getCardControllerPlayerId() != null)
+            gameEvent = gameEvent.controllerId(physicalCard.getCardControllerPlayerId());
 
         PhysicalCard attachedTo = physicalCard.getAttachedTo();
         if (attachedTo != null)

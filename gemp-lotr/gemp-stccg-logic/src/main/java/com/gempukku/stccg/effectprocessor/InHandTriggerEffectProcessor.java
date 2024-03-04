@@ -1,20 +1,19 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.sources.OptionalTriggerActionSource;
-import com.gempukku.stccg.cards.BuiltCardBlueprint;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
 
 public class InHandTriggerEffectProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "trigger", "requires", "cost", "effect");
+    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "trigger", "requires", "cost", "effect");
 
-        final JSONObject[] triggerArray = FieldUtils.getObjectArray(value.get("trigger"), "trigger");
+        final JSONObject[] triggerArray = environment.getObjectArray(value.get("trigger"), "trigger");
 
         for (JSONObject trigger : triggerArray) {
             final TriggerChecker triggerChecker = environment.getTriggerCheckerFactory().getTriggerChecker(trigger, environment);
@@ -24,9 +23,8 @@ public class InHandTriggerEffectProcessor implements EffectProcessor {
 
             // TODO - Assumes it is optional
             OptionalTriggerActionSource triggerActionSource = new OptionalTriggerActionSource();
-            triggerActionSource.addPlayRequirement(triggerChecker);
-            EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
-
+            triggerActionSource.addRequirement(triggerChecker);
+            triggerActionSource.processRequirementsCostsAndEffects(value, environment);
             blueprint.appendOptionalInHandTrigger(triggerActionSource, TriggerTiming.AFTER);
         }
     }

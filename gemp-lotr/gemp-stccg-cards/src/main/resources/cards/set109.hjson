@@ -1,0 +1,34 @@
+// Set 109: First Contact
+
+{
+    109_108: {
+        title: Obarakeh
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: first-contact-logo
+        icons: staff,first-contact-icon
+        classification: SECURITY
+        lore: Ensign Obarakeh is typical of Starfleet security personnel. She monitors and administrates computer encryption safeguards. Plays the Algolian chimes.
+        skill-box: "[*] Music [*] Computer Skill"
+        integrity: 6
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/fc/obarakeh.gif
+    }
+    109_111: {
+        title: Richard Wilkins
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: first-contact-logo
+        icons: staff,first-contact-icon
+        classification: SCIENCE
+        lore: Typical scientist. Ordered to scan the Neutral Zone on stardate 50893. Found 20 particles of space dust per cm³, 52 UV radiation spikes, and a class 2 comet.
+        skill-box: "[*] Stellar Cartography"
+        integrity: 7
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/fc/richardwilkins.gif
+    }
+}

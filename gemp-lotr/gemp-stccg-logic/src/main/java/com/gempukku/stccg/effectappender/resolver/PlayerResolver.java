@@ -2,7 +2,7 @@ package com.gempukku.stccg.effectappender.resolver;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.PlayerSource;
 
 import java.util.Locale;
@@ -11,7 +11,7 @@ public class PlayerResolver {
     public static PlayerSource resolvePlayer(String type) throws InvalidCardDefinitionException {
 
         if (type.equalsIgnoreCase("you"))
-            return ActionContext::getPerformingPlayer;
+            return ActionContext::getPerformingPlayerId;
         if (type.equalsIgnoreCase("owner"))
             return (actionContext) -> actionContext.getSource().getOwnerName();
         else {
@@ -24,7 +24,7 @@ public class PlayerResolver {
                         return cardFromMemory.getOwnerName();
                     else
                         // Sensible default
-                        return actionContext.getPerformingPlayer();
+                        return actionContext.getPerformingPlayerId();
                 };
             }
             else //noinspection SpellCheckingInspection

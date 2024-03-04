@@ -1,28 +1,28 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.ShuffleCardsIntoDrawDeckEffect;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.ShuffleCardsIntoDrawDeckEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class ShuffleCardsFromHandIntoDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "player", "filter", "count", "memorize");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "player", "filter", "count", "memorize");
 
-        String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
+        String player = environment.getString(effectObject.get("player"), "player", "you");
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
 
         MultiEffectAppender result = new MultiEffectAppender();
 
@@ -31,11 +31,11 @@ public class ShuffleCardsFromHandIntoDrawDeck implements EffectAppenderProducer 
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                        final Collection<PhysicalCard> cardsFromHand = actionContext.getCardsFromMemory(memorize);
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                        final Collection<PhysicalCard> cardsFromHand = context.getCardsFromMemory(memorize);
 
                         return new ShuffleCardsIntoDrawDeckEffect(
-                                actionContext.getGame(), actionContext.getSource(), Zone.HAND, playerSource.getPlayerId(actionContext), cardsFromHand
+                                context.getGame(), context.getSource(), Zone.HAND, playerSource.getPlayerId(context), cardsFromHand
                         );
                     }
                 });

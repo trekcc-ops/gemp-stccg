@@ -1,21 +1,21 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
-import com.gempukku.stccg.results.PlayCardResult;
+import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import org.json.simple.JSONObject;
 
 public class PlayedFromStacked implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "filter", "from", "memorize");
+    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "filter", "from", "memorize");
 
-        final String filterString = FieldUtils.getString(value.get("filter"), "filter");
-        final String fromString = FieldUtils.getString(value.get("from"), "from");
-        final String memorize = FieldUtils.getString(value.get("memorize"), "memorize");
-        final FilterableSource filter = environment.getFilterFactory().generateFilter(filterString, environment);
-        final FilterableSource fromFilter = environment.getFilterFactory().generateFilter(fromString, environment);
+        final String filterString = environment.getString(value.get("filter"), "filter");
+        final String fromString = environment.getString(value.get("from"), "from");
+        final String memorize = environment.getString(value.get("memorize"), "memorize");
+        final FilterableSource filter = environment.getFilterFactory().generateFilter(filterString);
+        final FilterableSource fromFilter = environment.getFilterFactory().generateFilter(fromString);
         return new TriggerChecker() {
             @Override
             public boolean accepts(ActionContext actionContext) {

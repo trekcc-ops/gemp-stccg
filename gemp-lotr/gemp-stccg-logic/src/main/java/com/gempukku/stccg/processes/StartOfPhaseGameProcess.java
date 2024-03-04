@@ -3,16 +3,16 @@ package com.gempukku.stccg.processes;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.actions.SystemQueueAction;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.TriggeringResultEffect;
-import com.gempukku.stccg.effects.utils.EffectType;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
+import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.results.StartOfPhaseResult;
+import com.gempukku.stccg.actions.turn.StartOfPhaseResult;
 
 public class StartOfPhaseGameProcess extends GameProcess {
     private final Phase _phase;
-    private String _playerId;
+    private final String _playerId;
     private final GameProcess _followingGameProcess;
     private final DefaultGame _game;
 
@@ -33,13 +33,16 @@ public class StartOfPhaseGameProcess extends GameProcess {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("Start of " + _phase + " phase");
         action.appendEffect(
-                new TriggeringResultEffect(null, new StartOfPhaseResult(_phase, _playerId), "Start of " + _phase + " phase"));
+                new TriggeringResultEffect(null, new StartOfPhaseResult(_phase, _playerId, _game), "Start of " + _phase + " phase"));
         action.appendEffect(
                 new Effect() {
                     @Override
                     public String getText() {
                         return null;
                     }
+
+                    @Override
+                    public String getPerformingPlayerId() { return null; }
 
                     @Override
                     public EffectType getType() {

@@ -1,6 +1,10 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
@@ -105,12 +109,12 @@ public class ST2EGameState extends GameState {
     public void seedFacilityAtLocation(PhysicalFacilityCard card, int spacelineIndex) {
         card.setLocationZoneIndex(spacelineIndex);
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
-        card.setCurrentLocation(getSpacelineLocations().get(spacelineIndex));
+        card.setLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
     }
 
     public void reportCardToFacility(PhysicalReportableCard1E cardReported, PhysicalFacilityCard facility) {
-        cardReported.setCurrentLocation(facility.getLocation());
+        cardReported.setLocation(facility.getLocation());
         attachCard(cardReported, facility);
     }
 
@@ -183,7 +187,7 @@ public class ST2EGameState extends GameState {
     }
 
     @Override
-    protected void sendStateToPlayer(String playerId, GameStateListener listener) {
+    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         if (_playerOrder != null) {
             listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
             if (_currentPlayerId != null)
@@ -197,13 +201,7 @@ public class ST2EGameState extends GameState {
             // Send missions in order
             for (ST1ELocation location : _spacelineLocations) {
                 for (int i = 0; i < location.getMissions().size(); i++) {
-                    GameEvent.Type eventType;
-                    if (i == 0) {
-                        eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
-                    } else {
-                        eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
-                    }
-                    listener.cardCreated(location.getMissions().get(i), eventType);
+                    listener.cardCreated(location.getMissions().get(i), GameEvent.Type.PUT_CARD_INTO_PLAY);
                     cardsLeftToSend.remove(location.getMissions().get(i));
                 }
             }
@@ -216,7 +214,7 @@ public class ST2EGameState extends GameState {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
                     if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        listener.putCardIntoPlay(physicalCard);
+                        listener.putCardIntoPlay(physicalCard, restoreSnapshot);
                         sentCardsFromPlay.add(physicalCard);
 
                         cardIterator.remove();
@@ -224,12 +222,19 @@ public class ST2EGameState extends GameState {
                 }
             } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
-            _cardGroups.get(Zone.HAND).get(playerId).forEach(listener::putCardIntoPlay);
+            for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId))
+                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
 
             List<PhysicalCard> missionPile = _missionPiles.get(playerId);
-            if (missionPile != null) missionPile.forEach(listener::putCardIntoPlay);
+            if (missionPile != null) {
+                for (PhysicalCard physicalCard : missionPile) {
+                    listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                }
+            }
 
-            _cardGroups.get(Zone.DISCARD).get(playerId).forEach(listener::putCardIntoPlay);
+            for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
+                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+            }
 
             listener.sendGameStats(getGame().getTurnProcedure().getGameStats());
         }

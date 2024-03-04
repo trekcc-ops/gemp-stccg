@@ -1,9 +1,7 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.defaulteffect.ActivateCardEffect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.Effect;
 
 public class ActivateCardAction extends AbstractCostToEffectAction {
 
@@ -15,17 +13,10 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     protected final DefaultGame _game;
 
     public ActivateCardAction(PhysicalCard physicalCard) {
+        super(physicalCard.getOwner(), ActionType.SPECIAL_ABILITY);
         _game = physicalCard.getGame();
         _physicalCard = physicalCard;
         setText("Use " + _physicalCard.getFullName());
-    }
-
-    @Override
-    public boolean canBeInitiated() { return true; }
-
-    @Override
-    public ActionType getActionType() {
-        return ActionType.SPECIAL_ABILITY;
     }
 
     @Override
@@ -47,7 +38,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
-                _game.getGameState().activatedCard(getPerformingPlayer(), _physicalCard);
+                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
                 _game.getGameState().sendMessage(_physicalCard.getCardLink() + " is used");
             }
         }

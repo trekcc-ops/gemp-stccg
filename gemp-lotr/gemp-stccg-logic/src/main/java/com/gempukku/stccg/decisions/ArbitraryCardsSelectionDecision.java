@@ -1,6 +1,6 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -65,7 +65,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         String[] images = new String[physicalCards.size()];
         int index = 0;
         for (PhysicalCard physicalCard : physicalCards) {
-            images[index] = physicalCard.getBlueprint().getImageUrl();
+            images[index] = physicalCard.getImageUrl();
             index++;
         }
         return images;

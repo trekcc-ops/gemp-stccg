@@ -1,16 +1,15 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.TransferPermanentNotFromPlayEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.TransferPermanentNotFromPlayEffect;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import org.json.simple.JSONObject;
@@ -21,16 +20,17 @@ import java.util.List;
 
 public class TransferFromDiscard implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "filter", "where");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "filter", "where");
 
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
-        final String where = FieldUtils.getString(effectObject.get("where"), "where");
+        final String filter = environment.getString(effectObject.get("filter"), "filter");
+        final String where = environment.getString(effectObject.get("where"), "where");
 
         MultiEffectAppender result = new MultiEffectAppender();
 
         result.addEffectAppender(
-                CardResolver.resolveCardsInDiscard(filter, new ConstantEvaluator(1), "_temp1", "you", "Choose card to transfer", environment));
+                CardResolver.resolveCardsInDiscard(filter, new ConstantValueSource(1), "_temp1",
+                        "you", "Choose card to transfer", environment));
         result.addEffectAppender(
                 CardResolver.resolveCards(where,
                         actionContext -> (Filter) (game, physicalCard) -> {

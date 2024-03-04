@@ -1,9 +1,9 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TribblesPlayCardAction;
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.TribblesPhysicalCard;
+import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.game.TribblesGame;

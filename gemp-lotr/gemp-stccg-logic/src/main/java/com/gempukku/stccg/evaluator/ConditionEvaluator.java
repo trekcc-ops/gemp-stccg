@@ -1,23 +1,25 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 
-public class ConditionEvaluator implements Evaluator {
+public class ConditionEvaluator extends Evaluator {
     private final int _default;
     private final int _conditionFulfilled;
     private final Condition _condition;
 
-    public ConditionEvaluator(int aDefault, int conditionFulfilled, Condition condition) {
-        _default = aDefault;
+    public ConditionEvaluator(ActionContext context, int defaultValue, int conditionFulfilled, Condition condition) {
+        super(context);
+        _default = defaultValue;
         _conditionFulfilled = conditionFulfilled;
         _condition = condition;
     }
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        if (_condition.isFulfilled(self.getGame()))
+        if (_condition.isFulfilled())
             return _conditionFulfilled;
         return _default;
     }

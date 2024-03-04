@@ -1,20 +1,16 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.results.RevealCardFromTopOfDeckResult;
+import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
 import org.json.simple.JSONObject;
 
 public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "filter");
+    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "filter");
 
-        final String filter = FieldUtils.getString(value.get("filter"), "filter", "any");
-
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+        final FilterableSource filterableSource = environment.getFilterable(value, "any");
 
         return new TriggerChecker() {
             @Override
@@ -24,11 +20,12 @@ public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
 
             @Override
             public boolean accepts(ActionContext actionContext) {
-                if (TriggerConditions.revealedCardsFromTopOfDeck(actionContext.getEffectResult(), actionContext.getPerformingPlayer())) {
-                    RevealCardFromTopOfDeckResult revealCardFromTopOfDeckResult = (RevealCardFromTopOfDeckResult) actionContext.getEffectResult();
-                    final Filterable filterable = filterableSource.getFilterable(actionContext);
-                    final PhysicalCard revealedCard = revealCardFromTopOfDeckResult.getRevealedCard();
-                    return Filters.and(filterable).accepts(actionContext.getGame(), revealedCard);
+                if (TriggerConditions.revealedCardsFromTopOfDeck(
+                        actionContext.getEffectResult(), actionContext.getPerformingPlayerId())) {
+                    return Filters.and(filterableSource.getFilterable(actionContext)).accepts(
+                            actionContext.getGame(),
+                            ((RevealCardFromTopOfDeckResult) actionContext.getEffectResult()).getRevealedCard()
+                    );
                 }
                 return false;
             }

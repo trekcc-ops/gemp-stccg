@@ -1,23 +1,26 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.ShuffleDeckEffect;
+import com.gempukku.stccg.actions.revealcards.LookAtTopCardOfADeckEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.LookAtTopCardOfADeckEffect;
-import com.gempukku.stccg.effects.defaulteffect.unrespondable.ShuffleDeckEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.List;
 
 public class LookAtDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "deck", "memorize");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "deck", "memorize");
 
-        final String deck = FieldUtils.getString(effectObject.get("deck"), "deck", "you");
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
+        final String deck = environment.getString(effectObject.get("deck"), "deck", "you");
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 
@@ -26,23 +29,23 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
         result.addEffectAppender(new DefaultDelayedAppender() {
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String deckId = playerSource.getPlayerId(actionContext);
-                final int count = actionContext.getGameState().getDrawDeck(deckId).size();
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                final String deckId = playerSource.getPlayerId(context);
+                final int count = context.getGameState().getDrawDeck(deckId).size();
 
-                return new LookAtTopCardOfADeckEffect(actionContext, count, deckId) {
+                return new LookAtTopCardOfADeckEffect(context, count, deckId) {
                     @Override
                     protected void cardsLookedAt(List<? extends PhysicalCard> cards) {
                         if (memorize != null)
-                            actionContext.setCardMemory(memorize, cards);
+                            context.setCardMemory(memorize, cards);
                     }
                 };
             }
         });
         result.addEffectAppender(new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                return new ShuffleDeckEffect(actionContext.getGame(), playerSource.getPlayerId(actionContext));
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                return new ShuffleDeckEffect(context.getGame(), playerSource.getPlayerId(context));
             }
         });
 

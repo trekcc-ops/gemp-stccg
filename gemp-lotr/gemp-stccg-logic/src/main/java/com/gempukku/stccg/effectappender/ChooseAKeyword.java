@@ -2,33 +2,32 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PlayOutDecisionEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import org.json.simple.JSONObject;
 
 public class ChooseAKeyword implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "memorize", "keywords");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "memorize", "keywords");
 
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
-        final String keywords = FieldUtils.getString(effectObject.get("keywords"), "keywords");
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
+        final String keywords = environment.getString(effectObject.get("keywords"), "keywords");
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 return new PlayOutDecisionEffect(
-                        actionContext.getGame(), actionContext.getPerformingPlayer(),
-                        new MultipleChoiceAwaitingDecision(1, "Choose a keyword",
+                        context.getGame(), context.getPerformingPlayerId(),
+                        new MultipleChoiceAwaitingDecision("Choose a keyword",
                                 keywords.split(",")) {
                             @Override
                             protected void validDecisionMade(int index, String result) {
-                                actionContext.setValueToMemory(memorize, result.toUpperCase().replace(' ', '_').replace('-', '_'));
-                                actionContext.getGameState().sendMessage(actionContext.getPerformingPlayer() + " has chosen " + result);
+                                context.setValueToMemory(memorize, result.toUpperCase().replace(' ', '_').replace('-', '_'));
+                                context.getGameState().sendMessage(context.getPerformingPlayerId() + " has chosen " + result);
                             }
                         });
             }

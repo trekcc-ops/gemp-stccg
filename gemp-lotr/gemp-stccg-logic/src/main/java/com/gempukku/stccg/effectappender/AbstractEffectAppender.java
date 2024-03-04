@@ -2,7 +2,7 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.actions.Effect;
 
 public abstract class AbstractEffectAppender implements EffectAppender {
     @Override

@@ -2,9 +2,12 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.lotr.Culture;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
+import com.gempukku.stccg.common.filterable.lotr.PossessionClass;
+import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.common.MultipleComparator;
 
 import java.text.Normalizer;
@@ -350,7 +353,7 @@ public class SortAndFilterCards {
 
         private int getStrengthSafely(CardBlueprint blueprint) {
             try {
-                return blueprint.getStrength();
+                return blueprint.getAttribute(CardAttribute.STRENGTH);
             } catch (UnsupportedOperationException exp) {
                 return Integer.MAX_VALUE;
             }

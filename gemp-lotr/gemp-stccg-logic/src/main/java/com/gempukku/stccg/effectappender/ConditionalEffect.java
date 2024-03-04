@@ -3,35 +3,31 @@ package com.gempukku.stccg.effectappender;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.StackActionEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class ConditionalEffect implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "requires", "effect");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "requires", "effect");
 
-        final JSONObject[] conditionArray = FieldUtils.getObjectArray(effectObject.get("requires"), "requires");
-        final JSONObject[] effectArray = FieldUtils.getObjectArray(effectObject.get("effect"), "effect");
-
-        final Requirement[] conditions = environment.getRequirementFactory().getRequirements(conditionArray, environment);
-        final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
+        final Requirement[] conditions = environment.getRequirementsFromJSON(effectObject);
+        final EffectAppender[] effectAppenders = environment.getEffectAppendersFromJSON(effectObject,"effect");
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                if (checkConditions(actionContext)) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                if (checkConditions(context)) {
                     SubAction subAction = action.createSubAction();
                     for (EffectAppender effectAppender : effectAppenders)
-                        effectAppender.appendEffect(cost, subAction, actionContext);
+                        effectAppender.appendEffect(cost, subAction, context);
 
-                    return new StackActionEffect(actionContext.getGame(), subAction);
+                    return new StackActionEffect(context.getGame(), subAction);
                 } else {
                     return null;
                 }

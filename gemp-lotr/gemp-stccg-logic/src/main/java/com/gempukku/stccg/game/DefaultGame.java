@@ -2,7 +2,8 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameState;
@@ -21,7 +22,7 @@ public abstract class DefaultGame {
     protected final GameFormat _format;
     protected final CardBlueprintLibrary _library;
     // IRL game mechanics
-    protected final Set<String> _allPlayers;
+    protected final Set<String> _allPlayerIds;
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
     protected boolean _cancelled;
@@ -31,9 +32,13 @@ public abstract class DefaultGame {
     // Game code infrastructure
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
-    protected final ModifiersLogic _modifiersLogic = new ModifiersLogic(this);
-    protected final DefaultActionsEnvironment _actionsEnvironment;
+    protected ModifiersLogic _modifiersLogic = new ModifiersLogic(this);
+    protected ActionsEnvironment _actionsEnvironment;
     protected final UserFeedback _userFeedback;
+    private final List<GameSnapshot> _snapshots = new LinkedList<>();
+    protected GameSnapshot _snapshotToRestore;
+    private int _nextSnapshotId;
+    private static final int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
@@ -42,7 +47,7 @@ public abstract class DefaultGame {
         _userFeedback = userFeedback;
         _library = library;
 
-        _allPlayers = decks.keySet();
+        _allPlayerIds = decks.keySet();
 
         _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
         new WinConditionRule(_actionsEnvironment).applyRule();
@@ -54,14 +59,14 @@ public abstract class DefaultGame {
     }
 
     public boolean isSolo() {
-        return _allPlayers.size() == 1;
+        return _allPlayerIds.size() == 1;
     }
 
     public GameFormat getFormat() {
         return _format;
     }
 
-    public Set<String> getPlayerIds() { return _allPlayers; }
+    public Set<String> getPlayerIds() { return _allPlayerIds; }
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
     public boolean isCancelled() { return _cancelled; }
 
@@ -69,7 +74,7 @@ public abstract class DefaultGame {
         _gameResultListeners.add(listener);
     }
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        getGameState().addGameStateListener(playerId, gameStateListener, getTurnProcedure().getGameStats());
+        getGameState().addGameStateListener(playerId, gameStateListener);
     }
     public void removeGameResultListener(GameResultListener listener) {
         _gameResultListeners.remove(listener);
@@ -77,7 +82,7 @@ public abstract class DefaultGame {
 
     public void requestCancel(String playerId) {
         _requestedCancel.add(playerId);
-        if (_requestedCancel.size() == _allPlayers.size())
+        if (_requestedCancel.size() == _allPlayerIds.size())
             cancelGameRequested();
     }
     public void cancelGameRequested() {
@@ -125,7 +130,7 @@ public abstract class DefaultGame {
     public void playerWon(String playerId, String reason) {
         if (!_finished) {
             // Any remaining players have lost
-            Set<String> losers = new HashSet<>(_allPlayers);
+            Set<String> losers = new HashSet<>(_allPlayerIds);
             losers.removeAll(_losers.keySet());
             losers.remove(playerId);
 
@@ -157,8 +162,8 @@ public abstract class DefaultGame {
                 if (getGameState() != null)
                     getGameState().sendMessage(playerId + " lost due to: " + reason);
 
-                if (_losers.size() + 1 == _allPlayers.size()) {
-                    List<String> allPlayers = new LinkedList<>(_allPlayers);
+                if (_losers.size() + 1 == _allPlayerIds.size()) {
+                    List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
                     gameWon(allPlayers.get(0), "Last remaining player in game");
                 }
@@ -197,23 +202,100 @@ public abstract class DefaultGame {
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
-        if (!_cancelled)
+        if (!_cancelled) {
             getTurnProcedure().carryOutPendingActionsUntilDecisionNeeded();
-    }
 
-    public String[] getAllPlayers() {
-        final GameState gameState = getGameState();
-        final PlayerOrder playerOrder = gameState.getPlayerOrder();
-        String[] result = new String[playerOrder.getPlayerCount()];
-
-        final PlayOrder counterClockwisePlayOrder = playerOrder.getCounterClockwisePlayOrder(gameState.getCurrentPlayerId(), false);
-        int index = 0;
-
-        String nextPlayer;
-        while ((nextPlayer = counterClockwisePlayOrder.getNextPlayer()) != null) {
-            result[index++] = nextPlayer;
+            while (_snapshotToRestore != null) {
+                restoreSnapshot();
+                carryOutPendingActionsUntilDecisionNeeded();
+            }
         }
-        return result;
     }
+
+    public String[] getAllPlayerIds() {
+        return _allPlayerIds.toArray(new String[0]);
+    }
+
+    public Player getCurrentPlayer() { return getGameState().getCurrentPlayer(); }
+
+    public List<GameSnapshot> getSnapshots() {
+        return Collections.unmodifiableList(_snapshots);
+    }
+
+    public String getOpponent(String playerId) {
+            // TODO - Only works for 2-player games
+        if (getAllPlayerIds().length != 2)
+            throw new RuntimeException("Tried to call getOpponent function with more than 2 players");
+        else {
+            return getAllPlayerIds()[0].equals(playerId) ?
+                    getAllPlayerIds()[1] : getAllPlayerIds()[0];
+        }
+    }
+
+    public void requestRestoreSnapshot(int snapshotId) {
+        if (_snapshotToRestore == null) {
+            for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
+                GameSnapshot gameSnapshot = iterator.next();
+                if (gameSnapshot.getId() == snapshotId) {
+                    _snapshotToRestore = gameSnapshot;
+                }
+                // After snapshot to restore is found, remove any snapshots after it from list
+                if (_snapshotToRestore != null) {
+                    // Remove the current snapshot from the iterator and the list.
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * Determines if a snapshot is pending to be restored.
+     * @return true or false
+     */
+    public boolean isRestoreSnapshotPending() {
+        return _snapshotToRestore != null;
+    }
+
+    /**
+     * Restores the snapshot as the current state of the game.
+     */
+    protected abstract void restoreSnapshot();
+
+    /**
+     * Creates a snapshot of the current state of the game.
+     * @param description the description
+     */
+    public void takeSnapshot(String description) {
+        pruneSnapshots();
+        // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
+        if (getGameState().getPlayCardStates().isEmpty())
+            _snapshots.add(GameSnapshot.createGameSnapshot(++_nextSnapshotId, description, getGameState(),
+                    _modifiersLogic, _actionsEnvironment, getTurnProcedure()));
+    }
+
+    /**
+     * Prunes older snapshots.
+     */
+    private void pruneSnapshots() {
+        // Remove old snapshots until reaching snapshots to keep
+        for (Iterator<GameSnapshot> iterator = _snapshots.iterator(); iterator.hasNext();) {
+            GameSnapshot gameSnapshot = iterator.next();
+            String snapshotCurrentPlayer = gameSnapshot.getCurrentPlayerId();
+            int snapshotCurrentTurnNumber = gameSnapshot.getCurrentTurnNumber();
+            if (snapshotCurrentTurnNumber <= 1 &&
+                    getGameState().getPlayersLatestTurnNumber(snapshotCurrentPlayer) <= 1) {
+                break;
+            }
+            int pruneOlderThanTurn = getGameState().getPlayersLatestTurnNumber(snapshotCurrentPlayer) -
+                    (NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS / 2);
+            if (snapshotCurrentTurnNumber >= pruneOlderThanTurn) {
+                break;
+            }
+            // Remove the current snapshot from the iterator and the list.
+            iterator.remove();
+        }
+    }
+
+
 
 }

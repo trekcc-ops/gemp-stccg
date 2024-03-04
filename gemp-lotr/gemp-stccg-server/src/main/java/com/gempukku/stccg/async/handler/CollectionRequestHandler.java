@@ -15,7 +15,6 @@ import com.gempukku.stccg.game.User;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
-import com.gempukku.stccg.rules.GameUtils;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;

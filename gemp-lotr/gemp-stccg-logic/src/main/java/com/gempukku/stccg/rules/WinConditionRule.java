@@ -1,12 +1,12 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
+import com.gempukku.stccg.actions.ActionsEnvironment;
 
 public class WinConditionRule {
-    private final DefaultActionsEnvironment _actionsEnvironment;
+    private final ActionsEnvironment _actionsEnvironment;
 
-    public WinConditionRule(DefaultActionsEnvironment actionsEnvironment) {
+    public WinConditionRule(ActionsEnvironment actionsEnvironment) {
         _actionsEnvironment = actionsEnvironment;
     }
 

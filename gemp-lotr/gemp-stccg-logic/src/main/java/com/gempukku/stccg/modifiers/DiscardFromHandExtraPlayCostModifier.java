@@ -1,13 +1,12 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.choose.ChooseAndDiscardCardsFromHandEffect;
+import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.game.PlayConditions;
 
 public class DiscardFromHandExtraPlayCostModifier extends AbstractExtraPlayCostModifier {
     private final int count;

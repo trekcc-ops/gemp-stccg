@@ -1,15 +1,17 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Token;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.lotr.Token;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 
 import java.util.Collection;
 import java.util.List;
 
 public interface GameStateListener {
+    String getPlayerId();
     void cardCreated(PhysicalCard card, GameEvent.Type eventType);
-    void putCardIntoPlay(PhysicalCard card);
+
+    void putCardIntoPlay(PhysicalCard card, boolean restoreSnapshot);
     void cardCreated(PhysicalCard card, boolean overridePlayerVisibility);
 
     void cardMoved(PhysicalCard card);
@@ -48,4 +50,6 @@ public interface GameStateListener {
     void sendWarning(String playerId, String warning);
 
     void endGame();
+
+    void cardImageUpdated(PhysicalCard card);
 }

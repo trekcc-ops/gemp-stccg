@@ -1,8 +1,8 @@
 package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCardGeneric;
-import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;

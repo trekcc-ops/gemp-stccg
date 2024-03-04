@@ -1,25 +1,20 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class SubAction extends AbstractCostToEffectAction {
     private final Action _action;
     protected final DefaultGame _game;
 
-    public SubAction(Action action, DefaultGame game) {
+    public SubAction(Action action) {
+        super(action);
         _action = action;
-        _game = game;
+        _game = action.getGame();
     }
 
     @Override
     public DefaultGame getGame() { return _game; }
-
-    @Override
-    public ActionType getActionType() {
-        return _action.getActionType();
-    }
 
     @Override
     public PhysicalCard getActionAttachedToCard() {
@@ -32,13 +27,8 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public String getPerformingPlayer() {
-        return _action.getPerformingPlayer();
-    }
-
-    @Override
-    public void setPerformingPlayer(String playerId) {
-        _action.setPerformingPlayer(playerId);
+    public String getPerformingPlayerId() {
+        return _action.getPerformingPlayerId();
     }
 
     @Override

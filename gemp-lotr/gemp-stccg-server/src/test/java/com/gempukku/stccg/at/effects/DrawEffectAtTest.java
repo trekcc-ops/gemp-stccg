@@ -1,18 +1,13 @@
 package com.gempukku.stccg.at.effects;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.at.AbstractAtTest;
-import com.gempukku.stccg.cards.PhysicalCardGeneric;
-import com.gempukku.stccg.requirement.trigger.TriggerConditions;
-import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.actions.RequiredTriggerAction;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
-import com.gempukku.stccg.effects.abstractsubaction.DrawCardsEffect;
-import com.gempukku.stccg.effects.defaulteffect.PreventEffect;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.Preventable;
+import com.gempukku.stccg.requirement.trigger.TriggerConditions;
 import org.junit.Test;
 
 import java.util.Collections;

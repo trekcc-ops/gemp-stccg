@@ -1,8 +1,8 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.PossessionClass;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.common.filterable.lotr.PossessionClass;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PossessionClassSpotModifier extends AbstractModifier {

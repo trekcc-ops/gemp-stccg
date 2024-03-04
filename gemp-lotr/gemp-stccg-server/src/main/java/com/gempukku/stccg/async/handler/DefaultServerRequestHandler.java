@@ -12,7 +12,6 @@ import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.game.User;
-import com.gempukku.stccg.rules.GameUtils;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;

@@ -9,6 +9,11 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
     private final List<Action> _actions;
 
     public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions) {
+        this(decisionId, text, actions, false);
+    }
+
+    public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions,
+                                       boolean revertEligible) {
         super(decisionId, text, AwaitingDecisionType.CARD_ACTION_CHOICE);
         _actions = new LinkedList<>(actions);
 
@@ -17,6 +22,8 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         setParam("blueprintId", getBlueprintIdsForVirtualActions(actions));
         setParam("imageUrl", getImageUrlsForVirtualActions(actions));
         setParam("actionText", getActionTexts(actions));
+        setParam("actionType", getActionTypes(actions));
+        setParam("revertEligible", String.valueOf(revertEligible)); // TODO SNAPSHOT - no methods for "revertEligible" in client
     }
 
     /**
@@ -32,6 +39,13 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         String[] result = new String[actions.size()];
         for (int i = 0; i < result.length; i++)
             result[i] = String.valueOf(i);
+        return result;
+    }
+
+    private String[] getActionTypes(List<? extends Action> actions) {
+        String[] result = new String[actions.size()];
+        for (int i = 0; i < result.length; i++)
+            result[i] = String.valueOf(actions.get(i).getActionType());
         return result;
     }
 

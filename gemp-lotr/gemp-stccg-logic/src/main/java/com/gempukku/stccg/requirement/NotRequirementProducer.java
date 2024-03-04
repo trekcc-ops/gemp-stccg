@@ -1,16 +1,15 @@
 package com.gempukku.stccg.requirement;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 public class NotRequirementProducer extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(object, "requires");
+    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(object, "requires");
 
-        final Requirement condition = environment.getRequirementFactory().getRequirement((JSONObject) object.get("requires"), environment);
+        final Requirement condition = environment.getRequirement((JSONObject) object.get("requires"));
 
         return (actionContext) -> !condition.accepts(actionContext);
     }

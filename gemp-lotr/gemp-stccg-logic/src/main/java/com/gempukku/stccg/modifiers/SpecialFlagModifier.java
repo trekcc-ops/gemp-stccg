@@ -1,6 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.condition.Condition;
 
 public class SpecialFlagModifier extends AbstractModifier {

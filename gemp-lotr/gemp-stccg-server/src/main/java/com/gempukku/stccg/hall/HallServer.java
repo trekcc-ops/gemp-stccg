@@ -695,12 +695,21 @@ public class HallServer extends AbstractServer {
         final League league = gameTable.getGameSettings().getLeague();
         final LeagueSeriesData leagueSerie = gameTable.getGameSettings().getSeriesData();
 
+        GameResultListener listener = getGameResultListener(league, leagueSerie);
+
+        CardGameMediator mediator = createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
+        gameTable.startGame(mediator);
+    }
+
+    private GameResultListener getGameResultListener(League league, LeagueSeriesData leagueSerie) {
         GameResultListener listener = null;
         if (league != null) {
             listener = new GameResultListener() {
                 @Override
-                public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
-                    _leagueService.reportLeagueGameResult(league, leagueSerie, winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
+                public void gameFinished(String winnerPlayerId, String winReason,
+                                         Map<String, String> loserPlayerIdsWithReasons) {
+                    _leagueService.reportLeagueGameResult(
+                            league, leagueSerie, winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
                 }
 
                 @Override
@@ -709,12 +718,11 @@ public class HallServer extends AbstractServer {
                 }
             };
         }
-
-        CardGameMediator mediator = createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
-        gameTable.startGame(mediator);
+        return listener;
     }
 
-    private CardGameMediator createGameMediator(GameParticipant[] participants, GameResultListener listener, String tournamentName, GameSettings gameSettings) {
+    private CardGameMediator createGameMediator(GameParticipant[] participants, GameResultListener listener,
+                                                String tournamentName, GameSettings gameSettings) {
         final CardGameMediator cardGameMediator = _gameServer.createNewGame(tournamentName, participants, gameSettings);
         if (listener != null)
             cardGameMediator.addGameResultListener(listener);
@@ -731,7 +739,8 @@ public class HallServer extends AbstractServer {
         }
 
         @Override
-        public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
+        public void gameFinished(String winnerPlayerId, String winReason,
+                                 Map<String, String> loserPlayerIdsWithReasons) {
             hallChanged();
         }
     }
@@ -793,7 +802,9 @@ public class HallServer extends AbstractServer {
                                 true, _tournamentService, unstartedTournamentQueue.getStartTime(), unstartedTournamentQueue.getTournamentName(),
                                 unstartedTournamentQueue.getFormat(), CollectionType.ALL_CARDS, Tournament.Stage.PLAYING_GAMES,
                                 _pairingMechanismRegistry.getPairingMechanism(unstartedTournamentQueue.getPlayOffSystem()),
-                                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, unstartedTournamentQueue.getPrizeScheme()), unstartedTournamentQueue.getMinimumPlayers());
+                                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library,
+                                        unstartedTournamentQueue.getPrizeScheme()),
+                                unstartedTournamentQueue.getMinimumPlayers());
                         _tournamentQueues.put(scheduledTournamentId, scheduledQueue);
                         hallChanged();
                     }

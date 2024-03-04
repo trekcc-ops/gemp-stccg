@@ -15,4 +15,6 @@ public class DefaultLimitCounter implements LimitCounter {
     public int getUsedLimit() {
         return _count;
     }
+
+    public void countUse() { _count++; }
 }

@@ -1,0 +1,57 @@
+// Set 163: The Sky's the Limit
+
+{
+    163_035: {
+        title: Lwaxana Troi
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: Betazoid ambassador held captive by Tog. Misled him about her willingness to cooperate. Later described Tog as slightly repulsive, but with a certain charm.
+        skill-box: "[*] Empathy x2 [*] Anthropology [*] Computer Skill"
+        integrity: 5
+        cunning: 8
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/35.jpg
+    }
+    163_040: {
+        title: Bosus
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: SECURITY
+        lore: Typical disconnected Borg disciple of The One. Participated in the raid on Ohniaka III. Swore to avenge the death of his friend Torsus.
+        icons: defense-subcommand
+        skill-box: "[*] Astrophysics [*] Treachery [*] Navigation"
+        integrity: 6
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
+    }
+    163_054: {
+        title: Stolen Ship
+        type: ship
+        affiliation: federation,romulan
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: MERCHANT CLASS
+        lore: One of many decommissioned Vulcan merchant vessels. Several were stolen by the Romulans in a ploy to conquer Vulcan for the Star Empire.
+        staffing: staff
+        gametext: Tractor Beam
+        range: 7
+        weapons: 6
+        shields: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
+        image-options: [
+            {
+                affiliation: romulan
+                image-url: https://www.trekcc.org/1e/cardimages/tstl/54.jpg
+            }
+            {
+                affiliation: federation
+                image-url: https://www.trekcc.org/1e/cardimages/tstl/54A.jpg
+            }
+        ]
+    }
+}

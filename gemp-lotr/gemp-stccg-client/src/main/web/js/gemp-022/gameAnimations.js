@@ -7,6 +7,8 @@ var GameAnimations = Class.extend({
     cardActivatedDuration:1200,
     decisionDuration:1200,
     removeCardFromPlayDuration:600,
+    cardId:null,
+    cardData:null,
 
     init:function (gameUI) {
         this.game = gameUI;
@@ -29,7 +31,7 @@ var GameAnimations = Class.extend({
             if (this.game.spectatorMode || this.game.replayMode || (participantId != this.game.bottomPlayerId)) {
                 $("#main").queue(
                     function (next) {
-                        var cardDiv = $(".card:cardId(" + cardId + ")");
+                        var cardDiv = getCardDivFromId(cardId);
                         if (cardDiv.length > 0) {
                             $(".borderOverlay", cardDiv)
                                 .switchClass("borderOverlay", "highlightBorderOverlay", that.getAnimationLength(that.cardActivatedDuration / 6))
@@ -134,7 +136,7 @@ var GameAnimations = Class.extend({
                             var card = new Card(blueprintId, "ANIMATION", "anim" + i, participantId, imageUrl);
                             var cardDiv = createSimpleCardDiv(card.imageUrl);
 
-                            var targetCard = $(".card:cardId(" + targetCardId + ")");
+                            var targetCard = getCardDivFromId(targetCardId);
                             if (targetCard.length > 0) {
                                 cardDiv.data("card", card);
                                 $("#main").append(cardDiv);
@@ -249,11 +251,8 @@ var GameAnimations = Class.extend({
                 else
                     $("#main").append(cardDiv);
 
-                if (targetCardId != null) {
-                    var targetCardData = $(".card:cardId(" + targetCardId + ")").data("card");
-                    targetCardData.attachedCards.push(cardDiv);
-                }
-
+                if (targetCardId != null)
+                    that.attachCardDivToTargetCardId(cardDiv, targetCardId);
                 next();
             });
 
@@ -269,7 +268,7 @@ var GameAnimations = Class.extend({
 
             $("#main").queue(
                 function (next) {
-                    var cardDiv = $(".card:cardId(" + cardId + ")");
+                    var cardDiv = getCardDivFromId(cardId);
                     var card = cardDiv.data("card");
                     var pos = cardDiv.position();
 
@@ -315,7 +314,7 @@ var GameAnimations = Class.extend({
                     setTimeout(next, that.getAnimationLength(that.putCardIntoPlayDuration * (5 / 8)));
                 }).queue(
                 function (next) {
-                    var cardDiv = $(".card:cardId(" + cardId + ")");
+                    var cardDiv = getCardDivFromId(cardId);
                     var pos = cardDiv.position();
 
                     var startLeft = pos.left;
@@ -340,63 +339,75 @@ var GameAnimations = Class.extend({
                             complete:next});
                 }).queue(
                 function (next) {
-                    var cardDiv = $(".card:cardId(" + cardId + ")");
+                    var cardDiv = getCardDivFromId(cardId);
                     $(cardDiv).css({zIndex:oldValues["zIndex"]});
                     next();
                 });
         }
     },
 
-    moveCardInPlay:function (element, animate) {
+    updateCardImage:function (element) {
+            $("#main").queue(
+                function (next) {
+                    var cardId = element.getAttribute("cardId");
+                    var imageUrl = element.getAttribute("imageUrl");
+                    var cardDiv = getCardDivFromId(cardId);
+                    images = document.getElementsByClassName("card_img_"+cardId);
+                    for (var i = 0; i < images.length; i++) {
+                        images[i].src = imageUrl;
+                    }
+                    if (cardDiv.data("card") != null)
+                        cardDiv.data("card").imageUrl = imageUrl;
+                    next();
+                });
+    },
+
+    moveCardInPlay:function (element) {
         var that = this;
         $("#main").queue(
             function (next) {
-                var cardId = element.getAttribute("cardId");
+                that.cardId = element.getAttribute("cardId");
                 var zone = element.getAttribute("zone");
                 var targetCardId = element.getAttribute("targetCardId");
                 var participantId = element.getAttribute("participantId");
                 var controllerId = element.getAttribute("controllerId");
+                var locationIndex = element.getAttribute("locationIndex");
 
                 if (controllerId != null)
                     participantId = controllerId;
 
-                // Remove from where it was already attached
-                $(".card").each(
-                    function () {
-                        var cardData = $(this).data("card");
-                        var index = -1;
-                        for (var i = 0; i < cardData.attachedCards.length; i++)
-                            if (cardData.attachedCards[i].data("card").cardId == cardId) {
-                                index = i;
-                                break;
-                            }
-                        if (index != -1)
-                            cardData.attachedCards.splice(index, 1);
-                    }
-                );
+                var card = getCardDivFromId(that.cardId);
+                var cardData = card.data("card");
+                    // TODO - This causes a comms error if the card was attached
+                if (cardData.zone == "ATTACHED")
+                                // TODO - Not quite right here
+                    cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
+                else
+                    cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
 
-                var card = $(".card:cardId(" + cardId + ")");
+                // Remove from where it was already attached
+                that.removeFromAttached(that.cardId);
+
+                var card = getCardDivFromId(that.cardId);
                 var cardData = card.data("card");
                 // move to new zone
                 cardData.zone = zone;
                 cardData.owner = participantId;
+                cardData.locationIndex = locationIndex;
+                that.cardData = cardData;
 
-                if (targetCardId != null) {
-                    // attach to new card if it's attached
-                    var targetCardData = $(".card:cardId(" + targetCardId + ")").data("card");
-                    targetCardData.attachedCards.push(card);
-                }
-
+                if (targetCardId != null)
+                    that.attachCardDivToTargetCardId(card, targetCardId);
                 next();
             });
 
-        if (animate) {
             $("#main").queue(
                 function (next) {
-                    that.game.layoutUI(false);
+                    that.game.layoutGroupWithCard(that.cardId);
+                    that.cardData.oldGroup.layoutCards();
+                    that.cardData.oldGroup = null;
                     next();
                 });
-        }
     },
 
     removeCardFromPlay:function (element, animate) {
@@ -422,24 +433,12 @@ var GameAnimations = Class.extend({
             function (next) {
                 for (var i = 0; i < cardRemovedIds.length; i++) {
                     var cardId = cardRemovedIds[i];
-                    var card = $(".card:cardId(" + cardId + ")");
+                    var card = getCardDivFromId(cardId);
 
                     if (card.length > 0) {
                         var cardData = card.data("card");
                         if (cardData.zone == "ATTACHED" || cardData.zone == "STACKED") {
-                            $(".card").each(
-                                function () {
-                                    var cardData = $(this).data("card");
-                                    var index = -1;
-                                    for (var i = 0; i < cardData.attachedCards.length; i++)
-                                        if (cardData.attachedCards[i].data("card").cardId == cardId) {
-                                            index = i;
-                                            break;
-                                        }
-                                    if (index != -1)
-                                        cardData.attachedCards.splice(index, 1);
-                                }
-                            );
+                            removeFromAttached(cardId);
                         }
 
                         card.remove();
@@ -491,13 +490,11 @@ var GameAnimations = Class.extend({
                     else
                         $(this).removeClass("current");
                 });
-//                that.game.advPathGroup.setCurrentPlayerIndex(playerIndex);
                 next();
             });
         if (animate) {
             $("#main").queue(
                 function (next) {
-//                    that.game.advPathGroup.layoutCards();
                     next();
                 });
         }
@@ -586,7 +583,7 @@ var GameAnimations = Class.extend({
                     var playerId = playerScore.getAttribute("name");
                     var score = playerScore.getAttribute("score");
 
-                    $("#score" + that.game.getPlayerIndex(playerId)).text(Number(score).toLocaleString("en-US") + ' Tribbles');
+                    $("#score" + that.game.getPlayerIndex(playerId)).text("SCORE " + Number(score).toLocaleString("en-US"));
                 }
 
 
@@ -681,5 +678,31 @@ var GameAnimations = Class.extend({
                 that.game.layoutUI(true);
                 next();
             });
+    },
+
+    removeFromAttached:function (cardId) {
+            // TODO - This can probably be greatly simplified now that "attachedToCard" has been created, but not messing with it for now
+        $(".card").each(
+            function () {
+                var cardData = $(this).data("card");
+                var index = -1;
+                for (var i = 0; i < cardData.attachedCards.length; i++)
+                    if (cardData.attachedCards[i].data("card").cardId == cardId) {
+                        index = i;
+                        break;
+                    }
+                if (index != -1) {
+                    cardData.attachedCards.splice(index, 1);
+                    getCardDivFromId(cardId).data("card").attachedToCard = null;
+                }
+            }
+        );
+    },
+
+    attachCardDivToTargetCardId(cardDiv, targetCardId) {
+        var targetCardData = getCardDivFromId(targetCardId).data("card");
+        targetCardData.attachedCards.push(cardDiv);
+        cardDiv.data("card").attachedToCard = targetCardData;
     }
+
 });

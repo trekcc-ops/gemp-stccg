@@ -1,17 +1,17 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.results.PlayerWentOutResult;
+import com.gempukku.stccg.actions.PlayerWentOutResult;
 
 import java.util.*;
 
 public class TribblesEndOfRoundGameProcess extends GameProcess {
     private final Map<String, Integer> _pointsScored = new HashMap<>();
     private GameProcess _nextProcess;
-    private TribblesGame _game;
+    private final TribblesGame _game;
     TribblesEndOfRoundGameProcess(TribblesGame game) {
         super();
         _game = game;
@@ -30,11 +30,11 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
                 _pointsScored.put(playerId, score);
                 gameState.addToPlayerScore(playerId, score);
                 gameState.sendMessage(playerId + " went out with " + score + " points");
-                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
+                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 
             // Each player places the cards remaining in their hand into their discard pile.
-            gameState.discardHand(_game, playerId);
+            gameState.discardHand(playerId);
 
             // Each player then shuffles their play pile into their decks.
             gameState.shufflePlayPileIntoDeck(_game, playerId);

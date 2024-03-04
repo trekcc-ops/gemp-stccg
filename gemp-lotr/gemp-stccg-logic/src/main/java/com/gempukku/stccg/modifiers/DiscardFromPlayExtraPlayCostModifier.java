@@ -1,10 +1,10 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.choose.ChooseAndDiscardCardsFromPlayEffect;
+import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromPlayEffect;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.PlayConditions;
 

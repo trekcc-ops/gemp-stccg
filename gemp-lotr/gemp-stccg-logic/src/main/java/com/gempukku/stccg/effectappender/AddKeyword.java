@@ -2,16 +2,15 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.filterable.Keyword;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.TimeResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.defaulteffect.unrespondable.AddUntilModifierEffect;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.modifiers.KeywordModifier;
-import com.gempukku.stccg.rules.GameUtils;
+import com.gempukku.stccg.rules.TextUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -21,24 +20,28 @@ import java.util.function.Function;
 
 public class AddKeyword implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "count", "filter", "memorize", "keyword", "amount", "until");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject,
+                "count", "filter", "memorize", "keyword", "amount", "until");
 
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
-        final String memory = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
-        final String keywordString = FieldUtils.getString(effectObject.get("keyword"), "keyword");
+        final ValueSource valueSource =
+                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final String filter = environment.getString(effectObject.get("filter"), "filter");
+        final String memory = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final String keywordString = environment.getString(effectObject.get("keyword"), "keyword");
         final TimeResolver.Time until = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
 
         Function<ActionContext, Keyword> keywordFunction;
         ValueSource amount;
         if (keywordString.startsWith("fromMemory(") && keywordString.endsWith(")")) {
-            String keywordMemory = keywordString.substring(keywordString.indexOf("(") + 1, keywordString.lastIndexOf(")"));
+            String keywordMemory =
+                    keywordString.substring(keywordString.indexOf("(") + 1, keywordString.lastIndexOf(")"));
             keywordFunction = actionContext -> Keyword.valueOf(actionContext.getValueFromMemory(keywordMemory));
-            amount = new ConstantEvaluator(1);
+            amount = new ConstantValueSource(1);
         } else {
             final String[] keywordSplit = keywordString.split("\\+");
-            Keyword keyword = FieldUtils.getEnum(Keyword.class, keywordSplit[0], "keyword");
+            Keyword keyword = environment.getEnum(Keyword.class, keywordSplit[0], "keyword");
             keywordFunction = (actionContext) -> keyword;
             int value = 1;
             if (keywordSplit.length == 2)
@@ -49,24 +52,26 @@ public class AddKeyword implements EffectAppenderProducer {
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(
-                CardResolver.resolveCards(filter, valueSource, memory, "you", "Choose cards to add keyword to", environment));
+        result.addEffectAppender(CardResolver.resolveCards(filter, valueSource, memory, "you",
+                "Choose cards to add keyword to", environment));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override
                     protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         List<Effect> result = new LinkedList<>();
-                        final Collection<? extends PhysicalCard> cardsFromMemory = actionContext.getCardsFromMemory(memory);
+                        final Collection<? extends PhysicalCard> cardsFromMemory =
+                                actionContext.getCardsFromMemory(memory);
                         for (PhysicalCard physicalCard : cardsFromMemory) {
-                            final int keywordCount = amount.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), physicalCard);
+                            final int keywordCount = amount.evaluateExpression(actionContext, physicalCard);
                             result.add(new AddUntilModifierEffect(actionContext.getGame(),
-                                    new KeywordModifier(actionContext.getSource(), physicalCard, keywordFunction.apply(actionContext), keywordCount), until));
+                                    new KeywordModifier(actionContext, physicalCard,
+                                            keywordFunction.apply(actionContext), keywordCount), until));
                         }
 
                         actionContext.getGameState().sendMessage(
                                 actionContext.getSource().getCardLink()
                                         + " adds " + keywordFunction.apply(actionContext).getHumanReadableGeneric()
-                                        + " to " + GameUtils.getConcatenatedCardLinks(cardsFromMemory)
+                                        + " to " + TextUtils.getConcatenatedCardLinks(cardsFromMemory)
                                         + " until " + until.getHumanReadable());
                         return result;
                     }

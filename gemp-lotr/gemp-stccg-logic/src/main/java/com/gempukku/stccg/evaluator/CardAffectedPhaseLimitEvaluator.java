@@ -2,14 +2,14 @@ package com.gempukku.stccg.evaluator;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.LimitCounter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CardAffectedPhaseLimitEvaluator implements Evaluator {
+public class CardAffectedPhaseLimitEvaluator extends Evaluator {
     private final Map<Integer, Integer> _evaluatedForCard = new HashMap<>();
 
     private final String prefix;
@@ -18,12 +18,11 @@ public class CardAffectedPhaseLimitEvaluator implements Evaluator {
     private final PhysicalCard _source;
     private final Phase _phase;
     private final int limit;
-    private final DefaultGame _game;
 
     public CardAffectedPhaseLimitEvaluator(ActionContext context, int limit, String prefix, Evaluator evaluator) {
+        super(context);
         _source = context.getSource();
         _phase = context.getGameState().getCurrentPhase();
-        _game = context.getGame();
         this.limit = limit;
         this.prefix = prefix;
         this.evaluator = evaluator;

@@ -1,0 +1,19 @@
+// Set 124: The Borg
+
+{
+    124_117: {
+        title: Thenelak
+        type: personnel
+        affiliation: romulan
+        uniqueness: universal
+        property-logo: voy-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Romulan female who assisted in the capture of U.S.S. Prometheus. Majored in warp theory at an academy located on a colony world 31 light-years from Romulus.
+        skill-box: "[*] Physics"
+        integrity: 5
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/borg/thenelak.jpg
+    }
+}

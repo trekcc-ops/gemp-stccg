@@ -1,38 +1,15 @@
 // Set 123: Voyager
 
 {
-    123_082: {
-        title: Assist Cooperative
-        type: mission
-        region: Nekrit Expanse
-        location: Factionalized colony
-        quadrant: delta
-        affiliation-icons: non-aligned
-        mission-type: planet
-        lore: Help group of former Borg to unite and end anarchy.
-        image-url: https://www.trekcc.org/1e/cardimages/voy/assistcooperative.jpg
-    }
-    123_083: {
-        title: Catalog Phenomena
-        type: mission
-        region: Nekrit Expanse
-        location: Plasma storm
-        uniqueness: universal
-        quadrant: delta
-        affiliation-icons: any
-        mission-type: space
-        lore: Map dust clouds and other hazards in the Expanse.
-        image-url: https://www.trekcc.org/1e/cardimages/voy/catalogphenomena.jpg
-    }
     123_193: {
         title: U.S.S. Intrepid
         type: ship
         affiliation: federation
-        property-logo: voy
+        property-logo: voy-logo
         ship-class: INTREPID CLASS
         uniqueness: universal
         lore: Prototype introduced in the early 2370s. Its bio-neural circuits respond faster than optical relays. Average crew complement of 140. Capable of a sustained warp 9.975.
-        staffing: command staff
+        staffing: command,staff
         gametext: Holodeck, Tractor Beam
         range: 8
         weapons: 7

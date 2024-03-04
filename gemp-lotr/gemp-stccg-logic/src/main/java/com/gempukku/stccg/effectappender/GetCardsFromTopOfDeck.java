@@ -1,11 +1,14 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.FilterableSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,24 +19,24 @@ import java.util.List;
 
 public class GetCardsFromTopOfDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "filter", "memorize");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "filter", "memorize");
 
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize");
-
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+        final FilterableSource filterableSource = environment.getFilterable(effectObject);
+        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                DefaultGame game = actionContext.getGame();
-                final Filterable filterable = filterableSource.getFilterable(actionContext);
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                DefaultGame game = context.getGame();
+                final Filterable filterable = filterableSource.getFilterable(context);
                 final Filter acceptFilter = Filters.and(filterable);
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect() {
-                        final List<? extends PhysicalCard> deck = game.getGameState().getDrawDeck(actionContext.getPerformingPlayer());
+                        final List<? extends PhysicalCard> deck =
+                                game.getGameState().getDrawDeck(context.getPerformingPlayerId());
                         List<PhysicalCard> result = new LinkedList<>();
                         for (PhysicalCard physicalCard : deck) {
                             if (acceptFilter.accepts(game, physicalCard))
@@ -42,7 +45,7 @@ public class GetCardsFromTopOfDeck implements EffectAppenderProducer {
                                 break;
                         }
 
-                        actionContext.setCardMemory(memorize, result);
+                        context.setCardMemory(memorize, result);
                     }
                 };
             }

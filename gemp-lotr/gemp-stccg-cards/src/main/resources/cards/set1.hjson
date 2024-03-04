@@ -1,0 +1,70 @@
+// Set 1: Second Edition
+
+{
+    1_251: {
+        title: Altman
+        affiliation: federation
+        cost: 1
+        species: Human
+        icons: staff, ds9-icon
+        skills2e: "[*] Biology [*] Engineer [*] Transporters"
+        lore: The engineering staff of Deep Space 9 is faced with the constant challenge of making Starfleet, Cardassian, and Bajoran technology work together.
+        integrity: 6
+        cunning: 5
+        strength: 5
+        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01251.jpg
+    }
+    1_265: {
+        title: Hoya
+        affiliation: federation
+        cost: 1
+        species: Benzite
+        icons: staff, ds9-icon
+        skills2e: "[*] Astrometrics [*] Navigation [*] Officer"
+        lore: Within a decade of the first Benzite joining Starfleet, many others enlisted. Advances in medical technology made it possible for Benzites to breathe in an oxygen-rich atmosphere without a respiration device.
+        integrity: 6
+        cunning: 5
+        strength: 4
+        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01265.jpg
+    }
+    1_278: {
+        title: Mills
+        affiliation: federation
+        cost: 1
+        species: Human
+        icons: staff, ds9-icon
+        skills2e: "[*] Geology [*] Physics [*] Security"
+        lore: Although there was some initial friction, Starfleet and Bajoran security forces aboard Deep Space 9 were soon working together smoothly.
+        integrity: 6
+        cunning: 5
+        strength: 6
+        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01278.jpg
+    }
+    1_284: {
+        title: "T'Lara"
+        affiliation: federation
+        cost: 2
+        species: Vulcan
+        icons: command, earth
+        skills2e: "[*] Exobiology [*] Law [*] Leadership [*] Officer"
+        lore: "\"This hearing will come to order. We are here to consider the request of the Klingon Empire that Lieutenant Commander Worf be extradited for trial on charges of murder. Advocate Ch'Pok, you may present your charges.\""
+        keyword: admiral
+        integrity: 6
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01284.jpg
+    }
+    1_393: {
+        title: U.S.S. Excelsior
+        affiliation: federation
+        cost: 4
+        staffing: staff,staff,staff
+        ship-class: EXCELSIOR CLASS
+        icons: earth
+        lore: "Although the transwarp drive experiment of the late 23rd century was a failure, the design of the ship itself was one of Starfleet’s greatest successes. New Excelsior-class ships were still being constructed over 75 years later."
+        range: 8
+        weapons: 7
+        shields: 7
+        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01393.jpg
+    }
+}

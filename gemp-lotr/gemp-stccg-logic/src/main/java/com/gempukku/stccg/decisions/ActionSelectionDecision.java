@@ -2,7 +2,7 @@ package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;

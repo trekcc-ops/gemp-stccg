@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at.effects;
 
 import com.gempukku.stccg.at.AbstractAtTest;
-import com.gempukku.stccg.cards.PhysicalCardGeneric;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import org.junit.Test;

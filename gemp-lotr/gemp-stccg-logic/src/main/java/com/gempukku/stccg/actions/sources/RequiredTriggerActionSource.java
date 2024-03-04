@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.sources;
 
 import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.common.filterable.RequiredType;
 

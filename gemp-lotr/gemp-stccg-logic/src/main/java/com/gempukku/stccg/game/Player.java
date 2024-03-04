@@ -1,12 +1,15 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class Player {
@@ -16,6 +19,8 @@ public class Player {
     private int _score;
     private final Set<Affiliation> _playedAffiliations;
     private final DefaultGame _game;
+    private final List<PhysicalCard> _cardsSeeded = new LinkedList<>();
+    private final List<PhysicalMissionCard> _solvedMissions = new LinkedList<>();
 
     public Player(DefaultGame game, String playerId) {
         _playerId = playerId;
@@ -69,10 +74,14 @@ public class Player {
 
     public boolean hasACopyOfCardInPlay(PhysicalCard card) {
         for (PhysicalCard cardInPlay : _game.getGameState().getAllCardsInPlay()) {
-            if (cardInPlay.getBlueprint() == card.getBlueprint() && cardInPlay.getOwner() == this)
+            if (cardInPlay.isCopyOf(card) && cardInPlay.getOwner() == this)
                 return true;
         }
         return false;
     }
 
+    public List<PhysicalCard> getCardsSeeded() { return _cardsSeeded; }
+    public void addCardSeeded(PhysicalCard card) { _cardsSeeded.add(card); }
+    public void addSolvedMission(PhysicalMissionCard card) { _solvedMissions.add(card); }
+    public List<PhysicalMissionCard> getSolvedMissions() { return _solvedMissions; }
 }

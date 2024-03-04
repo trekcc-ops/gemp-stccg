@@ -1,6 +1,6 @@
 package com.gempukku.stccg.decisions;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.*;
 

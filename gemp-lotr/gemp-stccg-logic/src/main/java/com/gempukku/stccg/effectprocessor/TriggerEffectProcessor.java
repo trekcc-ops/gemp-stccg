@@ -1,11 +1,11 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.sources.*;
-import com.gempukku.stccg.cards.BuiltCardBlueprint;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.common.filterable.ActionLimitType;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
 
@@ -13,15 +13,17 @@ import java.util.Objects;
 
 public class TriggerEffectProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment)
+    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "trigger", "optional", "requires", "cost", "effect", "text");
+        environment.validateAllowedFields(value, "trigger", "optional", "requires", "cost", "effect", "text", "limit");
 
-        final String text = FieldUtils.getString(value.get("text"), "text", "");
-        final JSONObject[] triggerArray = FieldUtils.getObjectArray(value.get("trigger"), "trigger");
+        final String text = environment.getString(value.get("text"), "text", "");
+        final JSONObject[] triggerArray = environment.getObjectArray(value.get("trigger"), "trigger");
         if (triggerArray.length == 0)
             throw new InvalidCardDefinitionException("Trigger effect without trigger definition");
-        final boolean optional = FieldUtils.getBoolean(value.get("optional"), "optional", false);
+        final boolean optional = environment.getBoolean(value.get("optional"), "optional", false);
+        final ActionLimitType limitType = environment.getEnum(
+                ActionLimitType.class, environment.getString(value.get("limit"), "limit", "unlimited"));
 
         for (JSONObject trigger : triggerArray) {
             TriggerChecker triggerChecker = environment.getTriggerCheckerFactory().getTriggerChecker(trigger, environment);
@@ -32,7 +34,7 @@ public class TriggerEffectProcessor implements EffectProcessor {
             TriggerActionSource triggerActionSource;
 
             if (optional) {
-                triggerActionSource = new OptionalTriggerActionSource(triggerTiming);
+                triggerActionSource = new OptionalTriggerActionSource(triggerTiming, limitType);
             } else {
                 triggerActionSource = new RequiredTriggerActionSource(triggerTiming);
             }
@@ -40,8 +42,8 @@ public class TriggerEffectProcessor implements EffectProcessor {
             if (!Objects.equals(text, "")) {
                 triggerActionSource.setText(text);
             }
-            triggerActionSource.addPlayRequirement(triggerChecker);
-            EffectUtils.processRequirementsCostsAndEffects(value, environment, triggerActionSource);
+            triggerActionSource.addRequirement(triggerChecker);
+            triggerActionSource.processRequirementsCostsAndEffects(value, environment);
             blueprint.appendBeforeOrAfterTrigger(triggerActionSource);
         }
     }

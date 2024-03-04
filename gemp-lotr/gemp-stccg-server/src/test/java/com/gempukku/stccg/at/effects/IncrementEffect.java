@@ -1,7 +1,7 @@
 package com.gempukku.stccg.at.effects;
 
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
+
+import com.gempukku.stccg.actions.UnrespondableEffect;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

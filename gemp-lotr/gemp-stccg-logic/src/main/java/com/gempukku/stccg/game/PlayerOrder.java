@@ -26,7 +26,7 @@ public class PlayerOrder {
         return Collections.unmodifiableList(_turnOrder);
     }
 
-    public PlayOrder getCounterClockwisePlayOrder(String startingPlayerId, boolean looped) {
+    public ActionOrder getCounterClockwisePlayOrder(String startingPlayerId, boolean looped) {
         int currentPlayerIndex = _turnOrder.indexOf(startingPlayerId);
         List<String> playOrder = new ArrayList<>();
         int nextIndex = currentPlayerIndex;
@@ -36,10 +36,10 @@ public class PlayerOrder {
             if (nextIndex < 0)
                 nextIndex = _turnOrder.size() - 1;
         } while (currentPlayerIndex != nextIndex);
-        return new PlayOrder(playOrder, looped);
+        return new ActionOrder(playOrder, looped);
     }
 
-    public PlayOrder getClockwisePlayOrder(String startingPlayerId, boolean looped) {
+    public ActionOrder getClockwisePlayOrder(String startingPlayerId, boolean looped) {
         int currentPlayerIndex = _turnOrder.indexOf(startingPlayerId);
         List<String> playOrder = new ArrayList<>();
         int nextIndex = currentPlayerIndex;
@@ -49,10 +49,10 @@ public class PlayerOrder {
             if (nextIndex == _turnOrder.size())
                 nextIndex = 0;
         } while (currentPlayerIndex != nextIndex);
-        return new PlayOrder(playOrder, looped);
+        return new ActionOrder(playOrder, looped);
     }
 
-    public PlayOrder getStandardPlayOrder(String startingPlayerId, boolean looped) {
+    public ActionOrder getStandardPlayOrder(String startingPlayerId, boolean looped) {
         if (!_isReversed) {
             return getClockwisePlayOrder(startingPlayerId, looped);
         } else {

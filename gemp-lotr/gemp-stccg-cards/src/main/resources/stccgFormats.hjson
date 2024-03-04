@@ -4,17 +4,25 @@
       code: debug
       sites: SPECIAL
       maximumSameName: 100
-      set:[101, 103, 105, 116, 123, 127, 128, 135, 144, 145, 146, 147, 150, 155, 157, 159, 161, 164, 180, 190, 221, 244, 245]
+      set:[1, 101, 103, 105, 106, 109, 112, 116, 123, 124, 125, 127, 128, 144, 145, 146, 147, 150, 155, 157, 159, 161, 163, 164, 172, 178, 180, 190, 202, 204, 212, 221, 244, 245]
       hall:false
     }
     {
         name: "1E Modern Complete"
         game: st1e
         code: st1emoderncomplete
-        set:[101, 103, 105, 116, 123, 127, 128, 135, 155, 159, 161, 244, 245]
+        set:[101, 103, 105, 106, 109, 112, 116, 123, 124, 125, 127, 128, 155, 159, 161, 163, 172, 178, 202, 204, 212, 244, 245]
         minimumDrawDeckSize: 30
         maximumSeedDeckSize: 30
         missions: 6
+    }
+    {
+        name: "2E All"
+        game: st2e
+        code: st2e
+        set:[1]
+        minimumDrawDeckSize: 30
+        missions: 5
     }
     {
         name: Tribbles

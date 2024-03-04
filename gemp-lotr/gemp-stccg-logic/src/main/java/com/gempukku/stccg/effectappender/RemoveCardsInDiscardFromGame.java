@@ -1,24 +1,27 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.RemoveCardsFromZoneEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.RemoveCardsFromZoneEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class RemoveCardsInDiscardFromGame implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "count", "filter");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "count", "filter");
 
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
 
         MultiEffectAppender result = new MultiEffectAppender();
 
@@ -27,9 +30,9 @@ public class RemoveCardsInDiscardFromGame implements EffectAppenderProducer {
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                        final Collection<PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
-                        return new RemoveCardsFromZoneEffect(actionContext, cards, Zone.DISCARD);
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                        final Collection<PhysicalCard> cards = context.getCardsFromMemory("_temp");
+                        return new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD);
                     }
                 });
 

@@ -5,10 +5,10 @@
         title: U.S.S. Drake
         type: ship
         affiliation: federation
-        property-logo: tng
+        property-logo: tng-logo
         ship-class: WAMBUNDU CLASS
         lore: Starfleet vessel, registry NCC-20381. In 2364, was assigned a routine mission of exploration in and around the Lorenze Cluster under the command of Paul Rice.
-        staffing: command staff
+        staffing: command,staff
         gametext: Holodeck, Tractor Beam
         range: 7
         weapons: 8

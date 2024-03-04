@@ -1,8 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 
 public class CantBeTransferredModifier extends AbstractModifier {
@@ -12,7 +11,7 @@ public class CantBeTransferredModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean canBeTransferred(DefaultGame game, PhysicalCard attachment) {
+    public boolean canBeTransferred(PhysicalCard attachment) {
         return false;
     }
 }

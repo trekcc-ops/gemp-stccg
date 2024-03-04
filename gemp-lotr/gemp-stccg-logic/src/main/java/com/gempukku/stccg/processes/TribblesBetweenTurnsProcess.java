@@ -1,7 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.PlayOrder;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
@@ -16,15 +16,15 @@ public class TribblesBetweenTurnsProcess extends GameProcess {
     public void process() {
         TribblesGameState gameState = _game.getGameState();
         _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
-        PlayOrder playOrder = gameState.getPlayerOrder().getStandardPlayOrder(gameState.getCurrentPlayerId(), false);
+        ActionOrder actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(gameState.getCurrentPlayerId(), false);
 
-        playOrder.getNextPlayer(); // TODO: This call is necessary but not logical
-        String currentPlayer = playOrder.getNextPlayer();
+        actionOrder.getNextPlayer(); // TODO: This call is necessary but not logical
+        String currentPlayer = actionOrder.getNextPlayer();
 
         while (_game.getGameState().getPlayerDecked(currentPlayer)) {
             _game.getGameState().sendMessage(currentPlayer + " is decked. Skipping their turn.");
-            playOrder = gameState.getPlayerOrder().getStandardPlayOrder(currentPlayer, false);
-            currentPlayer = playOrder.getNextPlayer();
+            actionOrder = gameState.getPlayerOrder().getStandardPlayOrder(currentPlayer, false);
+            currentPlayer = actionOrder.getNextPlayer();
         }
 
         _game.getGameState().startPlayerTurn(currentPlayer);

@@ -1,15 +1,14 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.TransferPermanentEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.TransferPermanentEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import org.json.simple.JSONObject;
@@ -20,14 +19,14 @@ import java.util.List;
 
 public class Transfer implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "filter", "where", "checkTarget", "memorizeTransferred", "memorizeTarget");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "filter", "where", "checkTarget", "memorizeTransferred", "memorizeTarget");
 
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter");
-        final String where = FieldUtils.getString(effectObject.get("where"), "where");
-        final boolean checkTarget = FieldUtils.getBoolean(effectObject.get("checkTarget"), "checkTarget", false);
-        final String memorizeTransferred = FieldUtils.getString(effectObject.get("memorizeTransferred"), "memorizeTransferred", "_temp1");
-        final String memorizeTarget = FieldUtils.getString(effectObject.get("memorizeTarget"), "memorizeTarget", "_temp2");
+        final String filter = environment.getString(effectObject.get("filter"), "filter");
+        final String where = environment.getString(effectObject.get("where"), "where");
+        final boolean checkTarget = environment.getBoolean(effectObject.get("checkTarget"), "checkTarget", false);
+        final String memorizeTransferred = environment.getString(effectObject.get("memorizeTransferred"), "memorizeTransferred", "_temp1");
+        final String memorizeTarget = environment.getString(effectObject.get("memorizeTarget"), "memorizeTarget", "_temp2");
 
         MultiEffectAppender result = new MultiEffectAppender();
 

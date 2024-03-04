@@ -1,11 +1,14 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.FilterableSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import org.json.simple.JSONObject;
@@ -16,31 +19,31 @@ import java.util.List;
 
 public class MemorizeStacked implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "filter", "on", "memory");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "filter", "on", "memory");
 
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "any");
-        final String on = FieldUtils.getString(effectObject.get("on"), "on");
-        final String memory = FieldUtils.getString(effectObject.get("memory"), "memory");
+        final String filter = environment.getString(effectObject.get("filter"), "filter", "any");
+        final String on = environment.getString(effectObject.get("on"), "on");
+        final String memory = environment.getString(effectObject.get("memory"), "memory");
 
-        final FilterableSource filterSource = environment.getFilterFactory().generateFilter(filter, environment);
-        final FilterableSource onFilterSource = environment.getFilterFactory().generateFilter(on, environment);
+        final FilterableSource filterSource = environment.getFilterFactory().generateFilter(filter);
+        final FilterableSource onFilterSource = environment.getFilterFactory().generateFilter(on);
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 return new UnrespondableEffect() {
                     @Override
                     protected void doPlayEffect() {
-                        DefaultGame game = actionContext.getGame();
-                        final Filterable filterable = filterSource.getFilterable(actionContext);
-                        final Filterable onFilterable = onFilterSource.getFilterable(actionContext);
+                        DefaultGame game = context.getGame();
+                        final Filterable filterable = filterSource.getFilterable(context);
+                        final Filterable onFilterable = onFilterSource.getFilterable(context);
                         final Collection<PhysicalCard> cardsWithStack = Filters.filterActive(game, onFilterable);
 
                         List<PhysicalCard> cardsToMemorize = new LinkedList<>();
                         for (PhysicalCard cardWithStack : cardsWithStack)
                             cardsToMemorize.addAll(Filters.filter(cardWithStack.getStackedCards(), game, filterable));
-                        actionContext.setCardMemory(memory, cardsToMemorize);
+                        context.setCardMemory(memory, cardsToMemorize);
                     }
                 };
             }

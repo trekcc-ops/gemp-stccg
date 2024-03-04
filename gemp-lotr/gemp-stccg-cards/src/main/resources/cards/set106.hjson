@@ -1,0 +1,76 @@
+// Set 106: Introductory 2-Player Game
+
+{
+    106_002: {
+        title: A Good Place to Die
+        type: mission
+        location: Halee System
+        lore: 'Study harsh planet where Klingon criminals are exiled "to die on their feet with honor."'
+        mission-type: planet
+        affiliation-icons: klingon
+        mission-requirements: Physics + STRENGTH>33 OR Biology + Honor
+        point-box: 25
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/agoodplacetodie.gif
+    }
+    106_003: {
+        title: Avert Danger
+        type: mission
+        location: Moab IV
+        lore: Aid colony threatened with destruction by a stellar core fragment.
+        mission-type: planet
+        affiliation-icons: federation,klingon
+        mission-requirements: Stellar Cartography + CUNNING>35 OR Astrophysics + CUNNING>35
+        point-box: 30
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/avertdanger.gif
+    }
+    106_004: {
+        title: Cargo Rendezvous
+        type: mission
+        location: Beltane IX
+        lore: Appointed meeting to deliver cargo at this major commercial center.
+        mission-type: planet
+        affiliation-icons: federation,romulan,klingon
+        mission-requirements: ENGINEER + Physics + INTEGRITY>30 OR Greed + Treachery + CUNNING>32
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Cargo-Rendezvous.jpg
+    }
+    106_005: {
+        title: Distress Mission
+        type: mission
+        location: Ligos VII
+        lore: Respond to distress call and beware of Ferengi activity in this sector.
+        mission-type: planet
+        affiliation-icons: federation,klingon
+        mission-requirements: Youth x3 + CUNNING>32 OR Honor x3 + STRENGTH>36
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/263VP.jpg
+    }
+    106_010: {
+        title: Reopen Dig
+        type: mission
+        location: Denius III
+        lore: Revive excavation and seek rumored clues to Iconian artifacts.
+        mission-type: planet
+        affiliation-icons: klingon
+        mission-requirements: Archaeology + OFFICER x2
+        point-box: 25
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/errata/ReopenDig.jpg
+    }
+    106_011: {
+        title: Reported Activity
+        type: mission
+        location: Xendi Sabu
+        lore: Probe reports of mysterious Ferengi activity in this sector.
+        mission-type: planet
+        affiliation-icons: federation,klingon
+        mission-requirements: Navigation + Honor x2 OR Navigation + ENGINEER x2
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Reported-Activity.jpg
+    }
+}

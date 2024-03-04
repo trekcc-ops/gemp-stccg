@@ -1,24 +1,28 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class MultiplyEvaluator implements Evaluator {
+public class MultiplyEvaluator extends Evaluator {
     private final Evaluator _source;
     private final Evaluator _multiplier;
+    private final DefaultGame _game;
 
-    public MultiplyEvaluator(Evaluator multiplier, Evaluator source) {
+    public MultiplyEvaluator(ActionContext context, Evaluator multiplier, Evaluator source) {
+        super(context);
         _multiplier = multiplier;
+        _game = context.getGame();
         _source = source;
     }
 
-    public MultiplyEvaluator(int multiplier, Evaluator source) {
-        _multiplier = new ConstantEvaluator(multiplier);
-        _source = source;
+    public MultiplyEvaluator(ActionContext context, int multiplier, Evaluator source) {
+        this(context, new ConstantValueSource(multiplier).getEvaluator(context), source);
     }
 
     @Override
     public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        return _multiplier.evaluateExpression(game, self) * _source.evaluateExpression(game, self);
+        return _multiplier.evaluateExpression(_game, self) * _source.evaluateExpression(_game, self);
     }
 }

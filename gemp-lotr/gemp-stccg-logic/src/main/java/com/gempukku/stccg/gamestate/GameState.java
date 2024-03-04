@@ -1,12 +1,15 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardState;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.PlayerOrder;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,19 +18,19 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class GameState {
+public abstract class GameState implements Snapshotable<GameState> {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     protected PlayerOrder _playerOrder;
-    protected GameFormat _format;
-    protected Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
+    protected final GameFormat _format;
+    protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
 
     protected final Map<String, Player> _players = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
 
     protected final List<PhysicalCard> _inPlay = new LinkedList<>();
 
-    private final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
+    protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
 
     protected String _currentPlayerId;
     protected Phase _currentPhase;
@@ -41,8 +44,10 @@ public abstract class GameState {
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
     protected final Map<String, CardDeck> _decks;
     protected final CardBlueprintLibrary _library;
+    private final Stack<PlayCardState> _playCardState = new Stack<>();
 
     protected int _nextCardId = 0;
+    private final Map<String, Integer> _turnNumbers = new HashMap<>();
 
     public GameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
                      GameFormat format, DefaultGame game) {
@@ -61,6 +66,7 @@ public abstract class GameState {
         for (String playerId : players) {
             cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
             _players.put(playerId, new Player(game, playerId));
+            _turnNumbers.put(playerId, 0);
         }
     }
 
@@ -117,9 +123,9 @@ public abstract class GameState {
         return _playerOrder;
     }
 
-    public void addGameStateListener(String playerId, GameStateListener gameStateListener, GameStats gameStats) {
+    public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
         _gameStateListeners.add(gameStateListener);
-        sendStateToPlayer(playerId, gameStateListener);
+        sendGameStateToClient(playerId, gameStateListener, false);
     }
 
     public void removeGameStateListener(GameStateListener gameStateListener) {
@@ -130,11 +136,16 @@ public abstract class GameState {
         return Collections.unmodifiableSet(_gameStateListeners);
     }
 
+    public void sendStateToAllListeners() {
+        for (GameStateListener gameStateListener : _gameStateListeners)
+            sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
+    }
+
     protected String getPhaseString() {
         return _currentPhase.getHumanReadable();
     }
 
-    protected void sendStateToPlayer(String playerId, GameStateListener listener) {
+    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         if (_playerOrder != null) {
             listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
             if (_currentPlayerId != null) listener.setCurrentPlayerId(_currentPlayerId);
@@ -150,7 +161,7 @@ public abstract class GameState {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
                     if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        listener.putCardIntoPlay(physicalCard);
+                        listener.putCardIntoPlay(physicalCard, restoreSnapshot);
                         sentCardsFromPlay.add(physicalCard);
                         cardIterator.remove();
                     }
@@ -161,7 +172,9 @@ public abstract class GameState {
             _stacked.values().forEach(cardsPutIntoPlay::addAll);
             cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
             cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
-            cardsPutIntoPlay.forEach(listener::putCardIntoPlay);
+            for (PhysicalCard physicalCard : cardsPutIntoPlay) {
+                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+            }
 
             listener.sendGameStats(getGame().getTurnProcedure().getGameStats());
         }
@@ -253,6 +266,12 @@ public abstract class GameState {
         removeCardsFromZone(card.getOwnerName(), Collections.singleton(card));
     }
 
+    public void moveCard(PhysicalCard card) {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.cardMoved(card);
+    }
+
+
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
             List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
@@ -304,11 +323,11 @@ public abstract class GameState {
 
     public void addCardToZone(PhysicalCard card, Zone zone, boolean end, GameEvent.Type eventType) {
         if (zone == Zone.DISCARD &&
-                getGame().getModifiersQuerying().hasFlagActive(getGame(), ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
+                getGame().getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
 
         if (zone.isInPlay()) {
-            assignNewCardId(card);
+//            assignNewCardId(card); // Possibly it was a mistake commenting this out, but I'm pretty sure we should keep cardId permanent
             _inPlay.add(card);
         }
 
@@ -336,10 +355,11 @@ public abstract class GameState {
     }
 
     void assignNewCardId(PhysicalCard card) {
-        _allCards.remove(card.getCardId());
+            // This function shouldn't be called if cardId is final
+/*        _allCards.remove(card.getCardId());
         int newCardId = _nextCardId++;
         card.setCardId(newCardId);
-        _allCards.put(newCardId, card);
+        _allCards.put(newCardId, card); */
     }
 
     public void shuffleCardsIntoDeck(Collection<? extends PhysicalCard> cards, String playerId) {
@@ -419,6 +439,7 @@ public abstract class GameState {
 
     public void startPlayerTurn(String playerId) {
         _playerOrder.setCurrentPlayer(playerId);
+        incrementCurrentTurnNumber();
         getAllGameStateListeners().forEach(listener -> listener.setCurrentPlayerId(playerId));
     }
 
@@ -488,11 +509,7 @@ public abstract class GameState {
         }
     }
 
-    public void playerDrawsCard(String player) {
-        playerDrawsCard(null, player);
-    }
-
-    public void playerDrawsCard(DefaultGame game, String playerId) {
+    public void playerDrawsCard(String playerId) {
         List<PhysicalCard> deck = _cardGroups.get(Zone.DRAW_DECK).get(playerId);
         if (!deck.isEmpty()) {
             PhysicalCard card = deck.get(0);
@@ -528,11 +545,82 @@ public abstract class GameState {
     public Player getPlayer(String playerId) { return _players.get(playerId); }
     public Collection<Player> getPlayers() { return _players.values(); }
 
-    public void discardHand(DefaultGame game, String playerId) {
+    public void discardHand(String playerId) {
         List<PhysicalCard> hand = new LinkedList<>(getHand(playerId));
         removeCardsFromZone(playerId, hand);
         for (PhysicalCard card : hand) {
             addCardToZone(card, Zone.DISCARD);
         }
+    }
+
+    public Player getCurrentPlayer() { return getPlayer(getCurrentPlayerId()); }
+
+    //
+    // Play card state info
+    //
+    public void beginPlayCard(PlayCardAction action) {
+            // TODO SNAPSHOT - Should be called at the beginning of every play card action
+        int id = _playCardState.size();
+        _playCardState.push(new PlayCardState(id, action));
+    }
+
+    /**
+     * Gets the top play card state, or the 2nd to top play card state if the source card is the top.
+     * @param sourceCardToSkip the sourceCard of the top play card state to skip, or null
+     * @return the current top play card state, or null
+     */
+    public PlayCardState getTopPlayCardState(PhysicalCard sourceCardToSkip) {
+            // TODO SNAPSHOT - SWCCG calls this function in filters and for a few blueprints
+        if (_playCardState.isEmpty())
+            return null;
+
+        PlayCardState topPlayCardState = _playCardState.peek();
+        if (sourceCardToSkip != null
+                && topPlayCardState != null
+                && topPlayCardState.getPlayCardAction().getCardEnteringPlay().getCardId() ==
+                sourceCardToSkip.getCardId()) {
+            int numPlayCardStates = _playCardState.size();
+            return (numPlayCardStates > 1 ? _playCardState.subList(numPlayCardStates - 2, numPlayCardStates - 1).get(0) : null);
+        }
+        return topPlayCardState;
+    }
+
+    /**
+     * Gets all the play card states.
+     * @return the play card states
+     */
+    public List<PlayCardState> getPlayCardStates() { // TODO SNAPSHOT - Should be called by ModifiersLogic
+        if (_playCardState.isEmpty())
+            return Collections.emptyList();
+
+        return _playCardState.subList(0, _playCardState.size());
+    }
+
+    public void endPlayCard() { // TODO SNAPSHOT - Should be called at end of every PlayCardAction
+            // TODO - Fairly sure this would be more appropriate as part of the Action, i.e. initiation, results, etc.
+        PlayCardState state = getTopPlayCardState(null);
+        if (state == null) {
+            return;
+        }
+        PlayCardAction action = state.getPlayCardAction();
+            // TODO SNAPSHOT - Review against SWCCG algorithm for PlayCardActions
+/*        getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getPlayedCard());
+        if (action.getOtherPlayedCard() != null) {
+            getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getOtherPlayedCard());
+        } */
+        _playCardState.pop();
+    }
+
+    public void incrementCurrentTurnNumber() {
+        _turnNumbers.put(getCurrentPlayerId(), _turnNumbers.get(getCurrentPlayerId())+1);
+    }
+
+    public int getPlayersLatestTurnNumber(String playerId) {
+        return _turnNumbers.get(playerId);
+    }
+
+    @Override
+    public void generateSnapshot(GameState selfSnapshot, SnapshotData snapshotData) {
+            // TODO SNAPSHOT - Add content here
     }
 }

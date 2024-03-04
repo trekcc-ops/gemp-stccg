@@ -1,15 +1,15 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.SystemQueueAction;
-import com.gempukku.stccg.effects.TriggeringResultEffect;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
+import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.turn.StartOfTurnResult;
+import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.results.StartOfTurnResult;
 
 public class TribblesStartOfTurnGameProcess extends GameProcess {
     private GameProcess _followingGameProcess;
-    private TribblesGame _game;
+    private final TribblesGame _game;
     public TribblesStartOfTurnGameProcess(TribblesGame game) {
         _game = game;
     }
@@ -28,7 +28,7 @@ public class TribblesStartOfTurnGameProcess extends GameProcess {
         });
 
         action.appendEffect(
-                new TriggeringResultEffect(_game, new StartOfTurnResult(), "Start of turn"));
+                new TriggeringResultEffect(_game, new StartOfTurnResult(_game), "Start of turn"));
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalStartOfTurn(_game.getGameState().getCurrentPlayerId());
         _game.getActionsEnvironment().addActionToStack(action);
         _followingGameProcess = new TribblesTurnProcess(_game);

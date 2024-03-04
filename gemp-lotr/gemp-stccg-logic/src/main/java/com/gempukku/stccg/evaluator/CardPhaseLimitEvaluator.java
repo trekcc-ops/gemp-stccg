@@ -1,30 +1,33 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.LimitCounter;
 
-public class CardPhaseLimitEvaluator implements Evaluator {
+public class CardPhaseLimitEvaluator extends Evaluator {
     private Integer _evaluated;
-
-    private final Evaluator _amount;
 
     private final PhysicalCard _source;
     private final Phase _phase;
-    private final Evaluator _limit;
+    private final ValueSource _amount, _limit;
+    private final ActionContext _context;
 
-    public CardPhaseLimitEvaluator(PhysicalCard source, Phase phase, Evaluator limit, Evaluator amount) {
-        _source = source;
-        _phase = phase;
+    public CardPhaseLimitEvaluator(ActionContext context, ValueSource limit, ValueSource amount) {
+        super(context);
+        _context = context;
+        _source = context.getSource();
+        _phase = context.getGameState().getCurrentPhase();
         _limit = limit;
         _amount = amount;
     }
 
     private int evaluateOnce(PhysicalCard cardAffected) {
-        LimitCounter limitCounter = cardAffected.getGame().getModifiersQuerying().getUntilEndOfPhaseLimitCounter(_source, _phase);
-        int amountResult = _amount.evaluateExpression(cardAffected.getGame(), cardAffected);
-        int limitResult = _limit.evaluateExpression(cardAffected.getGame(), cardAffected);
+        LimitCounter limitCounter = _game.getModifiersQuerying().getUntilEndOfPhaseLimitCounter(_source, _phase);
+        int amountResult = _amount.evaluateExpression(_context, cardAffected);
+        int limitResult = _limit.evaluateExpression(_context, cardAffected);
         return limitCounter.incrementToLimit(limitResult, amountResult);
     }
 

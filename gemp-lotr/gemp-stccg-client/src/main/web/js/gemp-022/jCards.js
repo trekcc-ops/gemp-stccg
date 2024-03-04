@@ -500,11 +500,19 @@ function createCardDiv(image, text, foil, tokens, noBorder, errata) {
     return createCardDiv(image, text, foil, tokens, noBorder, errata, false);
 }
 
-function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown) {
-    if (upsideDown)
-        var imgClass = "card_img upside-down";
-    else
-        var imgClass = "card_img";
+function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
+    if (cardId == null) {
+        if (upsideDown)
+            var imgClass = "card_img upside-down";
+        else
+            var imgClass = "card_img";
+    } else {
+        if (upsideDown)
+            var imgClass = "card_img upside-down card_img_" + cardId;
+        else
+            var imgClass = "card_img card_img_" + cardId;
+    }
+
 
     var cardDiv = $("<div class='card'><img class='" + imgClass + "' src='" + image + "' width='100%' height='100%'>" + ((text != null) ? text : "") + "</div>");
 
@@ -571,4 +579,8 @@ function createSimpleCardDiv(image) {
     var cardDiv = $("<div class='card'><img src='" + image + "' width='100%' height='100%'></div>");
 
     return cardDiv;
+}
+
+function getCardDivFromId(cardId) {
+    return $(".card:cardId(" + cardId + ")");
 }

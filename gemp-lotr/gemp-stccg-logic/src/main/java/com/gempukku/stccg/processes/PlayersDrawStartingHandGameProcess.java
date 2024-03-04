@@ -6,7 +6,7 @@ import com.gempukku.stccg.gamestate.GameState;
 public class PlayersDrawStartingHandGameProcess extends GameProcess {
     private final String _firstPlayer;
     private GameProcess _followingGameProcess;
-    private DefaultGame _game;
+    private final DefaultGame _game;
 
     public PlayersDrawStartingHandGameProcess(String firstPlayer, DefaultGame game) {
         _firstPlayer = firstPlayer;
@@ -17,10 +17,10 @@ public class PlayersDrawStartingHandGameProcess extends GameProcess {
     public void process() {
 
         GameState gameState = _game.getGameState();
-        for (String player : gameState.getPlayerOrder().getAllPlayers()) {
-            gameState.shuffleDeck(player);
+        for (String playerId : gameState.getPlayerOrder().getAllPlayers()) {
+            gameState.shuffleDeck(playerId);
             for (int i = 0; i < _game.getFormat().getHandSize(); i++)
-                gameState.playerDrawsCard(_game, player);
+                gameState.playerDrawsCard(playerId);
         }
         if (_game.getFormat().hasMulliganRule())
             _followingGameProcess = new MulliganProcess(

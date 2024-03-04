@@ -1,13 +1,16 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.discard.DiscardCardsFromZoneEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.defaulteffect.DiscardCardsFromZoneEffect;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -16,20 +19,25 @@ import java.util.List;
 
 public class DiscardCardsFromDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "count", "filter", "memorize", "player", "deck");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "count", "filter", "memorize", "player", "deck");
 
-        final String filter = FieldUtils.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final String memorize = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
-        final String player = FieldUtils.getString(effectObject.get("player"), "player", "you");
-        final String deck = FieldUtils.getString(effectObject.get("deck"), "deck", "you");
-
-        final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final String filter =
+                environment.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String memorize =
+                environment.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final PlayerSource choicePlayerSource =
+                environment.getPlayerSource(effectObject, "player", "you");
+        final PlayerSource targetPlayerSource =
+                environment.getPlayerSource(effectObject, "deck", "you");
 
         MultiEffectAppender result = new MultiEffectAppender();
 
         result.addEffectAppender(
-                CardResolver.resolveCardsInDeck(filter, null, countSource, memorize, player, deck, "Choose cards to discard", environment));
+                CardResolver.resolveCardsInZone(filter, null,
+                        ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment),
+                        memorize, choicePlayerSource, targetPlayerSource, "Choose cards to discard",
+                        environment, Zone.DRAW_DECK));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

@@ -23,19 +23,7 @@ public class GenerateTrophyCollections {
         Map<Integer, CardCollection> collectionsByType = collections.getPlayerCollectionsByType(CollectionType.MY_CARDS.getCode());
         System.out.println("Got all collections");
         for (Map.Entry<Integer, CardCollection> playerIdToCollection : collectionsByType.entrySet()) {
-            CardCollection collection = playerIdToCollection.getValue();
-            int tengwarCount =0;
-            tengwarCount+=collection.getItemCount("(S)FotR - Tengwar");
-            tengwarCount+=collection.getItemCount("(S)TTT - Tengwar");
-            tengwarCount+=collection.getItemCount("(S)RotK - Tengwar");
-            tengwarCount+=collection.getItemCount("(S)SH - Tengwar");
-            tengwarCount+=collection.getItemCount("(S)Tengwar");
-            for (SetDefinition setDefinition : library.getSetDefinitions().values()) {
-                for (String tengwarCard : setDefinition.getTengwarCards()) {
-                    tengwarCount+=collection.getItemCount(tengwarCard);
-                    tengwarCount+=4*collection.getItemCount(tengwarCard+"*");
-                }
-            }
+            int tengwarCount = getTengwarCount(playerIdToCollection, library);
             if (tengwarCount>0) {
                 System.out.println("Player id: "+playerIdToCollection.getKey()+", Tengwar count: "+tengwarCount);
                 DefaultCardCollection trophies = new DefaultCardCollection();
@@ -43,5 +31,22 @@ public class GenerateTrophyCollections {
                 collections.overwriteCollectionContents(playerIdToCollection.getKey(), CollectionType.TROPHY.getCode(), trophies, "Trophy Generation");
             }
         }
+    }
+
+    private static int getTengwarCount(Map.Entry<Integer, CardCollection> playerIdToCollection, CardBlueprintLibrary library) {
+        CardCollection collection = playerIdToCollection.getValue();
+        int tengwarCount =0;
+        tengwarCount+=collection.getItemCount("(S)FotR - Tengwar");
+        tengwarCount+=collection.getItemCount("(S)TTT - Tengwar");
+        tengwarCount+=collection.getItemCount("(S)RotK - Tengwar");
+        tengwarCount+=collection.getItemCount("(S)SH - Tengwar");
+        tengwarCount+=collection.getItemCount("(S)Tengwar");
+        for (SetDefinition setDefinition : library.getSetDefinitions().values()) {
+            for (String tengwarCard : setDefinition.getTengwarCards()) {
+                tengwarCount+=collection.getItemCount(tengwarCard);
+                tengwarCount+=4*collection.getItemCount(tengwarCard+"*");
+            }
+        }
+        return tengwarCount;
     }
 }

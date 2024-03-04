@@ -1,9 +1,8 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.effects.Effect;
+import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.results.EffectResult;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -122,13 +121,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            List<? extends Action> actions = actionProxy.getOptionalBeforeTriggers(playerId, effect);
-            if (actions != null) {
-                for (Action action : actions) {
-                    action.setPerformingPlayer(playerId);
-                    result.add(action);
-                }
-            }
+            List<? extends Action> actions = actionProxy.getOptionalBeforeTriggerActions(playerId, effect);
+            if (actions != null) result.addAll(actions);
         }
 
         return result;
@@ -141,11 +135,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         for (ActionProxy actionProxy : _actionProxies) {
             List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, effect);
             if (actions != null) {
-                for (Action action : actions) {
-                    action.setPerformingPlayer(playerId);
-                    if (_game.getModifiersQuerying().canPlayAction(playerId, action))
-                        result.add(action);
-                }
+                actions.stream().filter(action ->
+                        _game.getModifiersQuerying().canPlayAction(playerId, action)).forEach(result::add);
             }
         }
 
@@ -174,15 +165,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         final Map<Action, EffectResult> gatheredActions = new HashMap<>();
 
         if (effectResults != null) {
-            for (ActionProxy actionProxy : _actionProxies) {
-                for (EffectResult effectResult : effectResults) {
-                    List<? extends Action> actions = actionProxy.getOptionalAfterTriggerActions(playerId, effectResult);
-                    if (actions != null) {
-                        for (Action action : actions) {
-                            if (!effectResult.wasOptionalTriggerUsed(action)) {
-                                action.setPerformingPlayer(playerId);
-                                gatheredActions.put(action, effectResult);
-                            }
+            for (EffectResult effectResult : effectResults) {
+                List<? extends Action> actions = effectResult.getOptionalAfterTriggerActions(
+                        _game.getGameState().getPlayer(playerId));
+                if (actions != null) {
+                    for (Action action : actions) {
+                        if (!effectResult.wasOptionalTriggerUsed(action)) {
+                            gatheredActions.put(action, effectResult);
                         }
                     }
                 }
@@ -202,7 +191,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
                     List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, effectResult);
                     if (actions != null) {
                         for (Action action : actions) {
-                            action.setPerformingPlayer(playerId);
                             if (_game.getModifiersQuerying().canPlayAction(playerId, action))
                                 result.add(action);
                         }
@@ -222,7 +210,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             List<? extends Action> actions = actionProxy.getPhaseActions(playerId);
             if (actions != null) {
                 for (Action action : actions) {
-                    action.setPerformingPlayer(playerId);
                     if (_game.getModifiersQuerying().canPlayAction(playerId, action))
                         result.add(action);
                 }
@@ -239,4 +226,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     public Stack<Action> getActionStack() { return _actionStack; }
 
+    @Override
+    public void generateSnapshot(ActionsEnvironment selfSnapshot, SnapshotData snapshotData) {
+        // TODO SNAPSHOT - Add content here
+    }
 }

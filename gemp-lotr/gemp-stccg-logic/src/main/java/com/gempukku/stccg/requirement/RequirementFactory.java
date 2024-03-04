@@ -1,8 +1,7 @@
 package com.gempukku.stccg.requirement;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import com.gempukku.stccg.requirement.producers.*;
 import org.json.simple.JSONObject;
 
@@ -11,9 +10,12 @@ import java.util.Map;
 
 public class RequirementFactory {
     private final Map<String, RequirementProducer> requirementProducers = new HashMap<>();
+    private final CardBlueprintFactory _environment;
 
     @SuppressWarnings("SpellCheckingInspection")
-    public RequirementFactory() {
+    public RequirementFactory(CardBlueprintFactory environment) {
+        _environment = environment;
+
         requirementProducers.put("not", new NotRequirementProducer());
         requirementProducers.put("or", new OrRequirementProducer());
         requirementProducers.put("cardsindeckcount", new CardsInDeckCount());
@@ -43,20 +45,18 @@ public class RequirementFactory {
         requirementProducers.put("tribblesequencebroken", new TribbleSequenceBroken());
     }
 
-    public Requirement getRequirement(
-            JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final String type = FieldUtils.getString(object.get("type"), "type");
+    public Requirement getRequirement(JSONObject object) throws InvalidCardDefinitionException {
+        final String type = _environment.getString(object.get("type"), "type");
         final RequirementProducer requirementProducer = requirementProducers.get(type.toLowerCase());
         if (requirementProducer == null)
             throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
-        return requirementProducer.getPlayRequirement(object, environment);
+        return requirementProducer.getPlayRequirement(object, _environment);
     }
 
-    public Requirement[] getRequirements(
-            JSONObject[] object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
+    public Requirement[] getRequirements(JSONObject[] object) throws InvalidCardDefinitionException {
         Requirement[] result = new Requirement[object.length];
         for (int i = 0; i < object.length; i++)
-            result[i] = getRequirement(object[i], environment);
+            result[i] = getRequirement(object[i]);
         return result;
     }
 }

@@ -4,13 +4,15 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class NotCondition implements Condition {
     private final Condition _condition;
+    private final DefaultGame _game;
 
-    public NotCondition(Condition condition) {
+    public NotCondition(DefaultGame game, Condition condition) {
         _condition = condition;
+        _game = game;
     }
 
     @Override
-    public boolean isFulfilled(DefaultGame game) {
-        return !_condition.isFulfilled(game);
+    public boolean isFulfilled() {
+        return !_condition.isFulfilled();
     }
 }

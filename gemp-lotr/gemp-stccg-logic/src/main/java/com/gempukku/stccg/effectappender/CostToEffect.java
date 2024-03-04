@@ -3,43 +3,38 @@ package com.gempukku.stccg.effectappender;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.StackActionEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class CostToEffect implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "cost", "effect", "requires");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "cost", "effect", "requires");
 
-        final JSONObject[] costArray = FieldUtils.getObjectArray(effectObject.get("cost"), "cost");
-        final JSONObject[] effectArray = FieldUtils.getObjectArray(effectObject.get("effect"), "effect");
-        final JSONObject[] conditionArray = FieldUtils.getObjectArray(effectObject.get("requires"), "requires");
-
-        final EffectAppender[] costAppenders = environment.getEffectAppenderFactory().getEffectAppenders(costArray, environment);
-        final EffectAppender[] effectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray, environment);
-        final Requirement[] requirements = environment.getRequirementFactory().getRequirements(conditionArray, environment);
+        final EffectAppender[] costAppenders = environment.getEffectAppendersFromJSON(effectObject,"cost");
+        final EffectAppender[] effectAppenders = environment.getEffectAppendersFromJSON(effectObject,"effect");
+        final Requirement[] requirements = environment.getRequirementsFromJSON(effectObject);
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
 
-                if(requirementsNotMet(actionContext))
+                if(requirementsNotMet(context))
                     return null;
 
                 SubAction subAction = action.createSubAction();
 
                 for (EffectAppender costAppender : costAppenders)
-                    costAppender.appendEffect(true, subAction, actionContext);
+                    costAppender.appendEffect(true, subAction, context);
                 for (EffectAppender effectAppender : effectAppenders)
-                    effectAppender.appendEffect(false, subAction, actionContext);
+                    effectAppender.appendEffect(false, subAction, context);
 
-                return new StackActionEffect(actionContext.getGame(), subAction);
+                return new StackActionEffect(context.getGame(), subAction);
             }
 
             private boolean requirementsNotMet(ActionContext actionContext) {

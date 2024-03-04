@@ -165,7 +165,7 @@ var GameTableUI = Class.extend({
     },
 
     layoutGroupWithCard: function (cardId) {
-        var cardData = $(".card:cardId(" + cardId + ")").data("card");
+        var cardData = getCardDivFromId(cardId).data("card");
         var tempGroup = this.getReorganizableCardGroupForCardData(cardData);
         if (tempGroup != null) {
             tempGroup.layoutCards();
@@ -532,7 +532,7 @@ var GameTableUI = Class.extend({
     dragContinuesCardFunction: function (event) {
         if (this.dragCardId != null) {
             if (!this.draggingHorizontaly && Math.abs(this.dragStartX - event.clientX) >= 20) {
-                var cardElems = $(".card:cardId(" + this.dragCardId + ")");
+                var cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
                     var cardElem = cardElems[0];
                     var cardData = $(cardElem).data("card");
@@ -550,7 +550,7 @@ var GameTableUI = Class.extend({
                 }
             }
             if (this.draggingHorizontaly && this.dragCardId != null && this.dragCardIndex != null) {
-                var cardElems = $(".card:cardId(" + this.dragCardId + ")");
+                var cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
                     var cardElem = $(cardElems[0]);
                     var cardData = cardElem.data("card");
@@ -572,9 +572,9 @@ var GameTableUI = Class.extend({
                         var cardIdAtIndex = $(cardsInGroup[currentIndex]).data("card").cardId;
                         if (cardIdAtIndex != this.dragCardId) {
                             if (currentIndex < this.draggedCardIndex)
-                                $(".card:cardId(" + cardIdAtIndex + ")").before($(".card:cardId(" + this.dragCardId + ")"));
+                                $(".card:cardId(" + cardIdAtIndex + ")").before(getCardDivFromId(this.dragCardId));
                             else
-                                $(".card:cardId(" + cardIdAtIndex + ")").after($(".card:cardId(" + this.dragCardId + ")"));
+                                $(".card:cardId(" + cardIdAtIndex + ")").after(getCardDivFromId(this.dragCardId));
                             cardGroup.layoutCards();
                             this.draggedCardIndex = currentIndex;
                         }
@@ -587,7 +587,7 @@ var GameTableUI = Class.extend({
     dragStopCardFunction: function (event) {
         if (this.dragCardId != null) {
             if (this.dragStartY - event.clientY >= 20 && !this.draggingHorizontaly) {
-                var cardElems = $(".card:cardId(" + this.dragCardId + ")");
+                var cardElems = getCardDivFromId(this.dragCardId);
                 if (cardElems.length > 0) {
                     this.displayCardInfo($(cardElems[0]).data("card"));
                     this.successfulDrag = true;
@@ -610,8 +610,9 @@ var GameTableUI = Class.extend({
         var floatCardDiv = $("<div style='float: left;'></div>");
         floatCardDiv.append(createFullCardDiv(card.imageUrl, card.foil, card.horizontal));
         this.infoDialog.append(floatCardDiv);
-        if (extraSpace)
+        if (extraSpace) {
             this.infoDialog.append("<div id='cardEffects'></div>");
+        }
 
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
@@ -648,7 +649,8 @@ var GameTableUI = Class.extend({
     },
 
     setCardModifiers: function (html) {
-        $("#cardEffects").replaceWith(html);
+        $("#cardEffects").append(html);
+        $("#cardEffects").addClass("cardInfoText");
     },
 
     initializeDialogs: function () {
@@ -881,11 +883,13 @@ var GameTableUI = Class.extend({
         } else if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
         } else if (eventType == "MCIP") {
-            this.animations.moveCardInPlay(gameEvent, animate);
+            this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
         } else if (eventType == "P") {
             this.participant(gameEvent);
         } else if (eventType == "RCFP") {
             this.animations.removeCardFromPlay(gameEvent, animate);
+        } else if (eventType == "UPDATE_CARD_IMAGE") {
+            this.animations.updateCardImage(gameEvent);
         } else if (eventType == "GPC") {
             this.animations.gamePhaseChange(gameEvent, animate);
         } else if (eventType == "TC") {
@@ -1371,7 +1375,7 @@ var GameTableUI = Class.extend({
     },
 
     createCardDiv: function (card, text) {
-        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown());
+        var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
         cardDiv.data("card", card);
 
@@ -1486,7 +1490,7 @@ var GameTableUI = Class.extend({
                             $(".card:cardId(" + selectedCardIds + ")").addClass("selectedCard");
                     }
                 } else {
-                    $(".card:cardId(" + cardId + ")").removeClass("selectableCard").addClass("selectedCard");
+                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
                 }
 
                 processButtons();
@@ -1517,6 +1521,7 @@ var GameTableUI = Class.extend({
         var imageUrls = this.getDecisionParameters(decision, "imageUrl");
         var actionIds = this.getDecisionParameters(decision, "actionId");
         var actionTexts = this.getDecisionParameters(decision, "actionText");
+        var actionTypes = this.getDecisionParameters(decision, "actionType");
 
         var that = this;
 
@@ -1583,15 +1588,10 @@ var GameTableUI = Class.extend({
                 var actionText = actionTexts[i];
                 var blueprintId = blueprintIds[i];
                 var imageUrl = imageUrls[i];
+                var actionType = actionTypes[i];
 
                 if (blueprintId == "inPlay") {
-                    var cardIdElem = $(".card:cardId(" + cardId + ")");
-                    if (cardIdElem.data("action") == null) {
-                        cardIdElem.data("action", new Array());
-                    }
-
-                    var actions = cardIdElem.data("action");
-                    actions.push({actionId: actionId, actionText: actionText});
+                    var cardIdElem = getCardDivFromId(cardId);
                 } else {
                     hasVirtual = true;
                     cardIds[i] = "extra" + cardId;
@@ -1603,13 +1603,13 @@ var GameTableUI = Class.extend({
                     $("#main").append(cardDiv);
 
                     var cardIdElem = $(".card:cardId(extra" + cardId + ")");
-                    if (cardIdElem.data("action") == null) {
-                        cardIdElem.data("action", new Array());
-                    }
-
-                    var actions = cardIdElem.data("action");
-                    actions.push({actionId: actionId, actionText: actionText});
                 }
+
+                if (cardIdElem.data("action") == null) {
+                    cardIdElem.data("action", new Array());
+                }
+                var actions = cardIdElem.data("action");
+                actions.push({actionId: actionId, actionText: actionText, actionType: actionType});
             }
 
             if (hasVirtual) {
@@ -1617,7 +1617,7 @@ var GameTableUI = Class.extend({
             }
 
             that.selectionFunction = function (cardId, event) {
-                var cardIdElem = $(".card:cardId(" + cardId + ")");
+                var cardIdElem = getCardDivFromId(cardId);
                 var actions = cardIdElem.data("action");
 
                 var selectActionFunction = function (actionId) {
@@ -1626,15 +1626,18 @@ var GameTableUI = Class.extend({
                         finishChoice();
                     } else {
                         that.clearSelection();
-                        $(".card:cardId(" + cardId + ")").addClass("selectedCard");
+                        getCardDivFromId(cardId).addClass("selectedCard");
                         processButtons();
                     }
                 };
 
-                if (actions.length == 1) {
-                    var action = actions[0];
-                    selectActionFunction(action.actionId);
+                // If the only legal action is a card play, perform action automatically by clicking
+                // Otherwise show a drop-down menu with the action options by clicking
+                if (actions.length == 1 &&
+                        (actions[0].actionType == "PLAY_CARD" || actions[0].actionType == "SEED_CARD")) {
+                    selectActionFunction(actions[0].actionId);
                 } else {
+                        // TODO - Bind to right-click?
                     that.createActionChoiceContextMenu(actions, event, selectActionFunction);
                 }
             };
@@ -1779,7 +1782,7 @@ var GameTableUI = Class.extend({
                     finishChoice();
                 } else {
                     processButtons();
-                    $(".card:cardId(" + cardId + ")").addClass("selectedCard");
+                    getCardDivFromId(cardId).addClass("selectedCard");
                 }
             };
 
@@ -1858,7 +1861,7 @@ var GameTableUI = Class.extend({
                             $(".card:cardId(" + selectedCardIds + ")").addClass("selectedCard");
                     }
                 } else {
-                    $(".card:cardId(" + cardId + ")").removeClass("selectableCard").addClass("selectedCard");
+                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
                 }
 
                 processButtons();

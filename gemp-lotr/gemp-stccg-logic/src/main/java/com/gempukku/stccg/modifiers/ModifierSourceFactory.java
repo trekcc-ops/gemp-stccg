@@ -1,9 +1,8 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -27,12 +26,12 @@ public class ModifierSourceFactory {
         modifierProducers.put("cantplaycards", new CantPlayCards());
         modifierProducers.put("cantusespecialabilities", new CantUseSpecialAbilities());
         modifierProducers.put("extracosttoplay", new ExtraCostToPlay());
+        modifierProducers.put("gainicon", new AddIcon());
         modifierProducers.put("hastomoveifable", new HasToMoveIfAble());
         modifierProducers.put("itemclassspot", new ItemClassSpot());
         modifierProducers.put("modifycost", new ModifyCost());
         modifierProducers.put("modifymovelimit", new ModifyMoveLimit());
         modifierProducers.put("modifyplayoncost", new ModifyPlayOnCost());
-        modifierProducers.put("modifyresistance", new ModifyResistance());
         modifierProducers.put("modifystrength", new ModifyStrength());
         modifierProducers.put("opponentmaynotdiscard", new OpponentMayNotDiscard());
         modifierProducers.put("removekeyword", new RemoveKeyword());
@@ -41,8 +40,9 @@ public class ModifierSourceFactory {
 
     }
 
-    public ModifierSource getModifier(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final String type = FieldUtils.getString(object.get("type"), "type");
+    public ModifierSource getModifier(JSONObject object, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        final String type = environment.getString(object.get("type"), "type");
         final ModifierSourceProducer modifierSourceProducer = modifierProducers.get(type.toLowerCase());
         if (modifierSourceProducer == null)
             throw new InvalidCardDefinitionException("Unable to resolve modifier of type: " + type);

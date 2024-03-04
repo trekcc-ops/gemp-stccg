@@ -1,14 +1,12 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.results.EffectResult;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Snapshotable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public interface ActionsEnvironment {
+public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
     List<Action> getRequiredBeforeTriggers(Effect effect);
 
     List<Action> getOptionalBeforeTriggers(String playerId, Effect effect);
@@ -36,4 +34,11 @@ public interface ActionsEnvironment {
     List<EffectResult> getTurnEffectResults();
 
     List<EffectResult> getPhaseEffectResults();
+
+    Set<EffectResult> consumeEffectResults();
+    void signalEndOfTurn();
+    void addAlwaysOnActionProxy(ActionProxy actionProxy);
+    DefaultGame getGame();
+    Stack<Action> getActionStack();
+
 }

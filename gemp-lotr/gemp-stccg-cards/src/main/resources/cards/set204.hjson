@@ -1,0 +1,71 @@
+// Set 204: Coming of Age
+
+{
+    204_003: {
+        title: Examine Battle Site
+        type: mission
+        mission-type: space
+        point-box: 40
+        span: 4
+        affiliation-icons: federation,romulan,klingon,ferengi
+        location: Near Orelious IX
+        lore: Chart cataclysmic final battle from the Menthar-Promellian war.
+        mission-requirements: SCIENCE + (Archaeology OR Anthropology) + Physics + CUNNING>40
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/3.jpg
+    }
+    204_010: {
+        title: Aletia
+        type: personnel
+        affiliation: ferengi,non-aligned
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Typical humanoid employee of Omag. Retained for her expertise in biochemical weaponry and her talents for the tympanic tickle. Mentor to Calandra.
+        skill-box: "[*] Acquisition [*] Biology [*] Physics"
+        integrity: 4
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/10.jpg
+        image-options: [
+            {
+                affiliation: ferengi
+                image-url: https://www.trekcc.org/1e/cardimages/comingofage/10.jpg
+            }
+            {
+                affiliation: non-aligned
+                image-url: https://www.trekcc.org/1e/cardimages/comingofage/10A.jpg
+            }
+        ]
+    }
+    204_021: {
+        title: Dacres
+        type: personnel
+        affiliation: non-aligned
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: staff
+        lore: Typical humanoid mercenary. Colleague of Narik and Vekor. In 2370, he worked with Baran to find the Stone of Gol. Distrusts Galen.
+        skill-box: "[*] Astrophysics [*] Biology [*] Physics [*] Treachery"
+        integrity: 4
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/21.jpg
+    }
+    204_022: {
+        title: Tayar
+        type: personnel
+        affiliation: non-aligned
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: communications-subcommand
+        lore: Characteristic of disconnected Borg. Assault team member on Ohniaka III. Assigned by The One to identify the Starfleet forces encountered there.
+        skill-box: "[*] Computer Skill [*] Physics [*] Stellar Cartography"
+        integrity: 5
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/22.jpg
+    }
+}

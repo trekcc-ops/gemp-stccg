@@ -1,132 +1,43 @@
 // Set 155: The Next Generation
 
 {
-    155_001: {
-        title: A Good Day to Lie
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/1V.jpg
-    }
-    155_002: {
-        title: All Available Personnel
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/2V.jpg
-    }
-    155_003: {
-        title: Diplomatic Intervention
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/3V.jpg
-    }
-    155_004: {
-        title: Divided Loyalties
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/4V.jpg
-    }
-    155_005: {
-        title: Ferengi Ambush
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/5V.jpg
-    }
-    155_006: {
-        title: "I'm Not Going to Fight You"
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/6V.jpg
-    }
-    155_007: {
-        title: Local Trouble
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/7V.jpg
-    }
-    155_008: {
-        title: Magnetic Field Disruptions
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/8V.jpg
-    }
-    155_009: {
-        title: Microbrain
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
-    }
-    155_010: {
-        title: Pinned Down
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/10V.jpg
-    }
-    155_011: {
-        title: Temptation
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/11V.jpg
-    }
-    155_012: {
-        title: Tense Negotiations
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/12V.jpg
-    }
-    155_013: {
-        title: Triage
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/13V.jpg
-    }
-    155_014: {
-        title: War Games
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/14V.jpg
-    }
-    155_015: {
-        title: Warp Bubble Mishap
-        type: dilemma
-        seedPhase: dilemma
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/15V.jpg
-    }
-    155_016: {
-        title: Cowboy Diplomacy
-        type: event
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/16V.jpg
-    }
-    155_018: {
-        title: Heart of Glory
-        type: event
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/18V.jpg
-    }
-    155_019: {
-        title: "Let's See What's Out There"
-        type: event
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/19V.jpg
+    155_021: {
+       title: Attention All Hands
+        type: incident
+        icons: warp-core
+        property-logo: tng-logo
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
+//        seed-or-play: {
+//            where: on table
+//        }
+        effects: [
+            {
+                type: activated
+                phase: execute-orders
+                limitPerTurn: 1
+                effect: {
+                    type: play
+                    filter: choose(personnel)
+//                    filter: choose(yours + universal + tng-icon + personnel + not(android OR hologram OR au-icon) + you have no copies in play)
+//                    filter: choose(any)
+                    on: federation,outpost
+                }
+            }
+//            {
+//                type: activated
+//                cost: in place of your normal card play
+//                effect: {
+//                    type: download
+//                    filter: universal + tng-icon + ship
+//                    where: matching-outpost
+//                }
+//            }
+        ]
     }
     155_035: {
         title: Acquire Surplus Ships
         type: mission
+        mission-type: planet
         location: Klingon Salvage Yard
         affiliation-icons: klingon,ferengi
         lore: "Complete illicit sale of decommissioned B'rel-class hardware."
@@ -138,6 +49,7 @@
     155_036: {
         title: Amnesty Talks
         type: mission
+        mission-type: space
         location: Near Acamar system
         affiliation-icons: any
         lore: Mediate an end to Gatherer raids in this area.
@@ -161,6 +73,7 @@
     155_038: {
         title: Encounter at Farpoint
         type: mission
+        mission-type: planet
         location: Deneb IV
         affiliation-icons: federation,non-aligned
         lore: Negotiate with natives for use of their newly-constructed starbase.
@@ -172,6 +85,7 @@
     155_039: {
         title: Host Metaphasic Shielding Test
         type: mission
+        mission-type: space
         location: Veytan
         affiliation-icons: federation,klingon,non-aligned,ferengi
         lore: "Test revolutionary shield design within star's superdense corona."
@@ -180,22 +94,24 @@
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
-    }
-    155_040: {
-        title: Intercept Sleeper Ship
-        type: mission
-        location: Near Boradis system
-        affiliation-icons: federation,romulan,klingon,non-aligned
-        lore: Protect colonies from returning Klingon sleeper ship.
-        mission-requirements: "Leadership x2 + WEAPONS >8 OR Any K'Ehleyr + INTEGRITY >35"
-        gametext: "I.K.S. T'Ong may report here (with up to 3 personnel)"
-        point-box: 40
-        span: 5
-        image-url: https://www.trekcc.org/1e/cardimages/tng/40V.jpg
+        effects: {
+            type: trigger
+            optional: true
+            trigger: {
+                type: solved
+                filter: self
+            }
+            effect: {
+                type: download
+                filter: name(Metaphasic Shields)
+                where: here
+            }
+        }
     }
     155_041: {
         title: Investigate Destruction
         type: mission
+        mission-type: space
         region: Neutral Zone
         location: Science Station Delta-05
         affiliation-icons: federation,romulan
@@ -208,81 +124,43 @@
     155_042: {
         title: Raid Ancient Burial Site
         type: mission
+        mission-type: planet
         location: Calder II
         affiliation-icons: non-aligned
         lore: Seek ancient Debrune artifacts near Sakethan burial mounds.
-        mission-requirements: Archaeology + SECURITY + Treachery + STRENGTH >50
+        mission-requirements: Archaeology + SECURITY + Treachery + STRENGTH>50
         gametext: May seed one Mercenary Ship face up here.
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
+        effects: {
+            type: maySeed
+            filter: name(Mercenary Ship)
+        }
     }
     155_043: {
         title: Revenge Plot
         type: mission
+        mission-type: planet
         location: Camor V
+        lore: Lay genetic groundwork for vengeance against old foe.
         affiliation-icons: romulan,non-aligned,cardassian,ferengi
-        mission-requirements: MEDICAL + Exobiology + Treachery x2 OR any Bok + CUNNING >35
+        mission-requirements: MEDICAL + Exobiology + Treachery x2 OR any Bok + CUNNING>35
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
     }
-    155_044: {
-        title: Salvage Borg Ship
-        type: mission
-        region: Argolis Cluster
-        location: Small Moon
-        affiliation-icons: federation,romulan,klingon,cardassian,ferengi
-        mission-requirements: Astrophysics + ENGINEER + MEDICAL + Computer Skill
-        gametext: "*+10 if a {BORG} card in play."
-        point-box: 35*
-        span: 3
-        image-url: https://www.trekcc.org/1e/cardimages/tng/44V.jpg
-    }
-    155_045: {
-        title: Seize Freighter
-        type: mission
-        region: Neutral Zone
-        location: Near Talarian Shipping Lane
-        affiliation-icons: klingon
-        mission-requirements: OFFICER x2 + Honor + Navigation
-        gametext: *+5 if Korris or Konmel in crew.
-        point-box: 25*
-        span: 3
-        image-url: https://www.trekcc.org/1e/cardimages/tng/45V.jpg
-    }
-    155_046: {
-        title: Steal Technology
-        type: mission
-        location: Gamma Tauri IV
-        affiliation-icons: romulan,klingon,non-aligned,cardassian,ferengi
-        mission-requirements: OFFICER + Greed + Transporter Skill + Treachery
-        gametext: When you solve, may download (or steal) an equipment here.
-        point-box: 35
-        span: 4
-        image-url: https://www.trekcc.org/1e/cardimages/tng/46V.jpg
-    }
     155_047: {
         title: The Last Outpost
         type: mission
+        mission-type: planet
         location: Delphi Ardu IV
+        lore: "Investigate source of energy emanating from ancient T'Kon outpost."
         affiliation-icons: federation,ferengi
         mission-requirements: Acquisition + SECURITY + Treachery x2 OR Diplomacy x2 + Leadership + OFFICER
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/47V.jpg
-    }
-    155_048: {
-        title: Treat Plague Ship
-        type: mission
-        location: Near Haven
-        lore: Provide medical assistance to last members of disease-ravaged culture.
-        affiliation-icons: federation,romulan,non-aligned,bajoran
-        mission-requirements: Biology + CUNNING >26 + discard one MEDICAL personnel
-        gametext: *+10 if Plague Planet complete.
-        point-box: 25*
-        span: 2
-        image-url: https://www.trekcc.org/1e/cardimages/tng/48V.jpg
     }
     155_049: {
         title: Visit Tranquil Colony
@@ -301,166 +179,153 @@
         type: personnel
         affiliation: federation
         uniqueness: universal
-        property-logo: tng
+        property-logo: tng-logo
         classification: CIVILIAN
         lore: Typical civilian researcher studying pre-warp civilizations throughout Federation space. Supervised an anthropological study on Mintaka III.
-        skill-box: "{SKILL} Anthropology {SKILL} Archaeology {SKILL} Geology"
+        skill-box: "[*] Anthropology [*] Archaeology [*] Geology"
         integrity: 6
         cunning: 6
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/53V.jpg
-    }
-    155_054: {
-        title: Beverly
-        type: personnel
-        affiliation: federation
-        uniqueness: unique
-        property-logo: tng
-        classification: MEDICAL
-        icons: staff
-        lore: While hosting an experimental metaphasic shield test, Beverly Crusher took on the roles of diplomatic, detective, coroner, and test pilot.
-        skill-box: "{SKILL} Diplomacy {SKILL} Law {SKILL} Navigation {SKILL} Exobiology {SD} Starfleet Type II Phaser"
-        integrity: 7
-        cunning: 8
-        strength: 5
-        image-url: https://www.trekcc.org/1e/cardimages/tng/54V.jpg
     }
     155_055: {
         title: Daniel Kwan
         type: personnel
         affiliation: federation
         uniqueness: universal
-        property-logo: tng
+        property-logo: tng-logo
         classification: ENGINEER
         icons: staff
         lore: 1/2 Napean, 1/2 human representative of Starfleet engineers. Inherited his empathic sense from his mother. Formerly served at Utopia Planitia Yards.
-        skill-box: "{SKILL} Physics {SKILL} Empathy"
+        skill-box: "[*] Physics [*] Empathy"
         integrity: 7
         cunning: 6
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/tng/55V.jpg
-    }
-    155_056: {
-        title: Data
-        type: personnel
-        affiliation: federation
-        uniqueness: unique
-        property-logo: tng
-        classification: OFFICER
-        icons: command
-        lore: 'Pinocchio-like in his desire, the Soong-type android would gladly trade his superior abilities to be human. Learning to whistle "Pop Goes the Weasel."'
-        skill-box: "{SKILL} Computer Skill {SKILL} Astrophysics {SKILL} ENGINEER {SKILL} When reported, selected Anthropology, Physics, or Navigation."
-        integrity: 7
-        cunning: 12
-        strength: 12
-        image-url: https://www.trekcc.org/1e/cardimages/tng/56V.jpg
     }
     155_057: {
         title: Davies
         type: personnel
         affiliation: federation
         uniqueness: universal
-        property-logo: tng
+        property-logo: tng-logo
         classification: SCIENCE
         icons: staff
         lore: Geochemist representative of science specialists assigned to Galaxy-class starships. Intrigued by the symbiotic nature of the Trill species.
-        skill-box: "{SKILL} Physics {SKILL} Geology"
+        skill-box: "[*] Physics [*] Geology"
         integrity: 6
         cunning: 7
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/tng/57V.jpg
     }
-    155_058: {
-        title: Deanna Troi
-        type: personnel
-        affiliation: federation
-        uniqueness: unique
-        property-logo: tng
-        classification: OFFICER
-        icons: staff
-        lore: "Ship's counselor and occasional ambassador. 1/2 Betazoid, 1/2 human. Formerly romantically involved with William T. Riker as his imzadi."
-        skill-box: "{SKILL} Empathy {SKILL} Anthropology {SKILL} Diplomacy {SKILL} Honor {SD} Intuition {SD} Life-form Scan"
-        integrity: 7
-        cunning: 7
-        strength: 4
-        image-url: https://www.trekcc.org/1e/cardimages/tng/58V.jpg
-    }
     155_059: {
         title: Dr. Christopher
         type: personnel
         affiliation: federation
-        uniqueness: unique
-        property-logo: tng
+        property-logo: tng-logo
         classification: SCIENCE
         lore: "Subspace theoretician and husband of T'Pan. Invited to participate in a metaphasic shield test. Doubted Dr. Reyga's new technology."
-        skill-box: "{SKILL} SCIENCE"
+        skill-box: "[*] SCIENCE"
         integrity: 6
         cunning: 8
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/59V.jpg
     }
-    155_060: {
-        title: Geordi La Forge
+    155_064: {
+        title: Martin
         type: personnel
         affiliation: federation
-        uniqueness: unique
-        property-logo: tng
-        classification: OFFICER
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: MEDICAL
         icons: staff
-        lore: Conn officer of the U.S.S. Enterprise in 2364. Son of two Starfleet officers. Blind at birth, he has used the VISOR to see since the age of five.
-        skill-box: "{SKILL} At {SPACE}: Navigation, Astrophysics, Stellar Cartography {SKILL} At {PLANET}: ENGINEER, Physics, Computer Skill"
+        lore: One of many staff doctors assigned to the U.S.S. Enterprise. Took charge of sickbay in 2368 after Beverly Crusher was incapacitated.
+        skill-box: "[*] Exobiology [*] Computer Skill"
         integrity: 7
-        cunning: 7
+        cunning: 6
         strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/tng/60V.jpg
+        image-url: https://www.trekcc.org/1e/cardimages/tng/64V.jpg
     }
-    155_061: {
-        title: Kosinski
+    155_065: {
+        title: Seth Mendoza
         type: personnel
         affiliation: federation
-        property-logo: tng
-        classification: ENGINEER
-        icons: command
-        lore: Arrogant engineer believed to have improved engine performance on several ships in 2364. Finds problem solving heavily therapeutic.
-        skill-box: "{SKILL} Computer Skill {SKILL} Physics {SKILL} SCIENCE {SKILL} Stellar Cartography {SKILL} X=4 when facing a dilemma."
-        integrity: 5
-        cunning: 9+X
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: One of many ambassadors serving in the Federation Diplomatic Corps. Distant relative of Earth politician. Gambler and poker player.
+        skill-box: "[*] Anthropology [*] Diplomacy [*] Law"
+        integrity: 6
+        cunning: 6
         strength: 5
-        image-url: https://www.trekcc.org/1e/cardimages/tng/61V.jpg
+        image-url: https://www.trekcc.org/1e/cardimages/tng/65V.jpg
     }
-    155_067: {
-        title: Captain Picard
+    155_078: {
+        title: "B'Somgh"
         type: personnel
-        affiliation: ferengi
-        property-logo: tng
-        classification: OFFICER
-        icons: command,infiltrator-federation
-        lore: The former captain of the U.S.S. Stargazer, Jean-Luc Picard was manipulated into attacking his own ship.
-        restriction-box: "If exposed, becomes {FEDERATION} under opponent's control."
-        skill-box: "{SKILL} Leadership x2 {SKILL} Navigation x2 {SKILL} Physics {SD} Picard Maneuver"
-        integrity: 8
-        cunning: 8
-        strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/tng/67V.jpg
-    }
-    155_094: {
-        title: Vash
-        type: personnel
-        affiliation: non-aligned
-        property-logo: tng
-        classification: SCIENCE
-        lore: Treasure hunter, archaeologist, liar, and thief romantically involved with Jean-Luc Picard. Partnered with Q to explore distant Gamma Quadrant ruins.
-        skill-box: "{SKILL} Archaeology x2 {SKILL} Treachery {SKILL} Anthropology {SKILL} Smuggling {SKILL} Acquisition {SD} Dig"
-        integrity: 4
-        cunning: 7
-        strength: 5
-        image-url: https://www.trekcc.org/1e/cardimages/tng/94V.jpg
-    }
-    155_099: {
-        title: I.K.S. Pagh
-        type: ship
         affiliation: klingon
-        property-logo: tng
-        image-url: https://www.trekcc.org/1e/cardimages/tng/99V.jpg
+        property-logo: tng-logo
+        classification: ENGINEER
+        uniqueness: universal
+        icons: staff
+        lore: Warp drive specialist aboard the I.K.S. Pagh, representative of engineers in the Klingon Defense Force. Considered a gourmand by shipmates.
+        skill-box: "[*] Exobiology [*] Physics [*] Astrophysics [*] Biology"
+        integrity: 7
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/78V.jpg
+    }
+    155_088: {
+        title: "Q'elyn"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: ENGINEER
+        uniqueness: universal
+        lore: Representative of low-level technicians throughout the Klingon Empire. Before serving on the I.K.S. Pagh, worked as a supply agent on Rura Penthe.
+        skill-box: "[*] Acquisition"
+        integrity: 5
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/88V.jpg
+    }
+    155_090: {
+        title: Zegov
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: ENGINEER
+        uniqueness: universal
+        icons: command
+        lore: "Typical Klingon female inspired by the Sisters of Duras. Ruthlessly supervised the I.K.S. Pagh engine room. Curious about William T. Riker's endurance."
+        skill-box: "[*] Astrophysics [*] Treachery [*] Greed [*] SECURITY"
+        integrity: 4
+        cunning: 5
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/tng/90V.jpg
+    }
+    155_093: {
+        title: Koral
+        type: personnel
+        affiliation: non-aligned,klingon
+        property-logo: tng-logo
+        classification: CIVILIAN
+        icons: command
+        lore: Dour smuggler of few words. Acquired part of the Stone of Gol for Baran. Commanded a Klingon shuttle. Disliked games and replicated bloodwine.
+        skill-box: "[*] Archaeology [*] Smuggling [*] Navigation [*] Treachery [*] Stellar Cartography"
+        integrity: 3
+        cunning: 4
+        strength: 10
+        image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
+        image-options: [
+            {
+                affiliation: klingon
+                image-url: https://www.trekcc.org/1e/cardimages/tng/93AV.jpg
+            }
+            {
+                affiliation: non-aligned
+                image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
+            }
+        ]
     }
 }

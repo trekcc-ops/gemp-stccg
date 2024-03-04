@@ -10,11 +10,10 @@ import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 
 import java.util.Map;
-import java.util.Set;
 
 public class TribblesGame extends DefaultGame {
-    private final TribblesGameState _gameState;
-    private final TurnProcedure _turnProcedure;
+    private TribblesGameState _gameState;
+    private TurnProcedure _turnProcedure;
     private final TribblesGame _thisGame;
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
@@ -22,16 +21,15 @@ public class TribblesGame extends DefaultGame {
         super(format, decks, userFeedback, library);
         _thisGame = this;
 
-        _gameState = new TribblesGameState(_allPlayers, decks, library, _format, this);
+        _gameState = new TribblesGameState(_allPlayerIds, decks, library, _format, this);
         new TribblesRuleSet(_actionsEnvironment, _modifiersLogic, this).applyRuleSet();
 
         _gameState.createPhysicalCards();
-        _turnProcedure = new TurnProcedure(this, _allPlayers, userFeedback, _actionsEnvironment,
-                _gameState::init) {
+        _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment
+        ) {
             @Override
-            protected GameProcess setFirstGameProcess(Set<String> players,
-                                                      PlayerOrderFeedback playerOrderFeedback) {
-                return new TribblesPlayerOrderProcess(decks, _library, playerOrderFeedback, _thisGame);
+            protected GameProcess setFirstGameProcess() {
+                return new TribblesPlayerOrderProcess(decks, _library, _gameState::init, _thisGame);
             }
         };
     }
@@ -42,12 +40,20 @@ public class TribblesGame extends DefaultGame {
     }
     public TurnProcedure getTurnProcedure() { return _turnProcedure; }
 
-    public boolean isNextInSequence(PhysicalCard card) {
-        final int cardValue = card.getBlueprint().getTribbleValue();
-        if (_gameState.isChainBroken() && (cardValue == 1)) {
-            return true;
+    protected void restoreSnapshot() {
+        if (_snapshotToRestore != null) {
+            if (!(_snapshotToRestore.getGameState() instanceof TribblesGameState))
+                throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
+            else {
+                _gameState = (TribblesGameState) _snapshotToRestore.getGameState();
+                _modifiersLogic = _snapshotToRestore.getModifiersLogic();
+                _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
+                _turnProcedure = _snapshotToRestore.getTurnProcedure();
+                getGameState().sendMessage("Reverted to previous game state");
+                _snapshotToRestore = null;
+                getGameState().sendStateToAllListeners();
+            }
         }
-        return (cardValue == _gameState.getNextTribbleInSequence());
     }
 
 }

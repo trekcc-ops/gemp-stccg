@@ -5,15 +5,17 @@ import java.util.List;
 public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDecision {
     private final String[] _possibleResults;
 
-    public MultipleChoiceAwaitingDecision(int id, String text, String[] possibleResults) {
-        super(id, text, AwaitingDecisionType.MULTIPLE_CHOICE);
+    public MultipleChoiceAwaitingDecision(String text, String[] possibleResults) {
+        this(text, possibleResults, -1);
+    }
+    public MultipleChoiceAwaitingDecision(String text, List<String> possibleResults) {
+        this(text, possibleResults.toArray(new String[0]), -1);
+    }
+    public MultipleChoiceAwaitingDecision(String text, String[] possibleResults, int defaultIndex) {
+        super(1, text, AwaitingDecisionType.MULTIPLE_CHOICE);
         _possibleResults = possibleResults;
         setParam("results", _possibleResults);
-    }
-    public MultipleChoiceAwaitingDecision(int id, String text, List<String> possibleResults) {
-        super(id, text, AwaitingDecisionType.MULTIPLE_CHOICE);
-        _possibleResults = possibleResults.toArray(new String[0]);
-        setParam("results", _possibleResults);
+        setParam("defaultIndex", String.valueOf(defaultIndex)); // TODO SNAPSHOT - defaultIndex does not pass through to client
     }
 
     protected abstract void validDecisionMade(int index, String result);

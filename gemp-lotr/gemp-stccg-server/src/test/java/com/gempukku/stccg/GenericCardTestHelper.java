@@ -3,10 +3,12 @@ package com.gempukku.stccg;
 import com.gempukku.stccg.actions.ActionProxy;
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
-import com.gempukku.stccg.filters.FilterFactory;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
@@ -24,8 +26,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public static final String ATARRing = "4_1";
     public static final String GreatRing = "19_1";
 
-    private final FilterFactory FilterFactory = new FilterFactory();
-    private final CardGenerationEnvironment Environment = new CardBlueprintFactory();
+    private final CardBlueprintFactory Environment = new CardBlueprintFactory();
 
     // Player key, then name/card
     public final Map<String, Map<String, PhysicalCardGeneric>> Cards = new HashMap<>();

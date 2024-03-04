@@ -1,23 +1,20 @@
 package com.gempukku.stccg.effectprocessor;
 
-import com.gempukku.stccg.cards.BuiltCardBlueprint;
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
-import com.gempukku.stccg.cards.PhysicalCard;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.condition.Condition;
 import org.json.simple.JSONObject;
 
 public class ExtraCost implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "cost");
+    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "cost");
 
-        final EffectAppender costAppender = environment.getEffectAppenderFactory().getEffectAppender((JSONObject) value.get("cost"), environment);
+        final EffectAppender costAppender = environment.getEffectAppenderFactory().getEffectAppender((JSONObject) value.get("cost"));
 
         blueprint.appendExtraPlayCost(
                 (actionContext) -> new ExtraPlayCost() {

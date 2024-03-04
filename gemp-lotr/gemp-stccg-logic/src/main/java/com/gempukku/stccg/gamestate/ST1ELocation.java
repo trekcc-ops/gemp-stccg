@@ -1,9 +1,12 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.PhysicalCard;
-import com.gempukku.stccg.cards.PhysicalMissionCard;
-import com.gempukku.stccg.cards.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.*;
 
@@ -14,6 +17,7 @@ public class ST1ELocation {
     private final List<PhysicalMissionCard> _missionCards;
     private final Set<PhysicalCard> _nonMissionCards;
     private final Set<PhysicalFacilityCard> _outpostCards;
+    private final ST1EGame _game;
     public ST1ELocation(PhysicalMissionCard mission) {
         _quadrant = mission.getQuadrant();
         _region = mission.getBlueprint().getRegion();
@@ -21,6 +25,7 @@ public class ST1ELocation {
         _missionCards = new ArrayList<>();
         _nonMissionCards = new HashSet<>();
         _outpostCards = new HashSet<>();
+        _game = mission.getGame();
         addMission(mission);
     }
 
@@ -69,8 +74,39 @@ public class ST1ELocation {
 
     public boolean hasFacilityOwnedByPlayer(String playerId) {
         for (PhysicalCard nonMission : _nonMissionCards)
-            if (nonMission.getCardType() == CardType.FACILITY && nonMission.getOwnerName() == playerId)
+            if (nonMission.getCardType() == CardType.FACILITY && nonMission.getOwnerName().equals(playerId))
                 return true;
         return false;
     }
+
+    public int getDistanceToLocation(ST1ELocation location, Player player) throws InvalidGameLogicException {
+                // TODO - Not correct if you're calculating inter-quadrant distance (e.g., Bajoran Wormhole)
+        if (location.getQuadrant() != _quadrant)
+            throw new InvalidGameLogicException("Tried to calculate span between quadrants");
+        else {
+            List<ST1ELocation> spaceline = _game.getGameState().getSpacelineLocations();
+            int startingIndex = spaceline.indexOf(this);
+            int endingIndex = spaceline.indexOf(location);
+            int distance = 0;
+            int loopStart;
+            int loopEnd;
+            if (startingIndex < endingIndex) {
+                loopStart = startingIndex + 1;
+                loopEnd = endingIndex;
+            } else {
+                loopStart = endingIndex;
+                loopEnd = startingIndex - 1;
+            }
+            for (int i = loopStart; i <= loopEnd; i++) {
+                distance += spaceline.get(i).getSpan(player);
+            }
+            return distance;
+        }
+    }
+
+    public int getLocationZoneIndex() {
+        return _game.getGameState().getSpacelineLocations().indexOf(this);
+    }
+
+    public int getSpan(Player player) { return getMissionForPlayer(player.getPlayerId()).getSpan(player); }
 }

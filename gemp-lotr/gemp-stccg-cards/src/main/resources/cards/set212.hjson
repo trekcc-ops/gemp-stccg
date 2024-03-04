@@ -1,0 +1,29 @@
+// Set 212: The Cage
+
+{
+    212_026: {
+        title: Examine Quasar
+        type: mission
+        mission-type: space
+        region: Murasaki
+        location: Murasaki 312
+        lore: Update 23rd century data on electromagnetic phenomenon.
+        affiliation-icons: federation,romulan,klingon
+        mission-requirements: SCIENCE + Exobiology + Astrophysics + Navigation
+        point-box: 35
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/cage/26.jpg
+    }
+    212_028: {
+        title: Reallocate Dividends
+        type: mission
+        mission-type: planet
+        location: Sigma Iotia II
+        lore: Collect gains from 23rd century contract and determine re-investment options.
+        affiliation-icons: federation,klingon,non-aligned,dominion,ferengi
+        mission-requirements: Diplomacy + (Anthropology OR Acquisition) + (Law OR Greed OR CUNNING>32)
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/cage/28.jpg
+    }
+}

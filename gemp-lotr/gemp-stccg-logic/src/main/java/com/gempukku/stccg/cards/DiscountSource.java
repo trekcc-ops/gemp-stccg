@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.effects.DiscountEffect;
+import com.gempukku.stccg.actions.discard.DiscountEffect;
 
 public interface DiscountSource {
     int getPotentialDiscount(ActionContext actionContext);

@@ -2,12 +2,12 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayOrder;
+import com.gempukku.stccg.game.ActionOrder;
 
 public class BetweenTurnsProcess extends GameProcess {
 
-    private DefaultGame _game;
-    private GameProcess _nextProcess;
+    private final DefaultGame _game;
+    private final GameProcess _nextProcess;
     public BetweenTurnsProcess(DefaultGame game, GameProcess nextProcess) {
         _game = game;
         _nextProcess = nextProcess;
@@ -16,10 +16,10 @@ public class BetweenTurnsProcess extends GameProcess {
     public void process() {
         _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
         _game.getGameState().sendMessage("DEBUG: Beginning BetweenTurnsProcess");
-        PlayOrder playOrder = _game.getGameState().getPlayerOrder().getClockwisePlayOrder(_game.getGameState().getCurrentPlayerId(), false);
-        playOrder.getNextPlayer();
+        ActionOrder actionOrder = _game.getGameState().getPlayerOrder().getClockwisePlayOrder(_game.getGameState().getCurrentPlayerId(), false);
+        actionOrder.getNextPlayer();
 
-        String nextPlayer = playOrder.getNextPlayer();
+        String nextPlayer = actionOrder.getNextPlayer();
         _game.getGameState().startPlayerTurn(nextPlayer);
     }
 

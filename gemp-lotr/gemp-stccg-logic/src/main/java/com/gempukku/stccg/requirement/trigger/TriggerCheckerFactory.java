@@ -1,8 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -34,7 +33,6 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("playedfromstacked", new PlayedFromStacked());
         //noinspection SpellCheckingInspection
         triggerCheckers.put("playergoesout", new PlayerGoesOut());
-        triggerCheckers.put("reconciles", new Reconciles());
         //noinspection SpellCheckingInspection
         triggerCheckers.put("removedfromplay", new RemovedFromPlay());
         //noinspection SpellCheckingInspection
@@ -48,8 +46,8 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("usesspecialability", new UsesSpecialAbility());
     }
 
-    public TriggerChecker getTriggerChecker(JSONObject object, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        final String triggerType = FieldUtils.getString(object.get("type"), "type");
+    public TriggerChecker getTriggerChecker(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        final String triggerType = environment.getString(object.get("type"), "type");
         if (triggerType == null)
             throw new InvalidCardDefinitionException("Trigger type not defined");
         final TriggerCheckerProducer triggerCheckerProducer = triggerCheckers.get(triggerType.toLowerCase());

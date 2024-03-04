@@ -896,8 +896,8 @@
             return d;
         }
 
-            // TODO: see if these methods can be made more useful...
-            // TODO: *maybe* return cssW/H from these so caller can use this info
+            //  see if these methods can be made more useful...
+            //  *maybe* return cssW/H from these so caller can use this info
 
             /**
              * @param {(string|!Object)}        el
@@ -1400,7 +1400,7 @@
                         ,    overflowX:    hid
                         ,    overflowY:    hid
                         ,    margin:        0
-                        ,    padding:    0        // TODO: test whether body-padding could be handled?
+                        ,    padding:    0        //  test whether body-padding could be handled?
                         ,    border:        "none"    // a body-border creates problems because it cannot be measured!
                     });
 
@@ -1463,7 +1463,7 @@
             // simplify logic by making sure passed 'opts' var has basic keys
             opts = _transformData(opts);
 
-            // TODO: create a compatibility add-on for new UI widget that will transform old option syntax
+            //  create a compatibility add-on for new UI widget that will transform old option syntax
             var newOpts = {
                 applyDefaultStyles:        "applyDemoStyles"
             };
@@ -2015,7 +2015,7 @@
                     ,    helper:            "clone"
                     ,    opacity:        o.resizerDragOpacity
                     ,    addClasses:        false // avoid ui-state-disabled class when disabled
-                    //,	iframeFix:		o.draggableIframeFix // TODO: consider using when bug is fixed
+                    //,	iframeFix:		o.draggableIframeFix //  consider using when bug is fixed
                     ,    zIndex:            _c.zIndex.resizer_drag
 
                     ,    start: function (e, ui) {
@@ -2026,7 +2026,7 @@
                         live = o.resizeWhileDragging;
 
                         // ondrag_start callback - will CANCEL hide if returns false
-                        // TODO: dragging CANNOT be cancelled like this, so see if there is a way?
+                        //  dragging CANNOT be cancelled like this, so see if there is a way?
                         if (false === _execCallback(pane, o.ondrag_start)) return false;
 
                         _c.isLayoutBusy = true; // used by sizePane() logic during a liveResize
@@ -2141,7 +2141,7 @@
                         $("div.ui-layout-mask").each(function() {
                             this.parentNode.removeChild(this);
                         });
-                        //$("div.ui-layout-mask").remove(); // TODO: Is this less efficient?
+                        //$("div.ui-layout-mask").remove(); //  Is this less efficient?
 
                         // ondrag_start callback - will CANCEL hide if returns false
                         if (false === _execCallback(pane, o.ondrag_end || o.ondrag)) return false;
@@ -2234,7 +2234,7 @@
                         .removeData("layoutEdge")
                         .removeData("autoHidden")// in case set
                         .unbind("." + sID) // remove ALL Layout events
-                    // TODO: remove these extra unbind commands when jQuery is fixed
+                    //  remove these extra unbind commands when jQuery is fixed
                     //.unbind("mouseenter"+ sID)
                     //.unbind("mouseleave"+ sID)
                         ;
@@ -2713,7 +2713,7 @@
             if (!skipCallback && (state.initialized || o.triggerEventsOnLoad) && $P.is(":visible")) {
                 // onopen callback
                 _execCallback(pane, o.onopen_end || o.onopen);
-                // onshow callback - TODO: should this be here?
+                // onshow callback -  should this be here?
                 if (s.isShowing) _execCallback(pane, o.onshow_end || o.onshow);
                 // ALSO call onresize because layout-size *may* have changed while pane was closed
                 if (state.initialized) {
@@ -2788,7 +2788,7 @@
              */
             function close_NOW() {
                 if (s.isClosed) // skip 'close' if already closed!
-                    bindStopSlidingEvents(pane, false); // UNBIND trigger events - TODO: is this needed here?
+                    bindStopSlidingEvents(pane, false); // UNBIND trigger events -  is this needed here?
                 else if (!_c[pane].isMoving)
                     close(pane); // close will handle unbinding
             }
@@ -2817,7 +2817,7 @@
                     $P.css({ left: sC.insetLeft + sC.innerWidth - $P.outerWidth() });
             }
             else { // animation DONE - RESET CSS
-                // TODO: see if this can be deleted. It causes a quick-close when sliding in Chrome
+                //  see if this can be deleted. It causes a quick-close when sliding in Chrome
                 $P.css({ zIndex: (state[pane].isSliding ? _c.zIndex.pane_sliding : _c.zIndex.pane_normal) });
                 if (pane == "south")
                     $P.css({ top: "auto" });
@@ -3476,7 +3476,7 @@
                     $R.css({
                         height:    max(1, cssH($R, paneLen)) // account for borders & padding
                         ,    width:    max(0, cssW($R, spacing)) // ditto
-                        ,    top:    sC.insetTop + getPaneSize("north", true) // TODO: what if no North pane?
+                        ,    top:    sC.insetTop + getPaneSize("north", true) //  what if no North pane?
                         //,	top:	$.layout.cssNum($Ps["center"], "top")
                     });
                 }
@@ -3522,7 +3522,7 @@
                         $T.css({
                             width:    max(0, width)  // account for borders & padding
                             ,    height:    max(1, cssH($T, spacing)) // ditto
-                            ,    left:    offset // TODO: VERIFY that toggler  positions correctly for ALL values
+                            ,    left:    offset //  VERIFY that toggler  positions correctly for ALL values
                             ,    top:    0
                         });
                         // CENTER the toggler content SPAN
@@ -4175,7 +4175,7 @@
          */
 
         function isCookiesEnabled() {
-            // TODO: is the cookieEnabled property common enough to be useful???
+            //  is the cookieEnabled property common enough to be useful???
             return (navigator.cookieEnabled != 0);
         }
 

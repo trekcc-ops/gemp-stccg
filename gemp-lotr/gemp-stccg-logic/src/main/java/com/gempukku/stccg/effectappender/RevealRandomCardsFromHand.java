@@ -1,38 +1,38 @@
 package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.revealcards.RevealRandomCardsFromHandEffect;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.defaulteffect.RevealRandomCardsFromHandEffect;
 import org.json.simple.JSONObject;
 
 import java.util.List;
 
 public class RevealRandomCardsFromHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(effectObject, "hand", "forced", "count", "memorize");
+    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(effectObject, "hand", "forced", "count", "memorize");
 
-        final String hand = FieldUtils.getString(effectObject.get("hand"), "hand", "you");
-        final boolean forced = FieldUtils.getBoolean(effectObject.get("forced"), "forced");
-        final String memorized = FieldUtils.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final String hand = environment.getString(effectObject.get("hand"), "hand", "you");
+        final boolean forced = environment.getBoolean(effectObject.get("forced"), "forced");
+        final String memorized = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
 
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final PlayerSource handSource = PlayerResolver.resolvePlayer(hand);
 
         return new DefaultDelayedAppender() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                final String handPlayer = handSource.getPlayerId(actionContext);
-                final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+                final String handPlayer = handSource.getPlayerId(context);
+                final int count = countSource.evaluateExpression(context, null);
 
-                return new RevealRandomCardsFromHandEffect(actionContext, handPlayer, count) {
+                return new RevealRandomCardsFromHandEffect(context, handPlayer, count) {
                     @Override
                     protected void cardsRevealed(List<PhysicalCard> revealedCards) {
-                        actionContext.setCardMemory(memorized, revealedCards);
+                        context.setCardMemory(memorized, revealedCards);
                     }
                 };
             }
@@ -40,11 +40,11 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String handPlayer = handSource.getPlayerId(actionContext);
-                final int count = countSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
+                final int count = countSource.evaluateExpression(actionContext, null);
                 if (actionContext.getGameState().getHand(handPlayer).size() < count)
                     return false;
                 return !forced
-                        || actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(actionContext.getGame(), handPlayer, actionContext.getPerformingPlayer());
+                        || actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(actionContext.getGame(), handPlayer, actionContext.getPerformingPlayerId());
             }
         };
     }

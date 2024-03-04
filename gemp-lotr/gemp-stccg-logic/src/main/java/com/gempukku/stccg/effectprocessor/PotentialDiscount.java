@@ -1,35 +1,36 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.discard.DiscardCardFromHandDiscountEffect;
+import com.gempukku.stccg.actions.discard.OptionalDiscardDiscountEffect;
+import com.gempukku.stccg.actions.discard.RemoveCardsFromDiscardDiscountEffect;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.effects.DiscountEffect;
-import com.gempukku.stccg.fieldprocessor.FieldUtils;
+import com.gempukku.stccg.actions.discard.DiscountEffect;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.effects.discount.*;
 import org.json.simple.JSONObject;
 
 public class PotentialDiscount implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, BuiltCardBlueprint blueprint, CardGenerationEnvironment environment) throws InvalidCardDefinitionException {
-        FieldUtils.validateAllowedFields(value, "max", "discount", "memorize");
+    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "max", "discount", "memorize");
 
         final ValueSource maxSource = ValueResolver.resolveEvaluator(value.get("max"), 1000, environment);
         final JSONObject discount = (JSONObject) value.get("discount");
-        final String memory = FieldUtils.getString(value.get("memorize"), "memorize", "_temp");
+        final String memory = environment.getString(value.get("memorize"), "memorize", "_temp");
 
-        final String discountType = FieldUtils.getString(discount.get("type"), "type");
+        final String discountType = environment.getString(discount.get("type"), "type");
         if (discountType.equalsIgnoreCase("perDiscardFromHand")) {
-            FieldUtils.validateAllowedFields(discount, "filter");
+            environment.validateAllowedFields(discount, "filter");
 
-            final String filter = FieldUtils.getString(discount.get("filter"), "filter", "any");
-            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+            final String filter = environment.getString(discount.get("filter"), "filter", "any");
+            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
 
             blueprint.appendDiscountSource(
                 new DiscountSource() {
                     @Override
                     public int getPotentialDiscount(ActionContext actionContext) {
-                        return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
+                        return maxSource.evaluateExpression(actionContext, actionContext.getSource());
                     }
 
                     @Override
@@ -46,24 +47,24 @@ public class PotentialDiscount implements EffectProcessor {
                 });
         }
         else if (discountType.equalsIgnoreCase("ifDiscardFromPlay")) {
-            FieldUtils.validateAllowedFields(discount, "count", "filter");
+            environment.validateAllowedFields(discount, "count", "filter");
 
             final ValueSource discardCountSource = ValueResolver.resolveEvaluator(discount.get("count"), environment);
-            final String filter = FieldUtils.getString(discount.get("filter"), "filter", "any");
-            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+            final String filter = environment.getString(discount.get("filter"), "filter", "any");
+            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
 
             blueprint.appendDiscountSource(
                 new DiscountSource() {
                     @Override
                     public int getPotentialDiscount(ActionContext actionContext) {
-                        return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
+                        return maxSource.evaluateExpression(actionContext, actionContext.getSource());
                     }
 
                     @Override
                     public DiscountEffect getDiscountEffect(CostToEffectAction action, ActionContext actionContext) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        final int max = maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
-                        final int discardCount = discardCountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
+                        final int max = maxSource.evaluateExpression(actionContext);
+                        final int discardCount = discardCountSource.evaluateExpression(actionContext);
                         actionContext.setValueToMemory(memory, "No");
                         return new OptionalDiscardDiscountEffect(actionContext, action, max, discardCount, filterable) {
                             @Override
@@ -76,24 +77,24 @@ public class PotentialDiscount implements EffectProcessor {
                 });
         }
         else if (discountType.equalsIgnoreCase("ifRemoveFromDiscard")) {
-            FieldUtils.validateAllowedFields(discount, "count", "filter");
+            environment.validateAllowedFields(discount, "count", "filter");
 
             final ValueSource removeCountSource = ValueResolver.resolveEvaluator(value.get("count"), environment);
-            final String filter = FieldUtils.getString(discount.get("filter"), "filter", "any");
-            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter, environment);
+            final String filter = environment.getString(discount.get("filter"), "filter", "any");
+            final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
 
             blueprint.appendDiscountSource(
                 new DiscountSource() {
                     @Override
                     public int getPotentialDiscount(ActionContext actionContext) {
-                        return maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
+                        return maxSource.evaluateExpression(actionContext);
                     }
 
                     @Override
                     public DiscountEffect getDiscountEffect(CostToEffectAction action, ActionContext actionContext) {
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        final int max = maxSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
-                        final int removeCount = removeCountSource.getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), actionContext.getSource());
+                        final int max = maxSource.evaluateExpression(actionContext);
+                        final int removeCount = removeCountSource.evaluateExpression(actionContext);
                         actionContext.setValueToMemory(memory, "No");
                         return new RemoveCardsFromDiscardDiscountEffect(actionContext, removeCount, max, filterable) {
                             @Override

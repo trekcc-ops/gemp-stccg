@@ -1,12 +1,12 @@
 package com.gempukku.stccg.requirement;
 
-import com.gempukku.stccg.cards.CardGenerationEnvironment;
+import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import org.json.simple.JSONObject;
 
 public class TribbleSequenceBroken extends RequirementProducer{
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardGenerationEnvironment environment) {
+    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) {
 
         return actionContext -> {
             if (actionContext instanceof TribblesActionContext)

@@ -1,22 +1,20 @@
 package com.gempukku.stccg.rules;
 
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
+import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.rules.tribbles.TribblesOptionalTriggersRule;
 
 public class ST1ERuleSet extends RuleSet {
-    private final DefaultActionsEnvironment _actionsEnvironment;
+    private final ActionsEnvironment _actionsEnvironment;
 
-    public ST1ERuleSet(DefaultActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic) {
+    public ST1ERuleSet(ActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic) {
         super(actionsEnvironment, modifiersLogic);
         _actionsEnvironment = actionsEnvironment;
     }
 
-    public void applyRuleSet() {
-        new DiscardedCardRule(_actionsEnvironment).applyRule();
+    public void applySpecificRules() {
         new ST1EPlayCardInPhaseRule(_actionsEnvironment).applyRule();
         new ST1EExecuteOrdersRule(_actionsEnvironment).applyRule();
-        new ActivateResponseAbilitiesRule(_actionsEnvironment).applyRule();
-        new RequiredTriggersRule(_actionsEnvironment).applyRule();
+        new ST1EAffiliationAttackRestrictionsRule(_actionsEnvironment).applyRule();
+//        new ActivatePhaseActionsRule(_actionsEnvironment).applyRule();
     }
 }

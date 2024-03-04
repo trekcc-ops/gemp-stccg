@@ -2,12 +2,11 @@ package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.actions.RequiredTriggerAction;
-import com.gempukku.stccg.cards.PhysicalCard;
+import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.RequiredType;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.results.EffectResult;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,10 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RequiredTriggersRule {
-    private final DefaultActionsEnvironment actionsEnvironment;
+    private final ActionsEnvironment actionsEnvironment;
     private final DefaultGame _game;
 
-    public RequiredTriggersRule(DefaultActionsEnvironment actionsEnvironment) {
+    public RequiredTriggersRule(ActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
         _game = actionsEnvironment.getGame();
     }

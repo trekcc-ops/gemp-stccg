@@ -1,10 +1,6 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.effects.Effect;
-import com.gempukku.stccg.effects.PlayOutDecisionEffect;
-import com.gempukku.stccg.effects.defaulteffect.UnrespondableEffect;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Iterator;
 
@@ -16,8 +12,9 @@ public class PreventSubAction extends SubAction {
 
     private Effect _playerPreventionCost;
 
-    public PreventSubAction(DefaultGame game, Action action, Effect effectToExecute, Iterator<String> choicePlayers, PreventionCost preventionCost, Effect insteadEffect) {
-        super(action, game);
+    public PreventSubAction(Action action, Effect effectToExecute, Iterator<String> choicePlayers,
+                            PreventionCost preventionCost, Effect insteadEffect) {
+        super(action);
         _effectToExecute = effectToExecute;
         _choicePlayers = choicePlayers;
         _preventionCost = preventionCost;
