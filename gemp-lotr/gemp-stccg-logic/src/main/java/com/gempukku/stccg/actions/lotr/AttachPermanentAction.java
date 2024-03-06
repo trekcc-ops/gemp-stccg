@@ -46,7 +46,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
                     @Override
                     protected void cardSelected(PhysicalCard target) {
                         _target = target;
-                        _game.getGameState().sendMessage(card.getOwnerName() + " plays " + card.getCardLink() +
+                        _game.sendMessage(card.getOwnerName() + " plays " + card.getCardLink() +
                                 " from " + _playedFrom.getHumanReadable() + " on " + target.getCardLink());
                     }
                 };
@@ -76,7 +76,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
             else
                 _game.getGameState().addCardToZone(_cardToAttach, Zone.VOID);
             if (playedFromZone == Zone.DRAW_DECK) {
-                _game.getGameState().sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
+                _game.sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
                 _game.getGameState().shuffleDeck(_cardToAttach.getOwnerName());
             }
         }

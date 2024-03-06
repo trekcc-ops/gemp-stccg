@@ -57,8 +57,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         }
     }
 
-    public void signalEndOfPhase(Phase phase) {
-        List<ActionProxy> list = _untilEndOfPhaseActionProxies.get(phase);
+    public void signalEndOfPhase() {
+        List<ActionProxy> list = _untilEndOfPhaseActionProxies.get(_game.getGameState().getCurrentPhase());
         if (list != null) {
             _actionProxies.removeAll(list);
             list.clear();

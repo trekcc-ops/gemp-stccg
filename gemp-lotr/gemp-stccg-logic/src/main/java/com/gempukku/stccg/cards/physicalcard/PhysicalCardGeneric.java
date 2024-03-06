@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -19,6 +21,14 @@ public class PhysicalCardGeneric extends PhysicalCard {
 
     @Override
     public DefaultGame getGame() { return _game; }
+
+    @Override
+    public CostToEffectAction getPlayCardAction(boolean forFree) {
+        return new PlayCardAction(this) {
+          @Override
+          public DefaultGame getGame() { return _game; }
+        };
+    }
 
 
 }

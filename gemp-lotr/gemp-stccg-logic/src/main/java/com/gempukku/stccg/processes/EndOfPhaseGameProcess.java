@@ -1,14 +1,12 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.actions.SystemQueueAction;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.actions.EffectType;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.modifiers.ModifiersLogic;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.turn.EndOfPhaseResult;
+import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class EndOfPhaseGameProcess extends GameProcess {
     private final Phase _phase;
@@ -23,11 +21,10 @@ public class EndOfPhaseGameProcess extends GameProcess {
 
     @Override
     public void process() {
-        _game.getGameState().sendMessage("DEBUG: Beginning EndOfPhaseGameProcess");
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of " + _phase + " phase");
         action.appendEffect(
-                new TriggeringResultEffect(null, new EndOfPhaseResult(_phase, _game), "End of " + _phase + " phase"));
+                new TriggeringResultEffect(new EndOfPhaseResult(_phase, _game), "End of " + _phase + " phase"));
         action.appendEffect(
                 new Effect() {
                     @Override
@@ -53,9 +50,9 @@ public class EndOfPhaseGameProcess extends GameProcess {
 
                     @Override
                     public void playEffect() {
-                        ((ModifiersLogic) _game.getModifiersEnvironment()).signalEndOfPhase(_phase);
-                        ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalEndOfPhase(_phase);
-                        _game.getGameState().sendMessage("End of " + _phase + " phase.");
+                        _game.getModifiersEnvironment().signalEndOfPhase();
+                        _game.getActionsEnvironment().signalEndOfPhase();
+                        _game.sendMessage("End of " + _phase + " phase.");
                     }
                 });
         _game.getActionsEnvironment().addActionToStack(action);

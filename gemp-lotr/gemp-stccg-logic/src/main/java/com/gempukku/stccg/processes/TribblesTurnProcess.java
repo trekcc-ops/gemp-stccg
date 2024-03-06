@@ -11,7 +11,7 @@ public class TribblesTurnProcess extends GameProcess {
     }
     @Override
     public void process() {
-//        game.getGameState().sendMessage("DEBUG: Beginning TribblesTurnProcess");
+//        game.sendMessage("DEBUG: Beginning TribblesTurnProcess");
         _followingGameProcess = new TribblesPlayerPlaysOrDraws(_game.getGameState().getCurrentPlayerId(),
                 new TribblesEndOfTurnGameProcess(_game), _game
         );

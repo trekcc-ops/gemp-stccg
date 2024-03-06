@@ -39,10 +39,10 @@ public class SeedCardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         ST1EGameState gameState = _game.getGameState();
 
-        gameState.sendMessage(_cardSeeded.getOwnerName() + " seeded " + _cardSeeded.getCardLink());
+        _game.sendMessage(_cardSeeded.getOwnerName() + " seeded " + _cardSeeded.getCardLink());
         gameState.removeCardFromZone(_cardSeeded);
         if (_fromZone == Zone.DRAW_DECK) {
-            _game.getGameState().sendMessage(_cardSeeded.getOwnerName() + " shuffles their deck");
+            _game.sendMessage(_cardSeeded.getOwnerName() + " shuffles their deck");
             _game.getGameState().shuffleDeck(_cardSeeded.getOwnerName());
         }
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);

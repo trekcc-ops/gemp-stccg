@@ -81,7 +81,7 @@ public class FlyShipAction extends AbstractCostToEffectAction {
             _flyingCard.useRange(_destinationRangeMap.get(_destination));
             _flyingCard.setLocation(_destination.getLocation());
             _flyingCard.getGame().getGameState().moveCard(_flyingCard);
-            _flyingCard.getGame().getGameState().sendMessage(
+            _flyingCard.getGame().sendMessage(
                     _flyingCard.getCardLink() + " flew to " + _destination.getLocation().getLocationName() +
                             " (using " + _destinationRangeMap.get(_destination) + " RANGE)"
             );

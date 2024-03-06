@@ -1,4 +1,4 @@
-package com.gempukku.stccg.rules;
+package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.common.filterable.*;
@@ -12,6 +12,7 @@ public class ST1EAffiliationAttackRestrictionsRule {
     }
 
     public void applyRule() {
+                // TODO - This doesn't account for complexity of mixed-affiliation forces
         _game.setAffiliationAttackRestrictions(
                 (attacking, defending) -> {
                     if (attacking == Affiliation.KLINGON || attacking == Affiliation.KAZON ||

@@ -71,7 +71,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
             _cardRemoved = true;
             final Zone playedFromZone = _eventPlayed.getZone();
 
-            _game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " plays " + _eventPlayed.getCardLink() +
+            _game.sendMessage(_eventPlayed.getOwnerName() + " plays " + _eventPlayed.getCardLink() +
                     " from " + playedFromZone.getHumanReadable());
             _game.getGameState().removeCardsFromZone(_eventPlayed.getOwnerName(), Collections.singleton(_eventPlayed));
 
@@ -81,7 +81,7 @@ public class PlayEventAction extends AbstractCostToEffectAction {
                 _game.getGameState().addCardToZone(_eventPlayed, Zone.VOID);
 
             if (playedFromZone == Zone.DRAW_DECK) {
-                _game.getGameState().sendMessage(_eventPlayed.getOwnerName() + " shuffles their deck");
+                _game.sendMessage(_eventPlayed.getOwnerName() + " shuffles their deck");
                 _game.getGameState().shuffleDeck(_eventPlayed.getOwnerName());
             }
 

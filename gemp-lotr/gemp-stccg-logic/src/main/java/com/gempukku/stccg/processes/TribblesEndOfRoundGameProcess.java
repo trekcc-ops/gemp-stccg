@@ -29,7 +29,7 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 _pointsScored.put(playerId, score);
                 gameState.addToPlayerScore(playerId, score);
-                gameState.sendMessage(playerId + " went out with " + score + " points");
+                _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
             }
 

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.requirement.missionrequirements;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalPersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.RegularSkill;
 
 import java.util.Collection;
@@ -18,15 +18,15 @@ public class RegularSkillMissionRequirement implements MissionRequirement {
         _count = count;
     }
     @Override
-    public boolean canBeMetBy(PhysicalPersonnelCard personnel) {
+    public boolean canBeMetBy(PersonnelCard personnel) {
         Integer skillCount = personnel.getSkillLevel(_skill);
         return skillCount >= _count;
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PhysicalPersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
         int totalSkillLevel = 0;
-        for (PhysicalPersonnelCard card : personnel) {
+        for (PersonnelCard card : personnel) {
             totalSkillLevel += card.getSkillLevel(_skill);
         }
         return totalSkillLevel >= _count;

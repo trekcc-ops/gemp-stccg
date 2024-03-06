@@ -49,7 +49,7 @@ public class TribblesGame extends DefaultGame {
                 _modifiersLogic = _snapshotToRestore.getModifiersLogic();
                 _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                getGameState().sendMessage("Reverted to previous game state");
+                sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
                 getGameState().sendStateToAllListeners();
             }

@@ -48,7 +48,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToPlay.getZone();
-            _game.getGameState().sendMessage(_cardToPlay.getOwnerName() + " plays " +
+            _game.sendMessage(_cardToPlay.getOwnerName() + " plays " +
                     _cardToPlay.getCardLink() +  " from " + playedFromZone.getHumanReadable() +
                     " to " + _toZone.getHumanReadable());
             _game.getGameState().removeCardsFromZone(_cardToPlay.getOwnerName(),
@@ -59,7 +59,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
             else
                 _game.getGameState().addCardToZone(_game, _permanentPlayed, Zone.VOID); */
             if (playedFromZone == Zone.DRAW_DECK) {
-                _game.getGameState().sendMessage(_cardToPlay.getOwnerName() + " shuffles their deck");
+                _game.sendMessage(_cardToPlay.getOwnerName() + " shuffles their deck");
                 _game.getGameState().shuffleDeck(_cardToPlay.getOwnerName());
             }
         }

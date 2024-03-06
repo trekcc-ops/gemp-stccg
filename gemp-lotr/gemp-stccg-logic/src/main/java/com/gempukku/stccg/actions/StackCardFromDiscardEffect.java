@@ -32,7 +32,7 @@ public class StackCardFromDiscardEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(_card.getOwnerName() + " stacks " + _card.getCardLink() + " from discard on " + _stackOn.getCardLink());
+            _game.sendMessage(_card.getOwnerName() + " stacks " + _card.getCardLink() + " from discard on " + _stackOn.getCardLink());
             _game.getGameState().removeCardsFromZone(_card.getOwnerName(), Collections.singleton(_card));
             _game.getGameState().stackCard(_card, _stackOn);
             return new FullEffectResult(true);

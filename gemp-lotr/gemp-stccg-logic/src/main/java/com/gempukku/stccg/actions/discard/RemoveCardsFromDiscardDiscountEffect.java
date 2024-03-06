@@ -109,7 +109,7 @@ public class RemoveCardsFromDiscardDiscountEffect implements DiscountEffect {
         for (PhysicalCard removedCard : removedCards)
             game.getGameState().addCardToZone(removedCard, Zone.REMOVED);
 
-        game.getGameState().sendMessage(_playerId + " removed " + TextUtils.getConcatenatedCardLinks(removedCards) + " from discard using " + _source.getCardLink());
+        game.sendMessage(_playerId + " removed " + TextUtils.getConcatenatedCardLinks(removedCards) + " from discard using " + _source.getCardLink());
         discountPaidCallback(removedCards.size());
     }
 

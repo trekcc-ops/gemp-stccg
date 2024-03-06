@@ -9,13 +9,15 @@ import com.gempukku.stccg.processes.GameProcess;
 
 public class ST1EEndOfTurnProcess extends ST1EGameProcess {
     private final String _playerId;
-    ST1EEndOfTurnProcess(String playerId, ST1EGame game) {
+
+    ST1EEndOfTurnProcess(ST1EGame game) {
         super(game);
-        _playerId = playerId;
+        _playerId = game.getCurrentPlayerId();
     }
+
     @Override
     public void process() {
-//        _game.getGameState().sendMessage("DEBUG: End of turn phase.");
+//        _game.sendMessage("DEBUG: End of turn phase.");
         for (PhysicalCard card : Filters.filterActive(_game, Filters.ship)) {
             ((PhysicalShipCard) card).restoreRange();
         }

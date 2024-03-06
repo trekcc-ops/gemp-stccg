@@ -1,8 +1,8 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -14,11 +14,11 @@ public class ST1ELocation {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
-    private final List<PhysicalMissionCard> _missionCards;
+    private final List<MissionCard> _missionCards;
     private final Set<PhysicalCard> _nonMissionCards;
-    private final Set<PhysicalFacilityCard> _outpostCards;
+    private final Set<FacilityCard> _outpostCards;
     private final ST1EGame _game;
-    public ST1ELocation(PhysicalMissionCard mission) {
+    public ST1ELocation(MissionCard mission) {
         _quadrant = mission.getQuadrant();
         _region = mission.getBlueprint().getRegion();
         _locationName = mission.getBlueprint().getLocation();
@@ -29,10 +29,10 @@ public class ST1ELocation {
         addMission(mission);
     }
 
-    public List<PhysicalMissionCard> getMissions() { return _missionCards; }
-    public Set<PhysicalFacilityCard> getOutposts() { return _outpostCards; }
+    public List<MissionCard> getMissions() { return _missionCards; }
+    public Set<FacilityCard> getOutposts() { return _outpostCards; }
     public boolean hasMissions() { return !_missionCards.isEmpty(); }
-    public void addMission(PhysicalMissionCard card) {
+    public void addMission(MissionCard card) {
         _missionCards.add(card);
         card.setLocation(this);
     }
@@ -46,12 +46,12 @@ public class ST1ELocation {
             // TODO - Assumes that the mission is symmetric
             return getMissionForPlayer(playerId).getBlueprint().getOwnerAffiliationIcons();
     }
-    public PhysicalMissionCard getMissionForPlayer(String playerId) {
+    public MissionCard getMissionForPlayer(String playerId) {
         if (_missionCards.size() == 1) {
             return _missionCards.get(0);
         }
         else if (_missionCards.size() == 2) {
-            for (PhysicalMissionCard mission : _missionCards) {
+            for (MissionCard mission : _missionCards) {
                 if (Objects.equals(mission.getOwnerName(), playerId))
                     return mission;
             }
@@ -62,11 +62,11 @@ public class ST1ELocation {
     public void addNonMission(PhysicalCard card) {
         _nonMissionCards.add(card);
         if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
-            _outpostCards.add((PhysicalFacilityCard) card);
+            _outpostCards.add((FacilityCard) card);
     }
 
     public void refreshSpacelineIndex(int newIndex) {
-        for (PhysicalMissionCard mission : _missionCards)
+        for (MissionCard mission : _missionCards)
             mission.setLocationZoneIndex(newIndex);
         for (PhysicalCard nonMission : _nonMissionCards)
             nonMission.setLocationZoneIndex(newIndex);

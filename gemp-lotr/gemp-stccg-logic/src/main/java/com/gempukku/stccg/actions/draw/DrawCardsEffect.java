@@ -55,7 +55,7 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
                                 count++;
                         }
                         if (count > 0)
-                            _game.getGameState().sendMessage(
+                            _game.sendMessage(
                                     _playerId + " draws " + count + " card" + ((count > 1) ? "s" : ""));
                     }
                 }

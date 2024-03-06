@@ -32,7 +32,7 @@ public class CancelEventEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage(_source.getCardLink() + " cancels effect - " +
+            _game.sendMessage(_source.getCardLink() + " cancels effect - " +
                     _playedCard.getCardLink());
             _effectResult.cancelEvent();
             return new FullEffectResult(true);

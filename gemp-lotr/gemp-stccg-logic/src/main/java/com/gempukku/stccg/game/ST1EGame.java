@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -10,7 +11,7 @@ import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.AffiliationAttackRestrictions;
-import com.gempukku.stccg.rules.ST1ERuleSet;
+import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 
 import java.util.Map;
 
@@ -47,17 +48,15 @@ public class ST1EGame extends DefaultGame {
 
     protected void restoreSnapshot() {
         if (_snapshotToRestore != null) {
-            if (!(_snapshotToRestore.getGameState() instanceof ST1EGameState))
-                throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
-            else {
-                _gameState = (ST1EGameState) _snapshotToRestore.getGameState();
+            if (_snapshotToRestore.getGameState() instanceof ST1EGameState st1estate) {
+                _gameState = st1estate;
                 _modifiersLogic = _snapshotToRestore.getModifiersLogic();
                 _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                getGameState().sendMessage("Reverted to previous game state");
+                sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
-                getGameState().sendStateToAllListeners();
-            }
+                st1estate.sendStateToAllListeners();
+            } else throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
         }
     }
 
@@ -71,5 +70,11 @@ public class ST1EGame extends DefaultGame {
     }
 
     public AffiliationAttackRestrictions getAffiliationAttackRestrictions() { return _affiliationAttackRestrictions; }
+
+    @Override
+    public boolean shouldAutoPass(String playerId, Phase phase) {
+            // If false for a given phase, the user will still be prompted to "Pass" even if they have no legal actions.
+        return phase == Phase.SEED_FACILITY || phase == Phase.SEED_DOORWAY || phase == Phase.SEED_MISSION;
+    }
 
 }

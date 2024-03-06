@@ -3,14 +3,14 @@ package com.gempukku.stccg.actions.missionattempt;
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.AttemptingEntity;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.List;
 
 public class EncounterSeedCardAction extends AbstractCostToEffectAction {
-    private AttemptingEntity _attemptingEntity;
+    private AttemptingUnit _attemptingUnit;
     private final Player _player;
     private final ST1EGame _game;
     private String _cardEncountered;
@@ -21,7 +21,7 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
         super(action.getPlayer(), ActionType.OTHER);
         _player = action.getPlayer();
         _game = action.getGame();
-        _attemptingEntity = action.getAttemptingEntity();
+        _attemptingUnit = action.getAttemptingEntity();
         _seedCards = seedCards;
     }
 
@@ -44,7 +44,7 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
 
         if (!_seedCardWasRevealed) {
             _cardEncountered = _seedCards.get(0);
-            _game.getGameState().sendMessage("Seed card encountered: " + _cardEncountered);
+            _game.sendMessage("Seed card encountered: " + _cardEncountered);
             _seedCardWasRevealed = true;
             _seedCards.remove(0);
         }

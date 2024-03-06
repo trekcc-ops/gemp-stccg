@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ST1EGame;
@@ -11,11 +11,11 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 public class ReportCardEffect extends DefaultEffect {
     private final Zone _playedFrom;
     private final PhysicalReportableCard1E _cardPlayed;
-    private final PhysicalFacilityCard _reportingDestination;
+    private final FacilityCard _reportingDestination;
     private final ST1EGame _game;
 
     public ReportCardEffect(String performingPlayerId, Zone playedFrom, PhysicalReportableCard1E cardPlayed,
-                            PhysicalFacilityCard reportingDestination) {
+                            FacilityCard reportingDestination) {
         super(performingPlayerId);
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
@@ -41,14 +41,10 @@ public class ReportCardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         ST1EGameState gameState = _game.getGameState();
 
-        _game.getGameState().sendMessage(_cardPlayed.getOwnerName() + " played " +
-                _cardPlayed.getCardLink());
+        _game.sendMessage(_cardPlayed.getOwnerName() + " played " + _cardPlayed.getCardLink());
 
         gameState.removeCardFromZone(_cardPlayed);
         _game.getGameState().getPlayer(_cardPlayed.getOwnerName()).addPlayedAffiliation(_cardPlayed.getCurrentAffiliation());
-        _game.getGameState().sendMessage(
-                "DEBUG: " + _cardPlayed.getOwnerName() + " now playing: " +
-                        _cardPlayed.getCurrentAffiliation().getHumanReadable());
         _cardPlayed.reportToFacility(_reportingDestination);
         _game.getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, _playedFrom, _cardPlayed));

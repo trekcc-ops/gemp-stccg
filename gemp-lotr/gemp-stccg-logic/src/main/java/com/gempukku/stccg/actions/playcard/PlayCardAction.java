@@ -33,9 +33,15 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
         _toZone = toZone;
     }
 
+    public PlayCardAction(PhysicalCard card) {
+        this(card, card, card.getOwnerName(), Zone.TABLE, ActionType.PLAY_CARD);
+    }
+
     @Override
     public boolean canBeInitiated() {
-        return _cardEnteringPlay.canBePlayed();
+        if (!_cardEnteringPlay.canBePlayed())
+            return false;
+        return costsCanBePaid();
     }
 
     @Override
@@ -70,7 +76,7 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
         _reshuffle = reshuffle;
     }
 
-    protected abstract Effect getFinalEffect();
+    protected Effect getFinalEffect() { return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone); }
 
     public Effect nextEffect() {
         if (!_actionWasInitiated) {
@@ -78,13 +84,17 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
             _game.getGameState().beginPlayCard(this);
         }
 
+        Effect cost = getNextCost();
+        if (cost != null)
+            return cost;
+
         if (!_cardWasRemoved) {
             _cardWasRemoved = true;
-            _game.getGameState().sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
+            _game.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
                     _cardEnteringPlay.getCardLink() +  " from " + _fromZone.getHumanReadable() +
                     " to " + _toZone.getHumanReadable());
             if (_fromZone == Zone.DRAW_DECK) {
-                _game.getGameState().sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
+                _game.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
                 _game.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
             }
         }

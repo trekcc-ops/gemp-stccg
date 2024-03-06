@@ -15,13 +15,13 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public PhysicalReportableCard1E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
     }
-    public boolean canReportToFacility(PhysicalFacilityCard facility) {
+    public boolean canReportToFacility(FacilityCard facility) {
         for (Affiliation affiliation : _affiliationOptions)
             if (canReportToFacilityAsAffiliation(facility, affiliation))
                 return true;
         return false;
     }
-    public boolean canReportToFacilityAsAffiliation(PhysicalFacilityCard facility, Affiliation affiliation) {
+    public boolean canReportToFacilityAsAffiliation(FacilityCard facility, Affiliation affiliation) {
             /* Normally, Personnel, Ship, and Equipment cards play at a usable, compatible outpost or headquarters
                 in their native quadrant. */
         // TODO - Does not perform any compatibility checks other than affiliation
@@ -36,7 +36,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         if (!cardWithCrew.isCompatibleWith(affiliation))
             return false;
         for (PhysicalCard card : cardWithCrew.getCrew()) {
-            if (card instanceof PhysicalPersonnelCard personnel)
+            if (card instanceof PersonnelCard personnel)
                 if (!personnel.isCompatibleWith(affiliation))
                     return false;
         }
@@ -47,13 +47,13 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(cardWithCrew, _currentAffiliation);
     }
 
-    public void reportToFacility(PhysicalFacilityCard facility) {
+    public void reportToFacility(FacilityCard facility) {
         setLocation(facility.getLocation());
         _game.getGameState().attachCard(this, facility);
     }
 
     public Action createReportCardAction() {
-        return new ReportCardAction(this);
+        return new ReportCardAction(this, false);
     }
 
     public void leaveAwayTeam() {
@@ -66,7 +66,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         _awayTeam.add(this);
     }
 
-    public void joinEligibleAwayTeam(PhysicalMissionCard mission) {
+    public void joinEligibleAwayTeam(MissionCard mission) {
                 // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
                 // TODO - When there are multiple eligible away teams, there should be a player decision
         for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_owner).toList()) {

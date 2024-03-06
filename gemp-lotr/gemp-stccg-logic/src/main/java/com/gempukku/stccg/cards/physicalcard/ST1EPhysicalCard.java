@@ -1,8 +1,10 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Icon1E;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -19,4 +21,11 @@ public class ST1EPhysicalCard extends PhysicalCard {
 
     public List<Icon1E> getIcons() { return _blueprint.getIcons(); }
 
+    public CostToEffectAction getPlayCardAction(boolean forFree) {
+        // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
+        STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner(), forFree);
+        getGame().getModifiersQuerying().appendExtraCosts(action, this);
+        getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
+        return action;
+    }
 }

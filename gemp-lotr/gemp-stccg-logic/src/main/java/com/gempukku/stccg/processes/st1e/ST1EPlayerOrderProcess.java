@@ -26,7 +26,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             for (String player : _players) {
                 Random rand = new Random();
                 int diceRoll = rand.nextInt(6) + 1;
-                _game.getGameState().sendMessage(player + " rolled a " + diceRoll);
+                _game.sendMessage(player + " rolled a " + diceRoll);
                 diceResults.put(player, diceRoll);
             }
             int highestRoll = Collections.max(diceResults.values());
@@ -50,7 +50,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             }
         }
 
-        _game.getGameState().sendMessage(firstPlayer + " will go first");
+        _game.sendMessage(firstPlayer + " will go first");
         _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
     }
 

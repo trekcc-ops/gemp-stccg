@@ -47,7 +47,7 @@ public class TribblesPlayerOrderProcess extends GameProcess {
                 String randomCard = playerDeckCards.get(new Random().nextInt(playerDeckCards.size()));
                 try {
                     CardBlueprint randomBlueprint = _library.getCardBlueprint(randomCard);
-                    _game.getGameState().sendMessage(player + " drew " + randomBlueprint.getTitle());
+                    _game.sendMessage(player + " drew " + randomBlueprint.getTitle());
                     int randomTribbleCount = randomBlueprint.getTribbleValue();
                     _startingTribbles.put(player, randomTribbleCount);
                 } catch (CardNotFoundException e) {

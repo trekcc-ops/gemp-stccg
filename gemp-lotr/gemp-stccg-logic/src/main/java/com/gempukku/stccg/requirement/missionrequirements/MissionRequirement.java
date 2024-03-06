@@ -1,12 +1,12 @@
 package com.gempukku.stccg.requirement.missionrequirements;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalPersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 
 import java.util.*;
 
 public interface MissionRequirement {
 
-    boolean canBeMetBy(PhysicalPersonnelCard personnel);
+    boolean canBeMetBy(PersonnelCard personnel);
 
-    boolean canBeMetBy(Collection<PhysicalPersonnelCard> personnel);
+    boolean canBeMetBy(Collection<PersonnelCard> personnel);
 }

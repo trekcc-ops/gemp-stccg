@@ -27,7 +27,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
         if (_affiliationOptions.size() > 1) {
-            if (_attachedTo instanceof PhysicalMissionCard mission &&
+            if (_attachedTo instanceof MissionCard mission &&
                     this instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam().canBeDisbanded()) {
                     reportable.getAwayTeam().disband();
@@ -38,14 +38,12 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                         reportable.joinEligibleAwayTeam(mission);
                 }
             }
-            if (_blueprint.getAffiliationImageUrl(affiliation) != null)
-                setImageUrl(_blueprint.getAffiliationImageUrl(affiliation));
+            String newImageUrl = _blueprint.getAffiliationImageUrl(affiliation);
+            if (newImageUrl != null) {
+                _imageUrl = newImageUrl;
+                _game.getGameState().sendUpdatedCardImageToClient(this);
+            }
         }
-    }
-
-    public void setImageUrl(String imageUrl) {
-        _imageUrl = imageUrl;
-        _game.getGameState().sendUpdatedCardImageToClient(this);
     }
 
     public Set<Affiliation> getAffiliationOptions() { return _affiliationOptions; }

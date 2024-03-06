@@ -39,7 +39,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
                 _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
-                _game.getGameState().sendMessage(_physicalCard.getCardLink() + " is used");
+                _game.sendMessage(_physicalCard.getCardLink() + " is used");
             }
         }
 

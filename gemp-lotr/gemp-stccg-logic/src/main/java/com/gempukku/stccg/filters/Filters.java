@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.*;
@@ -87,12 +87,12 @@ public class Filters {
         return filterActive(player.getGame(), Filters.your(player), Filters.and(filters));
     }
 
-    public static Collection<PhysicalFacilityCard> yourActiveFacilities(Player player) {
-        Collection<PhysicalFacilityCard> result = new LinkedList<>();
+    public static Collection<FacilityCard> yourActiveFacilities(Player player) {
+        Collection<FacilityCard> result = new LinkedList<>();
         Collection<PhysicalCard> facilities = filterYourActive(player, CardType.FACILITY);
         for (PhysicalCard facility : facilities) {
-            if (facility instanceof PhysicalFacilityCard) {
-                result.add((PhysicalFacilityCard) facility);
+            if (facility instanceof FacilityCard) {
+                result.add((FacilityCard) facility);
             }
         }
         return result;

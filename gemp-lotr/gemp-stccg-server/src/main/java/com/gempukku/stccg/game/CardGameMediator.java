@@ -88,7 +88,7 @@ public abstract class CardGameMediator {
     }
 
     public void sendMessageToPlayers(String message) {
-        getGame().getGameState().sendMessage(message);
+        getGame().sendMessage(message);
     }
 
     public void addGameStateListener(String playerId, GameStateListener listener) {

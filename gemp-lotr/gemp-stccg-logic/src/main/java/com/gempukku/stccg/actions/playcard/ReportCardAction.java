@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.ST1EGame;
@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ReportCardAction extends PlayCardAction {
-    private PhysicalFacilityCard _reportingDestination;
+public class ReportCardAction extends STCCGPlayCardAction {
+    private FacilityCard _reportingDestination;
     private boolean _cardPlayed;
     private final ST1EGame _game;
     private boolean _destinationChosen = false;
@@ -26,9 +26,9 @@ public class ReportCardAction extends PlayCardAction {
     private Affiliation _selectedAffiliation;
     private final PhysicalReportableCard1E _cardEnteringPlay;
 
-    public ReportCardAction(PhysicalReportableCard1E cardToPlay) {
+    public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree) {
                     // TODO - Zone is null because these will be attached and the implementation is weird
-        super(cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
+        super(cardToPlay, null, cardToPlay.getOwner(), forFree);
         _cardEnteringPlay = cardToPlay;
         setText("Play " + _cardEnteringPlay.getFullName());
         _game = cardToPlay.getGame();
@@ -43,7 +43,7 @@ public class ReportCardAction extends PlayCardAction {
     protected Collection<PhysicalCard> getDestinationOptions() {
         Collection<PhysicalCard> availableFacilities = new HashSet<>();
         for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
-            for (PhysicalFacilityCard facility : location.getOutposts()) {
+            for (FacilityCard facility : location.getOutposts()) {
                 if (_cardEnteringPlay.canReportToFacility(facility))
                     availableFacilities.add(facility);
             }
@@ -53,7 +53,7 @@ public class ReportCardAction extends PlayCardAction {
 
     @Override
     public boolean canBeInitiated() {
-        return _cardEnteringPlay.canBePlayed() && !getDestinationOptions().isEmpty();
+        return _cardEnteringPlay.canBePlayed() && !getDestinationOptions().isEmpty() && costsCanBePaid();
     }
 
     @Override
@@ -64,19 +64,17 @@ public class ReportCardAction extends PlayCardAction {
     @Override    
     public Effect nextEffect() {
 
-        Collection<PhysicalCard> availableFacilities = getDestinationOptions();
-
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
                     _thisAction, getPerformingPlayerId(),
                     "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
-                    availableFacilities
+                    getDestinationOptions()
             ) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                     assert selectedCards.size() == 1;
-                    PhysicalFacilityCard selectedFacility =
-                            (PhysicalFacilityCard) Iterables.getOnlyElement(selectedCards);
+                    FacilityCard selectedFacility =
+                            (FacilityCard) Iterables.getOnlyElement(selectedCards);
                     _reportingDestination = selectedFacility;
                     _destinationChosen = true;
                     if (!_affiliationWasChosen) {

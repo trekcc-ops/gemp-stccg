@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.playcard.ChooseAndPlayCardFromZoneEffect;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
+import com.gempukku.stccg.actions.turn.OnceEachTurnEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
@@ -36,8 +37,8 @@ public class Blueprint155_021 extends CardBlueprint {
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, Icon1E.TNG_ICON,
                     Filters.youHaveNoCopiesInPlay(card.getOwner()), Filters.playable,
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(Icon1E.AU_ICON));
-//        action1.appendUsage(new OnceEachTurnEffect(action1));
-            // TODO - Should clarify that this plays for free, so it has to be during the card play segment
+            action1.setCardActionPrefix("1");
+            action1.appendUsage(new OnceEachTurnEffect(action1));
             action1.appendEffect(
                     new ChooseAndPlayCardFromZoneEffect(Zone.HAND, card.getOwner(), playableCardFilter) {
                         @Override
@@ -50,7 +51,7 @@ public class Blueprint155_021 extends CardBlueprint {
 
                         @Override
                         protected void playCard(final PhysicalCard selectedCard) {
-                            setPlayCardAction(new ReportCardAction((PhysicalReportableCard1E) selectedCard) {
+                            setPlayCardAction(new ReportCardAction((PhysicalReportableCard1E) selectedCard, true) {
                                 @Override
                                 protected Collection<PhysicalCard> getDestinationOptions() {
                                     return getDestinationOptionsForCard(selectedCard);
@@ -67,15 +68,18 @@ public class Blueprint155_021 extends CardBlueprint {
                         }
                     });
             action1.setText("Report a personnel for free");
-            actions.add(action1);
+            if (action1.canBeInitiated())
+                actions.add(action1);
+
+/*            ActivateCardAction action2 = new ActivateCardAction(card);
+            Filterable downloadableCardFilter = Filters.and(CardType.SHIP, Uniqueness.UNIVERSAL, Icon1E.TNG_ICON,
+                    Filters.playable);
+            action2.setCardActionPrefix("2");
+            action2.appendUsage(new OncePerGameEffect(action2));
+            action2.appendCost(new NormalCardPlayCost());
+            action2.appendEffect(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
+            actions.add(action2);*/
         }
-
-//        ActivateCardAction action2 = new ActivateCardAction(card);
-/*        action2.appendUsage(new OncePerGameEffect(action2));
-        action2.appendCost(in place of your normal card play);
-        action2.appendEffect(new DownloadEffect(download a universal [TNG] ship to your matching outpost));
-        actions.add(action2);*/
-
         return actions;
     }
 }

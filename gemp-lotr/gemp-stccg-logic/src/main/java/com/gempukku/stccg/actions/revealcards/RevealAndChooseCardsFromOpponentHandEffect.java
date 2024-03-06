@@ -50,7 +50,7 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
     public void playEffect() {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _opponentId, _playerId)) {
             List<PhysicalCard> opponentHand = new LinkedList<>(_game.getGameState().getHand(_opponentId));
-            _game.getGameState().sendMessage(_source.getCardLink() + " revealed " + _opponentId + " cards in hand - " +
+            _game.sendMessage(_source.getCardLink() + " revealed " + _opponentId + " cards in hand - " +
                     TextUtils.concatenateStrings(opponentHand.stream().map(PhysicalCard::getCardLink)));
 
             final ActionOrder actionOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_opponentId, false);

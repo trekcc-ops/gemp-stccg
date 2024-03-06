@@ -40,4 +40,7 @@ public interface CostToEffectAction extends Action {
     void setText(String text);
 
     boolean wasCarriedOut();
+
+    void setCardActionPrefix(String number);
+    String getCardActionPrefix();
 }

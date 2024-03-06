@@ -16,13 +16,13 @@ import com.gempukku.stccg.rules.TextUtils;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class PhysicalMissionCard extends ST1EPhysicalCard {
+public class MissionCard extends ST1EPhysicalCard {
     private final Quadrant _quadrant;
     private final int _pointsShown;
     private final MissionType _missionType;
     private final boolean _hasNoPointBox;
     private boolean _completed = false;
-    public PhysicalMissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+    public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
         _quadrant = blueprint.getQuadrant();
         _missionType = blueprint.getMissionType();

@@ -402,7 +402,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     public List<PhysicalCard> getRemoved(String playerId) { return getCardGroup(Zone.REMOVED, playerId); }
     public List<PhysicalCard> getDrawDeck(String playerId) { return getCardGroup(Zone.DRAW_DECK, playerId); }
 
-    private List<PhysicalCard> getCardGroup(Zone zone, String playerId) {
+    protected List<PhysicalCard> getCardGroup(Zone zone, String playerId) {
         return Collections.unmodifiableList(_cardGroups.get(zone).get(playerId));
     }
     public List<PhysicalCard> getDiscard(String playerId) { return getCardGroup(Zone.DISCARD, playerId); }

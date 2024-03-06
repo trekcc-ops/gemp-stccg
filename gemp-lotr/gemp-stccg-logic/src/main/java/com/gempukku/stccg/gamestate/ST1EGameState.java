@@ -4,9 +4,9 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
@@ -41,7 +41,8 @@ public class ST1EGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED || zone == Zone.DISCARD || zone == Zone.TABLE)
+        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
+                zone == Zone.DISCARD || zone == Zone.TABLE)
             return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);
@@ -98,7 +99,7 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public void addToSpaceline(PhysicalMissionCard missionCard, int indexNumber, boolean shared) {
+    public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared) {
         GameEvent.Type eventType;
         if (shared) {
             eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
@@ -113,7 +114,7 @@ public class ST1EGameState extends GameState {
         addCardToZone(missionCard, Zone.SPACELINE, true, eventType);
     }
 
-    public void seedFacilityAtLocation(PhysicalFacilityCard card, int spacelineIndex) {
+    public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);

@@ -11,15 +11,11 @@ public class TriggeringResultEffect implements Effect {
     private final String _text;
     private final DefaultGame _game;
 
-    public TriggeringResultEffect(DefaultGame game, EffectResult effectResult, String text) {
-        this(game, null, effectResult, text);
-    }
-
-    public TriggeringResultEffect(DefaultGame game, EffectType effectType, EffectResult effectResult, String text) {
-        _effectType = effectType;
+    public TriggeringResultEffect(EffectResult effectResult, String text) {
+        _effectType = null;
         _effectResult = effectResult;
         _text = text;
-        _game = game;
+        _game = effectResult.getGame();
     }
 
     @Override

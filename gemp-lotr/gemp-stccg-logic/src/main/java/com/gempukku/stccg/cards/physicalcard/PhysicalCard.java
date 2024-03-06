@@ -169,7 +169,7 @@ public abstract class PhysicalCard implements Filterable {
 
     public Quadrant getQuadrant() { return _blueprint.getQuadrant(); }
 
-    public boolean isAffectingGame() { return getGame().getGameState().getCurrentPlayerId().equals(_owner.getPlayerId()); }
+    public boolean isAffectingGame() { return getGame().getCurrentPlayer() == _owner; }
     public boolean canEnterPlay(List<Requirement> requirements) {
         if (isUnique() && _owner.hasACopyOfCardInPlay(this))
             return false;
@@ -204,19 +204,9 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public CostToEffectAction getPlayCardAction() {
-            // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-        STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner());
-        getGame().getModifiersQuerying().appendExtraCosts(action, this);
-        getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
-        return action;
+        return getPlayCardAction(false);
     }
-
-    public CostToEffectAction getPlayCardAction(Filterable destinationFilter) {
-        STCCGPlayCardAction action = new STCCGPlayCardAction(this, destinationFilter, getOwner());
-        getGame().getModifiersQuerying().appendExtraCosts(action, this);
-        getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
-        return action;
-    }
+    public abstract CostToEffectAction getPlayCardAction(boolean forFree);
 
     public CostToEffectAction getPlayCardAction(int twilightModifier, Filterable additionalAttachmentFilter,
                                                 boolean ignoreRoamingPenalty) {
@@ -228,15 +218,15 @@ public abstract class PhysicalCard implements Filterable {
                     case MINION -> Zone.SHADOW_CHARACTERS;
                     default -> Zone.SUPPORT;
                 };
-                CostToEffectAction action = new STCCGPlayCardAction(this, playToZone, this.getOwner());
+                CostToEffectAction action = new STCCGPlayCardAction((ST1EPhysicalCard) this, playToZone, this.getOwner());
                 getGame().getModifiersQuerying().appendExtraCosts(action, this);
                 getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
 
                 return action;
             } else {
                 Filter fullAttachValidTargetFilter = Filters.and(_blueprint.getValidTargetFilter(),
-                        (Filter) (game1, physicalCard) -> getGame().getModifiersQuerying().canHavePlayedOn(
-                                getGame(), this, physicalCard),
+                        (Filter) (game1, targetCard) -> getGame().getModifiersQuerying().canHavePlayedOn(
+                                this, targetCard),
                         (Filter) (game12, physicalCard) -> {
                             if (_blueprint.getSide() == Side.SHADOW) {
                                 final int twilightCostOnTarget = getGame().getModifiersQuerying().getTwilightCost(

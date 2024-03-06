@@ -23,11 +23,11 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
     @Override
     public void process() {
         if (_game.getGameState().getDrawDeck(_playerId).isEmpty()) {
-            _game.getGameState().sendMessage(_playerId + " can't draw a card");
+            _game.sendMessage(_playerId + " can't draw a card");
             _game.getGameState().setPlayerDecked(_playerId, true);
         } else {
             _game.getGameState().playerDrawsCard(_playerId);
-            _game.getGameState().sendMessage(_playerId + " drew a card");
+            _game.sendMessage(_playerId + " drew a card");
             List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(_playerId);
             PhysicalCard cardDrawn = playerHand.get(playerHand.size() - 1);
             final List<Action> playableActions = new LinkedList<>();

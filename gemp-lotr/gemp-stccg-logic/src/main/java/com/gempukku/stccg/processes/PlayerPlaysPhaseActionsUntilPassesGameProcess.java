@@ -14,7 +14,8 @@ public class PlayerPlaysPhaseActionsUntilPassesGameProcess extends GameProcess {
     private GameProcess _nextProcess;
     private final DefaultGame _game;
 
-    public PlayerPlaysPhaseActionsUntilPassesGameProcess(String playerId, GameProcess followingGameProcess, DefaultGame game) {
+    public PlayerPlaysPhaseActionsUntilPassesGameProcess(String playerId, GameProcess followingGameProcess,
+                                                         DefaultGame game) {
         _playerId = playerId;
         _followingGameProcess = followingGameProcess;
         _game = game;
@@ -28,12 +29,14 @@ public class PlayerPlaysPhaseActionsUntilPassesGameProcess extends GameProcess {
             playerPassed();
         } else {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardActionSelectionDecision(1, "Play " + _game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+                    new CardActionSelectionDecision(
+                            "Play " + _game.getCurrentPhaseString() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             if (action != null) {
-                                _nextProcess = new PlayerPlaysPhaseActionsUntilPassesGameProcess(_playerId, _followingGameProcess, _game);
+                                _nextProcess = new PlayerPlaysPhaseActionsUntilPassesGameProcess(
+                                        _playerId, _followingGameProcess, _game);
                                 _game.getActionsEnvironment().addActionToStack(action);
                             } else
                                 playerPassed();

@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.rules.TextUtils;
@@ -42,12 +42,12 @@ public class BeamOrWalkCardsEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         for (PhysicalReportableCard1E card : _cardsToBeam) {
             card.attachToCardAtLocation(_toCard);
-            if (_fromCard instanceof PhysicalMissionCard)
+            if (_fromCard instanceof MissionCard)
                 card.leaveAwayTeam();
-            if (_toCard instanceof PhysicalMissionCard mission)
+            if (_toCard instanceof MissionCard mission)
                 card.joinEligibleAwayTeam(mission);
         }
-        _game.getGameState().sendMessage(_performingPlayerId + " " + _actionName.toLowerCase() + "ed " +
+        _game.sendMessage(_performingPlayerId + " " + _actionName.toLowerCase() + "ed " +
                 TextUtils.plural(_cardsToBeam.size(), "card") + " from " + _fromCard.getCardLink() + " to " +
                 _toCard.getCardLink());
         return new FullEffectResult(true);

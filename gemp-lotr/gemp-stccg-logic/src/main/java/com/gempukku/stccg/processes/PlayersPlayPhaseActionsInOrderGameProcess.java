@@ -28,6 +28,7 @@ public class PlayersPlayPhaseActionsInOrderGameProcess extends GameProcess {
     @Override
     public void process() {
         Phase currentPhase = _game.getGameState().getCurrentPhase();
+        String currentPhaseString = _game.getCurrentPhaseString();
         String playerId;
         if (_game.getGameState().isConsecutiveAction()) {
             playerId = _actionOrder.getLastPlayer();
@@ -41,8 +42,8 @@ public class PlayersPlayPhaseActionsInOrderGameProcess extends GameProcess {
             playerPassed();
         else {
             _game.getUserFeedback().sendAwaitingDecision(playerId,
-                    new CardActionSelectionDecision(1, "Play " + currentPhase.getHumanReadable() +
-                            " action or Pass", playableActions) {
+                    new CardActionSelectionDecision(
+                            "Play " + currentPhaseString + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

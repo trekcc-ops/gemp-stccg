@@ -1,7 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
-import com.gempukku.stccg.actions.SystemQueueAction;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
@@ -33,7 +33,7 @@ public class StartOfPhaseGameProcess extends GameProcess {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("Start of " + _phase + " phase");
         action.appendEffect(
-                new TriggeringResultEffect(null, new StartOfPhaseResult(_phase, _playerId, _game), "Start of " + _phase + " phase"));
+                new TriggeringResultEffect(new StartOfPhaseResult(_phase, _playerId, _game), "Start of " + _phase + " phase"));
         action.appendEffect(
                 new Effect() {
                     @Override
@@ -62,7 +62,7 @@ public class StartOfPhaseGameProcess extends GameProcess {
                     public void playEffect() {
                         ((ModifiersLogic) _game.getModifiersEnvironment()).signalStartOfPhase(_phase);
                         ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalStartOfPhase(_phase);
-                        _game.getGameState().sendMessage("\nStart of " + _phase + " phase.");
+                        _game.sendMessage("\nStart of " + _phase + " phase.");
                     }
                 });
 

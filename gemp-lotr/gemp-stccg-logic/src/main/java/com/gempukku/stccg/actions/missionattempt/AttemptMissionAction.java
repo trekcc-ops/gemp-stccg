@@ -5,10 +5,10 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.choose.ChooseAwayTeamEffect;
-import com.gempukku.stccg.cards.AttemptingEntity;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
@@ -23,17 +23,17 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class AttemptMissionAction extends AbstractCostToEffectAction {
-    private AttemptingEntity _attemptingEntity;
+    private AttemptingUnit _attemptingUnit;
     private final Player _player;
     private final ST1EGame _game;
-    private final PhysicalMissionCard _missionCard;
+    private final MissionCard _missionCard;
     private Effect _attemptMissionEffect;
     private boolean _attemptingEntityWasChosen, _missionAttemptInitiated, _missionAttemptEnded;
     private final Effect _chooseAwayTeamEffect;
-    final Map<String, AttemptingEntity> _attemptingEntityMap = new HashMap<>();
+    final Map<String, AttemptingUnit> _attemptingEntityMap = new HashMap<>();
     List<String> _seedCards;
 
-    public AttemptMissionAction(Player player, PhysicalMissionCard missionCard) {
+    public AttemptMissionAction(Player player, MissionCard missionCard) {
         super(player, ActionType.ATTEMPT_MISSION);
         _player = player;
         _game = missionCard.getGame();
@@ -62,8 +62,8 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
             @Override
             protected void awayTeamChosen(String result) {
                 _attemptingEntityWasChosen = true;
-                _attemptingEntity = _attemptingEntityMap.get(result);
-                _attemptMissionEffect = new AttemptMissionEffect(_player, _attemptingEntity, _missionCard);
+                _attemptingUnit = _attemptingEntityMap.get(result);
+                _attemptMissionEffect = new AttemptMissionEffect(_player, _attemptingUnit, _missionCard);
             }
         };
     }
@@ -95,11 +95,14 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
 
         if (!_missionAttemptInitiated) {
             _missionAttemptInitiated = true;
-            _game.getGameState().sendMessage("DEBUG: Mission attempt initiated. Populating 3 seed cards.");
-            _seedCards = new LinkedList<>();        // TODO - Replace this with real stuff
-            _seedCards.add("Armus - Skin of Evil");
+                // DEBUG lines of dialog
+            _game.sendMessage("Mission attempt initiated. This is when you would ordinarily encounter dilemmas and stuff like that.");
+            _game.sendMessage("...");
+            _game.sendMessage("But we don't have any.");
+            _seedCards = new LinkedList<>();        // TODO - Replace this with real stuff at some point
+/*            _seedCards.add("Armus - Skin of Evil");
             _seedCards.add("Berserk Changeling");
-            _seedCards.add("Nanites");
+            _seedCards.add("Nanites"); */
 
         }
 
@@ -123,6 +126,6 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     public ST1EGame getGame() { return _game; }
 
     public Player getPlayer() { return _player; }
-    public AttemptingEntity getAttemptingEntity() { return _attemptingEntity; }
+    public AttemptingUnit getAttemptingEntity() { return _attemptingUnit; }
 
 }

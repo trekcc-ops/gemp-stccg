@@ -12,6 +12,10 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         this(decisionId, text, actions, false);
     }
 
+    public CardActionSelectionDecision(String text, List<? extends Action> actions) {
+        this(1, text, actions, false);
+    }
+
     public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions,
                                        boolean revertEligible) {
         super(decisionId, text, AwaitingDecisionType.CARD_ACTION_CHOICE);

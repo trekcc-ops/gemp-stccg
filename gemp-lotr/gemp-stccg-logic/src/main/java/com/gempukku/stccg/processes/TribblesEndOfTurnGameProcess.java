@@ -1,6 +1,6 @@
 package com.gempukku.stccg.processes;
 
-import com.gempukku.stccg.actions.SystemQueueAction;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.actions.EffectType;
@@ -16,11 +16,11 @@ public class TribblesEndOfTurnGameProcess extends GameProcess {
     }
     @Override
     public void process() {
-//        game.getGameState().sendMessage("DEBUG: Beginning TribblesEndOfTurnGameProcess");
+//        game.sendMessage("DEBUG: Beginning TribblesEndOfTurnGameProcess");
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of turn");
         action.appendEffect(
-                new TriggeringResultEffect(_game, new EndOfTurnResult(_game), "End of turn"));
+                new TriggeringResultEffect(new EndOfTurnResult(_game), "End of turn"));
         action.appendEffect(
                 new Effect() {
                     @Override

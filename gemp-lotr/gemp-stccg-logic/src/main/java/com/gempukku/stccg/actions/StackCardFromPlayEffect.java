@@ -53,7 +53,7 @@ public class StackCardFromPlayEffect extends DefaultEffect {
             for (PhysicalCard attachedCard : toMoveToDiscardCards)
                 gameState.addCardToZone(attachedCard, Zone.DISCARD);
 
-            _game.getGameState().sendMessage(_card.getCardLink() + " is stacked on " + _stackOn.getCardLink());
+            _game.sendMessage(_card.getCardLink() + " is stacked on " + _stackOn.getCardLink());
             _game.getGameState().stackCard(_card, _stackOn);
 
             // Send the result (attached cards get discarded)

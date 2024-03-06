@@ -132,6 +132,9 @@ var GameTableUI = Class.extend({
     },
 
     getReorganizableCardGroupForCardData: function (cardData) {
+        if (cardData.zone == "ATTACHED") {
+            return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
+        }
         for (var i=0; i < this.missionCardGroups.length; i++) {
             if (this.missionCardGroups[i].cardBelongs(cardData)) {
                 return this.missionCardGroups[i];
@@ -2248,7 +2251,7 @@ var ST1EGameTableUI = GameTableUI.extend({
 
         var BOTTOM_LEFT_TABS_RIGHT = LEFT_SIDE + CHAT_WIDTH;
 
-        $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
+        $("#bottomLeftTabs").css({left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH - 50, height: CHAT_HEIGHT});
         this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
         this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
             CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
@@ -2289,6 +2292,23 @@ var ST1EGameTableUI = GameTableUI.extend({
             top: height - (padding * 2) - chatHeight - 50 + "px",
             width: advPathWidth - 4,
             height: 30
+        });
+        this.gameStateElem.css({
+            position: "absolute",
+            left: padding * 2, // + advPathWidth,
+            top: padding,
+            width: specialUiWidth - padding + 75,
+            height: TABLE_AREA_TOP - padding * 2
+//            height: height - padding * 4 - alertHeight - chatHeight
+        });
+        this.alertBox.css({
+            position: "absolute",
+            left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
+//            left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
+//            left: CARD_PILE_AND_ACTION_AREA_LEFT,
+            top: PLAYER_ACTION_AREA_AND_HAND_TOP,
+            width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
+            height: alertHeight
         });
 
         for (var i = 0; i < 2; i++) {
@@ -2349,22 +2369,6 @@ var ST1EGameTableUI = GameTableUI.extend({
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }
                 // END OF SWCCG GEMP LOCATION CODE
-
-        this.gameStateElem.css({
-            position: "absolute",
-            left: padding * 2, // + advPathWidth,
-            top: padding,
-            width: specialUiWidth - padding + 75,
-            height: height - padding * 4 - alertHeight - chatHeight
-        });
-        this.alertBox.css({
-            position: "absolute",
-            left: BOTTOM_LEFT_TABS_RIGHT + padding * 2,
-            top: PLAYER_ACTION_AREA_AND_HAND_TOP,
-            width: specialUiWidth - padding,
-            height: alertHeight
-        });
-
 
         for (var playerId in this.discardPileGroups)
             if (this.discardPileGroups.hasOwnProperty(playerId))

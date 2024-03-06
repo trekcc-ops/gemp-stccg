@@ -35,7 +35,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
                         game.getGameState().removeCardsFromZone(player, selectedCards);
                         for (PhysicalCard card : selectedCards) {
-                            game.getGameState().sendMessage(player + " puts " + card.getCardLink() + " from hand on bottom of their play pile");
+                            game.sendMessage(player + " puts " + card.getCardLink() + " from hand on bottom of their play pile");
                             game.getGameState().addCardToZone(card, Zone.PLAY_PILE, false);
                         }
                     }

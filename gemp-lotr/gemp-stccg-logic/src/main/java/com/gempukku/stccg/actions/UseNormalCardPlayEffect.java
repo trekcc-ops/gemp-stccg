@@ -21,13 +21,14 @@ public class UseNormalCardPlayEffect extends AbstractSubActionEffect {
     public EffectType getType() { return EffectType.USE_NORMAL_CARD_PLAY; }
 
     @Override
-    public boolean isPlayableInFull() { //return _game.getModifiersQuerying().getNormalCardPlaysAvailable(_player) >= 1;
-        return true; }
-
+    public boolean isPlayableInFull() {
+        return _game.getModifiersQuerying().getNormalCardPlaysAvailable(_player) >= 1;
+    }
     @Override
     public void playEffect() {
         if (isPlayableInFull()) {
-            _game.getGameState().sendMessage("Normal card play used");
+            _game.getModifiersEnvironment().useNormalCardPlay(_player);
+            _game.sendMessage("Normal card play used");
         }
     }
 }

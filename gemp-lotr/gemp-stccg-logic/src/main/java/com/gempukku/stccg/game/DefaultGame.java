@@ -90,7 +90,7 @@ public abstract class DefaultGame {
             _cancelled = true;
 
             if (getGameState() != null)
-                getGameState().sendMessage("Game was cancelled, as requested by all parties.");
+                sendMessage("Game was cancelled, as requested by all parties.");
 
             for (GameResultListener gameResultListener : _gameResultListeners)
                 gameResultListener.gameCancelled();
@@ -116,8 +116,10 @@ public abstract class DefaultGame {
             _cancelled = true;
 
             if (getGameState() != null) {
-                getGameState().sendMessage("Game was cancelled due to an error, the error was logged and will be fixed soon.");
-                getGameState().sendMessage("Please post the replay game link and description of what happened on the tech support forum.");
+                sendMessage(
+                        "Game was cancelled due to an error, the error was logged and will be fixed soon.");
+                sendMessage(
+                        "Please post the replay game link and description of what happened on the tech support forum.");
             }
 
             for (GameResultListener gameResultListener : _gameResultListeners)
@@ -144,7 +146,7 @@ public abstract class DefaultGame {
     protected void gameWon(String winner, String reason) {
         _winnerPlayerId = winner;
         if (getGameState() != null)
-            getGameState().sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
+            sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
 
         assert getGameState() != null;
         getGameState().finish();
@@ -160,7 +162,7 @@ public abstract class DefaultGame {
             if (_losers.get(playerId) == null) {
                 _losers.put(playerId, reason);
                 if (getGameState() != null)
-                    getGameState().sendMessage(playerId + " lost due to: " + reason);
+                    sendMessage(playerId + " lost due to: " + reason);
 
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
@@ -295,7 +297,9 @@ public abstract class DefaultGame {
             iterator.remove();
         }
     }
-
-
+    
+    public void sendMessage(String message) { getGameState().sendMessage(message); }
+    public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
+    public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
 }

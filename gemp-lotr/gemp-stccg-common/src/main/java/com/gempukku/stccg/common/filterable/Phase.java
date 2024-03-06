@@ -8,7 +8,6 @@ public enum Phase {
     SEED_MISSION("Mission seed phase", true, true),
     SEED_DILEMMA("Dilemma seed phase", true, true),
     SEED_FACILITY("Facility seed phase", true, true),
-    PLAY("Play phase", true, true),
     CARD_PLAY("Card play", true, true),
     EXECUTE_ORDERS("Execute orders", true, true),
     // Tribbles
@@ -20,17 +19,25 @@ public enum Phase {
     MANEUVER("Maneuver", true, true),
     ARCHERY("Archery", true, true),
     ASSIGNMENT("Assignment", true, true),
-    SKIRMISH("Skirmish", true, true),
     REGROUP("Regroup", true, true);
 
     private final String humanReadable;
     private final boolean realPhase;
     private final boolean cardsAffectGame;
+    private final String actionVerb;
+
+    Phase(String humanReadable, boolean realPhase, boolean cardsAffectGame, String actionVerb) {
+        this.humanReadable = humanReadable;
+        this.realPhase = realPhase;
+        this.cardsAffectGame = cardsAffectGame;
+        this.actionVerb = actionVerb;
+    }
 
     Phase(String humanReadable, boolean realPhase, boolean cardsAffectGame) {
         this.humanReadable = humanReadable;
         this.realPhase = realPhase;
         this.cardsAffectGame = cardsAffectGame;
+        this.actionVerb = null;
     }
 
     public String getHumanReadable() {
@@ -55,4 +62,6 @@ public enum Phase {
         }
         return null;
     }
+
+    public String getActionVerb() { return actionVerb; }
 }

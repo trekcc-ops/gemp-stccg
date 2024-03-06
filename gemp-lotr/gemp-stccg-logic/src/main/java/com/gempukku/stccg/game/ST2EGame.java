@@ -48,7 +48,7 @@ public class ST2EGame extends DefaultGame {
                 _modifiersLogic = _snapshotToRestore.getModifiersLogic();
                 _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
-                getGameState().sendMessage("Reverted to previous game state");
+                sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
                 getGameState().sendStateToAllListeners();
             }
@@ -56,7 +56,7 @@ public class ST2EGame extends DefaultGame {
     }
 
     @Override
-    public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        getGameState().addGameStateListener(playerId, gameStateListener);
+    public void addGameStateListener(String playerId, GameStateListener listener) {
+        getGameState().addGameStateListener(playerId, listener);
     }
 }

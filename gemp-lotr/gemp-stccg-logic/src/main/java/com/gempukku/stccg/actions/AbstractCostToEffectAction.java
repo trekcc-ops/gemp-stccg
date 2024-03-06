@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.discard.DiscountEffect;
+import com.gempukku.stccg.actions.turn.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
@@ -8,13 +9,16 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 public abstract class AbstractCostToEffectAction implements CostToEffectAction {
+    private String _cardActionPrefix;
     private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
     private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
+    private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
     private final LinkedList<Effect> _processedCosts = new LinkedList<>();
     private final LinkedList<Effect> _effects = new LinkedList<>();
     private final LinkedList<Effect> _processedEffects = new LinkedList<>();
+    private final LinkedList<Effect> _usageCosts = new LinkedList<>();
     protected String text;
 
     protected final String _performingPlayerId;
@@ -97,6 +101,10 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
             if (!processedCost.wasCarriedOut())
                 return true;
         }
+        for (Effect usageCost : _processedUsageCosts) {
+            if (!usageCost.wasCarriedOut())
+                return true;
+        }
         return false;
     }
 
@@ -121,6 +129,12 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         if (targetingCost != null) {
             _processedCosts.add(targetingCost);
             return targetingCost;
+        }
+
+        Effect usageCost = _usageCosts.poll();
+        if (usageCost != null) {
+            _processedUsageCosts.add(usageCost);
+            return usageCost;
         }
 
         Effect cost = _costs.poll();
@@ -161,5 +175,33 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return new SubAction(_thisAction);
     }
 
-    public boolean canBeInitiated() { return true; }
+    public boolean canBeInitiated() {
+        return costsCanBePaid();
+    }
+
+    public boolean costsCanBePaid() {
+                // TODO - This may have bugs if multiple costs exist that can be paid independently but not together
+        for (Effect effect : _costs)
+            if (!effect.isPlayableInFull()) {
+                return false;
+            }
+        for (Effect effect : _usageCosts)
+            if (!effect.isPlayableInFull()) {
+                return false;
+            }
+        return true;
+    }
+
+    public void setCardActionPrefix(String prefix) {
+        _cardActionPrefix = prefix;
+    }
+
+    public String getCardActionPrefix() { return _cardActionPrefix; }
+
+    public final void appendUsage(UsageEffect cost) {
+        if (!_costs.isEmpty() || !_processedCosts.isEmpty() || !_effects.isEmpty() || !_processedEffects.isEmpty())
+            throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
+        _usageCosts.add(cost);
+    }
+
 }

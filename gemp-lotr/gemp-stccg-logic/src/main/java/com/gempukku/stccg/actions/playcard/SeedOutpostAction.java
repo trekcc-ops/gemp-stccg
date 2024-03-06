@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
@@ -25,8 +25,8 @@ public class SeedOutpostAction extends PlayCardAction {
     private final Set<Affiliation> _affiliationOptions = new HashSet<>();
     private Affiliation _selectedAffiliation;
     private final ST1EGame _game;
-    private final PhysicalFacilityCard _cardEnteringPlay;
-    public SeedOutpostAction(PhysicalFacilityCard cardToSeed) {
+    private final FacilityCard _cardEnteringPlay;
+    public SeedOutpostAction(FacilityCard cardToSeed) {
         super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION, ActionType.SEED_CARD);
         _cardEnteringPlay = cardToSeed;
         setText("Seed " + _cardEnteringPlay.getFullName());
@@ -55,7 +55,7 @@ public class SeedOutpostAction extends PlayCardAction {
 
         Set<PhysicalCard> availableMissions = new HashSet<>();
         for (ST1ELocation location : gameState.getSpacelineLocations()) {
-            PhysicalMissionCard missionCard = location.getMissionForPlayer(playerId);
+            MissionCard missionCard = location.getMissionForPlayer(playerId);
             if (_cardEnteringPlay.canSeedAtMission(missionCard)) {
                 availableMissions.add(missionCard);
             }
@@ -67,7 +67,7 @@ public class SeedOutpostAction extends PlayCardAction {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                     assert selectedCards.size() == 1;
-                    PhysicalMissionCard selectedMission = (PhysicalMissionCard) Iterables.getOnlyElement(selectedCards);
+                    MissionCard selectedMission = (MissionCard) Iterables.getOnlyElement(selectedCards);
                     _locationZoneIndex = selectedMission.getLocationZoneIndex();
                     _placementWasChosen = true;
                     if (!_affiliationWasChosen) {

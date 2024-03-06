@@ -4,6 +4,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public interface Action {
+    String getCardActionPrefix();
+
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,

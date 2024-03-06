@@ -32,10 +32,10 @@ public class LookAtOpponentsHandEffect extends DefaultEffect {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _opponentId, _playerId)) {
             List<PhysicalCard> opponentHand = new LinkedList<>(_game.getGameState().getHand(_opponentId));
 
-            _game.getGameState().sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
+            _game.sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
 
             if (!opponentHand.isEmpty()) {
-                _game.getGameState().sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
+                _game.sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");
 
                 _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new ArbitraryCardsSelectionDecision(1, "Opponent's hand", opponentHand,
@@ -46,7 +46,7 @@ public class LookAtOpponentsHandEffect extends DefaultEffect {
                     });
             }
             else {
-                _game.getGameState().sendMessage("No cards in " + _opponentId + " hand to look at");
+                _game.sendMessage("No cards in " + _opponentId + " hand to look at");
             }
 
             return new FullEffectResult(true);

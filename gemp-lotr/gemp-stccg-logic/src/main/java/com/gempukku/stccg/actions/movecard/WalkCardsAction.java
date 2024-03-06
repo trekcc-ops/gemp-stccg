@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.actions.Effect;
@@ -19,12 +19,13 @@ public class WalkCardsAction extends BeamOrWalkAction {
 
     @Override
     protected Collection<PhysicalCard> getDestinationOptions() {
-        if (_cardSource instanceof PhysicalShipCard && ((PhysicalShipCard) _cardSource).isDocked())
-            return Collections.singleton(((PhysicalShipCard) _cardSource).getDockedAtCard());
-        else if (_cardSource instanceof PhysicalFacilityCard)
-            return Filters.filter(
-                    _cardSource.getAttachedCards(), _game, Filters.ship, Filters.your(_performingPlayer));
-        else return new LinkedList<>();
+        Collection<PhysicalCard> result = new LinkedList<>();
+        if (_cardSource instanceof PhysicalShipCard ship && ship.isDocked())
+            result.add(ship.getDockedAtCard());
+        else if (_cardSource instanceof FacilityCard)
+            result.addAll(Filters.filter(
+                    _cardSource.getAttachedCards(), _game, Filters.ship, Filters.your(_performingPlayer)));
+        return result;
     }
 
     @Override

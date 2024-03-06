@@ -342,12 +342,20 @@ public class CardBlueprint {
     }
 
     public ActionSource getPlayEventAction() { return _playEventAction; }
-    public void setKilledTrigger(RequiredType requiredType, ActionSource actionSource) { _killedTriggers.put(requiredType, actionSource); }
-    public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) { _discardedFromPlayTriggers.put(requiredType, actionSource); }
-    public ActionSource getDiscardedFromPlayTrigger(RequiredType requiredType) { return _discardedFromPlayTriggers.get(requiredType); }
+    public void setKilledTrigger(RequiredType requiredType, ActionSource actionSource) {
+        _killedTriggers.put(requiredType, actionSource);
+    }
+    public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) {
+        _discardedFromPlayTriggers.put(requiredType, actionSource);
+    }
+    public ActionSource getDiscardedFromPlayTrigger(RequiredType requiredType) {
+        return _discardedFromPlayTriggers.get(requiredType);
+    }
     public List<Requirement> getSeedRequirements() { return _seedRequirements; }
     public List<Requirement> getPlayRequirements() { return _playRequirements; }
-    public List<ActionSource> getOptionalInHandTriggers(TriggerTiming timing) { return _optionalInHandTriggers.get(timing); }
+    public List<ActionSource> getOptionalInHandTriggers(TriggerTiming timing) {
+        return _optionalInHandTriggers.get(timing);
+    }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
     public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
     public List<DiscountSource> getDiscountSources() { return _discountSources; }
@@ -448,11 +456,11 @@ public class CardBlueprint {
     public PhysicalCard createPhysicalCard(DefaultGame game, int cardId, Player player) {
         if (game instanceof ST1EGame) {
             if (_cardType == CardType.MISSION)
-                return new PhysicalMissionCard((ST1EGame) game, cardId, player, this);
+                return new MissionCard((ST1EGame) game, cardId, player, this);
             else if (_cardType == CardType.FACILITY)
-                return new PhysicalFacilityCard((ST1EGame) game, cardId, player, this);
+                return new FacilityCard((ST1EGame) game, cardId, player, this);
             else if (_cardType == CardType.PERSONNEL)
-                return new PhysicalPersonnelCard((ST1EGame) game, cardId, player, this);
+                return new PersonnelCard((ST1EGame) game, cardId, player, this);
             else if (_cardType == CardType.SHIP)
                 return new PhysicalShipCard((ST1EGame) game, cardId, player, this);
             else return new ST1EPhysicalCard((ST1EGame) game, cardId, player, this);

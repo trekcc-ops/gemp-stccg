@@ -43,7 +43,7 @@ public class MulliganProcess extends GameProcess {
                                 for (int i = 0; i < handSize - 2; i++)
                                     gameState.playerDrawsCard(nextPlayer);
                             } else {
-                                _game.getGameState().sendMessage(nextPlayer + " decides not to mulligan");
+                                _game.sendMessage(nextPlayer + " decides not to mulligan");
                             }
                         }
                     });

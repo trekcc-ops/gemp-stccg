@@ -1,33 +1,26 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.UseNormalCardPlayEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
 
 public class STCCGPlayCardAction extends PlayCardAction {
-    private final DefaultGame _game;
+    private final ST1EGame _game;
 
-    public STCCGPlayCardAction(PhysicalCard card, Zone zone, Player player) {
+    public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, Player player) {
+        this(card, zone, player, false);
+    }
+
+    public STCCGPlayCardAction(ST1EPhysicalCard card, Zone zone, Player player, boolean forFree) {
         super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
         _game = card.getGame();
         setText("Play " + card.getFullName());
-    }
-
-    public STCCGPlayCardAction(PhysicalCard card, Filterable destinationFilter, Player player) {
-        super(card, card, player.getPlayerId(), Zone.ATTACHED, ActionType.PLAY_CARD);
-        _game = card.getGame();
-        setText("Play " + card.getFullName());
-    }
-
-    public STCCGPlayCardAction(PhysicalCard card, Zone zone, Player player, boolean forFree) {
-        super(card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
-        _game = card.getGame();
-        setText("Play " + card.getFullName());
-/*        if (!forFree)
-            appendCost(new UseNormalCardPlayEffect()); */
+        if (!forFree)
+            appendCost(new UseNormalCardPlayEffect(_game, player));
     }
 
     @Override
@@ -37,7 +30,4 @@ public class STCCGPlayCardAction extends PlayCardAction {
         return _cardEnteringPlay;
     }
 
-    protected Effect getFinalEffect() {
-        return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone);
-    }
 }

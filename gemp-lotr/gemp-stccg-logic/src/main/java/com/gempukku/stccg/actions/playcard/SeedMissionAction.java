@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class SeedMissionAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
-    private final PhysicalMissionCard _cardEnteringPlay;
+    private final MissionCard _cardEnteringPlay;
     private boolean _cardPlayed;
     private int _locationZoneIndex;
     private boolean _placementChosen;
@@ -31,7 +31,7 @@ public class SeedMissionAction extends PlayCardAction {
     private final Quadrant _quadrant;
     private final String _missionLocation;
 
-    public SeedMissionAction(PhysicalMissionCard cardToPlay) {
+    public SeedMissionAction(MissionCard cardToPlay) {
         super(cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
         _cardEnteringPlay = cardToPlay;
         setText("Seed " + _cardEnteringPlay.getFullName());

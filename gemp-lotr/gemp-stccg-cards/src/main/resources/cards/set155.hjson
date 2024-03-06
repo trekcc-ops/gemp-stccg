@@ -2,6 +2,7 @@
 
 {
     155_021: {
+    // TODO - This JSON implementation seems correct, but is not working as of 3/5/24. Replaced with Java class Blueprint155_021
        title: Attention All Hands
         type: incident
         icons: warp-core
@@ -23,15 +24,6 @@
                     on: federation,outpost
                 }
             }
-//            {
-//                type: activated
-//                cost: in place of your normal card play
-//                effect: {
-//                    type: download
-//                    filter: universal + tng-icon + ship
-//                    where: matching-outpost
-//                }
-//            }
         ]
     }
     155_035: {

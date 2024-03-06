@@ -37,7 +37,7 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
         if (!_sentBids) {
             _sentBids = true;
             for (Map.Entry<String, Integer> playerBid : _bids.entrySet())
-                _game.getGameState().sendMessage(playerBid.getKey() + " bid " + playerBid.getValue());
+                _game.sendMessage(playerBid.getKey() + " bid " + playerBid.getValue());
         }
         checkForNextSeating();
     }
@@ -86,7 +86,7 @@ public class ChooseSeatingOrderGameProcess extends GameProcess {
                 new MultipleChoiceAwaitingDecision("Choose one", getEmptySeatNumbers()) {
                     @Override
                     protected void validDecisionMade(int index, String result) {
-                        _game.getGameState().sendMessage(playerId + " has chosen to go " + _choices[index]);
+                        _game.sendMessage(playerId + " has chosen to go " + _choices[index]);
                         participantHasChosenSeat(playerId, index);
                     }
                 }

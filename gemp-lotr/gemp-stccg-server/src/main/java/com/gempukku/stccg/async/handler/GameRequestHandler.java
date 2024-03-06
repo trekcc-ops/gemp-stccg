@@ -48,6 +48,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         _gameServer = extractObject(context, GameServer.class);
         this.longPollingSystem = longPollingSystem;
 
+                // TODO - Replace these with ST-specific Phase enum values
         _autoPassDefault.add(Phase.FELLOWSHIP);
         _autoPassDefault.add(Phase.MANEUVER);
         _autoPassDefault.add(Phase.ARCHERY);

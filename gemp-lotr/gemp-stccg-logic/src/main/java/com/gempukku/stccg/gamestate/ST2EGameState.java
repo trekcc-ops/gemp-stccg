@@ -2,8 +2,8 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -91,7 +91,7 @@ public class ST2EGameState extends GameState {
         return false;
     }
 
-    public void addToSpaceline(PhysicalMissionCard missionCard, int indexNumber, boolean shared) {
+    public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared) {
         GameEvent.Type eventType;
         if (shared) {
             eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
@@ -106,14 +106,14 @@ public class ST2EGameState extends GameState {
         addCardToZone(missionCard, Zone.SPACELINE, true, eventType);
     }
 
-    public void seedFacilityAtLocation(PhysicalFacilityCard card, int spacelineIndex) {
+    public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
         card.setLocationZoneIndex(spacelineIndex);
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
     }
 
-    public void reportCardToFacility(PhysicalReportableCard1E cardReported, PhysicalFacilityCard facility) {
+    public void reportCardToFacility(PhysicalReportableCard1E cardReported, FacilityCard facility) {
         cardReported.setLocation(facility.getLocation());
         attachCard(cardReported, facility);
     }

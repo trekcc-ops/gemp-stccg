@@ -51,10 +51,10 @@ public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
                             }
                         });
 
-                _game.getGameState().sendMessage(_source.getCardLink() + " looked at " + randomCards.size() + " cards from " + _playerHand + " hand at random");
+                _game.sendMessage(_source.getCardLink() + " looked at " + randomCards.size() + " cards from " + _playerHand + " hand at random");
             }
             else {
-                _game.getGameState().sendMessage("No cards in " + _playerHand + " hand to look at");
+                _game.sendMessage("No cards in " + _playerHand + " hand to look at");
             }
 
             cardsSeen(randomCards);

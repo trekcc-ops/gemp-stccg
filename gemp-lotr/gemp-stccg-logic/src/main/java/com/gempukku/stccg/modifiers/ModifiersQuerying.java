@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,13 +39,8 @@ public interface ModifiersQuerying {
 
     int getKeywordCount(PhysicalCard physicalCard, Keyword keyword);
 
-    // Archery
-    int getArcheryTotal(Side side, int baseArcheryTotal);
-
     // Movement
     int getMoveLimit(int baseMoveLimit);
-
-    boolean addsTwilightForCompanionMove(PhysicalCard companion);
 
     // Twilight cost
     int getTwilightCost(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, int twilightCostModifier, boolean ignoreRoamingPenalty);
@@ -58,21 +54,6 @@ public interface ModifiersQuerying {
 
     boolean isAdditionalCardType(DefaultGame game, PhysicalCard card, CardType cardType);
 
-    // Wounds/exertions
-    boolean canTakeWounds(DefaultGame game, Collection<PhysicalCard> woundSources, PhysicalCard card, int woundsToTake);
-
-    boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, PhysicalCard card, Set<PhysicalCard> winners);
-
-    boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
-
-    boolean canBeHealed(PhysicalCard card);
-
-    boolean canAddBurden(DefaultGame game, String performingPlayer, PhysicalCard source);
-
-    boolean canRemoveBurden(DefaultGame game, PhysicalCard source);
-
-    boolean canRemoveThreat(DefaultGame game, PhysicalCard source);
-
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);
 
     boolean isValidAssignments(Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments);
@@ -82,7 +63,7 @@ public interface ModifiersQuerying {
 
     boolean canNotPlayCard(String performingPlayer, PhysicalCard card);
 
-    boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
+    boolean canHavePlayedOn(PhysicalCard playedCard, PhysicalCard target);
 
     boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
 
@@ -103,7 +84,7 @@ public interface ModifiersQuerying {
 
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
-    boolean canDrawCardNoIncrement(DefaultGame game, String playerId);
+    boolean canDrawCardNoIncrement(String playerId);
     boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId);
 
     boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
@@ -115,8 +96,6 @@ public interface ModifiersQuerying {
     boolean canBeLiberated(DefaultGame game, String playerId, PhysicalCard card, PhysicalCard source);
 
     Side hasInitiative();
-
-    int getNumberOfSpottableFPCultures(DefaultGame game, String playerId);
 
     int getNumberOfSpottableShadowCultures(DefaultGame game, String playerId);
 
@@ -135,5 +114,6 @@ public interface ModifiersQuerying {
     LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource);
 
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
+    int getNormalCardPlaysAvailable(Player player);
 
 }

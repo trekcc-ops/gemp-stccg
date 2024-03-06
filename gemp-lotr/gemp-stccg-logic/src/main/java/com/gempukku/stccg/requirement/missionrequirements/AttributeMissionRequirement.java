@@ -1,6 +1,6 @@
 package com.gempukku.stccg.requirement.missionrequirements;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalPersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 
 import java.util.Collection;
@@ -14,14 +14,14 @@ public class AttributeMissionRequirement implements MissionRequirement {
         _value = value;
     }
     @Override
-    public boolean canBeMetBy(PhysicalPersonnelCard personnel) {
+    public boolean canBeMetBy(PersonnelCard personnel) {
         return personnel.getAttribute(_attribute) > _value;
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PhysicalPersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
         int totalAttribute = 0;
-        for (PhysicalPersonnelCard card : personnel) {
+        for (PersonnelCard card : personnel) {
             totalAttribute += card.getAttribute(_attribute);
         }
         return totalAttribute > _value;

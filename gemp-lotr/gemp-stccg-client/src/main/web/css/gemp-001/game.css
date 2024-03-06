@@ -335,6 +335,7 @@ ul {
     width: 100%;
     height: 50px;
     scroll: auto;
+    margin: 3px;
 }
 
 #alertButtons {
@@ -396,6 +397,8 @@ ul {
 .alertBox {
     border-radius: 7px;
     border-width: 1px;
+    box-sizing: border-box;
+    padding: 5px;
 }
 
 .alert-box-highlight {

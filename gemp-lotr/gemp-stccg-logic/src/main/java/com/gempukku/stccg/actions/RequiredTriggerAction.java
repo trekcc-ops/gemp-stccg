@@ -42,7 +42,7 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
             if (_physicalCard != null)
                 _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
             if (_message != null)
-                _game.getGameState().sendMessage(_message);
+                _game.sendMessage(_message);
         }
 
         if (isCostFailed()) {

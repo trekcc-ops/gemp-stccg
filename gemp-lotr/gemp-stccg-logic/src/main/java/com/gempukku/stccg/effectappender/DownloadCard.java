@@ -54,7 +54,8 @@ public class DownloadCard implements EffectAppenderProducer {
                                 context.getCardsFromMemory(memorize);
                         if (cardsToPlay.size() == 1) {
                             return new StackActionEffect(context.getGame(),
-                                    cardsToPlay.iterator().next().getPlayCardAction());
+                                    cardsToPlay.iterator().next().getPlayCardAction(true));
+                                        // TODO - Because personnel/ships/equipment use ReportCardAction, this only works to download other card types
                         } else {
                             return null;
                         }

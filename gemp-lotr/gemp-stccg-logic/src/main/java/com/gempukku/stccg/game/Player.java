@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -20,7 +20,7 @@ public class Player {
     private final Set<Affiliation> _playedAffiliations;
     private final DefaultGame _game;
     private final List<PhysicalCard> _cardsSeeded = new LinkedList<>();
-    private final List<PhysicalMissionCard> _solvedMissions = new LinkedList<>();
+    private final List<MissionCard> _solvedMissions = new LinkedList<>();
 
     public Player(DefaultGame game, String playerId) {
         _playerId = playerId;
@@ -82,6 +82,6 @@ public class Player {
 
     public List<PhysicalCard> getCardsSeeded() { return _cardsSeeded; }
     public void addCardSeeded(PhysicalCard card) { _cardsSeeded.add(card); }
-    public void addSolvedMission(PhysicalMissionCard card) { _solvedMissions.add(card); }
-    public List<PhysicalMissionCard> getSolvedMissions() { return _solvedMissions; }
+    public void addSolvedMission(MissionCard card) { _solvedMissions.add(card); }
+    public List<MissionCard> getSolvedMissions() { return _solvedMissions; }
 }

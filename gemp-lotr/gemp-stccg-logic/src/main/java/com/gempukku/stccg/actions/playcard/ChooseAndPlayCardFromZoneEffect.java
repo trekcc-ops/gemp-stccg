@@ -114,7 +114,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
     }
 
     protected void playCard(final PhysicalCard selectedCard) {
-        _playCardAction = selectedCard.getPlayCardAction(_destinationFilter);
+        _playCardAction = selectedCard.getPlayCardAction();
         _playCardAction.appendEffect(
                 new UnrespondableEffect() {
                     @Override

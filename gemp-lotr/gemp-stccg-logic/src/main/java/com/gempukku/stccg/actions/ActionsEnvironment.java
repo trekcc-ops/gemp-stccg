@@ -40,5 +40,5 @@ public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
     DefaultGame getGame();
     Stack<Action> getActionStack();
-
+    void signalEndOfPhase();
 }

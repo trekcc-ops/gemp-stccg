@@ -47,7 +47,7 @@ public class RemoveCardsFromZoneEffect extends DefaultEffect {
             for (PhysicalCard removedCard : _cardsToRemove)
                 _game.getGameState().addCardToZone(removedCard, Zone.REMOVED);
 
-            _game.getGameState().sendMessage(_playerPerforming + " removed " +
+            _game.sendMessage(_playerPerforming + " removed " +
                     TextUtils.getConcatenatedCardLinks(_cardsToRemove) + " from discard using " + _source.getCardLink());
 
             return new FullEffectResult(true);

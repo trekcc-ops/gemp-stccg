@@ -43,7 +43,7 @@ public class RevealCardsFromYourHandEffect extends DefaultEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        _game.getGameState().sendMessage(_source.getCardLink() + " revealed " + _handPlayerId + " cards in hand - " +
+        _game.sendMessage(_source.getCardLink() + " revealed " + _handPlayerId + " cards in hand - " +
                 TextUtils.concatenateStrings(_cards.stream().map(PhysicalCard::getCardLink)));
 
         final ActionOrder playerOrder = _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(_handPlayerId, false);

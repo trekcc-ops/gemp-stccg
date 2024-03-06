@@ -1,14 +1,14 @@
-package com.gempukku.stccg.rules;
+package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.AbstractActionProxy;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.actions.playcard.SeedMissionAction;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalMissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -39,7 +39,7 @@ public class ST1EPlayCardInPhaseRule {
                         if (phase == Phase.SEED_DOORWAY) {
                             List<Action> result = new LinkedList<>();
                             for (PhysicalCard card : cardsInHand) {
-                                Action action = new STCCGPlayCardAction(card, Zone.TABLE, player);
+                                Action action = card.getPlayCardAction();
                                 if (action.canBeInitiated())
                                     result.add(action);
                             }
@@ -47,7 +47,7 @@ public class ST1EPlayCardInPhaseRule {
                         } else if (phase == Phase.SEED_MISSION && !cardsInHand.isEmpty()) {
                             if (Objects.equals(playerId, currentPlayerId)) {
                                 List<Action> actionList = new LinkedList<>();
-                                actionList.add(new SeedMissionAction((PhysicalMissionCard) cardsInHand.get(0)));
+                                actionList.add(new SeedMissionAction((MissionCard) cardsInHand.get(0)));
                                 return actionList;
                             }
                         } else if (phase == Phase.SEED_FACILITY) {

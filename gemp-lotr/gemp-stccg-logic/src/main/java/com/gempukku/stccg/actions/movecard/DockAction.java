@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalFacilityCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
@@ -17,8 +17,8 @@ public class DockAction extends AbstractCostToEffectAction {
     private final PhysicalShipCard _cardToDock;
     private boolean _targetChosen = false;
     private boolean _cardDocked = false;
-    private PhysicalFacilityCard _dockingTarget;
-    private final Collection<PhysicalFacilityCard> _dockingTargetOptions;
+    private FacilityCard _dockingTarget;
+    private final Collection<FacilityCard> _dockingTargetOptions;
 
     public DockAction(Player player, PhysicalShipCard cardToDock) {
         super(player, ActionType.MOVE_CARDS);
@@ -36,7 +36,7 @@ public class DockAction extends AbstractCostToEffectAction {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {
                 _targetChosen = true;
-                _dockingTarget = (PhysicalFacilityCard) Iterables.getOnlyElement(cards);
+                _dockingTarget = (FacilityCard) Iterables.getOnlyElement(cards);
             }
         };
 

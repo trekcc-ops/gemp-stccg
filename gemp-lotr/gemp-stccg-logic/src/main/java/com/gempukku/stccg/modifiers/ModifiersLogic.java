@@ -37,6 +37,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     private int _drawnThisPhaseCount = 0;
     private final Map<Integer, Integer> _woundsPerPhaseMap = new HashMap<>();
     private final DefaultGame _game;
+    private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
+    private int _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
 
     public ModifiersLogic(DefaultGame game) {
         _game = game;
@@ -239,7 +241,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         return false;
     }
 
-    public void signalEndOfPhase(Phase phase) {
+    public void signalEndOfPhase() {
+        Phase phase = _game.getGameState().getCurrentPhase();
         List<Modifier> list = _untilEndOfPhaseModifiers.get(phase);
         if (list != null) {
             removeModifiers(list);
@@ -253,6 +256,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         _woundsPerPhaseMap.clear();
     }
 
+
     public void signalStartOfPhase(Phase phase) {
         List<Modifier> list = _untilStartOfPhaseModifiers.get(phase);
         if (list != null) {
@@ -265,7 +269,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             counterMap.clear();
     }
 
-    public void signalStartOfTurn(Player player) { signalStartOfTurn(player.getPlayerId()); }
+    public void signalStartOfTurn() { signalStartOfTurn(_game.getCurrentPlayer().getPlayerId()); }
 
     public void signalStartOfTurn(String playerId) {
         List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.get(playerId);
@@ -275,6 +279,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                 _untilEndOfTurnModifiers.add(modifier);
             }
         }
+        _normalCardPlaysAvailable.put(_game.getGameState().getPlayer(playerId), _normalCardPlaysPerTurn);
     }
 
     public void signalEndOfTurn() {
@@ -428,28 +433,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public int getArcheryTotal(Side side, int baseArcheryTotal) {
-        int result = baseArcheryTotal;
-        for (Modifier modifier : getModifiers(ModifierEffect.ARCHERY_MODIFIER))
-            result += modifier.getArcheryTotalModifier(_game, side);
-        return Math.max(0, result);
-    }
-
-    @Override
     public int getMoveLimit(int baseMoveLimit) {
         int result = baseMoveLimit;
         for (Modifier modifier : getModifiers(ModifierEffect.MOVE_LIMIT_MODIFIER))
             result += modifier.getMoveLimitModifier();
         return Math.max(1, result);
-    }
-
-    @Override
-    public boolean addsTwilightForCompanionMove(PhysicalCard companion) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.MOVE_TWILIGHT_MODIFIER, companion)) {
-            if (!modifier.addsTwilightForCompanionMove(_game, companion))
-                return false;
-        }
-        return true;
     }
 
     @Override
@@ -529,51 +517,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean canTakeWounds(DefaultGame game, Collection<PhysicalCard> woundSources, PhysicalCard card, int woundsToTake) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.WOUND_MODIFIER, card)) {
-                Integer woundsTaken = _woundsPerPhaseMap.get(card.getCardId());
-                if (woundsTaken == null)
-                    woundsTaken = 0;
-                if (!modifier.canTakeWounds(game, woundSources, card, woundsTaken, woundsToTake))
-                    return false;
-            }
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, PhysicalCard card, Set<PhysicalCard> winners) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.WOUND_MODIFIER, card)) {
-                if (!modifier.canTakeWoundsFromLosingSkirmish(game, card, winners))
-                    return false;
-            }
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.WOUND_MODIFIER, exertedCard)) {
-                if (!modifier.canBeExerted(game, exertionSource, exertedCard))
-                    return false;
-            }
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
     public boolean canPlayAction(String performingPlayer, Action action) {
         for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
             if (!modifier.canPlayAction(_game, performingPlayer, action))
@@ -598,9 +541,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target) {
+    public boolean canHavePlayedOn(PhysicalCard playedCard, PhysicalCard target) {
         for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TARGET_MODIFIER, target))
-            if (!modifier.canHavePlayedOn(game, playedCard, target))
+            if (!modifier.canHavePlayedOn(_game, playedCard, target))
                 return false;
         return true;
     }
@@ -722,59 +665,18 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    @Override
-    public boolean canBeHealed(PhysicalCard card) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.WOUND_MODIFIER, card))
-                if (!modifier.canBeHealed(_game, card))
-                    return false;
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean canAddBurden(DefaultGame game, String performingPlayer, PhysicalCard source) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.BURDEN_MODIFIER, source)) {
-            if (!modifier.canAddBurden(game, performingPlayer, source))
-                return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean canRemoveBurden(DefaultGame game, PhysicalCard source) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.BURDEN_MODIFIER, source)) {
-            if (!modifier.canRemoveBurden(game, source))
-                return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean canRemoveThreat(DefaultGame game, PhysicalCard source) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.THREAT_MODIFIER, source)) {
-            if (!modifier.canRemoveThreat(game, source))
-                return false;
-        }
-        return true;
-    }
-
     /**
      * Rule of 4. "You cannot draw (or take into hand) more than 4 cards during your fellowship phase."
      *
-     * @param game
      * @param playerId
      * @return
      */
     @Override
-    public boolean canDrawCardNoIncrement(DefaultGame game, String playerId) {
-        if (game.getGameState().getCurrentPlayerId().equals(playerId)) {
-            if (game.getGameState().getCurrentPhase() != Phase.FELLOWSHIP)
+    public boolean canDrawCardNoIncrement(String playerId) {
+        if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
+            if (_game.getGameState().getCurrentPhase() != Phase.FELLOWSHIP)
                 return true;
-            return game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP && _drawnThisPhaseCount < 4;
+            return _game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP && _drawnThisPhaseCount < 4;
         }
         return true;
     }
@@ -870,27 +772,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             return Side.SHADOW;
         else
             return Side.FREE_PEOPLE;
-    }
-
-    @Override
-    public int getNumberOfSpottableFPCultures(DefaultGame game, String playerId) {
-        Set<Culture> spottableCulturesBasedOnCards = new HashSet<>();
-        for (PhysicalCard spottableFPCard : Filters.filterActive(game, Side.FREE_PEOPLE, Filters.spottable)) {
-            final Culture fpCulture = spottableFPCard.getBlueprint().getCulture();
-            if (fpCulture != null)
-                spottableCulturesBasedOnCards.add(fpCulture);
-        }
-
-        int result = 0;
-        for (Culture spottableCulturesBasedOnCardsOnCard : spottableCulturesBasedOnCards) {
-            if (canPlayerSpotCulture())
-                result++;
-        }
-
-        for (Modifier modifier : getModifiers(ModifierEffect.SPOT_MODIFIER))
-            result += modifier.getFPCulturesSpotCountModifier(game, playerId);
-
-        return result;
     }
 
     private boolean canPlayerSpotCulture() {
@@ -1004,5 +885,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     public DefaultGame getGame() { return _game; }
+
+    public int getNormalCardPlaysAvailable(Player player) { return _normalCardPlaysAvailable.get(player); }
+    public void useNormalCardPlay(Player player) {
+        int currentPlaysAvailable = _normalCardPlaysAvailable.get(player);
+        _normalCardPlaysAvailable.put(player, currentPlaysAvailable - 1);
+    }
 
 }

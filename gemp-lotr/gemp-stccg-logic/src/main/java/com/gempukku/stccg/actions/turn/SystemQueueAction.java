@@ -1,10 +1,12 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.turn;
 
+import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class SystemQueueAction extends AbstractCostToEffectAction {
-    private final DefaultGame _game;
+    protected final DefaultGame _game;
     public SystemQueueAction(DefaultGame game) {
         _game = game;
     }

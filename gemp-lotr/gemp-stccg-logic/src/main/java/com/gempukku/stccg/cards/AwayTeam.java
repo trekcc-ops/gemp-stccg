@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class AwayTeam implements AttemptingEntity {
+public class AwayTeam implements AttemptingUnit {
     private final Player _player;
     private final ST1EPhysicalCard _parentCard;
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
@@ -42,7 +42,7 @@ public class AwayTeam implements AttemptingEntity {
     public Player getPlayer() { return _player; }
     public String getPlayerId() { return _player.getPlayerId(); }
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
-    public boolean canAttemptMission(PhysicalMissionCard missionCard) {
+    public boolean canAttemptMission(MissionCard missionCard) {
         return isOnSurface(missionCard) && hasAffiliationFromSet(missionCard.getAffiliationIconsForPlayer(_player));
     }
 
@@ -54,10 +54,10 @@ public class AwayTeam implements AttemptingEntity {
         return TextUtils.concatenateStrings(getCards().stream().map(PhysicalCard::getFullName).toList());
     }
 
-    public Collection<PhysicalPersonnelCard> getAllPersonnel() {
-        List<PhysicalPersonnelCard> result = new LinkedList<>();
+    public Collection<PersonnelCard> getAllPersonnel() {
+        List<PersonnelCard> result = new LinkedList<>();
         for (PhysicalCard card : getCards()) {
-            if (card instanceof PhysicalPersonnelCard personnel) {
+            if (card instanceof PersonnelCard personnel) {
                 result.add(personnel);
             }
         }
@@ -81,7 +81,7 @@ public class AwayTeam implements AttemptingEntity {
     public boolean canBeDisbanded() {
             // TODO - Away Teams may also be eligible to be disbanded if they're not on a mission, this should check presence instead
                 // TODO - Check not sufficient in complex situations
-        if (_parentCard instanceof PhysicalMissionCard mission) {
+        if (_parentCard instanceof MissionCard mission) {
             List<AwayTeam> awayTeamsOnSurface = mission.getYourAwayTeamsOnSurface(_player).toList();
             for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
                 boolean canJoinAnother = false;
@@ -97,7 +97,7 @@ public class AwayTeam implements AttemptingEntity {
     }
 
     public void disband() {
-        if (_parentCard instanceof PhysicalMissionCard mission) {
+        if (_parentCard instanceof MissionCard mission) {
             for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
                 card.leaveAwayTeam();
                 List<AwayTeam> awayTeamsOnSurface = mission.getYourAwayTeamsOnSurface(_player).toList();

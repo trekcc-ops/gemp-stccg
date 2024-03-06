@@ -125,6 +125,11 @@
     needsLoading: false
   }
   {
+    setId: "180"
+    setName: Tribbles Royale
+    needsLoading: false
+  }
+  {
     setId: "190"
     setName: Star Trek 50 [Tribbles]
     needsLoading: false

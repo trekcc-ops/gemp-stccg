@@ -50,10 +50,10 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
                             });
                 }
 
-                _game.getGameState().sendMessage(_source.getCardLink() + " revealed cards from " + _playerHand + " hand at random - " + TextUtils.getConcatenatedCardLinks(randomCards));
+                _game.sendMessage(_source.getCardLink() + " revealed cards from " + _playerHand + " hand at random - " + TextUtils.getConcatenatedCardLinks(randomCards));
             }
             else {
-                _game.getGameState().sendMessage("No cards in " + _playerHand + " hand to reveal");
+                _game.sendMessage("No cards in " + _playerHand + " hand to reveal");
             }
             cardsRevealed(randomCards);
             for (PhysicalCard randomCard : randomCards)

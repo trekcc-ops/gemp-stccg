@@ -40,7 +40,7 @@ public class RevealHandEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _handPlayerId, _actingPlayer)) {
             final List<? extends PhysicalCard> hand = _game.getGameState().getHand(_handPlayerId);
-            _game.getGameState().sendMessage(
+            _game.sendMessage(
                     _source.getCardLink() + " revealed " + _handPlayerId + " cards in hand - " +
                             TextUtils.getConcatenatedCardLinks(hand)
             );

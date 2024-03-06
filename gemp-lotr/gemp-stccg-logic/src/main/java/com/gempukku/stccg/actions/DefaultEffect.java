@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 public abstract class DefaultEffect implements Effect {
+    protected Action _action;
     private Boolean _carriedOut;
     protected boolean _prevented;
     protected final String _performingPlayerId;
@@ -14,6 +15,10 @@ public abstract class DefaultEffect implements Effect {
     }
 
     protected DefaultEffect(PhysicalCard card) { _performingPlayerId = card.getOwnerName(); }
+    protected DefaultEffect(Action action) {
+        _action = action;
+        _performingPlayerId = action.getPerformingPlayerId();
+    }
     protected DefaultEffect() { _performingPlayerId = null; } // Should be reserved for automatic game effects
 
     protected abstract FullEffectResult playEffectReturningResult();

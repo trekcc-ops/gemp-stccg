@@ -1,14 +1,14 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.actions.EffectResult;
 
 public class TribblesPhysicalCard extends PhysicalCard {
     private final TribblesGame _game;
@@ -20,6 +20,9 @@ public class TribblesPhysicalCard extends PhysicalCard {
     public TribblesGame getGame() { return _game; }
 
     @Override
+    public CostToEffectAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
+
+    @Override
     public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
         return new TribblesActionContext(playerId, getGame(), this, effect, effectResult);
     }
@@ -28,10 +31,6 @@ public class TribblesPhysicalCard extends PhysicalCard {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;
         return _blueprint.getPlayOutOfSequenceConditions().stream().anyMatch(
                 requirement -> requirement.accepts(createActionContext()));
-    }
-
-    public Action createPlayCardAction() {
-        return new TribblesPlayCardAction(this);
     }
 
     public boolean isNextInSequence() {

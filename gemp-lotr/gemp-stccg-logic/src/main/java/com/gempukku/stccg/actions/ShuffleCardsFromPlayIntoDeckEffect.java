@@ -65,7 +65,7 @@ public class ShuffleCardsFromPlayIntoDeckEffect extends DefaultEffect {
             for (PhysicalCard physicalCard : discardedFromPlay)
                 _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, physicalCard));
 
-            _game.getGameState().sendMessage(TextUtils.getConcatenatedCardLinks(toShuffleIn) + " " + TextUtils.be(toShuffleIn) + " shuffled into " + _playerDeck + " deck");
+            _game.sendMessage(TextUtils.getConcatenatedCardLinks(toShuffleIn) + " " + TextUtils.be(toShuffleIn) + " shuffled into " + _playerDeck + " deck");
 
             cardsShuffledCallback(toShuffleIn);
         }

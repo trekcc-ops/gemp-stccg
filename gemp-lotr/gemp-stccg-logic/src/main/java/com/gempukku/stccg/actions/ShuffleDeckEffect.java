@@ -13,7 +13,7 @@ public class ShuffleDeckEffect extends UnrespondableEffect {
 
     @Override
     public void doPlayEffect() {
-        _game.getGameState().sendMessage(_playerId + " shuffles their deck");
+        _game.sendMessage(_playerId + " shuffles their deck");
         _game.getGameState().shuffleDeck(_playerId);
     }
 }

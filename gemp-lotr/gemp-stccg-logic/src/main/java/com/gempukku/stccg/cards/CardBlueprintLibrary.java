@@ -26,8 +26,9 @@ public class CardBlueprintLibrary {
 
     private final String[] _packageNames =
             new String[]{
-                    "", ".dwarven", ".dunland", ".elven", ".fallenRealms", ".gandalf", ".gollum", ".gondor", ".isengard", ".men", ".orc",
-                    ".raider", ".rohan", ".moria", ".wraith", ".sauron", ".shire", ".site", ".uruk_hai",
+                    "", ".dwarven", ".dunland", ".elven", ".fallenRealms", ".gandalf", ".gollum", ".gondor",
+                    ".isengard", ".men", ".orc", ".raider", ".rohan", ".moria", ".wraith", ".sauron", ".shire",
+                    ".site", ".uruk_hai",
 
                     //Additional Hobbit Draft packages
                     ".esgaroth", ".gundabad", ".smaug", ".spider", ".troll"

@@ -1,4 +1,4 @@
-package com.gempukku.stccg.rules;
+package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
@@ -11,11 +11,11 @@ import com.gempukku.stccg.gamestate.GameState;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ST1EExecuteOrdersRule {
+public class ST1EPhaseActionsRule {
     private final ActionsEnvironment actionsEnvironment;
     private final GameState _gameState;
 
-    public ST1EExecuteOrdersRule(ActionsEnvironment actionsEnvironment) {
+    public ST1EPhaseActionsRule(ActionsEnvironment actionsEnvironment) {
         this.actionsEnvironment = actionsEnvironment;
         _gameState = actionsEnvironment.getGame().getGameState();
     }

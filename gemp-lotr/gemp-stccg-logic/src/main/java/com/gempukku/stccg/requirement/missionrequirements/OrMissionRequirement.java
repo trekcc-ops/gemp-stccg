@@ -1,6 +1,6 @@
 package com.gempukku.stccg.requirement.missionrequirements;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalPersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,11 +12,11 @@ public class OrMissionRequirement implements MissionRequirement {
         _requirements = requirements;
     }
     @Override
-    public boolean canBeMetBy(PhysicalPersonnelCard personnel) {
+    public boolean canBeMetBy(PersonnelCard personnel) {
         return _requirements.stream().anyMatch(requirement -> requirement.canBeMetBy(personnel));
     }
     @Override
-    public boolean canBeMetBy(Collection<PhysicalPersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
         return _requirements.stream().anyMatch(requirement -> requirement.canBeMetBy(personnel));
     }
 }

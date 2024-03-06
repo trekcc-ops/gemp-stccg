@@ -2,7 +2,7 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.SystemQueueAction;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;

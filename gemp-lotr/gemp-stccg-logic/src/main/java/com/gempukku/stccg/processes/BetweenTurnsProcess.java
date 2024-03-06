@@ -15,7 +15,6 @@ public class BetweenTurnsProcess extends GameProcess {
     @Override
     public void process() {
         _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
-        _game.getGameState().sendMessage("DEBUG: Beginning BetweenTurnsProcess");
         ActionOrder actionOrder = _game.getGameState().getPlayerOrder().getClockwisePlayOrder(_game.getGameState().getCurrentPlayerId(), false);
         actionOrder.getNextPlayer();
 

@@ -57,7 +57,7 @@ public class RevealCardEffect implements Effect {
                         });
             }
 
-            _game.getGameState().sendMessage(_source.getCardLink() + " revealed cards - " +
+            _game.sendMessage(_source.getCardLink() + " revealed cards - " +
                     TextUtils.concatenateStrings(_cards.stream().map(PhysicalCard::getCardLink)));
         }
     }

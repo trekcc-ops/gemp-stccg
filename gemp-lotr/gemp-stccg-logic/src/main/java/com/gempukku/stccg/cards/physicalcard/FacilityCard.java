@@ -17,21 +17,21 @@ import com.gempukku.stccg.rules.TextUtils;
 
 import java.util.*;
 
-public class PhysicalFacilityCard extends PhysicalNounCard1E implements CardWithCrew {
+public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew {
     private final Set<PhysicalCard> _cardsAboard = new HashSet<>();
-    public PhysicalFacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
+    public FacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
     }
     public FacilityType getFacilityType() {
         return getBlueprint().getFacilityType();
     }
-    public boolean canSeedAtMission(PhysicalMissionCard mission) {
+    public boolean canSeedAtMission(MissionCard mission) {
         for (Affiliation affiliation : _affiliationOptions)
             if (canSeedAtMissionAsAffiliation(mission, affiliation))
                 return true;
         return false;
     }
-    public boolean canSeedAtMissionAsAffiliation(PhysicalMissionCard mission, Affiliation affiliation) {
+    public boolean canSeedAtMissionAsAffiliation(MissionCard mission, Affiliation affiliation) {
         if (mission.isHomeworld())
             return false;
         if (mission.getLocation().hasFacilityOwnedByPlayer(_owner.getPlayerId()))
@@ -42,7 +42,7 @@ public class PhysicalFacilityCard extends PhysicalNounCard1E implements CardWith
     @Override
     public boolean canBeSeeded() {
         for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
-            for (PhysicalMissionCard mission : location.getMissions())
+            for (MissionCard mission : location.getMissions())
                 if (this.canSeedAtMission(mission))
                     return true;
         }

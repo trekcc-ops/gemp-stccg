@@ -2,8 +2,9 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -13,15 +14,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ChangeAffiliationAction extends AbstractCostToEffectAction {
-    private final PhysicalReportableCard1E _card;
+    private final AffiliatedCard _card;
     private boolean _affiliationWasChosen = false;
     private Affiliation _selectedAffiliation;
     private boolean _actionCompleted = false;
     private final List<Affiliation> _affiliationOptions = new LinkedList<>();
     private final ST1EGame _game;
 
-    public ChangeAffiliationAction(Player player, PhysicalReportableCard1E card) {
-                    // TODO - Zone is null because these will be attached and the implementation is weird
+    public ChangeAffiliationAction(Player player, AffiliatedCard card) {
         super(player, ActionType.OTHER);
         _card = card;
         _game = card.getGame();
@@ -29,9 +29,18 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
             if (affiliation != _card.getCurrentAffiliation())
                 _affiliationOptions.add(affiliation);
         });
-        if (_card.getAttachedTo() != null && _card.getAttachedTo() instanceof CardWithCrew cardWithCrew) {
-            _affiliationOptions.removeIf(affiliation ->
-                    !_card.isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(cardWithCrew, affiliation));
+        if (card instanceof PersonnelCard personnel) {
+            if (personnel.getAttachedTo() != null && personnel.getAttachedTo() instanceof CardWithCrew cardWithCrew) {
+                _affiliationOptions.removeIf(affiliation ->
+                        !personnel.isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(cardWithCrew, affiliation));
+            }
+        } else if (card instanceof CardWithCrew cardWithCrew) {
+                // TODO - Ignores carried ship interactions
+            _affiliationOptions.removeIf(affiliation -> cardWithCrew.getPersonnelInCrew().stream().anyMatch(
+                    personnel -> !personnel.isCompatibleWith(affiliation)));
+        } else {
+            // There should be no other types of cards that would get the ChangeAffiliationAction
+            _affiliationOptions.clear();
         }
     }
 
@@ -45,10 +54,10 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public String getText() { return "Change affiliation"; }
 
     @Override
-    public PhysicalCard getActionSource() { return _card; }
+    public PhysicalCard getActionSource() { return (PhysicalCard) _card; }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _card; }
+    public PhysicalCard getActionAttachedToCard() { return (PhysicalCard) _card; }
 
     @Override
     public Effect nextEffect() {
@@ -67,7 +76,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         }
 
         if (!_actionCompleted) {
-            _game.getGameState().sendMessage(_performingPlayerId + " changed " +
+            _game.sendMessage(_performingPlayerId + " changed " +
                     _card.getCardLink() + "'s affiliation to " + _selectedAffiliation.toHTML());
             _card.setCurrentAffiliation(_selectedAffiliation);
             _actionCompleted = true;

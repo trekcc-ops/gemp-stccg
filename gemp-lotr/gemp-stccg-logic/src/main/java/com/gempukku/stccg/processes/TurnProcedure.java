@@ -1,6 +1,7 @@
 package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.adventure.InvalidSoloAdventureException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -68,7 +69,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
             Set<EffectResult> effectResults = _actionsEnvironment.consumeEffectResults();
             effectResults.forEach(EffectResult::createOptionalAfterTriggerActions);
             if (!effectResults.isEmpty()) {
-                _actionStack.add(new PlayOutEffectResults(effectResults));
+                _actionStack.add(new PlayOutEffectResults(_game, effectResults));
             } else {
                 if (_actionStack.isEmpty()) {
                     if (_playedGameProcess) {
@@ -94,7 +95,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
                                 _game.playerLost(_game.getGameState().getCurrentPlayerId(), exp.getMessage());
                             }
                         } else
-                            _actionStack.add(new PlayOutEffect(effect));
+                            _actionStack.add(new PlayOutEffect(_game, effect));
                     }
                 }
             }
@@ -106,12 +107,12 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
             if (numSinceDecision >= 5000) {
                 String errorMessage = "There's been " + numSinceDecision +
                         " actions/effects since last user decision. Game is probably looping, so ending game.";
-                _game.getGameState().sendMessage(errorMessage);
+                _game.sendMessage(errorMessage);
 
                 int actionNum = 1;
-                _game.getGameState().sendMessage("Action stack size: " + _actionStack.size());
+                _game.sendMessage("Action stack size: " + _actionStack.size());
                 for (Action action : _actionStack) {
-                    _game.getGameState().sendMessage("Action " + (actionNum++) + ": " +
+                    _game.sendMessage("Action " + (actionNum++) + ": " +
                             action.getClass().getSimpleName() + (action.getActionSource() != null ?
                             " Source: " + action.getActionSource().getFullName() : ""));
                 }
@@ -119,7 +120,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
                 effectResults = _game.getActionsEnvironment().consumeEffectResults();
                 int numEffectResult = 1;
                 for (EffectResult effectResult : effectResults) {
-                    _game.getGameState().sendMessage("EffectResult " + (numEffectResult++) + ": " +
+                    _game.sendMessage("EffectResult " + (numEffectResult++) + ": " +
                             effectResult.getType().name());
                 }
                 throw new UnsupportedOperationException(errorMessage);
@@ -131,8 +132,8 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         private final Effect _effect;
         private boolean _initialized;
 
-        protected PlayOutEffect(Effect effect) {
-            super(_game);
+        protected PlayOutEffect(DefaultGame game, Effect effect) {
+            super(game);
             _effect = effect;
         }
 
@@ -177,8 +178,8 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         private final Set<EffectResult> _effectResults;
         private boolean _initialized;
 
-        protected PlayOutEffectResults(Set<EffectResult> effectResults) {
-            super(_game);
+        protected PlayOutEffectResults(DefaultGame game, Set<EffectResult> effectResults) {
+            super(game);
             _effectResults = effectResults;
         }
 

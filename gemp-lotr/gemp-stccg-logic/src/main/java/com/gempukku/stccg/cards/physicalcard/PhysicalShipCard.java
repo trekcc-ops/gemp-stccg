@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.AttemptingEntity;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.rules.TextUtils;
@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class PhysicalShipCard extends PhysicalReportableCard1E implements AttemptingEntity, CardWithCrew {
+public class PhysicalShipCard extends PhysicalReportableCard1E
+        implements AffiliatedCard, AttemptingUnit, CardWithCrew {
 
     private boolean _docked = false;
-    private PhysicalFacilityCard _dockedAtCard = null;
+    private FacilityCard _dockedAtCard = null;
     private int _rangeAvailable;
 
     public PhysicalShipCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -54,14 +55,14 @@ public class PhysicalShipCard extends PhysicalReportableCard1E implements Attemp
     public boolean isDocked() { return _docked; }
 
     @Override
-    public void reportToFacility(PhysicalFacilityCard facility) {
+    public void reportToFacility(FacilityCard facility) {
         setLocation(facility.getLocation()); // TODO - What happens if the facility doesn't allow docking?
         _game.getGameState().attachCard(this, facility);
         _docked = true;
         _dockedAtCard = facility;
     }
 
-    public void dockAtFacility(PhysicalFacilityCard facilityCard) {
+    public void dockAtFacility(FacilityCard facilityCard) {
         _game.getGameState().transferCard(this, facilityCard);
         _docked = true;
         _dockedAtCard = facilityCard;
@@ -87,8 +88,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E implements Attemp
         Map<Icon1E, Long> staffingNeeded = frequencyMap(_blueprint.getStaffing().stream());
         List<List<Icon1E>> staffingIconsAvailable = new LinkedList<>();
         for (PhysicalCard card : getCrew()) {
-            if (card instanceof PhysicalPersonnelCard) {
-                List<Icon1E> icons = ((PhysicalPersonnelCard) card).getIcons();
+            if (card instanceof PersonnelCard) {
+                List<Icon1E> icons = ((PersonnelCard) card).getIcons();
                 if (icons != null) {
                     List<Icon1E> cardIcons = new LinkedList<>(icons);
                     if (cardIcons.contains(Icon1E.COMMAND) && !cardIcons.contains(Icon1E.STAFF))
@@ -162,7 +163,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E implements Attemp
     }
 
     @Override
-    public boolean canAttemptMission(PhysicalMissionCard mission) {
+    public boolean canAttemptMission(MissionCard mission) {
         if (_currentLocation != mission.getLocation())
             return false;
         if (_docked)
@@ -173,7 +174,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E implements Attemp
             // TODO - Does not include a check for infiltrators
         boolean matchesShip = false;
         boolean matchesMission = false;
-        for (PhysicalPersonnelCard card : getAttemptingPersonnel()) {
+        for (PersonnelCard card : getAttemptingPersonnel()) {
             Affiliation personnelAffiliation = card.getCurrentAffiliation();
             if (personnelAffiliation == _currentAffiliation)
                 matchesShip = true;
@@ -183,12 +184,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E implements Attemp
         return matchesShip && matchesMission;
     }
 
-    public Collection<PhysicalPersonnelCard> getAllPersonnel() {
-        Collection<PhysicalPersonnelCard> personnelInCrew = new LinkedList<>();
-        for (PhysicalCard card : getCrew()) {
-            if (card instanceof PhysicalPersonnelCard personnel)
-                personnelInCrew.add(personnel);
-        }
-        return personnelInCrew;
+    public Collection<PersonnelCard> getAllPersonnel() {
+        return getPersonnelInCrew();
     }
 }

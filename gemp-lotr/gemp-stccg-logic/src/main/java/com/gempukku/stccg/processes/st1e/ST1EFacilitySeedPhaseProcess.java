@@ -22,7 +22,6 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     public void process() {
         _playOrder = _game.getGameState().getPlayerOrder();
         String _currentPlayer = _playOrder.getCurrentPlayer();
-        _game.getGameState().sendMessage("DEBUG: Beginning facility seed phase process");
 
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         if (playableActions.isEmpty() && _game.shouldAutoPass(_currentPlayer, _game.getGameState().getCurrentPhase())) {
@@ -39,7 +38,6 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                                 _game.getActionsEnvironment().addActionToStack(action);
                             } else {
                                 _consecutivePasses++;
-                                _game.getGameState().sendMessage("DEBUG: Incrementing consecutivePasses");
                             }
                         }
                     });
@@ -49,7 +47,6 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     @Override
     public GameProcess getNextProcess() {
         if (_consecutivePasses >= _playOrder.getPlayerCount()) {
-            _game.getGameState().sendMessage("DEBUG: Exiting facility seed phase process");
             _playOrder.setCurrentPlayer(_playOrder.getFirstPlayer());
             return new ST1EStartOfPlayPhaseProcess(new ST1EStartOfTurnGameProcess(_game), _game);
         } else {
