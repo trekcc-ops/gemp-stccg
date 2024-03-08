@@ -17,10 +17,7 @@ public class CollectionSerializerTest {
     private CardCollection serializeAndDeserialize(DefaultCardCollection collection) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         _serializer.serializeCollection(collection, baos);
-
-        final byte[] bytes = baos.toByteArray();
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        return _serializer.deserializeCollection(bais);
+        return _serializer.deserializeCollection(new ByteArrayInputStream(baos.toByteArray()));
     }
 
     @Test

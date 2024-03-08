@@ -14,7 +14,8 @@ public enum Affiliation implements Filterable {
     NON_ALIGNED("Non-Aligned","https://www.trekcc.org/images/icons/1e/1E-NON.gif"),
     ROMULAN("Romulan","https://www.trekcc.org/images/icons/1e/1E-ROM.gif"),
     STARFLEET("Starfleet",""),
-    VIDIIAN("Vidiian","");
+    VIDIIAN("Vidiian",""),
+    VULCAN("Vulcan", "https://www.trekcc.org/images/icons/1e/1E-VUL.gif");
 
     private final String _humanReadable, _iconURL;
     Affiliation(String humanReadable, String iconURL) {

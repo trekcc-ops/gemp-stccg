@@ -10,7 +10,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import java.util.List;
 
 public class EncounterSeedCardAction extends AbstractCostToEffectAction {
-    private AttemptingUnit _attemptingUnit;
+    private final AttemptingUnit _attemptingUnit;
     private final Player _player;
     private final ST1EGame _game;
     private String _cardEncountered;
@@ -54,5 +54,7 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
 
     @Override
     public ST1EGame getGame() { return _game; }
+
+    public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
 
 }

@@ -133,7 +133,7 @@ public interface Modifier {
     boolean canPlaySite(DefaultGame game, String playerId);
 
     boolean shadowCanHaveInitiative(DefaultGame game);
-    boolean hasIcon(PhysicalCard card, Icon1E icon);
+    boolean hasIcon(PhysicalCard card, CardIcon icon);
 
     Side hasInitiative();
 

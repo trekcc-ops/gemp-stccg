@@ -8,6 +8,10 @@ import java.util.stream.Stream;
 
 public class TextUtils {
 
+    public static <T> T getRandomFromList(List<? extends T> list) {
+        return getRandomFromList(list, 1).get(0);
+    }
+
     public static <T> List<T> getRandomFromList(List<? extends T> list, int count) {
         List<T> randomizedList = new ArrayList<>(list);
         Collections.shuffle(randomizedList, ThreadLocalRandom.current());

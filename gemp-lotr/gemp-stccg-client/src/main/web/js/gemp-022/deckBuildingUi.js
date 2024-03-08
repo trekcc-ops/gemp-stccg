@@ -107,26 +107,15 @@ var GempLotrDeckBuildingUI = Class.extend({
                     $("#editingDeck").text("New deck");
                 });
 
-        deckListBut.click(
-                function () {
-                    that.loadDeckList();
-                });
-        
-        libraryListBut.click(
-                function () {
-                    that.loadLibraryList();
-                });
-
         importDeckBut.click(
                 function () {
                     that.deckName = null;
                     that.importDecklist();
                 });
-        
-        notesBut.click(
-               function () {
-                    that.editNotes();
-               });
+
+        deckListBut.click(function () { that.loadDeckList(); });
+        libraryListBut.click(function () { that.loadLibraryList(); });
+        notesBut.click(function () { that.editNotes(); });
 
         this.collectionDiv = $("#collectionDiv");
 

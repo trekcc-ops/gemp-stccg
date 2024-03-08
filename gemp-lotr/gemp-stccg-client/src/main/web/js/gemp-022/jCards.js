@@ -281,59 +281,6 @@ var Card = Class.extend({
     },
 
     isHorizontal: function (blueprintId) {
-        var separator = blueprintId.indexOf("_");
-        var setNo = parseInt(blueprintId.substr(0, separator));
-        var cardNo = parseInt(blueprintId.substr(separator + 1));
-
-        if (setNo == 0)
-            return (cardNo == 1 || cardNo == 4 || cardNo == 6 || cardNo == 8);
-        if (setNo == 1 || setNo == 51 || setNo == 71)
-            return ((cardNo >= 319 && cardNo <= 363) || cardNo == 367);
-        if (setNo == 2 || setNo == 52 || setNo == 72)
-            return (cardNo >= 115 && cardNo <= 120);
-        if (setNo == 3 || setNo == 53 || setNo == 73)
-            return (cardNo >= 115 && cardNo <= 120);
-        if (setNo == 4 || setNo == 54 || setNo == 74)
-            return (cardNo >= 323 && cardNo <= 363);
-        if (setNo == 5 || setNo == 55 || setNo == 75)
-            return (cardNo >= 118 && cardNo <= 120);
-        if (setNo == 6 || setNo == 56 || setNo == 76)
-            return (cardNo >= 115 && cardNo <= 120);
-        if (setNo == 7 || setNo == 57 || setNo == 77)
-            return (cardNo >= 329 && cardNo <= 363);
-        if (setNo == 8 || setNo == 58 || setNo == 78)
-            return (cardNo >= 117 && cardNo <= 120);
-        if (setNo == 10 || setNo == 60 || setNo == 80)
-            return (cardNo >= 117 && cardNo <= 120);
-        if (setNo == 11 || setNo == 61 || setNo == 81)
-            return (cardNo >= 227 && cardNo <= 266);
-        if (setNo == 12 || setNo == 62 || setNo == 82)
-            return (cardNo >= 185 && cardNo <= 194);
-        if (setNo == 13 || setNo == 63 || setNo == 83)
-            return (cardNo >= 185 && cardNo <= 194);
-        if (setNo == 15 || setNo == 65 || setNo == 85)
-            return (cardNo >= 187 && cardNo <= 194) || cardNo == 210;
-        if (setNo == 17 || setNo == 67 || setNo == 87)
-            return (cardNo >= 145 && cardNo <= 148);
-        if (setNo == 18 || setNo == 68 || setNo == 88)
-            return (cardNo >= 134 && cardNo <= 140);
-        if (setNo == 20)
-            return (cardNo >= 416 && cardNo <= 469);
-        if (setNo == 30)
-            return (cardNo >= 49 && cardNo <= 65);
-        if (setNo == 31)
-            return (cardNo >= 44 && cardNo <= 47);
-        if (setNo == 32)
-            return (cardNo >= 46 && cardNo <= 49);
-        if (setNo == 33)
-            return (cardNo >= 55 && cardNo <= 58);
-        if (setNo == 40)
-            return (cardNo >= 273 && cardNo <= 309);
-        if (setNo == 100 || setNo == 150)
-            return (cardNo == 1);
-        if (setNo == 101 || setNo == 151)
-            return (cardNo >= 57 && cardNo <= 64);
-
         return false;
     },
 

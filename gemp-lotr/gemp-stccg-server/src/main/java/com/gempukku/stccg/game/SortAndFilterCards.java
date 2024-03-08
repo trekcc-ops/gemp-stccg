@@ -14,30 +14,34 @@ import java.text.Normalizer;
 import java.util.*;
 
 public class SortAndFilterCards {
-    public <T extends CardItem> List<T> process(String filter, Iterable<T> items, CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary) {
+    public <T extends CardItem> List<T> process(String filter, Iterable<T> items, CardBlueprintLibrary cardLibrary,
+                                                FormatLibrary formatLibrary) {
         if (filter == null)
             filter = "";
         String[] filterParams = filter.split("\\|");
         String[] sets = getSetFilter(filterParams);
         List<String> words = getWords(filterParams);
-        Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", null, filterParams);
-        Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class, "tribblePower", null, filterParams);
+        Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", filterParams);
+        Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class, "tribblePower", filterParams);
+        Set<Affiliation> affiliations = getEnumFilter(Affiliation.values(), Affiliation.class, "affiliation", filterParams);
         Set<Keyword> phases = getEnumFilter(Keyword.values(),Keyword.class, "phase", Collections.emptySet(), filterParams);
 
         List<T> result = new ArrayList<>();
         Map<String, CardBlueprint> cardBlueprintMap = new HashMap<>();
-
         for (T item : items) {
             String blueprintId = item.getBlueprintId();
+
             if (isPack(blueprintId)) {
-                if (acceptsFilters(cardLibrary, cardBlueprintMap, formatLibrary, blueprintId, sets, cardTypes,
-                        tribblePowers, words, phases))
+                CardBlueprint blueprint = cardBlueprintMap.get(blueprintId);
+                if (acceptsFilters(blueprint, cardLibrary, formatLibrary, blueprintId, sets, cardTypes,
+                        affiliations, tribblePowers, words, phases))
                     result.add(item);
             } else {
                 try {
                     cardBlueprintMap.put(blueprintId, cardLibrary.getCardBlueprint(blueprintId));
-                    if (acceptsFilters(cardLibrary, cardBlueprintMap, formatLibrary, blueprintId, sets, cardTypes,
-                            tribblePowers, words, phases))
+                    CardBlueprint blueprint = cardBlueprintMap.get(blueprintId);
+                    if (acceptsFilters(blueprint, cardLibrary, formatLibrary, blueprintId, sets, cardTypes,
+                            affiliations, tribblePowers, words, phases))
                         result.add(item);
                 } catch (CardNotFoundException e) {
                     // Ignore the card
@@ -49,24 +53,11 @@ public class SortAndFilterCards {
         if (sort == null || sort.isEmpty())
             sort = "name";
 
-        final String[] sortSplit = sort.split(",");
-
         MultipleComparator<CardItem> comparators = new MultipleComparator<>();
-        for (String oneSort : sortSplit) {
-            switch (oneSort) {
-                case "strength" ->
-                        comparators.addComparator(new PacksFirstComparator(new StrengthComparator(cardBlueprintMap)));
-                case "vitality" ->
-                        comparators.addComparator(new PacksFirstComparator(new VitalityComparator(cardBlueprintMap)));
-                case "cardType" ->
-                        comparators.addComparator(new PacksFirstComparator(new CardTypeComparator(cardBlueprintMap)));
-                case "culture" ->
-                        comparators.addComparator(new PacksFirstComparator(new CultureComparator(cardBlueprintMap)));
-                case "name" ->
-                        comparators.addComparator(new PacksFirstComparator(new NameComparator(cardBlueprintMap)));
-                case "tribbleValue" ->
-                        comparators.addComparator(new PacksFirstComparator(new TribblesValueComparator(cardBlueprintMap)));
-            }
+        for (String oneSort : sort.split(",")) {
+            Comparator<CardItem> comparator = getCardItemComparator(oneSort, cardBlueprintMap);
+            if (comparator != null)
+                comparators.addComparator(new PacksFirstComparator(comparator));
         }
 
         result.sort(comparators);
@@ -74,25 +65,45 @@ public class SortAndFilterCards {
         return result;
     }
 
-    private boolean acceptsFilters(CardBlueprintLibrary library, Map<String, CardBlueprint> cardBlueprint,
-                                   FormatLibrary formatLibrary, String blueprintId, String[] sets, Set<CardType> cardTypes,
-                                   Set<TribblePower> tribblePowers, List<String> words, Set<Keyword> phases) {
-        final CardBlueprint blueprint = cardBlueprint.get(blueprintId);
+    private static Comparator<CardItem> getCardItemComparator(String oneSort, Map<String, CardBlueprint> blueprintMap) {
+        Comparator<CardItem> comparator;
+        switch (oneSort) {
+            case "strength" -> comparator = new StrengthComparator(blueprintMap);
+            case "vitality" -> comparator = new VitalityComparator(blueprintMap);
+            case "cardType" -> comparator = new CardTypeComparator(blueprintMap);
+            case "culture" -> comparator = new CultureComparator(blueprintMap);
+            case "name" -> comparator = new NameComparator(blueprintMap);
+            case "tribbleValue" -> comparator = new TribblesValueComparator(blueprintMap);
+            default -> comparator = null;
+        }
+        return comparator;
+    }
+
+    private boolean acceptsFilters(CardBlueprint blueprint, CardBlueprintLibrary library, FormatLibrary formatLibrary,
+                                   String blueprintId, String[] sets, Set<CardType> cardTypes,
+                                   Set<Affiliation> affiliations, Set<TribblePower> tribblePowers, List<String> words,
+                                   Set<Keyword> phases) {
+        if (sets != null && !isInSets(blueprintId, sets, library, formatLibrary))
+            return false;
+        if (cardTypes != null && !cardTypes.contains(blueprint.getCardType()))
+            return false;
+        if (tribblePowers != null && !tribblePowers.contains(blueprint.getTribblePower()))
+            return false;
+        if (affiliations != null && affiliations.stream().noneMatch(
+                affiliation -> blueprint.getAffiliations().contains(affiliation) ||
+                        blueprint.getOwnerAffiliationIcons().contains(affiliation)))
+            return false;
+        if (!containsAllWords(blueprint, words))
+            return false;
+        if (!containsAllKeywords(blueprint, phases))
+            return false;
+        return true;
 //                if (side == null || blueprint.getSide() == side)
 //                    if (rarity == null || isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
-                if (sets == null || isInSets(blueprintId, sets, library, formatLibrary, cardBlueprint))
-                    if (cardTypes == null || cardTypes.contains(blueprint.getCardType()))
-                        if (tribblePowers == null || tribblePowers.contains(blueprint.getTribblePower()))
-//                                if (cultures == null || cultures.contains(blueprint.getCulture()))
-//                                    if (containsAllKeywords(blueprint, keywords))
-                                if (containsAllWords(blueprint, words))
 //                                            if (siteNumber == null || blueprint.getSiteNumber() == siteNumber)
 //                                                if (races == null || races.contains(blueprint.getRace()))
-//                                                    if (containsAllClasses(blueprint, itemClasses))
-                                                return containsAllKeywords(blueprint, phases);
 //            }
 //        }
-        return false;
     }
 
     private Side getSideFilter(String[] filterParams) {
@@ -127,7 +138,8 @@ public class SortAndFilterCards {
         return sets;
     }
 
-    private boolean isRarity(String blueprintId, String[] rarity, CardBlueprintLibrary library, Map<String, SetDefinition> rarities) {
+    private boolean isRarity(String blueprintId, String[] rarity, CardBlueprintLibrary library,
+                             Map<String, SetDefinition> rarities) {
         if (blueprintId.contains("_")) {
             SetDefinition setRarity = rarities.get(blueprintId.substring(0, blueprintId.indexOf("_")));
             if (setRarity != null) {
@@ -147,17 +159,14 @@ public class SortAndFilterCards {
         return true;
     }
 
-    private boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library, FormatLibrary formatLibrary, Map<String, CardBlueprint> cardBlueprint) {
+    private boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library,
+                             FormatLibrary formatLibrary) {
         for (String set : sets) {
             GameFormat format = formatLibrary.getFormat(set);
 
             if (format != null) {
                 String valid = format.validateCard(blueprintId);
-                if(valid != null && !valid.isEmpty())
-                    return false;
-
-                final CardBlueprint blueprint = cardBlueprint.get(blueprintId);
-                return true;
+                return valid == null || valid.isEmpty();
             } else {
                 if (set.contains("-")) {
                     final String[] split = set.split("-", 2);
@@ -168,7 +177,8 @@ public class SortAndFilterCards {
                             return true;
                     }
                 } else {
-                    if (blueprintId.startsWith(set + "_") || library.hasAlternateInSet(blueprintId, Integer.parseInt(set)))
+                    if (blueprintId.startsWith(set + "_") ||
+                            library.hasAlternateInSet(blueprintId, Integer.parseInt(set)))
                         return true;
                 }
             }
@@ -249,6 +259,29 @@ public class SortAndFilterCards {
                 .replaceAll("”", "\"")
                 .replaceAll("“", "\"")
                 .replaceAll("\\p{M}", "");
+    }
+
+    private <T extends Enum> Set<T> getEnumFilter(T[] enumValues, Class<T> enumType, String prefix, String[] filterParams) {
+        for (String filterParam : filterParams) {
+            if (filterParam.startsWith(prefix + ":")) {
+                String values = filterParam.substring((prefix + ":").length());
+                if (values.startsWith("-")) {
+                    values = values.substring(1);
+                    Set<T> cardTypes = new HashSet<>(Arrays.asList(enumValues));
+                    for (String v : values.split(",")) {
+                        T t = (T) Enum.valueOf(enumType, v);
+                        cardTypes.remove(t);
+                    }
+                    return cardTypes;
+                } else {
+                    Set<T> cardTypes = new HashSet<>();
+                    for (String v : values.split(","))
+                        cardTypes.add((T) Enum.valueOf(enumType, v));
+                    return cardTypes;
+                }
+            }
+        }
+        return null;
     }
 
     private <T extends Enum> Set<T> getEnumFilter(T[] enumValues, Class<T> enumType, String prefix, Set<T> defaultResult, String[] filterParams) {

@@ -21,7 +21,7 @@ public class Blueprint155_021 extends CardBlueprint {
         setCardType(CardType.INCIDENT);
         setPropertyLogo(PropertyLogo.TNG_LOGO);
         setImageUrl("https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg");
-        addIcons(Icon1E.WARP_CORE);
+        addIcons(CardIcon.WARP_CORE);
     }
 
     private Collection<PhysicalCard> getDestinationOptionsForCard(PhysicalCard card) {
@@ -34,9 +34,9 @@ public class Blueprint155_021 extends CardBlueprint {
         if (phase == Phase.CARD_PLAY) {
 
             ActivateCardAction action1 = new ActivateCardAction(card);
-            Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, Icon1E.TNG_ICON,
+            Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
                     Filters.youHaveNoCopiesInPlay(card.getOwner()), Filters.playable,
-                    Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(Icon1E.AU_ICON));
+                    Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));
             action1.setCardActionPrefix("1");
             action1.appendUsage(new OnceEachTurnEffect(action1));
             action1.appendEffect(

@@ -8,28 +8,41 @@ public enum RegularSkill implements Filterable {
 
     // Other skills
     ANTHROPOLOGY("Anthropology"), ACQUISITION("Acquisition"),
-    ARCHAEOLOGY("Archaeology"), ASTROPHYSICS("Astrophysics"),
+    ARCHAEOLOGY("Archaeology"),
+    ASTROPHYSICS("Astrophysics"),
     BARBERING("Barbering"), BIOLOGY("Biology"),
     CANTANKEROUSNESS("Cantankerousness"), COMPUTER_SKILL("Computer Skill"),
     CYBERNETICS("Cybernetics"), DIPLOMACY("Diplomacy"),
-    EMPATHY("Empathy"), EXOBIOLOGY("Exobiology"),
+    EMPATHY("Empathy"),
+    EXOBIOLOGY("Exobiology"),
     FCA("FCA", true),
     GEOLOGY("Geology"), GREED("Greed"),
     GURAMBA("Guramba"), HONOR("Honor"),
     KLINGON_INTELLIGENCE("Klingon Intelligence", true),
     LAW("Law"), LEADERSHIP("Leadership"),
     MEMORY_OMEGA("Memory Omega", true),
-    MINDMELD("Mindmeld"), MIRACLE_WORKER("Miracle Worker"),
-    MUSIC("Music"), NAVIGATION("Navigation"),
+    MINDMELD("Mindmeld"),
+    MIRACLE_WORKER("Miracle Worker"),
+    MUSIC("Music"),
+    NAVIGATION("Navigation"),
     OBSIDIAN_ORDER("Obsidian Order", true),
     ORION_SYNDICATE("Orion Syndicate", true),
-    PHYSICS("Physics"), RESISTANCE("Resistance"),
+    PHYSICS("Physics"),
+    RESISTANCE("Resistance"),
     SECTION_31("Section 31", true),
-    SMUGGLING("Smuggling"), STELLAR_CARTOGRAPHY("Stellar Cartography"),
+    SMUGGLING("Smuggling"),
+    STELLAR_CARTOGRAPHY("Stellar Cartography"),
     TAL_SHIAR("Tal Shiar", true),
-    TRANSPORTER_SKILL("Transporter Skill"), TREACHERY("Treachery"),
+    TRANSPORTER_SKILL("Transporter Skill", false),
+    TREACHERY("Treachery", false),
     V_SHAR("V'Shar", true),
-    YOUTH("Youth", false);
+    YOUTH("Youth", false),
+
+    //2E Skills
+    ASTROMETRICS("Astrometrics", false),
+    PROGRAMMING("Programming", false),
+    TELEPATHY("Telepathy", false),
+    TRANSPORTERS("Transporters", false);
 
     private final String _humanReadable;
 

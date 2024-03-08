@@ -10,8 +10,9 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
 
 import java.util.*;
 
@@ -24,7 +25,7 @@ public class CardBlueprint {
     private PropertyLogo _propertyLogo;
     private String _lore;
     private Uniqueness uniqueness = null;
-    private List<Icon1E> _icons;
+    private List<CardIcon> _icons;
     private Quadrant quadrant;
     private String location;
     private int _pointsShown;
@@ -53,7 +54,7 @@ public class CardBlueprint {
     private int vitality;
     private int resistance;
     private int tribbleValue;
-    private List<Icon1E> _staffing;
+    private List<CardIcon> _staffing;
     private String _missionRequirementsText;
     private TribblePower tribblePower;
     private Set<PossessionClass> possessionClasses;
@@ -118,15 +119,15 @@ public class CardBlueprint {
     public Uniqueness getUniqueness() { return this.uniqueness;}
     public boolean isUnique() { return this.uniqueness == Uniqueness.UNIQUE; }
     public boolean isUniversal() { return this.uniqueness == Uniqueness.UNIVERSAL; }
-    public void setIcons(List<Icon1E> icons) { _icons = icons; }
-    public void addIcons(Icon1E... icons) {
+    public void setIcons(List<CardIcon> icons) { _icons = icons; }
+    public void addIcons(CardIcon... icons) {
         if (_icons == null) {
             _icons = new LinkedList<>();
         }
         Collections.addAll(_icons, icons);
     }
-    public List<Icon1E> getIcons() { return _icons; }
-    public boolean hasIcon(Icon1E icon) { return _icons != null && _icons.contains(icon); }
+    public List<CardIcon> getIcons() { return _icons; }
+    public boolean hasIcon(CardIcon icon) { return _icons != null && _icons.contains(icon); }
     public void setQuadrant(Quadrant quadrant) {
         this.quadrant = quadrant;
     }
@@ -169,8 +170,8 @@ public class CardBlueprint {
     public void setAttribute(CardAttribute attribute, int attributeValue) { _cardAttributes.put(attribute, attributeValue); }
     public int getAttribute(CardAttribute attribute) { return _cardAttributes.get(attribute); }
     public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
-    public void setStaffing(List<Icon1E> staffing) { _staffing = staffing; }
-    public List<Icon1E> getStaffing() { return _staffing; }
+    public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
+    public List<CardIcon> getStaffing() { return _staffing; }
     public void setClassification(RegularSkill classification) { _classification = classification; }
     public RegularSkill getClassification() { return _classification; }
     public void addSkill(Skill skill) {
@@ -193,6 +194,7 @@ public class CardBlueprint {
 
     // LotR
     public void setCost(int cost) { this.cost = cost; }
+    public int getCost() { return this.cost; }
     public int getTwilightCost() { return cost; }
     public void setSide(Side side) {
         this.side = side;
@@ -454,22 +456,29 @@ public class CardBlueprint {
     public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
     public PhysicalCard createPhysicalCard(DefaultGame game, int cardId, Player player) {
-        if (game instanceof ST1EGame) {
+        if (game instanceof ST1EGame st1egame) {
             if (_cardType == CardType.MISSION)
-                return new MissionCard((ST1EGame) game, cardId, player, this);
+                return new MissionCard(st1egame, cardId, player, this);
             else if (_cardType == CardType.FACILITY)
-                return new FacilityCard((ST1EGame) game, cardId, player, this);
+                return new FacilityCard(st1egame, cardId, player, this);
             else if (_cardType == CardType.PERSONNEL)
-                return new PersonnelCard((ST1EGame) game, cardId, player, this);
+                return new PersonnelCard(st1egame, cardId, player, this);
+            else if (_cardType == CardType.EQUIPMENT)
+                return new PhysicalReportableCard1E(st1egame, cardId, player, this);
             else if (_cardType == CardType.SHIP)
-                return new PhysicalShipCard((ST1EGame) game, cardId, player, this);
-            else return new ST1EPhysicalCard((ST1EGame) game, cardId, player, this);
+                return new PhysicalShipCard(st1egame, cardId, player, this);
+            else return new ST1EPhysicalCard(st1egame, cardId, player, this);
         } else if (game instanceof TribblesGame) {
             return new TribblesPhysicalCard((TribblesGame) game, cardId, player, this);
         } else return new PhysicalCardGeneric(game, cardId, player, this);
     }
 
-    public <T extends DefaultGame> List<ActionSource> getObnoxiousInPlayPhaseActions(T game) {
-        return null;
+    // Modifiers from game text
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) { return new LinkedList<>(); }
+
+    public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) {
+        List<Modifier> modifiers = new LinkedList<>();
+        modifiers.addAll(getGameTextWhileActiveInPlayModifiers(player, card));
+        return modifiers;
     }
 }

@@ -1,4 +1,4 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -7,6 +7,7 @@ import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;

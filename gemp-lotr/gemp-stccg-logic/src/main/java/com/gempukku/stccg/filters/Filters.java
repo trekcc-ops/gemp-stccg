@@ -87,6 +87,11 @@ public class Filters {
         return filterActive(player.getGame(), Filters.your(player), Filters.and(filters));
     }
 
+    public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
+                                                                      Filterable... filters) {
+        return filterYourActive(player, Filters.presentWith(card), Filters.and(filters));
+    }
+
     public static Collection<FacilityCard> yourActiveFacilities(Player player) {
         Collection<FacilityCard> result = new LinkedList<>();
         Collection<PhysicalCard> facilities = filterYourActive(player, CardType.FACILITY);
@@ -248,6 +253,10 @@ public class Filters {
                         return true;
             return false;
         };
+    }
+
+    public static Filter presentWith(final PhysicalCard card) {
+        return (game, physicalCard) -> physicalCard.isPresentWith(card);
     }
 
     public static Filter yourMatchingOutposts(Player player, PhysicalCard card) {
@@ -494,8 +503,8 @@ public class Filters {
             return _cardTypeFilterMap.get((CardType) filter);
         else if (filter instanceof Culture)
             return _cultureFilterMap.get((Culture) filter);
-        else if (filter instanceof Icon1E)
-            return (game, physicalCard) -> (physicalCard.hasIcon((Icon1E) filter));
+        else if (filter instanceof CardIcon)
+            return (game, physicalCard) -> (physicalCard.hasIcon((CardIcon) filter));
         else if (filter instanceof Keyword)
             return _keywordFilterMap.get((Keyword) filter);
         else if (filter instanceof MissionType)
@@ -599,6 +608,10 @@ public class Filters {
     public static final Filter mounted = Filters.or(Filters.hasAttached(PossessionClass.MOUNT), Keyword.MOUNTED);
 
     public static final Filter spottable = (game, physicalCard) -> true;
+
+    public static Filterable yourCardsPresentWith(Player player, PhysicalCard card) {
+        return and(your(player), presentWith(card));
+    }
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {
         private final DefaultGame game;

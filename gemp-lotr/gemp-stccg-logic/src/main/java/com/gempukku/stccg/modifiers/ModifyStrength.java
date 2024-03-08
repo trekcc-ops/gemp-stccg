@@ -3,6 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 import com.gempukku.stccg.requirement.Requirement;
 import org.json.simple.JSONObject;
 

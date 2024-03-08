@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.fieldprocessor;
 import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.filterable.Icon1E;
+import com.gempukku.stccg.common.filterable.CardIcon;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,9 +13,9 @@ public class IconsFieldProcessor implements FieldProcessor {
     public void processField(String key, Object value, CardBlueprint blueprint,
                              CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         final String[] icons = environment.getString(value, key).split(",");
-        List<Icon1E> iconObjects = new LinkedList<>();
+        List<CardIcon> iconObjects = new LinkedList<>();
         for (String icon : icons) {
-            iconObjects.add(environment.getEnum(Icon1E.class, icon));
+            iconObjects.add(environment.getEnum(CardIcon.class, icon));
         }
         blueprint.setIcons(iconObjects);
     }

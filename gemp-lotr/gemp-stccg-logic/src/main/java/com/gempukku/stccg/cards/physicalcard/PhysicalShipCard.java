@@ -83,25 +83,25 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public boolean isStaffed() {
-            // TODO - Ignores any staffing requirement that is not an Icon1E
+            // TODO - Ignores any staffing requirement that is not a CardIcon
             // TODO - Does not require a personnel of matching affiliation aboard
-        Map<Icon1E, Long> staffingNeeded = frequencyMap(_blueprint.getStaffing().stream());
-        List<List<Icon1E>> staffingIconsAvailable = new LinkedList<>();
+        Map<CardIcon, Long> staffingNeeded = frequencyMap(_blueprint.getStaffing().stream());
+        List<List<CardIcon>> staffingIconsAvailable = new LinkedList<>();
         for (PhysicalCard card : getCrew()) {
             if (card instanceof PersonnelCard) {
-                List<Icon1E> icons = ((PersonnelCard) card).getIcons();
+                List<CardIcon> icons = ((PersonnelCard) card).getIcons();
                 if (icons != null) {
-                    List<Icon1E> cardIcons = new LinkedList<>(icons);
-                    if (cardIcons.contains(Icon1E.COMMAND) && !cardIcons.contains(Icon1E.STAFF))
-                        cardIcons.add(Icon1E.STAFF);
+                    List<CardIcon> cardIcons = new LinkedList<>(icons);
+                    if (cardIcons.contains(CardIcon.COMMAND) && !cardIcons.contains(CardIcon.STAFF))
+                        cardIcons.add(CardIcon.STAFF);
                     staffingIconsAvailable.add(cardIcons);
                 }
             }
         }
-        for (List<Icon1E> combination : Lists.cartesianProduct(staffingIconsAvailable)) {
+        for (List<CardIcon> combination : Lists.cartesianProduct(staffingIconsAvailable)) {
             boolean staffed = true;
-            Map<Icon1E, Long> staffingAvailable = frequencyMap(combination.stream());
-            for (Icon1E icon : staffingNeeded.keySet()) {
+            Map<CardIcon, Long> staffingAvailable = frequencyMap(combination.stream());
+            for (CardIcon icon : staffingNeeded.keySet()) {
                 if (staffingAvailable.get(icon) == null || staffingAvailable.get(icon) < staffingNeeded.get(icon))
                     staffed = false;
             }
@@ -111,13 +111,14 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         return false;
     }
 
-    private Map<Icon1E, Long> frequencyMap(Stream<Icon1E> icons) {
+    private Map<CardIcon, Long> frequencyMap(Stream<CardIcon> icons) {
         return icons.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
     @Override
-    public String getTypeSpecificCardInfoHTML() {
+    public String getCardInfoHTML() {
         StringBuilder sb = new StringBuilder();
+        sb.append(super.getCardInfoHTML());
         Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
         attachedCards.put("Crew",getCrew());
         for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
@@ -131,7 +132,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
             sb.append("<i>none</i>");
         else {
             sb.append("<br>");
-            for (Icon1E icon : _blueprint.getStaffing())
+            for (CardIcon icon : _blueprint.getStaffing())
                 sb.append("<img src='").append(icon.getIconURL()).append("'>");
         }
         if (isStaffed())
@@ -143,7 +144,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
         sb.append("<br><b>Icons:</b> ");
 
-        for (Icon1E icon : Icon1E.values())
+        for (CardIcon icon : CardIcon.values())
             if (hasIcon(icon))
                 sb.append(icon.toHTML());
 

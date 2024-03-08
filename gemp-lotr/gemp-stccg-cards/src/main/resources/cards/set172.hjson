@@ -22,6 +22,7 @@
         property-logo: ds9-logo
         classification: MEDICAL
         icons: staff,maquis
+        uniqueness: universal
         lore: One of many Klingons seeking glory outside the Klingon Empire. She sympathized with the grievances of the Maquis.
         skill-box: "[*] Archaeology [*] Stellar Cartography [*] Biology"
         integrity: 6

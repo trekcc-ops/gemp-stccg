@@ -3,16 +3,16 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.Icon1E;
 import com.gempukku.stccg.condition.Condition;
 
 public class GainIconModifier extends AbstractModifier implements IconAffectingModifier {
-    private final Icon1E _icon;
+    private final CardIcon _icon;
     private final ValueSource _valueSource;
     private final ActionContext _context;
 
-    public GainIconModifier(ActionContext context, Filterable affectFilter, Condition condition, Icon1E icon,
+    public GainIconModifier(ActionContext context, Filterable affectFilter, Condition condition, CardIcon icon,
                             ValueSource valueSource) {
         super(context.getSource(), null, affectFilter, condition, ModifierEffect.GAIN_ICON_MODIFIER);
         _context = context;
@@ -21,7 +21,7 @@ public class GainIconModifier extends AbstractModifier implements IconAffectingM
     }
 
     @Override
-    public Icon1E getIcon() {
+    public CardIcon getIcon() {
         return _icon;
     }
 
@@ -31,7 +31,7 @@ public class GainIconModifier extends AbstractModifier implements IconAffectingM
     }
 
     @Override
-    public boolean hasIcon(PhysicalCard physicalCard, Icon1E icon) {
+    public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         return (icon == _icon && _valueSource.evaluateExpression(_context, physicalCard) > 0);
     }
 }

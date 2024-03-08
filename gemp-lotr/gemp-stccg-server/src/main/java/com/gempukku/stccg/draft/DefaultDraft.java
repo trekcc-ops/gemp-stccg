@@ -44,7 +44,7 @@ public class DefaultDraft implements Draft {
         _collectionType = collectionType;
         _productLibrary = productLibrary;
         _draftPack = draftPack;
-        _players = new ArrayList(players);
+        _players = new ArrayList<>(players);
         Collections.shuffle(_players, ThreadLocalRandom.current());
         
         _playerCount = _players.size();

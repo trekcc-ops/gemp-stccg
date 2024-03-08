@@ -11,6 +11,68 @@ body {
     border: 2px solid #00cccc;
 }
 
+.cardFilterSelect {
+    font-size: 80%;
+}
+
+#filter-inputs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#setSelect {
+    width: 130px;
+    font-size: 80%;
+}
+
+
+#nameInput {
+    width: 110px;
+    font-size: 70%;
+}
+
+#sortSelect {
+    width: 80px;
+    font-size: 80%;
+}
+
+#collection-display {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+#filter-main {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#card-navigation {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+}
+
+#advanced-filter {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+}
+
+#advanced-filter a {
+    color: #BF6B04;
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+#countSlider {
+    flex-grow: 1;
+}
+
 .cardCount {
     width: 20px;
     height: 18px;
@@ -113,7 +175,12 @@ button.navigation-butt {
     margin:  auto auto auto -4px;
 }
 
-#culture-buttons .ui-button {
+#affiliation-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#affiliation-buttons .ui-button {
     padding: 0;
 }
 

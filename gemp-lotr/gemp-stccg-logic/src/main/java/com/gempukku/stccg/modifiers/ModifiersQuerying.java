@@ -28,7 +28,7 @@ public interface ModifiersQuerying {
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
 
-    boolean hasIcon(PhysicalCard physicalCard, Icon1E icon);
+    boolean hasIcon(PhysicalCard physicalCard, CardIcon icon);
 
     boolean hasTextRemoved(PhysicalCard card);
 

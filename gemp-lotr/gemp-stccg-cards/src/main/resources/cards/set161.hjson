@@ -29,6 +29,34 @@
         strength: 2
         image-url: https://www.trekcc.org/1e/cardimages/engage/43.jpg
     }
+    161_044: {
+        title: Khev
+        type: personnel
+        uniqueness: universal
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: "Representative of non-military personnel guarding the Carraya system prison camp for Khitomer survivors. Sometimes serves as Tokath's bodyguard."
+        skill-box: "[*] SECURITY [*] Biology [*] Youth"
+        integrity: 5
+        cunning: 5
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/engage/44.jpg
+    }
+    161_045: {
+        title: Mareth
+        type: personnel
+        uniqueness: universal
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: ENGINEER
+        lore: Typical Romulan engineer who became trapped in a temporal fragment in 2369. Did not realize the cause was life-form incubation in the engine core.
+        skill-box: "[*] Computer Skill [*] Transporter Skill [*] Youth"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/engage/45.jpg
+    }
     161_048: {
         title: "T'Jev"
         type: personnel

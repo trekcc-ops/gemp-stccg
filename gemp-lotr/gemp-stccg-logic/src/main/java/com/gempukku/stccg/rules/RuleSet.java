@@ -22,7 +22,6 @@ public class RuleSet {
 
     public void applySpecificRules() {
             // Some of these may be more general
-        new StatModifiersRule(_modifiersLogic).applyRule();
         new ActivatePhaseActionsRule(_actionsEnvironment).applyRule();
         new ActivatePhaseActionsFromHandRule(_actionsEnvironment).applyRule();
         new OptionalTriggersFromHandRule(_actionsEnvironment).applyRule();

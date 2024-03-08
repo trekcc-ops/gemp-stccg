@@ -21,7 +21,7 @@ public class MissionCard extends ST1EPhysicalCard {
     private final int _pointsShown;
     private final MissionType _missionType;
     private final boolean _hasNoPointBox;
-    private boolean _completed = false;
+    protected boolean _completed = false;
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
         _quadrant = blueprint.getQuadrant();
@@ -50,7 +50,6 @@ public class MissionCard extends ST1EPhysicalCard {
     @Override
     public boolean canBeSeeded() { return true; }
 
-    public MissionType getMissionType() { return _missionType; }
     public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
 
     public boolean mayBeAttemptedByPlayer(Player player) {
@@ -87,8 +86,9 @@ public class MissionCard extends ST1EPhysicalCard {
     }
 
     @Override
-    public String getTypeSpecificCardInfoHTML() {
+    public String getCardInfoHTML() {
         StringBuilder sb = new StringBuilder();
+        sb.append(super.getCardInfoHTML());
         if (_missionType == MissionType.PLANET && _zone.isInPlay()) {
             long awayTeamCount = getAwayTeamsOnSurface().count();
             sb.append("<br><b>Away Teams on Planet</b>: ").append(awayTeamCount);
@@ -97,7 +97,7 @@ public class MissionCard extends ST1EPhysicalCard {
                             sb.append("<br><b>Away Team:</b> (").append(awayTeam.getPlayerId()).append(") ");
                             sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
                         }
-                        );
+                );
             }
         }
         sb.append("<br><br><b>Mission Requirements</b>: ").append(

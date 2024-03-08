@@ -65,9 +65,9 @@ public class CardBlueprintFactory {
         fieldProcessors.put("staffing", new StaffingFieldProcessor());
         fieldProcessors.put("facility-type", new FacilityTypeFieldProcessor());
         fieldProcessors.put("itemclass", new PossessionClassFieldProcessor());
+        fieldProcessors.put("cost", new CostFieldProcessor());
         fieldProcessors.put("keyword", new KeywordFieldProcessor());
         fieldProcessors.put("keywords", new KeywordFieldProcessor());
-        fieldProcessors.put("twilight", new CostFieldProcessor());
         fieldProcessors.put("target", new TargetFieldProcessor());
         fieldProcessors.put("requires", new RequirementFieldProcessor());
         fieldProcessors.put("effects", new EffectFieldProcessor());
@@ -78,6 +78,8 @@ public class CardBlueprintFactory {
         fieldProcessors.put("restriction-box", new NullProcessor());
         fieldProcessors.put("dilemma-type", new NullProcessor());
         fieldProcessors.put("dilemma-effect", new DilemmaEffectFieldProcessor());
+        fieldProcessors.put("headquarters", new NullProcessor());   // Flavor text for 2E headquarters?
+        fieldProcessors.put("playable", new NullProcessor()); // Cards that can be played to a 2E headquarters
     }
 
     public CardBlueprint buildFromJson(String blueprintId, JSONObject json) throws InvalidCardDefinitionException {

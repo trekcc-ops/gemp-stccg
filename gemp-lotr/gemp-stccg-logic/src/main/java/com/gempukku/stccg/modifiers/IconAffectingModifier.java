@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.common.filterable.Icon1E;
+import com.gempukku.stccg.common.filterable.CardIcon;
 
 public interface IconAffectingModifier {
-    Icon1E getIcon();
+    CardIcon getIcon();
 }

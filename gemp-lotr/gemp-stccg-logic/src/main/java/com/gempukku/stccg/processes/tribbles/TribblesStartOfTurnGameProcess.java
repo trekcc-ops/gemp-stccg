@@ -1,4 +1,4 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.turn.StartOfTurnResult;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
+import com.gempukku.stccg.processes.GameProcess;
 
 public class TribblesStartOfTurnGameProcess extends GameProcess {
     private GameProcess _followingGameProcess;

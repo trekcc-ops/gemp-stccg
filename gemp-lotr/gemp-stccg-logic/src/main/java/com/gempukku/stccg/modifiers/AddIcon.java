@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.common.filterable.Icon1E;
+import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.requirement.Requirement;
 import org.json.simple.JSONObject;
@@ -16,7 +16,7 @@ public class AddIcon implements ModifierSourceProducer {
         final String iconString = environment.getString(object.get("icon"), "icon");
 
         final String[] iconSplit = iconString.split("\\+");
-        Icon1E icon = environment.getEnum(Icon1E.class, iconSplit[0], "icon");
+        CardIcon icon = environment.getEnum(CardIcon.class, iconSplit[0], "icon");
         int value = 1;
         if (iconSplit.length == 2)
             value = Integer.parseInt(iconSplit[1]);

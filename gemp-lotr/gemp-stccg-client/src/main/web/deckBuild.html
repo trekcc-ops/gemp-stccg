@@ -82,6 +82,49 @@
 
 	<div id="collectionDiv" class="ui-layout-east ui-layout-pane ui-layout-pane-east">
 		<div id="cardCollectionDiv"></div>
+		<div id='filter-main'>
+			<div id='card-navigation'>
+				<button id='previousPage' class='navigation-butt'></button>
+				<div id='countSlider'></div>
+				<button id='nextPage' class='navigation-butt'></button>
+			</div>
+			<div id='advanced-filter'>
+				<a target='_blank' href='https://wiki.lotrtcgpc.net/wiki/Special:RunQuery/CardSearch'>
+					Looking for more?<br>Try the Wiki's Advanced Card Search.
+				</a>
+			</div>
+			<div id='filter-inputs'>
+				<select id='setSelect'>
+					<option value='101'>Premiere</option>
+				</select>
+				<input type='text' id='nameInput' placeholder='Card name' value=''>
+				<select id='sortSelect'>
+					<option value=''>Sort by:</option>
+					<option value='name'>Name</option>
+					<option value='cardType,name'>Card Type</option>
+					<option value='tribbleValue,name'>Tribble Value</option>
+				</select>
+			</div>
+			<div id='affiliation-buttons'>
+				<div id='affiliations'>
+					<input type='checkbox' class='affiliationFilter' id='BAJORAN'/><label for='BAJORAN' id='labelBAJORAN'><img src='https://www.trekcc.org/images/icons/1e/1E-BAJ.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='BORG'/><label for='BORG' id='labelBORG'><img src='https://www.trekcc.org/images/icons/1e/1E-BORG.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='CARDASSIAN'/><label for='CARDASSIAN' id='labelCARDASSIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-CARD.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='DOMINION'/><label for='DOMINION' id='labelDOMINION'><img src='https://www.trekcc.org/images/icons/1e/1E-DOM.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='FEDERATION'/><label for='FEDERATION' id='labelFEDERATION'><img src='https://www.trekcc.org/images/icons/1e/1E-FED.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='FERENGI'/><label for='FERENGI' id='labelFERENGI'><img src='https://www.trekcc.org/images/icons/1e/1E-FER.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='HIROGEN'/><label for='HIROGEN' id='labelHIROGEN'><img src='https://www.trekcc.org/images/icons/1e/1E-HIR.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='KAZON'/><label for='KAZON' id='labelKAZON'><img src='https://www.trekcc.org/images/icons/1e/1E-KAZ.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='KLINGON'/><label for='KLINGON' id='labelKLINGON'><img src='https://www.trekcc.org/images/icons/1e/1E-KLG.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='NEUTRAL'/><label for='NEUTRAL' id='labelNEUTRAL'><img src='https://www.trekcc.org/images/icons/1e/1E-NEU.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='NON_ALIGNED'/><label for='NON_ALIGNED' id='labelNON_ALIGNED'><img src='https://www.trekcc.org/images/icons/1e/1E-NON.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='ROMULAN'/><label for='ROMULAN' id='labelROMULAN'><img src='https://www.trekcc.org/images/icons/1e/1E-ROM.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='STARFLEET'/><label for='STARFLEET' id='labelSTARFLEET'><img src='https://www.trekcc.org/images/icons/1e/1E-STF.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='VIDIIAN'/><label for='VIDIIAN' id='labelVIDIIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VID.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='VULCAN'/><label for='VULCAN' id='labelVULCAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VUL.gif'/></label>
+				</div>
+		</div>
+		<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
 	</div>
 
 	<div id="cardInfoDiv" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1"
@@ -96,6 +139,74 @@
 		<div class="ui-dialog-content ui-widget-content"></div>
 	</div>
 
+		<div id="combos">
+			<select id='cardType' class='cardFilterSelect'>
+				<option value=''>All Card Types</option>
+				<option value='ARTIFACT'>Artifacts</option>
+				<option value='DILEMMA'>Dilemmas</option>
+				<option value='DOORWAY'>Doorways</option>
+				<option value='EQUIPMENT'>Equipment</option>
+				<option value='EVENT'>Events</option>
+				<option value='FACILITY'>Facilities</option>
+				<option value='INCIDENT'>Incidents</option>
+				<option value='INTERRUPT'>Interrupts</option>
+				<option value='MISSION'>Missions</option>
+				<option value='OBJECTIVE'>Objectives</option>
+				<option value='PERSONNEL'>Personnel</option>
+				<option value='SHIP'>Ships</option>
+				<option value='TRIBBLE'>Tribbles</option>
+				<option value='TROUBLE'>Troubles</option>
+			</select>
+<!--			<select id='keyword' class="cardFilterSelect">
+				<option value=''>No keyword filtering</option>
+				<option value='ADMIRAL'>Admiral</option>
+			</select>
+			<select id='type' class="cardFilterSelect">
+				<option value=''>All physical card types</option>
+				<option value='pack'>Packs</option>
+				<option value='card'>Cards</option>
+				<option value='foil'>Foils</option>
+				<option value='nonFoil'>Non-foils</option>
+				<option value='tengwar'>Tengwar</option>
+			</select> -->
+			<select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+			<select id='race' class="cardFilterSelect">
+				<option value=''>All races</option>
+				<option value='BALROG'>Balrog</option>
+				<option value='CREATURE'>Creature</option>
+				<option value='DWARF'>Dwarf</option>
+				<option value='ELF'>Elf</option>
+				<option value='ENT'>Ent</option>
+				<option value='HALF_TROLL'>Half-troll</option>
+				<option value='HOBBIT'>Hobbit</option>
+				<option value='MAIA'>Maia</option>
+			</select>
+			<select id='itemClass' class="cardFilterSelect">
+				<option value=''>All classes</option>
+				<option value='ARMOR'>Armor</option>
+				<option value='BOX'>Box</option>
+				<option value='BRACERS'>Bracers</option>
+				<option value='BROOCH'>Brooch</option>
+				<option value='CLOAK'>Cloak</option>
+			</select>
+			<select id='phase' class="cardFilterSelect">
+				<option value=''>All Phases</option>
+				<option value='FELLOWSHIP'>Fellowship</option>
+				<option value='SHADOW'>Shadow</option>
+				<option value='MANEUVER'>Maneuver</option>
+				<option value='ARCHERY'>Archery</option>
+				<option value='ASSIGNMENT'>Assignment</option>
+				<option value='SKIRMISH'>Skirmish</option>
+				<option value='REGROUP'>Regroup</option>
+				<option value='RESPONSE'>Response</option>
+			</select>
+		</div>
+	</div>
+	
 	<!-- JQuery JavaScript -->
 	<script type="text/javascript" src="js/jquery/jquery-1.6.2.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery-ui-1.8.16.custom.min.js"></script>

@@ -38,7 +38,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     private final Map<Integer, Integer> _woundsPerPhaseMap = new HashMap<>();
     private final DefaultGame _game;
     private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
-    private int _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
+    private final int _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
 
     public ModifiersLogic(DefaultGame game) {
         _game = game;
@@ -57,23 +57,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     @Override
     public LimitCounter getUntilEndOfPhaseLimitCounter(PhysicalCard card, String prefix, Phase phase) {
         Map<String, LimitCounter> limitCounterMap = _endOfPhaseLimitCounters.computeIfAbsent(phase, k -> new HashMap<>());
-        LimitCounter limitCounter = limitCounterMap.get(prefix + card.getCardId());
-        if (limitCounter == null) {
-            limitCounter = new DefaultLimitCounter();
-            limitCounterMap.put(prefix + card.getCardId(), limitCounter);
-        }
-        return limitCounter;
+        return limitCounterMap.computeIfAbsent(prefix + card.getCardId(), k -> new DefaultLimitCounter());
     }
 
     @Override
     public LimitCounter getUntilStartOfPhaseLimitCounter(PhysicalCard card, String prefix, Phase phase) {
         Map<String, LimitCounter> limitCounterMap = _startOfPhaseLimitCounters.computeIfAbsent(phase, k -> new HashMap<>());
-        LimitCounter limitCounter = limitCounterMap.get(prefix + card.getCardId());
-        if (limitCounter == null) {
-            limitCounter = new DefaultLimitCounter();
-            limitCounterMap.put(prefix + card.getCardId(), limitCounter);
-        }
-        return limitCounter;
+        return limitCounterMap.computeIfAbsent(prefix + card.getCardId(), k -> new DefaultLimitCounter());
     }
 
     @Override
@@ -83,22 +73,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix) {
-        LimitCounter limitCounter = _turnLimitCounters.get(prefix + card.getCardId());
-        if (limitCounter == null) {
-            limitCounter = new DefaultLimitCounter();
-            _turnLimitCounters.put(prefix + card.getCardId(), limitCounter);
-        }
-        return limitCounter;
+        return _turnLimitCounters.computeIfAbsent(prefix + card.getCardId(), k -> new DefaultLimitCounter());
     }
 
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource) {
-        LimitCounter limitCounter = _turnLimitActionSourceCounters.get(actionSource);
-        if (limitCounter == null) {
-            limitCounter = new DefaultLimitCounter();
-            _turnLimitActionSourceCounters.put(actionSource, limitCounter);
-        }
-        return limitCounter;
+        return _turnLimitActionSourceCounters.computeIfAbsent(actionSource, k -> new DefaultLimitCounter());
     }
 
     private List<Modifier> getEffectModifiers(ModifierEffect modifierEffect) {
@@ -106,13 +86,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     private void removeModifiers(List<Modifier> modifiers) {
-        for (List<Modifier> list : _modifiers.values())
-            list.removeAll(modifiers);
+        _modifiers.values().forEach(list -> list.removeAll(modifiers));
     }
 
     private void removeModifier(Modifier modifier) {
-        for (List<Modifier> list : _modifiers.values())
-            list.remove(modifier);
+        _modifiers.values().forEach(list -> list.remove(modifier));
     }
 
     @Override
@@ -164,7 +142,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     private List<Modifier> getIconModifiersAffectingCard(ModifierEffect modifierEffect,
-                                                            Icon1E icon, PhysicalCard card) {
+                                                         CardIcon icon, PhysicalCard card) {
         List<Modifier> modifiers = _modifiers.get(modifierEffect);
         if (modifiers == null)
             return Collections.emptyList();
@@ -194,7 +172,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
 
     @Override
-    public boolean hasIcon(PhysicalCard physicalCard, Icon1E icon) {
+    public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         try {
 /*            if (isCandidateForKeywordRemovalWithTextRemoval(_game, physicalCard, icon) &&
                     (hasTextRemoved(_game, physicalCard) || hasAllKeywordsRemoved(_game, physicalCard)))
@@ -205,6 +183,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     return false;
             }*/
 
+                    // TODO - Not accurate if the card has LOST an icon
             if (physicalCard.getBlueprint().hasIcon(icon))
                 return true;
 
@@ -220,7 +199,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, Icon1E icon) {
+    private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, CardIcon icon) {
  /*       if (modifierSource == null)
             return true;
         for (Modifier modifier : getIconModifiersAffectingCard(

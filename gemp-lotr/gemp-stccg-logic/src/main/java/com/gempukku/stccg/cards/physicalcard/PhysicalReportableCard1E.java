@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -16,6 +17,8 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         super(game, cardId, owner, blueprint);
     }
     public boolean canReportToFacility(FacilityCard facility) {
+        if (_blueprint.getCardType() == CardType.EQUIPMENT && facility.isUsableBy(_owner.getPlayerId()))
+            return true;
         for (Affiliation affiliation : _affiliationOptions)
             if (canReportToFacilityAsAffiliation(facility, affiliation))
                 return true;

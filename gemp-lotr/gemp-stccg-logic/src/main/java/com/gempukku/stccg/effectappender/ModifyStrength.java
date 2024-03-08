@@ -9,7 +9,7 @@ import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.modifiers.StrengthModifier;
+import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;

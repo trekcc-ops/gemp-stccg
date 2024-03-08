@@ -1,6 +1,148 @@
-// Set 112: Deep Space 9
+// Set 112: Deep Space Nine
 
 {
+    112_145: {
+        title: Anara
+        type: personnel
+        uniqueness: universal
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff
+        lore: "Representative of Bajoran engineering apprentices serving on Deep Space 9. Assisted Miles O'Brien with computer \"pup\" in 2369."
+        skill-box: "[*] Physics [*] Transporter Skill"
+        integrity: 6
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/anara.gif
+    }
+    112_146: {
+        title: Bareil Antos
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: V.I.P.
+        icons: staff,orb
+        lore: Vedek. Follows springball religiously. Romantically involved with Kira Nerys. Began spiritual service as a gardener; still enjoys tending the grounds.
+        skill-box: "[*] Anthropology [*] Diplomacy x2 [*] Honor [*] SCIENCE [*] Biology"
+        integrity: 8
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/34.jpg
+    }
+    112_149: {
+        title: Jabara
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: MEDICAL
+        lore: Bajoran nurse representative of medical assistants on Deep Space 9. Helped Dr. Julian Bashir extend the life of Bareil Antos in 2371.
+        skill-box: "[*] Exobiology [*] Youth"
+        integrity: 7
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/jabara.gif
+    }
+    112_152: {
+        title: Kallis Ven
+        type: personnel
+        uniqueness: universal
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: SECURITY
+        icons: staff
+        lore: One of the Bajoran deputies serving on Deep Space 9. During Cardassian occupation, helped chart Badlands and served as pilot on raids against Cardassian forces.
+        skill-box: "[*] Navigation [*] Computer Skill"
+        integrity: 6
+        cunning: 5
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/kallisven.gif
+    }
+    112_157: {
+        title: Mora Pol
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: SCIENCE
+        lore: "Member of Bajoran Institute of Science. Odo's foster father. Dr. Mora encouraged Odo to adopt humanoid form. Reconciled with his estranged \"son\" in 2373."
+        skill-box: "[*] SCIENCE [*] Exobiology x2"
+        integrity: 6
+        cunning: 8
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/morapol.gif
+    }
+    112_162: {
+        title: Prylar Mond
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        uniqueness: universal
+        lore: Representative of Bajoran Prylars. Interested in science. Escorted Benjamin Sisko to see Kai Opaka in 2369.
+        skill-box: "[*] Anthropology [*] Exobiology"
+        integrity: 8
+        cunning: 7
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/prylarmond.gif
+    }
+    112_163: {
+        title: Rano Dake
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: SECURITY
+        uniqueness: universal
+        icons: staff
+        lore: Characteristic of young, eager Bajorans serving on Deep Space 9. Assigned to security detachment under command of Odo.
+        skill-box: "[*] Geology [*] Youth"
+        integrity: 6
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/ranodake.gif
+    }
+    112_169: {
+        title: Tahna Los
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Member of Kohn-Ma terrorist group. Wanted for crimes against the Cardassian people. Tried to collapse the entrance to the Bajoran wormhole in 2369.
+        skill-box: "[*] Resistance [*] Treachery [*] Physics [*] ENGINEER"
+        integrity: 3
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/tahnalos.gif
+    }
+    112_188: {
+        title: Hogue
+        type: personnel
+        affiliation: cardassian
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        uniqueness: universal
+        icons: staff
+        lore: Student of Natima Lang. Dissident. Member of Cardassian underground sentenced to death by Central Command. Sought refuge at Deep Space 9.
+        skill-box: "[*] Youth [*] SCIENCE [*] Navigation [*] Honor"
+        integrity: 7
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/hogue.gif
+    }
+    112_199: {
+        title: Rekelen
+        type: personnel
+        affiliation: cardassian
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        uniqueness: universal
+        lore: Young dissident. Forced to flee Cardassia with Natima Lang and Hogue because of her political views. Member of Cardassian underground.
+        skill-box: "[*] Youth [*] Computer Skill [*] Geology"
+        integrity: 7
+        cunning: 7
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/rekelen.gif
+    }
     112_206: {
         title: Graham Davis
         type: personnel
@@ -129,6 +271,20 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/emissarysup/68.jpg
     }
+    112_223: {
+        title: Altovar
+        type: personnel
+        affiliation: non-aligned
+        property-logo: ds9-logo
+        classification: MEDICAL
+        icons: staff
+        lore: Lethean male. Attempted to steal biomimetic gel from Deep Space 9 infirmary in 2371. Attacked Julian Bashir, causing telepathically induced coma.
+        skill-box: "[*] Exobiology [*] Empathy [*] Greed"
+        integrity: 2
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/altovar.gif
+    }
     112_224: {
         title: Amaros
         type: personnel
@@ -186,7 +342,65 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/emissarysup/73.jpg
     }
-    112_261: {
+    112_242: {
+        title: Vakis
+        type: personnel
+        affiliation: romulan
+        property-logo: ds9-logo
+        classification: V.I.P.
+        icons: command
+        lore: Tal Shiar agent. Aware of assassination plot against Elim Garak. Unhappy to discover that her records mischaracterized him as a cobbler, not a tailor.
+        skill-box: "[*] Tal Shiar [*] MEDICAL [*] Biology [*] Treachery"
+        integrity: 5
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/vakis.gif
+    }
+    112_247: {
+        title: Assault Vessel
+        type: ship
+        affiliation: bajoran
+        uniqueness: universal
+        property-logo: ds9-logo
+        ship-class: ASSAULT CLASS
+        lore: Mainstay of the Bajoran Militia. During the 2370 coup attempt by the Circle, assault vessels commanded by General Krim and Colonel Day invaded Deep Space 9.
+        staffing: staff,staff
+        gametext: Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 6
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/75.jpg
+    }
+    112_253: {
+        title: Galor
+        type: ship
+        affiliation: cardassian
+        uniqueness: universal
+        property-logo: ds9-logo
+        ship-class: GALOR CLASS
+        lore: Military spacecraft used by the Cardassian Union. The Type-3 Galor-class warship is the backbone of the Cardassian fleet.
+        staffing: command,staff
+        gametext: Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/76.jpg
+    }
+    112_256: {
+        title: Prakesh
+        type: ship
+        affiliation: cardassian
+        property-logo: ds9-logo
+        ship-class: GALOR CLASS
+        lore: Type-3 Cardassian warship. Rescued the Detapa Council from Cardassia Prime just prior to the 2372 Klingon invasion. Commanded by Dukat.
+        staffing: command,staff
+        gametext: Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/prakesh.gif
+    }
+    112_260: {
         title: Flaxian Scout Vessel
         type: ship
         affiliation: non-aligned
@@ -199,7 +413,7 @@
         shields: 5
         image-url: https://www.trekcc.org/1e/cardimages/ds9/flaxianscoutvessel.gif
     }
-    112_264: {
+    112_263: {
         title: Xepolite Freighter
         type: ship
         affiliation: non-aligned

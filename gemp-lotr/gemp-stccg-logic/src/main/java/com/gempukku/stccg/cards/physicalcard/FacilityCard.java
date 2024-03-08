@@ -99,8 +99,9 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     @Override
-    public String getTypeSpecificCardInfoHTML() {
+    public String getCardInfoHTML() {
         StringBuilder sb = new StringBuilder();
+        sb.append(super.getCardInfoHTML());
         Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
         attachedCards.put("Docked ships",getDockedShips());
         attachedCards.put("Crew",getCrew());

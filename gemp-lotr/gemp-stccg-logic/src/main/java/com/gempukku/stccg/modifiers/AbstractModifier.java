@@ -28,6 +28,10 @@ public abstract class AbstractModifier implements Modifier {
         this(source, text, affectFilter, null, effect);
     }
 
+    protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition, ModifierEffect effect) {
+        this(source, null, affectFilter, condition, effect);
+    }
+
     protected AbstractModifier(DefaultGame game, Filterable affectFilter, Condition condition, ModifierEffect effect) {
         _cardSource = null;
         _text = null;
@@ -92,7 +96,7 @@ public abstract class AbstractModifier implements Modifier {
         return false;
     }
     @Override
-    public boolean hasIcon(PhysicalCard physicalCard, Icon1E icon) {
+    public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         return false;
     }
 

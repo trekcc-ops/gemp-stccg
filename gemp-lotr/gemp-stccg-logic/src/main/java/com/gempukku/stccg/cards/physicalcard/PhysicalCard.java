@@ -1,15 +1,16 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.lotr.AttachPermanentAction;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.lotr.AttachPermanentAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.lotr.Side;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -20,8 +21,6 @@ import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.modifiers.ModifierHook;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.rules.TextUtils;
 
 import java.util.*;
 
@@ -76,12 +75,11 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public void startAffectingGame() {
-        List<? extends Modifier> modifiers = getInPlayModifiers();
-        if (modifiers != null) {
-            _modifierHooks = new LinkedList<>();
-            for (Modifier modifier : modifiers)
-                _modifierHooks.add(getGame().getModifiersEnvironment().addAlwaysOnModifier(modifier));
-        }
+        List<Modifier> modifiers = getInPlayModifiers();
+        modifiers.addAll(_blueprint.getWhileInPlayModifiersNew(_owner, this));
+        _modifierHooks = new LinkedList<>();
+        for (Modifier modifier : modifiers)
+            _modifierHooks.add(getGame().getModifiersEnvironment().addAlwaysOnModifier(modifier));
     }
 
     public void startAffectingGameInZone(Zone zone) {
@@ -250,10 +248,9 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public List<Modifier> getModifiers(List<ModifierSource> sources) {
-        if (sources == null)
-            return null;
         List<Modifier> result = new LinkedList<>();
-        sources.forEach(inPlayModifier -> result.add(inPlayModifier.getModifier(createActionContext())));
+        if (sources != null)
+            sources.forEach(inPlayModifier -> result.add(inPlayModifier.getModifier(createActionContext())));
         return result;
     }
 
@@ -317,9 +314,9 @@ public abstract class PhysicalCard implements Filterable {
             if (!keywords.isEmpty())
                 sb.append("<br><b>Keywords:</b> ").append(keywords.substring(0, keywords.length() - 2));
 
-            return sb.append(getTypeSpecificCardInfoHTML()).toString();
+            return sb.toString();
         } else {
-            return null;
+            return "";
         }
     }
 
@@ -334,16 +331,6 @@ public abstract class PhysicalCard implements Filterable {
         return result;
     }
     public Collection<PhysicalCard> getAttachedCards() { return getGame().getGameState().getAttachedCards(this); }
-
-    public String getTypeSpecificCardInfoHTML() {
-        StringBuilder sb = new StringBuilder();
-        Collection<PhysicalCard> attachedCards = getAttachedCards();
-        if (!attachedCards.isEmpty()) {
-            sb.append("<br><b>Attached cards:</b>");
-            sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(attachedCards));
-        }
-        return sb.toString();
-    }
 
     public List<? extends Action> getPhaseActionsInPlay(String playerId) {
             // TODO - Very jank just to see if I can get the Java blueprint to work
@@ -378,7 +365,7 @@ public abstract class PhysicalCard implements Filterable {
         else return null;
     }
 
-    public List<? extends Modifier> getInPlayModifiers() {
+    public List<Modifier> getInPlayModifiers() {
         return getModifiers(_blueprint.getInPlayModifiers());
     }
 
@@ -566,7 +553,16 @@ public abstract class PhysicalCard implements Filterable {
         return actionSource.createActionAndAppendToContext(this, createActionContext());
     }
 
-    public boolean hasIcon(Icon1E icon) {
+    public boolean hasIcon(CardIcon icon) {
         return getGame().getModifiersQuerying().hasIcon(this, icon);
+    }
+
+    public boolean isPresentWith(PhysicalCard card) {
+        if (card.getLocation() != this.getLocation())
+            return false;
+        if (card.getAttachedTo() != this.getAttachedTo())
+            return false;
+        return true;
+            // TODO Elaborate on this definition
     }
 }

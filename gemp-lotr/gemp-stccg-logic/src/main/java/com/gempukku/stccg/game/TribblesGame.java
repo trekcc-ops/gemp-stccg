@@ -5,7 +5,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.gamestate.UserFeedback;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.TribblesPlayerOrderProcess;
+import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 

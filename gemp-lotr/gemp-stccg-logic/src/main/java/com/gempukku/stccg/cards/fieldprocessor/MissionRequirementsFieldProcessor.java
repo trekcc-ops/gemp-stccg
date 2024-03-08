@@ -16,7 +16,7 @@ public class MissionRequirementsFieldProcessor implements FieldProcessor {
     CardBlueprintFactory _environment;
     public MissionRequirementsFieldProcessor() {
         new ArrayList<>(Arrays.asList(RegularSkill.values()))
-                .forEach(regularSkill -> _skillMap.put(regularSkill.get_humanReadable(), regularSkill));
+                .forEach(regularSkill -> _skillMap.put(regularSkill.get_humanReadable().toUpperCase(), regularSkill));
         new ArrayList<>(Arrays.asList(PersonnelName.values()))
                 .forEach(name -> _personnelNameMap.put(name.getHumanReadable(), name));
     }
@@ -32,9 +32,10 @@ public class MissionRequirementsFieldProcessor implements FieldProcessor {
     }
 
     private MissionRequirement createRequirement(String text) throws InvalidCardDefinitionException {
-        String orNoParens = "\\s+OR\\s+(?![^\\(]*\\))";
-        String andNoParens = "\\s+\\+\\s+(?![^\\(]*\\))";
-        String multiplierSplit = "(?=x\\d+)";
+        String orNoParens = "\\s+(?i)OR\\s+(?![^(]*\\))";
+        String andNoParens = "(\\s\\+\\s+|,\\sand\\s+|,\\s+|\\sand\\s)(?![^(]*\\))";
+        String multiplierSplit1e = "(?=x\\d+)";
+        String multiplierSplit2e = "(?<=\\d).*(?=\\s\\w)";
         String attributeSplit = "(?=>\\d+)|(?=<\\d+)";
 
         if (text.split(orNoParens).length > 1) {
@@ -56,11 +57,23 @@ public class MissionRequirementsFieldProcessor implements FieldProcessor {
         if (text.startsWith("(") && text.endsWith(")")) {
             return createRequirement(text.substring(1, text.length() - 1));
         }
-        if (text.split(multiplierSplit).length > 1) {
-            String[] stringSplit = text.split(multiplierSplit);
-            if (_skillMap.get(stringSplit[0].trim()) != null)
+        if (text.split(multiplierSplit1e).length > 1) {
+            String[] stringSplit = text.split(multiplierSplit1e);
+            for (int i = 0; i < 2; i++) {
+                stringSplit[i] = stringSplit[i].trim();
+            }
+            if (_skillMap.get(stringSplit[0].toUpperCase()) != null)
                 return new RegularSkillMissionRequirement(
-                        _skillMap.get(stringSplit[0].trim()), Integer.parseInt(stringSplit[1].substring(1)));
+                        _skillMap.get(stringSplit[0].toUpperCase()), Integer.parseInt(stringSplit[1].substring(1)));
+        }
+        if (text.split(multiplierSplit2e).length > 1) {
+            String[] stringSplit = text.split(multiplierSplit2e);
+            for (int i = 0; i < 2; i++) {
+                stringSplit[i] = stringSplit[i].trim();
+            }
+            if (_skillMap.get(stringSplit[1].toUpperCase()) != null)
+                return new RegularSkillMissionRequirement(
+                        _skillMap.get(stringSplit[1].toUpperCase()), Integer.parseInt(stringSplit[0]));
         }
         if (text.split(attributeSplit).length > 1) {
             String[] stringSplit = text.split(attributeSplit);
@@ -68,14 +81,14 @@ public class MissionRequirementsFieldProcessor implements FieldProcessor {
                 return new AttributeMissionRequirement(_environment.getEnum(CardAttribute.class, stringSplit[0].trim()),
                         Integer.parseInt(stringSplit[1].substring(1)));
         }
-        if (_skillMap.get(text) != null) {
-            return new RegularSkillMissionRequirement(_skillMap.get(text));
+        if (_skillMap.get(text.toUpperCase()) != null) {
+            return new RegularSkillMissionRequirement(_skillMap.get(text.toUpperCase()));
         }
         if (_personnelNameMap.get(text) != null) {
             return new PersonnelNameMissionRequirement(_personnelNameMap.get(text));
         }
             // If none of these worked, throw an exception
-        throw new InvalidCardDefinitionException("Mission requirements do not conform to expected syntax");
+        throw new InvalidCardDefinitionException("Unable to process mission requirement: " + text);
     }
 
 }

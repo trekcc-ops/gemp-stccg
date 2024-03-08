@@ -1,6 +1,7 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.processes.GameProcess;
 
 public class TribblesTurnProcess extends GameProcess {
     private GameProcess _followingGameProcess;

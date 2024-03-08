@@ -235,12 +235,17 @@ public class CardBlueprintLibrary {
                         LOGGER.error(blueprintId + " - Replacing existing card definition!");
                 final JSONObject cardDefinition = cardEntry.getValue();
                 try {
-                            // TODO - Very jank for 155_021 testing
-                    if (blueprintId.equals("155_021")) {
-                        _blueprints.put(blueprintId, new Blueprint155_021());
-                    } else {
-                        final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
-                        _blueprints.put(blueprintId, cardBlueprint);
+                            // TODO - Not an ideal solution for long-term. Testing Java blueprints
+                    switch (blueprintId) {
+                        case "101_015" -> _blueprints.put(blueprintId, new Blueprint101_015());
+                        case "101_058" -> _blueprints.put(blueprintId, new Blueprint101_058());
+                        case "101_059" -> _blueprints.put(blueprintId, new Blueprint101_059());
+                        case "101_064" -> _blueprints.put(blueprintId, new Blueprint101_064());
+                        case "155_021" -> _blueprints.put(blueprintId, new Blueprint155_021());
+                        default -> {
+                            final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
+                            _blueprints.put(blueprintId, cardBlueprint);
+                        }
                     }
                 } catch (InvalidCardDefinitionException exp) {
                     LOGGER.error("Unable to load card " + blueprintId, exp);
@@ -453,9 +458,11 @@ public class CardBlueprintLibrary {
         throw new CardNotFoundException(blueprintId);
     }
 
-    private CardBlueprint tryLoadingFromPackage(String packageName, String setNumber, String cardNumber) throws IllegalAccessException, InstantiationException, NoSuchMethodException {
+    private CardBlueprint tryLoadingFromPackage(String packageName, String setNumber, String cardNumber)
+            throws IllegalAccessException, InstantiationException, NoSuchMethodException {
         try {
-            Class clazz = Class.forName("com.gempukku.stccg.cards.set" + setNumber + packageName + ".Card" + setNumber + "_" + normalizeId(cardNumber));
+            Class clazz = Class.forName("com.gempukku.stccg.cards.set" + setNumber + packageName +
+                    ".Card" + setNumber + "_" + normalizeId(cardNumber));
             return (CardBlueprint) clazz.getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException | InvocationTargetException e) {
             // Ignore

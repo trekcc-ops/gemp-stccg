@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
 public class PlayCardState {
-    private int _id;
-    private PlayCardAction _playCardAction;
+    private final int _id;
+    private final PlayCardAction _playCardAction;
 
     /**
      * Creates state information for a play card action.

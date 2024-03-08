@@ -21,7 +21,7 @@ public class FilterFactory {
 
     public FilterFactory(CardBlueprintFactory blueprintFactory) {
         _environment = blueprintFactory;
-        for (Icon1E value : Icon1E.values())
+        for (CardIcon value : CardIcon.values())
             appendFilter(value);
         for (CardType value : CardType.values())
             appendFilter(value);

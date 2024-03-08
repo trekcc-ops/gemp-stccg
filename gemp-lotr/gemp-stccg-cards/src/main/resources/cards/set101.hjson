@@ -3,17 +3,19 @@
 {
     101_015: {
         title: Armus - Skin of Evil
-        type: dilemma
-        dilemma-type: planet
-        property-logo: tng-logo
-        lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
-        gametext: Kills one Away Team member (random selection). Discard dilemma.
-        dilemma-effect: {
-            type: kill
-            filter: random(any)
-            discard-dilemma: true
-        }
-        image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
+        type: java def
+    }
+    101_058: {
+        title: Klingon Disruptor
+        type: java def
+    }
+    101_059: {
+        title: Klingon PADD
+        type: java def
+    }
+    101_064: {
+        title: Starfleet Type II Phaser
+        type: java def
     }
     101_104: {
         title: Federation Outpost

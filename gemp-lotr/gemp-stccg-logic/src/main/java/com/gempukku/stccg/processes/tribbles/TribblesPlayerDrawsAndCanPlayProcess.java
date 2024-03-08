@@ -1,4 +1,4 @@
-package com.gempukku.stccg.processes;
+package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.LinkedList;
 import java.util.List;
