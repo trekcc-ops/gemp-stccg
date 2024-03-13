@@ -51,12 +51,12 @@
 				function () {
 					$("#motd-response").html("Processing...");
 					
-					hall.comm.setMOTD($("#motd-text").val(), function (string) {
+					hall.comm.setDailyMessage($("#motd-text").val(), function (string) {
 						$("#motd-response").html("Response: " + string);
 					});
 				});
 			
-			hall.comm.getMOTD(function (json) {
+			hall.comm.getDailyMessage(function (json) {
 				$("#motd-text").val(json.response);
 				$("#motd-preview").html(json.response);
 			});

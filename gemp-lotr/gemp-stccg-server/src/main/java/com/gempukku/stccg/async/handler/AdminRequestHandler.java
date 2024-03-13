@@ -77,10 +77,10 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             shutdown(request, responseWriter);
         } else if (uri.equals("/reloadCards") && request.method() == HttpMethod.POST) {
             reloadCards(request, responseWriter);
-        } else if (uri.equals("/getMOTD") && request.method() == HttpMethod.GET) {
-            getMotd(request, responseWriter);
-        }else if (uri.equals("/setMOTD") && request.method() == HttpMethod.POST) {
-            setMotd(request, responseWriter);
+        } else if (uri.equals("/getDailyMessage") && request.method() == HttpMethod.GET) {
+            getDailyMessage(request, responseWriter);
+        }else if (uri.equals("/setDailyMessage") && request.method() == HttpMethod.POST) {
+            setDailyMessage(request, responseWriter);
         }else if (uri.equals("/previewSealedLeague") && request.method() == HttpMethod.POST) {
             previewSealedLeague(request, responseWriter);
         } else if (uri.equals("/addSealedLeague") && request.method() == HttpMethod.POST) {
@@ -512,12 +512,12 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 
-    private void getMotd(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
+    private void getDailyMessage(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
         validateAdmin(request);
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String motd = _hallServer.getMOTD();
+            String motd = _hallServer.getDailyMessage();
 
             if(motd != null) {
                 responseWriter.writeJsonResponse(motd.replace("\n", "<br>"));
@@ -527,14 +527,14 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         }
     }
 
-    private void setMotd(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, IOException {
+    private void setDailyMessage(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, IOException {
         validateAdmin(request);
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String motd = getFormParameterSafely(postDecoder, "motd");
 
-            _hallServer.setMOTD(motd);
+            _hallServer.setDailyMessage(motd);
 
             responseWriter.writeHtmlResponse("OK");
         } finally {

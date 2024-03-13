@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;

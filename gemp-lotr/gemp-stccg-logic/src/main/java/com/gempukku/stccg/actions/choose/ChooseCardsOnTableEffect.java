@@ -8,6 +8,7 @@ import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
 
 /**
  * An effect that causes the specified player to choose cards on the table.
- *
+ * <p>
  * Note: The choosing of cards provided by this effect does not involve persisting the cards selected or any targeting
  * reasons. This is just choosing cards, and calling the cardsSelected method with the card chosen.
  */
@@ -31,6 +32,25 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
     private boolean cardSelectionFailed;
     private final Action _action;
     private final DefaultGame _game;
+
+    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, Collection<? extends PhysicalCard> cards) {
+        this(action, playerId, choiceText, 1,1,cards,Filters.any);
+    }
+
+    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
+                                    Stream<? extends PhysicalCard> cards) {
+        this(action, playerId, choiceText, 1,1,cards.collect(Collectors.toSet()),Filters.any);
+    }
+
+    public ChooseCardsOnTableEffect(Action action, Player player, String choiceText,
+                                    int minimum, int maximum, Collection<PhysicalCard> cards) {
+        this(action, player.getPlayerId(), choiceText, minimum, maximum, cards, Filters.any);
+    }
+
+    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
+                                    int minimum, int maximum, Collection<PhysicalCard> cards) {
+        this(action, playerId, choiceText, minimum, maximum, cards, Filters.any);
+    }
 
     /**
      * Creates an effect that causes the player to choose cards from the specified collection of cards on the table accepted
@@ -48,20 +68,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
      * @param choiceText            the text shown to the player choosing the cards
      * @param cards                 the cards to choose from
      */
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, Collection<? extends PhysicalCard> cards) {
-        this(action, playerId, choiceText, 1,1,cards,Filters.any);
-    }
-
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
-                                    Stream<? extends PhysicalCard> cards) {
-        this(action, playerId, choiceText, 1,1,cards.collect(Collectors.toSet()),Filters.any);
-    }
-
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
-                                    int minimum, int maximum, Collection<PhysicalCard> cards) {
-        this(action, playerId, choiceText, minimum, maximum, cards, Filters.any);
-    }
-
     public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, int minimum, int maximum,
                                     Collection<? extends PhysicalCard> cards, Filterable filters) {
         super(playerId);

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import org.json.simple.JSONObject;
 

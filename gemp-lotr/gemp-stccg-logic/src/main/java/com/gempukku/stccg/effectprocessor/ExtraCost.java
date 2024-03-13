@@ -1,6 +1,8 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.game.DefaultGame;

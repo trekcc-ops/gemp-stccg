@@ -8,7 +8,7 @@ public class ST1ERuleSet extends RuleSet {
     private final ActionsEnvironment _actionsEnvironment;
 
     public ST1ERuleSet(ActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic) {
-        super(actionsEnvironment, modifiersLogic);
+        super(actionsEnvironment);
         _actionsEnvironment = actionsEnvironment;
     }
 

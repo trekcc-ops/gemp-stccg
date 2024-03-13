@@ -80,7 +80,8 @@ public class CollectionSerializer {
         }
     }
 
-    public MutableCardCollection deserializeCollection(DBDefs.Collection coll, List<DBDefs.CollectionEntry> entries) throws IOException {
+    public MutableCardCollection deserializeCollection(DBDefs.Collection coll, List<DBDefs.CollectionEntry> entries)
+            throws IOException {
         DefaultCardCollection newColl = new DefaultCardCollection();
 
         JSONParser parser = new JSONParser();

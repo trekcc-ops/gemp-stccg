@@ -5,11 +5,9 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.lotr.Culture;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
@@ -35,13 +33,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     private final Map<ActionSource, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
 
     private int _drawnThisPhaseCount = 0;
-    private final Map<Integer, Integer> _woundsPerPhaseMap = new HashMap<>();
     private final DefaultGame _game;
     private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
-    private final int _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
+    private final int _normalCardPlaysPerTurn;
 
     public ModifiersLogic(DefaultGame game) {
         _game = game;
+        _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
     }
 
     @Override
@@ -232,7 +230,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             counterMap.clear();
 
         _drawnThisPhaseCount = 0;
-        _woundsPerPhaseMap.clear();
     }
 
 
@@ -417,6 +414,15 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         for (Modifier modifier : getModifiers(ModifierEffect.MOVE_LIMIT_MODIFIER))
             result += modifier.getMoveLimitModifier();
         return Math.max(1, result);
+    }
+
+    @Override
+    public int getAttribute(PhysicalCard card, CardAttribute attribute) {
+        if (attribute == CardAttribute.STRENGTH)
+            return getStrength(card);
+        else
+                // TODO
+            throw new RuntimeException("No code exists for getAttribute(" + attribute);
     }
 
     @Override
@@ -760,24 +766,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public int getNumberOfSpottableShadowCultures(DefaultGame game, String playerId) {
-        Set<Culture> spottableCulturesBasedOnCards = new HashSet<>();
-        for (PhysicalCard spottableFPCard : Filters.filterActive(game, Side.SHADOW, Filters.spottable)) {
-            final Culture fpCulture = spottableFPCard.getBlueprint().getCulture();
-            if (fpCulture != null)
-                spottableCulturesBasedOnCards.add(fpCulture);
-        }
-
-        int result = 0;
-        for (Culture spottableCulturesBasedOnCardsOnCard : spottableCulturesBasedOnCards) {
-            if (canPlayerSpotCulture())
-                result++;
-        }
-
-        return result;
-    }
-
-    @Override
     public int getSpotBonus(Filterable filter) {
         int result = 0;
         for (Modifier modifier : getModifiers(ModifierEffect.SPOT_MODIFIER))
@@ -789,15 +777,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
-    }
-
-    @Override
-    public boolean canReplaceSite(String playerId, PhysicalCard siteToReplace) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.REPLACE_SITE_MODIFIER, siteToReplace))
-            if (!modifier.isSiteReplaceable(_game, playerId))
-                return false;
-
-        return true;
     }
 
     @Override

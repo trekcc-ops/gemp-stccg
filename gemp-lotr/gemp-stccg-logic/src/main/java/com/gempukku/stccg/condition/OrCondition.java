@@ -1,14 +1,10 @@
 package com.gempukku.stccg.condition;
 
-import com.gempukku.stccg.game.DefaultGame;
-
 public class OrCondition implements Condition {
     private final Condition[] _conditions;
-    private final DefaultGame _game;
 
-    public OrCondition(DefaultGame game, Condition... conditions) {
+    public OrCondition(Condition... conditions) {
         _conditions = conditions;
-        _game = game;
     }
 
     @Override

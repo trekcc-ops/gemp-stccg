@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.fieldprocessor;
 
-import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 
 public class ImageUrlFieldProcessor implements FieldProcessor {

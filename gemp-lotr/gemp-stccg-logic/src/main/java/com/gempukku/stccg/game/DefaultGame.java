@@ -38,11 +38,11 @@ public abstract class DefaultGame {
     private final List<GameSnapshot> _snapshots = new LinkedList<>();
     protected GameSnapshot _snapshotToRestore;
     private int _nextSnapshotId;
-    private static final int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
+    private final int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS;
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                         final CardBlueprintLibrary library) {
-
+        NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
         _format = format;
         _userFeedback = userFeedback;
         _library = library;
@@ -301,5 +301,4 @@ public abstract class DefaultGame {
     public void sendMessage(String message) { getGameState().sendMessage(message); }
     public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
-
 }

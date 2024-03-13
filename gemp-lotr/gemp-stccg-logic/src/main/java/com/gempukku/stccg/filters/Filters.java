@@ -1,11 +1,8 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.CardBlueprint;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.*;
 import com.gempukku.stccg.condition.Condition;
@@ -19,7 +16,7 @@ import java.util.*;
 public class Filters {
         // TODO - There is almost certainly a cleaner way of implementing this
     private static final Map<CardType, Filter> _cardTypeFilterMap = new HashMap<>();
-    private static final Map<MissionType, Filter> _missionTypeFilterMap = new HashMap<>();
+    private static final Map<SkillName, Filter> _skillNameFilterMap = new HashMap<>();
     private static final Map<FacilityType, Filter> _facilityTypeFilterMap = new HashMap<>();
     private static final Map<PropertyLogo, Filter> _propertyLogoFilterMap = new HashMap<>();
     private static final Map<PossessionClass, Filter> _possessionClassFilterMap = new HashMap<>();
@@ -41,8 +38,8 @@ public class Filters {
             _zoneFilterMap.put(zone, zone(zone));
         for (CardType cardType : CardType.values())
             _cardTypeFilterMap.put(cardType, cardType(cardType));
-        for (MissionType missionType : MissionType.values())
-            _missionTypeFilterMap.put(missionType, missionType(missionType));
+        for (SkillName skillName : SkillName.values())
+            _skillNameFilterMap.put(skillName, skillName(skillName));
         for (PropertyLogo propertyLogo : PropertyLogo.values())
             _propertyLogoFilterMap.put(propertyLogo, propertyLogo(propertyLogo));
         for (FacilityType facilityType : FacilityType.values())
@@ -206,20 +203,6 @@ public class Filters {
 
     public static Filter minPrintedTwilightCost(final int printedTwilightCost) {
         return (game, physicalCard) -> physicalCard.getBlueprint().getTwilightCost() >= printedTwilightCost;
-    }
-
-    public static Filter notPreventedByEffectToAssign(final Side assignedBySide, final PhysicalCard againstCard) {
-        return (game, physicalCard) -> {
-            if (againstCard.getBlueprint().getSide() == Side.FREE_PEOPLE) {
-                Map<PhysicalCard, Set<PhysicalCard>> assignment = new HashMap<>();
-                assignment.put(againstCard, Collections.singleton(physicalCard));
-                return game.getModifiersQuerying().isValidAssignments(assignedBySide, assignment);
-            } else {
-                Map<PhysicalCard, Set<PhysicalCard>> assignment = new HashMap<>();
-                assignment.put(physicalCard, Collections.singleton(againstCard));
-                return game.getModifiersQuerying().isValidAssignments(assignedBySide, assignment);
-            }
-        };
     }
 
     public static final Filter aragorn = Filters.name("Aragorn");
@@ -408,6 +391,14 @@ public class Filters {
         return (game, physicalCard) -> !Filters.and(filters).accepts(game, physicalCard);
     }
 
+    public static Filter other(final PhysicalCard card) {
+        return Filters.not(sameCard(card));
+    }
+
+    public static Filter otherCardPresentWith(final PhysicalCard card) {
+        return and(other(card), presentWith(card));
+    }
+
     public static Filter sameCard(final PhysicalCard card) {
         final int cardId = card.getCardId();
         return (game, physicalCard) -> (physicalCard.getCardId() == cardId);
@@ -428,7 +419,7 @@ public class Filters {
 
     public static Filter name(final String name) {
             // TODO - Does not consider the colon rule
-        return (game, physicalCard) -> name != null && physicalCard.getBlueprint().getTitle() != null &&
+        return (game, physicalCard) -> physicalCard.getBlueprint().getTitle() != null &&
                 physicalCard.getBlueprint().getTitle().equals(name);
     }
 
@@ -437,8 +428,8 @@ public class Filters {
                 || game.getModifiersQuerying().isAdditionalCardType(game, physicalCard, cardType);
     }
 
-    private static Filter missionType(final MissionType missionType) {
-        return (game, physicalCard) -> (physicalCard.getBlueprint().getMissionType() == missionType);
+    private static Filter skillName(final SkillName skillName) {
+        return (game, physicalCard) -> physicalCard.hasSkill(skillName);
     }
 
     private static Filter propertyLogo(final PropertyLogo propertyLogo) {
@@ -503,12 +494,15 @@ public class Filters {
             return _cardTypeFilterMap.get((CardType) filter);
         else if (filter instanceof Culture)
             return _cultureFilterMap.get((Culture) filter);
-        else if (filter instanceof CardIcon)
-            return (game, physicalCard) -> (physicalCard.hasIcon((CardIcon) filter));
+        else if (filter instanceof SkillName enumFilter)
+            return _skillNameFilterMap.get(enumFilter);
+        else if (filter instanceof CardIcon icon)
+            return (game, physicalCard) -> physicalCard.hasIcon(icon);
         else if (filter instanceof Keyword)
             return _keywordFilterMap.get((Keyword) filter);
-        else if (filter instanceof MissionType)
-            return _missionTypeFilterMap.get((MissionType) filter);
+        else if (filter instanceof MissionType missionType)
+                // TODO - Does not properly account for dual missions
+            return (game, physicalCard) -> physicalCard.getBlueprint().getMissionType() == missionType;
         else if (filter instanceof FacilityType)
             return _facilityTypeFilterMap.get((FacilityType) filter);
         else if (filter instanceof PropertyLogo)
@@ -602,10 +596,14 @@ public class Filters {
     }
 
 
-    public static final Filter ringBoundCompanion = Filters.and(CardType.COMPANION, Keyword.RING_BOUND);
     public static final Filter unboundCompanion = Filters.and(CardType.COMPANION, Filters.not(Keyword.RING_BOUND));
-    public static final Filter roamingMinion = Filters.and(CardType.MINION, Keyword.ROAMING);
     public static final Filter mounted = Filters.or(Filters.hasAttached(PossessionClass.MOUNT), Keyword.MOUNTED);
+
+    public static final Filter undocked = (game, physicalCard) -> {
+        if (physicalCard instanceof PhysicalShipCard shipCard)
+            return !shipCard.isDocked();
+        else return false;
+    };
 
     public static final Filter spottable = (game, physicalCard) -> true;
 

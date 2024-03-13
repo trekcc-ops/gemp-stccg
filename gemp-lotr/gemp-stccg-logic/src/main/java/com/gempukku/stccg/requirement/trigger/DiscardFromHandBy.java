@@ -1,6 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import org.json.simple.JSONObject;

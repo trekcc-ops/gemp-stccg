@@ -16,8 +16,8 @@ body {
 
 .owned {
     background-color: #000000;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+    border: 1px solid white;
+    color: white;
     font-size: 220%;
     font-weight: bolder;
     display: table-cell;
@@ -28,8 +28,8 @@ body {
 
 .pocket {
     background-color: #000000;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+    border: 1px solid white;
+    color: white;
     font-size: 100%;
     font-weight: bolder;
     text-align: right;
@@ -37,12 +37,12 @@ body {
 }
 
 .hideMerchant {
-    color: #ffffff;
+    color: white;
     text-align: right;
 }
 
 .countDiv {
-    color: #ffffff;
+    color: white;
     text-align: right;
 }
 

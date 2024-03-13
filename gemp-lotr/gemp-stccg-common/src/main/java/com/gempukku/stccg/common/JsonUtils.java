@@ -17,7 +17,7 @@ public final class JsonUtils {
         return !ext.equalsIgnoreCase("json") && !ext.equalsIgnoreCase("hjson");
     }
 
-    //Reads both json and hjson files, converting both to json (for compatilibity with other libraries)
+    //Reads both json and hjson files, converting both to json (for compatibility with other libraries)
     public static String ReadJson(Reader reader) throws IOException {
         return JsonValue.readHjson(reader).toString();
     }
@@ -36,7 +36,7 @@ public final class JsonUtils {
         }
         catch(Exception ex)
         {
-            return null;
+            throw new IOException("Error");
         }
 
     }

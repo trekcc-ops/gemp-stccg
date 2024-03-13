@@ -360,11 +360,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getFPCulturesSpotCountModifier(DefaultGame game, String playerId) {
-        return 0;
-    }
-
-    @Override
     public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard card) {
 
     }

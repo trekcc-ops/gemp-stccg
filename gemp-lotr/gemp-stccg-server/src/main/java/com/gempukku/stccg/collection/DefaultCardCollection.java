@@ -29,8 +29,8 @@ public class DefaultCardCollection implements MutableCardCollection {
         //Some deserialization defaults to making the currency a Long rather than an Integer
         if(extraInfo.containsKey(CurrencyKey)) {
             var input = extraInfo.get(CurrencyKey);
-            if(input instanceof Long linput) {
-                _extraInformation.put(CurrencyKey, linput.intValue());
+            if(input instanceof Long longInput) {
+                _extraInformation.put(CurrencyKey, longInput.intValue());
             }
         }
     }
@@ -179,12 +179,7 @@ public class DefaultCardCollection implements MutableCardCollection {
         if(getCurrency() != other.getCurrency())
             return false;
 
-        var cardkeys = Stream.concat(_counts.keySet().stream(),
-            other._counts.keySet().stream())
-                .distinct()
-                .toList();
-
-        for(String key : cardkeys) {
+        for(String key : Stream.concat(_counts.keySet().stream(), other._counts.keySet().stream()).distinct().toList()) {
             if(!_counts.containsKey(key) || !other._counts.containsKey(key))
                 return false;
             if(!_counts.get(key).equals(other._counts.get(key)))

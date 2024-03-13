@@ -20,13 +20,13 @@ public class AmbushAtTest extends AbstractAtTest {
         Map<String, Collection<String>> extraCards = new HashMap<>();
         initializeSimplestGame(extraCards);
 
-        PhysicalCardGeneric gimli = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("5_7"));
+        PhysicalCardGeneric dwarf = new PhysicalCardGeneric(_game, 100, P1, _cardLibrary.getCardBlueprint("5_7"));
         PhysicalCardGeneric desertLegion = new PhysicalCardGeneric(_game, 101, P2, _cardLibrary.getCardBlueprint("4_218"));
 
         skipMulligans();
 
         // Fellowship phase
-        _game.getGameState().addCardToZone(gimli, Zone.FREE_CHARACTERS);
+        _game.getGameState().addCardToZone(dwarf, Zone.FREE_CHARACTERS);
         playerDecided(P1, "");
 
         // Shadow phase
@@ -46,7 +46,7 @@ public class AmbushAtTest extends AbstractAtTest {
         playerDecided(P2, "");
 
         // Assign
-        playerDecided(P1, gimli.getCardId() + " " + desertLegion.getCardId());
+        playerDecided(P1, dwarf.getCardId() + " " + desertLegion.getCardId());
 
         // FP player gets no Ambush trigger
         assertNull(_userFeedback.getAwaitingDecision(P1));

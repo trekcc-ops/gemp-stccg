@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;

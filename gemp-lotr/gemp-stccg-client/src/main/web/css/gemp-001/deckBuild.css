@@ -77,7 +77,7 @@ body {
     width: 20px;
     height: 18px;
     background-color: #000000;
-    color: #ffffff;
+    color: white;
     font-size: 120%;
     font-weight: bolder;
     display: table-cell;
@@ -91,7 +91,7 @@ body {
 }
 
 #manageDecks {
-    color: #ffffff;
+    color: white;
     font-size: 180%;
     display: flex;
 }
@@ -102,7 +102,7 @@ body {
 }
 
 #deckStats {
-    color: #ffffff;
+    color: white;
 }
 
 .ui-button-text-only .ui-button-text {
@@ -147,7 +147,7 @@ button.navigation-butt {
 
 #messageDiv {
     text-align: center;
-    color: #ffffff;
+    color: white;
     font-size: 180%;
 }
 

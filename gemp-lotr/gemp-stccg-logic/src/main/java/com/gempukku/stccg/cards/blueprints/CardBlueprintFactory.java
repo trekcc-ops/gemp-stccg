@@ -1,5 +1,8 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.cards.blueprints;
 
+import com.gempukku.stccg.cards.FilterableSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.fieldprocessor.*;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -16,6 +19,7 @@ import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CardBlueprintFactory {
@@ -82,20 +86,31 @@ public class CardBlueprintFactory {
         fieldProcessors.put("playable", new NullProcessor()); // Cards that can be played to a 2E headquarters
     }
 
-    public CardBlueprint buildFromJson(String blueprintId, JSONObject json) throws InvalidCardDefinitionException {
-//        LOGGER.debug("Calling buildFromJson");
-        CardBlueprint result = new CardBlueprint(blueprintId);
+    public CardBlueprint buildFromJava(String blueprintId) throws InvalidCardDefinitionException {
+        try {
+            return (CardBlueprint) Class.forName("com.gempukku.stccg.cards.blueprints.Blueprint" + blueprintId)
+                    .getDeclaredConstructor().newInstance();
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new InvalidCardDefinitionException("No valid Java class found for blueprint " + blueprintId);
+        }
+    }
 
+    public CardBlueprint buildFromJson(String blueprintId, JSONObject json) throws InvalidCardDefinitionException {
+        CardBlueprint result;
+        result = new CardBlueprint(blueprintId);
         Set<Map.Entry<String, Object>> values = json.entrySet();
         for (Map.Entry<String, Object> value : values) {
             final String field = value.getKey().toLowerCase();
             final Object fieldValue = value.getValue();
-            final FieldProcessor fieldProcessor = fieldProcessors.get(field);
-            if (fieldProcessor == null)
-                throw new InvalidCardDefinitionException("Unrecognized field: " + field);
-
-//            LOGGER.debug("Processing field " + field + " with value " + fieldValue);
-            fieldProcessor.processField(field, fieldValue, result, this);
+            if (field.equals("type") && fieldValue.equals("java def"))
+                result = buildFromJava(blueprintId);    // TODO - This is awkwardly placed but should get the job done
+            else {
+                final FieldProcessor fieldProcessor = fieldProcessors.get(field);
+                if (fieldProcessor == null)
+                    throw new InvalidCardDefinitionException("Unrecognized field: " + field);
+                fieldProcessor.processField(field, fieldValue, result, this);
+            }
         }
 
         // Apply uniqueness based on ST1E glossary

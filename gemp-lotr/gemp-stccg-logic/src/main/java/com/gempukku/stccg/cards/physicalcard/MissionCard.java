@@ -1,14 +1,15 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.AwayTeam;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.rules.TextUtils;
@@ -36,7 +37,6 @@ public class MissionCard extends ST1EPhysicalCard {
         } else if (_blueprint.getOpponentAffiliationIcons() == null) {
             return _blueprint.getOwnerAffiliationIcons();
         } else {
-            // TODO: Assumes all missions are symmetric
             return _blueprint.getOwnerAffiliationIcons();
         }
     }
@@ -113,10 +113,10 @@ public class MissionCard extends ST1EPhysicalCard {
     public List<? extends Action> getPhaseActionsInPlay(Player player) {
         List<Action> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
-            Action action = new AttemptMissionAction(player, this);
-            if (action.canBeInitiated())
-                actions.add(action);
+            actions.add(new AttemptMissionAction(player, this));
+            actions.add(new ShipBattleAction(this, player, this.getLocation()));
         }
+        actions.removeIf(action -> !action.canBeInitiated());
         return actions;
     }
 

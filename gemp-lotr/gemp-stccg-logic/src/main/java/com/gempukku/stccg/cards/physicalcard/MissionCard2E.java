@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -12,15 +12,11 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class MissionCard2E extends MissionCard {
-    private final Quadrant _quadrant;
-    private final int _pointsShown;
     private final MissionType _missionType;
 
     public MissionCard2E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _quadrant = blueprint.getQuadrant();
         _missionType = blueprint.getMissionType();
-        _pointsShown = blueprint.getPointsShown();
     }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {

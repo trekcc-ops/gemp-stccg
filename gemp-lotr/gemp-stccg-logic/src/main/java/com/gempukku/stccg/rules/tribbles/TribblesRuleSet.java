@@ -10,7 +10,7 @@ public class TribblesRuleSet extends RuleSet {
     private final TribblesGame _game;
 
     public TribblesRuleSet(ActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic, TribblesGame game) {
-        super(actionsEnvironment, modifiersLogic);
+        super(actionsEnvironment);
         _actionsEnvironment = actionsEnvironment;
         _game = game;
     }

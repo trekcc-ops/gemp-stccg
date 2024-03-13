@@ -4,6 +4,7 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.PlayerLock;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.TransferDAO;

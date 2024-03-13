@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.ActivateCardAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
@@ -34,6 +34,8 @@ public class Blueprint155_021 extends CardBlueprint {
         if (phase == Phase.CARD_PLAY) {
 
             ActivateCardAction action1 = new ActivateCardAction(card);
+                // TODO - This should not be where the Filters.playable filter is included
+                // TODO - Make sure there's a native quadrant requirement here if Modern rules are used
             Filterable playableCardFilter = Filters.and(CardType.PERSONNEL, Uniqueness.UNIVERSAL, CardIcon.TNG_ICON,
                     Filters.youHaveNoCopiesInPlay(card.getOwner()), Filters.playable,
                     Filters.not(Filters.android), Filters.not(Filters.hologram), Filters.not(CardIcon.AU_ICON));

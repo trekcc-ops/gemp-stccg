@@ -1,16 +1,11 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.common.filterable.RegularSkill;
+import com.gempukku.stccg.common.filterable.SkillType;
 
 public class Skill {
-    private final RegularSkill _regularSkill;
-    private final int _level;
+    protected final SkillType _skillType;
 
-    public Skill(RegularSkill skill, Integer level) {
-        _regularSkill = skill;
-        _level = level;
+    public Skill(SkillType skillType) {
+        _skillType = skillType;
     }
-
-    public RegularSkill getRegularSkill() { return _regularSkill; }
-    public int getLevel() { return _level; }
 }

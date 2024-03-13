@@ -1,6 +1,8 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import org.json.simple.JSONObject;
 
 public class ModifierProcessor implements EffectProcessor {

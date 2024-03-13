@@ -1,21 +1,21 @@
 package com.gempukku.stccg.cards.fieldprocessor;
 
-import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.PersonnelName;
-import com.gempukku.stccg.common.filterable.RegularSkill;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.requirement.missionrequirements.*;
 
 import java.util.*;
 
 public class MissionRequirementsFieldProcessor implements FieldProcessor {
-    final Map<String, RegularSkill> _skillMap = new HashMap<>();
+    final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
     CardBlueprintFactory _environment;
     public MissionRequirementsFieldProcessor() {
-        new ArrayList<>(Arrays.asList(RegularSkill.values()))
+        new ArrayList<>(Arrays.asList(SkillName.values()))
                 .forEach(regularSkill -> _skillMap.put(regularSkill.get_humanReadable().toUpperCase(), regularSkill));
         new ArrayList<>(Arrays.asList(PersonnelName.values()))
                 .forEach(name -> _personnelNameMap.put(name.getHumanReadable(), name));

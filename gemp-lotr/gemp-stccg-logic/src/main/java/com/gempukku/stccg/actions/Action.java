@@ -9,7 +9,7 @@ public interface Action {
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,
-        SEED_CARD
+        BATTLE, SEED_CARD
     }
 
     ActionType getActionType();

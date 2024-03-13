@@ -146,21 +146,6 @@ var CardFilter = Class.extend({
 
 
         var setFilterChanged = function () {
-        /*
-                // TODO - Add a filter here to remove affiliations like Neutral and Hirogen for 2E
-            var setSelected = $("#setSelect option:selected").prop("value");
-            if (setSelected.includes("30-33") || setSelected.includes("30") || setSelected.includes("31")
-                    || setSelected.includes("32") || setSelected.includes("33")) {
-                $("#culture2").show();
-            } else {
-                $("#labelESGAROTH").removeClass("ui-state-active");
-                $("#labelGUNDABAD").removeClass("ui-state-active");
-                $("#labelMIRKWOOD").removeClass("ui-state-active");
-                $("#labelSMAUG").removeClass("ui-state-active");
-                $("#labelSPIDER").removeClass("ui-state-active");
-                $("#labelTROLL").removeClass("ui-state-active");
-                $("#culture2").hide();
-            }*/
             that.filter = that.calculateNormalFilter();
             that.start = 0
             that.getCollection();

@@ -1,6 +1,6 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.filterable.CardType;
 import org.junit.Test;

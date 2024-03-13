@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;

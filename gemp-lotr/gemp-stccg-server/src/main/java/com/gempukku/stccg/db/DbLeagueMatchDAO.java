@@ -26,11 +26,8 @@ public class DbLeagueMatchDAO implements LeagueMatchDAO {
                     try (ResultSet rs = statement.executeQuery()) {
                         Set<LeagueMatchResult> result = new HashSet<>();
                         while (rs.next()) {
-                            String winner = rs.getString(1);
-                            String loser = rs.getString(2);
-                            String serie = rs.getString(3);
-
-                            result.add(new LeagueMatchResult(serie, winner, loser));
+                            result.add(new LeagueMatchResult(
+                                    rs.getString(3), rs.getString(1), rs.getString(2)));
                         }
                         return result;
                     }
@@ -42,12 +39,12 @@ public class DbLeagueMatchDAO implements LeagueMatchDAO {
     }
 
     @Override
-    public void addPlayedMatch(String leagueId, String serieId, String winner, String loser) {
+    public void addPlayedMatch(String leagueId, String seriesId, String winner, String loser) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = conn.prepareStatement("insert into league_match (league_type, season_type, winner, loser) values (?, ?, ?, ?)")) {
                     statement.setString(1, leagueId);
-                    statement.setString(2, serieId);
+                    statement.setString(2, seriesId);
                     statement.setString(3, winner);
                     statement.setString(4, loser);
                     statement.execute();

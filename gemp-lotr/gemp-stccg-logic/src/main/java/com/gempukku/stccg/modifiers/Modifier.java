@@ -141,7 +141,5 @@ public interface Modifier {
 
     boolean lostAllKeywords(PhysicalCard card);
 
-    int getFPCulturesSpotCountModifier(DefaultGame game, String playerId);
-
     void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard card);
 }

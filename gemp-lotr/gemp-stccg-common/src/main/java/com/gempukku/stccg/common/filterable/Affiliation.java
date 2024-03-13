@@ -1,5 +1,7 @@
 package com.gempukku.stccg.common.filterable;
 
+import java.util.Arrays;
+
 public enum Affiliation implements Filterable {
     BAJORAN("Bajoran",""),
     BORG("Borg",""),
@@ -28,4 +30,14 @@ public enum Affiliation implements Filterable {
             return _humanReadable;
         else
             return "<img src='" + _iconURL + "' class='inline-icon' title='" + _humanReadable + "'>"; }
+
+    public static Affiliation findAffiliation(String name) {
+            // TODO - Copied this logic from the LotR Culture class. May not be appropriate for this one.
+        return Arrays.stream(values()).filter(
+                affiliation -> affiliation.getHumanReadable().equalsIgnoreCase(name) ||
+                        affiliation.toString().equals(
+                                name.toUpperCase().replace(' ', '_').replace('-', '_')))
+                .findFirst().orElse(null);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.effectappender.DelayedAppender;
@@ -34,7 +35,7 @@ public class PlayCardFromHand implements EffectAppenderProducer {
         if(noCheck)
         {
             //This range will cause choice checks to succeed even if no valid choices are found (which is how draw deck
-            // searching is supposed to work RAW).  However we don't want this to be the default, else dual-choice cards
+            // searching is supposed to work RAW). But we don't want this to be the default, or else dual-choice cards
             // that play "from draw deck or discard pile" would allow empty sources to be chosen, which is NPE.
             countSource = ValueResolver.resolveEvaluator("0-1", 1, environment);
         }

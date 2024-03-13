@@ -1,6 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
 import org.json.simple.JSONObject;

@@ -7,7 +7,7 @@
  ==  Version         : 1.0 1
  ==  Date            : 9 May 2011
  ==  Description     : Convert a text input in to a Spinner Control.
- ==  Required Files  : jquery.spinnercontrol.css
+ ==  Required Files  : spinnerControl.css
  ======================================================================================
  */
 

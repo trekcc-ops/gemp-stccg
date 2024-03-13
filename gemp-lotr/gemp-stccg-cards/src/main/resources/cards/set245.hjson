@@ -14,4 +14,47 @@
         mission-requirements: Leadership + Navigation + SCIENCE + CUNNING>30
         image-url: https://www.trekcc.org/1e/cardimages/sfl/9.jpg
     }
+    245_019: {
+        title: Belcalis
+        type: personnel
+        uniqueness: universal
+        affiliation: cardassian
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Typical Cardassian intelligence asset. His undercover team, dressed as monks, attacked a Maquis cell at the Juhraya colony. Later promoted to legate.
+        skill-box: "[*] Leadership [*] Obsidian Order"
+        integrity: 3
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/sfl/19.jpg
+    }
+    245_023: {
+        title: Jil Orra
+        type: personnel
+        uniqueness: universal
+        affiliation: cardassian
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: "One of many Cardassian children who admire their parents' military service. Daughter of Gul Madred. Cares for her pet wompat. Curious about humans."
+        skill-box: "[*] Youth [*] Exobiology [*] Geology"
+        integrity: 7
+        cunning: 7
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/sfl/23.jpg
+    }
+    245_025: {
+        title: Mekar
+        type: personnel
+        uniqueness: universal
+        affiliation: cardassian
+        property-logo: tng-logo
+        classification: MEDICAL
+        lore: Typical Cardassian working for Gul Madred. Cook and field medic. He provides taspar eggs for nutrition: boiled for the officers, live for the prisoners.
+        skill-box: "[*] Biology [*] Acquisition [DL] Taspar Egg"
+        integrity: 5
+        cunning: 5
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/sfl/25.jpg
+    }
 }

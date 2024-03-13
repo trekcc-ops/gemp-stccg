@@ -1,7 +1,8 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.actions.sources.TriggerActionSource;
+import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.*;
@@ -36,7 +37,7 @@ public class CardBlueprint {
     final List<Skill> _skills = new LinkedList<>();
     private final Set<Affiliation> _affiliations = new HashSet<>();
     private Region region;
-    private RegularSkill _classification;
+    private SkillName _classification;
     private boolean _canInsertIntoSpaceline;
     private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
     private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
@@ -48,13 +49,12 @@ public class CardBlueprint {
     private Race race;
     private Map<Keyword, Integer> keywords;
     private int cost = -1;
-    private int _range;
     private final Map<CardAttribute, Integer> _cardAttributes = new HashMap<>();
-    private int strength;
+    private int _specialDownloadIcons;
     private int vitality;
     private int resistance;
     private int tribbleValue;
-    private List<CardIcon> _staffing;
+    private List<CardIcon> _staffing = new LinkedList<>();
     private String _missionRequirementsText;
     private TribblePower tribblePower;
     private Set<PossessionClass> possessionClasses;
@@ -172,15 +172,27 @@ public class CardBlueprint {
     public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
     public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
     public List<CardIcon> getStaffing() { return _staffing; }
-    public void setClassification(RegularSkill classification) { _classification = classification; }
-    public RegularSkill getClassification() { return _classification; }
-    public void addSkill(Skill skill) {
-        _skills.add(skill);
+    public void setClassification(SkillName classification) { _classification = classification; }
+    public SkillName getClassification() { return _classification; }
+    public void addSkill(Skill skill) { _skills.add(skill); }
+    public void addSkill(RegularSkill regularSkill) {
+        _skills.add(regularSkill);
     }
-    public List<Skill> getSkills() { return _skills; }
+    public void addSkill(SkillName skillName) { _skills.add(new RegularSkill(skillName, 1)); }
+    public void addSkill(SkillName skillName, int level) { _skills.add(new RegularSkill(skillName, level)); }
+        // TODO - Not an exact match for how skills are processed
+    public List<RegularSkill> getRegularSkills() {
+        List<RegularSkill> result = new LinkedList<>();
+        for (Skill skill : _skills) {
+            if (skill instanceof RegularSkill regularSkill)
+                result.add(regularSkill);
+        }
+        return result;
+    }
     public void setSkillDotIcons(int dots) { _skillDots = dots; }
     public int getSkillDotCount() { return _skillDots; }
-    public int getSpecialDownloadIconCount() { return 0; } // TODO - Only 0 because no cards have implemented this yet
+    public int getSpecialDownloadIconCount() { return _specialDownloadIcons; } // TODO - Only 0 because no cards have implemented this yet
+    public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) {
@@ -409,7 +421,8 @@ public class CardBlueprint {
 
     public void validateConsistency() throws InvalidCardDefinitionException {
         if (title == null) throwException("Card has to have a title");
-        if (_cardType == null) throwException("Card has to have a type");
+        if (_cardType == null)
+            throwException("Card has to have a type");
         if (_cardType == CardType.MISSION) {
             if (_propertyLogo != null) throwException("Mission card should not have a property logo");
             if (location == null && !title.equals("Space")) throwException("Mission card should have a location");
@@ -474,11 +487,11 @@ public class CardBlueprint {
     }
 
     // Modifiers from game text
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) { return new LinkedList<>(); }
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, PhysicalCard card) {
+        return new LinkedList<>();
+    }
 
     public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) {
-        List<Modifier> modifiers = new LinkedList<>();
-        modifiers.addAll(getGameTextWhileActiveInPlayModifiers(player, card));
-        return modifiers;
+        return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
     }
 }

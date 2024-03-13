@@ -53,7 +53,7 @@
 				<span class="ui-icon ui-icon-suitcase"></span>
 			</button>
 
-			<select id="formatSelect" style="float: right; width: 150px;">
+			<label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
 				<option value="st1emoderncomplete">ST1E Modern Complete</option>
 			</select>
 
@@ -94,11 +94,11 @@
 				</a>
 			</div>
 			<div id='filter-inputs'>
-				<select id='setSelect'>
+				<label for='setSelect'></label><select id='setSelect'>
 					<option value='101'>Premiere</option>
 				</select>
-				<input type='text' id='nameInput' placeholder='Card name' value=''>
-				<select id='sortSelect'>
+				<label for='nameInput'></label><input type='text' id='nameInput' placeholder='Card name' value=''>
+				<label for='sortSelect'></label><select id='sortSelect'>
 					<option value=''>Sort by:</option>
 					<option value='name'>Name</option>
 					<option value='cardType,name'>Card Type</option>
@@ -107,21 +107,24 @@
 			</div>
 			<div id='affiliation-buttons'>
 				<div id='affiliations'>
-					<input type='checkbox' class='affiliationFilter' id='BAJORAN'/><label for='BAJORAN' id='labelBAJORAN'><img src='https://www.trekcc.org/images/icons/1e/1E-BAJ.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='BORG'/><label for='BORG' id='labelBORG'><img src='https://www.trekcc.org/images/icons/1e/1E-BORG.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='CARDASSIAN'/><label for='CARDASSIAN' id='labelCARDASSIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-CARD.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='DOMINION'/><label for='DOMINION' id='labelDOMINION'><img src='https://www.trekcc.org/images/icons/1e/1E-DOM.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='FEDERATION'/><label for='FEDERATION' id='labelFEDERATION'><img src='https://www.trekcc.org/images/icons/1e/1E-FED.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='FERENGI'/><label for='FERENGI' id='labelFERENGI'><img src='https://www.trekcc.org/images/icons/1e/1E-FER.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='HIROGEN'/><label for='HIROGEN' id='labelHIROGEN'><img src='https://www.trekcc.org/images/icons/1e/1E-HIR.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='KAZON'/><label for='KAZON' id='labelKAZON'><img src='https://www.trekcc.org/images/icons/1e/1E-KAZ.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='KLINGON'/><label for='KLINGON' id='labelKLINGON'><img src='https://www.trekcc.org/images/icons/1e/1E-KLG.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='NEUTRAL'/><label for='NEUTRAL' id='labelNEUTRAL'><img src='https://www.trekcc.org/images/icons/1e/1E-NEU.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='NON_ALIGNED'/><label for='NON_ALIGNED' id='labelNON_ALIGNED'><img src='https://www.trekcc.org/images/icons/1e/1E-NON.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='ROMULAN'/><label for='ROMULAN' id='labelROMULAN'><img src='https://www.trekcc.org/images/icons/1e/1E-ROM.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='STARFLEET'/><label for='STARFLEET' id='labelSTARFLEET'><img src='https://www.trekcc.org/images/icons/1e/1E-STF.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='VIDIIAN'/><label for='VIDIIAN' id='labelVIDIIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VID.gif'/></label>
-					<input type='checkbox' class='affiliationFilter' id='VULCAN'/><label for='VULCAN' id='labelVULCAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VUL.gif'/></label>
+					<input type='checkbox' class='affiliationFilter' id='BAJORAN'/>
+						<label for='BAJORAN' id='labelBAJORAN'>
+							<img src='https://www.trekcc.org/images/icons/1e/1E-BAJ.gif' alt="Bajoran"/>
+						</label>
+					<input type='checkbox' class='affiliationFilter' id='BORG'/><label for='BORG' id='labelBORG'><img src='https://www.trekcc.org/images/icons/1e/1E-BORG.gif' alt="Borg"/></label>
+					<input type='checkbox' class='affiliationFilter' id='CARDASSIAN'/><label for='CARDASSIAN' id='labelCARDASSIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-CARD.gif' alt="Cardassian"/></label>
+					<input type='checkbox' class='affiliationFilter' id='DOMINION'/><label for='DOMINION' id='labelDOMINION'><img src='https://www.trekcc.org/images/icons/1e/1E-DOM.gif' alt="Dominion"/></label>
+					<input type='checkbox' class='affiliationFilter' id='FEDERATION'/><label for='FEDERATION' id='labelFEDERATION'><img src='https://www.trekcc.org/images/icons/1e/1E-FED.gif' alt="Federation"/></label>
+					<input type='checkbox' class='affiliationFilter' id='FERENGI'/><label for='FERENGI' id='labelFERENGI'><img src='https://www.trekcc.org/images/icons/1e/1E-FER.gif' alt="Ferengi"/></label>
+					<input type='checkbox' class='affiliationFilter' id='HIROGEN'/><label for='HIROGEN' id='labelHIROGEN'><img src='https://www.trekcc.org/images/icons/1e/1E-HIR.gif' alt="Hirogen"/></label>
+					<input type='checkbox' class='affiliationFilter' id='KAZON'/><label for='KAZON' id='labelKAZON'><img src='https://www.trekcc.org/images/icons/1e/1E-KAZ.gif' alt="Kazon"/></label>
+					<input type='checkbox' class='affiliationFilter' id='KLINGON'/><label for='KLINGON' id='labelKLINGON'><img src='https://www.trekcc.org/images/icons/1e/1E-KLG.gif' alt="Klingon"/></label>
+					<input type='checkbox' class='affiliationFilter' id='NEUTRAL'/><label for='NEUTRAL' id='labelNEUTRAL'><img src='https://www.trekcc.org/images/icons/1e/1E-NEU.gif' alt="Neutral"/></label>
+					<input type='checkbox' class='affiliationFilter' id='NON_ALIGNED'/><label for='NON_ALIGNED' id='labelNON_ALIGNED'><img src='https://www.trekcc.org/images/icons/1e/1E-NON.gif' alt="Non-Aligned'"/></label>
+					<input type='checkbox' class='affiliationFilter' id='ROMULAN'/><label for='ROMULAN' id='labelROMULAN'><img src='https://www.trekcc.org/images/icons/1e/1E-ROM.gif' alt="Romulan"/></label>
+					<input type='checkbox' class='affiliationFilter' id='STARFLEET'/><label for='STARFLEET' id='labelSTARFLEET'><img src='https://www.trekcc.org/images/icons/1e/1E-STF.gif' alt="Starfleet"/></label>
+					<input type='checkbox' class='affiliationFilter' id='VIDIIAN'/><label for='VIDIIAN' id='labelVIDIIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VID.gif' alt="Vidiian"/></label>
+					<input type='checkbox' class='affiliationFilter' id='VULCAN'/><label for='VULCAN' id='labelVULCAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VUL.gif' alt="Vulcan"/></label>
 				</div>
 		</div>
 		<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
@@ -211,7 +214,7 @@
 	<script type="text/javascript" src="js/jquery/jquery-1.6.2.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery-ui-1.8.16.custom.min.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
-	<script type="text/javascript" src="js/jquery/jquery.spinnercontrol.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.spinnerControl.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.layout.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.touchSwipe.js"></script>
 

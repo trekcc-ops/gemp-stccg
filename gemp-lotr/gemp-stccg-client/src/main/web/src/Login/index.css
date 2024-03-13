@@ -72,7 +72,7 @@ body {
 }
 
 .status {
-    color:#ffffff; 
+    color:white;
     overflow:visible
 }
 
@@ -84,7 +84,7 @@ body {
     margin: 0;
     margin-left: auto;
     margin-right: auto;
-    color: #ffffff;
+    color: white;
 }
 
 .info {
@@ -93,7 +93,7 @@ body {
     margin-bottom: 150px; 
     width: 100vw;
     margin-left: calc(-50vw + 50%);
-    color: #FFFFFF;
+    color: white;
 }
 
 .sw-shoutout {

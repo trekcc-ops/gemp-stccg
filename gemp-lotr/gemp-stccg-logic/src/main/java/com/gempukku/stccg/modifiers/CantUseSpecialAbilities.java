@@ -1,6 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import org.json.simple.JSONObject;
 
 public class CantUseSpecialAbilities implements ModifierSourceProducer {

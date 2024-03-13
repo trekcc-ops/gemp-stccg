@@ -6,6 +6,8 @@ import com.gempukku.stccg.actions.discard.OptionalDiscardDiscountEffect;
 import com.gempukku.stccg.actions.discard.RemoveCardsFromDiscardDiscountEffect;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.actions.discard.DiscountEffect;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import org.json.simple.JSONObject;

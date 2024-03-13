@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.*;
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.AttemptingUnit;

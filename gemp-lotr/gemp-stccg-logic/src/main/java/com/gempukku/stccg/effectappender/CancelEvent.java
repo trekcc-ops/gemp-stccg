@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.lotr.CancelEventEffect;
 import com.gempukku.stccg.actions.lotr.PlayEventResult;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import org.json.simple.JSONObject;
 

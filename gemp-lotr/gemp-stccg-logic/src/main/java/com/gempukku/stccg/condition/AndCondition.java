@@ -4,11 +4,9 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class AndCondition implements Condition {
     private final Condition[] _conditions;
-    private final DefaultGame _game;
 
     public AndCondition(DefaultGame game, Condition... conditions) {
         _conditions = conditions;
-        _game = game;
     }
 
     @Override

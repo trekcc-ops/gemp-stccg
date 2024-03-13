@@ -267,7 +267,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public String getMOTD() {
+    public String getDailyMessage() {
         _hallDataAccessLock.readLock().lock();
         try {
             return _motd;
@@ -276,7 +276,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void setMOTD(String motd) {
+    public void setDailyMessage(String motd) {
         _hallDataAccessLock.writeLock().lock();
         try {
             _motd = motd;

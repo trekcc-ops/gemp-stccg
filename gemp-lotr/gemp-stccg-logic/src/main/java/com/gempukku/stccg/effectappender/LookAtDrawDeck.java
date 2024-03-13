@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.ShuffleDeckEffect;
 import com.gempukku.stccg.actions.revealcards.LookAtTopCardOfADeckEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;

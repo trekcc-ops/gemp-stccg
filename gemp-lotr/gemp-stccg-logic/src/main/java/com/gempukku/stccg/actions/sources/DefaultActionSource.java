@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.sources;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.EffectAppender;
@@ -21,12 +21,7 @@ public class DefaultActionSource implements ActionSource {
     protected final List<EffectAppender> costs = new LinkedList<>();
     protected final List<EffectAppender> effects = new LinkedList<>();
 
-    private boolean requiresRanger;
     protected String _text;
-
-    public void setRequiresRanger(boolean requiresRanger) {
-        this.requiresRanger = requiresRanger;
-    }
 
     public void setText(String text) {
         this._text = text;

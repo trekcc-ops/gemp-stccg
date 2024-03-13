@@ -69,7 +69,7 @@
         location: Deneb IV
         affiliation-icons: federation,non-aligned
         lore: Negotiate with natives for use of their newly-constructed starbase.
-        mission-requirements: Empathy + Exobiology + Honor + INTEGRITY >25 OR Acquisition + Diplomacy + Treachery + CUNNING >30
+        mission-requirements: Empathy + Exobiology + Honor + INTEGRITY>25 OR Acquisition + Diplomacy + Treachery + CUNNING>30
         point-box: 30
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/38V.jpg
@@ -267,6 +267,33 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/tng/78V.jpg
     }
+    155_082: {
+        title: Kahless
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: '"The greatest warrior of them all." Clone of the unforgettable Klingon leader. Fulfilled prophecy. Installed as ceremonial Emperor in 2369.'
+        skill-box: "[*] Honor x2 [*] Anthropology [*] Leadership x3 [DL] Warrior's Birthright"
+        integrity: 10
+        cunning: 5
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/tng/82V.jpg
+    }
+    155_083: {
+        title: Kitrik
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: "\"The Tyrant Molor\" in the Kot'baval Festival. Eager to help warriors deepen their understanding of Klingon heritage. Researcher on Maranga IV outpost."
+        skill-box: "[*] SCIENCE [*] Geology [*] Computer Skill"
+        integrity: 7
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/tng/83V.jpg
+    }
     155_088: {
         title: "Q'elyn"
         type: personnel
@@ -280,6 +307,20 @@
         cunning: 8
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/tng/88V.jpg
+    }
+    155_089: {
+        title: William T. Riker
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: The first Starfleet officer to serve on a Klingon ship as part of an exchange program. Commanded the I.K.S. Pagh after relieving Kargan of duty.
+        skill-box: "[*] Leadership [*] Navigation [*] Anthropology [*] Honor [*] Transporter Skill [DL] Emergency Transport Unit"
+        integrity: 7
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/89V.jpg
     }
     155_090: {
         title: Zegov
@@ -319,5 +360,18 @@
                 image-url: https://www.trekcc.org/1e/cardimages/tng/93V.jpg
             }
         ]
+    }
+    155_094: {
+        title: Vash
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: SCIENCE
+        lore: Treasure hunter, archaeologist, liar, and thief romantically involved with Jean-Luc Picard. Partnered with Q to explore distant Gamma Quadrant ruins.
+        skill-box: "[*] Archaeology x2 [*] Treachery [*] Anthropology [*] Smuggling [*] Acquisition [DL] Dig"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/94V.jpg
     }
 }

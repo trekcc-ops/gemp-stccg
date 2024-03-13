@@ -8,7 +8,6 @@ public class ConstantEvaluator extends Evaluator {
     private final int _value;
 
     public ConstantEvaluator(DefaultGame game, int value) {
-            // TODO - I don't love passing this null, but realistically ConstantEvaluators don't need an action context
         super(game);
         _value = value;
     }

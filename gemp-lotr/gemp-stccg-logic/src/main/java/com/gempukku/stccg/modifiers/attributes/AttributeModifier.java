@@ -13,7 +13,6 @@ public class AttributeModifier extends AbstractModifier {
     protected final Evaluator _evaluator;
     private final CardAttribute _attribute;
 
-        // TODO - The "cumulative" value is never used
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, boolean cumulative, CardAttribute attribute,
                              ModifierEffect effectType) {

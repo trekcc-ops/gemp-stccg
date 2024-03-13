@@ -34,7 +34,7 @@ public class LeagueService {
     private final SoloDraftDefinitions _soloDraftDefinitions;
 
     private final Map<String, List<PlayerStanding>> _leagueStandings = new ConcurrentHashMap<>();
-    private final Map<String, List<PlayerStanding>> _leagueSerieStandings = new ConcurrentHashMap<>();
+    private final Map<String, List<PlayerStanding>> _seriesStandings = new ConcurrentHashMap<>();
 
     private int _activeLeaguesLoadedDate;
     private List<League> _activeLeagues;
@@ -52,7 +52,7 @@ public class LeagueService {
     }
 
     public synchronized void clearCache() {
-        _leagueSerieStandings.clear();
+        _seriesStandings.clear();
         _leagueStandings.clear();
         _activeLeaguesLoadedDate = 0;
 
@@ -98,13 +98,14 @@ public class LeagueService {
         return _leagueParticipationDAO.getUsersParticipating(league.getType()).contains(player.getName());
     }
 
-    public synchronized boolean playerJoinsLeague(League league, User player, String remoteAddr) throws SQLException, IOException {
+    public synchronized boolean playerJoinsLeague(League league, User player, String remoteAddress)
+            throws SQLException, IOException {
         if (isPlayerInLeague(league, player))
             return false;
         int cost = league.getCost();
         if (_collectionsManager.removeCurrencyFromPlayerCollection("Joining "+league.getName()+" league", player, CollectionType.MY_CARDS, cost)) {
             league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).joinLeague(_collectionsManager, player, DateUtils.getCurrentDateAsInt());
-            _leagueParticipationDAO.userJoinsLeague(league.getType(), player, remoteAddr);
+            _leagueParticipationDAO.userJoinsLeague(league.getType(), player, remoteAddress);
             _leagueStandings.remove(LeagueMapKeys.getLeagueMapKey(league));
 
             return true;
@@ -147,7 +148,7 @@ public class LeagueService {
         _leagueMatchDao.addPlayedMatch(league.getType(), serie.getName(), winner, loser);
 
         _leagueStandings.remove(LeagueMapKeys.getLeagueMapKey(league));
-        _leagueSerieStandings.remove(LeagueMapKeys.getLeagueSerieMapKey(league, serie));
+        _seriesStandings.remove(LeagueMapKeys.getLeagueSerieMapKey(league, serie));
 
         awardPrizesToPlayer(league, serie, winner, true);
         awardPrizesToPlayer(league, serie, loser, false);
@@ -193,11 +194,11 @@ public class LeagueService {
     }
 
     public synchronized List<PlayerStanding> getLeagueSerieStandings(League league, LeagueSeriesData leagueSerie) {
-        List<PlayerStanding> serieStandings = _leagueSerieStandings.get(LeagueMapKeys.getLeagueSerieMapKey(league, leagueSerie));
+        List<PlayerStanding> serieStandings = _seriesStandings.get(LeagueMapKeys.getLeagueSerieMapKey(league, leagueSerie));
         if (serieStandings == null) {
             synchronized (this) {
                 serieStandings = createLeagueSerieStandings(league, leagueSerie);
-                _leagueSerieStandings.put(LeagueMapKeys.getLeagueSerieMapKey(league, leagueSerie), serieStandings);
+                _seriesStandings.put(LeagueMapKeys.getLeagueSerieMapKey(league, leagueSerie), serieStandings);
             }
         }
         return serieStandings;

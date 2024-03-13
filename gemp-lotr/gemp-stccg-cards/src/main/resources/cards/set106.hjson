@@ -73,4 +73,34 @@
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/errata/Reported-Activity.jpg
     }
+    106_013: {
+        title: Survey Instability
+        type: mission
+        location: Selcundi Drema Sector
+        lore: 'Study this "live fast, die hard" volcanic planet in this sector.'
+        mission-type: planet
+        affiliation-icons: federation
+        mission-requirements: Geology + STRENGTH>35
+        point-box: 25
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/surveyinstability.gif
+    }
+    106_014: {
+        title: Admiral McCoy
+        type: java def
+    }
+    106_018: {
+        title: Spock
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: "1/2 Vulcan, 1/2 Human son of Sarek and Amanda Grayson. Over 140-year-old ambassador. On private mission to Romulus. Mindmelded with Picard."
+        skill-box: "[*] Diplomacy x2 [*] Computer Skill [*] Leadership [*] SCIENCE [*] Mindmeld"
+        integrity: 9
+        cunning: 10
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/23V.jpg
+    }
 }

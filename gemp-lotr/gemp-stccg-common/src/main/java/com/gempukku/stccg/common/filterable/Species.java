@@ -2,6 +2,7 @@ package com.gempukku.stccg.common.filterable;
 
 public enum Species implements Filterable {
     ANDROID("android"),
+    BAJORAN("Bajoran"),
     HOLOGRAM("hologram"),
     KLINGON("Klingon");
     private final String _humanReadable;

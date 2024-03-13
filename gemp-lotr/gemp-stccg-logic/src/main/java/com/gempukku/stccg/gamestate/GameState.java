@@ -3,6 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardState;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
@@ -354,14 +355,6 @@ public abstract class GameState implements Snapshotable<GameState> {
             card.startAffectingGameInZone(zone);
     }
 
-    void assignNewCardId(PhysicalCard card) {
-            // This function shouldn't be called if cardId is final
-/*        _allCards.remove(card.getCardId());
-        int newCardId = _nextCardId++;
-        card.setCardId(newCardId);
-        _allCards.put(newCardId, card); */
-    }
-
     public void shuffleCardsIntoDeck(Collection<? extends PhysicalCard> cards, String playerId) {
 
         for (PhysicalCard card : cards) {
@@ -570,7 +563,7 @@ public abstract class GameState implements Snapshotable<GameState> {
      * @return the current top play card state, or null
      */
     public PlayCardState getTopPlayCardState(PhysicalCard sourceCardToSkip) {
-            // TODO SNAPSHOT - SWCCG calls this function in filters and for a few blueprints
+            // TODO SNAPSHOT - Star Wars GEMP calls this function in filters and for a few blueprints
         if (_playCardState.isEmpty())
             return null;
 
@@ -603,7 +596,7 @@ public abstract class GameState implements Snapshotable<GameState> {
             return;
         }
         PlayCardAction action = state.getPlayCardAction();
-            // TODO SNAPSHOT - Review against SWCCG algorithm for PlayCardActions
+            // TODO SNAPSHOT - Review against Star Wars GEMP algorithm for PlayCardActions
 /*        getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getPlayedCard());
         if (action.getOtherPlayedCard() != null) {
             getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getOtherPlayedCard());

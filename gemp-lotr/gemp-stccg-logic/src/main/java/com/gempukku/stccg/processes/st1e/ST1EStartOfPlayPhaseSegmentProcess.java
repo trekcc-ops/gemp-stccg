@@ -7,12 +7,10 @@ import com.gempukku.stccg.processes.GameProcess;
 
 public class ST1EStartOfPlayPhaseSegmentProcess extends GameProcess {
     private final Phase _phase;
-    private final String _playerId;
     private final ST1EGame _game;
 
     public ST1EStartOfPlayPhaseSegmentProcess(Phase phase, ST1EGame game) {
         _phase = phase;
-        _playerId = game.getCurrentPlayerId();
         _game = game;
     }
 

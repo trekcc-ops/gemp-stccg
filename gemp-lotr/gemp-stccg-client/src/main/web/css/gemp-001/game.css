@@ -79,7 +79,7 @@ ul {
 }
 
 .highlightBorderOverlay {
-    border: solid #ffffff;
+    border: solid white;
 }
 
 .cardHint {
@@ -91,25 +91,25 @@ ul {
 .cardStrength {
     text-align: center;
     font-weight: bolder;
-    color: #ffffff;
+    color: white;
 }
 
 .cardVitality {
     text-align: center;
     font-weight: bolder;
-    color: #ffffff;
+    color: white;
 }
 
 .cardSiteNumber {
     text-align: center;
     font-weight: bolder;
-    color: #ffffff;
+    color: white;
 }
 
 .cardResistance {
     text-align: center;
     font-weight: bolder;
-    color: #ffffff;
+    color: white;
 }
 
 .selectableCard > .borderOverlay {
@@ -132,7 +132,7 @@ ul {
 }
 
 .player {
-    color: #ffffff;
+    color: white;
     position: relative;
     z-index: 50;
 }
@@ -142,7 +142,7 @@ ul {
 }
 
 .playerStats {
-    color: #ffffff;
+    color: white;
 }
 
 .playerStats .clickable {
@@ -151,7 +151,7 @@ ul {
 }
 
 .phase {
-    color: #ffffff;
+    color: white;
     font-size: 120%;
 }
 
@@ -160,9 +160,9 @@ ul {
     font-size: 15px;
     width: 100px;
 //    border-radius: 7px;
-//    border: 1px solid #ffffff;
+//    border: 1px solid white;
 //    background-color: #000000;
-    color: #ffffff;
+    color: white;
     padding: 2px;
     text-align: left;
 }
@@ -181,7 +181,7 @@ ul {
 }
 
 .fpStrength, .shadowStrength {
-    background-color: #ffffff;
+    background-color: white;
     font-size: 300%;
 }
 

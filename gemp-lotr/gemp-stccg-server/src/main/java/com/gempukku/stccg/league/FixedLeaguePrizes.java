@@ -28,14 +28,14 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSerie, int totalGamesPlayedThisSerie) {
+    public CardCollection getPrizeForLeagueMatchWinner(int winCount, int gamesPlayed) {
         DefaultCardCollection winnerPrize = new DefaultCardCollection();
-        if (winCountThisSerie % 2 == 1) {
+        if (winCount % 2 == 1) {
             winnerPrize.addItem("(S)All Decipher Choice - Booster", 1);
         } else {
-            if (winCountThisSerie <= 4) {
+            if (winCount <= 4) {
                 winnerPrize.addItem(getRandom(_commons) + "*", 1);
-            } else if (winCountThisSerie <= 8) {
+            } else if (winCount <= 8) {
                 winnerPrize.addItem(getRandom(_uncommons) + "*", 1);
             } else {
                 winnerPrize.addItem(getRandom(_rares) + "*", 1);

@@ -24,6 +24,8 @@
         facility-type: outpost
         affiliation: federation
         uniqueness: universal
+        lore: Earth is a member of the United Federation of Planets. The Federation establishes outposts throughout its territory.
+        shields: 30
         image-url: https://www.trekcc.org/1e/cardimages/errata/Federation-Outpost.jpg
     }
     101_105: {
@@ -33,6 +35,8 @@
         facility-type: outpost
         affiliation: klingon
         uniqueness: universal
+        lore: "The Klingon Homeworld is Qo'noS. The Klingon Empire establishes outposts throughout its territory."
+        shields: 32
         image-url: https://www.trekcc.org/1e/cardimages/errata/Klingon-Outpost.jpg
    }
     101_106: {
@@ -42,6 +46,8 @@
         facility-type: outpost
         affiliation: romulan
         uniqueness: universal
+        lore: Romulus is one of the two homeworlds for the Romulans. The Romulan Star Empire establishes outposts throughout its territory.
+        shields: 32
         image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg
     }
     101_147: {
@@ -331,6 +337,20 @@
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/sfls/18.jpg
     }
+    101_200: {
+        title: Beverly Crusher
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: command
+        lore: Dr. Beverly Crusher is the chief medical officer of the U.S.S. Enterprise. Dancer and thespian. Widow of Jack Crusher. Mother of Ensign Wesley Crusher.
+        skill-box: "[*] MEDICAL [*] Biology [*] Exobiology"
+        integrity: 8
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/beverlycrusher95.jpg
+    }
     101_201: {
         title: Calloway
         type: personnel
@@ -402,6 +422,20 @@
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/premiere/deannatroi95.jpg
     }
+    101_206: {
+        title: Dr. La Forge
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Dr. La Forge is a Starfleet specialist in xenology and exobiology. Father of Lt. Commander Geordi La Forge. Husband of Captain Silva La Forge.
+        skill-box: "[*] Exobiology"
+        integrity: 7
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/drlaforge.gif
+    }
     101_208: {
         title: Dr. Selar
         type: personnel
@@ -416,6 +450,34 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/sfls/20.jpg
     }
+    101_209: {
+        title: Eric Pressman
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Captain Eric Pressman commanded the U.S.S. Pegasus before it was lost in space following a failed experiment.
+        skill-box: "[*] ENGINEER [*] Treachery"
+        integrity: 5
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/ericpressman95.jpg
+    }
+    101_211: {
+        title: Fleet Admiral Shanthi
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Fleet Admiral Shanthi authorized the blockade of Romulan forces covertly supporting the Klingon Civil War in 2368.
+        skill-box: "[*] Leadership [*] Diplomacy"
+        integrity: 9
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/TWT-fleetadmiralshanthi.jpg
+    }
     101_212: {
         title: Geordi La Forge
         type: personnel
@@ -429,6 +491,34 @@
         cunning: 8
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/sfls/21.jpg
+    }
+    101_213: {
+        title: Giusti
+        type: personnel
+        uniqueness: universal
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Ensign Giusti is representative of staff officers in Starfleet. Served at the Ops console aboard the U.S.S. Enterprise in 2370.
+        skill-box: "[*] Youth"
+        integrity: 7
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Giusti.jpg
+    }
+    101_214: {
+        title: Hannah Bates
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        lore: Genetically engineered scientist from Moab IV. Granted asylum aboard U.S.S. Enterprise in 2368.
+        skill-box: "[*] Physics"
+        integrity: 6
+        cunning: 8
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/hannahbates95.jpg
     }
     101_215: {
         title: Jean-Luc Picard
@@ -470,6 +560,34 @@
         cunning: 4
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/premiere/motthebarber95.jpg
+    }
+    101_226: {
+        title: Neela Daren
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Lt. Commander Neela Daren is a specialist in stellar cartography. Accomplished pianist. Romantically involved with Captain Jean-Luc Picard.
+        skill-box: "[*] Astrophysics [*] Stellar Cartography [*] Music"
+        integrity: 8
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/neeladaren95.jpg
+    }
+    101_232: {
+        title: Ro Laren
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Ensign Ro Laren is a Bajoran female. Protege of Captain Jean-Luc Picard. Sympathetic to the Maquis. A bit of a renegade.
+        skill-box: "[*] Computer Skill [*] Navigation [*] Treachery"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/rolaren95.jpg
     }
     101_233: {
         title: Sarek
@@ -528,6 +646,20 @@
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/sfls/23.jpg
     }
+    101_249: {
+        title: Wesley Crusher
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Ensign Wesley Crusher was a child prodigy. Protégé of the Traveler. Son of Dr. Beverly Crusher. Saved the U.S.S. Enterprise 3 1/2 times as a teenager.
+        skill-box: "[*] Youth [*] Computer Skill [*] Navigation [*] ENGINEER [*] Astrophysics"
+        integrity: 6
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Wesley-Crusher.jpg
+    }
     101_251: {
         title: Worf
         type: personnel
@@ -541,6 +673,19 @@
         cunning: 6
         strength: 10
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/25V.jpg
+    }
+    101_254: {
+        title: "Ba'el"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: 1/2 Klingon, 1/2 Romulan. Romantically involved with Lieutenant Worf. Born in Romulan prison camp in Carraya system.
+        skill-box: "[*] Anthropology [*] Youth"
+        integrity: 6
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/bael95.jpg
     }
     101_256: {
         title: Divok
@@ -557,7 +702,7 @@
         strength: 8
         image-url: https://www.trekcc.org/1e/cardimages/comingofage/14.jpg
     }
-    101_256: {
+    101_257: {
         title: Dukath
         type: personnel
         affiliation: klingon
@@ -727,6 +872,48 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/premiere/takket95.jpg
     }
+    101_329: {
+        title: Toreth
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: "Female captain of Imperial Romulan warbird, Khazara. Father killed by Tal Shiar. Uncovered M'ret defection plot."
+        skill-box: "[*] Leadership [*] Honor [*] Navigation"
+        integrity: 5
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/toreth95.jpg
+    }
+    101_330: {
+        title: Varel
+        type: personnel
+        uniqueness: universal
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Representative of female Romulans trained in the field of science. Assigned to assist with interphase generator project.
+        skill-box: "[*] Physics [*] Computer Skill [*] Youth"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/varel95.jpg
+    }
+    101_331: {
+        title: Runabout
+        type: ship
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        ship-class: RUNABOUT CLASS
+        lore: Resembles a large shuttle. Contains living accommodations. Modular design can be re-configured for different mission profiles.
+        range: 7
+        weapons: 5
+        shields: 5
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/runabout.jpg
+    }
     101_332: {
         title: Type VI Shuttlecraft
         type: ship
@@ -856,5 +1043,73 @@
         weapons: 7
         shields: 7
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/44V.jpg
+    }
+    101_355: {
+        title: Yridian Shuttle
+        type: ship
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: SHUTTLECRAFT
+        lore: Common shuttlecraft used by Yridian agents and others for covert activities.
+        range: 6
+        weapons: 1
+        shields: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/yridianshuttle95.jpg
+    }
+    101_356: {
+        title: Zibalian Shuttlecraft
+        type: ship
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: ZIBALIAN CLASS
+        lore: Common class of merchant vessel used by traders such as Kivas Fajo.
+        range: 6
+        weapons: 2
+        shields: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/zibaliantransport95.jpg
+    }
+    101_357: {
+        title: "D'deridex"
+        type: ship
+        affiliation: romulan
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: "D'DERIDEX CLASS"
+        lore: Imperial Romulan Warbird. A massive ship significantly larger than a Galaxy class starship.
+        gametext: Cloaking Device, Tractor Beam
+        staffing: command,staff,staff
+        range: 8
+        weapons: 9
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/dderidex95.jpg
+    }
+    101_358: {
+        title: Devoras
+        type: ship
+        affiliation: romulan
+        property-logo: tng-logo
+        ship-class: "D'DERIDEX CLASS"
+        lore: Warbird used to accomplish the escape of Romulan spy Selok from the Federation in 2367. Commanded by Admiral Mendak.
+        gametext: Cloaking Device, Tractor Beam
+        staffing: command,staff,staff
+        range: 9
+        weapons: 8
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/devoras95.jpg
+    }
+    101_362: {
+        title: Science Vessel
+        type: ship
+        affiliation: romulan
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: SCIENCE CLASS
+        lore: Specialized science ship used for an Interphase Generator experiment in 2368.
+        range: 8
+        weapons: 5
+        shields: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/45V.jpg
     }
 }

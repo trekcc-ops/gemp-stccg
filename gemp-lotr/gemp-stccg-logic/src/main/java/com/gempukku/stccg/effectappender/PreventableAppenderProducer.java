@@ -2,7 +2,7 @@ package com.gempukku.stccg.effectappender;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.decisions.YesNoDecision;

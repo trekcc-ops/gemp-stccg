@@ -4,6 +4,8 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.sources.ActivateCardActionSource;
 import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.actions.Effect;

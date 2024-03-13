@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;

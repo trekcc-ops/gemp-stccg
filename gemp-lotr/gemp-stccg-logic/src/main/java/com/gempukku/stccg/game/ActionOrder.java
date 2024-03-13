@@ -13,10 +13,6 @@ public class ActionOrder {
         _looped = looped;
     }
 
-    public String getFirstPlayer() {
-        return _playOrder.get(0);
-    }
-
     public String getLastPlayer() {
         return _lastPlayer;
     }

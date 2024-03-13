@@ -3,6 +3,7 @@ package com.gempukku.stccg.effectappender;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.tribblepower.*;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.actions.Effect;
 import org.json.simple.JSONObject;

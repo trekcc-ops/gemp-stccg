@@ -54,21 +54,21 @@ public class ChooseAndDiscardStackedCardsEffect extends AbstractSubActionEffect 
 
     @Override
     public void playEffect() {
-        List<PhysicalCard> discardableCards = new LinkedList<>();
+        List<PhysicalCard> eligibleCards = new LinkedList<>();
 
         for (PhysicalCard stackedOnCard : Filters.filterActive(_game, _stackedOnFilter))
-            discardableCards.addAll(Filters.filter(stackedOnCard.getStackedCards(), _game, _stackedCardFilter));
+            eligibleCards.addAll(Filters.filter(stackedOnCard.getStackedCards(), _game, _stackedCardFilter));
 
-        if (discardableCards.size() <= _minimum) {
+        if (eligibleCards.size() <= _minimum) {
             SubAction subAction = _action.createSubAction();
             subAction.appendEffect(
-                    new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.STACKED, discardableCards)
+                    new DiscardCardsFromZoneEffect(_game, _action.getActionSource(), Zone.STACKED, eligibleCards)
             );
-            discardingCardsCallback(discardableCards);
+            discardingCardsCallback(eligibleCards);
             processSubAction(_game, subAction);
         } else {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, "Choose cards to discard", discardableCards, _minimum, _maximum) {
+                    new CardsSelectionDecision(1, "Choose cards to discard", eligibleCards, _minimum, _maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

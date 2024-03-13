@@ -1,6 +1,6 @@
 package com.gempukku.stccg.requirement.producers;
 
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ValueSource;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;

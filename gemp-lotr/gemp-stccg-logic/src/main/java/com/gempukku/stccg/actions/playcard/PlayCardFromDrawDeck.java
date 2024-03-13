@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;

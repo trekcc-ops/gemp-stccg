@@ -3,58 +3,22 @@ package com.gempukku.stccg.common.filterable.lotr;
 import com.gempukku.stccg.common.filterable.Filterable;
 
 public enum Culture implements Filterable {
-    DWARVEN("Dwarven", true), ELVEN("Elven", true), GANDALF("Gandalf", true), GOLLUM("Gollum", true), GONDOR("Gondor", true), ROHAN("Rohan", true), SHIRE("Shire", true),
-    DUNLAND("Dunland", false), ISENGARD("Isengard", false), MEN("Men", false), MORIA("Moria", false), ORC("Orc", false), RAIDER("Raider", false),
-    SAURON("Sauron", false), URUK_HAI("Uruk-hai", false), WRAITH("Wraith", false),
-    FALLEN_REALMS("Fallen Realms", false, false),
+    DWARVEN(true),
+    ELVEN(true),
+    GANDALF(true),
+    GOLLUM(true), GONDOR(true), ROHAN(true), SHIRE(true),
+    DUNLAND(false), ISENGARD(false), MEN(false), MORIA(false), ORC(false), RAIDER(false),
+    SAURON(false), URUK_HAI(false), WRAITH(false),
+    FALLEN_REALMS(false, false),
 	
 	//Additional Hobbit Draft cultures
-	ESGAROTH("Esgaroth", true), GUNDABAD("Gundabad", false), MIRKWOOD("Mirkwood", false), SMAUG("Smaug", false), SPIDER("Spider", false), TROLL("Troll", false);
+	ESGAROTH(true), GUNDABAD(false), MIRKWOOD(false), SMAUG(false), SPIDER(false), TROLL(false);
 
-    private final String _humanReadable;
-    private final boolean _fp;
-    private final boolean _official;
-
-    Culture(String humanReadable, boolean fp) {
-        this(humanReadable, fp, true);
+    Culture(boolean fp) {
+        this(fp, true);
     }
 
-    Culture(String humanReadable, boolean fp, boolean official) {
-        _humanReadable = humanReadable;
-        _fp = fp;
-        _official = official;
+    Culture(boolean fp, boolean official) {
     }
 
-    public boolean isOfficial() {
-        return _official;
-    }
-
-    public String getHumanReadable() {
-        return _humanReadable;
-    }
-
-    public boolean isFP() {
-        return _fp;
-    }
-
-    public static Culture findCultureByHumanReadable(String humanReadable) {
-        for (Culture culture : values()) {
-            if (culture.getHumanReadable().equals(humanReadable))
-                return culture;
-        }
-        return null;
-    }
-
-    public static Culture findCulture(String name) {
-        String nameCaps = name.toUpperCase().replace(' ', '_').replace('-', '_');
-        String nameLower = name.toLowerCase();
-        if(nameLower.equals("ringwraith"))
-            return WRAITH;
-
-        for (Culture culture : values()) {
-            if (culture.getHumanReadable().toLowerCase().equals(nameLower) || culture.toString().equals(nameCaps))
-                return culture;
-        }
-        return null;
-    }
 }

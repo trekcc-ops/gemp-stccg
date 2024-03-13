@@ -1,8 +1,8 @@
 package com.gempukku.stccg.effectprocessor;
 
 import com.gempukku.stccg.actions.sources.OptionalTriggerActionSource;
-import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;

@@ -25,14 +25,11 @@ public class DbCollectionDAO implements CollectionDAO {
         _collectionSerializer = collectionSerializer;
     }
 
-    public Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws SQLException, IOException {
-        var colls = getCollectionInfosByType(type);
+    public Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws IOException {
         Map<Integer, CardCollection> result = new HashMap<>();
-
-        for(var coll : colls) {
-            result.put(coll.player_id, getCollection(coll));
-        }
-
+        for(var coll : getCollectionInfosByType(type))
+            result.put(coll.player_id,
+                    _collectionSerializer.deserializeCollection(coll, extractCollectionEntries(coll.id)));
         return result;
     }
 
@@ -45,17 +42,6 @@ public class DbCollectionDAO implements CollectionDAO {
         var entries = extractCollectionEntries(collection.id);
 
         return _collectionSerializer.deserializeCollection(collection, entries);
-    }
-
-    public CardCollection getCollection(int collectionID) throws SQLException, IOException {
-        return getCollection(getCollectionInfo(collectionID));
-    }
-
-    public CardCollection getCollection(DBDefs.Collection coll) throws SQLException, IOException {
-
-        var entries = extractCollectionEntries(coll.id);
-
-        return _collectionSerializer.deserializeCollection(coll, entries);
     }
 
     private List<DBDefs.CollectionEntry> extractCollectionEntries(int collectionID) {
@@ -182,7 +168,7 @@ public class DbCollectionDAO implements CollectionDAO {
                         .executeAndFetch(DBDefs.Collection.class);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to retrieve collection infos", ex);
+            throw new RuntimeException("Unable to retrieve collection database definitions", ex);
         }
     }
 
@@ -227,9 +213,9 @@ public class DbCollectionDAO implements CollectionDAO {
 
     public void convertCollection(int playerId, String type) throws SQLException, IOException {
         MutableCardCollection oldCollection = getOldPlayerCollection(playerId, type);
-        var oldinfo = new HashMap<>(oldCollection.getExtraInformation());
-        oldinfo.put(DefaultCardCollection.CurrencyKey, oldCollection.getCurrency());
-        oldCollection.setExtraInformation(oldinfo);
+        var oldInfo = new HashMap<>(oldCollection.getExtraInformation());
+        oldInfo.put(DefaultCardCollection.CurrencyKey, oldCollection.getCurrency());
+        oldCollection.setExtraInformation(oldInfo);
         overwriteCollectionContents(playerId, type, oldCollection, "Initial Convert");
     }
 

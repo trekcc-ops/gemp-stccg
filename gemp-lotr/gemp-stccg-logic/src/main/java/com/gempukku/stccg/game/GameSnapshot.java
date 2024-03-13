@@ -8,7 +8,7 @@ import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.common.filterable.Phase;
 
 /**
- * Defines a snapshot of a game. Since the SwccgGame class is not a snapshotable,
+ * Defines a snapshot of a game. Since the DefaultGame class is not a snapshotable,
  * this class is used as a starting point to snapshot of all the elements of the game.
  */
 public class GameSnapshot implements Snapshotable<GameSnapshot> {
@@ -46,15 +46,14 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
 
     @Override
     public void generateSnapshot(GameSnapshot selfSnapshot, SnapshotData snapshotData) {
-        GameSnapshot snapshot = selfSnapshot;
 
         // Set each field
-        snapshot._id = _id;
-        snapshot._description = _description;
-        snapshot._gameState = snapshotData.getDataForSnapshot(_gameState);
-        snapshot._modifiersLogic = snapshotData.getDataForSnapshot(_modifiersLogic);
-        snapshot._actionsEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
-        snapshot._turnProcedure = snapshotData.getDataForSnapshot(_turnProcedure);
+        selfSnapshot._id = _id;
+        selfSnapshot._description = _description;
+        selfSnapshot._gameState = snapshotData.getDataForSnapshot(_gameState);
+        selfSnapshot._modifiersLogic = snapshotData.getDataForSnapshot(_modifiersLogic);
+        selfSnapshot._actionsEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
+        selfSnapshot._turnProcedure = snapshotData.getDataForSnapshot(_turnProcedure);
     }
 
     /**

@@ -800,10 +800,10 @@ var GempClientCommunication = Class.extend({
         });
     },
     
-    getMOTD:function (callback, errorMap) {
+    getDailyMessage:function (callback, errorMap) {
         $.ajax({
             type:"GET",
-            url:this.url + "/admin/getMOTD",
+            url:this.url + "/admin/getDailyMessage",
             cache:false,
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap),
@@ -811,10 +811,10 @@ var GempClientCommunication = Class.extend({
         });
     },
     
-    setMOTD:function (motd, callback, errorMap) {
+    setDailyMessage:function (motd, callback, errorMap) {
         $.ajax({
             type:"POST",
-            url:this.url + "/admin/setMOTD",
+            url:this.url + "/admin/setDailyMessage",
             cache:false,
             data:{
                 motd:motd

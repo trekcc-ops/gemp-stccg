@@ -1,33 +1,33 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.cards.CardBlueprint;
-import com.gempukku.stccg.cards.Skill;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.common.filterable.RegularSkill;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
 
-        // TODO - Eventually will need setter functions for these
-    private final boolean _inStasis = false;
-    private final boolean _stopped = false;
-    private final boolean _disabled = false;
     public PersonnelCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
     }
 
     public Integer getAttribute(CardAttribute attribute) {
-        return _blueprint.getAttribute(attribute);
+        if (attribute == CardAttribute.STRENGTH)
+            return _game.getModifiersQuerying().getStrength(this);
+            // TODO - Does not apply modifiers for any attribute other than strength
+        else
+            return _blueprint.getAttribute(attribute);
     }
 
-    public Integer getSkillLevel(RegularSkill skill) {
+    public Integer getSkillLevel(SkillName skill) {
         int level = 0;
-        for (Skill blueprintSkill : _blueprint.getSkills()) {
-            if (blueprintSkill.getRegularSkill() == skill) {
-                level += blueprintSkill.getLevel();
+        for (RegularSkill blueprintRegularSkill : _blueprint.getRegularSkills()) {
+            if (blueprintRegularSkill.getRegularSkill() == skill) {
+                level += blueprintRegularSkill.getLevel();
             }
         }
         if (_blueprint.getClassification() == skill)
@@ -51,7 +51,13 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
 
         return sb.toString();
     }
-    public boolean isStopped() { return _stopped; }
-    public boolean isDisabled() { return _disabled; }
-    public boolean isInStasis() { return _inStasis; }
+    public boolean isStopped() {
+        return false; }
+    public boolean isDisabled() {
+        return false; }
+    public boolean isInStasis() { // TODO - Eventually will need setter functions for these
+        return false; }
+
+    @Override
+    public boolean hasSkill(SkillName skillName) { return getSkillLevel(skillName) >= 1; }
 }

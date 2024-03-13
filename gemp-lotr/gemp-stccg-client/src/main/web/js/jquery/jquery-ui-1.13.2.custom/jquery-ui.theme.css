@@ -34,19 +34,19 @@
 .ui-widget-content {
 	border: 1px solid #555555;
 	background: #000000 url("images/ui-bg_loop_25_000000_21x21.png") 50% 50% repeat;
-	color: #ffffff;
+	color: white;
 }
 .ui-widget-content a {
-	color: #ffffff;
+	color: white;
 }
 .ui-widget-header {
 	border: 1px solid #333333;
 	background: #444444 url("images/ui-bg_highlight-soft_44_444444_1x100.png") 50% 50% repeat-x;
-	color: #ffffff;
+	color: white;
 	font-weight: bold;
 }
 .ui-widget-header a {
-	color: #ffffff;
+	color: white;
 }
 
 /* Interaction states
@@ -86,7 +86,7 @@ a:visited.ui-button,
 	border: 1px solid #0b93d5;
 	background: #003147 url("images/ui-bg_highlight-soft_33_003147_1x100.png") 50% 50% repeat-x;
 	font-weight: normal;
-	color: #ffffff;
+	color: white;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -98,7 +98,7 @@ a:visited.ui-button,
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-	color: #ffffff;
+	color: white;
 	text-decoration: none;
 }
 
@@ -114,17 +114,17 @@ a.ui-button:active,
 	border: 1px solid #26b3f7;
 	background: #0972a5 url("images/ui-bg_highlight-hard_20_0972a5_1x100.png") 50% 50% repeat-x;
 	font-weight: normal;
-	color: #ffffff;
+	color: white;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
 	border: #26b3f7;
-	background-color: #ffffff;
+	background-color: white;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #ffffff;
+	color: white;
 	text-decoration: none;
 }
 

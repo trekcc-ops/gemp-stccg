@@ -1,19 +1,19 @@
 package com.gempukku.stccg.requirement.missionrequirements;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.common.filterable.RegularSkill;
+import com.gempukku.stccg.common.filterable.SkillName;
 
 import java.util.Collection;
 
 public class RegularSkillMissionRequirement implements MissionRequirement {
 
-    private final RegularSkill _skill;
+    private final SkillName _skill;
     private final int _count;
-    public RegularSkillMissionRequirement(RegularSkill skill) {
+    public RegularSkillMissionRequirement(SkillName skill) {
         _skill = skill;
         _count = 1;
     }
-    public RegularSkillMissionRequirement(RegularSkill skill, int count) {
+    public RegularSkillMissionRequirement(SkillName skill, int count) {
         _skill = skill;
         _count = count;
     }

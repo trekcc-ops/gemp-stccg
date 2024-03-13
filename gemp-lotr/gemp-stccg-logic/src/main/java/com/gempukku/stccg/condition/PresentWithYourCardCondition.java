@@ -6,8 +6,8 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 
 public class PresentWithYourCardCondition implements Condition {
-    private int _count;
-    private Filter _filters;
+    private final int _count;
+    private final Filter _filters;
     private final PhysicalCard _card;
 
     /**
@@ -34,6 +34,6 @@ public class PresentWithYourCardCondition implements Condition {
 
     @Override
     public boolean isFulfilled() {
-        return !Filters.filterYourCardsPresentWith(_card.getOwner(), _card, _filters).isEmpty();
+        return Filters.filterYourCardsPresentWith(_card.getOwner(), _card, _filters).size() >= _count;
     }
 }

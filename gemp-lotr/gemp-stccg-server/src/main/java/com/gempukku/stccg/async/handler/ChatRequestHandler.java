@@ -10,7 +10,6 @@ import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.common.LongPollingResource;
 import com.gempukku.stccg.common.LongPollingSystem;
-import com.gempukku.stccg.game.ChatCommunicationChannel;
 import com.gempukku.stccg.game.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -115,9 +114,10 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
                     chatRoom.sendMessage(resourceOwner.getName(), newMsg, admin);
                     responseWriter.writeXmlResponse(null);
                 } else {
-                    ChatCommunicationChannel pollableResource = chatRoom.getChatRoomListener(resourceOwner.getName());
-                    ChatUpdateLongPollingResource polledResource = new ChatUpdateLongPollingResource(chatRoom, room, resourceOwner.getName(), admin, responseWriter);
-                    longPollingSystem.processLongPollingResource(polledResource, pollableResource);
+                    longPollingSystem.processLongPollingResource(
+                            new ChatUpdateLongPollingResource(
+                                    chatRoom, room, resourceOwner.getName(), admin, responseWriter),
+                            chatRoom.getChatRoomListener(resourceOwner.getName()));
                 }
             } catch (SubscriptionExpiredException exp) {
                 logHttpError(LOGGER, 410, request.uri(), exp);

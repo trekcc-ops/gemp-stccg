@@ -289,7 +289,8 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public synchronized boolean registerUser(String login, String password, String remoteAddress) throws SQLException, LoginInvalidException {
+    public synchronized boolean registerUser(String login, String password, String remoteAddress)
+            throws LoginInvalidException {
         if (!validLoginName(login))
             return false;
 

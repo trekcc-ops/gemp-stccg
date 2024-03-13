@@ -1,6 +1,23 @@
 // Set 112: Deep Space Nine
 
 {
+    112_046: {
+        title: Bajoran Phaser
+        type: java def
+    }
+    112_105: {
+        title: Access Relay Station
+        type: mission
+        mission-type: planet
+        location: Callinon VII
+        lore: Analyze automated subspace relay station for information on the Dominion.
+        mission-requirements: OFFICER + SCIENCE + ENGINEER + Computer Skill x2 + CUNNING>34
+        affiliation-icons: federation,romulan,klingon,cardassian
+        point-box: 35
+        span: 5
+        quadrant: gamma
+        image-url: https://www.trekcc.org/1e/cardimages/homefront4/3.jpg
+    }
     112_145: {
         title: Anara
         type: personnel
@@ -58,6 +75,10 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/ds9/kallisven.gif
     }
+    112_153: {
+        title: Kira Nerys
+        type: java def
+    }
     112_157: {
         title: Mora Pol
         type: personnel
@@ -70,6 +91,34 @@
         cunning: 8
         strength: 3
         image-url: https://www.trekcc.org/1e/cardimages/ds9/morapol.gif
+    }
+    112_158: {
+        title: Nalan Bal
+        type: personnel
+        uniqueness: universal
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: SCIENCE
+        lore: "Astrophysicist. Characteristic of Bajoran scientists now free of Cardassian rule. Had a brief encounter with Jem'Hadar on Deep Space 9 in 2371."
+        skill-box: "[*] Astrophysics [*] Navigation"
+        integrity: 5
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/nalanbal.gif
+    }
+    112_159: {
+        title: Neela
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Religious activist. Assassin. Sabotaged systems and planted a bomb on Deep Space 9 in 2369. Believed she was following the will of the Prophets.
+        skill-box: "[*] Computer Skill [*] Archaeology [*] Treachery [DL] Bajoran Phaser"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/neela.gif
     }
     112_162: {
         title: Prylar Mond
@@ -100,6 +149,39 @@
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/ds9/ranodake.gif
     }
+    112_164: {
+        title: Rase Norvan
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: MEDICAL
+        uniqueness: universal
+        icons: staff
+        lore: Representative of Bajorans entering science and medical studies after the Cardassian occupation. Serves in the infirmary on Deep Space 9.
+        skill-box: "[*] Biology [*] Music [*] Youth"
+        integrity: 7
+        cunning: 5
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/rasenorvan.gif
+    }
+    112_165: {
+        title: Razka Karn
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Ex-resistance fighter pilot. Down on his luck. Deals in scrap metal. Sometime smuggler. Enjoys listening to classical Bajoran music such as Varani.
+        skill-box: "[*] Navigation x2 [*] Smuggling [*] Music [*] Resistance"
+        integrity: 5
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/razkakarn.gif
+    }
+    112_167: {
+        title: Shakaar Edon
+        type: java def
+    }
     112_169: {
         title: Tahna Los
         type: personnel
@@ -113,6 +195,61 @@
         cunning: 7
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/ds9/tahnalos.gif
+    }
+    112_170: {
+        title: Trazko
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Hireling used by Pallra during her extortion plan. Assassin. Recovered secret list of collaborators. Attempted to kill Quark - twice.
+        skill-box: "[*] Greed [*] Computer Skill [*] Stellar Cartography"
+        integrity: 2
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/trazko.gif
+    }
+    112_171: {
+        title: Varis Sul
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: V.I.P.
+        lore: Orphan of parents killed by Cardassians. Succeeded her father as tetrarch of the Paqu. Compromised with rival village of Navot. Friend of Jake Sisko and Nog.
+        skill-box: "[*] Youth [*] Leadership [*] Diplomacy [*] Geology"
+        integrity: 6
+        cunning: 5
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/varissul.gif
+    }
+    112_172: {
+        title: Vedek Sorad
+        type: personnel
+        uniqueness: universal
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: V.I.P.
+        lore: Bajoran Vedek. Typical member of Vedek Assembly. Accompanied Minister Rozahn to Deep Space 9 in 2370 to deny Skrreean request to settle on Bajor.
+        skill-box: "[*] Diplomacy [*] MEDICAL"
+        integrity: 6
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/39.jpg
+    }
+    112_182: {
+        title: Dukat
+        type: personnel
+        affiliation: cardassian
+        property-logo: ds9-logo
+        classification: OFFICER
+        icons: command
+        lore: Gul. Ex-prefect of Bajor. Commander of the Prakesh. Father of Ziyal. Cardassian Union liaison with Dominion. Desires to regain command of Terok Nor.
+        skill-box: "[*] Leadership x2 [*] Navigation x2 [*] Treachery [*] Diplomacy [*] Computer Skill"
+        integrity: 4
+        cunning: 8
+        strength: 9
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/115VP.jpg
     }
     112_188: {
         title: Hogue
@@ -128,6 +265,21 @@
         cunning: 6
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/ds9/hogue.gif
+    }
+    112_190: {
+        title: Jural
+        type: personnel
+        affiliation: cardassian
+        property-logo: ds9-logo
+        classification: OFFICER
+        uniqueness: universal
+        icons: command
+        lore: Typical Cardassian officer. Proud, dedicated and constantly seeking to advance his rank. Posted to Cardassian Central Command in 2370.
+        skill-box: "[*] Astrophysics [*] SCIENCE"
+        integrity: 5
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/jural.gif
     }
     112_199: {
         title: Rekelen

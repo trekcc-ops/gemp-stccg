@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -43,7 +43,7 @@ public class PlayConditions {
         if (!blueprint.isUnique())
             return true;
 
-        final int activeCount = Filters.countActive(game, Filters.name(blueprint.getTitle()));
+        final int activeCount = Filters.countActive(game, Filters.name(self.getTitle()));
         return activeCount == 0;
     }
 

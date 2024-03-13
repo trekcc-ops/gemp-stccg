@@ -1,6 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import org.json.simple.JSONObject;
 
 public class Transferred implements TriggerCheckerProducer {

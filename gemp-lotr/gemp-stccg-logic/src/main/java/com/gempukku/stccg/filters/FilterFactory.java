@@ -1,6 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Culture;
@@ -27,8 +28,8 @@ public class FilterFactory {
             appendFilter(value);
         for (Keyword value : Keyword.values())
             appendFilter(value);
-        for (Species value : Species.values())
-            appendFilter(value);
+/*        for (Species value : Species.values())
+            appendFilter(value); */
         for (Affiliation value : Affiliation.values())
             appendFilter(value);
         for (Uniqueness value : Uniqueness.values())
@@ -87,12 +88,11 @@ public class FilterFactory {
                     final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
                     return (actionContext) -> Filters.attachedTo(filterableSource.getFilterable(actionContext));
                 });
-        parameterFilters.put("culture", (parameter, environment) -> {
-            final Culture culture = Culture.findCulture(parameter);
-            if (culture == null)
+        parameterFilters.put("affiliation", (parameter, environment) -> {
+            final Affiliation affiliation = Affiliation.findAffiliation(parameter);
+            if (affiliation == null)
                 throw new InvalidCardDefinitionException("Unable to find culture for: " + parameter);
-
-            return (actionContext) -> culture;
+            return (actionContext) -> affiliation;
         });
         parameterFilters.put("culturefrommemory", ((parameter, environment) -> actionContext -> {
             Set<Culture> cultures = new HashSet<>();

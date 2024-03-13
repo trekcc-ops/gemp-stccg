@@ -4,7 +4,7 @@ import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.cards.CardCollection;
 
 public interface LeaguePrizes {
-    CardCollection getPrizeForLeagueMatchWinner(int winCountThisSerie, int totalGamesPlayedThisSerie);
+    CardCollection getPrizeForLeagueMatchWinner(int winCount, int gamesPlayed);
 
     CardCollection getPrizeForLeagueMatchLoser(int winCountThisSerie, int totalGamesPlayedThisSerie);
 

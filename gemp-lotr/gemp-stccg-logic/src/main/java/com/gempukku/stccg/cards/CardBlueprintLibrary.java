@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
@@ -156,24 +158,6 @@ public class CardBlueprintLibrary {
                     determineNeedsLoadingFlag(setJsonDef, flags);
 
                     SetDefinition setDefinition = new SetDefinition(setId, setName, flags);
-
-/*                    BufferedReader bufferedReader =
-                            new BufferedReader(new InputStreamReader(AppConfig.getResourceStream(
-                                    "rarities/" + rarityFile), StandardCharsets.UTF_8));
-                    try {
-                        String line;
-
-                        while ((line = bufferedReader.readLine()) != null) {
-                            String blueprintId = setId + "_" + line.substring(setId.length() + 1);
-                            if (!line.startsWith(setId))
-                                throw new IllegalStateException("Seems the setDefinition is for some other set");
-                            String cardRarity = line.substring(setId.length(), setId.length() + 1);
-                            setDefinition.addCard(blueprintId, cardRarity);
-                        }
-                    } finally {
-                        IOUtils.closeQuietly(bufferedReader);
-                    } */
-
                     _allSets.put(setId, setDefinition);
                 }
             } finally {
@@ -235,18 +219,8 @@ public class CardBlueprintLibrary {
                         LOGGER.error(blueprintId + " - Replacing existing card definition!");
                 final JSONObject cardDefinition = cardEntry.getValue();
                 try {
-                            // TODO - Not an ideal solution for long-term. Testing Java blueprints
-                    switch (blueprintId) {
-                        case "101_015" -> _blueprints.put(blueprintId, new Blueprint101_015());
-                        case "101_058" -> _blueprints.put(blueprintId, new Blueprint101_058());
-                        case "101_059" -> _blueprints.put(blueprintId, new Blueprint101_059());
-                        case "101_064" -> _blueprints.put(blueprintId, new Blueprint101_064());
-                        case "155_021" -> _blueprints.put(blueprintId, new Blueprint155_021());
-                        default -> {
-                            final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
-                            _blueprints.put(blueprintId, cardBlueprint);
-                        }
-                    }
+                    final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
+                    _blueprints.put(blueprintId, cardBlueprint);
                 } catch (InvalidCardDefinitionException exp) {
                     LOGGER.error("Unable to load card " + blueprintId, exp);
                 }
@@ -461,7 +435,7 @@ public class CardBlueprintLibrary {
     private CardBlueprint tryLoadingFromPackage(String packageName, String setNumber, String cardNumber)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException {
         try {
-            Class clazz = Class.forName("com.gempukku.stccg.cards.set" + setNumber + packageName +
+            Class<?> clazz = Class.forName("com.gempukku.stccg.cards.set" + setNumber + packageName +
                     ".Card" + setNumber + "_" + normalizeId(cardNumber));
             return (CardBlueprint) clazz.getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException | InvocationTargetException e) {

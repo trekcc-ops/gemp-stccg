@@ -51,7 +51,7 @@ public class DraftPoolBuilder {
         int choose = ((Number) data.get("choose")).intValue();
         JSONArray draftPackPool = (JSONArray) data.get("packs");
 
-        List draftPacks = new ArrayList();
+        List<List<String>> draftPacks = new ArrayList<>();
         for (JSONArray cards : (Iterable<JSONArray>) draftPackPool) {
             List<String> draftPack = new ArrayList<>();
             for (String card : (Iterable<String>) cards) {
@@ -66,7 +66,7 @@ public class DraftPoolBuilder {
         int choose = ((Number) data.get("choose")).intValue();
         JSONArray draftPackPool = (JSONArray) data.get("packs");
 
-        List draftPacks = new ArrayList();
+        List<List<String>> draftPacks = new ArrayList<>();
         for (JSONArray cards : (Iterable<JSONArray>) draftPackPool) {
             List<String> draftPack = new ArrayList<>();
             for (String card : (Iterable<String>) cards) {

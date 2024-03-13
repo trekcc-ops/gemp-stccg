@@ -1,6 +1,65 @@
 // Set 163: The Sky's the Limit
 
 {
+    163_026: {
+        title: Goran
+        type: personnel
+        uniqueness: universal
+        affiliation: cardassian
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: command
+        lore: Representative of espionage specialists serving in the Cardassian military. Posed as a monk to attack a Maquis cell at the Juhraya colony in 2370.
+        skill-box: "[*] Transporter Skill [*] Anthropology [*] Obsidian Order [DL] Cardassian Disruptor"
+        integrity: 6
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/26.jpg
+    }
+    163_032: {
+        title: Martinez
+        type: personnel
+        uniqueness: universal
+        affiliation: federation
+        property-logo: first-contact-logo
+        classification: MEDICAL
+        icons: staff,first-contact-icon
+        lore: Typical nurse who served under Beverly Crusher for many years. Helped evacuate sickbay when the Borg boarded the U.S.S. Enterprise-E.
+        skill-box: "[*] Biology [*] Transporter Skill"
+        integrity: 8
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/32.jpg
+    }
+    163_033: {
+        title: William T. Riker
+        type: personnel
+        affiliation: federation
+        property-logo: generations-logo
+        classification: OFFICER
+        icons: command
+        lore: Experienced officer who often commanded the U.S.S. Enterprise. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
+        skill-box: "[*] Leadership [*] Navigation [*] Music [DL] Brace for Impact"
+        integrity: 8
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/33.jpg
+    }
+    163_034: {
+        title: Dr. Farek
+        type: personnel
+        uniqueness: universal
+        affiliation: ferengi
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: Typical Ferengi physician. Served aboard the Krayton in 2366. Distrusted Lwaxana Troi. Tried to study her empathic powers with a mind probe.
+        skill-box: "[*] Exobiology [*] Treachery [*] Computer Skill"
+        integrity: 3
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/tstl/34.jpg
+    }
     163_035: {
         title: Lwaxana Troi
         type: personnel

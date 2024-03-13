@@ -8,6 +8,8 @@ import com.gempukku.stccg.actions.lotr.AttachPermanentAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.lotr.Side;
@@ -151,9 +153,7 @@ public abstract class PhysicalCard implements Filterable {
     }
 
 
-    public String getTitle() {
-        return _blueprint.getTitle();
-    }
+    public String getTitle() { return _title; }
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
@@ -558,11 +558,10 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public boolean isPresentWith(PhysicalCard card) {
-        if (card.getLocation() != this.getLocation())
-            return false;
-        if (card.getAttachedTo() != this.getAttachedTo())
-            return false;
-        return true;
-            // TODO Elaborate on this definition
+        return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
+        // TODO Elaborate on this definition
     }
+
+    public boolean hasSkill(SkillName skillName) { return false; }
+        // TODO May need to implement something here for weird non-personnel cards that have skills
 }

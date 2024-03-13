@@ -5,11 +5,11 @@ import java.util.List;
 
 
 public class DefaultDraftPoolElement implements DraftPoolElement {
-    private final List<ArrayList<String>> _draftPackList;
+    private final List<List<String>> _draftPackList;
     private final String _draftPoolType;
     private final int _packsToDraft;
         
-    public DefaultDraftPoolElement(String draftPoolType, List<ArrayList<String>> draftPackList, int packsToDraft) {
+    public DefaultDraftPoolElement(String draftPoolType, List<List<String>> draftPackList, int packsToDraft) {
         _draftPoolType = draftPoolType;
         _draftPackList = draftPackList;
         _packsToDraft = packsToDraft;

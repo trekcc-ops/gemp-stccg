@@ -71,10 +71,12 @@ public class DbAccess {
         // the "real" Connections created by the ConnectionFactory with
         // the classes that implement the pooling functionality.
         //
-        PoolableConnectionFactory poolableConnectionFactory =
-                new PoolableConnectionFactory(connectionFactory, connectionPool, null, AppConfig.getProperty("db.connection.validateQuery"), false, true);
-
-        connectionPool.setFactory(poolableConnectionFactory);
+        connectionPool.setFactory(
+                new PoolableConnectionFactory(
+                        connectionFactory, connectionPool, null,
+                        AppConfig.getProperty("db.connection.validateQuery"), false, true
+                )
+        );
 
         //
         // Finally, we create the PoolingDriver itself,

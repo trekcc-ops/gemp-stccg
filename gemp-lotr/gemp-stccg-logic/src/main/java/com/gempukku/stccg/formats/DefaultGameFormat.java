@@ -1,6 +1,7 @@
 package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -77,7 +78,7 @@ public class DefaultGameFormat implements GameFormat {
                              String name, String game, String code, int order, String surveyUrl,
                              boolean validateShadowFPCount, int minimumDrawDeckSize, int maximumSeedDeckSize, int missions, int maximumSameName, boolean mulliganRule,
                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
-                             boolean winOnControlling5Sites, boolean playtest, boolean hallVisible) {
+                             boolean winOnControlling5Sites, boolean isPlayTest, boolean hallVisible) {
         _library = library;
         _name = name;
         _game = game;
@@ -93,7 +94,7 @@ public class DefaultGameFormat implements GameFormat {
         _winAtEndOfRegroup = winAtEndOfRegroup;
         _discardPileIsPublic = discardPileIsPublic;
         _winOnControlling5Sites = winOnControlling5Sites;
-        _isPlaytest = playtest;
+        _isPlaytest = isPlayTest;
         _hallVisible = hallVisible;
         _missions = missions;
         _maximumSeedDeckSize = maximumSeedDeckSize;

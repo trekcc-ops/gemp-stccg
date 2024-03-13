@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;

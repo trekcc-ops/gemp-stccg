@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Culture;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
@@ -24,7 +25,7 @@ public class SortAndFilterCards {
         Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", filterParams);
         Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class, "tribblePower", filterParams);
         Set<Affiliation> affiliations = getEnumFilter(Affiliation.values(), Affiliation.class, "affiliation", filterParams);
-        Set<Keyword> phases = getEnumFilter(Keyword.values(),Keyword.class, "phase", Collections.emptySet(), filterParams);
+        Set<Keyword> phases = getPhaseFilter(Keyword.values(), Collections.emptySet(), filterParams);
 
         List<T> result = new ArrayList<>();
         Map<String, CardBlueprint> cardBlueprintMap = new HashMap<>();
@@ -95,9 +96,7 @@ public class SortAndFilterCards {
             return false;
         if (!containsAllWords(blueprint, words))
             return false;
-        if (!containsAllKeywords(blueprint, phases))
-            return false;
-        return true;
+        return containsAllKeywords(blueprint, phases);
 //                if (side == null || blueprint.getSide() == side)
 //                    if (rarity == null || isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
 //                                            if (siteNumber == null || blueprint.getSiteNumber() == siteNumber)
@@ -261,7 +260,8 @@ public class SortAndFilterCards {
                 .replaceAll("\\p{M}", "");
     }
 
-    private <T extends Enum> Set<T> getEnumFilter(T[] enumValues, Class<T> enumType, String prefix, String[] filterParams) {
+    private <T extends Enum<T>> Set<T> getEnumFilter(T[] enumValues, Class<T> enumType, String prefix,
+                                                     String[] filterParams) {
         for (String filterParam : filterParams) {
             if (filterParam.startsWith(prefix + ":")) {
                 String values = filterParam.substring((prefix + ":").length());
@@ -269,14 +269,14 @@ public class SortAndFilterCards {
                     values = values.substring(1);
                     Set<T> cardTypes = new HashSet<>(Arrays.asList(enumValues));
                     for (String v : values.split(",")) {
-                        T t = (T) Enum.valueOf(enumType, v);
+                        T t = Enum.valueOf(enumType, v);
                         cardTypes.remove(t);
                     }
                     return cardTypes;
                 } else {
                     Set<T> cardTypes = new HashSet<>();
                     for (String v : values.split(","))
-                        cardTypes.add((T) Enum.valueOf(enumType, v));
+                        cardTypes.add(Enum.valueOf(enumType, v));
                     return cardTypes;
                 }
             }
@@ -284,22 +284,23 @@ public class SortAndFilterCards {
         return null;
     }
 
-    private <T extends Enum> Set<T> getEnumFilter(T[] enumValues, Class<T> enumType, String prefix, Set<T> defaultResult, String[] filterParams) {
+    private <T extends Enum<T>> Set<T> getPhaseFilter(T[] enumValues,
+                                                      Set<T> defaultResult, String[] filterParams) {
         for (String filterParam : filterParams) {
-            if (filterParam.startsWith(prefix + ":")) {
-                String values = filterParam.substring((prefix + ":").length());
+            if (filterParam.startsWith("phase" + ":")) {
+                String values = filterParam.substring(("phase" + ":").length());
                 if (values.startsWith("-")) {
                     values = values.substring(1);
                     Set<T> cardTypes = new HashSet<>(Arrays.asList(enumValues));
                     for (String v : values.split(",")) {
-                        T t = (T) Enum.valueOf(enumType, v);
+                        T t = Enum.valueOf((Class<T>) Keyword.class, v);
                         cardTypes.remove(t);
                     }
                     return cardTypes;
                 } else {
                     Set<T> cardTypes = new HashSet<>();
                     for (String v : values.split(","))
-                        cardTypes.add((T) Enum.valueOf(enumType, v));
+                        cardTypes.add(Enum.valueOf((Class<T>) Keyword.class, v));
                     return cardTypes;
                 }
             }

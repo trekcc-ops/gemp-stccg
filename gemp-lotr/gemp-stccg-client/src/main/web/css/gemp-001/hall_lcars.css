@@ -99,7 +99,7 @@ div {
 
 
 textarea, input, select {
-	color: #ffffff;
+	color: white;
 	background-color: #222222;
 }
 
@@ -220,7 +220,7 @@ button {
 }
 
 #motd {
-	color: #ffffff;
+	color: white;
 	margin: 5px;
 	flex-grow: 1;
 }
@@ -476,7 +476,7 @@ table.tables tr.privateForPlayer {
 }
 
 .user-mention.systemMessage {
-	color: #FFFFFF;
+	color: white;
 }
 
 .warningMessage {
@@ -542,7 +542,7 @@ table.tables tr.privateForPlayer {
 }
 
 .chatUser {
-	color: #ffffff;
+	color: white;
 }
 
 .msg-content p {
@@ -618,8 +618,8 @@ table.tables tr.privateForPlayer {
 
 .pocket {
 	background-color: #000000;
-	border: 1px solid #ffffff;
-	color: #ffffff;
+	border: 1px solid white;
+	color: white;
 	font-size: 90%;
 	font-weight: bolder;
 	text-align: right;
@@ -632,7 +632,7 @@ table.tables tr.privateForPlayer {
 	width: 20px;
 	height: 18px;
 	background-color: #000000;
-	color: #ffffff;
+	color: white;
 	font-size: 120%;
 	font-weight: bolder;
 	display: table-cell;
@@ -642,7 +642,7 @@ table.tables tr.privateForPlayer {
 }
 
 #disclaimer {
-	color: #ffffff;
+	color: white;
 	font-size: 70%;
 	position: relative;
 	text-align: center;

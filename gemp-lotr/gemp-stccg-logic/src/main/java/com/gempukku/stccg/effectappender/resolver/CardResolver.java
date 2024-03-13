@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
 import com.gempukku.stccg.actions.choose.ChooseStackedCardsEffect;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -461,7 +462,7 @@ public class CardResolver {
         final String filter = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
                 // TODO - The line below was changed for ST1E implementation, but Tribbles assumes the old code
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
-//        final FilterableSource filterableSource = environment.getFilterFactory().parseSTCCGFilter(filter);
+//        final FilterableSource source = environment.getFilterFactory().parseSTCCGFilter(filter);
 
         return new DefaultDelayedAppender() {
             @Override

@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import org.json.simple.JSONObject;
 

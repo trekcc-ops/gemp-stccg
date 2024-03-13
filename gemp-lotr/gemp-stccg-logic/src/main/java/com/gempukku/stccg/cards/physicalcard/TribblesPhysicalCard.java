@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;

@@ -3,6 +3,7 @@ package com.gempukku.stccg.rules.st1e;
 import com.gempukku.stccg.actions.AbstractActionProxy;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
@@ -29,7 +30,9 @@ public class ST1EPhaseActionsRule {
                         final Phase currentPhase = _gameState.getCurrentPhase();
                         List<Action> result = new LinkedList<>();
                         if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
-                            Filters.filterYourActive(player).forEach(
+                            Filters.filterActive(_gameState.getGame(), CardType.MISSION).forEach(
+                                    card -> result.addAll(card.getPhaseActionsInPlay(player)));
+                            Filters.filterYourActive(player, Filters.not(CardType.MISSION)).forEach(
                                     card -> result.addAll(card.getPhaseActionsInPlay(player)));
                         }
                         return result;

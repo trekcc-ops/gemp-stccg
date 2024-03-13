@@ -1,15 +1,12 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.actions.ActionsEnvironment;
-import com.gempukku.stccg.modifiers.ModifiersLogic;
 
 public class RuleSet {
     private final ActionsEnvironment _actionsEnvironment;
-    private final ModifiersLogic _modifiersLogic;
 
-    public RuleSet(ActionsEnvironment actionsEnvironment, ModifiersLogic modifiersLogic) {
+    public RuleSet(ActionsEnvironment actionsEnvironment) {
         _actionsEnvironment = actionsEnvironment;
-        _modifiersLogic = modifiersLogic;
     }
 
     public void applyGenericRules() {

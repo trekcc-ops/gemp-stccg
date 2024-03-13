@@ -1,6 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
 import org.json.simple.JSONObject;

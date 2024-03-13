@@ -3,6 +3,7 @@ package com.gempukku.stccg;
 import com.gempukku.stccg.actions.ActionProxy;
 import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.*;
@@ -219,7 +220,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public PhysicalCardGeneric GetPlayerTopOfDeck(String player) { return GetFromTopOfPlayerDeck(player, 1); }
 
     /**
-     * Index is 1-based (1 is first, 2 is second, etc)
+     * Index is 1-based (1 is first, 2 is second, etc.)
      */
     public PhysicalCardGeneric GetFromTopOfPlayerDeck(String player, int index)
     {

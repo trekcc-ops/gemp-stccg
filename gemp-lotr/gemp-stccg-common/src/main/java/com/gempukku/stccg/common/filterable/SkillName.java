@@ -1,6 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
-public enum RegularSkill implements Filterable {
+public enum SkillName implements Filterable {
     // Classifications
     ANIMAL("ANIMAL"), CIVILIAN("CIVILIAN"), ENGINEER("ENGINEER"),
     MEDICAL("MEDICAL"), OFFICER("OFFICER"), SCIENCE("SCIENCE"),
@@ -46,11 +46,11 @@ public enum RegularSkill implements Filterable {
 
     private final String _humanReadable;
 
-    RegularSkill(String humanReadable) {
+    SkillName(String humanReadable) {
         this(humanReadable, false);
     }
 
-    RegularSkill(String humanReadable, boolean isIntelligence) {
+    SkillName(String humanReadable, boolean isIntelligence) {
         _humanReadable = humanReadable;
         boolean _isIntelligence = true;
     }

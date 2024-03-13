@@ -47,6 +47,8 @@ public interface ModifiersQuerying {
 
     int getRoamingPenalty(DefaultGame game, PhysicalCard physicalCard);
 
+    int getAttribute(PhysicalCard card, CardAttribute attribute);
+
     // Stats
     int getStrength(PhysicalCard physicalCard);
 
@@ -97,13 +99,9 @@ public interface ModifiersQuerying {
 
     Side hasInitiative();
 
-    int getNumberOfSpottableShadowCultures(DefaultGame game, String playerId);
-
     int getSpotBonus(Filterable filter);
 
     boolean hasFlagActive(ModifierFlag modifierFlag);
-
-    boolean canReplaceSite(String playerId, PhysicalCard siteToReplace);
 
     boolean canPlaySite(String playerId);
 
