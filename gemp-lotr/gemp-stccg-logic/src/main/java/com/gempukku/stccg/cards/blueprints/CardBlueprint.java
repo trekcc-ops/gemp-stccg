@@ -191,7 +191,7 @@ public class CardBlueprint {
     }
     public void setSkillDotIcons(int dots) { _skillDots = dots; }
     public int getSkillDotCount() { return _skillDots; }
-    public int getSpecialDownloadIconCount() { return _specialDownloadIcons; } // TODO - Only 0 because no cards have implemented this yet
+    public int getSpecialDownloadIconCount() { return _specialDownloadIcons; }
     public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
 
     // Tribbles

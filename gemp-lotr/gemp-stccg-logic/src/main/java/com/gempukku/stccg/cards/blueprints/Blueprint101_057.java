@@ -9,32 +9,29 @@ import com.gempukku.stccg.condition.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
+import com.gempukku.stccg.modifiers.attributes.CunningModifier;
 
 import java.util.LinkedList;
 import java.util.List;
 
-
-public class Blueprint101_064 extends CardBlueprint {
-    Blueprint101_064() {
-        super("101_064");
-        setTitle("Starfleet Type II Phaser");
+public class Blueprint101_057 extends CardBlueprint {
+    Blueprint101_057() {
+        super("101_057");
+        setTitle("Federation PADD");
         setCardType(CardType.EQUIPMENT);
         setPropertyLogo(PropertyLogo.TNG_LOGO);
-        setLore("Handheld weapon can be set for stun, heat and disruption. PHASER is an acronym for PHASed Energy Rectification.");
-//        setGameText("Federation and Non-Aligned use only. Each of your personnel present is STRENGTH +2. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/errata/Starfleet-Type-II-Phaser.jpg");
+        setLore("Standard Federation Personal Access Display Device for computerized information.");
+//        setGameText("Federation use only. Each of your personnel CUNNING +2 where present. (Cumulative.)");
+        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/federationpadd95.jpg");
     }
 
     @Override
     protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
+        Filterable usageFilter = Filters.and(CardType.PERSONNEL, Affiliation.FEDERATION);
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL);
-        modifiers.add(new StrengthModifier(thisCard, affectFilter,
-                new PresentWithYourCardCondition(thisCard,
-                        Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.NON_ALIGNED, Affiliation.FEDERATION))),
-                2, true));
-                                // TODO RULES - Does "Federation" have a different meaning here?
+        modifiers.add(new CunningModifier(thisCard, affectFilter,
+                new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));
         return modifiers;
     }
 }

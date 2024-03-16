@@ -5,6 +5,18 @@
         title: Armus - Skin of Evil
         type: java def
     }
+    101_055: {
+        title: Engineering Kit
+        type: java def
+    }
+    101_056: {
+        title: Engineering PADD
+        type: java def
+    }
+    101_057: {
+        title: Federation PADD
+        type: java def
+    }
     101_058: {
         title: Klingon Disruptor
         type: java def
@@ -13,8 +25,28 @@
         title: Klingon PADD
         type: java def
     }
+    101_060: {
+        title: Medical Kit
+        type: java def
+    }
+    101_061: {
+        title: Medical Tricorder
+        type: java def
+    }
+    101_062: {
+        title: Romulan Disruptor
+        type: java def
+    }
+    101_061: {
+        title: Romulan PADD
+        type: java def
+    }
     101_064: {
         title: Starfleet Type II Phaser
+        type: java def
+    }
+    101_065: {
+        title: Tricorder
         type: java def
     }
     101_104: {
@@ -75,6 +107,42 @@
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/errata/Covert-Installation.jpg
+    }
+    101_149: {
+        title: Covert Rescue
+        type: mission
+        mission-type: planet
+        location: Galorndon Core
+        lore: Retrieve crashed scoutship in Federation territory.
+        affiliation-icons: romulan
+        mission-requirements: Diplomacy + Leadership + CUNNING>35
+        point-box: 30
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/covertrescue95.jpg
+    }
+    101_150: {
+        title: Cultural Observation
+        type: mission
+        mission-type: planet
+        location: Mintaka III
+        lore: Aid observation of primitive society.
+        affiliation-icons: federation
+        mission-requirements: Anthropology + Leadership + STRENGTH>30
+        point-box: 40
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/culturalobservation95.jpg
+    }
+    101_153: {
+        title: Evaluate Terraforming
+        type: mission
+        mission-type: planet
+        location: Velara III
+        lore: Evaluate progress of terraforming station.
+        affiliation-icons: federation
+        mission-requirements: MEDICAL + Biology + Exobiology OR Geordi La Forge + MEDICAL x2
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/evaluateterraforming95.jpg
     }
     101_154: {
         title: Excavation
@@ -673,6 +741,35 @@
         cunning: 6
         strength: 10
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/25V.jpg
+    }
+    101_252: {
+        title: "B'Etor"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: Plotted with Lursa to seize power from Gowron with the support of the Romulans. Younger of the two Duras sisters. The pretty one.
+        skill-box: "[*] Treachery [*] Leadership [*] Physics [*] Youth [*] Greed"
+        integrity: 2
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/betor95.jpg
+    }
+    101_253: {
+        title: "B'iJik"
+        type: personnel
+        affiliation: klingon
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Klingon male trained as an officer for the Klingon Defense Force. Served as junior adjutant to the diplomatic delegation for Gowron.
+        skill-box: "[*] Navigation"
+        integrity: 4
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/bijik95.jpg
     }
     101_254: {
         title: "Ba'el"

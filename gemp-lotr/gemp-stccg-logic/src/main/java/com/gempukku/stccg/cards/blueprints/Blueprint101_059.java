@@ -25,7 +25,7 @@ public class Blueprint101_059 extends CardBlueprint {
     @Override
     protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
-        Filterable usageFilter = Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.KLINGON, Species.KLINGON));
+        Filterable usageFilter = Filters.and(CardType.PERSONNEL, Filters.Klingon);
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL);
         modifiers.add(new CunningModifier(thisCard, affectFilter,
                 new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));

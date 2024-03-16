@@ -1,4 +1,4 @@
-# GEMP LOTR Docker Setup
+# GEMP STCCG Docker Setup
 Welcome to the wonderful world of containerized installation!
 
 Using Docker, all the fiddly setup and installation details can be coded into scripts so that people like you looking to set up an instance of the software don't have to worry about the database, server, Java installation, and all the hokey prerequisites that go along with it.  Just copy the files, open docker, run the docker-compose, and your instance is ready to be accessed.  
@@ -26,7 +26,7 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	* If you're installing this on Linux, I assume you know more than I do about how to set it up properly.
 2. Install your container manager of choice.  I would HIGHLY recommend [PortainerIO](https://www.portainer.io/), which itself runs in a docker container and exposes itself as an interactable web page.  This will give you a graphical readout of all your currently running containers, registered images, networks, volumes, and just about anything else you might want, PLUS have interactive command lines for when the GUI just doesn't cut it.  The manager that comes with Docker Desktop by default is pretty much only just barely enough to run portainer with, so don't bother with it otherwise.
 3. Pull the git repository down to your host machine; you may have already done this.
-4. Open a code editor of your choice and navigate to `{repo-root}/gemp-lotr/gemp-lotr/docker`.  Open up [docker-compose.yml](docker-compose.yml) and change the defaults to suit your needs:
+4. Open a code editor of your choice and navigate to `{repo-root}/gemp-stccg/gemp-lotr/docker`.  Open up [docker-compose.yml](docker-compose.yml) and change the defaults to suit your needs:
 	1. Note all the relative paths under each volume/source: these are all paths on your host system.  If you want e.g. the database to be in a different location than what's listed, alter these relative paths to something else on your host system.
 	2. In the Docker [.env](./.env) file note all the username/password fields.  If you are hosting this for something other than personal development, be sure to change all of these to something else.
 	3. Note the two "published" ports: 17001 for the app, and 35001 for the db.  These are the ports that you will be accessing the site with (and the db if you connect with a database manager). If you are hosting this for something other than personal development, consider changing these to something else.  **DO NOT** change the "target" ports, these targets are the ports that are used internally by Docker networking.

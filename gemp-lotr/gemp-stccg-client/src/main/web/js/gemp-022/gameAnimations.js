@@ -379,9 +379,7 @@ var GameAnimations = Class.extend({
                 var card = getCardDivFromId(that.cardId);
                 var cardData = card.data("card");
                 cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);
-                    // TODO - This causes a comms error if the card was attached
                 if (cardData.zone == "ATTACHED")
-                                // TODO - Not quite right here
                     cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData.attachedToCard);
                 else
                     cardData.oldGroup = that.game.getReorganizableCardGroupForCardData(cardData);

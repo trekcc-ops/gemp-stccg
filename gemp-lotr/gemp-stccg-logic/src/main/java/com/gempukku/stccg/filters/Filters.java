@@ -606,6 +606,12 @@ public class Filters {
     };
 
     public static final Filter spottable = (game, physicalCard) -> true;
+    public static final Filter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
+    public static final Filter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
+
+    public static Filter classification(SkillName skillName) {
+        return (game, physicalCard) -> physicalCard.getBlueprint().getClassification() == skillName;
+    }
 
     public static Filterable yourCardsPresentWith(Player player, PhysicalCard card) {
         return and(your(player), presentWith(card));
