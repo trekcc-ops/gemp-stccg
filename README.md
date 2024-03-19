@@ -1,7 +1,7 @@
-# gemp-lotr
-GEMP is a platform for running a rules-enforced CCG in a web-hosted fashion, so players can play in their browser.  This instance of GEMP is for the Lord of the Rings TCG, which has a public instance [hosted here](https://play.lotrtcgpc.net) by the [LOTR-TCG Player's Council](https://lotrtcgpc.net).
+# gemp-stccg
+GEMP is a platform for running a rules-enforced CCG in a web-hosted fashion, so players can play in their browser.  This instance of GEMP is for the Star Trek CCG.
 
-The engine is adaptable to other games, but essentially requires forking and ripping out all the LOTR-based stuff and replacing it with context specific to the game of your choice.  The [Star Wars CCG Players Committee](https://www.starwarsccg.org/) has done so with [their SWCCG GEMP](https://github.com/PlayersCommittee/gemp-swccg-public), which is [hosted publicly here](https://www.starwarsccg.org/).  If forking for a new game, we recommend using this one as the base, as it contains several advancements not in the SW GEMP, including JSON-based card definitions and an updated Java version.
+The engine is adaptable to other games, but essentially requires forking and ripping out all the Star Trek-based stuff and replacing it with context specific to the game of your choice.  The [Star Wars CCG Players Committee](https://www.starwarsccg.org/) has done so with [their SWCCG GEMP](https://github.com/PlayersCommittee/gemp-swccg-public), which is [hosted publicly here](https://www.starwarsccg.org/).  If forking for a new game, we recommend using this one as the base, as it contains several advancements not in the SW GEMP, including JSON-based card definitions and an updated Java version.
 
 # Getting Help
 
@@ -15,9 +15,9 @@ GEMP is a server written for Java 18, using MariaDB for a MySQL database instanc
 GEMP is divided into several modules which each handle a different aspect of the game, albeit for now they cannot be hosted separately (tho this is a future improvement we would like to make)
 
 ## gemp-stccg-client
-This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-lotr/gemp-stccg-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-stccg-server.  From there the action could go anywhere depending on context.
+This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-module/gemp-stccg-client/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-module/gemp-stccg-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-stccg-server.  From there the action could go anywhere depending on context.
 
-gemp-stccg-client is also the home for the web portion of the project; everything in [/src/main/web/](./gemp-lotr/gemp-stccg-client/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](./gemp-lotr/gemp-stccg-client/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
+gemp-stccg-client is also the home for the web portion of the project; everything in [/src/main/web/](./gemp-module/gemp-stccg-client/src/main/web) is served as-is to the browser client, and the bulk of the Javascript can be found in [/js/gemp-022](./gemp-module/gemp-stccg-client/src/main/web/js/gemp-022).  /images contains icons, booster pack images, and other such resources.
 
 ## gemp-stccg-cards
 
@@ -44,14 +44,14 @@ The home for classes used in executing game rules and also in generating card ob
 
 The entry point for the server and the home for all database interaction, hall management, game running, chat, tournaments, and other services.  
 
-This is also the home for the unit tests for the server, which will fail compilation if they do not pass: [/src/test/java/com/gempukku/stccg](gemp-lotr/gemp-stccg-server/src/test/java/com/gempukku/stccg).  Besides various service tests, there is a cards subfolder which contains a place to put unit tests for new cards (including errata).  All PC V-cards and errata have a class for holding tests for that card, which are initially generated from the same spreadsheet that is used for generating the images and manually expanded as needed (see ketura for help on that). 
+This is also the home for the unit tests for the server, which will fail compilation if they do not pass: [/src/test/java/com/gempukku/stccg](gemp-module/gemp-stccg-server/src/test/java/com/gempukku/stccg).  Besides various service tests, there is a cards subfolder which contains a place to put unit tests for new cards (including errata).  All PC V-cards and errata have a class for holding tests for that card, which are initially generated from the same spreadsheet that is used for generating the images and manually expanded as needed (see ketura for help on that). 
 
 Old card unit tests were scattershot and stored in the /at subfolder as needed.  Do not add to this subfolder; instead use the cards subfolder mentioned above.
 
 
 # Hosting
 
-GEMP includes tools for hosting within [Docker](https://docker-curriculum.com/), which makes setting up a local host a breeze (assuming the maintainers have kept the database scripts up-to-date).  See the readme in the [/docker](/gemp-lotr/docker) subfolder for more advanced details and instructions on the organization, but the following are basic instructions on how to start a local copy of GEMP.  Make sure to follow the advanced instructions if hosting a production instance, as it will give steps for updating the default ports and credentials for db accounts and such.
+GEMP includes tools for hosting within [Docker](https://docker-curriculum.com/), which makes setting up a local host a breeze (assuming the maintainers have kept the database scripts up-to-date).  See the readme in the [/docker](/gemp-module/docker) subfolder for more advanced details and instructions on the organization, but the following are basic instructions on how to start a local copy of GEMP.  Make sure to follow the advanced instructions if hosting a production instance, as it will give steps for updating the default ports and credentials for db accounts and such.
 
 1. Install Docker (Docker Desktop if on Windows).  If you are on Windows, make sure that when you install it you check all boxes that have Docker behave like it's on Linux. 
 
@@ -61,7 +61,7 @@ GEMP includes tools for hosting within [Docker](https://docker-curriculum.com/),
     * Open a command line window and navigate to the folder that you want to put GEMP in
     * Run the following command: `git clone https://github.com/PlayersCouncil/gemp-lotr.git`
 
-4. Open a command line and navigate to gemp-lotr/gemp-lotr/docker.  
+4. Open a command line and navigate to gemp-stccg/gemp-module/docker.  
     * Run the command `docker-compose up -d`
     * You should see `Starting gemp_app....done` and `Starting gemp_db....done` at the end.  
     * This process will take a while the first time you do it, and will be near instantaneous every time after.
@@ -84,20 +84,20 @@ GEMP includes tools for hosting within [Docker](https://docker-curriculum.com/),
             * expand the `gemp_1` container
             * click the actiosn button and select `Open in Terminal`
 
-    2. Navigate to the gemp codebase: `cd etc/gemp-lotr`
+    2. Navigate to the gemp codebase: `cd etc/gemp-module`
 
     3. Now tell Maven to compile the project: `mvn install`
         * This process will take upwards of 5-10 minutes.  You should see a green "BUILD SUCCESS" when it is successfully done.  In portainer.io or another rich command line context, you should see lots of red text if it failed.
 
-7. Open [gemp-lotr/gemp-lotr/docker/docker-compose.yml](gemp-lotr/docker/docker-compose.yml) in your editor of choice, and uncomment [this line](https://github.com/PlayersCouncil/gemp-lotr/blob/master/gemp-lotr/docker/docker-compose.yml#L52).  This will ensure that the container runs the GEMP server every time it is started automatically.
+7. Open [gemp-stccg/gemp-module/docker/docker-compose.yml](gemp-module/docker/docker-compose.yml) in your editor of choice, and uncomment [this line](https://github.com/PlayersCouncil/gemp-lotr/blob/master/gemp-lotr/docker/docker-compose.yml#L52).  This will ensure that the container runs the GEMP server every time it is started automatically.
 
 8. On your host machine cycle your docker container
-    * In a terminal navigate to `gemp-lotr/docker`
+    * In a terminal navigate to `gemp-module/docker`
     * Run `docker-compose down`
     * After that completes run `docker-compose up -d`	
     * This is how you restart GEMP any time that you need to incorporate changes to the Docker container.  If you just need to reload freshly-compiled code, then restart the container directly via Docker or portainer.io.
 	
-9. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  Open your browser of choice and navigate to http://localhost:17001/gemp-lotr/ . 
+9. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  Open your browser of choice and navigate to http://localhost:17001/gemp-module/ . 
 
 10. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
   
