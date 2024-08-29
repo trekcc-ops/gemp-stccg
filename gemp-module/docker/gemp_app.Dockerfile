@@ -1,10 +1,10 @@
-FROM amazoncorretto:18-alpine-jdk
+FROM amazoncorretto:21-alpine-jdk
 
 RUN apk update; \
 	apk update \
 	apk add --no-cache procps; \
 	apk add --no-cache net-tools; \
-	apk add --no-cache iputils; \/
+	apk add --no-cache iputils; \
 	apk add --no-cache bash; \
 	apk add --no-cache util-linux; \
 	apk add --no-cache dpkg; \
