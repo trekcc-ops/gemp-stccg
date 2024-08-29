@@ -21,4 +21,3 @@ remote-sync
 replay
 !replay/.placeholder
 logs/nohup.out
-gemp-module/docker/docker-compose.yml
