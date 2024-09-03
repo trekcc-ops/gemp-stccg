@@ -27,7 +27,7 @@ services:
          source: ../gemp-stccg-client/src/main/web
          target: /etc/gemp-lotr/web
        - type: bind
-         source: ../../gemp-lotr
+         source: ../../gemp-module
          target: /etc/gemp-lotr
        - type: bind
          source: ../gemp-stccg-client/src/main/web
