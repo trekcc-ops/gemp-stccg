@@ -25,16 +25,13 @@ services:
     volumes:
        - type: bind
          source: ../gemp-stccg-client/src/main/web
-         target: /etc/gemp-lotr/web
-       - type: bind
-         source: ../../gemp-module
-         target: /etc/gemp-lotr
+         target: /etc/gemp-module/web
        - type: bind
          source: ../../gemp-module
          target: /etc/gemp-module
        - type: bind
          source: ../gemp-stccg-client/src/main/web
-         target: /var/www/localhost/htdocs/gemp-lotr #/etc/apache2/htdocs/gemp-lotr
+         target: /var/www/localhost/htdocs/gemp-module #/etc/apache2/htdocs/gemp-lotr
        - type: bind
          source: ../../logs
          target: /logs
@@ -51,7 +48,7 @@ services:
       gemp_net_1:
         ipv4_address: ${APP_IP}
     tty: true
-    command: nohup java -jar /etc/gemp-lotr/gemp-stccg-client/target/web.jar &
+    command: nohup java -jar /etc/gemp-module/gemp-stccg-client/target/web.jar &
 
 
   db:
