@@ -30,6 +30,9 @@ services:
          source: ../../gemp-module
          target: /etc/gemp-lotr
        - type: bind
+         source: ../../gemp-module
+         target: /etc/gemp-module
+       - type: bind
          source: ../gemp-stccg-client/src/main/web
          target: /var/www/localhost/htdocs/gemp-lotr #/etc/apache2/htdocs/gemp-lotr
        - type: bind
