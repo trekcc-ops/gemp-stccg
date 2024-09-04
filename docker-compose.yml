@@ -57,7 +57,7 @@ services:
     container_name: ${DB_CONTAINER_NAME}
     build: 
       context: .
-      dockerfile: gemp-module/docker/gemp_db.Dockerfile
+      dockerfile: gemp_db.Dockerfile
     image: gemp_db
     ports:
         # target means in the container
