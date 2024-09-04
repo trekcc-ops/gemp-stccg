@@ -42,30 +42,12 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	* You can verify this by connecting to the database on your host machine with your DB manager of choice (I recommend [DBeaver](https://dbeaver.io/)).  
 	* It is exposed on localhost:35001 (unless you changed this port in step 4.2) and uses the user/pass of `gempuser`/`gemppassword` (unless you changed this in step 4.2).  
 	* If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.  
-8. Open a terminal in the Docker container
-	* Using Portainer or Docker Desktop open a terminal in the `gemp_app` container
-		* if using portainer.io, 
-			* log in
-			* select your 'Local' endpoint
-			* click the Containers tab on the left
-			* click the `>_` icon next to gemp_app and click the Connect button
-		* If using Docker Desktop
-			* Open Docker Desktop
-			* Select the "Container" option in the left navbar
-			* expand the `gemp_1` container
-			* click the actions button and select `Open in Terminal`
-9. Navigate to the folder that Docker binds to your code base (by default `etc/gemp-module` unless you updated volume bindings in `docker-compose.yml`)
-	* Navigate to the gemp codebase  `cd etc/gemp-module`
-	* Use Maven to compile the application	`mvn install`
-	* This process will take upwards of 5-10 minutes.  
-	* You should see a green "BUILD SUCCESS" when it is successfully done.  In portainer.io or another rich command line context, you should see lots of red text if it failed.
-10. Uncomment [this line](https://github.com/PlayersCouncil/gemp-lotr/blob/master/gemp-lotr/docker/docker-compose.yml#L52) in `docker-compose.yml` to ensure the GEMP server is run on every container statrt
-11. On your host machine cycle your docker container
+8. On your host machine cycle your docker container
 	* In a terminal navigate to `gemp-module/docker`
 	* Run `docker-compose down`
 	* After that completes run `docker-compose up -d`	
-12. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  
+9. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  
 	* Open your browser of choice and navigate to http://localhost:17001/gemp-module/ .  (If you need a different port to be bound to, then repeat step 4 and edit the exposed port, then repeat step 11 to load those changes.)
-13. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
+10. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
 
 At this point, editing the code is a matter of changing the files on your local machine and either re-running step 9, or re-compiling the code base in your IDE of choice.
