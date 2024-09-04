@@ -1,7 +1,6 @@
 FROM amazoncorretto:21-alpine-jdk
 
 RUN apk update; \
-	apk update \
 	apk add --no-cache procps; \
 	apk add --no-cache net-tools; \
 	apk add --no-cache iputils; \
@@ -15,10 +14,12 @@ RUN apk update; \
 	apk add --no-cache freetype; \
 	apk add --no-cache fontconfig; \
 	apk add --no-cache git; \
-	apk add --no-cache nano; 
-		
-		
-		
+	apk add --no-cache nano; \ 
+	apk add --no-cache openrc; \
+	apk add --no-cache apache2
+
+
+
 #####################################################################
 # The following is pulled from the official maven dockerfile:
 # https://github.com/carlossg/docker-maven/blob/26ba49149787c85b9c51222b47c00879b2a0afde/openjdk-14/Dockerfile
@@ -44,21 +45,11 @@ ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y
 
 
 #####################################################################
-# Build phase
+# Build the web jar
 
 RUN mkdir -p /src/gemp-module
 COPY gemp-module/ /src/gemp-module/
 
 RUN mvn -f /src/gemp-module/pom.xml install -DskipTests
-
-#####################################################################
-# Run phase
-
-RUN apk add --no-cache openrc; \
-	apk add --no-cache apache2
 	
 RUN touch /nohup.out
-	
-#RUN nohup java -jar /etc/gemp-module/gemp-stccg-client/target/web.jar &
-
-
