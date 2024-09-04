@@ -8,7 +8,7 @@ services:
     container_name: ${APP_CONTAINER_NAME}
     build: 
       context: .
-      dockerfile: gemp_app.Dockerfile
+      dockerfile: gemp-module/docker/gemp_app.Dockerfile
     image: gemp_app
     expose:
       - "80"
@@ -31,7 +31,7 @@ services:
          target: /etc/gemp-module
        - type: bind
          source: gemp-module/gemp-stccg-client/src/main/web
-         target: /var/www/localhost/htdocs/gemp-module #/etc/apache2/htdocs/gemp-lotr
+         target: /var/www/localhost/htdocs/gemp-module
        - type: bind
          source: logs
          target: /logs
@@ -57,7 +57,7 @@ services:
     container_name: ${DB_CONTAINER_NAME}
     build: 
       context: .
-      dockerfile: gemp_db.Dockerfile
+      dockerfile: gemp-module/docker/gemp_db.Dockerfile
     image: gemp_db
     ports:
         # target means in the container
