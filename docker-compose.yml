@@ -13,7 +13,7 @@ services:
     expose:
       - "80"
       - "8080"
-    restart: always
+    #restart: always
     ports:
         # target means in the container
       - target: 80
@@ -24,31 +24,31 @@ services:
         published: 8052
     volumes:
        - type: bind
-         source: ../gemp-stccg-client/src/main/web
+         source: gemp-module/gemp-stccg-client/src/main/web
          target: /etc/gemp-module/web
        - type: bind
-         source: ../../gemp-module
+         source: gemp-module
          target: /etc/gemp-module
        - type: bind
-         source: ../gemp-stccg-client/src/main/web
+         source: gemp-module/gemp-stccg-client/src/main/web
          target: /var/www/localhost/htdocs/gemp-module #/etc/apache2/htdocs/gemp-lotr
        - type: bind
-         source: ../../logs
+         source: logs
          target: /logs
        - type: bind
-         source: ../../replay
+         source: replay
          target: /replay
        - type: bind
-         source: ../..
+         source: .
          target: /gemp-src
        - type: bind
-         source: ../../logs/nohup.out
+         source: logs/nohup.out
          target: /nohup.out
     networks:
       gemp_net_1:
         ipv4_address: ${APP_IP}
     tty: true
-    command: nohup java -jar /etc/gemp-module/gemp-stccg-client/target/web.jar &
+    command: nohup java -jar /src/gemp-module/gemp-stccg-client/target/web.jar &
 
 
   db:
@@ -56,8 +56,8 @@ services:
       - .env
     container_name: ${DB_CONTAINER_NAME}
     build: 
-      context: ..
-      dockerfile: docker/gemp_db.Dockerfile
+      context: .
+      dockerfile: gemp-module/docker/gemp_db.Dockerfile
     image: gemp_db
     ports:
         # target means in the container
@@ -67,7 +67,7 @@ services:
     restart: always
     volumes:
        - type: bind
-         source: ../../database
+         source: database
          target: /var/lib/mysql
     networks:
       gemp_net_1:

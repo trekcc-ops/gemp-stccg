@@ -44,7 +44,15 @@ ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y
 
 
 #####################################################################
+# Build phase
 
+RUN mkdir -p /src/gemp-module
+COPY gemp-module/ /src/gemp-module/
+
+RUN mvn -f /src/gemp-module/pom.xml install -DskipTests
+
+#####################################################################
+# Run phase
 
 RUN apk add --no-cache openrc; \
 	apk add --no-cache apache2
