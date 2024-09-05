@@ -53,4 +53,4 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	* Open your browser of choice and navigate to http://localhost:17001/gemp-module/ .  (If you need a different port to be bound to, then repeat step 7 and edit the exposed port, then repeat step 11 to load those changes.)
 13. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
 
-At this point, editing the code is a matter of changing the files on your local machine and re-running `docker-compose down` and `docker-compose up -d`.
+At this point, editing the code is a matter of changing the files on your local machine and re-running `docker-compose down` and `docker-compose up --build -d`.
