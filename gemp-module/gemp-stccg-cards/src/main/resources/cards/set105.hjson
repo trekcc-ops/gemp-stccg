@@ -1,0 +1,10 @@
+// Set 105: Q-Continuum
+
+{
+    105_015: {
+        title: Q-Flash
+        type: doorway
+        property-logo: tng-logo
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg
+    }
+}

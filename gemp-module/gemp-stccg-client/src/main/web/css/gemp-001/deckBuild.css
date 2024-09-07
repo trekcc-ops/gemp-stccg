@@ -1,0 +1,202 @@
+body {
+    font-size: 12px;
+}
+
+.selectableCard > .borderOverlay {
+    border: 2px solid #00ff00;
+    cursor: pointer;
+}
+
+.selectedCard > .borderOverlay {
+    border: 2px solid #00cccc;
+}
+
+.cardFilterSelect {
+    font-size: 80%;
+}
+
+#filter-inputs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#setSelect {
+    width: 130px;
+    font-size: 80%;
+}
+
+
+#nameInput {
+    width: 110px;
+    font-size: 70%;
+}
+
+#sortSelect {
+    width: 80px;
+    font-size: 80%;
+}
+
+#collection-display {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+#filter-main {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#card-navigation {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+}
+
+#advanced-filter {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+}
+
+#advanced-filter a {
+    color: #BF6B04;
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+#countSlider {
+    flex-grow: 1;
+}
+
+.cardCount {
+    width: 20px;
+    height: 18px;
+    background-color: #000000;
+    color: white;
+    font-size: 120%;
+    font-weight: bolder;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    opacity: 0.7;
+}
+
+.ui-layout-east {
+    width: 350px;
+}
+
+#manageDecks {
+    color: white;
+    font-size: 180%;
+    display: flex;
+}
+
+#editingDeck {
+    vertical-align: top;
+    padding-left: 3px;
+}
+
+#deckStats {
+    color: white;
+}
+
+.ui-button-text-only .ui-button-text {
+    font-size: 70%;
+}
+
+button.navigation-butt {
+    padding: 0.5em;
+}
+
+.navigation-butt.ui-button-icon-only > .ui-button-text{
+    padding: 0;
+}
+
+.navigation-butt.ui-button-icon-only {
+    width:  25px;
+}
+
+.ui-button-icon-only .ui-button-icon-primary.ui-icon {
+    margin:  auto auto auto -4px;
+}
+
+#set {
+    width: 120px;
+}
+
+#cardType {
+    width: 100px;
+}
+
+#fullFiltering select {
+    font-size: 80%;
+}
+
+#fullFiltering input {
+    font-size: 80%;
+}
+
+#filtering select {
+    font-size: 80%;
+}
+
+#messageDiv {
+    text-align: center;
+    color: white;
+    font-size: 180%;
+}
+
+.menu-button.ui-button {
+    padding: 0;
+}
+
+.menu-button > .ui-button-text {
+    padding: 0;
+}
+
+button.navigation-butt {
+    padding: 0.5em;
+}
+
+.navigation-butt.ui-button-icon-only > .ui-button-text{
+    padding: 0;
+}
+
+.navigation-butt.ui-button-icon-only {
+    width:  25px;
+}
+
+.ui-button-icon-only .ui-button-icon-primary.ui-icon {
+    margin:  auto auto auto -4px;
+}
+
+#affiliation-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#affiliation-buttons .ui-button {
+    padding: 0;
+}
+
+#collectionSelect {
+    order:  100;
+}
+
+#editingDeck {
+    flex-grow:  1;
+}
+
+.notesText {
+    flex-grow: 1;
+    margin: 5px;
+}
+
+.notesDialog {
+    display: flex;
+}

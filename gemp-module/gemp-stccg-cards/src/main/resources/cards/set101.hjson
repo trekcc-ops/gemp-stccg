@@ -1,0 +1,1212 @@
+// Set 101: Premiere [1E]
+
+{
+    101_015: {
+        title: Armus - Skin of Evil
+        type: java def
+    }
+    101_055: {
+        title: Engineering Kit
+        type: java def
+    }
+    101_056: {
+        title: Engineering PADD
+        type: java def
+    }
+    101_057: {
+        title: Federation PADD
+        type: java def
+    }
+    101_058: {
+        title: Klingon Disruptor
+        type: java def
+    }
+    101_059: {
+        title: Klingon PADD
+        type: java def
+    }
+    101_060: {
+        title: Medical Kit
+        type: java def
+    }
+    101_061: {
+        title: Medical Tricorder
+        type: java def
+    }
+    101_062: {
+        title: Romulan Disruptor
+        type: java def
+    }
+    101_061: {
+        title: Romulan PADD
+        type: java def
+    }
+    101_064: {
+        title: Starfleet Type II Phaser
+        type: java def
+    }
+    101_065: {
+        title: Tricorder
+        type: java def
+    }
+    101_104: {
+        title: Federation Outpost
+        type: facility
+        property-logo: tng-logo
+        facility-type: outpost
+        affiliation: federation
+        uniqueness: universal
+        lore: Earth is a member of the United Federation of Planets. The Federation establishes outposts throughout its territory.
+        shields: 30
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Federation-Outpost.jpg
+    }
+    101_105: {
+        title: Klingon Outpost
+        type: facility
+        property-logo: tng-logo
+        facility-type: outpost
+        affiliation: klingon
+        uniqueness: universal
+        lore: "The Klingon Homeworld is Qo'noS. The Klingon Empire establishes outposts throughout its territory."
+        shields: 32
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Klingon-Outpost.jpg
+   }
+    101_106: {
+        title: Romulan Outpost
+        type: facility
+        property-logo: tng-logo
+        facility-type: outpost
+        affiliation: romulan
+        uniqueness: universal
+        lore: Romulus is one of the two homeworlds for the Romulans. The Romulan Star Empire establishes outposts throughout its territory.
+        shields: 32
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg
+    }
+    101_147: {
+        title: Cloaked Mission
+        type: mission
+        region: Romulus System
+        location: Romulus
+        affiliation-icons: klingon
+        mission-type: planet
+        lore: Secretly escort covert operatives to the Romulan homeworld.
+        mission-requirements: Navigation + Diplomacy + Honor
+        point-box: 30
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Cloaked-Mission.jpg
+    }
+    101_148: {
+        title: Covert Installation
+        type: mission
+        region: Neutral Zone
+        location: Devora
+        affiliation-icons: romulan
+        mission-type: planet
+        lore: Build hidden monitoring station in the Neutral Zone.
+        mission-requirements: ENGINEER + Leadership + Treachery
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Covert-Installation.jpg
+    }
+    101_149: {
+        title: Covert Rescue
+        type: mission
+        mission-type: planet
+        location: Galorndon Core
+        lore: Retrieve crashed scoutship in Federation territory.
+        affiliation-icons: romulan
+        mission-requirements: Diplomacy + Leadership + CUNNING>35
+        point-box: 30
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/covertrescue95.jpg
+    }
+    101_150: {
+        title: Cultural Observation
+        type: mission
+        mission-type: planet
+        location: Mintaka III
+        lore: Aid observation of primitive society.
+        affiliation-icons: federation
+        mission-requirements: Anthropology + Leadership + STRENGTH>30
+        point-box: 40
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/culturalobservation95.jpg
+    }
+    101_153: {
+        title: Evaluate Terraforming
+        type: mission
+        mission-type: planet
+        location: Velara III
+        lore: Evaluate progress of terraforming station.
+        affiliation-icons: federation
+        mission-requirements: MEDICAL + Biology + Exobiology OR Geordi La Forge + MEDICAL x2
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/evaluateterraforming95.jpg
+    }
+    101_154: {
+        title: Excavation
+        type: mission
+        location: Kurl
+        affiliation-icons: federation,romulan
+        mission-type: planet
+        lore: Assist new archaeological dig.
+        mission-requirements: Archaeology OR CUNNING>32
+        point-box: 25
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/excavation95.jpg
+    }
+    101_155: {
+        title: Explore Black Cluster
+        type: mission
+        mission-type: space
+        location: Sector 97
+        lore: Study and evaluate enormous cluster of collapsed proto-stars.
+        affiliation-icons: federation,klingon
+        mission-requirements: Stellar Cartography + Leadership OR CUNNING>50
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/exploreblackcluster95.jpg
+    }
+    101_157: {
+        title: Explore Typhon Expanse
+        type: mission
+        mission-type: space
+        location: Typhon Expanse
+        lore: Trace time distortion reported in this desolate region.
+        mission-requirements: Astrophysics + Stellar Cartography OR CUNNING>50
+        affiliation-icons: romulan,klingon
+        point-box: 35
+        span: 5
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Explore-Typhon-Expanse.jpg
+    }
+    101_158: {
+        title: Expose Covert Supply
+        type: mission
+        location: "Qo'noS"
+        affiliation-icons: romulan
+        mission-type: planet
+        lore: Uncover covert supply lines supporting rebels on the Klingon Homeworld.
+        mission-requirements: Treachery x3 + Navigation
+        point-box: 30
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/exposecovertsupply.gif
+    }
+    101_160: {
+        title: Fever Emergency
+        type: mission
+        mission-type: planet
+        location: Nahmi IV
+        lore: Coordinate aid for Correllium Fever outbreak.
+        affiliation-icons: klingon
+        mission-requirements: MEDICAL x3 OR Biology + OFFICER
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/feveremergency.jpg
+    }
+    101_163: {
+        title: Iconia Investigation
+        type: mission
+        region: Neutral Zone
+        location: Iconia
+        affiliation-icons: romulan
+        mission-type: planet
+        lore: Investigate Federation incursion in the Neutral Zone.
+        mission-requirements: Archaeology + Computer Skill x2
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Iconia-Investigation.jpg
+    }
+    101_164: {
+        title: 'Investigate "Shattered Space"'
+        type: mission
+        region: Neutral Zone
+        location: Near Neutral Zone
+        lore: Study fragments of distorted space/time reported in this sector.
+        affiliation-icons: romulan
+        mission-type: space
+        mission-requirements: Leadership + Computer Skill + Astrophysics x2 + Stellar Cartography
+        point-box: 45
+        span: 5
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Investigate-Shattered-Space.jpg
+    }
+    101_165: {
+        title: Investigate Alien Probe
+        type: mission
+        mission-type: space
+        location: Parvenium System
+        lore: Study and evaluate mysterious probe sighted in this sector.
+        mission-requirements: Anthropology + Biology + Computer Skill
+        affiliation-icons: klingon
+        point-box: 40
+        span: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/investigatealienprobe95.jpg
+    }
+    101_168: {
+        title: Investigate Disturbance
+        type: mission
+        mission-type: planet
+        location: Boreth
+        lore: Investigate disturbance at Boreth monastery.
+        affiliation-icons: klingon
+        mission-requirements: Honor + Leadership + INTEGRITY>30 OR Gowron + Biology
+        point-box: 35
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/264VP.jpg
+    }
+    101_169: {
+        title: Investigate Massacre
+        type: mission
+        mission-type: planet
+        location: Tarod IX
+        lore: Initiate investigation into destruction of distant outpost.
+        affiliation-icons: federation,romulan
+        mission-requirements: Diplomacy + INTEGRITY>35 + CUNNING>35
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/investigatemassacre95.jpg
+    }
+    101_169: {
+        title: Investigate Raid
+        type: mission
+        mission-type: planet
+        location: Ohniaka III
+        lore: Investigate report of Borg attack.
+        affiliation-icons: romulan
+        mission-requirements: Exobiology + Diplomacy
+        point-box: 35
+        span: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateraid95.jpg
+    }
+    101_173: {
+        title: Khitomer Research
+        type: mission
+        mission-type: planet
+        location: Khitomer
+        lore: Reopen investigation into Khitomer massacre.
+        affiliation-icons: romulan,klingon
+        mission-requirements: Honor x3 + Computer Skill + Treachery
+        point-box: 35
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Khitomer-Research.jpg
+    }
+    101_174: {
+        title: Krios Suppression
+        type: mission
+        mission-type: planet
+        location: Krios
+        lore: Aid suppression of warring factions.
+        affiliation-icons: klingon
+        mission-requirements: Honor + Diplomacy + STRENGTH>35
+        point-box: 30
+        span: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/kriossuppression95.jpg
+    }
+    101_175: {
+        title: Medical Relief
+        type: mission
+        mission-type: planet
+        location: Beta Lankal
+        lore: Respond to reported medical emergency.
+        affiliation-icons: klingon
+        mission-requirements: Biology + Exobiology + MEDICAL
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/medicalrelief95.jpg
+    }
+    101_176: {
+        title: New Contact
+        type: mission
+        mission-type: planet
+        location: Tau Alpha C
+        lore: Seek contact with advanced civilization at this distant planet.
+        affiliation-icons: romulan,klingon
+        mission-requirements: Diplomacy + Leadership + Empathy + Anthropology
+        point-box: 40
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/newcontact95.jpg
+    }
+    101_178: {
+        title: Plunder Site
+        type: mission
+        mission-type: planet
+        location: Barradas III
+        lore: Search ancient civilization site for treasures or artifacts.
+        affiliation-icons: romulan,klingon
+        mission-requirements: Treachery + Archaeology + STRENGTH>30
+        point-box: 30
+        span: 2
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/plundersite.jpg
+    }
+    101_194: {
+        title: Wormhole Negotiations
+        type: mission
+        mission-type: space
+        location: Wormhole Terminus
+        lore: Study and negotiate for exclusive use of Barzan wormhole.
+        affiliation-icons: federation,romulan,klingon
+        mission-requirements: Diplomacy x5 OR Honor x4 OR Treachery x4
+        point-box: 45
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/errata/WormholeNegotiations.jpg
+    }
+    101_196: {
+        title: Alexander Rozhenko
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: "3/4 Klingon, 1/4 Human male. Born on the 43rd day of Maktag. Son of Lieutenant Worf and K'Ehleyr."
+        skill-box: "[*] Honor [*] Youth"
+        integrity: 6
+        cunning: 4
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/alexanderrozhenko95.jpg
+    }
+    101_197: {
+        title: Alynna Nechayev
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: Vice-Admiral Alynna Nechayev is an antagonistic superior of Captain Jean-Luc Picard. Responsible for liaison with the Cardassians and the Maquis.
+        skill-box: "[*] Diplomacy [*] Leadership"
+        integrity: 7
+        cunning: 8
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/alynnanechayev95.jpg
+    }
+    101_198: {
+        title: Alyssa Ogawa
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: Nurse Alyssa Ogawa is a medical assistant and friend to Dr. Beverly Crusher.
+        skill-box: "[*] Biology"
+        integrity: 7
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/8.jpg
+    }
+    101_199: {
+        title: Benjamin Maxwell
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Captain Benjamin Maxwell of the U.S.S. Phoenix is a bitter enemy of the Cardassians.
+        skill-box: "[*] Leadership"
+        integrity: 9
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/18.jpg
+    }
+    101_200: {
+        title: Beverly Crusher
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: command
+        lore: Dr. Beverly Crusher is the chief medical officer of the U.S.S. Enterprise. Dancer and thespian. Widow of Jack Crusher. Mother of Ensign Wesley Crusher.
+        skill-box: "[*] MEDICAL [*] Biology [*] Exobiology"
+        integrity: 8
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/beverlycrusher95.jpg
+    }
+    101_201: {
+        title: Calloway
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: MEDICAL
+        lore: Ensign Calloway is representative of Starfleet medical technicians. Served aboard the U.S.S. Enterprise in 2370.
+        skill-box: "[*] Youth"
+        integrity: 7
+        cunning: 5
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/calloway.jpg
+    }
+    101_202: {
+        title: Christopher Hobson
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Lt. Commander Christopher Hobson is representative of staff officers in Starfleet. Served aboard the U.S.S. Sutherland in 2368.
+        skill-box: "[*] Computer Skill"
+        integrity: 6
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/christopherhobson95.jpg
+    }
+    101_203: {
+        title: Darian Wallace
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: SECURITY
+        lore: Ensign Darian Wallace is representative of Starfleet security officers. Held numerous positions aboard the U.S.S. Enterprise.
+        skill-box: "[*] Anthropology"
+        integrity: 7
+        cunning: 5
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/19.jpg
+    }
+    101_204: {
+        title: Data
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Lt. Commander Data is a sentient android created by Dr. Noonien Soong. Has positronic brain. Desires to be human. Once left his head in San Francisco.
+        skill-box: "[*] ENGINEER [*] Computer Skill x2 [*] Music [*] Astrophysics [*] Exobiology"
+        integrity: 8
+        cunning: 12
+        strength: 12
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/data95.jpg
+    }
+    101_205: {
+        title: Deanna Troi
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Lt. Commander Deanna Troi is a 1/2 Betazoid, 1/2 Human empath. Counselor for U.S.S. Enterprise. Imzadi to William T. Riker. Loves chocolate.
+        skill-box: "[*] Empathy [*] Diplomacy"
+        integrity: 8
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/deannatroi95.jpg
+    }
+    101_206: {
+        title: Dr. La Forge
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Dr. La Forge is a Starfleet specialist in xenology and exobiology. Father of Lt. Commander Geordi La Forge. Husband of Captain Silva La Forge.
+        skill-box: "[*] Exobiology"
+        integrity: 7
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/drlaforge.gif
+    }
+    101_208: {
+        title: Dr. Selar
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: Dr. Selar is a female Vulcan medical doctor. Served aboard the U.S.S. Enterprise for many years.
+        skill-box: "[*] Computer Skill [*] Mindmeld"
+        integrity: 7
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/20.jpg
+    }
+    101_209: {
+        title: Eric Pressman
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Captain Eric Pressman commanded the U.S.S. Pegasus before it was lost in space following a failed experiment.
+        skill-box: "[*] ENGINEER [*] Treachery"
+        integrity: 5
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/ericpressman95.jpg
+    }
+    101_211: {
+        title: Fleet Admiral Shanthi
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Fleet Admiral Shanthi authorized the blockade of Romulan forces covertly supporting the Klingon Civil War in 2368.
+        skill-box: "[*] Leadership [*] Diplomacy"
+        integrity: 9
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/TWT-fleetadmiralshanthi.jpg
+    }
+    101_212: {
+        title: Geordi La Forge
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: command
+        lore: Lt. Commander Geordi La Forge is chief engineer aboard the U.S.S. Enterprise. Great sense of humor. Fortuitous holodeck programmer.
+        skill-box: "[*] ENGINEER [*] Navigation [*] Physics [*] Computer Skill"
+        integrity: 8
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/21.jpg
+    }
+    101_213: {
+        title: Giusti
+        type: personnel
+        uniqueness: universal
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Ensign Giusti is representative of staff officers in Starfleet. Served at the Ops console aboard the U.S.S. Enterprise in 2370.
+        skill-box: "[*] Youth"
+        integrity: 7
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Giusti.jpg
+    }
+    101_214: {
+        title: Hannah Bates
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        lore: Genetically engineered scientist from Moab IV. Granted asylum aboard U.S.S. Enterprise in 2368.
+        skill-box: "[*] Physics"
+        integrity: 6
+        cunning: 8
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/hannahbates95.jpg
+    }
+    101_215: {
+        title: Jean-Luc Picard
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Captain Jean-Luc Picard of the U.S.S. Enterprise. Born in LaBarre, France. Has an artificial heart. Reads Shakespeare. Something of a Renaissance man.
+        skill-box: "[*] Diplomacy x2 [*] Leadership [*] Honor [*] Archaeology [*] Navigation [*] Music"
+        integrity: 9
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/82VP.jpg
+    }
+    101_216: {
+        title: "Jenna D'Sora"
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: staff
+        lore: "Lieutenant Jenna D'Sora had a brief, unsuccessful romantic relationship with Lt. Commander Data. Wooed by crystillia flowers from Telemarius III."
+        skill-box: "[*] Stellar Cartography [*] Music"
+        integrity: 7
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/jennadsora95.jpg
+    }
+    101_225: {
+        title: Mot the Barber
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: Bolian male. Convivial barber aboard the U.S.S. Enterprise. Snappy conversationalist.
+        skill-box: "[*] Barbering"
+        integrity: 6
+        cunning: 4
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/motthebarber95.jpg
+    }
+    101_226: {
+        title: Neela Daren
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Lt. Commander Neela Daren is a specialist in stellar cartography. Accomplished pianist. Romantically involved with Captain Jean-Luc Picard.
+        skill-box: "[*] Astrophysics [*] Stellar Cartography [*] Music"
+        integrity: 8
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/neeladaren95.jpg
+    }
+    101_232: {
+        title: Ro Laren
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Ensign Ro Laren is a Bajoran female. Protege of Captain Jean-Luc Picard. Sympathetic to the Maquis. A bit of a renegade.
+        skill-box: "[*] Computer Skill [*] Navigation [*] Treachery"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/rolaren95.jpg
+    }
+    101_233: {
+        title: Sarek
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: Illustrious Vulcan Federation ambassador. Over 200 years old. Married at least three times: to a Vulcan princess, to Amanda, and to Perrin. Father of Spock.
+        skill-box: "[*] Diplomacy x3 [*] Mindmeld"
+        integrity: 9
+        cunning: 10
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/252VP.jpg
+    }
+    101_242: {
+        title: Taitt
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        uniqueness: universal
+        lore: Ensign Taitt is representative of science specialists from Starfleet Academy. Helped the U.S.S. Enterprise destroy a Borg ship in 2370.
+        skill-box: "[*] Stellar Cartography [*] Geology"
+        integrity: 6
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/22.jpg
+    }
+    101_246: {
+        title: Thomas Riker
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: "Lt. Commander Thomas Riker is William Riker's double. Created during a transporter accident in 2361."
+        skill-box: "[*] Leadership [*] Navigation [*] Geology [*] Music"
+        integrity: 8
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/thomasriker95.jpg
+    }
+    101_247: {
+        title: Toby Russell
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: Dr. Toby Russell is a controversial neurogeneticist. Creator of the genetronic replicator therapy for spinal injury that saved Lieutenant Worf.
+        skill-box: "[*] Physics"
+        integrity: 6
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/23.jpg
+    }
+    101_249: {
+        title: Wesley Crusher
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Ensign Wesley Crusher was a child prodigy. Protégé of the Traveler. Son of Dr. Beverly Crusher. Saved the U.S.S. Enterprise 3 1/2 times as a teenager.
+        skill-box: "[*] Youth [*] Computer Skill [*] Navigation [*] ENGINEER [*] Astrophysics"
+        integrity: 6
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Wesley-Crusher.jpg
+    }
+    101_251: {
+        title: Worf
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: command
+        lore: Lieutenant Worf is chief of security on the U.S.S. Enterprise. Klingon warrior and Starfleet officer. Son of Mogh. Raised on Earth by foster parents.
+        skill-box: "[*] Honor x2 [*] Navigation [*] Diplomacy"
+        integrity: 8
+        cunning: 6
+        strength: 10
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/25V.jpg
+    }
+    101_252: {
+        title: "B'Etor"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: Plotted with Lursa to seize power from Gowron with the support of the Romulans. Younger of the two Duras sisters. The pretty one.
+        skill-box: "[*] Treachery [*] Leadership [*] Physics [*] Youth [*] Greed"
+        integrity: 2
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/betor95.jpg
+    }
+    101_253: {
+        title: "B'iJik"
+        type: personnel
+        affiliation: klingon
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Klingon male trained as an officer for the Klingon Defense Force. Served as junior adjutant to the diplomatic delegation for Gowron.
+        skill-box: "[*] Navigation"
+        integrity: 4
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/bijik95.jpg
+    }
+    101_254: {
+        title: "Ba'el"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: 1/2 Klingon, 1/2 Romulan. Romantically involved with Lieutenant Worf. Born in Romulan prison camp in Carraya system.
+        skill-box: "[*] Anthropology [*] Youth"
+        integrity: 6
+        cunning: 6
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/bael95.jpg
+    }
+    101_256: {
+        title: Divok
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: MEDICAL
+        uniqueness: universal
+        icons: staff
+        lore: Male trained in Klingon anatomy and medicine. Studied the effects of Tribbles on the Klingon nervous system.
+        skill-box: "[*] Biology [*] Youth"
+        integrity: 6
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/14.jpg
+    }
+    101_257: {
+        title: Dukath
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: SCIENCE
+        uniqueness: universal
+        icons: staff
+        lore: Klingon trained in the field of science. Studied the effects of Berthold rays on plant life. Served aboard the I.K.C. Pagh.
+        skill-box: "[*] Archaeology"
+        integrity: 5
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/dukath.jpg
+    }
+    101_260: {
+        title: Gorath
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: SECURITY
+        uniqueness: universal
+        icons: staff
+        lore: "Klingon trained in the field of security. Guarded the Klingon High Council chamber in the year of Maktag. Served as security chief for the Hegh'bat division."
+        skill-box: "[*] Honor"
+        integrity: 6
+        cunning: 4
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/gorath95.jpg
+    }
+    101_262: {
+        title: "J'Ddan"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: SCIENCE
+        uniqueness: universal
+        icons: staff
+        lore: Klingon trained in the field of science. Smuggled Federation secrets to the Romulans in the form of amino acid codes.
+        skill-box: "[*] Exobiology [*] Treachery"
+        integrity: 2
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/comingofage/15.jpg
+    }
+    101_277: {
+        title: Kurak
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Famed female Klingon scientist and warp-field specialist who evaluated the metaphasic shield.
+        skill-box: "[*] Astrophysics [*] Computer Skill [*] Physics [*] Honor"
+        integrity: 6
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/31V.jpg
+    }
+    101_284: {
+        title: Torak
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: Governor Torak served near the Federation border commanding Sector 2520 in 2369.
+        skill-box: "[*] Diplomacy [*] Geology"
+        integrity: 5
+        cunning: 4
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/torak95.jpg
+    }
+    101_289: {
+        title: Amarie
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: CIVILIAN
+        lore: Four-armed pianist. Information broker. Ex-wife of arms smuggler. Four times widowed. Qualor II lounge performer. Knows Aktuh and Melota. Salt sucker.
+        skill-box: "[*] Music"
+        integrity: 5
+        cunning: 9
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/amarie95.jpg
+    }
+    101_292: {
+        title: Devinoni Ral
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: V.I.P.
+        uniqueness: universal
+        lore: 1/4 Betazoid, 3/4 Human. Skilled negotiator. Abused his empathic powers to gain advantage. Had a dangerous liaison with Counselor Deanna Troi.
+        skill-box: "[*] Empathy [*] Diplomacy [*] Treachery"
+        integrity: 3
+        cunning: 9
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/devinoniral.jpg
+    }
+    101_297: {
+        title: Gorta
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: ENGINEER
+        uniqueness: universal
+        lore: Male of Dopterian race. Representative of non-aligned agents. An opportunist. Had an encounter with the sisters of Duras in 2370.
+        skill-box: "[*] Physics [*] Greed"
+        integrity: 3
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/gorta.jpg
+    }
+    101_303: {
+        title: Vekor
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: SCIENCE
+        uniqueness: universal
+        lore: Representative of female mercenaries operating throughout the galaxy. Worked with Baran to find the Stone of Gol.
+        skill-box: "[*] MEDICAL [*] Navigation [*] Geology"
+        integrity: 2
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/37V.jpg
+    }
+    101_310: {
+        title: Mirok
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Scientist in charge of developing and testing the interphase generator in 2368.
+        skill-box: "[*] ENGINEER [*] Astrophysics [*] Physics"
+        integrity: 3
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/mirok95.jpg
+    }
+    101_312: {
+        title: "N'Vek"
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: command
+        lore: "Member of the Romulan underground. Spearheaded defection of Vice-Proconsul M'ret to the Federation."
+        skill-box: "[*] Honor [*] Biology [*] Computer Skill"
+        integrity: 6
+        cunning: 8
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/nvek95.jpg
+    }
+    101_320: {
+        title: Takket
+        type: personnel
+        affiliation: romulan
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: command
+        lore: Romulan male trained in Romulan anatomy and medicine. Extensively trained in exobiology.
+        skill-box: "[*] Exobiology"
+        integrity: 4
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/takket95.jpg
+    }
+    101_329: {
+        title: Toreth
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: "Female captain of Imperial Romulan warbird, Khazara. Father killed by Tal Shiar. Uncovered M'ret defection plot."
+        skill-box: "[*] Leadership [*] Honor [*] Navigation"
+        integrity: 5
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/toreth95.jpg
+    }
+    101_330: {
+        title: Varel
+        type: personnel
+        uniqueness: universal
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Representative of female Romulans trained in the field of science. Assigned to assist with interphase generator project.
+        skill-box: "[*] Physics [*] Computer Skill [*] Youth"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/varel95.jpg
+    }
+    101_331: {
+        title: Runabout
+        type: ship
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        ship-class: RUNABOUT CLASS
+        lore: Resembles a large shuttle. Contains living accommodations. Modular design can be re-configured for different mission profiles.
+        range: 7
+        weapons: 5
+        shields: 5
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/runabout.jpg
+    }
+    101_332: {
+        title: Type VI Shuttlecraft
+        type: ship
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        ship-class: TYPE VI SHUTTLECRAFT
+        lore: Modern Federation shuttle with warp capability. May be armed for special missions.
+        range: 6
+        weapons: 2
+        shields: 2
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/25.jpg
+    }
+    101_334: {
+        title: U.S.S. Enterprise
+        type: ship
+        affiliation: federation
+        property-logo: tng-logo
+        ship-class: GALAXY CLASS
+        lore: The fifth Starfleet ship named Enterprise, launched in 2363. Built at the Utopia Planetia shipyards orbiting Mars.
+        staffing: command,staff,staff
+        gametext: Holodeck, Tractor Beam
+        range: 9
+        weapons: 8
+        shields: 9
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/26.jpg
+    }
+    101_339: {
+        title: U.S.S. Nebula
+        type: ship
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        ship-class: NEBULA CLASS
+        lore: Modern class of ship featuring large upper equipment modules customizable for specific mission uses.
+        staffing: command,staff
+        gametext: Holodeck, Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/27.jpg
+    }
+    101_340: {
+        title: U.S.S. Oberth
+        type: ship
+        affiliation: federation
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: OBERTH CLASS
+        lore: Class of small ships often used for scientific missions. Named for 20th century rocket scientist Hermann Oberth.
+        staffing: staff
+        gametext: Tractor Beam
+        range: 6
+        weapons: 4
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/errata/USS-Oberth.jpg
+    }
+    101_344: {
+        title: I.K.C. Bortas
+        type: ship
+        affiliation: klingon
+        property-logo: tng-logo
+        ship-class: "VOR'CHA CLASS"
+        lore: Flagship commanded by Gowron during the Klingon Civil War of 2367-68. Lieutenant Worf briefly served aboard as a weapons officer.
+        staffing: command,staff,staff
+        gametext: Cloaking Device, Tractor Beam
+        range: 9
+        weapons: 9
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/errata/IKC-Bortas.jpg
+    }
+    101_347: {
+        title: "I.K.C. K'Vort"
+        type: ship
+        affiliation: klingon
+        property-logo: tng-logo
+        ship-class: "K'VORT CLASS"
+        lore: "Class of ships identical in configuration to the classic B'rel class Klingon Bird-of-Prey, although much larger."
+        staffing: staff
+        gametext: Cloaking Device, Tractor Beam
+        range: 8
+        weapons: 6
+        shields: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/43V.jpg
+    }
+    101_350: {
+        title: "I.K.C. Vor'Cha"
+        type: ship
+        affiliation: klingon
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: "VOR'CHA CLASS"
+        lore: Large attack cruiser. The modern mainstay of the Klingon Defense Force.
+        staffing: command,staff,staff
+        gametext: Cloaking Device, Tractor Beam
+        range: 9
+        weapons: 8
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ikcvorcha.jpg
+    }
+    101_353: {
+        title: Husnock Ship
+        type: ship
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: UNKNOWN CLASS
+        lore: With a single thought, Kevin Uxbridge killed the entire Husnock race (50 billion lives) everywhere in the universe. Their powerful ships remain.
+        staffing: command,staff,staff
+        gametext: Holodeck, Tractor Beam
+        range: 6
+        weapons: 9
+        shields: 12
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/husnockship95.jpg
+    }
+    101_354: {
+        title: Mercenary Ship
+        type: ship
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: UNKNOWN CLASS
+        lore: Little-known ship. Difficult to track due to a unique hull design that renders it invisible to long-range scans. Baran captained one in 2370.
+        staffing: staff,staff
+        gametext: Long-Range Scan Shielding
+        range: 7
+        weapons: 7
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/44V.jpg
+    }
+    101_355: {
+        title: Yridian Shuttle
+        type: ship
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: SHUTTLECRAFT
+        lore: Common shuttlecraft used by Yridian agents and others for covert activities.
+        range: 6
+        weapons: 1
+        shields: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/yridianshuttle95.jpg
+    }
+    101_356: {
+        title: Zibalian Shuttlecraft
+        type: ship
+        affiliation: non-aligned
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: ZIBALIAN CLASS
+        lore: Common class of merchant vessel used by traders such as Kivas Fajo.
+        range: 6
+        weapons: 2
+        shields: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/zibaliantransport95.jpg
+    }
+    101_357: {
+        title: "D'deridex"
+        type: ship
+        affiliation: romulan
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: "D'DERIDEX CLASS"
+        lore: Imperial Romulan Warbird. A massive ship significantly larger than a Galaxy class starship.
+        gametext: Cloaking Device, Tractor Beam
+        staffing: command,staff,staff
+        range: 8
+        weapons: 9
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/dderidex95.jpg
+    }
+    101_358: {
+        title: Devoras
+        type: ship
+        affiliation: romulan
+        property-logo: tng-logo
+        ship-class: "D'DERIDEX CLASS"
+        lore: Warbird used to accomplish the escape of Romulan spy Selok from the Federation in 2367. Commanded by Admiral Mendak.
+        gametext: Cloaking Device, Tractor Beam
+        staffing: command,staff,staff
+        range: 9
+        weapons: 8
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/devoras95.jpg
+    }
+    101_362: {
+        title: Science Vessel
+        type: ship
+        affiliation: romulan
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: SCIENCE CLASS
+        lore: Specialized science ship used for an Interphase Generator experiment in 2368.
+        range: 8
+        weapons: 5
+        shields: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/45V.jpg
+    }
+}

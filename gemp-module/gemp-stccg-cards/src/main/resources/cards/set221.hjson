@@ -1,0 +1,46 @@
+// Set 221: A Tribble of a Different Color
+
+{
+    221_002: {
+         title: 1 Tribble - Kindness
+         type: tribble
+         tribble-value: 1
+         tribble-power: kindness
+         image-url: https://www.trekcc.org/tribbles/cardimages/toadc/137V.jpg
+    }
+    221_004: {
+         title: 1 Tribble - Recycle
+         type: tribble
+         tribble-value: 1
+         tribble-power: recycle
+         image-url: https://www.trekcc.org/tribbles/cardimages/toadc/139V.jpg
+    }
+    221_006: {
+         title: 10 Tribbles - Generosity
+         type: tribble
+         tribble-value: 10
+         tribble-power: generosity
+         image-url: https://www.trekcc.org/tribbles/cardimages/toadc/141V.jpg
+    }
+    221_008: {
+        title: 100 Tribbles - Cheat
+        type: tribble
+        tribble-value: 100
+        tribble-power: cheat
+        image-url: https://www.trekcc.org/tribbles/cardimages/toadc/143V.jpg
+        effects: {
+            type: playOutOfSequence
+            requires: {
+                type: nextTribbleInSequence
+                value: 10
+            }
+        }
+    }
+    221_010: {
+         title: 100 Tribbles - Laughter
+         type: tribble
+         tribble-value: 100
+         tribble-power: laughter
+         image-url: https://www.trekcc.org/tribbles/cardimages/toadc/145V.jpg
+    }
+}

@@ -1,0 +1,183 @@
+package com.gempukku.stccg.cards;
+
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.rules.TextUtils;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import java.util.*;
+import java.util.stream.Stream;
+
+public class DefaultActionContext implements ActionContext {
+    private final DefaultGame _game;
+    protected final ActionContext _relevantContext;
+    protected final String performingPlayer;
+    protected final PhysicalCard source;
+    protected final EffectResult effectResult;
+    protected final Effect effect;
+    protected final Multimap<String, PhysicalCard> _cardMemory = HashMultimap.create();
+    protected final Map<String, String> _valueMemory = new HashMap<>();
+
+    public DefaultActionContext(String performingPlayer, DefaultGame game, PhysicalCard source,
+                                Effect effect, EffectResult effectResult) {
+        this(null, performingPlayer, game, source, effect, effectResult);
+    }
+
+
+    public DefaultActionContext(ActionContext delegate, String performingPlayer, DefaultGame game,
+                                PhysicalCard source, Effect effect, EffectResult effectResult) {
+        this.performingPlayer = performingPlayer;
+        this.source = source;
+        this.effectResult = effectResult;
+        this.effect = effect;
+        _game = game;
+        _relevantContext = Objects.requireNonNullElse(delegate, this);
+    }
+
+    public ActionContext createDelegateContext(Effect effect) {
+        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), effect, null);
+    }
+
+    public ActionContext createDelegateContext(EffectResult effectResult) {
+        return new DefaultActionContext(this, getPerformingPlayerId(), getGame(), getSource(), null, effectResult);
+    }
+
+    public ActionContext createDelegateContext(String playerId) {
+        return new DefaultActionContext(this, playerId, getGame(), getSource(), getEffect(), getEffectResult());
+    }
+    public Map<String, String> getValueMemory() { return _valueMemory; }
+    public Multimap<String, PhysicalCard> getCardMemory() { return _cardMemory; }
+    public Player getPerformingPlayer() { return _game.getGameState().getPlayer(performingPlayer); }
+    public String getPerformingPlayerId() { return performingPlayer; }
+    public PhysicalCard getSource() {
+        return source;
+    }
+
+    public void setValueToMemory(String memory, String value) {
+        if(memory != null) {
+            memory = memory.toLowerCase();
+        }
+        getRelevantValueMemory().put(memory, value);
+    }
+
+
+    public String getValueFromMemory(String memory) {
+        if(memory != null) {
+            memory = memory.toLowerCase();
+        }
+        final String result = getRelevantValueMemory().get(memory);
+        if (result == null)
+            throw new IllegalArgumentException("Memory not found - " + memory);
+        return result;
+    }
+
+    public void setCardMemory(String memory, PhysicalCard card) {
+        if(memory != null) {
+            memory = memory.toLowerCase();
+        }
+        getRelevantCardMemory().removeAll(memory);
+        if (card != null)
+            getRelevantCardMemory().put(memory, card);
+    }
+
+
+    public void setCardMemory(String memory, Collection<? extends PhysicalCard> cards) {
+        if(memory != null) {
+            memory = memory.toLowerCase();
+        }
+        getRelevantCardMemory().removeAll(memory);
+        getRelevantCardMemory().putAll(memory, cards);
+    }
+
+    public Collection<PhysicalCard> getCardsFromMemory(String memory) {
+        if(memory != null) {
+            memory = memory.toLowerCase();
+        }
+        return getRelevantCardMemory().get(memory);
+    }
+
+    public PhysicalCard getCardFromMemory(String memory) {
+        if(memory != null) {
+            memory = memory.toLowerCase();
+        }
+        final Collection<PhysicalCard> physicalCards = getRelevantCardMemory().get(memory);
+        if (physicalCards.isEmpty())
+            return null;
+        if (physicalCards.size() != 1)
+            throw new RuntimeException("Unable to retrieve one card from memory: " + memory);
+        return physicalCards.iterator().next();
+    }
+
+
+
+
+    protected ActionContext getRelevantContext() { return _relevantContext; }
+    protected Map<String, String> getRelevantValueMemory() { return getRelevantContext().getValueMemory(); }
+    protected Multimap<String, PhysicalCard> getRelevantCardMemory() { return getRelevantContext().getCardMemory(); }
+
+
+    @Override
+    public DefaultGame getGame() {
+        return _game;
+    }
+
+    @Override
+    public GameState getGameState() { return _game.getGameState(); }
+
+
+    public EffectResult getEffectResult() {
+        return effectResult;
+    }
+
+
+    public Effect getEffect() {
+        return effect;
+    }
+
+    public boolean acceptsAllRequirements(Stream<Requirement> requirements) {
+        return requirements.allMatch(requirement -> requirement.accepts(this));
+    }
+
+    public boolean acceptsAllRequirements(Requirement[] requirementArray) {
+        return acceptsAllRequirements(Arrays.stream(requirementArray));
+    }
+
+    public boolean acceptsAllRequirements(List<Requirement> requirementList) {
+        return acceptsAllRequirements(requirementList.stream());
+    }
+
+    public boolean acceptsAnyRequirements(Requirement[] requirementArray) {
+        return Arrays.stream(requirementArray).anyMatch(requirement -> requirement.accepts(this));
+    }
+
+    public String substituteText(String text) {
+        String result = text;
+        while (result.contains("{")) {
+            int startIndex = result.indexOf("{");
+            int endIndex = result.indexOf("}");
+            String memory = result.substring(startIndex + 1, endIndex);
+            String cardNames = TextUtils.getConcatenatedCardLinks(getCardsFromMemory(memory));
+            if (cardNames.equalsIgnoreCase("none")) {
+                try {
+                    cardNames = getValueFromMemory(memory);
+                } catch (IllegalArgumentException ex) {
+                    cardNames = "none";
+                }
+            }
+            result = result.replace("{" + memory + "}", cardNames);
+        }
+        return result;
+    }
+
+    public List<PhysicalCard> getZoneCards(PlayerSource playerSource, Zone zone) {
+        return _game.getGameState().getZoneCards(playerSource.getPlayerId(this), zone);
+    }
+
+}

@@ -1,0 +1,236 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+	<title>Deck Builder ST:CCG-GEMP</title>
+
+		<!-- JQuery CSS -->
+	<link rel="stylesheet" type="text/css" href="css/dark-hive/jquery-ui-1.8.16.custom.css">
+	<link rel="stylesheet" type="text/css" href="css/jquery.contextMenu.css">
+		<!-- Gemp CSS -->
+	<link rel="stylesheet" type="text/css" href="src/DeckBuilder/index.css">
+	<link rel="stylesheet" type="text/css" href="css/gemp-001/deckBuild.css">
+	<link rel="stylesheet" type="text/css" href="css/gemp-001/cardDisplay.css">
+		<!-- Other Resources -->
+	<link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" href="images/icons/favicon-16x16.png">
+	<link rel="manifest" href="images/icons/site.webmanifest">
+
+</head>
+
+<body class="ui-layout-container" cz-shortcut-listen="true">
+
+	<div id="deckDiv" class="ui-layout-center ui-layout-pane ui-layout-pane-center">
+
+		<div id="manageDecks">
+
+			<button id="newDeckBut" title="New deck" class="menu-button">
+				<span class="ui-icon ui-icon-document"></span>
+			</button>
+
+			<button id="saveDeckBut" title="Save deck" class="menu-button">
+				<span class="ui-icon ui-icon-disk"></span>
+			</button>
+
+			<button id="renameDeckBut" title="Rename deck" class="menu-button">
+				<span class="ui-icon ui-icon-pencil"></span>
+			</button>
+
+			<button id="copyDeckBut" title="Copy deck to new" class="menu-button">
+				<span class="ui-icon ui-icon-copy"></span>
+			</button>
+
+			<button id="importDeckBut" title="Import Deck" class="menu-button">
+				<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>
+			</button>
+
+			<button id="libraryListBut" title="Open Library" class="menu-button">
+				<span class="ui-icon ui-icon-bookmark"></span>
+			</button>
+
+			<button id="deckListBut" title="Deck list" class="menu-button">
+				<span class="ui-icon ui-icon-suitcase"></span>
+			</button>
+
+			<label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+			</select>
+
+			<button id="notesBut" title="Add/Edit Notes" class="menu-button">
+				<span class="ui-icon ui-icon-plus"></span>
+			</button>
+
+			<span id="editingDeck">New deck</span>
+
+			<label for="collectionSelect"></label><select id="collectionSelect">
+				<option value="default">All cards</option>
+				<option value="permanent">My cards</option>
+				<option value="trophy">Trophies</option>
+			</select>
+		</div>
+
+		<div id="missionsDiv">Missions</div>
+		<div id="seedDeckDiv">Seed Deck</div>
+
+		<div id="statsDiv">
+			<div id="deckStats"></div>
+		</div>
+
+		<div id="decksRegion"></div>
+	</div>
+
+	<div id="collectionDiv" class="ui-layout-east ui-layout-pane ui-layout-pane-east">
+		<div id="cardCollectionDiv"></div>
+		<div id='filter-main'>
+			<div id='card-navigation'>
+				<button id='previousPage' class='navigation-butt'></button>
+				<div id='countSlider'></div>
+				<button id='nextPage' class='navigation-butt'></button>
+			</div>
+			<div id='advanced-filter'>
+				<a target='_blank' href='https://wiki.lotrtcgpc.net/wiki/Special:RunQuery/CardSearch'>
+					Looking for more?<br>Try the Wiki's Advanced Card Search.
+				</a>
+			</div>
+			<div id='filter-inputs'>
+				<label for='setSelect'></label><select id='setSelect'>
+					<option value='101'>Premiere</option>
+				</select>
+				<label for='nameInput'></label><input type='text' id='nameInput' placeholder='Card name' value=''>
+				<label for='sortSelect'></label><select id='sortSelect'>
+					<option value=''>Sort by:</option>
+					<option value='name'>Name</option>
+					<option value='cardType,name'>Card Type</option>
+					<option value='tribbleValue,name'>Tribble Value</option>
+				</select>
+			</div>
+			<div id='affiliation-buttons'>
+				<div id='affiliations'>
+					<input type='checkbox' class='affiliationFilter' id='BAJORAN'/>
+						<label for='BAJORAN' id='labelBAJORAN'>
+							<img src='https://www.trekcc.org/images/icons/1e/1E-BAJ.gif' alt="Bajoran"/>
+						</label>
+					<input type='checkbox' class='affiliationFilter' id='BORG'/><label for='BORG' id='labelBORG'><img src='https://www.trekcc.org/images/icons/1e/1E-BORG.gif' alt="Borg"/></label>
+					<input type='checkbox' class='affiliationFilter' id='CARDASSIAN'/><label for='CARDASSIAN' id='labelCARDASSIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-CARD.gif' alt="Cardassian"/></label>
+					<input type='checkbox' class='affiliationFilter' id='DOMINION'/><label for='DOMINION' id='labelDOMINION'><img src='https://www.trekcc.org/images/icons/1e/1E-DOM.gif' alt="Dominion"/></label>
+					<input type='checkbox' class='affiliationFilter' id='FEDERATION'/><label for='FEDERATION' id='labelFEDERATION'><img src='https://www.trekcc.org/images/icons/1e/1E-FED.gif' alt="Federation"/></label>
+					<input type='checkbox' class='affiliationFilter' id='FERENGI'/><label for='FERENGI' id='labelFERENGI'><img src='https://www.trekcc.org/images/icons/1e/1E-FER.gif' alt="Ferengi"/></label>
+					<input type='checkbox' class='affiliationFilter' id='HIROGEN'/><label for='HIROGEN' id='labelHIROGEN'><img src='https://www.trekcc.org/images/icons/1e/1E-HIR.gif' alt="Hirogen"/></label>
+					<input type='checkbox' class='affiliationFilter' id='KAZON'/><label for='KAZON' id='labelKAZON'><img src='https://www.trekcc.org/images/icons/1e/1E-KAZ.gif' alt="Kazon"/></label>
+					<input type='checkbox' class='affiliationFilter' id='KLINGON'/><label for='KLINGON' id='labelKLINGON'><img src='https://www.trekcc.org/images/icons/1e/1E-KLG.gif' alt="Klingon"/></label>
+					<input type='checkbox' class='affiliationFilter' id='NEUTRAL'/><label for='NEUTRAL' id='labelNEUTRAL'><img src='https://www.trekcc.org/images/icons/1e/1E-NEU.gif' alt="Neutral"/></label>
+					<input type='checkbox' class='affiliationFilter' id='NON_ALIGNED'/><label for='NON_ALIGNED' id='labelNON_ALIGNED'><img src='https://www.trekcc.org/images/icons/1e/1E-NON.gif' alt="Non-Aligned'"/></label>
+					<input type='checkbox' class='affiliationFilter' id='ROMULAN'/><label for='ROMULAN' id='labelROMULAN'><img src='https://www.trekcc.org/images/icons/1e/1E-ROM.gif' alt="Romulan"/></label>
+					<input type='checkbox' class='affiliationFilter' id='STARFLEET'/><label for='STARFLEET' id='labelSTARFLEET'><img src='https://www.trekcc.org/images/icons/1e/1E-STF.gif' alt="Starfleet"/></label>
+					<input type='checkbox' class='affiliationFilter' id='VIDIIAN'/><label for='VIDIIAN' id='labelVIDIIAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VID.gif' alt="Vidiian"/></label>
+					<input type='checkbox' class='affiliationFilter' id='VULCAN'/><label for='VULCAN' id='labelVULCAN'><img src='https://www.trekcc.org/images/icons/1e/1E-VUL.gif' alt="Vulcan"/></label>
+				</div>
+		</div>
+		<div id='collection-display' style='display:flex;flex-direction:column;position:relative;'></div>
+	</div>
+
+	<div id="cardInfoDiv" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1"
+		role="dialog" aria-labelledby="ui-dialog-title-1">
+		<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+			<span class="ui-dialog-title" id="ui-dialog-title-1">Card information</span>
+			<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">
+				<span class="ui-icon ui-icon-closethick">close</span>
+			</a>
+		</div>
+
+		<div class="ui-dialog-content ui-widget-content"></div>
+	</div>
+
+		<div id="combos">
+			<select id='cardType' class='cardFilterSelect'>
+				<option value=''>All Card Types</option>
+				<option value='ARTIFACT'>Artifacts</option>
+				<option value='DILEMMA'>Dilemmas</option>
+				<option value='DOORWAY'>Doorways</option>
+				<option value='EQUIPMENT'>Equipment</option>
+				<option value='EVENT'>Events</option>
+				<option value='FACILITY'>Facilities</option>
+				<option value='INCIDENT'>Incidents</option>
+				<option value='INTERRUPT'>Interrupts</option>
+				<option value='MISSION'>Missions</option>
+				<option value='OBJECTIVE'>Objectives</option>
+				<option value='PERSONNEL'>Personnel</option>
+				<option value='SHIP'>Ships</option>
+				<option value='TRIBBLE'>Tribbles</option>
+				<option value='TROUBLE'>Troubles</option>
+			</select>
+<!--			<select id='keyword' class="cardFilterSelect">
+				<option value=''>No keyword filtering</option>
+				<option value='ADMIRAL'>Admiral</option>
+			</select>
+			<select id='type' class="cardFilterSelect">
+				<option value=''>All physical card types</option>
+				<option value='pack'>Packs</option>
+				<option value='card'>Cards</option>
+				<option value='foil'>Foils</option>
+				<option value='nonFoil'>Non-foils</option>
+				<option value='tengwar'>Tengwar</option>
+			</select> -->
+			<select id='tribblePower' class="cardFilterSelect">
+				<option value=''>All tribble powers</option>
+				<option value='cheat'>Cheat</option>
+				<option value='convert'>Convert</option>
+			</select>
+			<select id='race' class="cardFilterSelect">
+				<option value=''>All races</option>
+				<option value='BALROG'>Balrog</option>
+				<option value='CREATURE'>Creature</option>
+				<option value='DWARF'>Dwarf</option>
+				<option value='ELF'>Elf</option>
+				<option value='ENT'>Ent</option>
+				<option value='HALF_TROLL'>Half-troll</option>
+				<option value='HOBBIT'>Hobbit</option>
+				<option value='MAIA'>Maia</option>
+			</select>
+			<select id='itemClass' class="cardFilterSelect">
+				<option value=''>All classes</option>
+				<option value='ARMOR'>Armor</option>
+				<option value='BOX'>Box</option>
+				<option value='BRACERS'>Bracers</option>
+				<option value='BROOCH'>Brooch</option>
+				<option value='CLOAK'>Cloak</option>
+			</select>
+			<select id='phase' class="cardFilterSelect">
+				<option value=''>All Phases</option>
+				<option value='FELLOWSHIP'>Fellowship</option>
+				<option value='SHADOW'>Shadow</option>
+				<option value='MANEUVER'>Maneuver</option>
+				<option value='ARCHERY'>Archery</option>
+				<option value='ASSIGNMENT'>Assignment</option>
+				<option value='SKIRMISH'>Skirmish</option>
+				<option value='REGROUP'>Regroup</option>
+				<option value='RESPONSE'>Response</option>
+			</select>
+		</div>
+	</div>
+	
+	<!-- JQuery JavaScript -->
+	<script type="text/javascript" src="js/jquery/jquery-1.6.2.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.spinnerControl.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.layout.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.touchSwipe.js"></script>
+
+	<!-- Code shared by other pages -->
+	<script type="text/javascript" src="js/gemp-022/inheritance.js"></script>
+	<script type="text/javascript" src="js/gemp-022/common.js"></script>
+	<script type="text/javascript" src="js/gemp-022/communication.js"></script>
+	<script type="text/javascript" src="js/gemp-022/deliveryService.js"></script>
+	<script type="text/javascript" src="js/gemp-022/jCardGroup.js"></script>
+	<script type="text/javascript" src="js/gemp-022/jCards.js"></script>
+
+	<!-- Deck building JS -->
+	<script type="text/javascript" src="js/gemp-022/cardFilter.js"></script>
+	<script type="text/javascript" src="js/gemp-022/deckBuildingUi.js"></script>
+	<script type="text/javascript" src="src/DeckBuilder/deckBuilder.js"></script>
+
+</body>
+
+</html>

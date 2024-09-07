@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>Game Table ST:CCG-GEMP</title>
+
+        <!-- JQuery CSS -->
+    <link rel="stylesheet" type="text/css" href="css/dark-hive/jquery-ui-1.8.16.custom.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.contextMenu.css">
+    <link rel="stylesheet" type="text/css" href="css/gemp-001/spinnerControl.css">
+        <!-- Gemp CSS -->
+    <link rel="stylesheet" type="text/css" href="css/gemp-001/game.css">
+    <link rel="stylesheet" type="text/css" href="css/gemp-001/cardDisplay.css">
+        <!-- Other Resources -->
+    <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="images/icons/favicon-16x16.png">
+    <link rel="manifest" href="images/icons/site.webmanifest">
+    <!-- Audio file downloaded from https://material.io/design/sound/sound-resources.html -->
+    <audio id="awaitAction" src="/gemp-module/src/assets/awaiting_decision.mp3" type="audio/mpeg" preload="metadata"></audio>
+
+</head>
+<body>
+    <div id="main">
+        <div id="alertBox" class="ui-widget-content rounded">
+            <div id="alertText"></div>
+            <div id="alertButtons"></div>
+        </div>
+        <div id="gameStateElem" class="ui-widget-content rounded"></div>
+        <div id="statsDiv" class="ui-widget-content stats rounded">
+            <div class="fpArchery"></div>
+            <div class="shadowArchery"></div>
+            <div class="move"></div>
+        </div>
+        <div id="bottomLeftTabs">
+            <ul>
+                <li id="chatBoxTab"><a href="#chatBox" class="slimTab">Chat</a></li>
+                <li id="settingsBoxTab"><a href="#settingsBox" class="slimTab">Settings</a></li>
+                <li id="gameOptionsTab"><a href='#gameOptionsBox' class='slimTab'>Options</a></li>
+                <li id="playersInRoomTab"><a href='#playersInRoomBox' class='slimTab'>Players</a></li>
+            </ul>
+                <div id="chatBox" class="slimPanel"></div>
+                <div id="settingsBox" class="slimPanel">
+
+                    <label for="foilPresentation">Foil presentation:</label><select id="foilPresentation">
+                        <option value="static">Static Layer</option>
+                        <option value="animated">Animated Layer</option>
+                        <option value="none">None</option>
+                    </select><br/>
+
+                    <input id="autoAccept" type="checkbox" value="selected" />
+                    <label for="autoAccept">Auto-accept after selecting action or card</label><br />
+
+                    <input id="alwaysDropDown" type="checkbox" value="selected" />
+                    <label for="alwaysDropDown">Always display drop-down in answer selection</label><br />
+
+                    <div id="autoPassOptionsDiv">
+                        Phases when game auto-passes for you, if you have no phase actions to play<br />
+                        <!-- Auto-pass options defined in JavaScript -->
+                    </div>
+
+                </div>
+                <div id="gameOptionsBox" class="slimPanel">
+                    <button id="concedeGame">Concede Game</button><br />
+                    <button id="cancelGame">Request Game Cancel</button>
+                </div>
+                <div id="playersInRoomBox" class="slimPanel"></div>
+        </div>
+        <div id="replay">
+            <button id='slowerButton'>Slower</button>
+            <button id='fasterButton'>Faster</button><br/>
+            <img id='replayButton' src='images/play.png' width='64' height='64' alt="Replay">
+        </div>
+        <div id="infoDialog"></div>
+    </div>
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="js/jquery/jquery-1.6.2.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.spinnerControl.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.layout.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.touchSwipe.js"></script>
+        <!-- Code shared by other pages -->
+    <script type="text/javascript" src="js/gemp-022/inheritance.js"></script>
+    <script type="text/javascript" src="js/gemp-022/chat.js"></script>
+    <script type="text/javascript" src="js/gemp-022/common.js"></script>
+    <script type="text/javascript" src="js/gemp-022/communication.js"></script>
+    <script type="text/javascript" src="js/gemp-022/deliveryService.js"></script>
+    <script type="text/javascript" src="js/gemp-022/jCardGroup.js"></script>
+    <script type="text/javascript" src="js/gemp-022/jCards.js"></script>
+        <!-- Game table specific JS -->
+    <script type="text/javascript" src="js/gemp-022/gameAnimations.js"></script>
+    <script type="text/javascript" src="js/gemp-022/gameUi.js"></script>
+    <script type="text/javascript" src="src/Game/game.js"></script>
+
+</body>
+</html>

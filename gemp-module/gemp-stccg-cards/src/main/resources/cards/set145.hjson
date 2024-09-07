@@ -1,0 +1,46 @@
+// Set 145: No Tribble at All
+
+{
+    145_002: {
+        title: 1 Tribble - Evolve
+        type: tribble
+        tribble-value: 1
+        tribble-power: evolve
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/20V.jpg
+    }
+    145_003: {
+        title: 1 Tribble - Process
+        type: tribble
+        tribble-value: 1
+        tribble-power: process
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/21V.jpg
+    }
+    145_005: {
+        title: 10 Tribbles - Evolve
+        type: tribble
+        tribble-value: 10
+        tribble-power: evolve
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/23V.jpg
+    }
+    145_010: {
+        title: "1,000 Tribbles - Freeze"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: freeze
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/28V.jpg
+    }
+    145_011: {
+        title: "1,000 Tribbles - Process"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: process
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/29V.jpg
+    }
+    145_016: {
+        title: "100,000 Tribbles - Mutate"
+        type: tribble
+        tribble-value: 100000
+        tribble-power: mutate
+        image-url: https://www.trekcc.org/tribbles/cardimages/ntaa/34V.jpg
+    }
+}

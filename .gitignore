@@ -9,7 +9,7 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
-
+.env
 database/*
 !database/.placeholder
 logs/*
@@ -21,4 +21,3 @@ remote-sync
 replay
 !replay/.placeholder
 logs/nohup.out
-gemp-lotr/docker/docker-compose.yml

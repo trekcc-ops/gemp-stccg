@@ -1,0 +1,46 @@
+<script type="text/javascript">
+	$("eventsMain").ready(
+		function () {
+			$("#eventsMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+			$("#event-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
+			
+			var leagueUI = new LeagueResultsUI("/gemp-stccg-server");
+			
+			var tourneyUI = new TournamentResultsUI("/gemp-stccg-server");
+
+			$(".loadFinishedTournaments").button().click(
+				function() {
+					tourneyUI.loadHistoryTournaments();
+				});
+		});
+	
+	$("tournamentResults").ready(
+				function () {
+					
+				});
+
+</script>
+
+<div id="eventsMain" class="hall-tab flex-horizontal">
+	<div id="event-tabs" class="sub-tabs">
+		<ol>
+			<li><a href="#leagues">Current Leagues</a></li>
+			<li><a href="#tournaments">Current Tournaments</a></li>
+		</ol>
+	</div>
+	<div id="leagues" class="article">
+		
+		All times are GMT based.
+		<div id="leagueResults"></div>
+	</div>
+	
+	<div id="tournaments" class="article"> 
+		<script type="text/javascript">
+			
+
+		</script>
+		All times are GMT based.
+		<div class="loadFinishedTournaments">Load finished tournaments</div>
+		<div id="tournamentResults"></div>
+	</div>
+</div>

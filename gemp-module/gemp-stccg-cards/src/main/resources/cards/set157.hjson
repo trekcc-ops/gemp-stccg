@@ -1,0 +1,52 @@
+// Set 157: Nothing But Tribble
+
+{
+    157_001: {
+        title: "1 Tribble - Convert"
+        type: tribble
+        tribble-value: 1
+        tribble-power: convert
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/55V.jpg
+    }
+    157_004: {
+        title: "10 Tribbles - Advance"
+        type: tribble
+        tribble-value: 10
+        tribble-power: advance
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/58V.jpg
+		effects: {
+		    type: playOutOfSequence
+            requires: {
+                type: tribbleSequenceBroken
+            }
+		}
+    }
+    157_010: {
+        title: "1,000 Tribbles - Masaka"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: masaka
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/64V.jpg
+    }
+    157_011: {
+        title: "1,000 Tribbles - Reverse"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: reverse
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/65V.jpg
+    }
+    157_014: {
+        title: "10,000 Tribbles - Masaka"
+        type: tribble
+        tribble-value: 10000
+        tribble-power: masaka
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/68V.jpg
+    }
+    157_015: {
+        title: "10,000 Tribbles - Reverse"
+        type: tribble
+        tribble-value: 10000
+        tribble-power: reverse
+        image-url: https://www.trekcc.org/tribbles/cardimages/nbt/69V.jpg
+    }
+}

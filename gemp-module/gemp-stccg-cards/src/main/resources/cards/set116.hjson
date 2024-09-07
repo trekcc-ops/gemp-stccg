@@ -1,0 +1,264 @@
+// Set 116: Blaze of Glory
+
+{
+    116_011: {
+        title: Battle Bridge Door
+        type: doorway
+        property-logo: tng-logo
+        image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
+    }
+    116_018: {
+        title: Romulan Disruptor Rifle
+        type: java def
+    }
+    116_052: {
+        title: Furel
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Strong believer in the Prophets. While with Shakaar resistance cell, lost his left arm saving Kira Nerys from Cardassians. Refuses synthetic replacement.
+        skill-box: "[*] ENGINEER [*] Biology [*] Geology [*] Resistance [DL] Sniper"
+        integrity: 6
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/bog/furel.gif
+    }
+    116_053: {
+        title: Lupaza
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Friend of Kira Nerys. Romantically involved with Furel. Member of Shakaar resistance cell. Fought provisional government over soil reclamators.
+        skill-box: "[*] MEDICAL [*] Resistance [*] Smuggling [*] Computer Skill"
+        integrity: 7
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/bog/lupaza.gif
+    }
+    116_054: {
+        title: Riker Wil
+        type: java def
+    }
+    116_059: {
+        title: Gul Madred
+        type: personnel
+        affiliation: cardassian
+        property-logo: tng-logo
+        classification: OFFICER
+        persona: Madred
+        icons: command
+        lore: "Ruthless Obsidian Order officer. Madred's torture of Jean-Luc Picard quickly degenerated into a desperate attempt to break Picard's will. A pitiable man."
+        skill-box: "[*] Obsidian Order [*] SECURITY [*] Treachery [*] Archaeology [DL] Torture"
+        integrity: 2
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/16.jpg
+    }
+    116_070: {
+        title: Enrique Muniz
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff
+        lore: "Highly valued assistant to Chief O'Brien. Called \"Quique\" by his friends. Joked that he wants to grow up to be O'Brien - just not as old and grizzled."
+        skill-box: "[*] Computer Skill x2 [*] Honor [*] Navigation [*] Geology"
+        integrity: 8
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/55.jpg
+    }
+    116_071: {
+        title: "Miles O'Brien"
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Chief of operations on Deep Space 9. Friend of Julian. Father of Molly and Kirayoshi. Husband of Keiko. Likes kayaking, darts and historical battle simulations.
+        skill-box: "[*] ENGINEER [*] Physics [*] Computer Skill [*] Honor [*] Transporter Skill [DL] Defense System Upgrade"
+        integrity: 8
+        cunning: 7
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/213VP.jpg
+    }
+    116_072: {
+        title: Sarita Carson
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: SECURITY
+        uniqueness: universal
+        icons: staff
+        lore: Ensign Carson is one of the many talented navigators serving Starfleet. Former member of Nova Squadron. Assigned to bridge duty aboard U.S.S. Defiant.
+        skill-box: "[*] Navigation [*] SCIENCE"
+        integrity: 6
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/emissarysup/61.jpg
+    }
+    116_074: {
+        title: "Hon'Tihl"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: OFFICER
+        icons: command
+        lore: "First officer and sole survivor of the I.K.C. Toh'Kaht. Briefly succeeded captain Kee'Bhor. Suffering from the influence of Saltah'na energy spheres."
+        skill-box: "[*] SCIENCE [*] Geology [*] Treachery"
+        integrity: 6
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/bog/hontihl.gif
+    }
+    116_080: {
+        title: "N'Garen"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SECURITY
+        uniqueness: universal
+        icons: staff
+        lore: "Typical of young Klingons serving the Empire. Daughter of Tse'Dek. Assigned to tactical/weapons station on I.K.C. Rotarran by General Martok."
+        skill-box: "[*] Astrophysics [*] SCIENCE [*] Youth"
+        integrity: 7
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ngaren.jpg
+    }
+    116_081: {
+        title: Voktak
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: OFFICER
+        uniqueness: universal
+        icons: staff
+        lore: "Typical front-line Klingon officer. Engaged Federation forces on Ajilon Prime. Once commanded the I.K.C. K'Ratak while its captain recovered from war injuries."
+        skill-box: "[*] Navigation [*] Stellar Cartography [*] Treachery"
+        integrity: 4
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/bog/voktak.gif
+    }
+    116_082: {
+        title: "Wo'Din"
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SCIENCE
+        uniqueness: universal
+        icons: staff
+        lore: Typical Klingon inspired by tales of glorious battle against the Dominion. Learned diplomatic skills from his father, a former Klingon negotiator.
+        skill-box: "[*] Diplomacy [*] Stellar Cartography"
+        integrity: 5
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/TWT-wodin.jpg
+    }
+    116_084: {
+        title: Zetal
+        type: personnel
+        affiliation: klingon
+        property-logo: ds9-logo
+        classification: SCIENCE
+        uniqueness: universal
+        icons: staff
+        lore: Typical skilled Klingon serving in the fleet during the war with Cardassia. Her ship took part in a raid which destroyed an outpost on Korma in 2372.
+        skill-box: "[*] Biology"
+        integrity: 6
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/bog/zetal.gif
+    }
+    116_089: {
+        title: "D'Vin"
+        type: personnel
+        uniqueness: universal
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Brilliant Romulan astro-archaeologist. Member of the Romulan underground. Works closely with Spock for reunification of the Vulcan and Romulan peoples.
+        skill-box: "[*] Astrophysics [*] Navigation [*] Youth"
+        integrity: 5
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/bog/dvin.gif
+    }
+    116_090: {
+        title: Dr. Koramar
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Brilliant Romulan astro-archaeologist. Member of the Romulan underground. Works closely with Spock for reunification of the Vulcan and Romulan peoples.
+        skill-box: "[*] ENGINEER [*] Archaeology [*] Honor [*] Stellar Cartography"
+        integrity: 8
+        cunning: 9
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/bog/drkoramar.gif
+    }
+    116_095: {
+        title: "R'Mal"
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Typical Romulan scientist. Led team of archaeologists on an unsuccessful mission to locate an Iconian gateway in Romulan territory.
+        skill-box: "[*] Archaeology"
+        integrity: 7
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/bog/rmal.gif
+    }
+    116_100: {
+        title: Keldon
+        type: ship
+        affiliation: cardassian
+        uniqueness: universal
+        property-logo: ds9-logo
+        lore: Cardassian warship. More powerful than Galor-class spacecraft. Design commissioned by the Central Command after war with Federation in 2366.
+        ship-class: KELDON CLASS
+        staffing: command,staff,staff
+        gametext: Tractor Beam
+        range: 8
+        weapons: 8
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/bog/keldon.gif
+    }
+    116_105: {
+        title: I.K.C. Lukara
+        type: ship
+        affiliation: klingon
+        property-logo: ds9-logo
+        lore: Bird-of-Prey commanded by Kang. Transported its commander and his comrades to Secarus IV in 2370, to confront the Albino in his stronghold.
+        ship-class: "K'VORT CLASS"
+        staffing: staff
+        gametext: Cloaking Device, Tractor Beam
+        range: 7
+        weapons: 7
+        shields: 7
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/173VP.jpg
+    }
+    116_108: {
+        title: Romulan Shuttle
+        type: ship
+        affiliation: romulan
+        uniqueness: universal
+        property-logo: ds9-logo
+        lore: Romulan shuttlecraft. Favored by the Tal Shiar. Senator Vreenak commanded one on his diplomatic mission to Deep Space 9.
+        ship-class: SHUTTLECRAFT
+        gametext: Cloaking Device
+        range: 7
+        weapons: 3
+        shields: 3
+        image-url: https://www.trekcc.org/1e/cardimages/bog/romulanshuttle.gif
+    }
+}

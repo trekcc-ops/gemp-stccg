@@ -1,0 +1,43 @@
+// Set 172: The Maquis
+
+{
+    172_028: {
+        title: Cal Hudson
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: OFFICER
+        icons: command,maquis
+        lore: "Starfleet's attaché to the Federation's Demilitarized Zone colonies. Friend of Benjamin Sisko. Widower who found new purpose as leader of a Maquis cell."
+        skill-box: "[*] Diplomacy [*] Leadership [*] Navigation [*] Treachery [*] Law [*] Smuggling"
+        integrity: 4
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/maquis/28V.jpg
+    }
+    172_040: {
+        title: "M'vil"
+        type: personnel
+        affiliation: non-aligned,klingon
+        property-logo: ds9-logo
+        classification: MEDICAL
+        icons: staff,maquis
+        uniqueness: universal
+        lore: One of many Klingons seeking glory outside the Klingon Empire. She sympathized with the grievances of the Maquis.
+        skill-box: "[*] Archaeology [*] Stellar Cartography [*] Biology"
+        integrity: 6
+        cunning: 5
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/maquis/40V.jpg
+        image-options: [
+            {
+                affiliation: non-aligned
+                image-url: https://www.trekcc.org/1e/cardimages/maquis/40V.jpg
+            }
+            {
+                affiliation: klingon
+                image-url: https://www.trekcc.org/1e/cardimages/maquis/40VA.jpg
+            }
+        ]
+    }
+}

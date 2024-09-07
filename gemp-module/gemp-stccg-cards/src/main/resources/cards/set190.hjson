@@ -1,0 +1,39 @@
+// Set 190: Star Trek 50 [Tribbles]
+
+{
+    190_004: {
+        title: 10 Tribbles - Convert
+        type: tribble
+        tribble-value: 10
+        tribble-power: convert
+        image-url: https://www.trekcc.org/tribbles/cardimages/50th/121V.jpg
+    }
+    190_005: {
+        title: 100 Tribbles - Cycle
+        type: tribble
+        tribble-value: 100
+        tribble-power: cycle
+        image-url: https://www.trekcc.org/tribbles/cardimages/50th/122V.jpg
+    }
+    190_009: {
+        title: "1,000 Tribbles - Cheat"
+        type: tribble
+        tribble-value: 1000
+        tribble-power: cheat
+        image-url: https://www.trekcc.org/tribbles/cardimages/50th/126V.jpg
+        effects: {
+            type: playOutOfSequence
+            requires: {
+                type: nextTribbleInSequence
+                value: 100
+            }
+        }
+    }
+    190_012: {
+        title: "10,000 Tribbles - Exchange"
+        type: tribble
+        tribble-value: 10000
+        tribble-power: exchange
+        image-url: https://www.trekcc.org/tribbles/cardimages/50th/129V.jpg
+    }
+}

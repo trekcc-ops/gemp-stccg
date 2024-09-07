@@ -1,0 +1,45 @@
+// Set 103: Alternate Universe
+
+{
+    103_096: {
+        title: Montgomery Scott
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        icons: command
+        classification: ENGINEER
+        lore: Chief Engineer of the Starship Enterprise. Scotty was rescued by the U.S.S. Enterprise after he spent 75 years in the pattern buffer of the U.S.S. Jenolen.
+        skill-box: "[*] ENGINEER [*] Astrophysics [*] Honor [*] Miracle Worker [*] Transporter Skill"
+        integrity: 7
+        cunning: 8
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/MontgomeryScott.jpg
+    }
+    103_109: {
+        title: Maques
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: Male leader of the Cairn, a telepathic species who had no concept of spoken language until Federation contact was initiated by Lwaxana Troi in 2370.
+        skill-box: "[*] Empathy x2 [*] Diplomacy"
+        integrity: 8
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/au/maques.gif
+    }
+    103_118: {
+        title: "I.K.C. K'Ratak"
+        type: ship
+        affiliation: klingon
+        property-logo: tng-logo
+        ship-class: "K'VORT CLASS"
+        lore: Bird-of-Prey named in honor of the author of the classic work of Klingon literature, The Dream of the Fire.
+        staffing: staff
+        gametext: Cloaking Device, Tractor Beam
+        range: 6
+        weapons: 8
+        shields: 6
+        image-url: https://www.trekcc.org/1e/cardimages/au/ikckratak.gif
+    }
+}
