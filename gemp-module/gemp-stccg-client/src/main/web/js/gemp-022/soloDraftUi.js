@@ -115,7 +115,7 @@ var GempLotrSoloDraftUI = Class.extend({
                 }
             });
 
-        this.comm.getCollection(this.leagueType, "sort:cardType,culture,name", 0, 1000,
+        this.comm.getCollection(this.leagueType, "sort:cardType,name", 0, 1000,
             function (xml) {
                 var root = xml.documentElement;
                 if (root.tagName == "collection") {

@@ -45,7 +45,6 @@ public class CardBlueprint {
     private Integer _opponentSpan;
     private MissionType _missionType;
     private FacilityType _facilityType;
-    private Culture culture;
     private Race race;
     private Map<Keyword, Integer> keywords;
     private int cost = -1;
@@ -214,10 +213,7 @@ public class CardBlueprint {
     public Side getSide() {
         return side;
     }
-    public void setCulture(Culture culture) {
-        this.culture = culture;
-    }
-    public Culture getCulture() { return culture; }
+
     public void setRace(Race race) {
         this.race = race;
     }

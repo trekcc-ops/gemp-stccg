@@ -32,7 +32,7 @@ Other data definitions besides cards are also stored in this module, including b
 
 ## gemp-stccg-common
 
-This module contains definitions used throughout the project, including enums for card types, cultures, zones, and the like.  It also contains certain low-level classes for HTTP responses.
+This module contains definitions used throughout the project, including enums for card types, affiliations, zones, and the like.  It also contains certain low-level classes for HTTP responses.
 
 
 ## gemp-stccg-logic

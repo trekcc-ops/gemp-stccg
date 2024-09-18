@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.lotr.Token;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 
 import java.util.Collection;
@@ -32,8 +31,6 @@ public interface GameStateListener {
     void setCurrentPlayerId(String playerId);
 
     void setCurrentPhase(String currentPhase);
-
-    void addTokens(PhysicalCard card, Token token, int count);
 
     void sendMessage(String message);
 

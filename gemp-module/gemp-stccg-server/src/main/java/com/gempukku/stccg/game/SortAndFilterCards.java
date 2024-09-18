@@ -3,7 +3,6 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.lotr.Culture;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.lotr.PossessionClass;
 import com.gempukku.stccg.common.filterable.lotr.Side;
@@ -72,7 +71,6 @@ public class SortAndFilterCards {
             case "strength" -> comparator = new StrengthComparator(blueprintMap);
             case "vitality" -> comparator = new VitalityComparator(blueprintMap);
             case "cardType" -> comparator = new CardTypeComparator(blueprintMap);
-            case "culture" -> comparator = new CultureComparator(blueprintMap);
             case "name" -> comparator = new NameComparator(blueprintMap);
             case "tribbleValue" -> comparator = new TribblesValueComparator(blueprintMap);
             default -> comparator = null;
@@ -430,25 +428,4 @@ public class SortAndFilterCards {
         }
     }
 
-    private static class CultureComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
-
-        private CultureComparator(Map<String, CardBlueprint> cardBlueprintMap) {
-            _cardBlueprintMap = cardBlueprintMap;
-        }
-
-        @Override
-        public int compare(CardItem o1, CardItem o2) {
-            Culture culture1 = _cardBlueprintMap.get(o1.getBlueprintId()).getCulture();
-            Culture culture2 = _cardBlueprintMap.get(o2.getBlueprintId()).getCulture();
-
-            return getOrdinal(culture1) - getOrdinal(culture2);
-        }
-
-        private int getOrdinal(Culture culture) {
-            if (culture == null)
-                return -1;
-            return culture.ordinal();
-        }
-    }
 }

@@ -161,26 +161,6 @@ button {
 	z-index: 100;
 }
 
-/*#culture-icon {
-	position: relative;
-	display: block;
-	width: 80%;
-	height: 80%;
-	top: 60%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
-	z-index:  1;
-	filter: invert(10%) sepia(12%) saturate(5075%) hue-rotate(332deg) brightness(120%) contrast(108%) 
-		drop-shadow(0 -10px 0 #FFFFFF88) drop-shadow(0 10px 0 #00000088);
-	opacity: 0.3;
-}*/
-
-.cultureHint {
-	position:relative;
-	top: 4px;
-}
-
 #gameHall {
 	overflow-y: scroll;
 	width: calc(100% );

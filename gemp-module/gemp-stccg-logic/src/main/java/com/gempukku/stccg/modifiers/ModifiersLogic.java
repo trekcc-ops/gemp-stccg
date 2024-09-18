@@ -759,12 +759,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             return Side.FREE_PEOPLE;
     }
 
-    private boolean canPlayerSpotCulture() {
-        for (Modifier ignored : getModifiers(ModifierEffect.SPOT_MODIFIER))
-            return false;
-        return true;
-    }
-
     @Override
     public int getSpotBonus(Filterable filter) {
         int result = 0;

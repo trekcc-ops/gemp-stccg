@@ -41,8 +41,6 @@ public class EventSerializer {
             eventElem.setAttribute("quadrant", gameEvent.getQuadrant());
         if (gameEvent.getLocationIndex() != null)
             eventElem.setAttribute("locationIndex", gameEvent.getLocationIndex().toString());
-        if (gameEvent.getToken() != null)
-            eventElem.setAttribute("token", gameEvent.getToken().name());
         if (gameEvent.getCount() != null)
             eventElem.setAttribute("count", gameEvent.getCount().toString());
         if (gameEvent.getOtherCardIds() != null)

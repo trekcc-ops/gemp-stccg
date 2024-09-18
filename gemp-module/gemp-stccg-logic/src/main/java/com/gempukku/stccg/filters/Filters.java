@@ -26,12 +26,9 @@ public class Filters {
     private static final Map<Uniqueness, Filter> _uniquenessFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
     private static final Map<Side, Filter> _sideFilterMap = new HashMap<>();
-    private static final Map<Culture, Filter> _cultureFilterMap = new HashMap<>();
     private static final Map<Keyword, Filter> _keywordFilterMap = new HashMap<>();
 
     static {
-        for (Culture culture : Culture.values())
-            _cultureFilterMap.put(culture, culture(culture));
         for (Side side : Side.values())
             _sideFilterMap.put(side, side(side));
         for (Zone zone : Zone.values())
@@ -456,10 +453,6 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.getBlueprint().getSpecialDownloadIconCount() == count;
     }
 
-    private static Filter culture(final Culture culture) {
-        return (game, physicalCard) -> (physicalCard.getBlueprint().getCulture() == culture);
-    }
-
     private static Filter keyword(final Keyword keyword) {
         return (game, physicalCard) -> game.getModifiersQuerying().hasKeyword(physicalCard, keyword);
     }
@@ -492,8 +485,6 @@ public class Filters {
             return Filters.sameCard((PhysicalCard) filter);
         else if (filter instanceof CardType)
             return _cardTypeFilterMap.get((CardType) filter);
-        else if (filter instanceof Culture)
-            return _cultureFilterMap.get((Culture) filter);
         else if (filter instanceof SkillName enumFilter)
             return _skillNameFilterMap.get(enumFilter);
         else if (filter instanceof CardIcon icon)

@@ -217,11 +217,6 @@ var CardFilter = Class.extend({
         $("#itemClass").change(filterOut);
         $("#phase").change(filterOut);
         $(".affiliationFilter").click(filterOut);
-
-/*        $("#labelDWARVEN,#labelELVEN,#labelGANDALF,#labelGONDOR,#labelROHAN,#labelSHIRE,#labelGOLLUM,#labelDUNLAND,#labelISENGARD,#labelMEN,#labelMORIA,#labelORC,#labelRAIDER,#labelSAURON,#labelURUK_HAI,#labelWRAITH").click(filterOut);
-        //Additional Hobbit Draft labels
-        $("#labelESGAROTH,#labelGUNDABAD,#labelMIRKWOOD,#labelSMAUG,#labelSPIDER,#labelTROLL").click(filterOut); */
-        
         this.collectionDiv = $("#collection-display");
         //collection-display
         pageElem.append(this.collectionDiv);

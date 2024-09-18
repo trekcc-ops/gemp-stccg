@@ -3,7 +3,6 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.lotr.Token;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 
@@ -25,7 +24,6 @@ public class GameEvent {
         MOVE_CARD_IN_PLAY("MCIP"), REMOVE_CARD_FROM_PLAY("RCFP"),
         ADD_ASSIGNMENT("AA"), REMOVE_ASSIGNMENT("RA"),
         START_SKIRMISH("SS"), REMOVE_FROM_SKIRMISH("RFS"), ADD_TO_SKIRMISH("ATS"), END_SKIRMISH("ES"),
-        ADD_TOKENS("AT"), REMOVE_TOKENS("RT"),
         SEND_MESSAGE("M"), SEND_WARNING("W"),
         GAME_STATS("GS"),
         CHAT_MESSAGE("CM"),
@@ -61,7 +59,6 @@ public class GameEvent {
     private String _phase;
     private Integer _count;
     private Boolean _bool;
-    private Token _token;
     private int[] _otherCardIds;
     private Map<String, CardDeck> _decks;
     private GameStats _gameStats;
@@ -120,15 +117,6 @@ public class GameEvent {
 
     public GameEvent zone(Zone zone) {
         _zone = zone;
-        return this;
-    }
-
-    public Token getToken() {
-        return _token;
-    }
-
-    public GameEvent token(Token token) {
-        _token = token;
         return this;
     }
 

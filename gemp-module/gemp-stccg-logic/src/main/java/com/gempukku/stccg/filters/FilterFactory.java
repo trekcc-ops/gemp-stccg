@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.lotr.Culture;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
 import com.gempukku.stccg.common.filterable.lotr.Race;
 import com.gempukku.stccg.common.filterable.lotr.Side;
@@ -91,16 +90,9 @@ public class FilterFactory {
         parameterFilters.put("affiliation", (parameter, environment) -> {
             final Affiliation affiliation = Affiliation.findAffiliation(parameter);
             if (affiliation == null)
-                throw new InvalidCardDefinitionException("Unable to find culture for: " + parameter);
+                throw new InvalidCardDefinitionException("Unable to find affiliation for: " + parameter);
             return (actionContext) -> affiliation;
         });
-        parameterFilters.put("culturefrommemory", ((parameter, environment) -> actionContext -> {
-            Set<Culture> cultures = new HashSet<>();
-            for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter)) {
-                cultures.add(physicalCard.getBlueprint().getCulture());
-            }
-            return Filters.or(cultures.toArray(new Culture[0]));
-        }));
         parameterFilters.put("hasattached",
                 (parameter, environment) -> {
                     final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);

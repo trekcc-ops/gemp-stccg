@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.lotr.Token;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
@@ -150,11 +149,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public void setCurrentPlayerId(String currentPlayerId) {
         appendEvent(new GameEvent(TURN_CHANGE).participantId(currentPlayerId));
-    }
-
-    @Override
-    public void addTokens(PhysicalCard card, Token token, int count) {
-        appendEvent(new GameEvent(ADD_TOKENS).card(card).token(token).count(count));
     }
 
     @Override
