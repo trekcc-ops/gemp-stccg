@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.discard.DiscountEffect;
 import com.gempukku.stccg.actions.playcard.PlayCardEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -89,11 +88,6 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         if (!_discountResolved) {
             final DiscountEffect discount = getNextPotentialDiscount();
             if (discount != null) {
-                if (_cardToAttach.getBlueprint().getSide() == Side.SHADOW) {
-                    int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _cardToAttach, _target, _twilightModifier, false);
-                    int requiredDiscount = Math.max(0, twilightCost - _game.getGameState().getTwilightPool() - getProcessedDiscount() - getPotentialDiscount());
-                    discount.setMinimalRequiredDiscount(requiredDiscount);
-                }
                 return discount;
             } else {
                 _discountResolved = true;

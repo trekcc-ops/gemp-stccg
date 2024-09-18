@@ -15,7 +15,7 @@
       "repeat": 1,
       "data": {
         "optionCount": 1,
-        "filter": "side:FREE_PEOPLE name:Bilbo set:30"
+        "filter": "name:Bilbo set:30"
       }
     },
     {
@@ -23,7 +23,7 @@
       "repeat": 1,
       "data": {
         "optionCount": 1,
-        "filter": "side:FREE_PEOPLE name:Gandalf set:30"
+        "filter": "name:Gandalf set:30"
       }
     },
     {
@@ -31,7 +31,7 @@
       "repeat": 1,
       "data": {
         "optionCount": 2,
-        "filter": "side:SHADOW set:31 rarity:R"
+        "filter": "set:31 rarity:R"
       }
     },
     {
@@ -44,7 +44,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "side:SHADOW set:31 rarity:X"
+              "filter": "set:31 rarity:X"
             }
           },
           {
@@ -52,7 +52,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 4,
-              "filter": "side:SHADOW set:31 rarity:U,R"
+              "filter": "set:31 rarity:U,R"
             }
           },
           {
@@ -60,7 +60,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 6,
-              "filter": "side:SHADOW set:31 rarity:U"
+              "filter": "set:31 rarity:U"
             }
           }
         ]
@@ -76,7 +76,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 2,
-              "filter": "side:SHADOW set:31 rarity:X"
+              "filter": "set:31 rarity:X"
             }
           },
           {
@@ -84,7 +84,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "side:SHADOW set:31 rarity:U,R"
+              "filter": "set:31 rarity:U,R"
             }
           },
           {
@@ -92,7 +92,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 5,
-              "filter": "side:SHADOW set:31 rarity:U"
+              "filter": "set:31 rarity:U"
             }
           },
           {
@@ -100,7 +100,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 8,
-              "filter": "side:SHADOW set:31 rarity:C"
+              "filter": "set:31 rarity:C"
             }
           }
         ]
@@ -116,7 +116,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "side:SHADOW set:31 rarity:U"
+              "filter": "set:31 rarity:U"
             }
           },
           {
@@ -124,7 +124,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 5,
-              "filter": "side:SHADOW set:31 rarity:C"
+              "filter": "set:31 rarity:C"
             }
           }
         ]
@@ -140,7 +140,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "side:SHADOW set:31 rarity:U"
+              "filter": "set:31 rarity:U"
             }
           },
           {
@@ -148,7 +148,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 4,
-              "filter": "side:SHADOW set:31 rarity:C"
+              "filter": "set:31 rarity:C"
             }
           }
         ]
@@ -172,7 +172,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "side:FREE_PEOPLE set:30,31 rarity:X"
+              "filter": "set:30,31 rarity:X"
             }
           },
           {
@@ -180,7 +180,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 4,
-              "filter": "side:FREE_PEOPLE set:30,31 rarity:R"
+              "filter": "set:30,31 rarity:R"
             }
           },
           {
@@ -188,7 +188,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "side:FREE_PEOPLE set:30,31 rarity:C"
+              "filter": "set:30,31 rarity:C"
             }
           }
         ]

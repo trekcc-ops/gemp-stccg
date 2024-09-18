@@ -251,9 +251,9 @@ public class DefaultServerRequestHandler {
 
         result.append(listCards("Adventure Deck","cardType:SITE sort:siteNumber,twilight",
                 deckCards,false, sortAndFilter, formatLibrary, showToolTip));
-        result.append(listCards("Free Peoples Draw Deck","side:FREE_PEOPLE sort:cardType,name",
+        result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
                 deckCards,true, sortAndFilter, formatLibrary, showToolTip));
-        result.append(listCards("Shadow Draw Deck","side:SHADOW sort:cardType,name",
+        result.append(listCards("Shadow Draw Deck","sort:cardType,name",
                 deckCards,true, sortAndFilter, formatLibrary, showToolTip));
 
         return result.toString();

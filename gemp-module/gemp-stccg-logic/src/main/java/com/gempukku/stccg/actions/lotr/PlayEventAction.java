@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.lotr;
 
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.discard.DiscountEffect;
 
@@ -91,11 +90,6 @@ public class PlayEventAction extends AbstractCostToEffectAction {
         if (!_discountResolved) {
             final DiscountEffect discount = getNextPotentialDiscount();
             if (discount != null) {
-                if (_eventPlayed.getBlueprint().getSide() == Side.SHADOW) {
-                    int twilightCost = _game.getModifiersQuerying().getTwilightCost(_game, _eventPlayed, null, 0, false);
-                    int requiredDiscount = Math.max(0, twilightCost - _game.getGameState().getTwilightPool() - getProcessedDiscount() - getPotentialDiscount());
-                    discount.setMinimalRequiredDiscount(requiredDiscount);
-                }
                 return discount;
             } else {
                 _discountResolved = true;

@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.MultipleComparator;
@@ -94,20 +93,6 @@ public class SortAndFilterCards {
         if (!containsAllWords(blueprint, words))
             return false;
         return containsAllKeywords(blueprint, phases);
-//                if (side == null || blueprint.getSide() == side)
-//                    if (rarity == null || isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
-//                                            if (siteNumber == null || blueprint.getSiteNumber() == siteNumber)
-//                                                if (races == null || races.contains(blueprint.getRace()))
-//            }
-//        }
-    }
-
-    private Side getSideFilter(String[] filterParams) {
-        for (String filterParam : filterParams) {
-            if (filterParam.startsWith("side:"))
-                return Side.valueOf(filterParam.substring("side:".length()));
-        }
-        return null;
     }
 
     private String getTypeFilter(String[] filterParams) {

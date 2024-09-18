@@ -12,7 +12,6 @@ import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -225,17 +224,7 @@ public abstract class PhysicalCard implements Filterable {
                 Filter fullAttachValidTargetFilter = Filters.and(_blueprint.getValidTargetFilter(),
                         (Filter) (game1, targetCard) -> getGame().getModifiersQuerying().canHavePlayedOn(
                                 this, targetCard),
-                        (Filter) (game12, physicalCard) -> {
-                            if (_blueprint.getSide() == Side.SHADOW) {
-                                final int twilightCostOnTarget = getGame().getModifiersQuerying().getTwilightCost(
-                                        getGame(), this, physicalCard, twilightModifier, false);
-                                int potentialDiscount =
-                                        getGame().getModifiersQuerying().getPotentialDiscount(this);
-                                return twilightCostOnTarget - potentialDiscount <= getGame().getGameState().getTwilightPool();
-                            } else {
-                                return true;
-                            }
-                        });
+                        (Filter) (game12, physicalCard) -> true);
 
                 final AttachPermanentAction action = new AttachPermanentAction(this,
                         Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter), twilightModifier);

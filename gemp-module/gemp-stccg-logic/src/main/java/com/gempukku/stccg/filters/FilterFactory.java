@@ -5,8 +5,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Race;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
@@ -34,8 +32,6 @@ public class FilterFactory {
         for (Uniqueness value : Uniqueness.values())
             appendFilter(value);
         for (FacilityType value : FacilityType.values())
-            appendFilter(value);
-        for (Race value : Race.values())
             appendFilter(value);
         for (PropertyLogo value : PropertyLogo.values())
             appendFilter(value);
@@ -231,34 +227,6 @@ public class FilterFactory {
                         return Filters.or(filters1);
                     };
                 });
-        parameterFilters.put("race",
-                (parameter, environment) -> {
-                    if (parameter.equals("stored")) {
-                        return actionContext -> (Filter) (game, physicalCard) -> {
-                            final String value = (String) actionContext.getSource().getWhileInZoneData();
-                            if (value == null)
-                                return false;
-                            else
-                                return Race.valueOf(value) == physicalCard.getBlueprint().getRace();
-                        };
-                    } else if (parameter.equals("cannotspot")) {
-                        return actionContext -> (Filter) (game, physicalCard) -> {
-                            final Race race = physicalCard.getBlueprint().getRace();
-                            if (race != null)
-                                return !Filters.canSpot(game, race);
-                            return false;
-                        };
-                    }
-                    throw new InvalidCardDefinitionException("Unknown race definition in filter: " + parameter
-                            + ".  Do not use race() for races; instead just list the race by itself.");
-                });
-        parameterFilters.put("side", (parameter, environment) -> {
-            final Side side = Side.Parse(parameter);
-            if (side == null)
-                throw new InvalidCardDefinitionException("Unable to find side for: " + parameter);
-
-            return (actionContext) -> side;
-        });
         parameterFilters.put("strengthlessthan",
                 (parameter, environment) -> {
                     final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);

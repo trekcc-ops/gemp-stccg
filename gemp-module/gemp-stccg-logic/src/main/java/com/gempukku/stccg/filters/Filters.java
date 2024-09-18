@@ -20,16 +20,12 @@ public class Filters {
     private static final Map<FacilityType, Filter> _facilityTypeFilterMap = new HashMap<>();
     private static final Map<PropertyLogo, Filter> _propertyLogoFilterMap = new HashMap<>();
     private static final Map<Species, Filter> _speciesFilterMap = new HashMap<>();
-    private static final Map<Race, Filter> _raceFilterMap = new HashMap<>();
     private static final Map<Affiliation, Filter> _affiliationFilterMap = new HashMap<>();
     private static final Map<Uniqueness, Filter> _uniquenessFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
-    private static final Map<Side, Filter> _sideFilterMap = new HashMap<>();
     private static final Map<Keyword, Filter> _keywordFilterMap = new HashMap<>();
 
     static {
-        for (Side side : Side.values())
-            _sideFilterMap.put(side, side(side));
         for (Zone zone : Zone.values())
             _zoneFilterMap.put(zone, zone(zone));
         for (CardType cardType : CardType.values())
@@ -40,8 +36,6 @@ public class Filters {
             _propertyLogoFilterMap.put(propertyLogo, propertyLogo(propertyLogo));
         for (FacilityType facilityType : FacilityType.values())
             _facilityTypeFilterMap.put(facilityType, facilityType(facilityType));
-        for (Race race : Race.values())
-            _raceFilterMap.put(race, race(race));
         for (Affiliation affiliation : Affiliation.values())
             _affiliationFilterMap.put(affiliation, affiliation(affiliation));
         for (Uniqueness uniqueness : Uniqueness.values())
@@ -287,19 +281,6 @@ public class Filters {
     public static final Filter unique = (game, physicalCard) ->
             physicalCard.getBlueprint().getUniqueness() == Uniqueness.UNIQUE;
 
-    private static Filter race(final Race race) {
-        return Filters.and(
-                Filters.or(CardType.COMPANION, CardType.ALLY, CardType.MINION, CardType.FOLLOWER),
-                (Filter) (game, physicalCard) -> {
-                    CardBlueprint blueprint = physicalCard.getBlueprint();
-                    return blueprint.getRace() == race;
-                });
-    }
-
-
-    private static Filter side(final Side side) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getSide() == side;
-    }
 
     private static Filter affiliation(final Affiliation affiliation) {
         return (game, physicalCard) -> {
@@ -489,27 +470,17 @@ public class Filters {
             return _propertyLogoFilterMap.get((PropertyLogo) filter);
         else if (filter instanceof Species enumFilter)
             return _speciesFilterMap.get(enumFilter);
-        else if (filter instanceof Race enumFilter)
-            return _raceFilterMap.get(enumFilter);
         else if (filter instanceof Uniqueness enumFilter)
             return _uniquenessFilterMap.get(enumFilter);
         else if (filter instanceof Affiliation enumFilter)
             return _affiliationFilterMap.get(enumFilter);
-        else if (filter instanceof Side)
-            return _sideFilterMap.get((Side) filter);
         else if (filter instanceof Zone)
             return _zoneFilterMap.get((Zone) filter);
         else
             throw new IllegalArgumentException("Unknown type of filterable: " + filter);
     }
 
-    public static final Filter activeSide = (game, physicalCard) -> {
-        boolean shadow = physicalCard.getBlueprint().getSide() == Side.SHADOW;
-        if (shadow)
-            return !physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
-        else
-            return physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
-    };
+    public static final Filter activeSide = (game, physicalCard) -> physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
 
     private static Filter andInternal(final Filter... filters) {
         return (game, physicalCard) -> {

@@ -40,7 +40,6 @@ public class CardBlueprintFactory {
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
         fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
-        fieldProcessors.put("side", new SideFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
         fieldProcessors.put("seed", new SeedFieldProcessor());
         fieldProcessors.put("icons", new IconsFieldProcessor());
@@ -64,7 +63,6 @@ public class CardBlueprintFactory {
         fieldProcessors.put("skill-box", new SkillBoxFieldProcessor());
         fieldProcessors.put("image-options", new ImageOptionsFieldProcessor());
 
-        fieldProcessors.put("race", new RaceFieldProcessor());
         fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
         fieldProcessors.put("staffing", new StaffingFieldProcessor());
         fieldProcessors.put("facility-type", new FacilityTypeFieldProcessor());

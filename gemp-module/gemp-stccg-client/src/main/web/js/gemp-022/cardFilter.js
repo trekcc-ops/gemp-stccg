@@ -38,7 +38,6 @@ var CardFilter = Class.extend({
         $("#affiliation-buttons").buttonset("option", "disabled", !enable);
         $("#cardType").prop("disabled", !enable);
         $("#keyword").prop("disabled", !enable);
-        $("#race").prop("disabled", !enable);
         $("#tribblePower").prop("disabled", !enable);
         $("#phase").prop("disabled", !enable);
     },
@@ -170,22 +169,16 @@ var CardFilter = Class.extend({
         };
         
         //Hide dynamic filters by default
-        $("#race").hide();
         $("#phase").hide();
         
         var changeDynamicFilters = function () {
             var cardType = $("#cardType option:selected").prop("value");
             if (cardType.includes("COMPANION") || cardType.includes("ALLY") || cardType.includes("MINION")) {
-                $("#race").show();
                 $("#phase").hide();
                 $("#phase").val("");
             } else if (cardType.includes("EVENT")) {
-                $("#race").hide();
-                $("#race").val("");
                 $("#phase").show();
             } else {
-                $("#race").hide();
-                $("#race").val("");
                 $("#phase").hide();
                 $("#phase").val("")
             }
@@ -199,7 +192,6 @@ var CardFilter = Class.extend({
         $("#cardType").change(changeDynamicFilters);
         $("#keyword").change(filterOut);
         $("#type").change(filterOut);
-        $("#race").change(filterOut);
         $("#phase").change(filterOut);
         $(".affiliationFilter").click(filterOut);
         this.collectionDiv = $("#collection-display");
@@ -226,7 +218,7 @@ var CardFilter = Class.extend({
     },
 
     calculateNormalFilter: function () {
-        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "race", "phase");
+        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "phase");
         var filterString = "";
 
         for (var i = 0; i < normalFilterArray.length; i++) {

@@ -44,7 +44,7 @@ var GempLotrDeckBuildingUI = Class.extend({
                     that.clearCollection();
                 },
                 function (elem, type, blueprintId, count, imageUrl) {
-                    that.addCardToCollection(type, blueprintId, count, elem.getAttribute("side"),
+                    that.addCardToCollection(type, blueprintId, count,
                         elem.getAttribute("contents"), elem.getAttribute("imageUrl"));
                 },
                 function () {
@@ -840,7 +840,7 @@ var GempLotrDeckBuildingUI = Class.extend({
         $(".card", this.normalCollectionDiv).remove();
     },
 
-    addCardToCollection:function (type, blueprintId, count, side, contents, imageUrl) {
+    addCardToCollection:function (type, blueprintId, count, contents, imageUrl) {
         if (type == "pack") {
             if (blueprintId.substr(0, 3) == "(S)") {
                 var card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
@@ -858,7 +858,8 @@ var GempLotrDeckBuildingUI = Class.extend({
             }
             this.normalCollectionDiv.append(cardDiv);
         } else if (type == "card") {
-            var card = new Card(blueprintId, side, "collection", "player", imageUrl);
+            // TODO - "SHADOW" here is a dummy value for LotR side. Can't identify if removing it altogether will cause issues for the Card function.
+            var card = new Card(blueprintId, "SHADOW", "collection", "player", imageUrl);
             var countInDeck = 0;
             $(".card", this.deckDiv).each(
                     function () {

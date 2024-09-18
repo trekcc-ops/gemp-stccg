@@ -32,7 +32,6 @@ public class CardBlueprint {
     private int _pointsShown;
     private int _skillDots;
     private boolean _hasPointBox;
-    private Side side;
     private MissionRequirement _missionRequirements;
     final List<Skill> _skills = new LinkedList<>();
     private final Set<Affiliation> _affiliations = new HashSet<>();
@@ -45,7 +44,6 @@ public class CardBlueprint {
     private Integer _opponentSpan;
     private MissionType _missionType;
     private FacilityType _facilityType;
-    private Race race;
     private Map<Keyword, Integer> keywords;
     private int cost = -1;
     private final Map<CardAttribute, Integer> _cardAttributes = new HashMap<>();
@@ -206,17 +204,7 @@ public class CardBlueprint {
     public void setCost(int cost) { this.cost = cost; }
     public int getCost() { return this.cost; }
     public int getTwilightCost() { return cost; }
-    public void setSide(Side side) {
-        this.side = side;
-    }
-    public Side getSide() {
-        return side;
-    }
 
-    public void setRace(Race race) {
-        this.race = race;
-    }
-    public Race getRace() { return race; }
     public void setVitality(int vitality) {
         this.vitality = vitality;
     }

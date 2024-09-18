@@ -3,7 +3,6 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -174,26 +173,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean isAllyParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
-        return false;
-    }
-
-    @Override
-    public boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card) {
-        return false;
-    }
-
-    @Override
-    public boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card) {
-        return false;
-    }
-
-    @Override
-    public int getArcheryTotalModifier(DefaultGame game, Side side) {
-        return 0;
-    }
-
-    @Override
     public int getMoveLimitModifier() {
         return 0;
     }
@@ -255,11 +234,6 @@ public abstract class AbstractModifier implements Modifier {
 
     @Override
     public boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId) {
-        return false;
-    }
-
-    @Override
-    public boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, PhysicalCard card) {
         return false;
     }
 
@@ -342,11 +316,6 @@ public abstract class AbstractModifier implements Modifier {
     @Override
     public boolean shadowCanHaveInitiative(DefaultGame game) {
         return true;
-    }
-
-    @Override
-    public Side hasInitiative() {
-        return null;
     }
 
     @Override

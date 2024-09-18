@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Race;
 import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -379,7 +378,7 @@ public class ValueResolver {
                         return multiplier * total;
                     }
                 };
-            } else if (type.equalsIgnoreCase("maxOfRaces")) {
+            } else if (type.equalsIgnoreCase("maxOfSpecies")) {
                 environment.validateAllowedFields(object, "filter");
                 final String filter = environment.getString(object.get("filter"), "filter");
 
@@ -390,8 +389,8 @@ public class ValueResolver {
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
                         int result = 0;
                         final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        for (Race race : Race.values())
-                            result = Math.max(result, Filters.countSpottable(actionContext.getGame(), race, filterable));
+                        for (Species species : Species.values())
+                            result = Math.max(result, Filters.countSpottable(actionContext.getGame(), species, filterable));
 
                         return result;
                     }

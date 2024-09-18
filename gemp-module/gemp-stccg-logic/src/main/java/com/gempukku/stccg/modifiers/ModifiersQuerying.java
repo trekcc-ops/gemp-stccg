@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Action;
@@ -12,8 +11,6 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface ModifiersQuerying {
     LimitCounter getUntilEndOfPhaseLimitCounter(PhysicalCard card, Phase phase);
@@ -58,8 +55,6 @@ public interface ModifiersQuerying {
 
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);
 
-    boolean isValidAssignments(Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments);
-
     // Playing actions
     boolean canPlayAction(String performingPlayer, Action action);
 
@@ -96,8 +91,6 @@ public interface ModifiersQuerying {
     boolean canDiscardCardsFromTopOfDeck(String playerId, PhysicalCard source);
 
     boolean canBeLiberated(DefaultGame game, String playerId, PhysicalCard card, PhysicalCard source);
-
-    Side hasInitiative();
 
     int getSpotBonus(Filterable filter);
 

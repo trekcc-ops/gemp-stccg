@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -617,14 +616,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean isValidAssignments(Side side, Map<PhysicalCard, Set<PhysicalCard>> assignments) {
-        for (Modifier ignored : getModifiers(ModifierEffect.ASSIGNMENT_MODIFIER)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source) {
         LoggingThreadLocal.logMethodStart();
         try {
@@ -731,32 +722,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         } finally {
             LoggingThreadLocal.logMethodEnd();
         }
-    }
-
-    @Override
-    public Side hasInitiative() {
-        for (Modifier modifier : getModifiers(ModifierEffect.INITIATIVE_MODIFIER)) {
-            if (!modifier.shadowCanHaveInitiative(_game))
-                return Side.FREE_PEOPLE;
-        }
-
-        for (Modifier modifier : getModifiers(ModifierEffect.INITIATIVE_MODIFIER)) {
-            Side initiative = modifier.hasInitiative();
-            if (initiative != null)
-                return initiative;
-        }
-
-        int freePeopleInitiativeHandSize = _game.getGameState().getHand(_game.getGameState().getCurrentPlayerId()).size()
-                + _game.getGameState().getVoidFromHand(_game.getGameState().getCurrentPlayerId()).size();
-
-        int initiativeHandSize = 4;
-        for (Modifier modifier : getModifiers(ModifierEffect.INITIATIVE_MODIFIER))
-            initiativeHandSize += modifier.getInitiativeHandSizeModifier(_game);
-
-        if (freePeopleInitiativeHandSize < initiativeHandSize)
-            return Side.SHADOW;
-        else
-            return Side.FREE_PEOPLE;
     }
 
     @Override

@@ -187,11 +187,6 @@ public class GameEvent {
         return _side;
     }
 
-    public GameEvent side(String side) {
-        _side = side;
-        return this;
-    }
-
     public String getControllerId() {
         return _controllerId;
     }

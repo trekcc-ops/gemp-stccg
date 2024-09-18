@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -67,14 +66,6 @@ public interface Modifier {
 
     boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
 
-    boolean isAllyParticipateInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card);
-
-    boolean isUnhastyCompanionAllowedToParticipateInSkirmishes(DefaultGame game, PhysicalCard card);
-
-    boolean isAllyPreventedFromParticipatingInSkirmishes(DefaultGame game, Side sidePlayer, PhysicalCard card);
-
-    int getArcheryTotalModifier(DefaultGame game, Side side);
-
     int getMoveLimitModifier();
 
     boolean addsTwilightForCompanionMove(DefaultGame game, PhysicalCard companion);
@@ -100,8 +91,6 @@ public interface Modifier {
     boolean canBeTransferred(PhysicalCard attachment);
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
-
-    boolean isPreventedFromBeingAssignedToSkirmish(DefaultGame game, Side sidePlayer, PhysicalCard card);
 
     boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source);
 
@@ -134,8 +123,6 @@ public interface Modifier {
 
     boolean shadowCanHaveInitiative(DefaultGame game);
     boolean hasIcon(PhysicalCard card, CardIcon icon);
-
-    Side hasInitiative();
 
     int getInitiativeHandSizeModifier(DefaultGame game);
 
