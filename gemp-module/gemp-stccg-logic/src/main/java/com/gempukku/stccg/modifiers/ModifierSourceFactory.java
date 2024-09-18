@@ -28,7 +28,6 @@ public class ModifierSourceFactory {
         modifierProducers.put("extracosttoplay", new ExtraCostToPlay());
         modifierProducers.put("gainicon", new AddIcon());
         modifierProducers.put("hastomoveifable", new HasToMoveIfAble());
-        modifierProducers.put("itemclassspot", new ItemClassSpot());
         modifierProducers.put("modifycost", new ModifyCost());
         modifierProducers.put("modifymovelimit", new ModifyMoveLimit());
         modifierProducers.put("modifyplayoncost", new ModifyPlayOnCost());

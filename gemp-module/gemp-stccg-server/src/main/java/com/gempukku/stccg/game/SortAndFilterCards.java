@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.Keyword;
-import com.gempukku.stccg.common.filterable.lotr.PossessionClass;
 import com.gempukku.stccg.common.filterable.lotr.Side;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
@@ -221,22 +220,6 @@ public class SortAndFilterCards {
         for (Keyword keyword : keywords) {
             if (blueprint == null || !blueprint.hasKeyword(keyword))
                 return false;
-        }
-        return true;
-    }
-
-    private boolean containsAllClasses(CardBlueprint blueprint, Set<PossessionClass> possessionClasses) {
-        for (PossessionClass filterPossessionClass : possessionClasses) {
-            if (!(blueprint == null)) {
-                if (blueprint.getPossessionClasses() == null) {
-                    return filterPossessionClass == PossessionClass.CLASSLESS;
-                }            
-                for (PossessionClass blueprintPossessionClass : blueprint.getPossessionClasses()) {
-                    if (filterPossessionClass == blueprintPossessionClass)
-                        return true;
-                }
-            }
-            return false;
         }
         return true;
     }

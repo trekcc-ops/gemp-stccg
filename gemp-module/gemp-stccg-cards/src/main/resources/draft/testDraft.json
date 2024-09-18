@@ -16,7 +16,7 @@
       "repeat": 1,
       "data": {
         "optionCount": 3,
-        "filter": "side:FREE_PEOPLE cardType:POSSESSION,ARTIFACT set:1 rarity:R"
+        "filter": "side:FREE_PEOPLE cardType:ARTIFACT set:1 rarity:R"
       }
     },
     {

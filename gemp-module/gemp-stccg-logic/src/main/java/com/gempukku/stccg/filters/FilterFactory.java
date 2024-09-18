@@ -62,7 +62,6 @@ public class FilterFactory {
         simpleFilters.put("unbound",
                 (actionContext) -> Filters.unboundCompanion);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
-        simpleFilters.put("weapon", (actionContext) -> Filters.weapon);
             // TODO - "your" isn't quite right
         simpleFilters.put("your", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         simpleFilters.put("yours", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));

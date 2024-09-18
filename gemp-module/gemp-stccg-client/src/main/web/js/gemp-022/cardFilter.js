@@ -39,7 +39,6 @@ var CardFilter = Class.extend({
         $("#cardType").prop("disabled", !enable);
         $("#keyword").prop("disabled", !enable);
         $("#race").prop("disabled", !enable);
-        $("#itemClass").prop("disabled", !enable);
         $("#tribblePower").prop("disabled", !enable);
         $("#phase").prop("disabled", !enable);
     },
@@ -172,34 +171,21 @@ var CardFilter = Class.extend({
         
         //Hide dynamic filters by default
         $("#race").hide();
-        $("#itemClass").hide();
         $("#phase").hide();
         
         var changeDynamicFilters = function () {
             var cardType = $("#cardType option:selected").prop("value");
             if (cardType.includes("COMPANION") || cardType.includes("ALLY") || cardType.includes("MINION")) {
                 $("#race").show();
-                $("#itemClass").hide();
-                $("#itemClass").val("");
-                $("#phase").hide();
-                $("#phase").val("");
-            } else if (cardType.includes("POSSESSION") || cardType.includes("ARTIFACT")) {
-                $("#race").hide();
-                $("#race").val("");
-                $("#itemClass").show();
                 $("#phase").hide();
                 $("#phase").val("");
             } else if (cardType.includes("EVENT")) {
                 $("#race").hide();
                 $("#race").val("");
-                $("#itemClass").hide();
-                $("#itemClass").val("");
                 $("#phase").show();
             } else {
                 $("#race").hide();
                 $("#race").val("");
-                $("#itemClass").hide();
-                $("#itemClass").val("");
                 $("#phase").hide();
                 $("#phase").val("")
             }
@@ -214,7 +200,6 @@ var CardFilter = Class.extend({
         $("#keyword").change(filterOut);
         $("#type").change(filterOut);
         $("#race").change(filterOut);
-        $("#itemClass").change(filterOut);
         $("#phase").change(filterOut);
         $(".affiliationFilter").click(filterOut);
         this.collectionDiv = $("#collection-display");
@@ -241,7 +226,7 @@ var CardFilter = Class.extend({
     },
 
     calculateNormalFilter: function () {
-        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "race", "itemClass", "phase");
+        var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "race", "phase");
         var filterString = "";
 
         for (var i = 0; i < normalFilterArray.length; i++) {

@@ -68,7 +68,6 @@ public class CardBlueprintFactory {
         fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
         fieldProcessors.put("staffing", new StaffingFieldProcessor());
         fieldProcessors.put("facility-type", new FacilityTypeFieldProcessor());
-        fieldProcessors.put("itemclass", new PossessionClassFieldProcessor());
         fieldProcessors.put("cost", new CostFieldProcessor());
         fieldProcessors.put("keyword", new KeywordFieldProcessor());
         fieldProcessors.put("keywords", new KeywordFieldProcessor());

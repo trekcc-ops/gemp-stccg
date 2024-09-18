@@ -56,7 +56,6 @@ public class CardBlueprint {
     private List<CardIcon> _staffing = new LinkedList<>();
     private String _missionRequirementsText;
     private TribblePower tribblePower;
-    private Set<PossessionClass> possessionClasses;
     private List<Requirement> _seedRequirements;
     private List<Requirement> _playRequirements;
     private List<FilterableSource> targetFilters;
@@ -236,8 +235,6 @@ public class CardBlueprint {
         Integer count = keywords.get(keyword);
         return Objects.requireNonNullElse(count, 0);
     }
-    public void setPossessionClasses(Set<PossessionClass> possessionClasses) { this.possessionClasses = possessionClasses; }
-    public Set<PossessionClass> getPossessionClasses() { return possessionClasses; }
 
 
     public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }

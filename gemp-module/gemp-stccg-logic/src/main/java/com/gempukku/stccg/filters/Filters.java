@@ -19,7 +19,6 @@ public class Filters {
     private static final Map<SkillName, Filter> _skillNameFilterMap = new HashMap<>();
     private static final Map<FacilityType, Filter> _facilityTypeFilterMap = new HashMap<>();
     private static final Map<PropertyLogo, Filter> _propertyLogoFilterMap = new HashMap<>();
-    private static final Map<PossessionClass, Filter> _possessionClassFilterMap = new HashMap<>();
     private static final Map<Species, Filter> _speciesFilterMap = new HashMap<>();
     private static final Map<Race, Filter> _raceFilterMap = new HashMap<>();
     private static final Map<Affiliation, Filter> _affiliationFilterMap = new HashMap<>();
@@ -47,8 +46,6 @@ public class Filters {
             _affiliationFilterMap.put(affiliation, affiliation(affiliation));
         for (Uniqueness uniqueness : Uniqueness.values())
             _uniquenessFilterMap.put(uniqueness, uniqueness(uniqueness));
-        for (PossessionClass possessionClass : PossessionClass.values())
-            _possessionClassFilterMap.put(possessionClass, possessionClass(possessionClass));
         for (Species species : Species.values())
             _speciesFilterMap.put(species, species(species));
         for (Keyword keyword : Keyword.values())
@@ -179,13 +176,6 @@ public class Filters {
     }
 
 
-    private static Filter possessionClass(final PossessionClass possessionClass) {
-        return (game, physicalCard) -> {
-            final Set<PossessionClass> possessionClasses = physicalCard.getBlueprint().getPossessionClasses();
-            return possessionClasses != null && possessionClasses.contains(possessionClass);
-        };
-    }
-
     private static Filter species(final Species species) {
         return (game, physicalCard) -> {
             return false;
@@ -204,8 +194,7 @@ public class Filters {
 
     public static final Filter aragorn = Filters.name("Aragorn");
     public static final Filter gandalf = Filters.name("Gandalf");
-    public static final Filter weapon = Filters.or(PossessionClass.HAND_WEAPON, PossessionClass.RANGED_WEAPON);
-    public static final Filter item = Filters.or(CardType.ARTIFACT, CardType.POSSESSION);
+    public static final Filter item = Filters.or(CardType.ARTIFACT);
     public static final Filter character = Filters.or(CardType.ALLY, CardType.COMPANION, CardType.MINION);
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
     public static final Filter ship = Filters.or(CardType.SHIP);
@@ -498,8 +487,6 @@ public class Filters {
             return _facilityTypeFilterMap.get((FacilityType) filter);
         else if (filter instanceof PropertyLogo)
             return _propertyLogoFilterMap.get((PropertyLogo) filter);
-        else if (filter instanceof PossessionClass)
-            return _possessionClassFilterMap.get((PossessionClass) filter);
         else if (filter instanceof Species enumFilter)
             return _speciesFilterMap.get(enumFilter);
         else if (filter instanceof Race enumFilter)
@@ -588,7 +575,6 @@ public class Filters {
 
 
     public static final Filter unboundCompanion = Filters.and(CardType.COMPANION, Filters.not(Keyword.RING_BOUND));
-    public static final Filter mounted = Filters.or(Filters.hasAttached(PossessionClass.MOUNT), Keyword.MOUNTED);
 
     public static final Filter undocked = (game, physicalCard) -> {
         if (physicalCard instanceof PhysicalShipCard shipCard)
