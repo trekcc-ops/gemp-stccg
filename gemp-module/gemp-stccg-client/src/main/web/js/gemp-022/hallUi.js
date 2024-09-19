@@ -1,4 +1,5 @@
 import GempClientCommunication from './communication.js';
+import { formatPrice } from './common.js';
 
 export default class GempHallUI {
 	comm;
@@ -321,7 +322,6 @@ export default class GempHallUI {
 			var currency = parseInt(root.getAttribute("currency"));
 			if (currency != this.pocketValue) {
 				this.pocketValue = currency;
-				//this.pocketDiv.html(formatPrice(currency));
 			}
 
 			var motd = root.getAttribute("motd");

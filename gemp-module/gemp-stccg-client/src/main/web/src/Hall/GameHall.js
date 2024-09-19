@@ -1,5 +1,6 @@
 import ChatBoxUI from "../../js/gemp-022/chat.js";
 import GempHallUI from "../../js/gemp-022/hallUi.js";
+import { formatPrice } from "../../js/gemp-022/common.js";
 
 var chat;
 var hall;
@@ -8,7 +9,7 @@ $(document).ready(function () {
 
 	$("#main").tabs();
 	
-	chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-stccg-server", true, null, false, null, true);
+	let chat = new ChatBoxUI("Game Hall", $("#chat"), "/gemp-stccg-server", true, null, false, null, true);
 	chat.showTimestamps = true;
 	
 	hall = new GempHallUI("/gemp-stccg-server", chat);
@@ -83,5 +84,35 @@ $(document).ready(function () {
 
 			return true;
 		});
+
+		$("#main").on("tabsload", function(event, ui) {
+			let selected_tab_num = $( "#main" ).tabs( "option", "active" );
+			switch(selected_tab_num) {
+				case 0:
+					// Game hall
+					break;
+				case 1:
+					// Help
+					break;
+				case 2:
+					// Events
+					break;
+				case 3:
+					// Server info
+					break;
+				case 4:
+					// My account
+					$("#accountMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+					$("#account-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
 		
+					$("#accountName").html(chat.userName);
+					$("#pocketDiv").html(formatPrice(hall.pocketValue));
+					break;
+				case 5:
+					// Admin
+					break;
+				default:
+					console.error("main.tabs(): Unknown selected tab number" + selected_tab_num);
+			}
+		});
 });
