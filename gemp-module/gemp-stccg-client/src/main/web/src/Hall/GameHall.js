@@ -1,3 +1,6 @@
+import ChatBoxUI from "../../js/gemp-022/chat.js";
+import GempHallUI from "../../js/gemp-022/hallUi.js";
+
 var chat;
 	var hall;
 
