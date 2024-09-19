@@ -46,8 +46,6 @@ public interface Modifier {
 
     int getResistanceModifier(PhysicalCard physicalCard);
 
-    int getMinionSiteNumberModifier(DefaultGame game, PhysicalCard physicalCard);
-
     boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType);
 
     int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty);
@@ -67,8 +65,6 @@ public interface Modifier {
     boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
 
     int getMoveLimitModifier();
-
-    boolean addsTwilightForCompanionMove(DefaultGame game, PhysicalCard companion);
 
     boolean addsToArcheryTotal(DefaultGame game, PhysicalCard card);
 

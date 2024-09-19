@@ -345,8 +345,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
         LoggingThreadLocal.logMethodStart();
         try {
-            if (isCandidateForKeywordRemovalWithTextRemoval(keyword) &&
-                    (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
+            if ((physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
                 return false;
 
             for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
@@ -372,8 +371,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public int getKeywordCount(PhysicalCard physicalCard, Keyword keyword) {
         LoggingThreadLocal.logMethodStart();
         try {
-            if (isCandidateForKeywordRemovalWithTextRemoval(keyword)
-                    && (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
+            if (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard))
                 return 0;
 
             for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
@@ -390,10 +388,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         } finally {
             LoggingThreadLocal.logMethodEnd();
         }
-    }
-
-    private boolean isCandidateForKeywordRemovalWithTextRemoval(Keyword keyword) {
-        return keyword != Keyword.ROAMING;
     }
 
     private boolean appliesKeywordModifier(PhysicalCard affecting, PhysicalCard modifierSource, Keyword keyword) {
@@ -466,13 +460,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TWILIGHT_COST_MODIFIER, physicalCard)) {
                 result += modifier.getTwilightCostModifier(physicalCard, target, ignoreRoamingPenalty);
             }
-            result = Math.max(0, result);
-
-            if (!ignoreRoamingPenalty && hasKeyword(physicalCard, Keyword.ROAMING)) {
-                int roamingPenalty = getRoamingPenalty(game, physicalCard);
-                result += Math.max(0, roamingPenalty);
-            }
-            return result;
+            return Math.max(0, result);
         } finally {
             LoggingThreadLocal.logMethodEnd();
         }
@@ -649,11 +637,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
      */
     @Override
     public boolean canDrawCardNoIncrement(String playerId) {
-        if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
-            if (_game.getGameState().getCurrentPhase() != Phase.FELLOWSHIP)
-                return true;
-            return _game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP && _drawnThisPhaseCount < 4;
-        }
+        _game.getGameState().getCurrentPlayerId();
         return true;
     }
 
@@ -666,16 +650,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
      */
     @Override
     public boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId) {
-        if (game.getGameState().getCurrentPlayerId().equals(playerId)) {
-            if (game.getGameState().getCurrentPhase() != Phase.FELLOWSHIP)
-                return true;
-            if (game.getGameState().getCurrentPhase() == Phase.FELLOWSHIP && _drawnThisPhaseCount < 4) {
-                _drawnThisPhaseCount++;
-                return true;
-            } else {
-                return false;
-            }
-        }
+        game.getGameState().getCurrentPlayerId();
         return true;
     }
 

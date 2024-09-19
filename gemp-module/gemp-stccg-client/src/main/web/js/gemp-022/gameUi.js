@@ -63,7 +63,7 @@ var GameTableUI = Class.extend({
         this.gameSettings.set("autoPass", false);
 
             // TODO: LotR-specific. Replace with correct arrays for ST-specific implementations.
-        this.gamePhases = new Array("Fellowship", "Shadow", "Maneuver", "Archery", "Assignment", "Skirmish", "Regroup");
+        this.gamePhases = new Array("Fellowship", "Maneuver", "Archery", "Assignment", "Skirmish", "Regroup");
 
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
@@ -1289,7 +1289,7 @@ var GameTableUI = Class.extend({
                     var x = 0.09 * maxDimension - size / 2;
                     var strengthY = 0.688 * maxDimension - size / 2;
                     var vitalityY = 0.800 * maxDimension - size / 2;
-                    var minionSiteNumberY = 0.905 * maxDimension - size / 2;
+                    var lotrSiteNumberY = 0.905 * maxDimension - size / 2;
 
                     var fontPerc = (size * 5.5) + "%";
                     var borderRadius = Math.ceil(size / 5) + "px";
@@ -1349,7 +1349,7 @@ var GameTableUI = Class.extend({
                         "border-radius": borderRadius,
                         "font-size": fontPerc,
                         left: x + "px",
-                        top: minionSiteNumberY + "px",
+                        top: lotrSiteNumberY + "px",
                         width: size,
                         height: size
                     });
@@ -1365,7 +1365,7 @@ var GameTableUI = Class.extend({
                         "border-radius": borderRadius,
                         "font-size": fontPerc,
                         left: x + "px",
-                        top: minionSiteNumberY + "px",
+                        top: lotrSiteNumberY + "px",
                         width: size,
                         height: size
                     });

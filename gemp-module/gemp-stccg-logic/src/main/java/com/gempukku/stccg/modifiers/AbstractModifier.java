@@ -130,11 +130,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getMinionSiteNumberModifier(DefaultGame game, PhysicalCard physicalCard) {
-        return 0;
-    }
-
-    @Override
     public boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType) {
         return false;
     }
@@ -175,11 +170,6 @@ public abstract class AbstractModifier implements Modifier {
     @Override
     public int getMoveLimitModifier() {
         return 0;
-    }
-
-    @Override
-    public boolean addsTwilightForCompanionMove(DefaultGame game, PhysicalCard companion) {
-        return true;
     }
 
     @Override

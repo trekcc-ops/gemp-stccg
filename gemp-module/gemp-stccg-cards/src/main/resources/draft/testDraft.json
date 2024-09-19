@@ -29,7 +29,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "cardType:COMPANION set:1 rarity:R"
+              "filter": "set:1 rarity:R"
             }
           },
           {
@@ -37,7 +37,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 4,
-              "filter": "cardType:COMPANION set:1 rarity:U,P"
+              "filter": "set:1 rarity:U,P"
             }
           },
           {
@@ -45,7 +45,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 5,
-              "filter": "cardType:COMPANION set:1 rarity:C"
+              "filter": "set:1 rarity:C"
             }
           }
         ]
@@ -88,7 +88,7 @@
       "repeat": 1,
       "data": {
         "optionCount": 3,
-        "filter": "cardType:MINION set:1 rarity:R"
+        "filter": "set:1 rarity:R"
       }
     },
     {
@@ -101,7 +101,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 3,
-              "filter": "cardType:MINION set:1 rarity:R"
+              "filter": "set:1 rarity:R"
             }
           },
           {
@@ -109,7 +109,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 4,
-              "filter": "cardType:MINION set:1 rarity:U,P"
+              "filter": "set:1 rarity:U,P"
             }
           },
           {
@@ -117,7 +117,7 @@
             "type": "filterPick",
             "data": {
               "optionCount": 5,
-              "filter": "cardType:MINION set:1 rarity:C"
+              "filter": "set:1 rarity:C"
             }
           }
         ]

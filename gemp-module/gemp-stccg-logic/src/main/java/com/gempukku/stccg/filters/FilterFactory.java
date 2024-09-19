@@ -38,7 +38,6 @@ public class FilterFactory {
 
         simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
         simpleFilters.put("any", (actionContext) -> Filters.any);
-        simpleFilters.put("character", (actionContext) -> Filters.character);
         simpleFilters.put("idinstored",
                 (actionContext -> (Filter) (game, physicalCard) -> {
                     final String whileInZoneData = (String) actionContext.getSource().getWhileInZoneData();
@@ -55,8 +54,6 @@ public class FilterFactory {
         simpleFilters.put("item", (actionContext) -> Filters.item);
         simpleFilters.put("nor", (actionContext) -> Filters.Nor);
         simpleFilters.put("self", ActionContext::getSource);
-        simpleFilters.put("unbound",
-                (actionContext) -> Filters.unboundCompanion);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
             // TODO - "your" isn't quite right
         simpleFilters.put("your", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));

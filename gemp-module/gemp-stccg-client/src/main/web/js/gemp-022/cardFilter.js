@@ -173,10 +173,7 @@ var CardFilter = Class.extend({
         
         var changeDynamicFilters = function () {
             var cardType = $("#cardType option:selected").prop("value");
-            if (cardType.includes("COMPANION") || cardType.includes("ALLY") || cardType.includes("MINION")) {
-                $("#phase").hide();
-                $("#phase").val("");
-            } else if (cardType.includes("EVENT")) {
+            if (cardType.includes("EVENT")) {
                 $("#phase").show();
             } else {
                 $("#phase").hide();

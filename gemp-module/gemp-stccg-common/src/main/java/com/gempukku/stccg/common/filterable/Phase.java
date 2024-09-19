@@ -15,7 +15,6 @@ public enum Phase {
 
     // LotR
     FELLOWSHIP("Fellowship", true, true),
-    SHADOW("Shadow", true, true),
     MANEUVER("Maneuver", true, true),
     ARCHERY("Archery", true, true),
     ASSIGNMENT("Assignment", true, true),

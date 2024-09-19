@@ -44,20 +44,6 @@ public class Filters {
             _speciesFilterMap.put(species, species(species));
         for (Keyword keyword : Keyword.values())
             _keywordFilterMap.put(keyword, keyword(keyword));
-
-        // Some simple shortcuts for filters
-        // Only companions can be rangers
-        _keywordFilterMap.put(Keyword.RANGER, Filters.and(CardType.COMPANION, keyword(Keyword.RANGER)));
-        // Only allies can be villagers
-        _keywordFilterMap.put(Keyword.VILLAGER, Filters.and(CardType.ALLY, keyword(Keyword.VILLAGER)));
-
-        // Minion groups
-        _keywordFilterMap.put(Keyword.SOUTHRON, Filters.and(CardType.MINION, keyword(Keyword.SOUTHRON)));
-        _keywordFilterMap.put(Keyword.EASTERLING, Filters.and(CardType.MINION, keyword(Keyword.EASTERLING)));
-        _keywordFilterMap.put(Keyword.CORSAIR, Filters.and(CardType.MINION, keyword(Keyword.CORSAIR)));
-        _keywordFilterMap.put(Keyword.TRACKER, Filters.and(CardType.MINION, keyword(Keyword.TRACKER)));
-        _keywordFilterMap.put(Keyword.WARG_RIDER, Filters.and(CardType.MINION, keyword(Keyword.WARG_RIDER)));
-        _keywordFilterMap.put(Keyword.BESIEGER, Filters.and(CardType.MINION, keyword(Keyword.BESIEGER)));
     }
 
     public static boolean canSpot(DefaultGame game, Filterable... filters) {
@@ -189,7 +175,6 @@ public class Filters {
     public static final Filter aragorn = Filters.name("Aragorn");
     public static final Filter gandalf = Filters.name("Gandalf");
     public static final Filter item = Filters.or(CardType.ARTIFACT);
-    public static final Filter character = Filters.or(CardType.ALLY, CardType.COMPANION, CardType.MINION);
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
     public static final Filter ship = Filters.or(CardType.SHIP);
     public static final Filter facility = Filters.or(CardType.FACILITY);
@@ -544,8 +529,6 @@ public class Filters {
                 });
     }
 
-
-    public static final Filter unboundCompanion = Filters.and(CardType.COMPANION, Filters.not(Keyword.RING_BOUND));
 
     public static final Filter undocked = (game, physicalCard) -> {
         if (physicalCard instanceof PhysicalShipCard shipCard)

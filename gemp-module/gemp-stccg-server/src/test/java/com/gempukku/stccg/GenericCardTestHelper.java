@@ -368,19 +368,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         _game.getGameState().shuffleDeck(player);
     }
 
-    public void FreepsMoveCharToTable(String...names) {
-        Arrays.stream(names).forEach(name -> FreepsMoveCharToTable(GetFreepsCard(name)));
-    }
-    public void FreepsMoveCharToTable(PhysicalCardGeneric...cards) {
-        Arrays.stream(cards).forEach(card -> MoveCardToZone(P1, card, Zone.FREE_CHARACTERS));
-    }
-    public void ShadowMoveCharToTable(String...names) {
-        Arrays.stream(names).forEach(name -> ShadowMoveCharToTable(GetShadowCard(name)));
-    }
-    public void ShadowMoveCharToTable(PhysicalCardGeneric...cards) {
-        Arrays.stream(cards).forEach(card -> MoveCardToZone(P2, card, Zone.SHADOW_CHARACTERS));
-    }
-
 
     public void FreepsMoveCardToSupportArea(String...names) {
         Arrays.stream(names).forEach(name -> FreepsMoveCardToSupportArea(GetFreepsCard(name)));
@@ -408,20 +395,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
 
-    public void FreepsMoveCardToDeadPile(String...names) {
-        Arrays.stream(names).forEach(name -> FreepsMoveCardToDeadPile(GetFreepsCard(name)));
-    }
-    public void FreepsMoveCardToDeadPile(PhysicalCardGeneric...cards) {
-        Arrays.stream(cards).forEach(card -> MoveCardToZone(P1, card, Zone.DEAD));
-    }
-    public void ShadowMoveCardToDeadPile(String...names) {
-        Arrays.stream(names).forEach(name -> ShadowMoveCardToDeadPile(GetFreepsCard(name)));
-    }
-    public void ShadowMoveCardToDeadPile(PhysicalCardGeneric...cards) {
-        Arrays.stream(cards).forEach(card -> MoveCardToZone(P2, card, Zone.DEAD));
-    }
-
-
     public void RemoveCardZone(String player, PhysicalCardGeneric card) {
         if(card.getZone() != null)
         {
@@ -446,15 +419,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
             if(current == target)
                 break;
 
-            if(current == Phase.FELLOWSHIP) {
-                FreepsPassCurrentPhaseAction();
-            }
-            else if(current == Phase.SHADOW) {
-                ShadowPassCurrentPhaseAction();
-            }
-            else {
-                PassCurrentPhaseActions();
-            }
+            PassCurrentPhaseActions();
 
             if(attempts == 20)
             {
@@ -470,15 +435,7 @@ public class GenericCardTestHelper extends AbstractAtTest {
             if(current == target)
                 break;
 
-            if(current == Phase.FELLOWSHIP) {
-                ShadowPassCurrentPhaseAction();
-            }
-            else if(current == Phase.SHADOW) {
-                FreepsPassCurrentPhaseAction();
-            }
-            else {
-                PassCurrentPhaseActions();
-            }
+            PassCurrentPhaseActions();
 
             if(attempts == 20)
             {
@@ -513,35 +470,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public void FreepsDeclineAssignments() throws DecisionResultInvalidException { FreepsPassCurrentPhaseAction(); }
     public void ShadowDeclineAssignments() throws DecisionResultInvalidException { ShadowPassCurrentPhaseAction(); }
-
-    public void FreepsAssignToMinions(PhysicalCardGeneric comp, PhysicalCardGeneric...minions) throws DecisionResultInvalidException { AssignToMinions(P1, comp, minions); }
-    public void ShadowAssignToMinions(PhysicalCardGeneric comp, PhysicalCardGeneric...minions) throws DecisionResultInvalidException { AssignToMinions(P2, comp, minions); }
-    public void AssignToMinions(String player, PhysicalCardGeneric comp, PhysicalCardGeneric...minions) throws DecisionResultInvalidException {
-        StringBuilder result = new StringBuilder(String.valueOf(comp.getCardId()));
-
-        for (PhysicalCardGeneric minion : minions) {
-            result.append(" ").append(minion.getCardId());
-        }
-
-        playerDecided(player, result.toString());
-    }
-
-    public void FreepsAssignToMinions(PhysicalCardGeneric[]...groups) throws DecisionResultInvalidException { AssignToMinions(P1, groups); }
-    public void ShadowAssignToMinions(PhysicalCardGeneric[]...groups) throws DecisionResultInvalidException { AssignToMinions(P2, groups); }
-    public void AssignToMinions(String player, PhysicalCardGeneric[]...groups) throws DecisionResultInvalidException {
-        StringBuilder result = new StringBuilder();
-
-        for (PhysicalCardGeneric[] group : groups) {
-            result.append(group[0].getCardId());
-            for(int i = 1; i < group.length; i++)
-            {
-                result.append(" ").append(group[i].getCardId());
-            }
-            result.append(",");
-        }
-
-        playerDecided(player, result.toString());
-    }
 
 
     public List<PhysicalCardGeneric> FreepsGetAttachedCards(String name) { return GetAttachedCards(GetFreepsCard(name)); }
@@ -690,7 +618,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void ShadowChoose(String...choices) throws DecisionResultInvalidException { playerDecided(P2, String.join(",", choices)); }
 
 
-    public void FreepsChooseToMove() throws DecisionResultInvalidException { playerDecided(P1, "0"); }
     public void FreepsChooseToStay() throws DecisionResultInvalidException { playerDecided(P1, "1"); }
     public void ShadowChooseToStay() throws DecisionResultInvalidException { playerDecided(P2, "1"); }
 
@@ -703,7 +630,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public void ShadowDeclineOptionalTrigger() throws DecisionResultInvalidException { playerDecided(P2, ""); }
 
     public void FreepsDeclineReconciliation() throws DecisionResultInvalidException { FreepsPassCurrentPhaseAction(); }
-    public void ShadowDeclineReconciliation() throws DecisionResultInvalidException { ShadowPassCurrentPhaseAction(); }
 
     public void FreepsChooseYes() throws DecisionResultInvalidException { ChooseMultipleChoiceOption(P1, "Yes"); }
     public void ShadowChooseYes() throws DecisionResultInvalidException { ChooseMultipleChoiceOption(P2, "Yes"); }
@@ -734,15 +660,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     {
         playerDecided(P1, "");
         playerDecided(P2, "");
-    }
-
-    public void QuickSkip(int times) throws DecisionResultInvalidException {
-        for(int i = 0; i <= times; i++) {
-            SkipToPhase(Phase.REGROUP);
-            PassCurrentPhaseActions();
-            ShadowDeclineReconciliation();
-            FreepsChooseToMove();
-        }
     }
 
 }

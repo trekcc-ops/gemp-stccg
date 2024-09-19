@@ -210,11 +210,7 @@ public abstract class PhysicalCard implements Filterable {
 
             final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
             if (validTargetFilter == null) {
-                Zone playToZone = switch (_blueprint.getCardType()) {
-                    case COMPANION -> Zone.FREE_CHARACTERS;
-                    case MINION -> Zone.SHADOW_CHARACTERS;
-                    default -> Zone.SUPPORT;
-                };
+                Zone playToZone = Zone.SUPPORT;
                 CostToEffectAction action = new STCCGPlayCardAction((ST1EPhysicalCard) this, playToZone, this.getOwner());
                 getGame().getModifiersQuerying().appendExtraCosts(action, this);
                 getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);

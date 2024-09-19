@@ -8,16 +8,11 @@ public enum Zone implements Filterable {
     SPACELINE("spaceline", true, true, true, false),
     AT_LOCATION("location", true, true, true, false),
 
-    // Public knowledge and in play
-    FREE_CHARACTERS("play", true, true, true, true),
     SUPPORT("play", true, true, true, true),
-    SHADOW_CHARACTERS("play", true, true, true, true),
-    ADVENTURE_PATH("play", true, true, true, true),
     ATTACHED("play", true, true, true, false),
 
     // Public knowledge but not in play
     STACKED("stacked", true, true, false, false),
-    DEAD("dead pile", true, true, false, false),
     REMOVED("removed", true, true, false, true),
 
     /* TODO - Not a perfect implementation of play pile. In a real game, only the top card is visible,

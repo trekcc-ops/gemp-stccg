@@ -418,10 +418,6 @@ public class CardBlueprint {
         // Checks below are LotR-specific
         if (_cardType != CardType.EVENT && _playEventAction != null)
             throwException("Only events should have an event type effect");
-        if (targetFilters != null && keywords != null) {
-            if (keywords.size() > 1 && keywords.containsKey(Keyword.TALE))
-                throwException("Attachment should not have keywords");
-        }
     }
 
 
