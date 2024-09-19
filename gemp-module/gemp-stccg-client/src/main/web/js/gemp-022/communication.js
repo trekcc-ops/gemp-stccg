@@ -1,3 +1,5 @@
+import getUrlParam from 'common.js';
+
 export default class GempClientCommunication {
     constructor(url, failure) {
         this.url = url;
