@@ -1,9 +1,11 @@
-var StatsUI = Class.extend({
-    communication:null,
-    paramsDiv:null,
-    statsDiv:null,
+import GempClientCommunication from "./communication.js";
 
-    init:function (url, paramControl, statControl) {
+export default class StatsUI {
+    communication;
+    paramsDiv;
+    statsDiv;
+
+    constructor(url, paramControl, statControl) {
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
@@ -27,20 +29,21 @@ var StatsUI = Class.extend({
             function () {
                 var startDay = $(".startDay", that.paramsDiv).prop("value");
                 var period = $("option:selected", $(".period", that.paramsDiv)).prop("value");
-
+                
+                // BUG: Function gets called but returns a 404 XHR. Broken lookup?
                 that.communication.getStats(startDay, period, that.loadedStats, {
                     "400":function () {
                         alert("Invalid parameter entered");
                     }
                 })
             });
-    },
+    }
     
-    getPercentage:function (num1, num2) {
+    getPercentage(num1, num2) {
         return Number(num1 / num2).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:2});
-    },
+    }
 
-    loadedStats:function (json) {
+    loadedStats(json) {
         var that = this;
         log(json);
         
@@ -99,4 +102,4 @@ var StatsUI = Class.extend({
 
         }
     }
-});
+}
