@@ -93,12 +93,32 @@ $(document).ready(function () {
 					break;
 				case 1:
 					// Help
+					$("#helpMain").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+					$("#help-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
 					break;
 				case 2:
 					// Events
+					$("#eventsMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+					$("#event-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
+					
+					// TODO: import these bad boys
+					let leagueUI = new LeagueResultsUI("/gemp-stccg-server");
+					
+					let tourneyUI = new TournamentResultsUI("/gemp-stccg-server");
+		
+					$(".loadFinishedTournaments").button().click(
+						function() {
+							tourneyUI.loadHistoryTournaments();
+						}
+					);
 					break;
 				case 3:
 					// Server info
+					$("#infoMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+					$("#info-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
+					// TODO: Import StatsUI
+					var ui = new StatsUI("/gemp-stccg-server", $("#statsParameters"), $("#stats"));
+					$(".getStats").click();
 					break;
 				case 4:
 					// My account
@@ -110,6 +130,22 @@ $(document).ready(function () {
 					break;
 				case 5:
 					// Admin
+					$("#adminMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+					$("#admin-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
+					
+					$("#landingTab").parent().hide();
+					$("#landing").hide();
+					
+					if(!hall.userInfo.type.includes("a"))
+					{
+						$("#generalTab").parent().hide();
+						$("#banTab").parent().hide();
+					}
+					
+					if(!hall.userInfo.type.includes("l"))
+					{
+						$("#leagueTab").parent().hide();
+					}
 					break;
 				default:
 					console.error("main.tabs(): Unknown selected tab number" + selected_tab_num);
