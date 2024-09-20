@@ -16,6 +16,7 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.DefaultUserFeedback;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.*;
@@ -45,19 +46,28 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         initializeGameWithDecks(decks);
     }
 
-    protected void initializeGameWithDecks(Map<String, CardDeck> decks) throws DecisionResultInvalidException {
-        initializeGameWithDecks(decks, "multipath");
-    }
-
-    protected void initializeGameWithDecks(Map<String, CardDeck> decks, String formatName) throws DecisionResultInvalidException {
+    protected void initializeSimple1EGame() {
+        Map<String, CardDeck> decks = new HashMap<>();
+        addPlayerDeck(P1, decks, null);
+        addPlayerDeck(P2, decks,null);
         _userFeedback = new DefaultUserFeedback();
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.getFormat(formatName);
+        GameFormat format = formatLibrary.getFormat("multipath");
 
-        Map<String, CardDeck> genericDecks = new HashMap<>(decks);
+        _game = new ST1EGame(format, decks, _userFeedback, _cardLibrary);
+        _userFeedback.setGame(_game);
+        _game.startGame();
 
-        _game = new TribblesGame(format, genericDecks, _userFeedback, _cardLibrary);
+    }
+
+    protected void initializeGameWithDecks(Map<String, CardDeck> decks) throws DecisionResultInvalidException {
+        _userFeedback = new DefaultUserFeedback();
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("multipath");
+
+        _game = new ST1EGame(format, new HashMap<>(decks), _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
         _game.startGame();
 

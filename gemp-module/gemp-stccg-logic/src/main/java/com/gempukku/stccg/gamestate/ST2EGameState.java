@@ -51,7 +51,7 @@ public class ST2EGameState extends GameState {
     public void createPhysicalCards() {
         for (Player player : _players.values()) {
             String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecksWithEnum().entrySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {

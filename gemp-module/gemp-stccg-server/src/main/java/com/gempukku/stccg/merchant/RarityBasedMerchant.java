@@ -24,13 +24,8 @@ public class RarityBasedMerchant implements Merchant {
             foil = true;
             blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
         }
-        boolean tengwar = false;
-        if (blueprintId.endsWith("T")) {
-            tengwar = true;
-            blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
-        }
 
-        if (foil || tengwar)
+        if (foil)
             return null;
 
         return getCardBasePrice(blueprintId);
@@ -43,18 +38,10 @@ public class RarityBasedMerchant implements Merchant {
             foil = true;
             blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
         }
-        boolean tengwar = false;
-        if (blueprintId.endsWith("T")) {
-            tengwar = true;
-            blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
-        }
-
         Integer cardBasePrice = getCardBasePrice(blueprintId);
         if (cardBasePrice == null)
             return null;
 
-        if (tengwar)
-            cardBasePrice *= 2;
         if (foil)
             cardBasePrice *= 4;
 

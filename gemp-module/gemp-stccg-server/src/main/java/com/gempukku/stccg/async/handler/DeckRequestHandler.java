@@ -6,6 +6,7 @@ import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.db.DeckDAO;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.GameFormat;
@@ -519,11 +520,11 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         notes.setTextContent(deck.getNotes());
         deckElem.appendChild(notes);
 
-        for (String subDeck : deck.getSubDecks().keySet()) {
+        for (SubDeck subDeck : deck.getSubDecks().keySet()) {
             for (String card : deck.getSubDecks().get(subDeck)) {
                 Element cardElement = doc.createElement("card");
                 cardElement.setAttribute("blueprintId", card);
-                cardElement.setAttribute("subDeck", subDeck);
+                cardElement.setAttribute("subDeck", subDeck.name());
                 try {
                     cardElement.setAttribute("imageUrl", deck.getLibrary().getCardBlueprint(card).getImageUrl());
                 } catch (CardNotFoundException e) {

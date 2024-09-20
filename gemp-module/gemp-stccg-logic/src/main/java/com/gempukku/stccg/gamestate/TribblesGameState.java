@@ -2,6 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
@@ -50,7 +51,7 @@ public class TribblesGameState extends GameState {
     public void createPhysicalCards() {
         for (Player player : _players.values()) {
             String playerId = player.getPlayerId();
-            for (Map.Entry<String,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
@@ -61,7 +62,7 @@ public class TribblesGameState extends GameState {
                         throw new RuntimeException("Card blueprint not found");
                     }
                 }
-                if (Objects.equals(entry.getKey(), "DRAW_DECK")) {
+                if (Objects.equals(entry.getKey().name(), "DRAW_DECK")) {
                     _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
                     subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
                 }

@@ -1,4 +1,4 @@
-package com.gempukku.stccg.at.effects;
+package com.gempukku.stccg.at;
 
 
 import com.gempukku.stccg.actions.UnrespondableEffect;

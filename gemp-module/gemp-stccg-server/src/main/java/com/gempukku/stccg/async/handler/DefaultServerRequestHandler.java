@@ -248,7 +248,7 @@ public class DefaultServerRequestHandler {
         for (String card : deck.getDrawDeckCards())
             deckCards.addItem(_library.getBaseBlueprintId(card), 1);
 
-        result.append(listCards("Adventure Deck","cardType:SITE sort:siteNumber,twilight",
+        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
                 deckCards,false, sortAndFilter, formatLibrary, showToolTip));
         result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
                 deckCards,true, sortAndFilter, formatLibrary, showToolTip));

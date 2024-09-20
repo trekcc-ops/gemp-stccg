@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CardDeck {
-    Map<String, List<String>> _subDecks = new HashMap<>();
+    Map<SubDeck, List<String>> _subDecks = new HashMap<>();
     protected final String _deckName;
     protected String _notes;
     protected String _targetFormat;
@@ -41,14 +41,14 @@ public class CardDeck {
                     cards.add(card);
                 }
             }
-            _subDecks.put(parts[i], cards);
+            _subDecks.put(SubDeck.valueOf(parts[i]), cards);
         }
     }
 
     public String buildContentsFromDeck() {
         List<String> parts = new ArrayList<>();
-        _subDecks.forEach((k,v) -> {
-            parts.add(k);
+        _subDecks.forEach((k, v) -> {
+            parts.add(k.name());
             parts.add(String.join(",",v));
         });
         return String.join("|", parts);
@@ -57,31 +57,15 @@ public class CardDeck {
     public String getDeckName() {
         return _deckName;
     }
-    public void addCard(String card) {
-        _subDecks.get("DRAW_DECK").add(card);
-    }
+    public void addCard(String card) { _subDecks.get(SubDeck.DRAW_DECK).add(card); }
     public List<String> getDrawDeckCards() {
-        return _subDecks.get("DRAW_DECK");
-    }
-    public List<String> getAllDeckCards() {
-        List<String> allCards = new ArrayList<>();
-        _subDecks.forEach((k, v) -> allCards.addAll(v));
-        return allCards;
-    }
-    public Map<String, List<String>> getSubDecks() { return _subDecks; }
-    public Map<SubDeck, List<String>> getSubDecksWithEnum() {
-        Map<SubDeck, List<String>> subDecksWithEnum = new HashMap<>();
-        for (Map.Entry<String, List<String>> entry : _subDecks.entrySet()) {
-            subDecksWithEnum.put(SubDeck.valueOf(entry.getKey()), entry.getValue());
-        }
-        return subDecksWithEnum;
+        return _subDecks.get(SubDeck.DRAW_DECK);
     }
 
-    public List<String> getSubDeck(SubDeck subDeck) {
-        return _subDecks.get(subDeck.name());
-    }
+    public Map<SubDeck, List<String>> getSubDecks() { return _subDecks; }
+    public List<String> getSubDeck(SubDeck subDeck) { return _subDecks.get(subDeck); }
 
-    public void setSubDecks(Map<String, List<String>> subDecks) { _subDecks = subDecks; }
+    public void setSubDecks(Map<SubDeck, List<String>> subDecks) { _subDecks = subDecks; }
     public String getTargetFormat() { return _targetFormat; }
     public CardBlueprintLibrary getLibrary() { return _library; }
 

@@ -184,14 +184,6 @@ public class SortAndFilterCards {
         return result;
     }
 
-    private Integer getSiteNumber(String[] filterParams) {
-        for (String filterParam : filterParams) {
-            if (filterParam.startsWith("siteNumber:"))
-                return Integer.parseInt(filterParam.substring("siteNumber:".length()));
-        }
-        return null;
-    }
-
     private String getSort(String[] filterParams) {
         for (String filterParam : filterParams) {
             if (filterParam.startsWith("sort:"))
@@ -322,19 +314,6 @@ public class SortAndFilterCards {
         @Override
         public int compare(CardItem o1, CardItem o2) {
             return _cardBlueprintMap.get(o1.getBlueprintId()).getTribbleValue() - _cardBlueprintMap.get(o2.getBlueprintId()).getTribbleValue();
-        }
-    }
-
-    private static class TwilightComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
-
-        private TwilightComparator(Map<String, CardBlueprint> cardBlueprintMap) {
-            _cardBlueprintMap = cardBlueprintMap;
-        }
-
-        @Override
-        public int compare(CardItem o1, CardItem o2) {
-            return _cardBlueprintMap.get(o1.getBlueprintId()).getTwilightCost() - _cardBlueprintMap.get(o2.getBlueprintId()).getTwilightCost();
         }
     }
 

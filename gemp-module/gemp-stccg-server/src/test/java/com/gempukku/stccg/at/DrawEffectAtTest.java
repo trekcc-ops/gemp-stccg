@@ -1,8 +1,7 @@
-package com.gempukku.stccg.at.effects;
+package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
-import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
@@ -19,13 +18,13 @@ import static org.junit.Assert.*;
 public class DrawEffectAtTest extends AbstractAtTest {
     @Test
     public void drawingSuccessful() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
+        initializeSimple1EGame();
 
         skipMulligans();
 
-        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
 
-        _game.getGameState().putCardOnTopOfDeck(merry);
+        _game.getGameState().putCardOnTopOfDeck(picard);
 
         final AtomicInteger triggerCount = new AtomicInteger(0);
 
@@ -34,7 +33,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(merry);
+                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new IncrementEffect(triggerCount));
                             return Collections.singletonList(action);
@@ -49,7 +48,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         assertEquals(1, _game.getGameState().getHand(P1).size());
         assertEquals(0, _game.getGameState().getDrawDeck(P1).size());
-        assertTrue(_game.getGameState().getHand(P1).contains(merry));
+        assertTrue(_game.getGameState().getHand(P1).contains(picard));
         assertTrue(drawEffect.wasCarriedOut());
 
         assertEquals(1, triggerCount.get());
@@ -61,9 +60,9 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
 
-        _game.getGameState().putCardOnTopOfDeck(merry);
+        _game.getGameState().putCardOnTopOfDeck(picard);
 
         final AtomicInteger triggerCount = new AtomicInteger(0);
 
@@ -72,7 +71,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(merry);
+                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new IncrementEffect(triggerCount));
                             return Collections.singletonList(action);
@@ -87,7 +86,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         assertEquals(1, _game.getGameState().getHand(P1).size());
         assertEquals(0, _game.getGameState().getDrawDeck(P1).size());
-        assertTrue(_game.getGameState().getHand(P1).contains(merry));
+        assertTrue(_game.getGameState().getHand(P1).contains(picard));
         assertFalse(drawEffect.wasCarriedOut());
 
         assertEquals(1, triggerCount.get());
@@ -99,11 +98,11 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
-        final PhysicalCardGeneric merry2 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
+        final PhysicalCardGeneric picard2 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("101_215"));
 
-        _game.getGameState().putCardOnTopOfDeck(merry);
-        _game.getGameState().putCardOnTopOfDeck(merry2);
+        _game.getGameState().putCardOnTopOfDeck(picard);
+        _game.getGameState().putCardOnTopOfDeck(picard2);
 
         final AtomicInteger triggerCount = new AtomicInteger(0);
 
@@ -112,7 +111,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(merry);
+                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new IncrementEffect(triggerCount));
                             return Collections.singletonList(action);
@@ -127,8 +126,8 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         assertEquals(2, _game.getGameState().getHand(P1).size());
         assertEquals(0, _game.getGameState().getDrawDeck(P1).size());
-        assertTrue(_game.getGameState().getHand(P1).contains(merry));
-        assertTrue(_game.getGameState().getHand(P1).contains(merry2));
+        assertTrue(_game.getGameState().getHand(P1).contains(picard));
+        assertTrue(_game.getGameState().getHand(P1).contains(picard2));
         assertTrue(drawEffect.wasCarriedOut());
 
         assertEquals(2, triggerCount.get());
@@ -140,9 +139,9 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
         skipMulligans();
 
-        final PhysicalCardGeneric merry = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("1_303"));
+        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
 
-        _game.getGameState().putCardOnTopOfDeck(merry);
+        _game.getGameState().putCardOnTopOfDeck(picard);
 
         final AtomicInteger triggerCount = new AtomicInteger(0);
         final AtomicInteger preventCount = new AtomicInteger(0);
@@ -152,7 +151,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
                         if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(merry);
+                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new IncrementEffect(triggerCount));
                             return Collections.singletonList(action);
@@ -163,7 +162,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     @Override
                     public List<? extends Action> getRequiredBeforeTriggers(Effect effect) {
                         if (TriggerConditions.isDrawingACard(effect, _game, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(merry);
+                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new PreventEffect(_game, (Preventable) effect));
                             action.appendEffect(

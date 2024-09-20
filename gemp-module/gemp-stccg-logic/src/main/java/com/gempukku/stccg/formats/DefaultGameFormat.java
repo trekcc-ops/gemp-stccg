@@ -407,7 +407,7 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public CardDeck applyErrata(CardDeck deck) {
         CardDeck deckWithErrata = new CardDeck(deck);
-        Map<String, List<String>> newSubDecks = deckWithErrata.getSubDecks();
+        Map<SubDeck, List<String>> newSubDecks = deckWithErrata.getSubDecks();
         newSubDecks.forEach((k, v) -> v.replaceAll(this::applyErrata));
         deckWithErrata.setSubDecks(newSubDecks);
         return deckWithErrata;
