@@ -1,65 +1,4 @@
-$("banMain").ready(
-	function () {
-		
-		$("#reset-button").button().click(
-			function () {
-				let execute = confirm("Are you sure you want to reset the password for '" + $("#reset-input").val() + "'?  This action cannot be undone.");
-					
-				if(!execute)
-					return;
-					
-				let resultdiv = $("#reset-result");
-				resultdiv.html("Processing...");
-				
-				hall.comm.resetUserPassword($("#reset-input").val(), function (string) {
-					resultdiv.html(string);
-				}, banErrorMap(resultdiv));
-			});
-		
-		$("#permaban-button").button().click(
-			function () {
-				let resultdiv = $("#permaban-result");
-				resultdiv.html("Processing...");
-				
-				hall.comm.permabanUser($("#permaban-input").val(), function (string) {
-					resultdiv.html(string);
-				}, banErrorMap(resultdiv));
-			});
-		
-		$("#tempban-button").button().click(
-			function () {
-				let resultdiv = $("#tempban-result");
-				resultdiv.html("Processing...");
-				
-				hall.comm.tempbanUser($("#tempban-input").val(), $("#temp-ban-duration-select").val(), function (string) {
-					resultdiv.html(string);
-				}, banErrorMap(resultdiv));
-			});
-		
-		$("#unban-button").button().click(
-			function () {
-				let resultdiv = $("#unban-result");
-				resultdiv.html("Processing...");
-				
-				hall.comm.unbanUser($("#unban-input").val(), function (string) {
-					resultdiv.html(string);
-				}, banErrorMap(resultdiv));
-			});
-		
-		$("#sus-button").button().click(
-			function () {
-				let resultdiv = $("#sus-result");
-				resultdiv.html("Processing...");
-				
-				hall.comm.susUserSearch($("#sus-input").val(), susUserPopulate, banErrorMap(resultdiv), function() {
-					$("#displayUsers").hide();
-				});
-			});
-		
-		
-	});
-
-function susUserPopulate(xml) {
+export function susUserPopulate(xml) {
 	var root = xml.documentElement;
 	if(root == null)
 	{
@@ -98,7 +37,7 @@ function susUserPopulate(xml) {
 	}
 }
 
-function banMultiple() {
+export function banMultiple() {
 	var actionSuccess = function () {
 		alert("Operation was successful");
 	};
@@ -137,7 +76,7 @@ function banMultiple() {
 }
 
 
-function banErrorMap(outputControl, callback=null) {
+export function banErrorMap(outputControl, callback=null) {
 	return {
 		"0":function() {
 			outputControl.html("0: Server has been shut down or there was a problem with your internet connection.", "warningMessage");

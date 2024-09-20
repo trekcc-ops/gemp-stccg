@@ -5,6 +5,7 @@ import PlayerStatsUI from "../../js/gemp-022/playerStatsUi.js";
 import StatsUI from "../../js/gemp-022/statsUi.js";
 import LeagueResultsUI from "../../js/gemp-022/leagueResultsUi.js";
 import { gatherData, sortOptionsByName, leagueErrorMap } from "../../js/gemp-022/leagueAdmin.js";
+import { susUserPopulate, banErrorMap } from "../../js/gemp-022/manage.js";
 import TournamentResultsUI from "../../js/gemp-022/tournamentResultsUi.js";
 import { formatPrice } from "../../js/gemp-022/common.js";
 
@@ -637,6 +638,60 @@ $(document).ready(function () {
 						case 3:
 							// Manage Users
 							console.log("Manage users");
+							$("#reset-button").button().click(
+								function () {
+									let execute = confirm("Are you sure you want to reset the password for '" + $("#reset-input").val() + "'?  This action cannot be undone.");
+										
+									if(!execute)
+										return;
+										
+									let resultdiv = $("#reset-result");
+									resultdiv.html("Processing...");
+									
+									hall.comm.resetUserPassword($("#reset-input").val(), function (string) {
+										resultdiv.html(string);
+									}, banErrorMap(resultdiv));
+								});
+							
+							$("#permaban-button").button().click(
+								function () {
+									let resultdiv = $("#permaban-result");
+									resultdiv.html("Processing...");
+									
+									hall.comm.permabanUser($("#permaban-input").val(), function (string) {
+										resultdiv.html(string);
+									}, banErrorMap(resultdiv));
+								});
+							
+							$("#tempban-button").button().click(
+								function () {
+									let resultdiv = $("#tempban-result");
+									resultdiv.html("Processing...");
+									
+									hall.comm.tempbanUser($("#tempban-input").val(), $("#temp-ban-duration-select").val(), function (string) {
+										resultdiv.html(string);
+									}, banErrorMap(resultdiv));
+								});
+							
+							$("#unban-button").button().click(
+								function () {
+									let resultdiv = $("#unban-result");
+									resultdiv.html("Processing...");
+									
+									hall.comm.unbanUser($("#unban-input").val(), function (string) {
+										resultdiv.html(string);
+									}, banErrorMap(resultdiv));
+								});
+							
+							$("#sus-button").button().click(
+								function () {
+									let resultdiv = $("#sus-result");
+									resultdiv.html("Processing...");
+									
+									hall.comm.susUserSearch($("#sus-input").val(), susUserPopulate, banErrorMap(resultdiv), function() {
+										$("#displayUsers").hide();
+									});
+								});
 							break;
 						default:
 							console.error("adminMain.tabs(): Unknown selected tab number" + selected_admin_tab);
