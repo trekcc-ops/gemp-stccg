@@ -30,7 +30,6 @@ export default class StatsUI {
                 var startDay = $(".startDay", that.paramsDiv).prop("value");
                 var period = $("option:selected", $(".period", that.paramsDiv)).prop("value");
                 
-                // BUG: Function gets called but returns a 404 XHR. Broken lookup?
                 that.communication.getStats(startDay, period, that.loadedStats, {
                     "400":function () {
                         alert("Invalid parameter entered");
@@ -45,7 +44,7 @@ export default class StatsUI {
 
     loadedStats(json) {
         var that = this;
-        log(json);
+        // console.log(json);
         
         var getPercentage = (num1, num2) => Number(num1 / num2).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:2});
 
