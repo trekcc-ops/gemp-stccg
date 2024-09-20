@@ -22,7 +22,7 @@ export default class PlayerStatsUI {
     }
 
     loadedPlayerStats(xml) {
-        log(xml);
+        // log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'playerStats') {
             $("#playerStats").html("");

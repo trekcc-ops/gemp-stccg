@@ -3,6 +3,8 @@ import GempHallUI from "../../js/gemp-022/hallUi.js";
 import GameHistoryUI from "../../js/gemp-022/gameHistoryUi.js";
 import PlayerStatsUI from "../../js/gemp-022/playerStatsUi.js";
 import StatsUI from "../../js/gemp-022/statsUi.js";
+import LeagueResultsUI from "../../js/gemp-022/leagueResultsUi.js";
+import TournamentResultsUI from "../../js/gemp-022/tournamentResultsUi.js";
 import { formatPrice } from "../../js/gemp-022/common.js";
 
 var chat;
@@ -104,7 +106,6 @@ $(document).ready(function () {
 					$("#eventsMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
 					$("#event-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
 					
-					// TODO: import these bad boys
 					let leagueUI = new LeagueResultsUI("/gemp-stccg-server");
 					
 					let tourneyUI = new TournamentResultsUI("/gemp-stccg-server");
@@ -119,7 +120,7 @@ $(document).ready(function () {
 					// Server info
 					$("#infoMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
 					$("#info-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
-					// TODO: Import StatsUI
+					
 					var ui = new StatsUI("/gemp-stccg-server", $("#statsParameters"), $("#stats"));
 					$(".getStats").click();
 					break;
