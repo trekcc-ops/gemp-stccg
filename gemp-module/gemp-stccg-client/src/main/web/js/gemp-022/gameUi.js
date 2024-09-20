@@ -879,44 +879,44 @@ var GameTableUI = Class.extend({
         }
     },
 
-    // Strings for game events should match the enum names in logic\gamestate\GameEvent.java
     processGameEvent: function (gameEvent, animate) {
         var eventType = gameEvent.getAttribute("type");
-        if (eventType == "PUT_CARD_INTO_PLAY") {
+        if (eventType == "PCIP") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
         } else if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType == "MOVE_CARD_IN_PLAY") {
-            this.animations.moveCardInPlay(gameEvent);
-        } else if (eventType == "PARTICIPANTS") {
+        } else if (eventType == "MCIP") {
+            this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
+        } else if (eventType == "P") {
             this.participant(gameEvent);
-        } else if (eventType == "REMOVE_CARD_FROM_PLAY") {
+        } else if (eventType == "RCFP") {
             this.animations.removeCardFromPlay(gameEvent, animate);
         } else if (eventType == "UPDATE_CARD_IMAGE") {
             this.animations.updateCardImage(gameEvent);
-        } else if (eventType == "GAME_PHASE_CHANGE") {
+        } else if (eventType == "GPC") {
             this.animations.gamePhaseChange(gameEvent, animate);
-        } else if (eventType == "TURN_CHANGE") {
+        } else if (eventType == "TC") {
             this.animations.turnChange(gameEvent, animate);
-        } else if (eventType == "GAME_STATS") {
+        } else if (eventType == "GS") {
             this.animations.gameStats(gameEvent, animate);
-        } else if (eventType == "SEND_MESSAGE") {
+        } else if (eventType == "M") {
             this.animations.message(gameEvent, animate);
-        } else if (eventType == "SEND_WARNING") {
+        } else if (eventType == "W") {
             this.animations.warning(gameEvent, animate);
-        } else if (eventType == "CARD_AFFECTED_BY_CARD") {
+        } else if (eventType == "CAC") {
             this.animations.cardAffectsCard(gameEvent, animate);
-        } else if (eventType == "SHOW_CARD_ON_SCREEN") {
+        } else if (eventType == "EP") {
             this.animations.eventPlayed(gameEvent, animate);
-        } else if (eventType == "FLASH_CARD_IN_PLAY") {
+        } else if (eventType == "CA") {
             this.animations.cardActivated(gameEvent, animate);
-        } else if (eventType == "DECISION") {
+        } else if (eventType == "D") {
             this.animations.processDecision(gameEvent, animate);
-        } else if (eventType = "TRIBBLE_SEQUENCE_UPDATE") {
+        } else if (eventType = "TSEQ") {
             this.animations.tribbleSequence(gameEvent, animate);
         } else if (eventType = "PLAYER_SCORE") {
             this.animations.playerScore(gameEvent, animate);
-        } else if (eventType == "GAME_ENDED") {
+        }
+        else if (eventType == "EG") {
             this.processGameEnd();
         }
     },
@@ -2299,13 +2299,10 @@ var ST1EGameTableUI = GameTableUI.extend({
             top: padding,
             width: specialUiWidth - padding + 75,
             height: TABLE_AREA_TOP - padding * 2
-//            height: height - padding * 4 - alertHeight - chatHeight
         });
         this.alertBox.css({
             position: "absolute",
             left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
-//            left: $("#bottomLeftTabs").offset().left + $("#bottomLeftTabs").width() + BORDER_PADDING * 5,
-//            left: CARD_PILE_AND_ACTION_AREA_LEFT,
             top: PLAYER_ACTION_AREA_AND_HAND_TOP,
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
             height: alertHeight
