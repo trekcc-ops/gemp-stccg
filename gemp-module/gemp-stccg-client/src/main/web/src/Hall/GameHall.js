@@ -1,6 +1,7 @@
 import ChatBoxUI from "../../js/gemp-022/chat.js";
 import GempHallUI from "../../js/gemp-022/hallUi.js";
 import GameHistoryUI from "../../js/gemp-022/gameHistoryUi.js";
+import PlayerStatsUI from "../../js/gemp-022/playerStatsUi.js";
 import { formatPrice } from "../../js/gemp-022/common.js";
 
 var chat;
