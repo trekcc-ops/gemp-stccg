@@ -124,9 +124,60 @@ $(document).ready(function () {
 					// My account
 					$("#accountMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
 					$("#account-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
-		
 					$("#accountName").html(chat.userName);
 					$("#pocketDiv").html(formatPrice(hall.pocketValue));
+
+					let selected_acct_tab_num = $("#accountMain").tabs("option", "active");
+					switch(selected_acct_tab_num) {
+						case 0:
+							// My Account
+							console.log("My account");
+							break;
+						case 1:
+							// Game History
+							console.log("Game history");
+							// TODO
+							var ui = new GameHistoryUI("/gemp-stccg-server");
+							break;
+						case 2:
+							// My Stats
+							console.log("My stats");
+							// TODO
+							var ui = new PlayerStatsUI("/gemp-stccg-server");
+							break;
+						case 3:
+							// Playtesting
+							console.log("Playtesting");
+							function drawTable(json) {
+
+								const template = {"<>":"tr","html": [
+									{"<>":"td","html":"${format_name}"},
+									{"<>":"td","html":"${winner}"},
+									{"<>":"td","html":"${loser}"},
+									{"<>":"td","html":"${win_reason}"},
+									{"<>":"td","html":"${lose_reason}"},
+									{"<>":"td","html":function() {
+										return "<a href=\"" + window.location.origin + "/gemp-module/game.html?replayId=" + this.winner + "$" + this.win_recording_id + "\">Replay link</a>";
+										}},
+									{"<>":"td","html":function() {
+										return "<a href=\"" + window.location.origin + "/gemp-module/game.html?replayId=" + this.loser + "$" + this.lose_recording_id + "\">Replay link</a>";
+										}},
+									{"<>":"td","html":function() { return new Date(this.start_date).toLocaleString('sv'); }},
+									{"<>":"td","html":function() { return new Date(this.end_date).toLocaleString('sv'); }},
+								]};
+								
+									   
+								$("#tblReplays").json2html(json,template);
+							}
+							
+							
+							hall.comm.getRecentReplays("PLAYTEST", 100, function(json){drawTable(json);}, hall.hallErrorMap());
+							drawTable();
+							break;
+						default:
+							console.error("accountMain.tabs(): Unknown selected tab number" + selected_acct_tab_num);
+					}
+
 					break;
 				case 5:
 					// Admin
