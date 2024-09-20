@@ -100,6 +100,91 @@ $(document).ready(function () {
 					// Help
 					$("#helpMain").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 					$("#help-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+
+					let selected_help_tab_num = $("#helpMain").tabs("option", "active");
+					switch(selected_help_tab_num) {
+						case 0:
+							// How do I play?
+							break;
+						case 1:
+							// Code of Conduct
+							break;
+						case 2:
+							// Format rules
+							hall.comm.getFormatRules(
+								function(json){
+									$("#formatRules").html(json);
+								},
+								hall.hallErrorMap()
+							);
+							break;
+						case 3:
+							// League rules
+							break;
+						case 4:
+							// PC Eratta
+							// BUG: This seems to throw a 500 server error;
+							//      possibly related to missing cards or wrong errata type.
+							//      At the very least, the json passed back is empty.
+							hall.comm.getErrata(
+								function(json){
+									//$("#errata-readout").text(JSON.stringify(json, null, 2));
+									
+									var top = $("<div style='display:flex; flex-direction:column; gap:20px; justify-content:center; align-items:center;'></div>");
+									
+									var results = {};
+									for(var bp in json) {
+										var info = json[bp];
+										var eid = info.ErrataIDs.PC;
+										var text = info.LinkText;
+										text = text.replace(eid, bp + "," + eid);
+										//console.log(text);
+										//result.append(text);
+										
+										var parts = bp.split("_");
+										var setID = parseInt(parts[0]);
+										var cardID = parseInt(parts[1]);
+										
+										if(setID in results) {
+											results[setID][cardID] = text;
+										}
+										else {
+											results[setID] = {};
+											results[setID][cardID] = text;
+										}
+									}
+									//debugger;
+									var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+									var sets = Object.keys(results).sort(collator.compare);
+									
+									for(var set in sets) {
+										var setdiv = $("<div style='display:flex; flex-direction:column; gap:10px; flex-wrap: wrap; width:70%; row-gap:10px; column-gap:30px; '></div>");
+										top.append($("<div style='margin:auto; font-size: 140%; position:relative; top:20px; bottom:10px;'>Set " + sets[set] + "</div>"));
+										
+										//(# * 28) / 2
+										//debugger;
+										var cards = Object.keys(results[sets[set]]).sort(collator.compare);
+										for(var card in cards) {
+											var cardspan = $("<span></span>");
+											
+											var html = results[sets[set]][cards[card]];
+											cardspan.append(results[sets[set]][cards[card]]);
+											
+											setdiv.append(cardspan);
+										}
+					
+										
+										setdiv.css({"height": "" + (((cards.length * 28) / 1.8) + 30) + "px"});
+										
+										top.append(setdiv);
+									}
+									
+									
+									$("#errata-readout").html(top);
+								},
+								hall.hallErrorMap());
+							break;
+					}
 					break;
 				case 2:
 					// Events
