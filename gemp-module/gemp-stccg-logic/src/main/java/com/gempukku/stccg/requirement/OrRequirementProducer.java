@@ -11,6 +11,6 @@ public class OrRequirementProducer extends RequirementProducer {
 
         final Requirement[] requirements = environment.getRequirementsFromJSON(object);
 
-        return (actionContext) -> RequirementUtils.acceptsAnyRequirements(requirements, actionContext);
+        return (actionContext) -> actionContext.acceptsAnyRequirements(requirements);
     }
 }

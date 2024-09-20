@@ -42,31 +42,15 @@ public interface Modifier {
 
     boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTaget);
 
-    int getVitalityModifier(DefaultGame game, PhysicalCard physicalCard);
-
-    int getResistanceModifier(PhysicalCard physicalCard);
-
     boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType);
 
     int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty);
 
     int getRoamingPenaltyModifier(DefaultGame game, PhysicalCard physicalCard);
 
-    int getOverwhelmMultiplier(DefaultGame game, PhysicalCard physicalCard);
-
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard physicalCard);
 
-    boolean canTakeWounds(DefaultGame game, Collection<PhysicalCard> woundSources, PhysicalCard physicalCard, int woundsAlreadyTakenInPhase, int woundsToTake);
-
-    boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, PhysicalCard physicalCard, Set<PhysicalCard> winners);
-
-    boolean canTakeArcheryWound(DefaultGame game, PhysicalCard physicalCard);
-
-    boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard);
-
     int getMoveLimitModifier();
-
-    boolean addsToArcheryTotal(DefaultGame game, PhysicalCard card);
 
     boolean canPlayAction(DefaultGame game, String performingPlayer, Action action);
 

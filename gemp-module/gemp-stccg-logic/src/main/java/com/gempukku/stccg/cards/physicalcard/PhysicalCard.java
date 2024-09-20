@@ -17,10 +17,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.gempukku.stccg.modifiers.ExtraPlayCost;
-import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.ModifierEffect;
-import com.gempukku.stccg.modifiers.ModifierHook;
+import com.gempukku.stccg.modifiers.*;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.*;
@@ -173,7 +170,7 @@ public abstract class PhysicalCard implements Filterable {
         ActionContext context = createActionContext();
         if (requirements != null && !context.acceptsAllRequirements(requirements))
             return false;
-        return !getGame().getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
+        return !getModifiers().canNotPlayCard(getOwnerName(), this);
     }
     public boolean canBeSeeded() { return canEnterPlay(_blueprint.getSeedRequirements()); }
     public boolean canBePlayed() { return canEnterPlay(_blueprint.getPlayRequirements()); }
@@ -212,21 +209,21 @@ public abstract class PhysicalCard implements Filterable {
             if (validTargetFilter == null) {
                 Zone playToZone = Zone.SUPPORT;
                 CostToEffectAction action = new STCCGPlayCardAction((ST1EPhysicalCard) this, playToZone, this.getOwner());
-                getGame().getModifiersQuerying().appendExtraCosts(action, this);
-                getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
+                getModifiers().appendExtraCosts(action, this);
+                getModifiers().appendPotentialDiscounts(action, this);
 
                 return action;
             } else {
                 Filter fullAttachValidTargetFilter = Filters.and(_blueprint.getValidTargetFilter(),
-                        (Filter) (game1, targetCard) -> getGame().getModifiersQuerying().canHavePlayedOn(
+                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(
                                 this, targetCard),
                         (Filter) (game12, physicalCard) -> true);
 
                 final AttachPermanentAction action = new AttachPermanentAction(this,
-                        Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter), twilightModifier);
+                        Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter));
 
-                getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
-                getGame().getModifiersQuerying().appendExtraCosts(action, this);
+                getModifiers().appendPotentialDiscounts(action, this);
+                getModifiers().appendExtraCosts(action, this);
 
                 return action;
             }
@@ -240,7 +237,7 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public boolean hasTextRemoved() {
-        for (Modifier modifier : getGame().getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
+        for (Modifier modifier : getModifiers().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
             if (modifier.hasRemovedText(getGame(), this))
                 return true;
         }
@@ -269,7 +266,7 @@ public abstract class PhysicalCard implements Filterable {
             else if (Filters.filterActive(getGame(), this).isEmpty())
                 sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");*/
 
-            Collection<Modifier> modifiers = getGame().getModifiersQuerying().getModifiersAffecting(this);
+            Collection<Modifier> modifiers = getModifiers().getModifiersAffecting(this);
             if (!modifiers.isEmpty()) {
                 sb.append("<b>Active modifiers:</b><br>");
                 for (Modifier modifier : modifiers) {
@@ -287,11 +284,11 @@ public abstract class PhysicalCard implements Filterable {
             for (Keyword keyword : Keyword.values()) {
                 if (keyword.isInfoDisplayable()) {
                     if (keyword.isMultiples()) {
-                        int count = getGame().getModifiersQuerying().getKeywordCount(this, keyword);
+                        int count = getModifiers().getKeywordCount(this, keyword);
                         if (count > 0)
                             keywords.append(keyword.getHumanReadable()).append(" +").append(count).append(", ");
                     } else {
-                        if (getGame().getModifiersQuerying().hasKeyword(this, keyword))
+                        if (getModifiers().hasKeyword(this, keyword))
                             keywords.append(keyword.getHumanReadable()).append(", ");
                     }
                 }
@@ -539,7 +536,7 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public boolean hasIcon(CardIcon icon) {
-        return getGame().getModifiersQuerying().hasIcon(this, icon);
+        return getModifiers().hasIcon(this, icon);
     }
 
     public boolean isPresentWith(PhysicalCard card) {
@@ -549,4 +546,24 @@ public abstract class PhysicalCard implements Filterable {
 
     public boolean hasSkill(SkillName skillName) { return false; }
         // TODO May need to implement something here for weird non-personnel cards that have skills
+
+    public boolean checkTurnLimit(int max) {
+        return getModifiers().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
+    }
+
+    public boolean checkPhaseLimit(Phase phase, int max) {
+        return getModifiers().getUntilEndOfPhaseLimitCounter(this, phase).getUsedLimit() < max;
+    }
+
+    public boolean checkPhaseLimit(int max) {
+        return checkPhaseLimit(getGame().getGameState().getCurrentPhase(), max);
+    }
+
+    public boolean checkPhaseLimit(String prefix, int max) {
+        return getModifiers().getUntilEndOfPhaseLimitCounter(this, prefix, getGame().getGameState().getCurrentPhase()).getUsedLimit() < max;
+    }
+
+    private ModifiersQuerying getModifiers() {
+        return getGame().getModifiersQuerying();
+    }
 }

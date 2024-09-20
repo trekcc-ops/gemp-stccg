@@ -12,15 +12,7 @@ import java.util.Set;
 
 public interface GameFormat {
 
-    boolean doesNotHaveRuleOfFour();
-
-    boolean hasMulliganRule();
-
-    boolean winWhenShadowReconciles();
-
     boolean discardPileIsPublic();
-
-    boolean winOnControlling5Sites();
 
     boolean isPlaytest();
 
@@ -42,13 +34,7 @@ public interface GameFormat {
 
     List<String> getBannedCards();
 
-    List<String> getRestrictedCards();
-
     List<String> getValidCards();
-
-    List<String> getLimit2Cards();
-
-    List<String> getLimit3Cards();
 
     List<String> getRestrictedCardNames();
 

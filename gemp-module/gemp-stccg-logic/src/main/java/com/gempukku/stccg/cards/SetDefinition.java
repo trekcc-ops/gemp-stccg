@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards;
 import java.util.*;
 
 public class SetDefinition {
-    private final List<String> _tengwarCards = new LinkedList<>();
     private final Map<String, List<String>> _rarityList = new HashMap<>();
     private final Map<String, String> _cardsRarity = new LinkedHashMap<>();
     private final String _setId;
@@ -37,10 +36,6 @@ public class SetDefinition {
         if (list == null)
             return Collections.emptyList();
         return Collections.unmodifiableList(list);
-    }
-
-    public List<String> getTengwarCards() {
-        return Collections.unmodifiableList(_tengwarCards);
     }
 
     public String getCardRarity(String cardId) {

@@ -12,7 +12,6 @@ public class ModifierSourceFactory {
     private final Map<String, ModifierSourceProducer> modifierProducers = new HashMap<>();
 
     public ModifierSourceFactory() {
-        modifierProducers.put("addactivated", new AddActivated());
         modifierProducers.put("addkeyword", new AddKeyword());
         modifierProducers.put("cancelkeywordbonusfrom", new CancelKeywordBonusFrom());
         modifierProducers.put("cancelstrengthbonusfrom", new CancelStrengthBonusFrom());
@@ -20,11 +19,9 @@ public class ModifierSourceFactory {
         modifierProducers.put("canplaycardoutofsequence", new CanPlayCardOutOfSequence());
         modifierProducers.put("canplaystackedcards", new CanPlayStackedCards());
         modifierProducers.put("cantbediscarded", new CantBeDiscarded());
-        modifierProducers.put("cantbetransferred", new CantBeTransferred());
         modifierProducers.put("cantdiscardcardsfromhandortopofdrawdeck", new CantDiscardCardsFromHandOrTopOfDrawDeck());
         modifierProducers.put("cantlookorrevealhand", new CantLookOrRevealHand());
         modifierProducers.put("cantplaycards", new CantPlayCards());
-        modifierProducers.put("cantusespecialabilities", new CantUseSpecialAbilities());
         modifierProducers.put("extracosttoplay", new ExtraCostToPlay());
         modifierProducers.put("gainicon", new AddIcon());
         modifierProducers.put("hastomoveifable", new HasToMoveIfAble());

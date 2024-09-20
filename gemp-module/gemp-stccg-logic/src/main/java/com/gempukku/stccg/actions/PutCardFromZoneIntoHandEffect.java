@@ -33,8 +33,7 @@ public class PutCardFromZoneIntoHandEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _card.getZone() == _fromZone && (_game.getFormat().doesNotHaveRuleOfFour() ||
-                _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _card.getOwnerName()));
+        return _card.getZone() == _fromZone;
     }
 
     public String chatMessage(PhysicalCard card) {

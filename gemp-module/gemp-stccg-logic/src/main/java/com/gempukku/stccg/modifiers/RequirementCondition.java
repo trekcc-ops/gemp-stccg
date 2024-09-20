@@ -3,7 +3,6 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 
 public class RequirementCondition implements Condition {
     private final Requirement[] requirements;
@@ -15,7 +14,5 @@ public class RequirementCondition implements Condition {
     }
 
     @Override
-    public boolean isFulfilled() {
-        return RequirementUtils.acceptsAllRequirements(requirements, actionContext);
-    }
+    public boolean isFulfilled() { return actionContext.acceptsAllRequirements(requirements); }
 }

@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
-import com.gempukku.stccg.PlayerLock;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -55,7 +54,7 @@ public class DefaultServerRequestHandler {
     protected final void processLoginReward(String loggedUser) throws Exception {
         if (loggedUser != null) {
             User player = _playerDao.getPlayer(loggedUser);
-            synchronized (PlayerLock.getLock(player)) {
+            synchronized (player.getName().intern()) {
                 ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
                 int latestMonday = DateUtils.getMondayBeforeOrOn(now);
 

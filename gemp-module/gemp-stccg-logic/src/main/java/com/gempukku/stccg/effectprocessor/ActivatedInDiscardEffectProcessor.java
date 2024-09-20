@@ -1,16 +1,10 @@
 package com.gempukku.stccg.effectprocessor;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
-import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
-import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
 public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
@@ -33,28 +27,10 @@ public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
 
             DefaultActionSource actionSource = new DefaultActionSource();
             actionSource.setText(text);
-            if (limitPerPhase > 0) {
-                actionSource.addRequirement(
-                        (actionContext) -> PlayConditions.checkPhaseLimit(actionContext.getGame(), actionContext.getSource(), phase, limitPerPhase));
-                actionSource.addCost(
-                        new AbstractEffectAppender() {
-                            @Override
-                            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                                return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
-                            }
-                        });
-            }
-            if (limitPerTurn > 0) {
-                actionSource.addRequirement(
-                        (actionContext) -> PlayConditions.checkTurnLimit(actionContext.getGame(), actionContext.getSource(), limitPerTurn));
-                actionSource.addCost(
-                        new AbstractEffectAppender() {
-                            @Override
-                            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-                                return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
-                            }
-                        });
-            }
+            if (limitPerPhase > 0)
+                actionSource.setPhaseLimit(phase, limitPerPhase);
+            if (limitPerTurn > 0)
+                actionSource.setTurnLimit(limitPerTurn);
             actionSource.addRequirement(
                     (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
             actionSource.processRequirementsCostsAndEffects(value, environment);

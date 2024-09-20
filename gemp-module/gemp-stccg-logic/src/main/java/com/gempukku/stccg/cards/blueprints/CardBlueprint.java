@@ -48,8 +48,6 @@ public class CardBlueprint {
     private int cost = -1;
     private final Map<CardAttribute, Integer> _cardAttributes = new HashMap<>();
     private int _specialDownloadIcons;
-    private int vitality;
-    private int resistance;
     private int tribbleValue;
     private List<CardIcon> _staffing = new LinkedList<>();
     private String _missionRequirementsText;
@@ -205,14 +203,6 @@ public class CardBlueprint {
     public int getCost() { return this.cost; }
     public int getTwilightCost() { return cost; }
 
-    public void setVitality(int vitality) {
-        this.vitality = vitality;
-    }
-    public int getVitality() { return vitality; }
-    public void setResistance(int resistance) {
-        this.resistance = resistance;
-    }
-    public int getResistance() { return resistance; }
     public void setKeywords(Map<Keyword, Integer> keywords) {
         this.keywords = keywords;
     }

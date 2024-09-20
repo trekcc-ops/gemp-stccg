@@ -7,6 +7,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class ST1EChangeAffiliationRule {
@@ -24,11 +25,13 @@ public class ST1EChangeAffiliationRule {
                     @Override
                     public List<Action> getPhaseActions(String playerId) {
                         Player player = _game.getGameState().getPlayer(playerId);
-                        LegalActionList result = new LegalActionList();
+                        LinkedList<Action> result = new LinkedList<>();
                         if (playerId.equals(_game.getCurrentPlayerId())) {
                             for (PhysicalCard card : Filters.filterYourActive(player)) {
                                 if (card instanceof AffiliatedCard affiliatedCard) {
-                                    result.addIfLegal(new ChangeAffiliationAction(player, affiliatedCard));
+                                    ChangeAffiliationAction action = new ChangeAffiliationAction(player, affiliatedCard);
+                                    if (action.canBeInitiated())
+                                        result.add(action);
                                 }
                             }
                         }

@@ -2,14 +2,18 @@ package com.gempukku.stccg.actions.sources;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
+import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.effectappender.EffectAppenderFactory;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
@@ -41,7 +45,7 @@ public class DefaultActionSource implements ActionSource {
 
     @Override
     public boolean isValid(ActionContext actionContext) {
-        return RequirementUtils.acceptsAllRequirements(requirements, actionContext);
+        return actionContext.acceptsAllRequirements(requirements);
     }
 
     @Override
@@ -91,5 +95,27 @@ public class DefaultActionSource implements ActionSource {
                 addRequirement(effectAppender::isPlayableInFull);
             addEffect(effectAppender);
         }
+    }
+
+    public void setPhaseLimit(Phase phase, int limitPerPhase) {
+        addRequirement((actionContext) -> actionContext.getSource().checkPhaseLimit(phase, limitPerPhase));
+        addCost(
+                new AbstractEffectAppender() {
+                    @Override
+                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                        return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
+                    }
+                });
+    }
+
+    public void setTurnLimit(int limitPerTurn) {
+        addRequirement((actionContext) -> actionContext.getSource().checkTurnLimit(limitPerTurn));
+        addCost(
+            new AbstractEffectAppender() {
+                @Override
+                protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                    return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
+                }
+            });
     }
 }

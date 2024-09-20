@@ -10,9 +10,7 @@ import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Action;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public abstract class AbstractModifier implements Modifier {
     protected String _playerId;
@@ -120,16 +118,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getVitalityModifier(DefaultGame game, PhysicalCard physicalCard) {
-        return 0;
-    }
-
-    @Override
-    public int getResistanceModifier(PhysicalCard physicalCard) {
-        return 0;
-    }
-
-    @Override
     public boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType) {
         return false;
     }
@@ -140,41 +128,11 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getOverwhelmMultiplier(DefaultGame game, PhysicalCard physicalCard) {
-        return 0;
-    }
-
-    @Override
     public boolean canCancelSkirmish(DefaultGame game, PhysicalCard physicalCard) { return true; }
-
-    @Override
-    public boolean canTakeWounds(DefaultGame game, Collection<PhysicalCard> woundSources, PhysicalCard physicalCard, int woundsAlreadyTaken, int woundsToTake) {
-        return true;
-    }
-
-    @Override
-    public boolean canTakeWoundsFromLosingSkirmish(DefaultGame game, PhysicalCard physicalCard, Set<PhysicalCard> winners) {
-        return true;
-    }
-
-    @Override
-    public boolean canTakeArcheryWound(DefaultGame game, PhysicalCard physicalCard) {
-        return true;
-    }
-
-    @Override
-    public boolean canBeExerted(DefaultGame game, PhysicalCard exertionSource, PhysicalCard exertedCard) {
-        return true;
-    }
 
     @Override
     public int getMoveLimitModifier() {
         return 0;
-    }
-
-    @Override
-    public boolean addsToArcheryTotal(DefaultGame game, PhysicalCard card) {
-        return true;
     }
 
     @Override

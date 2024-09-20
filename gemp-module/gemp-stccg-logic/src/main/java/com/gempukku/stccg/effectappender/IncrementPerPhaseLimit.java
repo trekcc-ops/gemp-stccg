@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
-import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
 public class IncrementPerPhaseLimit implements EffectAppenderProducer {
@@ -33,10 +32,9 @@ public class IncrementPerPhaseLimit implements EffectAppenderProducer {
                 final int limit = limitSource.evaluateExpression(actionContext, actionContext.getSource());
 
                 if (perPlayer)
-                    return PlayConditions.checkPhaseLimit(actionContext.getGame(), actionContext.getSource(),
-                            actionContext.getPerformingPlayerId() + "_", limit);
+                    return actionContext.getSource().checkPhaseLimit(actionContext.getPerformingPlayerId() + "_",limit);
                 else
-                    return PlayConditions.checkPhaseLimit(actionContext.getGame(), actionContext.getSource(), limit);
+                    return actionContext.getSource().checkPhaseLimit(limit);
             }
         };
     }

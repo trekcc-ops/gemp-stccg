@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
-import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
 public class IncrementPerTurnLimit implements EffectAppenderProducer {
@@ -25,7 +24,7 @@ public class IncrementPerTurnLimit implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                return PlayConditions.checkTurnLimit(actionContext.getGame(), actionContext.getSource(), limit);
+                return actionContext.getSource().checkTurnLimit(limit);
             }
         };
     }

@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class CostToEffect implements EffectAppenderProducer {
@@ -38,7 +37,7 @@ public class CostToEffect implements EffectAppenderProducer {
             }
 
             private boolean requirementsNotMet(ActionContext actionContext) {
-                return (!RequirementUtils.acceptsAllRequirements(requirements, actionContext));
+                return (!actionContext.acceptsAllRequirements(requirements));
             }
 
             @Override

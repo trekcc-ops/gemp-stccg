@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.lotr;
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseActiveCardEffect;
-import com.gempukku.stccg.actions.discard.DiscountEffect;
 import com.gempukku.stccg.actions.playcard.PlayCardEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -24,21 +23,16 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
 
     private boolean _cardDiscarded;
 
-    private boolean _discountResolved;
-    private boolean _discountApplied;
-
-    private int _twilightModifier;
     private final Zone _playedFrom;
     private PhysicalCard _target;
     private final DefaultGame _game;
 
-    public AttachPermanentAction(final PhysicalCard card, Filter filter, final int twilightModifier) {
+    public AttachPermanentAction(final PhysicalCard card, Filter filter) {
         super(card.getOwner(), ActionType.PLAY_CARD);
         _game = card.getGame();
         _cardToAttach = card;
         setText("Play " + _cardToAttach.getFullName());
         _playedFrom = card.getZone();
-        _twilightModifier = twilightModifier;
 
         _chooseTargetEffect =
                 new ChooseActiveCardEffect(null, card.getOwnerName(), "Attach " + card.getFullName() + ". Choose target to attach to", filter) {
@@ -83,21 +77,6 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         if (!_targetChosen) {
             _targetChosen = true;
             return _chooseTargetEffect;
-        }
-
-        if (!_discountResolved) {
-            final DiscountEffect discount = getNextPotentialDiscount();
-            if (discount != null) {
-                return discount;
-            } else {
-                _discountResolved = true;
-            }
-        }
-
-        if (!_discountApplied) {
-            _discountApplied = true;
-            _twilightModifier -= getProcessedDiscount();
-            insertCost(new PayPlayOnTwilightCostEffect(_game, _cardToAttach, _target, _twilightModifier));
         }
 
         if ((_target != null) && (!isCostFailed())) {

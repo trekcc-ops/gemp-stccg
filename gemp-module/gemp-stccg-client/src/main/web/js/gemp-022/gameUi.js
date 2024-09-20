@@ -879,44 +879,44 @@ var GameTableUI = Class.extend({
         }
     },
 
+    // Strings for game events should match the enum names in logic\gamestate\GameEvent.java
     processGameEvent: function (gameEvent, animate) {
         var eventType = gameEvent.getAttribute("type");
-        if (eventType == "PCIP") {
+        if (eventType == "PUT_CARD_INTO_PLAY") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
         } else if (eventType == "PUT_SHARED_MISSION_INTO_PLAY") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
-        } else if (eventType == "MCIP") {
-            this.animations.moveCardInPlay(gameEvent); // No animation exists for this event
-        } else if (eventType == "P") {
+        } else if (eventType == "MOVE_CARD_IN_PLAY") {
+            this.animations.moveCardInPlay(gameEvent);
+        } else if (eventType == "PARTICIPANTS") {
             this.participant(gameEvent);
-        } else if (eventType == "RCFP") {
+        } else if (eventType == "REMOVE_CARD_FROM_PLAY") {
             this.animations.removeCardFromPlay(gameEvent, animate);
         } else if (eventType == "UPDATE_CARD_IMAGE") {
             this.animations.updateCardImage(gameEvent);
-        } else if (eventType == "GPC") {
+        } else if (eventType == "GAME_PHASE_CHANGE") {
             this.animations.gamePhaseChange(gameEvent, animate);
-        } else if (eventType == "TC") {
+        } else if (eventType == "TURN_CHANGE") {
             this.animations.turnChange(gameEvent, animate);
-        } else if (eventType == "GS") {
+        } else if (eventType == "GAME_STATS") {
             this.animations.gameStats(gameEvent, animate);
-        } else if (eventType == "M") {
+        } else if (eventType == "SEND_MESSAGE") {
             this.animations.message(gameEvent, animate);
-        } else if (eventType == "W") {
+        } else if (eventType == "SEND_WARNING") {
             this.animations.warning(gameEvent, animate);
-        } else if (eventType == "CAC") {
+        } else if (eventType == "CARD_AFFECTED_BY_CARD") {
             this.animations.cardAffectsCard(gameEvent, animate);
-        } else if (eventType == "EP") {
+        } else if (eventType == "SHOW_CARD_ON_SCREEN") {
             this.animations.eventPlayed(gameEvent, animate);
-        } else if (eventType == "CA") {
+        } else if (eventType == "FLASH_CARD_IN_PLAY") {
             this.animations.cardActivated(gameEvent, animate);
-        } else if (eventType == "D") {
+        } else if (eventType == "DECISION") {
             this.animations.processDecision(gameEvent, animate);
-        } else if (eventType = "TSEQ") {
+        } else if (eventType = "TRIBBLE_SEQUENCE_UPDATE") {
             this.animations.tribbleSequence(gameEvent, animate);
         } else if (eventType = "PLAYER_SCORE") {
             this.animations.playerScore(gameEvent, animate);
-        }
-        else if (eventType == "EG") {
+        } else if (eventType == "GAME_ENDED") {
             this.processGameEnd();
         }
     },

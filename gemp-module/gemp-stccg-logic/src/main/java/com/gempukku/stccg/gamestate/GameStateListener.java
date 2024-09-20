@@ -19,12 +19,8 @@ public interface GameStateListener {
 
     void initializeBoard(List<String> playerIds, boolean discardIsPublic);
 
-    void setPlayerPosition(String playerId, int i);
-
     void setPlayerDecked(String playerId, boolean bool);
     void setPlayerScore(String playerId, int points);
-
-    void setTwilight(int twilightPool);
 
     void setTribbleSequence(String tribbleSequence);
 

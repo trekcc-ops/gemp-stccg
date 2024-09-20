@@ -5,7 +5,7 @@ import java.util.*;
 public class JSONDefs {
     public static class Pack {
         public enum PackType {
-            SELECTION, PACK, RANDOM, TENGWAR, RANDOM_FOIL, BOOSTER
+            SELECTION, PACK, RANDOM, RANDOM_FOIL, BOOSTER
         }
 
         public String Name;

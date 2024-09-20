@@ -309,25 +309,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             result.append(integer).append(", ");
         result.append("</li>");
         if (!gameFormat.getBannedCards().isEmpty()) {
-            result.append("<li>X-listed (can't be played): ");
+            result.append("<li>Banned cards (can't be played): ");
             appendCards(result, gameFormat.getBannedCards());
-            result.append("</li>");
-        }
-        if (!gameFormat.getRestrictedCards().isEmpty()) {
-            result.append("<li>R-listed (can play just one copy): ");
-            appendCards(result, gameFormat.getRestrictedCards());
-            result.append("</li>");
-        }
-        if (!gameFormat.getLimit2Cards().isEmpty()) {
-            result.append("<li>Limited to 2 in deck: ");
-            List<String> limit2Cards = gameFormat.getLimit2Cards();
-            appendCards(result, limit2Cards);
-            result.append("</li>");
-        }
-        if (!gameFormat.getLimit3Cards().isEmpty()) {
-            result.append("<li>Limited to 3 in deck: ");
-            List<String> limit3Cards = gameFormat.getLimit3Cards();
-            appendCards(result, limit3Cards);
             result.append("</li>");
         }
         if (!gameFormat.getRestrictedCardNames().isEmpty()) {

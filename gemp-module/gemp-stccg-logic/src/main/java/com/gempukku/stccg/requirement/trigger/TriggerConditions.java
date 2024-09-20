@@ -193,18 +193,4 @@ public class TriggerConditions {
                 && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getMovedFromCard());
     }
 
-    public static boolean moves(EffectResult effectResult) {
-        return effectResult.getType() == EffectResult.Type.WHEN_FELLOWSHIP_MOVES;
-    }
-
-    public static boolean transferredCard(DefaultGame game, EffectResult effectResult, Filterable transferredCard, Filterable transferredFrom, Filterable transferredTo) {
-        if (effectResult.getType() == EffectResult.Type.CARD_TRANSFERRED) {
-            CardTransferredResult transferResult = (CardTransferredResult) effectResult;
-            return (Filters.and(transferredCard).accepts(game, transferResult.getTransferredCard())
-                    && (transferredFrom == null || (transferResult.getTransferredFrom() != null && Filters.and(transferredFrom).accepts(game, transferResult.getTransferredFrom())))
-                    && (transferredTo == null || (transferResult.getTransferredTo() != null && Filters.and(transferredTo).accepts(game, transferResult.getTransferredTo()))));
-        }
-        return false;
-    }
-
 }

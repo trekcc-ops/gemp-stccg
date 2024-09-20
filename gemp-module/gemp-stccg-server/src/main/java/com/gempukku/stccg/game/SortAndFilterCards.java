@@ -67,7 +67,6 @@ public class SortAndFilterCards {
         Comparator<CardItem> comparator;
         switch (oneSort) {
             case "strength" -> comparator = new StrengthComparator(blueprintMap);
-            case "vitality" -> comparator = new VitalityComparator(blueprintMap);
             case "cardType" -> comparator = new CardTypeComparator(blueprintMap);
             case "name" -> comparator = new NameComparator(blueprintMap);
             case "tribbleValue" -> comparator = new TribblesValueComparator(blueprintMap);
@@ -354,27 +353,6 @@ public class SortAndFilterCards {
         private int getStrengthSafely(CardBlueprint blueprint) {
             try {
                 return blueprint.getAttribute(CardAttribute.STRENGTH);
-            } catch (UnsupportedOperationException exp) {
-                return Integer.MAX_VALUE;
-            }
-        }
-    }
-
-    private static class VitalityComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
-
-        private VitalityComparator(Map<String, CardBlueprint> cardBlueprintMap) {
-            _cardBlueprintMap = cardBlueprintMap;
-        }
-
-        @Override
-        public int compare(CardItem o1, CardItem o2) {
-            return getVitalitySafely(_cardBlueprintMap.get(o1.getBlueprintId())) - getVitalitySafely(_cardBlueprintMap.get(o2.getBlueprintId()));
-        }
-
-        private int getVitalitySafely(CardBlueprint blueprint) {
-            try {
-                return blueprint.getVitality();
             } catch (UnsupportedOperationException exp) {
                 return Integer.MAX_VALUE;
             }

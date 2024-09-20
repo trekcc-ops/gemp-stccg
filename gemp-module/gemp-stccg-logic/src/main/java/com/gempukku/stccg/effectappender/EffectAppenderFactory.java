@@ -89,7 +89,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("addkeyword", new AddKeyword());
         effectAppenderProducers.put("addmodifier", new AddModifier());
         effectAppenderProducers.put("appendcardidstowhileinzone", new AppendCardIdsToWhileInZone());
-        effectAppenderProducers.put("cancelevent", new CancelEvent());
         effectAppenderProducers.put("chooseakeyword", new ChooseAKeyword());
         effectAppenderProducers.put("conditional", new ConditionalEffect());
         effectAppenderProducers.put("costtoeffect", new CostToEffect());
@@ -112,8 +111,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("stackcardsfromhand", new StackCardsFromHand());
         effectAppenderProducers.put("stacktopcardsofdrawdeck", new StackTopCardsOfDrawDeck());
         effectAppenderProducers.put("storewhileinzone", new StoreWhileInZone());
-        effectAppenderProducers.put("transfer", new Transfer());
-        effectAppenderProducers.put("transferfromdiscard", new TransferFromDiscard());
     }
 
     public EffectAppender getEffectAppender(JSONObject effectObject) throws InvalidCardDefinitionException {

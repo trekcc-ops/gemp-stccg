@@ -9,7 +9,6 @@ import com.gempukku.stccg.actions.turn.AddUntilEndOfPhaseActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilEndOfTurnActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilStartOfPhaseActionProxyEffect;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 import org.json.simple.JSONObject;
 
@@ -56,7 +55,7 @@ public class AddTrigger implements EffectAppenderProducer {
                                           EffectAppender[] effects) {
         return new AbstractActionProxy() {
             private boolean checkRequirements(ActionContext actionContext) {
-                if (!RequirementUtils.acceptsAllRequirements(requirements, actionContext))
+                if (actionContext.acceptsAllRequirements(requirements))
                     return true;
 
                 for (EffectAppender cost : costs) {

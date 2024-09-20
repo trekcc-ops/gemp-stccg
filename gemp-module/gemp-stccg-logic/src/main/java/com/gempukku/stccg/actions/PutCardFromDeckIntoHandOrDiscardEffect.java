@@ -37,22 +37,16 @@ public class PutCardFromDeckIntoHandOrDiscardEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         if (_physicalCard.getZone() == Zone.DRAW_DECK) {
             var gameState = _game.getGameState();
-            if ((_game.getFormat().doesNotHaveRuleOfFour() || _game.getModifiersQuerying().canDrawCardAndIncrementForRuleOfFour(_game, _physicalCard.getOwnerName()))) {
-                if(_reveal) {
-                    gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + _physicalCard.getCardLink() + " from deck into their hand");
-                }
-                else {
-                    gameState.sendMessage(_physicalCard.getOwnerName() + " puts a card from deck into their hand");
-                }
-                gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
-                gameState.addCardToZone(_physicalCard, Zone.HAND);
-                _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(this, _physicalCard));
-                return new FullEffectResult(true);
-            } else {
-                gameState.sendMessage(_physicalCard.getOwnerName() + " discards " + _physicalCard.getCardLink() + " from deck due to Rule of 4");
-                gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
-                gameState.addCardToZone(_physicalCard, Zone.DISCARD);
+            if(_reveal) {
+                gameState.sendMessage(_physicalCard.getOwnerName() + " puts " + _physicalCard.getCardLink() + " from deck into their hand");
             }
+            else {
+                gameState.sendMessage(_physicalCard.getOwnerName() + " puts a card from deck into their hand");
+            }
+            gameState.removeCardsFromZone(_physicalCard.getOwnerName(), Collections.singleton(_physicalCard));
+            gameState.addCardToZone(_physicalCard, Zone.HAND);
+            _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(this, _physicalCard));
+            return new FullEffectResult(true);
         }
         return new FullEffectResult(false);
     }

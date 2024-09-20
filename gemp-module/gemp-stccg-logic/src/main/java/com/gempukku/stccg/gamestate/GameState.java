@@ -35,7 +35,6 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     protected String _currentPlayerId;
     protected Phase _currentPhase;
-    private int _twilightPool;
 
     private boolean _consecutiveAction;
 
@@ -151,7 +150,6 @@ public abstract class GameState implements Snapshotable<GameState> {
             listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
             if (_currentPlayerId != null) listener.setCurrentPlayerId(_currentPlayerId);
             if (_currentPhase != null) listener.setCurrentPhase(getPhaseString());
-            listener.setTwilight(_twilightPool);
 
             Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
             Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
@@ -241,11 +239,6 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
         for (GameStateListener listener : getAllGameStateListeners())
             listener.cardAffectedByCard(playerPerforming, card, affectedCards);
-    }
-
-    public void eventPlayed(PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.eventPlayed(card);
     }
 
     public void activatedCard(String playerPerforming, PhysicalCard card) {
@@ -421,15 +414,6 @@ public abstract class GameState implements Snapshotable<GameState> {
         return _stacked;
     }
 
-    public void setTwilight(int twilight) {
-        _twilightPool = twilight;
-        getAllGameStateListeners().forEach(listener -> listener.setTwilight(_twilightPool));
-    }
-
-    public int getTwilightPool() {
-        return _twilightPool;
-    }
-
     public void startPlayerTurn(String playerId) {
         _playerOrder.setCurrentPlayer(playerId);
         incrementCurrentTurnNumber();
@@ -480,14 +464,6 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     public Phase getCurrentPhase() {
         return _currentPhase;
-    }
-
-    public void addTwilight(int twilight) {
-        setTwilight(_twilightPool + Math.max(0, twilight));
-    }
-
-    public void removeTwilight(int twilight) {
-        setTwilight(_twilightPool - Math.min(Math.max(0, twilight), _twilightPool));
     }
 
     public PhysicalCard removeCardFromEndOfPile(String player, Zone zone, EndOfPile endOfPile) {

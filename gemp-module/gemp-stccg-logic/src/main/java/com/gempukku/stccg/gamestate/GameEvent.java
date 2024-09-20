@@ -13,23 +13,27 @@ import java.util.Map;
 
 public class GameEvent {
     public enum Type {
-        PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"), PLAYER_POSITION("PP"),
+        PARTICIPANTS("PARTICIPANTS"),
+        GAME_PHASE_CHANGE("GAME_PHASE_CHANGE"),
+        TURN_CHANGE("TURN_CHANGE"),
         PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
-        TWILIGHT_POOL_UPDATE("TP"),
-        TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
+        TRIBBLE_SEQUENCE_UPDATE("TRIBBLE_SEQUENCE_UPDATE"),
         PLAYER_DECKED("PLAYER_DECKED"), // TODO: Not implemented in JavaScript
         PLAYER_SCORE("PLAYER_SCORE"), // TODO: Not implemented in JavaScript
-        PUT_CARD_INTO_PLAY("PCIP"),
-        PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PCIPAR"),
-        MOVE_CARD_IN_PLAY("MCIP"), REMOVE_CARD_FROM_PLAY("RCFP"),
-        ADD_ASSIGNMENT("AA"), REMOVE_ASSIGNMENT("RA"),
-        START_SKIRMISH("SS"), REMOVE_FROM_SKIRMISH("RFS"), ADD_TO_SKIRMISH("ATS"), END_SKIRMISH("ES"),
-        SEND_MESSAGE("M"), SEND_WARNING("W"),
-        GAME_STATS("GS"),
-        CHAT_MESSAGE("CM"),
-        GAME_ENDED("EG"),
+        PUT_CARD_INTO_PLAY("PUT_CARD_INTO_PLAY"),
+        PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING"),
+            // TODO: PCIP without animating is not implemented in JavaScript. Probably better to implement as a parameter in PCIP anyway
+        MOVE_CARD_IN_PLAY("MOVE_CARD_IN_PLAY"),
+        REMOVE_CARD_FROM_PLAY("REMOVE_CARD_FROM_PLAY"),
+        SEND_MESSAGE("SEND_MESSAGE"),
+        SEND_WARNING("SEND_WARNING"),
+        GAME_STATS("GAME_STATS"),
+        GAME_ENDED("GAME_ENDED"),
         UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
-        CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"), DECISION("D");
+        CARD_AFFECTED_BY_CARD("CARD_AFFECTED_BY_CARD"),
+        SHOW_CARD_ON_SCREEN("SHOW_CARD_ON_SCREEN"),
+        FLASH_CARD_IN_PLAY("FLASH_CARD_IN_PLAY"),
+        DECISION("DECISION");
 
         private final String code;
 
@@ -43,7 +47,6 @@ public class GameEvent {
     }
 
     private String _message;
-    private String _side;
     private final Type _type;
     private Zone _zone;
     private String _participantId;
@@ -181,10 +184,6 @@ public class GameEvent {
     public GameEvent allParticipantIds(List<String> allParticipantIds) {
         _allParticipantIds = allParticipantIds;
         return this;
-    }
-
-    public String getSide() {
-        return _side;
     }
 
     public String getControllerId() {

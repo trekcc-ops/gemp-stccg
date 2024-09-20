@@ -28,7 +28,7 @@ public class FormatLibrary {
 
     private final Semaphore collectionReady = new Semaphore(1);
 
-    public FormatLibrary(AdventureLibrary adventureLibrary, CardBlueprintLibrary bpLibrary) {
+    public FormatLibrary(CardBlueprintLibrary bpLibrary) {
         this(bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
     }
 
@@ -175,23 +175,10 @@ public class FormatLibrary {
         }
     }
 
-    private final Map<String, String> legacyCodeMapping = new HashMap<>() {{
-        put("fotr_block", "fotr_block_sealed");
-        put("ttt_block", "ttt_block_sealed");
-        put("movie", "rotk_block_sealed");
-        put("war_block", "wotr_block_sealed");
-        put("hunters_block", "th_block_sealed");
-        put("movie_special", "movie_special_sealed");
-        put("ts_special", "ts_special_sealed");
-    }};
-
     public SealedLeagueDefinition GetSealedTemplate(String leagueName) {
         try {
             collectionReady.acquire();
             var data = _sealedTemplates.get(leagueName);
-            if(data == null) {
-                data = _sealedTemplates.get(legacyCodeMapping.get(leagueName));
-            }
             if(data == null) {
                 collectionReady.release();
                 throw new RuntimeException("Could not find league definition for '" + leagueName + "'.");

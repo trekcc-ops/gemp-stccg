@@ -20,62 +20,6 @@ public class IndividualCardAtTest extends AbstractAtTest {
 
 
     @Test
-    public void mumakChieftainPlayingMumakForFree() throws DecisionResultInvalidException, CardNotFoundException {
-        Map<String, Collection<String>> extraCards = new HashMap<>();
-        initializeSimplestGame(extraCards);
-
-        PhysicalCardGeneric mumakChieftain = new PhysicalCardGeneric(_game, 100, P2, _cardLibrary.getCardBlueprint("10_45"));
-        PhysicalCardGeneric mumak = new PhysicalCardGeneric(_game, 100, P2, _cardLibrary.getCardBlueprint("5_73"));
-
-        skipMulligans();
-
-        _game.getGameState().addCardToZone(mumak, Zone.DISCARD);
-        _game.getGameState().addCardToZone(mumakChieftain, Zone.HAND);
-        _game.getGameState().setTwilight(5);
-
-        // End fellowship phase
-        playerDecided(P1, "");
-
-        assertEquals(7, _game.getGameState().getTwilightPool());
-
-        // Play mumak chieftain
-        final AwaitingDecision shadowDecision = _userFeedback.getAwaitingDecision(P2);
-        assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, shadowDecision.getDecisionType());
-        validateContents(new String[]{String.valueOf(mumakChieftain.getCardId())}, shadowDecision.getDecisionParameters().get("cardId"));
-        playerDecided(P2, "0");
-
-        assertEquals(0, _game.getGameState().getTwilightPool());
-
-        final AwaitingDecision optionalPlayDecision = _userFeedback.getAwaitingDecision(P2);
-        assertEquals(AwaitingDecisionType.CARD_ACTION_CHOICE, optionalPlayDecision.getDecisionType());
-        validateContents(new String[]{String.valueOf(mumakChieftain.getCardId())}, optionalPlayDecision.getDecisionParameters().get("cardId"));
-        playerDecided(P2, "0");
-
-        assertEquals(Zone.ATTACHED, mumak.getZone());
-    }
-
-    @Test
-    public void orcMarksmanUnique() throws CardNotFoundException, DecisionResultInvalidException {
-        initializeSimplestGame();
-
-        PhysicalCardGeneric marksman1 = new PhysicalCardGeneric(_game, 100, P2, _cardLibrary.getCardBlueprint("40_227"));
-        PhysicalCardGeneric marksman2 = new PhysicalCardGeneric(_game, 101, P2, _cardLibrary.getCardBlueprint("40_227"));
-
-        skipMulligans();
-
-        _game.getGameState().addCardToZone(marksman1, Zone.HAND);
-        _game.getGameState().addCardToZone(marksman2, Zone.HAND);
-
-        _game.getGameState().addTwilight(10);
-
-        // End fellowship
-        playerDecided(P1, "");
-
-        playerDecided(P2, "0");
-        assertNull(getCardActionId(_userFeedback.getAwaitingDecision(P2), "Play Orc Mark"));
-    }
-
-    @Test
     public void frodosPipeOncePerPhase() throws CardNotFoundException, DecisionResultInvalidException {
         initializeSimplestGame();
 

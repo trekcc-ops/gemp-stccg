@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class ConditionalEffect implements EffectAppenderProducer {
@@ -34,7 +33,7 @@ public class ConditionalEffect implements EffectAppenderProducer {
             }
 
             private boolean checkConditions(ActionContext actionContext) {
-                return RequirementUtils.acceptsAllRequirements(conditions, actionContext);
+                return actionContext.acceptsAllRequirements(conditions);
             }
 
             @Override

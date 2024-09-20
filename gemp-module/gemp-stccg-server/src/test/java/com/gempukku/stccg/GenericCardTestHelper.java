@@ -410,8 +410,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
 
-    public int GetTwilight() { return _game.getGameState().getTwilightPool(); }
-
     public void SkipToPhase(Phase target) throws DecisionResultInvalidException {
         for(int attempts = 1; attempts <= 20; attempts++)
         {

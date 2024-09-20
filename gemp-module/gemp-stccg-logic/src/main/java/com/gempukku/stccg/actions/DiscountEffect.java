@@ -1,4 +1,4 @@
-package com.gempukku.stccg.actions.discard;
+package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.Effect;
 

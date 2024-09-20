@@ -9,7 +9,6 @@ import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -87,7 +86,7 @@ public class ValueResolver {
                 return actionContext -> (Evaluator) new Evaluator(actionContext) {
                     @Override
                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        if (RequirementUtils.acceptsAllRequirements(conditions, actionContext)) {
+                        if (actionContext.acceptsAllRequirements(conditions)) {
                             return trueValue.evaluateExpression(actionContext, cardAffected);
                         } else {
                             return falseValue.evaluateExpression(actionContext, cardAffected);
@@ -255,7 +254,7 @@ public class ValueResolver {
                 final int over = environment.getInteger(object.get("over"), "over", 0);
                 final String filter = environment.getString(object.get("filter"), "filter", "any");
 
-                final FilterableSource vitalitySource = environment.getFilterFactory().generateFilter(filter);
+                final FilterableSource strengthSource = environment.getFilterFactory().generateFilter(filter);
 
                 return (actionContext) -> {
                     if (filter.equals("any")) {
@@ -271,7 +270,7 @@ public class ValueResolver {
                                 new Evaluator(actionContext) {
                                     @Override
                                     public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                                        final Filterable filterable = vitalitySource.getFilterable(actionContext);
+                                        final Filterable filterable = strengthSource.getFilterable(actionContext);
                                         int strength = 0;
                                         for (PhysicalCard physicalCard : Filters.filterActive(actionContext.getGame(), filterable)) {
                                             strength += actionContext.getGame().getModifiersQuerying().getStrength(physicalCard);

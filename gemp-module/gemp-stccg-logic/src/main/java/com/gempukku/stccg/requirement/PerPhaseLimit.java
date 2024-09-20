@@ -2,7 +2,6 @@ package com.gempukku.stccg.requirement;
 
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.game.PlayConditions;
 import org.json.simple.JSONObject;
 
 public class PerPhaseLimit extends RequirementProducer {
@@ -15,9 +14,9 @@ public class PerPhaseLimit extends RequirementProducer {
 
         return (actionContext) -> {
             if (perPlayer)
-                return PlayConditions.checkPhaseLimit(actionContext.getGame(), actionContext.getSource(), actionContext.getPerformingPlayerId() + "_", limit);
+                return actionContext.getSource().checkPhaseLimit(actionContext.getPerformingPlayerId() + "_", limit);
             else
-                return PlayConditions.checkPhaseLimit(actionContext.getGame(), actionContext.getSource(), limit);
+                return actionContext.getSource().checkPhaseLimit(limit);
         };
     }
 }

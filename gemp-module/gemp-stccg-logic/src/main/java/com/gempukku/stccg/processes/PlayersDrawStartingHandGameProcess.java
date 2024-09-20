@@ -22,13 +22,7 @@ public class PlayersDrawStartingHandGameProcess extends GameProcess {
             for (int i = 0; i < _game.getFormat().getHandSize(); i++)
                 gameState.playerDrawsCard(playerId);
         }
-        if (_game.getFormat().hasMulliganRule())
-            _followingGameProcess = new MulliganProcess(
-                    _game.getGameState().getPlayerOrder().getClockwisePlayOrder(_firstPlayer, false),
-                    _game
-            );
-        else
-            _followingGameProcess = new PlayersDrawStartingHandGameProcess(_firstPlayer, _game);
+        _followingGameProcess = new PlayersDrawStartingHandGameProcess(_firstPlayer, _game);
     }
 
     @Override

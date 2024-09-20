@@ -122,11 +122,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void setPlayerPosition(String participant, int position) {
-        appendEvent(new GameEvent(PLAYER_POSITION).participantId(participant).index(position));
-    }
-
-    @Override
     public void setPlayerDecked(String participant, boolean bool) {
         appendEvent(new GameEvent(PLAYER_DECKED).participantId(participant).bool(bool));
     }
@@ -134,11 +129,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     @Override
     public void setPlayerScore(String participant, int points) {
         appendEvent(new GameEvent(PLAYER_SCORE).participantId(participant).score(points));
-    }
-
-    @Override
-    public void setTwilight(int twilightPool) {
-        appendEvent(new GameEvent(TWILIGHT_POOL_UPDATE).count(twilightPool));
     }
 
     @Override

@@ -16,13 +16,7 @@ public class ReplayMetadata {
         public String TargetFormat;
         public String DeckName;
         public List<String> DrawDeck;
-        public String Ring;
-        public final List<String> StartingFellowship = new ArrayList<>();
     }
-
-    //Version 1: First tracked version; original version was completely different
-    //Version 2: Adding the highest achieved sites by player, game IDs, and game timer length information
-    public Integer MetadataVersion = 2;
 
     public final DBDefs.GameHistory GameReplayInfo;
 

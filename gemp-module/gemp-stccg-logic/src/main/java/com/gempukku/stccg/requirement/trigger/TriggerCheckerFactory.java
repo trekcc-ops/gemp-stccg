@@ -25,7 +25,6 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("endofphase", new EndOfPhase());
         //noinspection SpellCheckingInspection
         triggerCheckers.put("endofturn", new EndOfTurn());
-        triggerCheckers.put("moves", new Moves());
         //noinspection SpellCheckingInspection
         triggerCheckers.put("movesfrom", new MovesFrom());
         triggerCheckers.put("played", new PlayedTriggerCheckerProducer());
@@ -41,9 +40,7 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("startofphase", new StartOfPhase());
         //noinspection SpellCheckingInspection
         triggerCheckers.put("startofturn", new StartOfTurn());
-        triggerCheckers.put("transferred", new Transferred());
         //noinspection SpellCheckingInspection
-        triggerCheckers.put("usesspecialability", new UsesSpecialAbility());
     }
 
     public TriggerChecker getTriggerChecker(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {

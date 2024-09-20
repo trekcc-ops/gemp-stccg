@@ -118,27 +118,7 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public boolean hasMulliganRule() {
-        return _mulliganRule;
-    }
-
-    @Override
-    public boolean winWhenShadowReconciles() {
-        return _winAtEndOfRegroup;
-    }
-
-    @Override
     public boolean discardPileIsPublic() { return _discardPileIsPublic; }
-
-    @Override
-    public boolean doesNotHaveRuleOfFour() {
-        return !_hasRuleOfFour;
-    }
-
-    @Override
-    public boolean winOnControlling5Sites() {
-        return _winOnControlling5Sites;
-    }
 
     @Override
     public boolean isPlaytest() {
@@ -170,11 +150,6 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public List<String> getRestrictedCards() {
-        return Collections.unmodifiableList(_restrictedCards);
-    }
-
-    @Override
     public List<String> getRestrictedCardNames() {
         return Collections.unmodifiableList(_restrictedCardNames);
     }
@@ -182,17 +157,6 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public List<String> getValidCards() {
         return Collections.unmodifiableList(_validCards);
-    }
-
-    //Additional Hobbit Draft parameters
-    @Override
-    public List<String> getLimit2Cards() {
-        return Collections.unmodifiableList(_limit2Cards);
-    }
-
-    @Override
-    public List<String> getLimit3Cards() {
-        return Collections.unmodifiableList(_limit3Cards);
     }
 
     @Override

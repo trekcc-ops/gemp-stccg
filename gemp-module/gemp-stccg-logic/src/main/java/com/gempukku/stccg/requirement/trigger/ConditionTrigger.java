@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class ConditionTrigger implements TriggerCheckerProducer {
@@ -22,7 +21,7 @@ public class ConditionTrigger implements TriggerCheckerProducer {
 
             @Override
             public boolean accepts(ActionContext actionContext) {
-                return RequirementUtils.acceptsAllRequirements(requirements, actionContext);
+                return actionContext.acceptsAllRequirements(requirements);
             }
         };
     }

@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementUtils;
 import org.json.simple.JSONObject;
 
 public class PlayOutOfSequenceProcessor implements EffectProcessor {
@@ -15,8 +14,6 @@ public class PlayOutOfSequenceProcessor implements EffectProcessor {
 
         final Requirement[] conditions = environment.getRequirementsFromJSON(value);
 
-        blueprint.appendPlayOutOfSequenceCondition(
-                actionContext -> RequirementUtils.acceptsAllRequirements(conditions, actionContext)
-        );
+        blueprint.appendPlayOutOfSequenceCondition(actionContext -> actionContext.acceptsAllRequirements(conditions));
     }
 }
