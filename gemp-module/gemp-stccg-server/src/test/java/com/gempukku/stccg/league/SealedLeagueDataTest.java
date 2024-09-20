@@ -1,7 +1,6 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.AbstractServerTest;
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -20,9 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SealedLeagueDataTest extends AbstractServerTest {
 
-    private static final FormatLibrary _formatLibrary = new FormatLibrary(
-            new DefaultAdventureLibrary(), _cardLibrary
-    );
+    private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
 
     @Test
     public void testJoinLeagueFirstWeek() {

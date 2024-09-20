@@ -1,7 +1,6 @@
 package com.gempukku.stccg.library;
 
 import com.gempukku.stccg.AbstractServerTest;
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.league.SealedLeagueProduct;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 public class FormatLibraryTests extends AbstractServerTest {
 
-    protected static final FormatLibrary _formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+    protected static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
     protected static final SealedLeagueProduct _sealedLeagueProduct = new SealedLeagueProduct();
 
     @ParameterizedTest(name = "{0} in FormatLibrary matches SealedLeagueProduct.")

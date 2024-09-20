@@ -2,7 +2,6 @@ package com.gempukku.stccg.processes;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
-import com.gempukku.stccg.adventure.InvalidSoloAdventureException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
@@ -89,11 +88,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
                     }
                     if (effect != null) {
                         if (effect.getType() == null) {
-                            try {
-                                effect.playEffect();
-                            } catch (InvalidSoloAdventureException exp) {
-                                _game.playerLost(_game.getGameState().getCurrentPlayerId(), exp.getMessage());
-                            }
+                            effect.playEffect();
                         } else
                             _actionStack.add(new PlayOutEffect(_game, effect));
                     }
@@ -166,11 +161,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
 
         @Override
         protected void doPlayEffect() {
-            try {
-                _effect.playEffect();
-            } catch (InvalidSoloAdventureException exp) {
-                _game.playerLost(_game.getGameState().getCurrentPlayerId(), exp.getMessage());
-            }
+            _effect.playEffect();
         }
     }
 

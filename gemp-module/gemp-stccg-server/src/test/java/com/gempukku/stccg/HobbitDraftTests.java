@@ -1,6 +1,5 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.SetDefinition;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.SoloDraft;
@@ -16,8 +15,7 @@ public class HobbitDraftTests extends AbstractServerTest {
     @Test
     public void HobbitDraftTest() {
         CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
-        DefaultAdventureLibrary defaultAdventureLibrary = new DefaultAdventureLibrary();
-        FormatLibrary formatLibrary = new FormatLibrary(defaultAdventureLibrary, _cardLibrary);
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
         SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, formatLibrary);
 

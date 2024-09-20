@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
-import com.gempukku.stccg.adventure.AdventureLibrary;
 import com.gempukku.stccg.SealedLeagueDefinition;
 import com.gempukku.stccg.common.JsonUtils;
 import org.hjson.JsonValue;

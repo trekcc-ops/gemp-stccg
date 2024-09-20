@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.adventure.InvalidSoloAdventureException;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
@@ -15,8 +14,6 @@ public abstract class ChooseOpponentEffect extends ChoosePlayerEffect {
     }
 
     public static String[] getOpponents(DefaultGame game, String playerId) {
-        if (game.isSolo())
-            throw new InvalidSoloAdventureException("Opponent requested");
         List<String> shadowPlayers = new LinkedList<>(game.getGameState().getPlayerOrder().getAllPlayers());
         shadowPlayers.remove(playerId);
         return shadowPlayers.toArray(new String[0]);

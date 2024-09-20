@@ -1,7 +1,5 @@
 package com.gempukku.stccg.builder;
 
-import com.gempukku.stccg.adventure.AdventureLibrary;
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionSerializer;
@@ -47,13 +45,8 @@ public class ServerBuilder {
 
     public static void CreateServices(Map<Type, Object> objectMap) {
         LOGGER.debug("Calling CreateServices function");
-        objectMap.put(AdventureLibrary.class,
-                new DefaultAdventureLibrary());
-
         objectMap.put(FormatLibrary.class,
-                new FormatLibrary(
-                        extract(objectMap, AdventureLibrary.class),
-                        extract(objectMap, CardBlueprintLibrary.class)));
+                new FormatLibrary(extract(objectMap, CardBlueprintLibrary.class)));
 
         objectMap.put(GameHistoryService.class,
                 new GameHistoryService(

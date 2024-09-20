@@ -3,7 +3,6 @@ package com.gempukku.stccg.at;
 import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -53,7 +52,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void initializeGameWithDecks(Map<String, CardDeck> decks, String formatName) throws DecisionResultInvalidException {
         _userFeedback = new DefaultUserFeedback();
 
-        FormatLibrary formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat(formatName);
 
         Map<String, CardDeck> genericDecks = new HashMap<>(decks);

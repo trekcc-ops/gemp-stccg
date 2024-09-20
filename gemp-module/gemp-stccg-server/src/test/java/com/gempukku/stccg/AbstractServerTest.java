@@ -1,6 +1,5 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.adventure.DefaultAdventureLibrary;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.DefaultGame;
@@ -12,7 +11,7 @@ public abstract class AbstractServerTest {
 
     static {
         _cardLibrary = new CardBlueprintLibrary();
-        _formatLibrary = new FormatLibrary(new DefaultAdventureLibrary(), _cardLibrary);
+        _formatLibrary = new FormatLibrary(_cardLibrary);
     }
 
     protected DefaultGame _game;
