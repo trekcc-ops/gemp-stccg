@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 public class DefaultGameFormat implements GameFormat {
 
-    public static final String CardRemovedError = "Deck contains card removed from the set";
     private final CardBlueprintLibrary _library;
     private final String _name;
     private final String _game;
@@ -328,7 +327,7 @@ public class DefaultGameFormat implements GameFormat {
             }
         }
 
-        // Card count in deck and Ring-bearer
+        // Card count in deck
         Map<String, Integer> cardCountByName = new HashMap<>();
         Map<String, Integer> cardCountByBaseBlueprintId = new HashMap<>();
 

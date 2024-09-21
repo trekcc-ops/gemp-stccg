@@ -88,11 +88,9 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String includeEventsStr = getFormParameterSafely(postDecoder, "includeEvents");
-            boolean includeEvents = includeEventsStr != null && includeEventsStr.equalsIgnoreCase("true");
-
             String json;
 
-            if(includeEvents)
+            if(includeEventsStr != null && includeEventsStr.equalsIgnoreCase("true"))
             {
                 JSONDefs.FullFormatReadout data = new JSONDefs.FullFormatReadout();
                 data.Formats = _formatLibrary.getAllFormats().values().stream()

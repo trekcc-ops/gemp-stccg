@@ -3,11 +3,11 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.*;
-import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.gamestate.GameStateListener;
+import com.gempukku.stccg.gamestate.ST2EGameState;
+import com.gempukku.stccg.gamestate.UserFeedback;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
-import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.RuleSet;
 
 import java.util.Map;
@@ -15,12 +15,10 @@ import java.util.Map;
 public class ST2EGame extends DefaultGame {
     private ST2EGameState _gameState;
     private TurnProcedure _turnProcedure;
-    private final ST2EGame _thisGame;
 
     public ST2EGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                     final CardBlueprintLibrary library) {
         super(format, decks, userFeedback, library);
-        _thisGame = this;
 
         _gameState = new ST2EGameState(_allPlayerIds, decks, library, _format, this);
         new RuleSet(_actionsEnvironment).applyRuleSet();

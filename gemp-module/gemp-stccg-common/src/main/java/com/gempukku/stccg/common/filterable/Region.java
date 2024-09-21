@@ -7,5 +7,5 @@ public enum Region implements Filterable {
     NORTHWEST_PASSAGE, ROMULUS_SYSTEM, SECTOR_001, TELLUN, VALO,
 
     //2E regions
-    QO_NOS_SYSTEM;
+    QO_NOS_SYSTEM
 }

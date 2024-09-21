@@ -13,8 +13,6 @@ import com.gempukku.stccg.game.Player;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * An effect that causes the specified player to choose cards on the table.
@@ -29,17 +27,11 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
     private final Collection<? extends PhysicalCard> _cards;
     private final Filterable _filters;
     private final String _choiceText;
-    private boolean cardSelectionFailed;
     private final Action _action;
     private final DefaultGame _game;
 
     public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, Collection<? extends PhysicalCard> cards) {
         this(action, playerId, choiceText, 1,1,cards,Filters.any);
-    }
-
-    public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText,
-                                    Stream<? extends PhysicalCard> cards) {
-        this(action, playerId, choiceText, 1,1,cards.collect(Collectors.toSet()),Filters.any);
     }
 
     public ChooseCardsOnTableEffect(Action action, Player player, String choiceText,
@@ -58,10 +50,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
      *
      * @param minimum               the minimum number of cards to choose
      * @param maximum               the maximum number of cards to choose
-     * @param maximumAcceptsCount   the maximum number of times cards may be accepted by the filter, which will further limit
-     *                              cards that can be selected when cards with multiple model types accept filter multiple times
-     * @param matchPartialModelType true if card with multiple model types (i.e. squadrons) match if any model type
-     *                              matches the filter otherwise card only matches if all model types match the filter
      * @param filters               the filter
      * @param action                the action performing this effect
      * @param playerId              the player
@@ -145,7 +133,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
 
     @Override
     public boolean wasCarriedOut() {
-        return super.wasCarriedOut() && !cardSelectionFailed;
+        return super.wasCarriedOut();
     }
 
     /**

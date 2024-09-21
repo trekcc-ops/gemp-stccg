@@ -33,46 +33,27 @@ public class CardBlueprintLibrary {
     private final CardBlueprintFactory cardBlueprintBuilder = new CardBlueprintFactory();
 
     private final Semaphore collectionReady = new Semaphore(1);
-    private final File _cardPath;
-    private final File _mappingsPath;
-    private final File _setDefsPath;
-
+    private final File _cardPath = AppConfig.getCardsPath();
     private final List<ICallback> _refreshCallbacks = new ArrayList<>();
+    private boolean _blueprintLoadErrorEncountered;
 
     public CardBlueprintLibrary() {
-        this(AppConfig.getCardsPath(), AppConfig.getMappingsPath(), AppConfig.getSetDefinitionsPath());
-    }
-
-    public CardBlueprintLibrary(File cardsPath, File mappingsPath, File setDefinitionPath) {
-        _cardPath = cardsPath;
-        _mappingsPath = mappingsPath;
-        _setDefsPath = setDefinitionPath;
         LOGGER.info("Locking blueprint library in constructor");
-        //This will be released after the library has been init'd; until then all functional uses should block
+        //This will be released after the library has been initialized. Until then, all functional uses will be blocked.
         collectionReady.acquireUninterruptibly();
-        LOGGER.info("Unlocking blueprint library in constructor");
+        _blueprintLoadErrorEncountered = false;
 
         loadSets();
         loadMappings();
         loadCards(_cardPath, true);
+
+        LOGGER.info("Unlocking blueprint library in constructor");
         collectionReady.release();
     }
 
     public void SubscribeToRefreshes(ICallback callback) {
-        if(_refreshCallbacks.contains(callback))
-            return;
-
-        _refreshCallbacks.add(callback);
-
-    }
-
-    public boolean UnsubscribeFromRefreshes(ICallback callback) {
         if(!_refreshCallbacks.contains(callback))
-            return false;
-
-        _refreshCallbacks.remove(callback);
-
-        return true;
+            _refreshCallbacks.add(callback);
     }
 
     public PhysicalCard createPhysicalCard(DefaultGame game, String blueprintId, int cardId, String playerId)
@@ -118,18 +99,21 @@ public class CardBlueprintLibrary {
     }
 
     private void reloadCards() {
+        _blueprintLoadErrorEncountered = false;
         try {
             collectionReady.acquire();
             loadCards(_cardPath, false);
             collectionReady.release();
         } catch (InterruptedException e) {
+            _blueprintLoadErrorEncountered = true;
             throw new RuntimeException(e);
         }
     }
 
     private void loadSets() {
         try {
-            final InputStreamReader reader = new InputStreamReader(new FileInputStream(_setDefsPath), StandardCharsets.UTF_8);
+            final InputStreamReader reader = new InputStreamReader(
+                    new FileInputStream(AppConfig.getSetDefinitionsPath()), StandardCharsets.UTF_8);
             try {
                 String json = JsonValue.readHjson(reader).toString();
                 JSONParser parser = new JSONParser();
@@ -160,7 +144,8 @@ public class CardBlueprintLibrary {
 
     private void loadMappings() {
         try {
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(_mappingsPath), StandardCharsets.UTF_8))) {
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(AppConfig.getMappingsPath()), StandardCharsets.UTF_8))) {
                 String line;
 
                 _blueprintMapping.clear();
@@ -211,18 +196,19 @@ public class CardBlueprintLibrary {
                     String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
                     _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (InvalidCardDefinitionException exp) {
+                    _blueprintLoadErrorEncountered = true;
                     LOGGER.error("Unable to load card " + blueprintId, exp);
                 }
             }
-        } catch (FileNotFoundException exp) {
-            LOGGER.error("Failed to find file " + file.getAbsolutePath(), exp);
-        } catch (IOException exp) {
-            LOGGER.error("Error while loading file " + file.getAbsolutePath(), exp);
-        } catch (ParseException exp) {
-            LOGGER.error("Failed to parse file " + file.getAbsolutePath(), exp);
-        }
-        catch (Exception exp) {
-            LOGGER.error("Unexpected error while parsing file " + file.getAbsolutePath(), exp);
+        } catch (Exception exp) {
+            _blueprintLoadErrorEncountered = true;
+            String errorMessage = switch (exp) {
+                case FileNotFoundException fileNotFoundException -> "Failed to find file";
+                case IOException ioException -> "Error while loading file";
+                case ParseException parseException -> "Failed to parse file";
+                default -> "Unexpected error while parsing file";
+            };
+            LOGGER.error(errorMessage + " " + file.getAbsolutePath(), exp);
         }
         LOGGER.debug("Loaded JSON card file " + file.getName());
     }
@@ -407,5 +393,9 @@ public class CardBlueprintLibrary {
 
     public List<String> getAllBlueprintIds() {
         return new ArrayList<>(_blueprints.keySet());
+    }
+
+    public boolean checkLoadSuccess() {
+        return !_blueprintLoadErrorEncountered;
     }
 }

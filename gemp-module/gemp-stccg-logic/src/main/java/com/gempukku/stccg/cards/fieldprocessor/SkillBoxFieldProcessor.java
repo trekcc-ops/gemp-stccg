@@ -57,8 +57,7 @@ public class SkillBoxFieldProcessor implements FieldProcessor {
                 return new RegularSkill(skillMap.get(skill), 1);
             }
         } else if (skillSplit[0].trim().equals("[DL]")) {
-            String sdCardName = skillSplit[1].trim();
-            return new SpecialDownloadSkill(sdCardName);
+            return new SpecialDownloadSkill();
         } else {
             throw new InvalidCardDefinitionException("Invalid skill syntax in JSON file");
         }

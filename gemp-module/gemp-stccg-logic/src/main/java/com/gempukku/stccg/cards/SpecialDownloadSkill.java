@@ -3,11 +3,9 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.common.filterable.SkillType;
 
 public class SpecialDownloadSkill extends Skill {
-    private final String _cardName;
 
-    public SpecialDownloadSkill(String cardName) {
+    public SpecialDownloadSkill() {
         super(SkillType.SPECIAL);
-        _cardName = cardName;
     }
 
         // TODO - Nothing implemented for special download skill yet

@@ -24,7 +24,6 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     protected final PhysicalCard _actionSource;
     private boolean _openedFire;
     private boolean _actionWasInitiated = false;
-    private boolean _cardWasRemoved = false;
     private boolean _returningFire;
     private boolean _virtualCardAction;
     protected final DefaultGame _game;
@@ -40,13 +39,11 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     private final Map<Player, OpenFireResult> _openFireResults = new HashMap<>();
     private final Map<Player, Integer> _damageSustained = new HashMap<>();
     private boolean _winnerDetermined;
-    private Player _winner;
-    private boolean _noWinner;
     private boolean _battleResolved;
 
     private enum OpenFireResult {
-        HIT, DIRECT_HIT, MISS;
-    };
+        HIT, DIRECT_HIT, MISS
+    }
 
     /**
      * Creates an action for playing the specified card.
@@ -185,6 +182,8 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         }
 
         if (!_winnerDetermined) {
+            Player _winner;
+            boolean _noWinner;
             if (_damageSustained.get(_attackingPlayer) > _damageSustained.get(_defendingPlayer))
                 _winner = _defendingPlayer;
             else if (_damageSustained.get(_defendingPlayer) > _damageSustained.get(_attackingPlayer))

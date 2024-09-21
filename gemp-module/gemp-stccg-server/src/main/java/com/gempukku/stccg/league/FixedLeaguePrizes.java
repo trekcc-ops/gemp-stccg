@@ -13,17 +13,12 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class FixedLeaguePrizes implements LeaguePrizes {
-    private final List<String> _commons = new ArrayList<>();
-    private final List<String> _uncommons = new ArrayList<>();
     private final List<String> _rares = new ArrayList<>();
     private final List<String> _allCards = new ArrayList<>();
     private final CardBlueprintLibrary _library;
 
     public FixedLeaguePrizes(CardBlueprintLibrary library) {
         for (SetDefinition setDefinition : library.getSetDefinitions().values()) {
-                // TODO - Cards don't have rarities assigned as of 9/21/24
-            _commons.addAll(setDefinition.getCardsOfRarity("C"));
-            _uncommons.addAll(setDefinition.getCardsOfRarity("U"));
             _rares.addAll(setDefinition.getCardsOfRarity("R"));
         }
         _allCards.addAll(library.getAllBlueprintIds());
@@ -53,7 +48,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         } else if (collectionType.equals(CollectionType.MY_CARDS) || collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
             return getPrizeForCollectorsLeague(position, playersCount, gamesPlayed, maxGamesPlayed);
         } else {
-            return getPrizeForSealedLeague(position, playersCount, gamesPlayed, maxGamesPlayed);
+            return getPrizeForSealedLeague(position);
         }
     }
 
@@ -66,7 +61,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return null;
     }
 
-    private CardCollection getPrizeForSealedLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
+    private CardCollection getPrizeForSealedLeague(int position) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getSealedBoosterCount(position));
         addPrizes(prize, getRandomFoil(_rares, getRandomRareFoilCount(position)));
@@ -91,13 +86,6 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return 0;
     }
 
-    //1st - 30 boosters, 4 tengwar, 3 foil rares
-//2nd - 25 boosters, 3 tengwar, 2 foil rares
-//3rd - 20 boosters, 2 tengwar, 1 foil rares
-//4th - 15 boosters, 1 tengwar
-//5th-8th - 10 boosters
-//9th-16th - 5 boosters
-//17th-32nd - 2 boosters
     private CardCollection getPrizeForCollectorsLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getCollectorsBoosterCount(position));
@@ -163,10 +151,6 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         if (position < 5)
             return 5 - position;
         return 0;
-    }
-
-    private String getRandom(List<String> list) {
-        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }
 
     private List<String> getRandomFoil(List<String> list, int count) {

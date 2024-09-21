@@ -9,38 +9,24 @@ import java.util.Map;
 
 public class TriggerCheckerFactory {
     private final Map<String, TriggerCheckerProducer> triggerCheckers = new HashMap<>();
-
+    @SuppressWarnings("SpellCheckingInspection")
     public TriggerCheckerFactory() {
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("abouttodiscard", new AboutToDiscardFromPlay());
         triggerCheckers.put("requires", new ConditionTrigger());
         triggerCheckers.put("discarded", new Discarded());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("discardfromdeck", new DiscardFromDeck());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("discardfromhand", new DiscardFromHand());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("discardfromhandby", new DiscardFromHandBy());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("endofphase", new EndOfPhase());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("endofturn", new EndOfTurn());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("movesfrom", new MovesFrom());
         triggerCheckers.put("played", new PlayedTriggerCheckerProducer());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("playedfromstacked", new PlayedFromStacked());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("playergoesout", new PlayerGoesOut());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("removedfromplay", new RemovedFromPlay());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("revealscardfromtopofdrawdeck", new RevealsCardFromTopOfDrawDeck());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("startofphase", new StartOfPhase());
-        //noinspection SpellCheckingInspection
         triggerCheckers.put("startofturn", new StartOfTurn());
-        //noinspection SpellCheckingInspection
     }
 
     public TriggerChecker getTriggerChecker(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {

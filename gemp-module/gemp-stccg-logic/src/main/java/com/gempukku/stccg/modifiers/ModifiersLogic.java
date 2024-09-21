@@ -31,7 +31,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
     private final Map<ActionSource, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
 
-    private int _drawnThisPhaseCount = 0;
     private final DefaultGame _game;
     private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
     private final int _normalCardPlaysPerTurn;
@@ -228,7 +227,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         if (counterMap != null)
             counterMap.clear();
 
-        _drawnThisPhaseCount = 0;
+        int _drawnThisPhaseCount = 0;
     }
 
 

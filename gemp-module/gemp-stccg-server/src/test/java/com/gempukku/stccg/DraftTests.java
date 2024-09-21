@@ -61,31 +61,9 @@ public class DraftTests extends AbstractServerTest {
         }
     }
 
-    private static void testRandomness2() {
-        int lastValue = -1;
-        long patchStart = 1813024350;
-        long longestPatch = 0;
-        for (long seed = 0; seed < 8813024350L; seed++) {
-            final int value = new Random(seed).nextInt(8);
-            if (value != lastValue) {
-                long patchLength = seed - patchStart;
-                if (patchLength > longestPatch) {
-                    System.out.println("Longest patch: " + patchStart + "-" + (seed - 1));
-                    System.out.println("Patch length: " + patchLength);
-                    longestPatch = patchLength;
-                }
-                patchStart = seed;
-                lastValue = value;
-            }
-        }
-    }
-
     @Test
     public void testRandomness() {
         doRandomTest(4, false);
-        System.out.println("WTF!!!!");
-        System.out.println("WTF!!!!");
-        System.out.println("WTF!!!!");
         doRandomTest(3, false);
         doRandomTest(4, true);
         doRandomTest(3, true);

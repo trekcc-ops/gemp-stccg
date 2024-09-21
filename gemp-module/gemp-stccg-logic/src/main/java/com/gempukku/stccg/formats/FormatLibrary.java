@@ -7,7 +7,6 @@ import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.SealedLeagueDefinition;
 import com.gempukku.stccg.common.JsonUtils;
 import org.hjson.JsonValue;
-import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -17,9 +16,7 @@ import java.util.concurrent.Semaphore;
 public class FormatLibrary {
     private final Map<String, GameFormat> _allFormats = new HashMap<>();
     private final Map<String, GameFormat> _hallFormats = new LinkedHashMap<>();
-
     private final Map<String, SealedLeagueDefinition> _sealedTemplates = new LinkedHashMap<>();
-
     private final CardBlueprintLibrary _cardLibrary;
     private final File _formatPath;
     private final File _sealedPath;
@@ -31,8 +28,7 @@ public class FormatLibrary {
         this(bpLibrary, AppConfig.getFormatDefinitionsPath(), AppConfig.getSealedPath());
     }
 
-    public FormatLibrary(CardBlueprintLibrary bpLibrary, File formatPath,
-                         File sealedPath) {
+    public FormatLibrary(CardBlueprintLibrary bpLibrary, File formatPath, File sealedPath) {
         _cardLibrary = bpLibrary;
         _formatPath = formatPath;
         _sealedPath = sealedPath;
@@ -66,7 +62,6 @@ public class FormatLibrary {
     private void loadTemplateFromFile(File file) {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
-        JSONParser parser = new JSONParser();
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
             var defs = JsonUtils.ConvertArray(reader, JSONDefs.SealedTemplate.class);
 
@@ -119,7 +114,7 @@ public class FormatLibrary {
             collectionReady.release();
         }
         catch (Exception exp) {
-            throw new RuntimeException("Problem loading LotR formats", exp);
+            throw new RuntimeException("Problem loading game formats", exp);
         }
     }
 
