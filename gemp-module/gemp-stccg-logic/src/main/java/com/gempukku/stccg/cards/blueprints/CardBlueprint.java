@@ -23,6 +23,7 @@ public class CardBlueprint {
     private String subtitle;
     protected CardType _cardType;
     private String imageUrl;
+    private String _rarity;
     private PropertyLogo _propertyLogo;
     private String _lore;
     private Uniqueness uniqueness = null;
@@ -103,6 +104,8 @@ public class CardBlueprint {
     public CardType getCardType() { return _cardType; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getImageUrl() { return imageUrl; }
+    public void setRarity(String rarity) { _rarity = rarity; }
+    public String getRarity() { return _rarity; }
     public void addImageOption(Affiliation affiliation, String imageUrl) { _imageOptions.put(affiliation, imageUrl); }
     public String getAffiliationImageUrl(Affiliation affiliation) { return _imageOptions.get(affiliation); }
     public void setPropertyLogo(PropertyLogo propertyLogo) { _propertyLogo = propertyLogo; }
@@ -396,7 +399,9 @@ public class CardBlueprint {
             throwException("Card has to have a type");
         if (_cardType == CardType.MISSION) {
             if (_propertyLogo != null) throwException("Mission card should not have a property logo");
-            if (location == null && !title.equals("Space")) throwException("Mission card should have a location");
+                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
+            if (location == null && !title.equals("Space") && !_blueprintId.startsWith("1_"))
+                throwException("Mission card should have a location");
         } else if (_cardType == CardType.TRIBBLE) {
             if (tribblePower == null) throwException("Tribble card has to have a Tribble power");
             if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
@@ -432,7 +437,7 @@ public class CardBlueprint {
         return false;
     }
 
-    public List<ActionSource> getInPlayPhaseActions(DefaultGame game) { return inPlayPhaseActions; }
+    public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
     public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
     public PhysicalCard createPhysicalCard(DefaultGame game, int cardId, Player player) {

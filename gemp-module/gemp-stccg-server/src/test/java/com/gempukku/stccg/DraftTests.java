@@ -11,18 +11,17 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
-public class HobbitDraftTests extends AbstractServerTest {
+public class DraftTests extends AbstractServerTest {
     @Test
-    public void HobbitDraftTest() {
+    public void DraftTest() {
         CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
         SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, formatLibrary);
 
-        final SoloDraft hobbitDraft = soloDraftDefinitions.getSoloDraft("hobbit_draft");
+        final SoloDraft soloDraft = soloDraftDefinitions.getSoloDraft("test_draft");
 
         long collectionType = 1568486003481L;
-        final int playerId = 1000;
 
         Map<String, Integer> availableCards = new TreeMap<>(
                 (o1, o2) -> {
@@ -41,8 +40,8 @@ public class HobbitDraftTests extends AbstractServerTest {
 
             int stage = 0;
 
-            while (hobbitDraft.hasNextStage(seed, stage)) {
-                final Iterable<SoloDraft.DraftChoice> availableChoices = hobbitDraft.getAvailableChoices(seed, stage, null);
+            while (soloDraft.hasNextStage(seed, stage)) {
+                final Iterable<SoloDraft.DraftChoice> availableChoices = soloDraft.getAvailableChoices(seed, stage, null);
                 for (SoloDraft.DraftChoice availableChoice : availableChoices) {
                     final String blueprintId = availableChoice.getBlueprintId();
                     availableCards.merge(blueprintId, 1,

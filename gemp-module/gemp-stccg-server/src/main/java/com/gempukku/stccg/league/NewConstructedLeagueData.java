@@ -65,7 +65,7 @@ public class NewConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public void joinLeague(CollectionsManager collecionsManager, User player, int currentTime) {
+    public void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
     }
 
     @Override
@@ -73,12 +73,12 @@ public class NewConstructedLeagueData implements LeagueData {
         int status = oldStatus;
         if (status == 0) {
             int maxGamesPlayed = 0;
-            for (LeagueSeriesData sery : _series) {
-                maxGamesPlayed+=sery.getMaxMatches();
+            for (LeagueSeriesData series : _series) {
+                maxGamesPlayed+=series.getMaxMatches();
             }
 
-            LeagueSeriesData lastSerie = _series.get(_series.size() - 1);
-            if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
+            LeagueSeriesData lastSeries = _series.getLast();
+            if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesPlayed, _collectionType);
                     if (leaguePrize != null)

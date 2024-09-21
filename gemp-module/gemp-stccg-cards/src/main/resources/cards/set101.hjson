@@ -4,18 +4,22 @@
     101_015: {
         title: Armus - Skin of Evil
         type: java def
+        rarity: R
     }
     101_055: {
         title: Engineering Kit
         type: java def
+        rarity: C
     }
     101_056: {
         title: Engineering PADD
         type: java def
+        rarity: C
     }
     101_057: {
         title: Federation PADD
         type: java def
+        rarity: C
     }
     101_058: {
         title: Klingon Disruptor
@@ -59,6 +63,7 @@
         lore: Earth is a member of the United Federation of Planets. The Federation establishes outposts throughout its territory.
         shields: 30
         image-url: https://www.trekcc.org/1e/cardimages/errata/Federation-Outpost.jpg
+        rarity: C
     }
     101_105: {
         title: Klingon Outpost
@@ -131,6 +136,7 @@
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/premiere/culturalobservation95.jpg
+        rarity: R
     }
     101_153: {
         title: Evaluate Terraforming
@@ -313,6 +319,7 @@
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/premiere/medicalrelief95.jpg
+        rarity: R
     }
     101_176: {
         title: New Contact
@@ -337,6 +344,7 @@
         point-box: 30
         span: 2
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/plundersite.jpg
+        rarity: U
     }
     101_194: {
         title: Wormhole Negotiations
@@ -503,6 +511,7 @@
         cunning: 7
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/premiere/drlaforge.gif
+        rarity: R
     }
     101_208: {
         title: Dr. Selar
@@ -517,6 +526,7 @@
         cunning: 8
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/sfls/20.jpg
+        rarity: U
     }
     101_209: {
         title: Eric Pressman
@@ -545,6 +555,7 @@
         cunning: 6
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/TWT-fleetadmiralshanthi.jpg
+        rarity: U
     }
     101_212: {
         title: Geordi La Forge
@@ -559,6 +570,7 @@
         cunning: 8
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/sfls/21.jpg
+        rarity: R
     }
     101_213: {
         title: Giusti
@@ -574,6 +586,7 @@
         cunning: 6
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/errata/Giusti.jpg
+        rarity: C
     }
     101_214: {
         title: Hannah Bates
@@ -587,6 +600,7 @@
         cunning: 8
         strength: 2
         image-url: https://www.trekcc.org/1e/cardimages/premiere/hannahbates95.jpg
+        rarity: U
     }
     101_215: {
         title: Jean-Luc Picard
@@ -685,6 +699,7 @@
         cunning: 7
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/sfls/22.jpg
+        rarity: C
     }
     101_246: {
         title: Thomas Riker
@@ -770,6 +785,7 @@
         cunning: 6
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/premiere/bijik95.jpg
+        rarity: C
     }
     101_254: {
         title: "Ba'el"
@@ -798,6 +814,7 @@
         cunning: 6
         strength: 8
         image-url: https://www.trekcc.org/1e/cardimages/comingofage/14.jpg
+        rarity: C
     }
     101_257: {
         title: Dukath
@@ -813,6 +830,7 @@
         cunning: 6
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/dukath.jpg
+        rarity: C
     }
     101_260: {
         title: Gorath
@@ -828,6 +846,7 @@
         cunning: 4
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/premiere/gorath95.jpg
+        rarity: C
     }
     101_262: {
         title: "J'Ddan"
@@ -843,6 +862,7 @@
         cunning: 6
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/comingofage/15.jpg
+        rarity: C
     }
     101_277: {
         title: Kurak

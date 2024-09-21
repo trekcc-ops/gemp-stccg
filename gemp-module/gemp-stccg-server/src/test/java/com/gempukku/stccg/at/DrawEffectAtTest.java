@@ -2,6 +2,7 @@ package com.gempukku.stccg.at;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.decisions.DecisionResultInvalidException;
@@ -16,130 +17,37 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 
 public class DrawEffectAtTest extends AbstractAtTest {
+
     @Test
-    public void drawingSuccessful() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimple1EGame();
-
-        skipMulligans();
-
-        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
-
-        _game.getGameState().putCardOnTopOfDeck(picard);
-
-        final AtomicInteger triggerCount = new AtomicInteger(0);
-
-        _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
-                new AbstractActionProxy() {
-                    @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
-                        if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
-                            action.appendEffect(
-                                    new IncrementEffect(triggerCount));
-                            return Collections.singletonList(action);
-                        }
-                        return null;
-                    }
-                });
-
-        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 1);
-
-        carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
-
-        assertEquals(1, _game.getGameState().getHand(P1).size());
-        assertEquals(0, _game.getGameState().getDrawDeck(P1).size());
-        assertTrue(_game.getGameState().getHand(P1).contains(picard));
-        assertTrue(drawEffect.wasCarriedOut());
-
-        assertEquals(1, triggerCount.get());
+    public void drawOneSuccess() throws DecisionResultInvalidException, CardNotFoundException {
+        drawEffectTest(1,30, false);
     }
 
     @Test
-    public void drawingMultipleNotSuccessful() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
-
-        skipMulligans();
-
-        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
-
-        _game.getGameState().putCardOnTopOfDeck(picard);
-
-        final AtomicInteger triggerCount = new AtomicInteger(0);
-
-        _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
-                new AbstractActionProxy() {
-                    @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
-                        if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
-                            action.appendEffect(
-                                    new IncrementEffect(triggerCount));
-                            return Collections.singletonList(action);
-                        }
-                        return null;
-                    }
-                });
-
-        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 2);
-
-        carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
-
-        assertEquals(1, _game.getGameState().getHand(P1).size());
-        assertEquals(0, _game.getGameState().getDrawDeck(P1).size());
-        assertTrue(_game.getGameState().getHand(P1).contains(picard));
-        assertFalse(drawEffect.wasCarriedOut());
-
-        assertEquals(1, triggerCount.get());
+    public void drawTwoSuccess() throws DecisionResultInvalidException, CardNotFoundException {
+        drawEffectTest(2,30, false);
     }
 
     @Test
-    public void drawingMultipleSuccessful() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
-
-        skipMulligans();
-
-        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
-        final PhysicalCardGeneric picard2 = new PhysicalCardGeneric(_game, 102, P1, _cardLibrary.getCardBlueprint("101_215"));
-
-        _game.getGameState().putCardOnTopOfDeck(picard);
-        _game.getGameState().putCardOnTopOfDeck(picard2);
-
-        final AtomicInteger triggerCount = new AtomicInteger(0);
-
-        _game.getActionsEnvironment().addUntilEndOfTurnActionProxy(
-                new AbstractActionProxy() {
-                    @Override
-                    public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
-                        if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
-                            RequiredTriggerAction action = new RequiredTriggerAction(picard);
-                            action.appendEffect(
-                                    new IncrementEffect(triggerCount));
-                            return Collections.singletonList(action);
-                        }
-                        return null;
-                    }
-                });
-
-        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 2);
-
-        carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
-
-        assertEquals(2, _game.getGameState().getHand(P1).size());
-        assertEquals(0, _game.getGameState().getDrawDeck(P1).size());
-        assertTrue(_game.getGameState().getHand(P1).contains(picard));
-        assertTrue(_game.getGameState().getHand(P1).contains(picard2));
-        assertTrue(drawEffect.wasCarriedOut());
-
-        assertEquals(2, triggerCount.get());
+    public void drawOnePrevented() throws DecisionResultInvalidException, CardNotFoundException {
+        drawEffectTest(1,30, true);
     }
 
     @Test
-    public void insteadOfDraw() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeSimplestGame();
+    public void drawElevenFailure() throws DecisionResultInvalidException, CardNotFoundException {
+        drawEffectTest(11,9, false);
+    }
 
-        skipMulligans();
 
-        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, P1, _cardLibrary.getCardBlueprint("101_215"));
+    public void drawEffectTest(int cardsToDraw, int cardsInDeck, boolean prevented) throws DecisionResultInvalidException, CardNotFoundException {
+        initializeSimple1EGame(cardsInDeck);
+        String playerId = _game.getCurrentPlayerId();
+        int initialDeckSize = _game.getGameState().getDrawDeck(playerId).size();
+        int initialHandSize = _game.getGameState().getHand(playerId).size();
+        int expectedCardsDrawn = prevented ? 0 : Math.min(cardsToDraw, initialDeckSize+1);
+        assertEquals(cardsInDeck,initialDeckSize + initialHandSize);
+
+        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, playerId, _cardLibrary.getCardBlueprint("101_215"));
 
         _game.getGameState().putCardOnTopOfDeck(picard);
 
@@ -150,7 +58,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                 new AbstractActionProxy() {
                     @Override
                     public List<? extends RequiredTriggerAction> getRequiredAfterTriggers(EffectResult effectResult) {
-                        if (TriggerConditions.forEachCardDrawn(effectResult, P1)) {
+                        if (TriggerConditions.forEachCardDrawn(effectResult, playerId)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new IncrementEffect(triggerCount));
@@ -161,7 +69,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
 
                     @Override
                     public List<? extends Action> getRequiredBeforeTriggers(Effect effect) {
-                        if (TriggerConditions.isDrawingACard(effect, _game, P1)) {
+                        if (prevented && TriggerConditions.isDrawingACard(effect, _game, playerId)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
                                     new PreventEffect(_game, (Preventable) effect));
@@ -173,15 +81,15 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, null, P1, 1);
+        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, new SystemQueueAction(_game), playerId, cardsToDraw);
 
-        carryOutEffectInPhaseActionByPlayer(P1, drawEffect);
+        carryOutEffectInPhaseActionByPlayer(playerId, drawEffect);
 
-        assertEquals(0, _game.getGameState().getHand(P1).size());
-        assertEquals(1, _game.getGameState().getDrawDeck(P1).size());
-        assertFalse(drawEffect.wasCarriedOut());
-
-        assertEquals(0, triggerCount.get());
-        assertEquals(1, preventCount.get());
+        assertEquals(initialHandSize + expectedCardsDrawn, _game.getGameState().getHand(playerId).size());
+        assertEquals(initialDeckSize + 1 - expectedCardsDrawn, _game.getGameState().getDrawDeck(playerId).size());
+        assertEquals(!prevented, _game.getGameState().getHand(playerId).contains(picard));
+        assertEquals((cardsToDraw <= initialDeckSize + 1) && !prevented, drawEffect.wasCarriedOut());
+        assertEquals(expectedCardsDrawn, triggerCount.get());
+        assertEquals(prevented ? cardsToDraw : 0, preventCount.get());
     }
 }

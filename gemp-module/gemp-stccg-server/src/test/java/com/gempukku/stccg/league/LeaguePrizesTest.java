@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardCollection;
 import org.junit.Test;
 
 public class LeaguePrizesTest extends AbstractServerTest {
+
     @Test
     public void test() {
         LeaguePrizes leaguePrizes = new FixedLeaguePrizes(_cardLibrary);

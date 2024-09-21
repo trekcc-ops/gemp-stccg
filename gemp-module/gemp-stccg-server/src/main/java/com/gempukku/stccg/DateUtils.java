@@ -1,10 +1,14 @@
 package com.gempukku.stccg;
 
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.text.ParseException;
 
+// TODO - Is this class adequately considering time zones and Daylight Savings Time?
 public class DateUtils {
     public static int getCurrentDateAsInt() {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
@@ -17,10 +21,15 @@ public class DateUtils {
     }
 
     public static int offsetDate(int start, int dayOffset) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        ZonedDateTime startDate = ZonedDateTime.parse(String.valueOf(start), formatter);
-        ZonedDateTime endDate = startDate.plusDays(dayOffset);
-        return Integer.parseInt(endDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Calendar c = Calendar.getInstance();
+            c.setTime(format.parse(String.valueOf(start)));
+            c.add(Calendar.DATE, dayOffset);
+            return(Integer.parseInt(format.format(c.getTime())));
+        } catch (ParseException exp) {
+            throw new RuntimeException("Can't parse date", exp);
+        }
     }
 
     public static int getMondayBeforeOrOn(ZonedDateTime date) {

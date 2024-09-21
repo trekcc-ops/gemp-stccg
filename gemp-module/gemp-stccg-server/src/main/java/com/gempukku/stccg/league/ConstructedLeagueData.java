@@ -60,7 +60,7 @@ public class ConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public void joinLeague(CollectionsManager collecionsManager, User player, int currentTime) {
+    public void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
     }
 
     @Override
@@ -69,10 +69,10 @@ public class ConstructedLeagueData implements LeagueData {
         if (status == 0) {
             int maxGamesCount = 0;
             for (LeagueSeriesData seriesData : _allSeries) {
-                maxGamesCount+=seriesData.getMaxMatches();
+                maxGamesCount += seriesData.getMaxMatches();
             }
 
-            LeagueSeriesData lastSeries = _allSeries.get(_allSeries.size() - 1);
+            LeagueSeriesData lastSeries = _allSeries.getLast();
             if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesCount, _collectionType);

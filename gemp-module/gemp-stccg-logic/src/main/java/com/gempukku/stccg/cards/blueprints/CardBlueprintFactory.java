@@ -36,7 +36,8 @@ public class CardBlueprintFactory {
         fieldProcessors.put("property-logo", new PropertyLogoFieldProcessor());
         fieldProcessors.put("lore", new LoreFieldProcessor());
         fieldProcessors.put("subtitle", new SubtitleFieldProcessor());
-        fieldProcessors.put("image-url", new ImageUrlFieldProcessor());
+        fieldProcessors.put("image-url", new StringFieldProcessor());
+        fieldProcessors.put("rarity", new StringFieldProcessor());
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
         fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
@@ -104,8 +105,13 @@ public class CardBlueprintFactory {
                 result = buildFromJava(blueprintId);    // TODO - This is awkwardly placed but should get the job done
             else {
                 final FieldProcessor fieldProcessor = fieldProcessors.get(field);
+                    // TODO - This granularity for 101_150 is just here for debugging. Not sure what's happening
+                if (Objects.equals(blueprintId, "101_150")) {
+                    if (fieldProcessor == null)
+                        throw new InvalidCardDefinitionException("Unrecognized field for 101_150: " + field);
+                }
                 if (fieldProcessor == null)
-                    throw new InvalidCardDefinitionException("Unrecognized field: " + field);
+                    throw new InvalidCardDefinitionException("Unrecognized field not for 101_150: " + field);
                 fieldProcessor.processField(field, fieldValue, result, this);
             }
         }
@@ -126,6 +132,10 @@ public class CardBlueprintFactory {
                 CardType.MISSION);
         if (result.getQuadrant() == null && implicitlyAlphaQuadrant.contains(result.getCardType()))
             result.setQuadrant(Quadrant.ALPHA);
+
+        // Set rarity to P if none was specified
+        if (result.getRarity() == null)
+            result.setRarity("P");
 
         result.validateConsistency();
 

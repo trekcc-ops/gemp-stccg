@@ -81,6 +81,8 @@ public class ST1EGameState extends GameState {
                     subDeck.forEach(card -> card.setZone(Zone.MISSIONS_PILE));
                 }
             }
+            _seedDecks.computeIfAbsent(playerId, k -> new LinkedList<>());
+            _missionPiles.computeIfAbsent(playerId, k -> new LinkedList<>());
         }
     }
 

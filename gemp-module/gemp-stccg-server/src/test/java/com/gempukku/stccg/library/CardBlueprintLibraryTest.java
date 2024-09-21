@@ -1,5 +1,6 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.library;
 
+import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -8,7 +9,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CardBlueprintLibraryTests extends AbstractLogicTest {
+public class CardBlueprintLibraryTest extends AbstractLogicTest {
     @Test
     public void LibraryLoadsWithNoDuplicates() {
         Map<String, String> cardNames = new HashMap<>();

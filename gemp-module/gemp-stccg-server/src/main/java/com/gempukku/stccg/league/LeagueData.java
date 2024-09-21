@@ -14,7 +14,7 @@ public interface LeagueData {
 
     SoloDraft getSoloDraft();
 
-    void joinLeague(CollectionsManager collecionsManager, User player, int currentTime);
+    void joinLeague(CollectionsManager collectionsManager, User player, int currentTime);
 
     int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime);
 

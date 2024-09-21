@@ -2,10 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.filterable.SubDeck;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CardDeck {
     Map<SubDeck, List<String>> _subDecks = new HashMap<>();
@@ -57,10 +54,12 @@ public class CardDeck {
     public String getDeckName() {
         return _deckName;
     }
-    public void addCard(String card) { _subDecks.get(SubDeck.DRAW_DECK).add(card); }
-    public List<String> getDrawDeckCards() {
-        return _subDecks.get(SubDeck.DRAW_DECK);
+    public void addCard(String blueprintId) { addCard(SubDeck.DRAW_DECK, blueprintId); }
+    public void addCard(SubDeck subDeck, String blueprintId) {
+        _subDecks.computeIfAbsent(subDeck, k -> new LinkedList<>());
+        _subDecks.get(subDeck).add(blueprintId);
     }
+    public List<String> getDrawDeckCards() { return _subDecks.get(SubDeck.DRAW_DECK); }
 
     public Map<SubDeck, List<String>> getSubDecks() { return _subDecks; }
     public List<String> getSubDeck(SubDeck subDeck) { return _subDecks.get(subDeck); }

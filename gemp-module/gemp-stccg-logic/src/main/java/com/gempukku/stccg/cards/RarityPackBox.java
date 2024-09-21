@@ -31,7 +31,9 @@ public class RarityPackBox implements PackBox {
     @Override
     public List<CardCollection.Item> openPack() {
         List<CardCollection.Item> result = new LinkedList<>();
-        boolean hasFoil = (ThreadLocalRandom.current().nextInt(6) == 0);
+            // TODO - Implement foils?
+//        boolean hasFoil = (ThreadLocalRandom.current().nextInt(6) == 0);
+        boolean hasFoil = false;
         if (hasFoil) {
             int foilRarity = ThreadLocalRandom.current().nextInt(11);
             if (foilRarity == 0) {

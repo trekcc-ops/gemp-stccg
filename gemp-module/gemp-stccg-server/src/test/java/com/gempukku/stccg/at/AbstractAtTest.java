@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
@@ -17,7 +18,6 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.DefaultUserFeedback;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.*;
 
@@ -46,14 +46,19 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         initializeGameWithDecks(decks);
     }
 
-    protected void initializeSimple1EGame() {
+    protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
-        addPlayerDeck(P1, decks, null);
-        addPlayerDeck(P2, decks,null);
+        CardDeck testDeck = new CardDeck("Test");
+        for (int i = 0; i < deckSize; i++) {
+            testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
+        }
+
+        decks.put(P1, testDeck);
+        decks.put(P2, testDeck);
         _userFeedback = new DefaultUserFeedback();
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.getFormat("multipath");
+        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
 
         _game = new ST1EGame(format, decks, _userFeedback, _cardLibrary);
         _userFeedback.setGame(_game);
@@ -139,7 +144,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void addPlayerDeck(String player, Map<String, CardDeck> decks, Map<String, Collection<String>> additionalCardsInDeck) {
-        CardDeck deck = createSimplestDeck();
+        CardDeck deck = new CardDeck("Some deck");
         if (additionalCardsInDeck != null) {
             Collection<String> extraCards = additionalCardsInDeck.get(player);
             if (extraCards != null)
@@ -178,7 +183,4 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         playerDecided(playerId, "0");
     }
 
-    protected CardDeck createSimplestDeck() {
-        return new CardDeck("Some deck");
-    }
 }

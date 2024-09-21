@@ -16,15 +16,18 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     private final List<String> _commons = new ArrayList<>();
     private final List<String> _uncommons = new ArrayList<>();
     private final List<String> _rares = new ArrayList<>();
+    private final List<String> _allCards = new ArrayList<>();
+    private final CardBlueprintLibrary _library;
 
     public FixedLeaguePrizes(CardBlueprintLibrary library) {
         for (SetDefinition setDefinition : library.getSetDefinitions().values()) {
-            if (setDefinition.hasFlag("originalSet")) {
-                _commons.addAll(setDefinition.getCardsOfRarity("C"));
-                _uncommons.addAll(setDefinition.getCardsOfRarity("U"));
-                _rares.addAll(setDefinition.getCardsOfRarity("R"));
-            }
+                // TODO - Cards don't have rarities assigned as of 9/21/24
+            _commons.addAll(setDefinition.getCardsOfRarity("C"));
+            _uncommons.addAll(setDefinition.getCardsOfRarity("U"));
+            _rares.addAll(setDefinition.getCardsOfRarity("R"));
         }
+        _allCards.addAll(library.getAllBlueprintIds());
+        _library = library; // TODO - Not sure it's helpful to save this as a class member once rarities work
     }
 
     @Override
@@ -33,13 +36,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         if (winCount % 2 == 1) {
             winnerPrize.addItem("(S)All Decipher Choice - Booster", 1);
         } else {
-            if (winCount <= 4) {
-                winnerPrize.addItem(getRandom(_commons) + "*", 1);
-            } else if (winCount <= 8) {
-                winnerPrize.addItem(getRandom(_uncommons) + "*", 1);
-            } else {
-                winnerPrize.addItem(getRandom(_rares) + "*", 1);
-            }
+            winnerPrize.addItem(_library.getRandomBlueprintId() + "*", 1);
         }
         return winnerPrize;
     }
@@ -69,15 +66,6 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return null;
     }
 
-    //1st - 60 boosters, 4 tengwar, 3 foil rares
-//2nd - 55 boosters, 3 tengwar, 2 foil rares
-//3rd - 50 boosters, 2 tengwar, 1 foil rare
-//4th - 45 boosters, 1 tengwar
-//5th-8th - 40 boosters
-//9th-16th - 35 boosters
-//17th-32nd - 20 boosters
-//33rd-64th - 10 boosters
-//65th-128th - 5 boosters
     private CardCollection getPrizeForSealedLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getSealedBoosterCount(position));
@@ -141,7 +129,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     private CardCollection getPrizeForConstructedLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getConstructedBoosterCount(position));
-        addPrizes(prize, getRandomFoil(_rares, getRandomRareFoilCount(position)));
+        addPrizes(prize, getRandomFoil(_allCards, getRandomRareFoilCount(position)));
         if (prize.getAll().iterator().hasNext())
             return prize;
         return null;

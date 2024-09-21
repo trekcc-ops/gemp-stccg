@@ -319,10 +319,10 @@ public abstract class PhysicalCard implements Filterable {
         if (_blueprint instanceof Blueprint155_021 testCard)
             return testCard.getInPlayActionsNew(getGame().getGameState().getCurrentPhase(), this);
         else {
-            if (_blueprint.getInPlayPhaseActions(getGame()) == null)
+            if (_blueprint.getInPlayPhaseActions() == null)
                 return new LinkedList<>();
             else
-                return getActivatedActions(playerId, _blueprint.getInPlayPhaseActions(getGame()));
+                return getActivatedActions(playerId, _blueprint.getInPlayPhaseActions());
         }
     }
 

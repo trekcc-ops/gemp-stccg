@@ -7,9 +7,10 @@ import org.junit.Test;
 import java.util.List;
 
 public class RarityPackBoxTest extends AbstractLogicTest {
+
     @Test
     public void openingPacks() {
-        RarityPackBox fellowshipBox = new RarityPackBox(_cardLibrary.getSetDefinitions().get("1"));
+        RarityPackBox fellowshipBox = new RarityPackBox(_cardLibrary.getSetDefinitions().get("101"));
         for (int i=0; i<10; i++) {
             System.out.println("Pack: "+(i+1));
             final List<CardCollection.Item> items = fellowshipBox.openPack();

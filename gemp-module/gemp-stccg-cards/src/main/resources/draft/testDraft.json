@@ -1,0 +1,62 @@
+{
+  "code": "test_draft",
+  "format": "st1emoderncomplete",
+  "startingPool": {
+    "type": "randomCardPool",
+    "data": {
+      "randomResult": [
+        ["101_015","101_056","101_057"]
+      ]
+    }
+  },
+  "choices": [
+    {
+      "type": "filterPick",
+      "repeat": 1,
+      "data": {
+        "optionCount": 1,
+        "filter": "set:101 cardType:PERSONNEL"
+      }
+    },
+    {
+      "type": "filterPick",
+      "repeat": 1,
+      "data": {
+        "optionCount": 2,
+        "filter": "set:101"
+      }
+    },
+    {
+      "type": "weightedSwitch",
+      "repeat": 5,
+      "data": {
+        "switchResult": [
+          {
+            "weight": 0.4,
+            "type": "filterPick",
+            "data": {
+              "optionCount": 3,
+              "filter": "set:101 cardType:MISSION"
+            }
+          },
+          {
+            "weight": 0.4,
+            "type": "filterPick",
+            "data": {
+              "optionCount": 4,
+              "filter": "set:101 cardType:DILEMMA"
+            }
+          },
+          {
+            "weight": 0.2,
+            "type": "filterPick",
+            "data": {
+              "optionCount": 6,
+              "filter": "set:101 cardType:EQUIPMENT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

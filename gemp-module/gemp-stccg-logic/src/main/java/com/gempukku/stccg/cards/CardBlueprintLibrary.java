@@ -18,7 +18,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -26,15 +25,6 @@ import java.util.concurrent.Semaphore;
 public class CardBlueprintLibrary {
     private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
 
-    private final String[] _packageNames =
-            new String[]{
-                    "", ".dwarven", ".dunland", ".elven", ".fallenRealms", ".gandalf", ".gollum", ".gondor",
-                    ".isengard", ".men", ".orc", ".raider", ".rohan", ".moria", ".wraith", ".sauron", ".shire",
-                    ".site", ".uruk_hai",
-
-                    //Additional Hobbit Draft packages
-                    ".esgaroth", ".gundabad", ".smaug", ".spider", ".troll"
-            };
     private final Map<String, CardBlueprint> _blueprints = new HashMap<>();
     private final Map<String, String> _blueprintMapping = new HashMap<>();
     private final Map<String, Set<String>> _fullBlueprintMapping = new HashMap<>();
@@ -65,7 +55,6 @@ public class CardBlueprintLibrary {
         loadSets();
         loadMappings();
         loadCards(_cardPath, true);
-        cacheAllJavaBlueprints();
         collectionReady.release();
     }
 
@@ -150,7 +139,6 @@ public class CardBlueprintLibrary {
 
                     String setId = (String) setJsonDef.get("setId");
                     String setName = (String) setJsonDef.get("setName");
-//                    String rarityFile = (String) setJsonDef.get("rarityFile");
 
                     Set<String> flags = new HashSet<>();
                     determineOriginalSetFlag(setJsonDef, flags);
@@ -205,7 +193,6 @@ public class CardBlueprintLibrary {
     private void loadCardsFromFile(File file, boolean validateNew) {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
-
         JSONParser parser = new JSONParser();
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
             //This will read both json and hjson, producing standard json
@@ -221,6 +208,8 @@ public class CardBlueprintLibrary {
                 try {
                     final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJson(blueprintId, cardDefinition);
                     _blueprints.put(blueprintId, cardBlueprint);
+                    String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
+                    _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (InvalidCardDefinitionException exp) {
                     LOGGER.error("Unable to load card " + blueprintId, exp);
                 }
@@ -236,29 +225,6 @@ public class CardBlueprintLibrary {
             LOGGER.error("Unexpected error while parsing file " + file.getAbsolutePath(), exp);
         }
         LOGGER.debug("Loaded JSON card file " + file.getName());
-    }
-
-    private void cacheAllJavaBlueprints() {
-        for (SetDefinition setDefinition : _allSets.values()) {
-            if (setDefinition.hasFlag("needsLoading")) {
-                LOGGER.debug("Loading Java cards for set " + setDefinition.getSetId());
-                final Set<String> allCards = setDefinition.getAllCards();
-                for (String blueprintId : allCards) {
-                    if (getBaseBlueprintId(blueprintId).equals(blueprintId)) {
-                        if (!_blueprints.containsKey(blueprintId)) {
-                            try {
-                                // Ensure it's loaded
-                                CardBlueprint blueprint = findJavaBlueprint(blueprintId);
-                                _blueprints.put(blueprintId, blueprint);
-                            } catch (CardNotFoundException exp) {
-                                throw new RuntimeException("Unable to start the server, due to invalid (missing) card definition - " + blueprintId);
-                            }
-                        }
-                    }
-                }
-            }
-            LOGGER.debug("Java cards for set " + setDefinition.getSetId() + " successfully loaded");
-        }
     }
 
     public String getBaseBlueprintId(String blueprintId) {
@@ -395,10 +361,12 @@ public class CardBlueprintLibrary {
             if(bp != null)
                 return bp;
 
-            return findJavaBlueprint(blueprintId);
         } catch (InterruptedException exp) {
             throw new RuntimeException("CardBlueprintLibrary.getCardBlueprint() interrupted: ", exp);
         }
+
+        // Throw exception if card not found in blueprints
+        throw new CardNotFoundException(blueprintId);
     }
 
     public String stripBlueprintModifiers(String blueprintId) {
@@ -407,51 +375,6 @@ public class CardBlueprintLibrary {
         if (blueprintId.endsWith("T"))
             blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
         return blueprintId;
-    }
-
-    private CardBlueprint findJavaBlueprint(String blueprintId) throws CardNotFoundException {
-        if (_blueprintMapping.containsKey(blueprintId))
-            return getCardBlueprint(_blueprintMapping.get(blueprintId));
-
-        String[] blueprintParts = blueprintId.split("_");
-
-        String setNumber = blueprintParts[0];
-        String cardNumber = blueprintParts[1];
-
-        for (String packageName : _packageNames) {
-            CardBlueprint blueprint;
-            try {
-                blueprint = tryLoadingFromPackage(packageName, setNumber, cardNumber);
-            } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
-                throw new CardNotFoundException(blueprintId);
-            }
-            if (blueprint != null)
-                return blueprint;
-        }
-
-        throw new CardNotFoundException(blueprintId);
-    }
-
-    private CardBlueprint tryLoadingFromPackage(String packageName, String setNumber, String cardNumber)
-            throws IllegalAccessException, InstantiationException, NoSuchMethodException {
-        try {
-            Class<?> clazz = Class.forName("com.gempukku.stccg.cards.set" + setNumber + packageName +
-                    ".Card" + setNumber + "_" + normalizeId(cardNumber));
-            return (CardBlueprint) clazz.getDeclaredConstructor().newInstance();
-        } catch (ClassNotFoundException | InvocationTargetException e) {
-            // Ignore
-            return null;
-        }
-    }
-
-    private String normalizeId(String blueprintPart) {
-        int id = Integer.parseInt(blueprintPart);
-        if (id < 10)
-            return "00" + id;
-        else if (id < 100)
-            return "0" + id;
-        else
-            return String.valueOf(id);
     }
 
     private void determineNeedsLoadingFlag(JSONObject setDefinition, Set<String> flags) {
@@ -478,4 +401,11 @@ public class CardBlueprintLibrary {
             flags.add("originalSet");
     }
 
+    public String getRandomBlueprintId() {
+        return new ArrayList<>(_blueprints.keySet()).get(new Random().nextInt(_blueprints.size()));
+    }
+
+    public List<String> getAllBlueprintIds() {
+        return new ArrayList<>(_blueprints.keySet());
+    }
 }
