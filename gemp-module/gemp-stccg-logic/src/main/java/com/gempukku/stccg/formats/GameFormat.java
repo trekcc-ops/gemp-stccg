@@ -47,5 +47,4 @@ public interface GameFormat {
     int getHandSize();
 
     JSONDefs.Format Serialize();
-    GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, DefaultGame game);
 }

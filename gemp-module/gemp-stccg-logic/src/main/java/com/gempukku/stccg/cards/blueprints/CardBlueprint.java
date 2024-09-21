@@ -62,7 +62,6 @@ public class CardBlueprint {
     private final Map<RequiredType, ActionSource> _discardedFromPlayTriggers = new HashMap<>();
     private final Map<TriggerTiming, List<ActionSource>> _optionalInHandTriggers = new HashMap<>();
     private final Map<TriggerTiming, List<ActionSource>> _activatedTriggers = new HashMap<>();
-    private final Map<RequiredType, ActionSource> _killedTriggers = new HashMap<>();
 
     private List<ActionSource> inPlayPhaseActions;
     private List<ActionSource> inDiscardPhaseActions;
@@ -330,9 +329,7 @@ public class CardBlueprint {
     }
 
     public ActionSource getPlayEventAction() { return _playEventAction; }
-    public void setKilledTrigger(RequiredType requiredType, ActionSource actionSource) {
-        _killedTriggers.put(requiredType, actionSource);
-    }
+
     public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) {
         _discardedFromPlayTriggers.put(requiredType, actionSource);
     }

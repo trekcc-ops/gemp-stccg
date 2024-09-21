@@ -6,6 +6,8 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.*;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
+import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
+import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.RuleSet;
 
 import java.util.Map;
@@ -26,8 +28,8 @@ public class ST2EGame extends DefaultGame {
         _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment
         ) {
             @Override
-            protected GameProcess setFirstGameProcess() {
-                return _thisGame.getFormat().getStartingGameProcess(_allPlayerIds, _gameState::init, _thisGame);
+            protected ST1EGameProcess setFirstGameProcess() {
+                return null; // TODO - Needs to be replaced by a starting process for 2E
             }
         };
     }

@@ -51,7 +51,6 @@ public class FilterFactory {
                     return false;
                 }));
         simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
-        simpleFilters.put("item", (actionContext) -> Filters.item);
         simpleFilters.put("nor", (actionContext) -> Filters.Nor);
         simpleFilters.put("self", ActionContext::getSource);
         simpleFilters.put("unique", (actionContext) -> Filters.unique);
@@ -85,18 +84,6 @@ public class FilterFactory {
                 throw new InvalidCardDefinitionException("Unable to find affiliation for: " + parameter);
             return (actionContext) -> affiliation;
         });
-        parameterFilters.put("hasattached",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
-                    return (actionContext) -> Filters.hasAttached(filterableSource.getFilterable(actionContext));
-                });
-        parameterFilters.put("hasattachedcount",
-                (parameter, environment) -> {
-                    String[] parameterSplit = parameter.split(",", 2);
-                    int count = Integer.parseInt(parameterSplit[0]);
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameterSplit[1]);
-                    return (actionContext) -> Filters.hasAttached(count, filterableSource.getFilterable(actionContext));
-                });
         parameterFilters.put("hasstacked",
                 (parameter, environment) -> {
                     final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
@@ -131,50 +118,8 @@ public class FilterFactory {
                         );
                     };
                 });
-        parameterFilters.put("maxtwilight",
-                (parameter, environment) -> {
-                    if (parameter.startsWith("memory(") && parameter.endsWith(")")) {
-                        String memory = parameter.substring(parameter.indexOf("(") + 1, parameter.lastIndexOf(")"));
-                        return actionContext -> {
-                            try{
-                                final int value = Integer.parseInt(actionContext.getValueFromMemory(memory));
-                                return Filters.maxPrintedTwilightCost(value);
-                            }
-                            catch(IllegalArgumentException ex) {
-                                return Filters.maxPrintedTwilightCost(100);
-                            }
-                        };
-                    } else {
-                        final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
-                        return actionContext -> {
-                            final int value = valueSource.evaluateExpression(actionContext, null);
-                            return Filters.maxPrintedTwilightCost(value);
-                        };
-                    }
-                });
         parameterFilters.put("memory",
                 (parameter, environment) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
-        parameterFilters.put("mintwilight",
-                (parameter, environment) -> {
-                    if (parameter.startsWith("memory(") && parameter.endsWith(")")) {
-                        String memory = parameter.substring(parameter.indexOf("(") + 1, parameter.lastIndexOf(")"));
-                        return actionContext -> {
-                            try {
-                                final int value = Integer.parseInt(actionContext.getValueFromMemory(memory));
-                                return Filters.minPrintedTwilightCost(value);
-                            }
-                            catch(IllegalArgumentException ex) {
-                                return Filters.minPrintedTwilightCost(0);
-                            }
-                        };
-                    } else {
-                        final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
-                        return actionContext -> {
-                            final int value = valueSource.evaluateExpression(actionContext, null);
-                            return Filters.minPrintedTwilightCost(value);
-                        };
-                    }
-                });
 
         parameterFilters.put("name",
                 (parameter, environment) -> {
@@ -338,42 +283,6 @@ public class FilterFactory {
             throw new InvalidCardDefinitionException("Unknown filter: " + value);
         else return result;
     }
-
-/*
-        First attempt at parseFilter. Will likely not continue.
-    public Filter parseFilter(String value, CardGenerationEnvironment environment)
-            throws InvalidCardDefinitionException {
-        return parseFilter(value, environment, false);
-        //		    filter: Your personnel and ships that have a Star Trek: The Next Generation or Star Trek: Generations property logo (even if not in play)
-    }
-
-    public Filter parseFilter(String value, CardGenerationEnvironment environment, boolean andMeansOr) throws InvalidCardDefinitionException {
-            // TODO - Does not deal with comma-separated and/or lists (e.g., "ships, personnel, and equipment"
-        if (value.startsWith("Your")) {
-            if (value.endsWith("(even if not in play)")) {
-                String replaced = value.replaceAll("\\s*\\(even if not in play\\)$", "").replaceAll("Your[^$]","");
-                return Filters.yourCardsIncludingOutOfPlay(parseFilter(replaced, environment));
-            }
-            else {
-                return Filters.yourCardsInPlay(parseFilter(value.replaceAll("Your[^$]", ""), environment));
-            }
-        }
-        if (value.split("\\s*that have\\s*").length == 2) {
-            String[] stringSplit = value.split("\\s*that have\\s*");
-            return Filters.and(parseFilter(stringSplit[0], environment, true), parseFilter(stringSplit[1], environment, false));
-        }
-        if (value.split("\\s*and\\s*").length == 2) {
-            String[] stringSplit = value.split("\\s*and\\s*");
-            if (andMeansOr)
-                return Filters.or(parseFilter(stringSplit[0], environment), parseFilter(stringSplit[1], environment));
-            else return Filters.and(parseFilter(stringSplit[0], environment), parseFilter(stringSplit[1], environment));
-        }
-        if (value.split("\\s*or\\s*").length == 2) {
-            String[] stringSplit = value.split("\\s*or\\s*");
-            return Filters.or(parseFilter(stringSplit[0], environment), parseFilter(stringSplit[1], environment));
-        }
-        return parseFilter(value, environment);
-    } */
 
     private String[] splitIntoFilters(String value) throws InvalidCardDefinitionException {
         List<String> parts = new LinkedList<>();

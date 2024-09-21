@@ -1,7 +1,6 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.lotr.*;
@@ -44,14 +43,6 @@ public class Filters {
             _speciesFilterMap.put(species, species(species));
         for (Keyword keyword : Keyword.values())
             _keywordFilterMap.put(keyword, keyword(keyword));
-    }
-
-    public static boolean canSpot(DefaultGame game, Filterable... filters) {
-        return canSpot(game, 1, filters);
-    }
-
-    public static boolean canSpot(DefaultGame game, int count, Filterable... filters) {
-        return countSpottable(game, filters)>=count;
     }
 
     public static Collection<PhysicalCard> filterYourActive(Player player, Filterable... filters) {
@@ -101,21 +92,6 @@ public class Filters {
         return result;
     }
 
-    public static PhysicalCard findFirstActive(DefaultGame game, Filterable... filters) {
-        FindFirstActiveCardInPlayVisitor visitor = new FindFirstActiveCardInPlayVisitor(game, Filters.and(filters));
-        game.getGameState().iterateActiveCards(visitor);
-        return visitor.getCard();
-    }
-
-    public static int countSpottable(DefaultGame game, Filterable... filters) {
-        GetCardsMatchingFilterVisitor matchingFilterVisitor = new GetCardsMatchingFilterVisitor(game, Filters.and(filters, Filters.spottable));
-        game.getGameState().iterateActiveCards(matchingFilterVisitor);
-        int result = matchingFilterVisitor.getCounter();
-        if (filters.length==1)
-            result+=game.getModifiersQuerying().getSpotBonus(filters[0]);
-        return result;
-    }
-
     public static int countActive(DefaultGame game, Filterable... filters) {
         GetCardsMatchingFilterVisitor matchingFilterVisitor = new GetCardsMatchingFilterVisitor(game, Filters.and(filters));
         game.getGameState().iterateActiveCards(matchingFilterVisitor);
@@ -151,10 +127,6 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) < game.getModifiersQuerying().getStrength(card);
     }
 
-    public static Filter attachedTo(final PhysicalCard parentCard) {
-        return (game, physicalCard) -> physicalCard.getAttachedTo() == parentCard;
-    }
-
 
     private static Filter species(final Species species) {
         return (game, physicalCard) -> {
@@ -164,17 +136,6 @@ public class Filters {
     }
 
 
-    public static Filter maxPrintedTwilightCost(final int printedTwilightCost) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getTwilightCost() <= printedTwilightCost;
-    }
-
-    public static Filter minPrintedTwilightCost(final int printedTwilightCost) {
-        return (game, physicalCard) -> physicalCard.getBlueprint().getTwilightCost() >= printedTwilightCost;
-    }
-
-    public static final Filter aragorn = Filters.name("Aragorn");
-    public static final Filter gandalf = Filters.name("Gandalf");
-    public static final Filter item = Filters.or(CardType.ARTIFACT);
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
     public static final Filter ship = Filters.or(CardType.SHIP);
     public static final Filter facility = Filters.or(CardType.FACILITY);
@@ -315,17 +276,6 @@ public class Filters {
         return (game, physicalCard) -> filterYourActive(player, copyOfCard(physicalCard)).isEmpty();
     }
 
-    public static Filter hasAttached(final Filterable... filters) {
-        return hasAttached(1, filters);
-    }
-
-    public static Filter hasAttached(int count, final Filterable... filters) {
-        return (game, physicalCard) -> {
-            List<PhysicalCard> physicalCardList = game.getGameState().getAttachedCards(physicalCard);
-            return (Filters.filter(physicalCardList, game, filters).size() >= count);
-        };
-    }
-
     public static Filter hasStacked(final Filterable... filter) {
         return hasStacked(1, filter);
     }
@@ -335,7 +285,7 @@ public class Filters {
             List<PhysicalCard> physicalCardList = physicalCard.getStackedCards();
             if (filter.length == 1 && filter[0] == Filters.any)
                 return physicalCardList.size() >= count;
-            return (Filters.filter(physicalCardList, game, Filters.and(filter, activeSide)).size() >= count);
+            return (Filters.filter(physicalCardList, game, Filters.and(filter, ownedByCurrentPlayer)).size() >= count);
         };
     }
 
@@ -465,7 +415,7 @@ public class Filters {
             throw new IllegalArgumentException("Unknown type of filterable: " + filter);
     }
 
-    public static final Filter activeSide = (game, physicalCard) -> physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
+    public static final Filter ownedByCurrentPlayer = (game, physicalCard) -> physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());
 
     private static Filter andInternal(final Filter... filters) {
         return (game, physicalCard) -> {
@@ -536,7 +486,6 @@ public class Filters {
         else return false;
     };
 
-    public static final Filter spottable = (game, physicalCard) -> true;
     public static final Filter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final Filter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
 

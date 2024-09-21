@@ -377,23 +377,6 @@ public class ValueResolver {
                         return multiplier * total;
                     }
                 };
-            } else if (type.equalsIgnoreCase("maxOfSpecies")) {
-                environment.validateAllowedFields(object, "filter");
-                final String filter = environment.getString(object.get("filter"), "filter");
-
-                final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
-
-                return actionContext -> new Evaluator(actionContext) {
-                    @Override
-                    public int evaluateExpression(DefaultGame game, PhysicalCard cardAffected) {
-                        int result = 0;
-                        final Filterable filterable = filterableSource.getFilterable(actionContext);
-                        for (Species species : Species.values())
-                            result = Math.max(result, Filters.countSpottable(actionContext.getGame(), species, filterable));
-
-                        return result;
-                    }
-                };
             } else if (type.equalsIgnoreCase("max")) {
                 environment.validateAllowedFields(object, "first", "second");
                 ValueSource first = resolveEvaluator(object.get("first"), environment);

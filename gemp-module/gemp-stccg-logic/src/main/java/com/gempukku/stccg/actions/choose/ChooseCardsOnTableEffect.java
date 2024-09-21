@@ -83,7 +83,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return Filters.countSpottable(_game, _filters) >= _minimum;
+        return Filters.countActive(_game, _filters) >= _minimum;
     }
 
     private boolean isAllowAbort() { return false; }

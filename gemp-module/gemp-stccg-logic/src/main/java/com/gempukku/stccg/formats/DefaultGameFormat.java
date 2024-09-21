@@ -5,10 +5,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerOrderFeedback;
-import com.gempukku.stccg.processes.BiddingGameProcess;
-import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -503,9 +499,6 @@ public class DefaultGameFormat implements GameFormat {
             errata = null;
             hall = _hallVisible;
         }};
-    }
-    public GameProcess getStartingGameProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, DefaultGame game) {
-        return new BiddingGameProcess(players, playerOrderFeedback, game);
     }
 
 }
