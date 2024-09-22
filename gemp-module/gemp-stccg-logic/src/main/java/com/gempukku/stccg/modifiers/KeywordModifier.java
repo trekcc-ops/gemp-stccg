@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.lotr.Keyword;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.condition.Condition;
 
 public class KeywordModifier extends AbstractModifier implements KeywordAffectingModifier {

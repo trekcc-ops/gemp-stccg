@@ -8,10 +8,6 @@ import java.util.stream.Stream;
 
 public class TextUtils {
 
-    public static <T> T getRandomFromList(List<? extends T> list) {
-        return getRandomFromList(list, 1).get(0);
-    }
-
     public static <T> List<T> getRandomFromList(List<? extends T> list, int count) {
         List<T> randomizedList = new ArrayList<>(list);
         Collections.shuffle(randomizedList, ThreadLocalRandom.current());
@@ -23,11 +19,14 @@ public class TextUtils {
     }
 
     public static String plural(int count, String noun) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(count).append(" ").append(noun);
-        if (count != 1)
-            sb.append("s");
-        return sb.toString();
+        return count + " " + ((count == 1) ? noun : getPluralNoun(noun));
+    }
+
+    public static String getPluralNoun(String noun) {
+        return switch(noun) {
+            case "series", "personnel" -> noun;
+            default -> noun + "s";
+        };
     }
 
     public static <T> String be(Collection<T> collection) { return collection.size() > 1 ? "are" : "is"; }

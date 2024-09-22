@@ -3,7 +3,6 @@ package com.gempukku.stccg.filters;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.lotr.*;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
@@ -49,6 +48,8 @@ public class Filters {
         return filterActive(player.getGame(), Filters.your(player), Filters.and(filters));
     }
 
+
+
     public static Collection<PhysicalCard> filterYourCardsPresentWith(Player player, PhysicalCard card,
                                                                       Filterable... filters) {
         return filterYourActive(player, Filters.presentWith(card), Filters.and(filters));
@@ -70,6 +71,17 @@ public class Filters {
         GetCardsMatchingFilterVisitor getCardsMatchingFilter = new GetCardsMatchingFilterVisitor(game, filter);
         game.getGameState().iterateActiveCards(getCardsMatchingFilter);
         return getCardsMatchingFilter.getPhysicalCards();
+    }
+
+    public static Collection<PhysicalCard> filterCardsInPlay(DefaultGame game, Filterable... filters) {
+        Filter filter = Filters.and(filters);
+        List<PhysicalCard> cards = game.getGameState().getAllCardsInPlay();
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : cards) {
+            if (filter.accepts(game, card))
+                result.add(card);
+        }
+        return result;
     }
 
     public static Collection<PhysicalCard> filter(Iterable<? extends PhysicalCard> cards, DefaultGame game, Filterable... filters) {
@@ -141,6 +153,7 @@ public class Filters {
     public static final Filter facility = Filters.or(CardType.FACILITY);
     public static final Filter universal = Filters.or(Uniqueness.UNIVERSAL);
     public static final Filter android = Filters.or(Species.ANDROID);
+
     public static final Filter hologram = Filters.or(Species.HOLOGRAM);
     public static Filter matchingAffiliation(final PhysicalCard cardToMatch) {
         return (game, physicalCard) -> {
@@ -496,6 +509,7 @@ public class Filters {
     public static Filterable yourCardsPresentWith(Player player, PhysicalCard card) {
         return and(your(player), presentWith(card));
     }
+
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {
         private final DefaultGame game;

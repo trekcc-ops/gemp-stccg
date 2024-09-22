@@ -10,7 +10,7 @@ import com.gempukku.stccg.gamestate.UserFeedback;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
-import com.gempukku.stccg.rules.AffiliationAttackRestrictions;
+import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ public class ST1EGame extends DefaultGame {
         _thisGame = this;
 
         _gameState = new ST1EGameState(_allPlayerIds, decks, library, _format, this);
-        new ST1ERuleSet(_actionsEnvironment, _modifiersLogic).applyRuleSet();
+        new ST1ERuleSet(this).applyRuleSet();
 
         _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment

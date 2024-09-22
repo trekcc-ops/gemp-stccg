@@ -1,4 +1,4 @@
-package com.gempukku.stccg.rules;
+package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.common.filterable.Affiliation;
 

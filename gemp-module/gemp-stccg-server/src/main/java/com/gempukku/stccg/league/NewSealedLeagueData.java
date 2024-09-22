@@ -41,7 +41,7 @@ public class NewSealedLeagueData implements LeagueData {
         var def = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
 
         _series = new LinkedList<>();
-        for (int i = 0; i < def.GetSerieCount(); i++) {
+        for (int i = 0; i < def.GetSeriesCount(); i++) {
             _series.add(
                     new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie " + (i + 1),
                             DateUtils.offsetDate(start, i * seriesDuration), DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
@@ -71,7 +71,7 @@ public class NewSealedLeagueData implements LeagueData {
             LeagueSeriesData serie = _series.get(i);
             if (currentTime >= serie.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
-                var leagueProduct = sealedLeague.GetProductForSerie(i);
+                var leagueProduct = sealedLeague.GetProductForSeries(i);
 
                 for (CardCollection.Item serieCollectionItem : leagueProduct)
                     startingCollection.addItem(serieCollectionItem.getBlueprintId(), serieCollectionItem.getCount());
@@ -88,7 +88,7 @@ public class NewSealedLeagueData implements LeagueData {
             LeagueSeriesData serie = _series.get(i);
             if (currentTime >= serie.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
-                var leagueProduct = sealedLeague.GetProductForSerie(i);
+                var leagueProduct = sealedLeague.GetProductForSeries(i);
                 Map<User, CardCollection> map = collectionsManager.getPlayersCollection(_collectionType.getCode());
                 for (Map.Entry<User, CardCollection> playerCardCollectionEntry : map.entrySet()) {
                     collectionsManager.addItemsToPlayerCollection(true, "New sealed league product", playerCardCollectionEntry.getKey(), _collectionType, leagueProduct);

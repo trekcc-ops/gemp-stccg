@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.sources.TriggerActionSource;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.lotr.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;

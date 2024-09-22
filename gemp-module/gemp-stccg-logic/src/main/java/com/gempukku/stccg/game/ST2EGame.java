@@ -8,7 +8,7 @@ import com.gempukku.stccg.gamestate.ST2EGameState;
 import com.gempukku.stccg.gamestate.UserFeedback;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
-import com.gempukku.stccg.rules.RuleSet;
+import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class ST2EGame extends DefaultGame {
         super(format, decks, userFeedback, library);
 
         _gameState = new ST2EGameState(_allPlayerIds, decks, library, _format, this);
-        new RuleSet(_actionsEnvironment).applyRuleSet();
+        new RuleSet(this).applyRuleSet();
 
         _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment
         ) {

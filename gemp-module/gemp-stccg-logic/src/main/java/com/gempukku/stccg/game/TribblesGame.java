@@ -22,7 +22,7 @@ public class TribblesGame extends DefaultGame {
         _thisGame = this;
 
         _gameState = new TribblesGameState(_allPlayerIds, decks, library, _format, this);
-        new TribblesRuleSet(_actionsEnvironment, _modifiersLogic, this).applyRuleSet();
+        new TribblesRuleSet(this).applyRuleSet();
 
         _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment

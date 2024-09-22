@@ -68,7 +68,7 @@ public class SealedLeagueData implements LeagueData {
             LeagueSeriesData seriesData = _allSeries.get(i);
             if (currentTime >= seriesData.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_format);
-                var leagueProduct = sealedLeague.GetProductForSerie(i);
+                var leagueProduct = sealedLeague.GetProductForSeries(i);
 
                 for (CardCollection.Item serieCollectionItem : leagueProduct)
                     startingCollection.addItem(serieCollectionItem.getBlueprintId(), serieCollectionItem.getCount());
@@ -85,7 +85,7 @@ public class SealedLeagueData implements LeagueData {
             LeagueSeriesData seriesData = _allSeries.get(i);
             if (currentTime >= seriesData.getStart()) {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_format);
-                var leagueProduct = sealedLeague.GetProductForSerie(i);
+                var leagueProduct = sealedLeague.GetProductForSeries(i);
 
                 Map<User, CardCollection> map = collectionsManager.getPlayersCollection(_collectionType.getCode());
                 for (Map.Entry<User, CardCollection> playerCardCollectionEntry : map.entrySet()) {

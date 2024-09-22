@@ -31,13 +31,13 @@ public class SealedLeagueDefinition {
         }
     }
 
-    public int GetSerieCount() { return _seriesProduct.size(); }
+    public int GetSeriesCount() { return _seriesProduct.size(); }
 
     public String GetName() { return _name; }
     public String GetID() { return _id; }
     public GameFormat GetFormat() { return _format; }
     public List<List<CardCollection.Item>> GetAllSeriesProducts() { return Collections.unmodifiableList(_seriesProduct); }
-    public List<CardCollection.Item> GetProductForSerie(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
+    public List<CardCollection.Item> GetProductForSeries(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
 
     public JSONDefs.SealedTemplate Serialize() {
         return new JSONDefs.SealedTemplate() {{

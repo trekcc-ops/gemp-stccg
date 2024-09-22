@@ -13,7 +13,6 @@ import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.gempukku.stccg.processes.TurnProcedure;
-import com.gempukku.stccg.rules.WinConditionRule;
 
 import java.util.*;
 
@@ -50,7 +49,6 @@ public abstract class DefaultGame {
         _allPlayerIds = decks.keySet();
 
         _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
-        new WinConditionRule(_actionsEnvironment).applyRule();
     }
 
     public abstract GameState getGameState();

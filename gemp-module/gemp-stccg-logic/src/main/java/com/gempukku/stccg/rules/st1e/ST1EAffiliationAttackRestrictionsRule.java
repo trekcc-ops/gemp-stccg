@@ -7,11 +7,12 @@ import com.gempukku.stccg.game.ST1EGame;
 public class ST1EAffiliationAttackRestrictionsRule {
     private final ST1EGame _game;
 
-    public ST1EAffiliationAttackRestrictionsRule(ActionsEnvironment actionsEnvironment) {
-        _game = (ST1EGame) actionsEnvironment.getGame();
+    public ST1EAffiliationAttackRestrictionsRule(ST1EGame game) {
+        _game = game;
     }
 
     public void applyRule() {
+            // TODO - Convert this into an action proxy so it can extend from ST1ERule
                 // TODO - This doesn't account for complexity of mixed-affiliation forces
         _game.setAffiliationAttackRestrictions(
                 (attacking, defending) -> {

@@ -1,6 +1,4 @@
-package com.gempukku.stccg.common.filterable.lotr;
-
-import com.gempukku.stccg.common.filterable.Filterable;
+package com.gempukku.stccg.common.filterable;
 
 public enum Keyword implements Filterable {
 

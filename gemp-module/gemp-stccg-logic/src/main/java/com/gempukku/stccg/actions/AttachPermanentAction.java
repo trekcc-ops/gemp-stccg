@@ -1,7 +1,5 @@
-package com.gempukku.stccg.actions.lotr;
+package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseActiveCardEffect;
 import com.gempukku.stccg.actions.playcard.PlayCardEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;

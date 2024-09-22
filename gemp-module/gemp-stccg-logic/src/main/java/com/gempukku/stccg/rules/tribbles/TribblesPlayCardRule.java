@@ -10,34 +10,24 @@ import com.gempukku.stccg.game.TribblesGame;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TribblesPlayCardRule {
-    private final ActionsEnvironment actionsEnvironment;
-    private final TribblesGame _game;
-
-    public TribblesPlayCardRule(ActionsEnvironment actionsEnvironment, TribblesGame game) {
-        this.actionsEnvironment = actionsEnvironment;
-        _game = game;
+public class TribblesPlayCardRule extends TribblesRule {
+    public TribblesPlayCardRule(TribblesGame game) {
+        super(game);
     }
 
-    public void applyRule() {
-        actionsEnvironment.addAlwaysOnActionProxy(
-                new AbstractActionProxy() {
-                    @Override
-                    public List<? extends Action> getPhaseActions(String playerId) {
-                        if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
-                            List<Action> result = new LinkedList<>();
-                            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-                                if (card.canBePlayed()) {
-                                    Action action = card.getPlayCardAction();
-                                    if (action.canBeInitiated())
-                                        result.add(action);
-                                }
-                            }
-                            return result;
-                        }
-                        return null;
-                    }
+    @Override
+    public List<? extends Action> getPhaseActions(String playerId) {
+        if (_game.getGameState().getCurrentPlayerId().equals(playerId)) {
+            List<Action> result = new LinkedList<>();
+            for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
+                if (card.canBePlayed()) {
+                    Action action = card.getPlayCardAction();
+                    if (action.canBeInitiated())
+                        result.add(action);
                 }
-        );
+            }
+            return result;
+        }
+        return null;
     }
 }
