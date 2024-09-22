@@ -11,8 +11,18 @@ import java.util.Map;
 //  Game stats to be delivered to the client
 
 public class GameStats {
-    private Map<String, Map<Zone, Integer>> _zoneSizes = new HashMap<>();
-    private Map<String, Integer> _playerScores = new HashMap<>();
+    private Map<String, Map<Zone, Integer>> _zoneSizes;
+    private Map<String, Integer> _playerScores;
+
+    public GameStats() {
+        _zoneSizes = new HashMap<>();
+        _playerScores = new HashMap<>();
+    }
+
+    public GameStats(GameStats originalStats) {
+        _zoneSizes = new HashMap<>(originalStats._zoneSizes);
+        _playerScores = new HashMap<>(originalStats._playerScores);
+    }
 
     /**
      * @return If the stats have changed
@@ -59,10 +69,4 @@ public class GameStats {
 
     public Map<String, Integer> getPlayerScores() { return Collections.unmodifiableMap(_playerScores); }
 
-    public GameStats makeACopy() {
-        GameStats copy = new GameStats();
-        copy._zoneSizes = _zoneSizes;
-        copy._playerScores = _playerScores;
-        return copy;
-    }
 }

@@ -1,7 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.DBDefs;
 
 import java.sql.SQLException;
 import java.util.List;

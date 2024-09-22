@@ -329,10 +329,6 @@ public class CardBlueprintLibrary {
         return getCardBlueprint(blueprintId).getFullName();
     }
 
-    public CardBlueprint getCardBlueprint(CardItem item) throws CardNotFoundException {
-        return getCardBlueprint(item.getBlueprintId());
-    }
-
     public CardBlueprint getCardBlueprint(String blueprintId) throws CardNotFoundException {
         blueprintId = stripBlueprintModifiers(blueprintId);
         CardBlueprint bp = null;

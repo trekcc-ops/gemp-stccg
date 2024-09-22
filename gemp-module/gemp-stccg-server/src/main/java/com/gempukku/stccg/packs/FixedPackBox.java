@@ -1,8 +1,8 @@
 package com.gempukku.stccg.packs;
 
-import com.gempukku.stccg.cards.PackBox;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.PackBox;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.cards.CardCollection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,18 +40,18 @@ public class FixedPackBox implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack() {
-        List<CardCollection.Item> result = new LinkedList<>();
+    public List<GenericCardItem> openPack() {
+        List<GenericCardItem> result = new LinkedList<>();
         for (Map.Entry<String, Integer> contentsEntry : _contents.entrySet()) {
             String blueprintId = contentsEntry.getKey();
-            result.add(CardCollection.Item.createItem(blueprintId, contentsEntry.getValue(), _recursive));
+            result.add(GenericCardItem.createItem(blueprintId, contentsEntry.getValue(), _recursive));
         }
         return result;
     }
 
     //Not used in non-random packs
     @Override
-    public List<CardCollection.Item> openPack(int selection) { return openPack(); }
+    public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
     @Override
     public List<String> GetAllOptions() {

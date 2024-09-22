@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.Effect;

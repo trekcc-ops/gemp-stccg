@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.common.DBDefs;
+import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.cards.CardDeck;

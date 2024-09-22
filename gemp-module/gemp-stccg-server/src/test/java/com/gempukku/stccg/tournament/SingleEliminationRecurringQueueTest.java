@@ -3,7 +3,7 @@ package com.gempukku.stccg.tournament;
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import org.junit.Test;
 import org.mockito.Mockito;
 

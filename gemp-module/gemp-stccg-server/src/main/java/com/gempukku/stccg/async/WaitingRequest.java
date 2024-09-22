@@ -1,4 +1,4 @@
-package com.gempukku.stccg.common;
+package com.gempukku.stccg.async;
 
 public interface WaitingRequest {
     void processRequest();

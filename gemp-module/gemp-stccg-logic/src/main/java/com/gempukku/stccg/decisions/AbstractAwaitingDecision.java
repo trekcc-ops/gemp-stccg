@@ -1,5 +1,8 @@
 package com.gempukku.stccg.decisions;
 
+import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.AwaitingDecisionType;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,7 +1,6 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.game.User;
 
 import java.util.Map;
 import java.util.Set;

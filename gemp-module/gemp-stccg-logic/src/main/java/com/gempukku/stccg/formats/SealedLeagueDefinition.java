@@ -1,8 +1,7 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.formats;
 
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.common.JSONDefs;
-import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.formats.GameFormat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +12,7 @@ public class SealedLeagueDefinition {
     private final String _name;
     private final String _id;
     private final GameFormat _format;
-    private final List<List<CardCollection.Item>> _seriesProduct = new ArrayList<>();
+    private final List<List<GenericCardItem>> _seriesProduct = new ArrayList<>();
 
     public SealedLeagueDefinition(String name, String id, GameFormat format, List<List<String>> product) {
         _name = name;
@@ -21,9 +20,9 @@ public class SealedLeagueDefinition {
         _format = format;
 
         for(var serie : product) {
-            List<CardCollection.Item> items = new ArrayList<>();
+            List<GenericCardItem> items = new ArrayList<>();
             for(String def : serie) {
-                var item = CardCollection.Item.createItem(def);
+                var item = GenericCardItem.createItem(def);
                 items.add(item);
             }
 
@@ -36,8 +35,8 @@ public class SealedLeagueDefinition {
     public String GetName() { return _name; }
     public String GetID() { return _id; }
     public GameFormat GetFormat() { return _format; }
-    public List<List<CardCollection.Item>> GetAllSeriesProducts() { return Collections.unmodifiableList(_seriesProduct); }
-    public List<CardCollection.Item> GetProductForSeries(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
+    public List<List<GenericCardItem>> GetAllSeriesProducts() { return Collections.unmodifiableList(_seriesProduct); }
+    public List<GenericCardItem> GetProductForSeries(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
 
     public JSONDefs.SealedTemplate Serialize() {
         return new JSONDefs.SealedTemplate() {{
@@ -45,7 +44,7 @@ public class SealedLeagueDefinition {
            ID = _id;
            Format = _format.getCode();
            SeriesProduct = _seriesProduct.stream()
-                   .map(x->x.stream().map(CardCollection.Item::toString).collect(Collectors.toList()))
+                   .map(x->x.stream().map(GenericCardItem::toString).collect(Collectors.toList()))
                    .collect(Collectors.toList());
         }};
     }

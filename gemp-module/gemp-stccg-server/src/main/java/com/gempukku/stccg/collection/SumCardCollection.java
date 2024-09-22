@@ -1,6 +1,6 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,14 +32,14 @@ public class SumCardCollection implements CardCollection {
     }
 
     @Override
-    public Iterable<Item> getAll() {
-        Map<String, Item> sum = new HashMap<>();
+    public Iterable<GenericCardItem> getAll() {
+        Map<String, GenericCardItem> sum = new HashMap<>();
         for (CardCollection cardCollection : _cardCollections) {
-            Iterable<Item> inCollection = cardCollection.getAll();
-            for (Item cardCount : inCollection) {
+            Iterable<GenericCardItem> inCollection = cardCollection.getAll();
+            for (GenericCardItem cardCount : inCollection) {
                 String cardId = cardCount.getBlueprintId();
                 int count = sum.get(cardId).getCount();
-                sum.put(cardId, Item.createItem(cardId, count + cardCount.getCount()));
+                sum.put(cardId, GenericCardItem.createItem(cardId, count + cardCount.getCount()));
             }
         }
 

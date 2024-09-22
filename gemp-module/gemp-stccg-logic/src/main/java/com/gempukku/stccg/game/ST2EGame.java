@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST2EGameState;
-import com.gempukku.stccg.gamestate.UserFeedback;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
 import com.gempukku.stccg.rules.generic.RuleSet;

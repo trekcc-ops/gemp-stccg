@@ -11,7 +11,7 @@ import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -216,7 +216,7 @@ public class DefaultServerRequestHandler {
                 + "<span><img class=\"ttimage\" src=\"https://wiki.lotrtcgpc.net/images/" + id + "_card.jpg\" ></span></span>";
     }
 
-    protected String generateCardTooltip(CardCollection.Item item) throws CardNotFoundException {
+    protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
         return generateCardTooltip(_library.getCardBlueprint(item.getBlueprintId()), item.getBlueprintId());
     }
 
@@ -225,14 +225,14 @@ public class DefaultServerRequestHandler {
             throws CardNotFoundException {
         StringBuilder sb = new StringBuilder();
         sb.append("<br/><b>").append(deckName).append(":</b><br/>");
-        for (CardCollection.Item item : sortAndFilter.process(filter, deckCards.getAll(), _library, formatLibrary)) {
+        for (GenericCardItem item : sortAndFilter.process(filter, deckCards.getAll(), _library, formatLibrary)) {
             if (countCards)
                 sb.append(item.getCount()).append("x ");
             String cardText;
             if (showToolTip)
                 cardText = generateCardTooltip(item);
             else
-                cardText = _library.getCardBlueprint(item).getFullName();
+                cardText = _library.getCardBlueprint(item.getBlueprintId()).getFullName();
             sb.append(cardText).append("<br/>");
         }
         return sb.toString();

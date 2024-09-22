@@ -2,16 +2,18 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -64,7 +66,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     }
     
     private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        List<CardCollection.Item> importResult = processImport(
+        List<GenericCardItem> importResult = processImport(
                 getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"), _library
         );
 
@@ -73,7 +75,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         collectionElem.setAttribute("count", String.valueOf(importResult.size()));
         doc.appendChild(collectionElem);
 
-        for (CardCollection.Item item : importResult) {
+        for (GenericCardItem item : importResult) {
             appendCardElement(doc, collectionElem, item, true);
         }
 
@@ -97,9 +99,9 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         if (collection == null)
             throw new HttpProcessingException(404);
 
-        Iterable<CardCollection.Item> items = collection.getAll();
+        Iterable<GenericCardItem> items = collection.getAll();
         SortAndFilterCards sortAndFilter = new SortAndFilterCards();
-        List<CardCollection.Item> filteredResult = sortAndFilter.process(filter, items, _library, _formatLibrary);
+        List<GenericCardItem> filteredResult = sortAndFilter.process(filter, items, _library, _formatLibrary);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element collectionElem = doc.createElement("collection");
@@ -108,8 +110,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
         for (int i = start; i < start + count; i++) {
             if (i >= 0 && i < filteredResult.size()) {
-                CardCollection.Item item = filteredResult.get(i);
-                if (item.getType() == CardCollection.Item.Type.CARD) {
+                GenericCardItem item = filteredResult.get(i);
+                if (item.getType() == CardItemType.CARD) {
                     appendCardElement(doc, collectionElem, item, false);
                 } else {
                     appendPackElement(doc, collectionElem, item, true);
@@ -123,7 +125,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeXmlResponse(doc, headers);
     }
 
-    private void appendCardElement(Document doc, Element collectionElem, CardCollection.Item item,
+    private void appendCardElement(Document doc, Element collectionElem, GenericCardItem item,
                                    boolean setSubDeckAttribute) throws Exception {
         Element card = doc.createElement("card");
         if (setSubDeckAttribute) {
@@ -138,16 +140,16 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         collectionElem.appendChild(card);
     }
 
-    private void appendPackElement(Document doc, Element collectionElem, CardCollection.Item item, boolean setContentsAttribute) {
+    private void appendPackElement(Document doc, Element collectionElem, GenericCardItem item, boolean setContentsAttribute) {
         String blueprintId = item.getBlueprintId();
         Element pack = doc.createElement("pack");
         pack.setAttribute("count", String.valueOf(item.getCount()));
         pack.setAttribute("blueprintId", blueprintId);
         if (setContentsAttribute) {
-            if (item.getType() == CardCollection.Item.Type.SELECTION) {
-                List<CardCollection.Item> contents = _productLibrary.GetProduct(blueprintId).openPack();
+            if (item.getType() == CardItemType.SELECTION) {
+                List<GenericCardItem> contents = _productLibrary.GetProduct(blueprintId).openPack();
                 StringBuilder contentsStr = new StringBuilder();
-                for (CardCollection.Item content : contents)
+                for (GenericCardItem content : contents)
                     contentsStr.append(content.getBlueprintId()).append("|");
                 contentsStr.delete(contentsStr.length() - 1, contentsStr.length());
                 pack.setAttribute("contents", contentsStr.toString());
@@ -179,8 +181,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         Element collectionElem = doc.createElement("pack");
         doc.appendChild(collectionElem);
 
-        for (CardCollection.Item item : packContents.getAll()) {
-            if (item.getType() == CardCollection.Item.Type.CARD) {
+        for (GenericCardItem item : packContents.getAll()) {
+            if (item.getType() == CardItemType.CARD) {
                 appendCardElement(doc, collectionElem, item, false);
             } else {
                 appendPackElement(doc, collectionElem, item, false);
@@ -251,7 +253,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         return result;
     }
 
-    public List<CardCollection.Item> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
+    public List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
         Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
         for (SubDeck subDeck : SubDeck.values()) {
             lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);
@@ -259,7 +261,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         // Assumes formatting from Lackey txt files. "Draw deck" is not called out explicitly.
         SubDeck currentSubDeck = SubDeck.DRAW_DECK;
 
-        List<CardCollection.Item> result = new ArrayList<>();
+        List<GenericCardItem> result = new ArrayList<>();
         for (CardCount cardCount : getDecklist(rawDeckList)) {
             SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.name);
             if (newSubDeck != null) currentSubDeck = newSubDeck;
@@ -281,7 +283,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
                                     SortAndFilterCards.replaceSpecialCharacters(blueprint.getFullName().toLowerCase())
                                             .equals(cardCount.name())
                             ) {
-                                result.add(CardCollection.Item.createItem(id, cardCount.count(), currentSubDeck));
+                                result.add(GenericCardItem.createItem(id, cardCount.count(), currentSubDeck));
                                 break;
                             }
                         }

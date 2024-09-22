@@ -8,7 +8,7 @@ import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueSeriesData;

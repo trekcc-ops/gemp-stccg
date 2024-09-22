@@ -1,6 +1,4 @@
-package com.gempukku.stccg.gamestate;
-
-import com.gempukku.stccg.decisions.AwaitingDecision;
+package com.gempukku.stccg.common;
 
 public interface UserFeedback {
     void sendAwaitingDecision(String playerId, AwaitingDecision awaitingDecision);

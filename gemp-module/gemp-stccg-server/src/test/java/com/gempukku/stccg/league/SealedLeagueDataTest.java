@@ -1,12 +1,13 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.AbstractServerTest;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -119,17 +120,17 @@ public class SealedLeagueDataTest extends AbstractServerTest {
             Mockito.when(collectionsManager.getPlayersCollection("test")).thenReturn(playersInLeague);
             int result = data.process(collectionsManager, null, 1, i);
             assertEquals(2, result);
-            final List<CardCollection.Item> expectedToAdd = new ArrayList<>();
-            expectedToAdd.add(CardCollection.Item.createItem("(S)MoM - Starter", 1));
-            expectedToAdd.add(CardCollection.Item.createItem("MoM - Booster", 3));
-            expectedToAdd.add(CardCollection.Item.createItem("2_51", 1));
+            final List<GenericCardItem> expectedToAdd = new ArrayList<>();
+            expectedToAdd.add(GenericCardItem.createItem("(S)MoM - Starter", 1));
+            expectedToAdd.add(GenericCardItem.createItem("MoM - Booster", 3));
+            expectedToAdd.add(GenericCardItem.createItem("2_51", 1));
             Mockito.verify(collectionsManager, new Times(1)).getPlayersCollection("test");
             Mockito.verify(collectionsManager, new Times(1)).addItemsToPlayerCollection(Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType),
                     Mockito.argThat(
-                            (ArgumentMatcher<Collection<CardCollection.Item>>) argument -> {
+                            (ArgumentMatcher<Collection<GenericCardItem>>) argument -> {
                                 if (argument.size() != expectedToAdd.size())
                                     return false;
-                                for (CardCollection.Item item : expectedToAdd) {
+                                for (GenericCardItem item : expectedToAdd) {
                                     if (!argument.contains(item))
                                         return false;
                                 }

@@ -4,8 +4,9 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.db.vo.CollectionType;
@@ -13,7 +14,7 @@ import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.league.SoloDraftLeagueData;
@@ -169,7 +170,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
 
         if (draftPoolList != null) {
             List<String> draftPoolListUpdate = new ArrayList<>();
-            for (CardCollection.Item item : draftPool.getAll()) {
+            for (GenericCardItem item : draftPool.getAll()) {
                 String blueprint = item.getBlueprintId();
                 for (int i = 0; i < draftPool.getItemCount(blueprint); i++)
                     draftPoolListUpdate.add(blueprint);
@@ -189,7 +190,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         Element pickResultElem = doc.createElement("pickResult");
         doc.appendChild(pickResultElem);
 
-        for (CardCollection.Item item : selectedCards.getAll()) {
+        for (GenericCardItem item : selectedCards.getAll()) {
             Element pickedCard = doc.createElement("pickedCard");
             pickedCard.setAttribute("blueprintId", item.getBlueprintId());
             pickedCard.setAttribute("count", String.valueOf(item.getCount()));

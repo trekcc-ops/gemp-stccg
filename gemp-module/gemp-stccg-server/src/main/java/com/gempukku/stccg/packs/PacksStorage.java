@@ -1,7 +1,7 @@
 package com.gempukku.stccg.packs;
 
-import com.gempukku.stccg.cards.PackBox;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.PackBox;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -16,7 +16,7 @@ public class PacksStorage {
         _boosterBoxes.put(packId, boosterBox);
     }
 
-    public List<CardCollection.Item> openPack(String packId) {
+    public List<GenericCardItem> openPack(String packId) {
         PackBox boosterBox = GetBox(packId);
         return boosterBox.openPack();
     }

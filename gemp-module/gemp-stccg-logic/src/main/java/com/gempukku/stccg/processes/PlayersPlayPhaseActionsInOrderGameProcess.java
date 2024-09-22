@@ -3,7 +3,7 @@ package com.gempukku.stccg.processes;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 

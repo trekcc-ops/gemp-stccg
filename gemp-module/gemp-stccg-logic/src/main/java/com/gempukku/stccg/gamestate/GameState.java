@@ -2,13 +2,17 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardState;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
-import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.filterable.EndOfPile;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
@@ -18,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.gempukku.stccg.gamestate.GameEvent.Type.REMOVE_CARD_FROM_PLAY;
 
 public abstract class GameState implements Snapshotable<GameState> {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
@@ -82,7 +88,7 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     public void finish() {
         for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.endGame();
+            listener.sendEvent(GameEvent.Type.GAME_ENDED);
         }
 
         if(_playerOrder == null || _playerOrder.getAllPlayers() == null)
@@ -91,7 +97,7 @@ public abstract class GameState implements Snapshotable<GameState> {
         for (String playerId : _playerOrder.getAllPlayers()) {
             for(var card : getDrawDeck(playerId)) {
                 for (GameStateListener listener : getAllGameStateListeners()) {
-                    listener.cardCreated(card, true);
+                    sendCreatedCardToListener(card, false, listener, true, true);
                 }
             }
         }
@@ -160,7 +166,7 @@ public abstract class GameState implements Snapshotable<GameState> {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
                     if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                         sentCardsFromPlay.add(physicalCard);
                         cardIterator.remove();
                     }
@@ -172,10 +178,10 @@ public abstract class GameState implements Snapshotable<GameState> {
             cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
             cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
             for (PhysicalCard physicalCard : cardsPutIntoPlay) {
-                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
             }
 
-            listener.sendGameStats(getGame().getTurnProcedure().getGameStats());
+            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
         }
 
         for (String lastMessage : _lastMessages)
@@ -210,14 +216,14 @@ public abstract class GameState implements Snapshotable<GameState> {
 
         card.attachTo(transferTo);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardMoved(card);
+            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,card));
     }
 
     public void detachCard(PhysicalCard attachedCard, Zone newZone) {
         attachedCard.setZone(newZone);
         attachedCard.detach();
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardMoved(attachedCard);
+            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY,attachedCard));
     }
 
     public void attachCard(PhysicalCard card, PhysicalCard attachTo) throws InvalidParameterException {
@@ -238,12 +244,12 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardAffectedByCard(playerPerforming, card, affectedCards);
+            listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card).participantId(playerPerforming).otherCardIds(affectedCards));
     }
 
     public void activatedCard(String playerPerforming, PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardActivated(playerPerforming, card);
+            listener.sendEvent(new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, _players.get(playerPerforming)));
     }
 
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
@@ -262,7 +268,7 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     public void moveCard(PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardMoved(card);
+            listener.sendEvent(new GameEvent(GameEvent.Type.MOVE_CARD_IN_PLAY, card));
     }
 
 
@@ -296,8 +302,20 @@ public abstract class GameState implements Snapshotable<GameState> {
                 card.setWhileInZoneData(null);
         }
 
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardsRemoved(playerPerforming, cards);
+        for (GameStateListener listener : getAllGameStateListeners()) {
+
+            Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
+            for (PhysicalCard card : cards) {
+                boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
+                if (card.getZone().isPublic() || publicDiscard ||
+                        (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(listener.getPlayerId())))
+                    removedCardsVisibleByPlayer.add(card);
+            }
+            if (!removedCardsVisibleByPlayer.isEmpty())
+                listener.sendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY).otherCardIds(removedCardsVisibleByPlayer)
+                        .participantId(playerPerforming));
+        }
+
 
         for (PhysicalCard card : cards) {
             card.setZone(null);
@@ -312,10 +330,10 @@ public abstract class GameState implements Snapshotable<GameState> {
     }
 
     public void addCardToZone(PhysicalCard card, Zone zone, boolean end) {
-        addCardToZone(card, zone, end, GameEvent.Type.PUT_CARD_INTO_PLAY);
+        addCardToZone(card, zone, end, false);
     }
 
-    public void addCardToZone(PhysicalCard card, Zone zone, boolean end, GameEvent.Type eventType) {
+    public void addCardToZone(PhysicalCard card, Zone zone, boolean end, boolean sharedMission) {
         if (zone == Zone.DISCARD &&
                 getGame().getModifiersQuerying().hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD))
             zone = Zone.REMOVED;
@@ -337,15 +355,38 @@ public abstract class GameState implements Snapshotable<GameState> {
             LOGGER.error("Card was in " + card.getZone() + " when tried to add to zone: " + zone);
 
         card.setZone(zone);
-
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardCreated(card, eventType);
+            sendCreatedCardToListener(card, sharedMission, listener,true);
 
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
             card.startAffectingGame();
         if ((zone == Zone.STACKED || zone == Zone.DISCARD) && card.isAffectingGame())
             card.startAffectingGameInZone(zone);
+    }
+
+    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener, boolean animate) {
+        sendCreatedCardToListener(card, sharedMission, listener, animate, false);
+    }
+
+    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener, boolean animate, boolean overrideOwnerVisibility) {
+        GameEvent.Type eventType;
+
+        if (sharedMission)
+            eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
+        else if (!animate)
+            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING;
+        else eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
+
+        boolean sendGameEvent;
+        if (card.getZone().isPublic())
+            sendGameEvent = true;
+        else if (card.getZone() == Zone.DISCARD && _format.discardPileIsPublic())
+            sendGameEvent = true;
+        else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
+
+        if (sendGameEvent)
+            listener.sendEvent(new GameEvent(eventType, card));
     }
 
     public void shuffleCardsIntoDeck(Collection<? extends PhysicalCard> cards, String playerId) {
@@ -493,7 +534,7 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     public void sendGameStats(GameStats gameStats) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendGameStats(gameStats);
+            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, gameStats));
     }
 
     public void sendWarning(String player, String warning) {

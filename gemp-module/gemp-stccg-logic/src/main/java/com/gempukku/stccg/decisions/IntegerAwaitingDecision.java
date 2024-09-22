@@ -1,5 +1,8 @@
 package com.gempukku.stccg.decisions;
 
+import com.gempukku.stccg.common.AwaitingDecisionType;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+
 public abstract class IntegerAwaitingDecision extends AbstractAwaitingDecision {
     private final Integer _min;
     private final Integer _max;

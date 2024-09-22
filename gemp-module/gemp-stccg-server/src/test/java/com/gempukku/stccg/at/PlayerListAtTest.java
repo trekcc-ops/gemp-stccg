@@ -1,6 +1,6 @@
 package com.gempukku.stccg.at;
 
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

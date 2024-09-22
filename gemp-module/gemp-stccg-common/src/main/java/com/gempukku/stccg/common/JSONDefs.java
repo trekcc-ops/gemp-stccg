@@ -78,11 +78,16 @@ public class JSONDefs {
     }
 
     public static class PlayHistoryStats {
-        public List<DBDefs.FormatStats> Stats;
+        public List<FormatStats> Stats;
         public int ActivePlayers;
         public int GamesCount;
         public String StartDate;
         public String EndDate;
     }
 
+    public static class FormatStats {
+        public String Format;
+        public int Count;
+        public boolean Casual;
+    }
 }

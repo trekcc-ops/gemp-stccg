@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;

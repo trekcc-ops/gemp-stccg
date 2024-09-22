@@ -3,7 +3,7 @@ package com.gempukku.stccg.league;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.draft.SoloDraft;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 
 import java.util.List;
 

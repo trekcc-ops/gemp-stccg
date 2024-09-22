@@ -1,6 +1,6 @@
-package com.gempukku.stccg.game;
+package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.common.DBDefs;
+import com.gempukku.stccg.DBDefs;
 
 import java.util.ArrayList;
 import java.util.Date;

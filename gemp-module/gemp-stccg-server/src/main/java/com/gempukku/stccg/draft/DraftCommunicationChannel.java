@@ -1,8 +1,9 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.common.LongPollableResource;
-import com.gempukku.stccg.common.WaitingRequest;
+import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.async.LongPollableResource;
+import com.gempukku.stccg.async.WaitingRequest;
+import com.gempukku.stccg.cards.GenericCardItem;
 
 public class DraftCommunicationChannel implements LongPollableResource {
     private final int _channelNumber;
@@ -61,7 +62,7 @@ public class DraftCommunicationChannel implements LongPollableResource {
 
     private String getSerialized(CardCollection cardCollection) {
         StringBuilder sb = new StringBuilder();
-        for (CardCollection.Item collectionItem : cardCollection.getAll())
+        for (GenericCardItem collectionItem : cardCollection.getAll())
             sb.append(collectionItem.getCount()).append("x").append(collectionItem.getBlueprintId()).append("|");
 
         return sb.toString();

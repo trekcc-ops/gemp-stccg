@@ -1,4 +1,4 @@
-package com.gempukku.stccg.decisions;
+package com.gempukku.stccg.common;
 
 public class DecisionResultInvalidException extends Exception {
     private final String _warningMessage;

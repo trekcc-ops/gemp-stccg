@@ -1,6 +1,8 @@
 package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.AwaitingDecisionType;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 
 import java.util.*;
 

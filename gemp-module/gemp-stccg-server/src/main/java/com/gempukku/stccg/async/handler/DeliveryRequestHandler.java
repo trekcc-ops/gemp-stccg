@@ -2,9 +2,11 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.TransferDAO;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.common.CardItemType;
+import com.gempukku.stccg.db.User;
 import com.google.common.collect.Iterables;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -52,9 +54,9 @@ public class DeliveryRequestHandler extends DefaultServerRequestHandler implemen
             if (Iterables.size(items.getAll()) > 0) {
                 Element collectionTypeElem = doc.createElement("collectionType");
                 collectionTypeElem.setAttribute("name", collectionType);
-                for (CardCollection.Item item : items.getAll()) {
+                for (GenericCardItem item : items.getAll()) {
                     String blueprintId = item.getBlueprintId();
-                    if (item.getType() == CardCollection.Item.Type.CARD) {
+                    if (item.getType() == CardItemType.CARD) {
                         Element card = doc.createElement("card");
                         card.setAttribute("count", String.valueOf(item.getCount()));
                         card.setAttribute("blueprintId", blueprintId);

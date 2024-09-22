@@ -1,7 +1,7 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.common.JSONDefs;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
 
@@ -246,7 +246,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
-    public List<DBDefs.FormatStats> GetAllGameFormatData(ZonedDateTime from, ZonedDateTime to) {
+    public List<JSONDefs.FormatStats> GetAllGameFormatData(ZonedDateTime from, ZonedDateTime to) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -264,7 +264,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                 return conn.createQuery(sql)
                         .addParameter("from", from.format(_dateFormat))
                         .addParameter("to", to.format(_dateFormat))
-                        .executeAndFetch(DBDefs.FormatStats.class);
+                        .executeAndFetch(JSONDefs.FormatStats.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve format stats", ex);

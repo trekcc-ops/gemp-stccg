@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Preventable;
 import com.gempukku.stccg.requirement.trigger.TriggerConditions;
 import org.junit.Test;

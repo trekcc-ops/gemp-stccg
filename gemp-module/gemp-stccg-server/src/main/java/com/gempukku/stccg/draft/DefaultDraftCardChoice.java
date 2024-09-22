@@ -1,6 +1,6 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 
 public class DefaultDraftCardChoice implements DraftCardChoice {
     private final CardCollection _cardCollection;

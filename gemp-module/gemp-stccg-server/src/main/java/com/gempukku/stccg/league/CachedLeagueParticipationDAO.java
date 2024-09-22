@@ -2,7 +2,7 @@ package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.packs;
 
-import com.gempukku.stccg.cards.PackBox;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.PackBox;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -35,7 +35,7 @@ public class WeightedRandomPack implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack() {
+    public List<GenericCardItem> openPack() {
         int totalWeight = _contents.values().stream()
                 .mapToInt(Reward::weight)
                 .sum();
@@ -44,7 +44,7 @@ public class WeightedRandomPack implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack(int roll) {
+    public List<GenericCardItem> openPack(int roll) {
         int currentPercent = 0;
 
         for (Reward reward : _contents.values()) {
@@ -57,8 +57,8 @@ public class WeightedRandomPack implements PackBox {
         return generateItems(_contents.keySet().stream().findFirst().orElse(null));
     }
 
-    public List<CardCollection.Item> generateItems(String name) {
-        var result = CardCollection.Item.createItem(name, _contents.get(name).quantity, true);
+    public List<GenericCardItem> generateItems(String name) {
+        var result = GenericCardItem.createItem(name, _contents.get(name).quantity, true);
         return Collections.singletonList(result);
     }
 

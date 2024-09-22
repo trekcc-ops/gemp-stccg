@@ -2,13 +2,14 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.IgnoreDAO;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;

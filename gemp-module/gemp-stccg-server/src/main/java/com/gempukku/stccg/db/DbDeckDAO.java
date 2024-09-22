@@ -2,7 +2,6 @@ package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.game.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

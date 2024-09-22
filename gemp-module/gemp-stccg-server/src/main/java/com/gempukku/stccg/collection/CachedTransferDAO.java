@@ -1,7 +1,6 @@
 package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.cache.Cached;
-import com.gempukku.stccg.cards.CardCollection;
 
 import java.util.Collections;
 import java.util.HashSet;

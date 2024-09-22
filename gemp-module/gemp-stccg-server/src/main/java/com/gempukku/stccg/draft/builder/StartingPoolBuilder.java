@@ -1,6 +1,6 @@
 package com.gempukku.stccg.draft.builder;
 
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.google.common.collect.Iterables;
 import org.json.simple.JSONArray;

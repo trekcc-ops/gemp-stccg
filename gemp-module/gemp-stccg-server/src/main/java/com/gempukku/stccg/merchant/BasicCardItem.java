@@ -1,4 +1,6 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.merchant;
+
+import com.gempukku.stccg.cards.CardItem;
 
 import java.util.Objects;
 

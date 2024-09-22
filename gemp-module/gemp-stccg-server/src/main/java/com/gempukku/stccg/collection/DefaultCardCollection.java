@@ -1,6 +1,7 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.packs.ProductLibrary;
 
 import java.util.*;
@@ -8,7 +9,7 @@ import java.util.stream.Stream;
 
 public class DefaultCardCollection implements MutableCardCollection {
     public static final String CurrencyKey = "currency";
-    private final Map<String, CardCollection.Item> _counts = new LinkedHashMap<>();
+    private final Map<String, GenericCardItem> _counts = new LinkedHashMap<>();
     private final Map<String, Object> _extraInformation = new HashMap<>();
 
     public DefaultCardCollection() {
@@ -17,7 +18,7 @@ public class DefaultCardCollection implements MutableCardCollection {
 
     public DefaultCardCollection(CardCollection cardCollection) {
         this();
-        for (CardCollection.Item item : cardCollection.getAll()) {
+        for (GenericCardItem item : cardCollection.getAll()) {
             _counts.put(item.getBlueprintId(), item);
         }
 
@@ -64,27 +65,27 @@ public class DefaultCardCollection implements MutableCardCollection {
     @Override
     public synchronized void addItem(String itemId, int toAdd) {
         if (toAdd > 0) {
-            CardCollection.Item oldCount = _counts.get(itemId);
+            GenericCardItem oldCount = _counts.get(itemId);
             if (oldCount == null) {
-                _counts.put(itemId, CardCollection.Item.createItem(itemId, toAdd));
+                _counts.put(itemId, GenericCardItem.createItem(itemId, toAdd));
             } else
-                _counts.put(itemId, CardCollection.Item.createItem(itemId, toAdd + oldCount.getCount()));
+                _counts.put(itemId, GenericCardItem.createItem(itemId, toAdd + oldCount.getCount()));
         }
     }
 
     @Override
     public synchronized boolean removeItem(String itemId, int toRemove) {
         if (toRemove > 0) {
-            CardCollection.Item oldCount = _counts.get(itemId);
+            GenericCardItem oldCount = _counts.get(itemId);
             if (oldCount == null || oldCount.getCount() < toRemove)
                 return false;
-            _counts.put(itemId, CardCollection.Item.createItem(itemId, Math.max(0, oldCount.getCount() - toRemove)));
+            _counts.put(itemId, GenericCardItem.createItem(itemId, Math.max(0, oldCount.getCount() - toRemove)));
         }
         return true;
     }
 
-    private void addAllItems(CardCollection.Item item, DefaultCardCollection coll, ProductLibrary lib) {
-        if(item.isRecursive() && item.getType() == CardCollection.Item.Type.PACK) {
+    private void addAllItems(GenericCardItem item, DefaultCardCollection coll, ProductLibrary lib) {
+        if(item.isRecursive() && item.getType() == CardItemType.PACK) {
             for(int i = 0; i < item.getCount(); i++) {
                 var bp = item.getBlueprintId();
                 var product = lib.GetProduct(bp);
@@ -105,15 +106,15 @@ public class DefaultCardCollection implements MutableCardCollection {
 
     @Override
     public synchronized CardCollection openPack(String packId, String selection, ProductLibrary productLibrary) {
-        CardCollection.Item count = _counts.get(packId);
+        GenericCardItem count = _counts.get(packId);
         if (count == null)
             return null;
         if (count.getCount() > 0) {
-            List<CardCollection.Item> packContents = null;
+            List<GenericCardItem> packContents = null;
             if (packId.startsWith("(S)")) {
                 if (selection != null && hasSelection(packId, selection, productLibrary)) {
                     packContents = new LinkedList<>();
-                    packContents.add(CardCollection.Item.createItem(selection, 1));
+                    packContents.add(GenericCardItem.createItem(selection, 1));
                 }
             } else {
                 var product = productLibrary.GetProduct(packId);
@@ -127,7 +128,7 @@ public class DefaultCardCollection implements MutableCardCollection {
 
             DefaultCardCollection packCollection = new DefaultCardCollection();
 
-            for (CardCollection.Item itemFromPack : packContents) {
+            for (GenericCardItem itemFromPack : packContents) {
                 addAllItems(itemFromPack, packCollection, productLibrary);
             }
 
@@ -139,20 +140,20 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     @Override
-    public synchronized Iterable<CardCollection.Item> getAll() {
+    public synchronized Iterable<GenericCardItem> getAll() {
         return _counts.values();
     }
 
     @Override
     public synchronized int getItemCount(String blueprintId) {
-        CardCollection.Item count = _counts.get(blueprintId);
+        GenericCardItem count = _counts.get(blueprintId);
         if (count == null)
             return 0;
         return count.getCount();
     }
 
     private boolean hasSelection(String packId, String selection, ProductLibrary productLibrary) {
-        for (CardCollection.Item item : productLibrary.GetProduct(packId).openPack()) {
+        for (GenericCardItem item : productLibrary.GetProduct(packId).openPack()) {
             if (item.getBlueprintId().equals(selection))
                 return true;
         }

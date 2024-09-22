@@ -1,4 +1,4 @@
-package com.gempukku.stccg.common;
+package com.gempukku.stccg.async;
 
 import java.util.Collections;
 import java.util.HashSet;

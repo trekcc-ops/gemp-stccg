@@ -3,10 +3,9 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST2EGame;
@@ -76,116 +75,6 @@ public class ST2EGameState extends GameState {
         }
     }
 
-    public List<PhysicalCard> getMissionPile(String playerId) {
-        return Collections.unmodifiableList(_missionPiles.get(playerId));
-    }
-
-    public List<PhysicalCard> getSeedDeck(String playerId) {
-        return Collections.unmodifiableList(_seedDecks.get(playerId));
-    }
-
-    public boolean hasLocationsInQuadrant(Quadrant quadrant) {
-        for (ST1ELocation location : _spacelineLocations) {
-            if (location.getQuadrant() == quadrant) return true;
-        }
-        return false;
-    }
-
-    public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared) {
-        GameEvent.Type eventType;
-        if (shared) {
-            eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
-            assert _spacelineLocations.get(indexNumber).getMissions().size() == 1;
-            missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().iterator().next());
-            _spacelineLocations.get(indexNumber).addMission(missionCard);
-        } else {
-            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
-            _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));
-        }
-        refreshSpacelineIndices();
-        addCardToZone(missionCard, Zone.SPACELINE, true, eventType);
-    }
-
-    public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
-        card.setLocationZoneIndex(spacelineIndex);
-        _spacelineLocations.get(spacelineIndex).addNonMission(card);
-        card.setLocation(getSpacelineLocations().get(spacelineIndex));
-        addCardToZone(card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
-    }
-
-    public void reportCardToFacility(PhysicalReportableCard1E cardReported, FacilityCard facility) {
-        cardReported.setLocation(facility.getLocation());
-        attachCard(cardReported, facility);
-    }
-
-    public void refreshSpacelineIndices() {
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            _spacelineLocations.get(i).refreshSpacelineIndex(i);
-        }
-    }
-
-    public Integer indexOfLocation(String location, Quadrant quadrant) {
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (Objects.equals(_spacelineLocations.get(i).getLocationName(), location) &&
-                    _spacelineLocations.get(i).getQuadrant() == quadrant)
-                return i;
-        }
-        return null;
-    }
-
-    public Integer firstInQuadrant(Quadrant quadrant) {
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant) return i;
-        }
-        return null;
-    }
-    public Integer lastInQuadrant(Quadrant quadrant) {
-        for (int i = _spacelineLocations.size() - 1; i >= 0; i--) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant)
-                return i;
-        }
-        return null;
-    }
-
-    public Integer firstInRegion(Region region, Quadrant quadrant) {
-        if (quadrant == null || region == null)
-            return null;
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant &&
-                    (_spacelineLocations.get(i).getRegion() == region))
-                return i;
-        }
-        return null;
-    }
-
-    public Integer lastInRegion(Region region, Quadrant quadrant) {
-        for (int i = _spacelineLocations.size() - 1; i >= 0; i--) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant &&
-                    (_spacelineLocations.get(i).getRegion() == region))
-                return i;
-        }
-        return null;
-    }
-
-    public int getSpacelineLocationsSize() { return _spacelineLocations.size(); }
-    public int getQuadrantLocationsSize(Quadrant quadrant) {
-        int x = 0;
-        for (ST1ELocation location : _spacelineLocations) {
-            if (location.getQuadrant() == quadrant) x++;
-        }
-        return x;
-    }
-    public List<ST1ELocation> getSpacelineLocations() { return _spacelineLocations; }
-
-    public Set<PhysicalCard> getQuadrantLocationCards(Quadrant quadrant) {
-        Set<PhysicalCard> newCollection = new HashSet<>();
-        for (ST1ELocation location : _spacelineLocations)
-            for (PhysicalCard mission : location.getMissions())
-                if (mission.getQuadrant() == quadrant)
-                    newCollection.add(mission);
-        return newCollection;
-    }
-
     @Override
     public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         if (_playerOrder != null) {
@@ -201,7 +90,7 @@ public class ST2EGameState extends GameState {
             // Send missions in order
             for (ST1ELocation location : _spacelineLocations) {
                 for (int i = 0; i < location.getMissions().size(); i++) {
-                    listener.cardCreated(location.getMissions().get(i), GameEvent.Type.PUT_CARD_INTO_PLAY);
+                    sendCreatedCardToListener(location.getMissions().get(i), false, listener, true);
                     cardsLeftToSend.remove(location.getMissions().get(i));
                 }
             }
@@ -214,7 +103,7 @@ public class ST2EGameState extends GameState {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
                     if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                         sentCardsFromPlay.add(physicalCard);
 
                         cardIterator.remove();
@@ -223,20 +112,20 @@ public class ST2EGameState extends GameState {
             } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
             for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId))
-                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
 
             List<PhysicalCard> missionPile = _missionPiles.get(playerId);
             if (missionPile != null) {
                 for (PhysicalCard physicalCard : missionPile) {
-                    listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                 }
             }
 
             for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
-                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
             }
 
-            listener.sendGameStats(getGame().getTurnProcedure().getGameStats());
+            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
         }
 
         for (String lastMessage : _lastMessages)

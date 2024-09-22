@@ -5,12 +5,12 @@ import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.*;
 
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStats;
-import com.gempukku.stccg.gamestate.UserFeedback;
+import com.gempukku.stccg.common.UserFeedback;
 
 import java.util.*;
 

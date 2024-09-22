@@ -1,6 +1,6 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 
 import java.util.List;
 

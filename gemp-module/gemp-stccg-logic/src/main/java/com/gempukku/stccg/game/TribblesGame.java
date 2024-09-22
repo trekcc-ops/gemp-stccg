@@ -3,7 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
-import com.gempukku.stccg.gamestate.UserFeedback;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;

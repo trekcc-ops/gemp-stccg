@@ -1,7 +1,7 @@
 package com.gempukku.stccg.packs;
 
-import com.gempukku.stccg.cards.PackBox;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.PackBox;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 
 import java.util.ArrayList;
@@ -25,14 +25,14 @@ public class RandomFoilPack implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack() {
+    public List<GenericCardItem> openPack() {
         return openPack(ThreadLocalRandom.current().nextInt(_availableCards.size()));
     }
 
     @Override
-    public List<CardCollection.Item> openPack(int selection) {
+    public List<GenericCardItem> openPack(int selection) {
         final String bpID = _availableCards.stream().skip(selection).findFirst().orElse(null) + "*";
-        return Collections.singletonList(CardCollection.Item.createItem(bpID, 1, true));
+        return Collections.singletonList(GenericCardItem.createItem(bpID, 1, true));
     }
 
     @Override

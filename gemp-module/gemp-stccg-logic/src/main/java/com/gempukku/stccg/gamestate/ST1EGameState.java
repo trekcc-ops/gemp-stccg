@@ -8,12 +8,14 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.*;
+
+import static com.gempukku.stccg.gamestate.GameEvent.Type.UPDATE_CARD_IMAGE;
 
 public class ST1EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _seedDecks;
@@ -102,24 +104,21 @@ public class ST1EGameState extends GameState {
     }
 
     public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared) {
-        GameEvent.Type eventType;
         if (shared) {
-            eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
             assert _spacelineLocations.get(indexNumber).getMissions().size() == 1;
             missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().iterator().next());
             _spacelineLocations.get(indexNumber).addMission(missionCard);
         } else {
-            eventType = GameEvent.Type.PUT_CARD_INTO_PLAY;
             _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));
         }
         refreshSpacelineIndices();
-        addCardToZone(missionCard, Zone.SPACELINE, true, eventType);
+        addCardToZone(missionCard, Zone.SPACELINE, true, shared);
     }
 
     public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setLocation(getSpacelineLocations().get(spacelineIndex));
-        addCardToZone(card, Zone.AT_LOCATION, true, GameEvent.Type.PUT_CARD_INTO_PLAY);
+        addCardToZone(card, Zone.AT_LOCATION, true);
     }
 
     public void refreshSpacelineIndices() {
@@ -192,6 +191,9 @@ public class ST1EGameState extends GameState {
 
     @Override
     public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+
+        boolean sharedMission;
+
         if (_playerOrder != null) {
             listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
             if (_currentPlayerId != null)
@@ -207,14 +209,16 @@ public class ST1EGameState extends GameState {
                 for (int i = 0; i < location.getMissions().size(); i++) {
                     GameEvent.Type eventType;
                     if (i == 0) {
+                        sharedMission = false;
                         eventType = restoreSnapshot ? GameEvent.Type.PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING :
                                 GameEvent.Type.PUT_CARD_INTO_PLAY;
                     } else {
+                        sharedMission = true;
                         eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
                     }
-                            // TODO SNAPSHOT - Pretty sure this cardCreated function won't work with snapshotting
+                            // TODO SNAPSHOT - Pretty sure this sendCreatedCard function won't work with snapshotting
                     PhysicalCard mission = location.getMissions().get(i);
-                    listener.cardCreated(mission, eventType);
+                    sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
                     cardsLeftToSend.remove(mission);
                     sentCardsFromPlay.add(mission);
                 }
@@ -228,7 +232,7 @@ public class ST1EGameState extends GameState {
                     PhysicalCard physicalCard = cardIterator.next();
                     PhysicalCard attachedTo = physicalCard.getAttachedTo();
                     if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                         sentCardsFromPlay.add(physicalCard);
 
                         cardIterator.remove();
@@ -237,21 +241,21 @@ public class ST1EGameState extends GameState {
             } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
 
             for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId)) {
-                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
             }
 
             List<PhysicalCard> missionPile = _missionPiles.get(playerId);
             if (missionPile != null) {
                 for (PhysicalCard physicalCard : missionPile) {
-                    listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
                 }
             }
 
             for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
-                listener.putCardIntoPlay(physicalCard, restoreSnapshot);
+                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
             }
 
-            listener.sendGameStats(getGame().getTurnProcedure().getGameStats());
+            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
         }
 
         for (String lastMessage : _lastMessages)
@@ -275,7 +279,7 @@ public class ST1EGameState extends GameState {
 
     public void sendUpdatedCardImageToClient(PhysicalCard card) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.cardImageUpdated(card);
+            listener.sendEvent(new GameEvent(GameEvent.Type.UPDATE_CARD_IMAGE, card));
     }
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {

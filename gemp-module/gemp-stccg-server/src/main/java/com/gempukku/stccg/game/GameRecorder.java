@@ -2,11 +2,9 @@ package com.gempukku.stccg.game;
 
 import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.DBDefs;
+import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.EventSerializer;
-import com.gempukku.stccg.gamestate.GameCommunicationChannel;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.cards.CardDeck;
 import org.w3c.dom.Document;

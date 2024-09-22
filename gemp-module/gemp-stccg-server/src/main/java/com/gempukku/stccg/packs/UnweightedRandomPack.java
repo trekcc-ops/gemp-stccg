@@ -1,7 +1,7 @@
 package com.gempukku.stccg.packs;
 
-import com.gempukku.stccg.cards.PackBox;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.PackBox;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -29,15 +29,15 @@ public class UnweightedRandomPack implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack() {
+    public List<GenericCardItem> openPack() {
         int selection = ThreadLocalRandom.current().nextInt(_contents.size());
         return openPack(selection);
     }
 
-    public List<CardCollection.Item> openPack(int selection) {
+    public List<GenericCardItem> openPack(int selection) {
         String key = _contents.keySet().stream().skip(selection).findFirst().orElse(null);
         assert key != null;
-        var result = CardCollection.Item.createItem(key, _contents.get(key), true);
+        var result = GenericCardItem.createItem(key, _contents.get(key), true);
         return Collections.singletonList(result);
     }
 

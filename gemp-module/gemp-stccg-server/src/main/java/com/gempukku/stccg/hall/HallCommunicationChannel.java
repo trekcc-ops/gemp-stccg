@@ -1,8 +1,8 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.game.User;
-import com.gempukku.stccg.common.LongPollableResource;
-import com.gempukku.stccg.common.WaitingRequest;
+import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.async.LongPollableResource;
+import com.gempukku.stccg.async.WaitingRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableObject;
 

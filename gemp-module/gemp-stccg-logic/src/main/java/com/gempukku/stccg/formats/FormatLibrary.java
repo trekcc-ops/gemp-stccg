@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
-import com.gempukku.stccg.SealedLeagueDefinition;
 import com.gempukku.stccg.common.JsonUtils;
 import org.hjson.JsonValue;
 
@@ -49,51 +48,46 @@ public class FormatLibrary {
     }
 
     private void loadSealedTemplates(File path) {
-        if (path.isFile()) {
-            loadTemplateFromFile(path);
-        }
-        else if (path.isDirectory()) {
+        if (path.isDirectory()) {
             for (File file : Objects.requireNonNull(path.listFiles())) {
                 loadSealedTemplates(file);
             }
         }
-    }
+        else if (path.isFile()) {
+            if (JsonUtils.IsInvalidHjsonFile(path))
+                return;
+            try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
+                var defs = JsonUtils.ConvertArray(reader, JSONDefs.SealedTemplate.class);
 
-    private void loadTemplateFromFile(File file) {
-        if (JsonUtils.IsInvalidHjsonFile(file))
-            return;
-        try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            var defs = JsonUtils.ConvertArray(reader, JSONDefs.SealedTemplate.class);
-
-            if(defs == null)
-            {
-                var def= JsonUtils.Convert(reader, JSONDefs.SealedTemplate.class);
-                if(def != null)
+                if(defs == null)
                 {
-                    defs = Collections.singletonList(def);
+                    var def= JsonUtils.Convert(reader, JSONDefs.SealedTemplate.class);
+                    if(def != null)
+                    {
+                        defs = Collections.singletonList(def);
+                    }
+                    else {
+                        System.out.println(path + " is not a SealedTemplate nor an array of SealedTemplate.  Could not load from file.");
+                        return;
+                    }
                 }
-                else {
-                    System.out.println(file + " is not a SealedTemplate nor an array of SealedTemplate.  Could not load from file.");
-                    return;
+
+                for (var def : defs) {
+                    if(def == null)
+                        continue;
+                    var sealed = new SealedLeagueDefinition(def.Name, def.ID, _allFormats.get(def.Format), def.SeriesProduct);
+
+                    if(_sealedTemplates.containsKey(def.ID)) {
+                        System.out.println("Overwriting existing sealed definition '" + def.ID + "'!");
+                    }
+                    _sealedTemplates.put(def.ID, sealed);
                 }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            for (var def : defs) {
-                if(def == null)
-                    continue;
-                var sealed = new SealedLeagueDefinition(def.Name, def.ID, _allFormats.get(def.Format), def.SeriesProduct);
-
-                if(_sealedTemplates.containsKey(def.ID)) {
-                    System.out.println("Overwriting existing sealed definition '" + def.ID + "'!");
-                }
-                _sealedTemplates.put(def.ID, sealed);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
-
     public void ReloadFormats() {
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(_formatPath), StandardCharsets.UTF_8)) {
             collectionReady.acquire();

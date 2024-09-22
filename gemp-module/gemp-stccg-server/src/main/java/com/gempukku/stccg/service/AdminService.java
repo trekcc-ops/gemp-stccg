@@ -2,7 +2,7 @@ package com.gempukku.stccg.service;
 
 import com.gempukku.stccg.db.IpBanDAO;
 import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 
 import java.sql.SQLException;
 

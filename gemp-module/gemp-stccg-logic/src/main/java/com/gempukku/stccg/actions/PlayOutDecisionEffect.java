@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PlayOutDecisionEffect implements Effect {

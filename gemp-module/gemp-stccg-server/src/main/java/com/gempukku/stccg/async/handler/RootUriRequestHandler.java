@@ -3,7 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.LongPollingSystem;
+import com.gempukku.stccg.async.LongPollingSystem;
 import io.netty.handler.codec.http.HttpRequest;
 
 import java.lang.reflect.Type;

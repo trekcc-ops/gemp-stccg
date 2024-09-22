@@ -1,7 +1,8 @@
 package com.gempukku.stccg.db;
 
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.TransferDAO;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 
 import java.sql.Connection;
@@ -108,7 +109,7 @@ public class DbTransferDAO implements TransferDAO {
 
                             cardCollection.addCurrency(resultSet.getInt(2));
                             CardCollection retrieved = deserializeCollection(resultSet.getString(3));
-                            for (CardCollection.Item item : retrieved.getAll())
+                            for (GenericCardItem item : retrieved.getAll())
                                 cardCollection.addItem(item.getBlueprintId(), item.getCount());
                             result.put(name, cardCollection);
                         }
@@ -129,7 +130,7 @@ public class DbTransferDAO implements TransferDAO {
 
     private String serializeCollection(CardCollection cardCollection) {
         StringBuilder sb = new StringBuilder();
-        for (CardCollection.Item item : cardCollection.getAll())
+        for (GenericCardItem item : cardCollection.getAll())
             sb.append(item.getCount()).append("x").append(item.getBlueprintId()).append(",");
         return sb.toString();
     }

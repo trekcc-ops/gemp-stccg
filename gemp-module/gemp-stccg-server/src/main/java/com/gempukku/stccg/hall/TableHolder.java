@@ -5,7 +5,7 @@ import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import org.apache.logging.log4j.LogManager;

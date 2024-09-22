@@ -1,4 +1,4 @@
-package com.gempukku.stccg.decisions;
+package com.gempukku.stccg.common;
 
 import java.util.Map;
 

@@ -2,13 +2,9 @@ package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.common.JSONDefs;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.PlayerOrderFeedback;
-import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface GameFormat {
 

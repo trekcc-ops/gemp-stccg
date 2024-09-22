@@ -2,7 +2,7 @@ package com.gempukku.stccg.draft;
 
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.tournament.TournamentCallback;
 
 public interface Draft {

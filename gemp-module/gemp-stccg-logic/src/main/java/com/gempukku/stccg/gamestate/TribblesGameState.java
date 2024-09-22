@@ -87,7 +87,7 @@ public class TribblesGameState extends GameState {
     public void setPlayerDecked(String playerId, boolean bool) {
         _players.get(playerId).setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerDecked(playerId, bool);
+            listener.setPlayerDecked(_players.get(playerId), bool);
     }
 
     public boolean getPlayerDecked(String playerId) {

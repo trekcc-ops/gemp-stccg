@@ -2,8 +2,8 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.chat.ChatMessage;
 import com.gempukku.stccg.chat.ChatRoomListener;
-import com.gempukku.stccg.common.LongPollableResource;
-import com.gempukku.stccg.common.WaitingRequest;
+import com.gempukku.stccg.async.LongPollableResource;
+import com.gempukku.stccg.async.WaitingRequest;
 
 import java.util.LinkedList;
 import java.util.List;

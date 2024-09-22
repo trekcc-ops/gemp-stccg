@@ -2,9 +2,10 @@ package com.gempukku.stccg.draft;
 
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -133,7 +134,7 @@ public class DefaultDraft implements Draft {
         MutableCardCollection cardChoice = _cardChoice.get(playerName);
         if (cardChoice != null) {
             if (cardChoice.removeItem(cardId, 1)) {
-                _collectionsManager.addItemsToPlayerCollection(false, "Pick in draft", playerName, _collectionType, List.of(CardCollection.Item.createItem(cardId, 1)));
+                _collectionsManager.addItemsToPlayerCollection(false, "Pick in draft", playerName, _collectionType, List.of(GenericCardItem.createItem(cardId, 1)));
                 _cardChoice.remove(playerName);
             }
         }

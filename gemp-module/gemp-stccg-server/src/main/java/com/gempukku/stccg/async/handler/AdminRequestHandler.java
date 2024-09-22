@@ -5,7 +5,8 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cache.CacheManager;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.LeagueDAO;
@@ -13,7 +14,7 @@ import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.*;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -262,7 +263,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             String product = getFormParameterSafely(postDecoder, "product");
             String collectionType = getFormParameterSafely(postDecoder, "collectionType");
 
-            Collection<CardCollection.Item> productItems = getProductItems(product);
+            Collection<GenericCardItem> productItems = getProductItems(product);
 
             Map<User, CardCollection> playersCollection = _collectionManager.getPlayersCollection(collectionType);
 
@@ -284,7 +285,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             String product = getFormParameterSafely(postDecoder, "product");
             String collectionType = getFormParameterSafely(postDecoder, "collectionType");
 
-            Collection<CardCollection.Item> productItems = getProductItems(product);
+            Collection<GenericCardItem> productItems = getProductItems(product);
 
             List<String> playerNames = getItems(players);
 
@@ -310,15 +311,15 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         return result;
     }
 
-    private Collection<CardCollection.Item> getProductItems(String values) {
-        List<CardCollection.Item> result = new LinkedList<>();
+    private Collection<GenericCardItem> getProductItems(String values) {
+        List<GenericCardItem> result = new LinkedList<>();
         for (String item : values.split("\n")) {
             item = item.trim();
             if (!item.isEmpty()) {
                 final String[] itemSplit = item.split("x", 2);
                 if (itemSplit.length != 2)
                     throw new RuntimeException("Unable to parse the items");
-                result.add(CardCollection.Item.createItem(itemSplit[1].trim(), Integer.parseInt(itemSplit[0].trim())));
+                result.add(GenericCardItem.createItem(itemSplit[1].trim(), Integer.parseInt(itemSplit[0].trim())));
             }
         }
         return result;

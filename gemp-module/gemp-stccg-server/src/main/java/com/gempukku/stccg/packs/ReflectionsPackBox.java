@@ -1,8 +1,8 @@
 package com.gempukku.stccg.packs;
 
-import com.gempukku.stccg.cards.PackBox;
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.PackBox;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
 import com.gempukku.stccg.cards.SetDefinition;
 
 import java.util.ArrayList;
@@ -37,21 +37,21 @@ public class ReflectionsPackBox implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack() {
-        List<CardCollection.Item> result = new LinkedList<>();
+    public List<GenericCardItem> openPack() {
+        List<GenericCardItem> result = new LinkedList<>();
         boolean foil;
         foil = ThreadLocalRandom.current().nextInt(15) == 0;
-        result.add(CardCollection.Item.createItem(getRandomReflectionsCard() + (foil ? "*" : ""), 1));
+        result.add(GenericCardItem.createItem(getRandomReflectionsCard() + (foil ? "*" : ""), 1));
         foil = ThreadLocalRandom.current().nextInt(15) == 0;
-        result.add(CardCollection.Item.createItem(getRandomReflectionsCard() + (foil ? "*" : ""), 1));
+        result.add(GenericCardItem.createItem(getRandomReflectionsCard() + (foil ? "*" : ""), 1));
 
         for (int i = 0; i < 16; i++) {
             final String blueprintId = _previousSetCards.get(ThreadLocalRandom.current().nextInt(_previousSetCards.size()));
             // There is a 1/6 * 1/11 chance it will be a foil
             if (ThreadLocalRandom.current().nextInt(66) == 0)
-                result.add(CardCollection.Item.createItem(blueprintId + "*", 1));
+                result.add(GenericCardItem.createItem(blueprintId + "*", 1));
             else
-                result.add(CardCollection.Item.createItem(blueprintId, 1));
+                result.add(GenericCardItem.createItem(blueprintId, 1));
         }
 
         return result;
@@ -62,7 +62,7 @@ public class ReflectionsPackBox implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack(int selection) { return openPack(); }
+    public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
     @Override
     public List<String> GetAllOptions() {

@@ -1,8 +1,10 @@
-package com.gempukku.stccg.gamestate;
+package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.gamestate.GameStats;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,7 +16,7 @@ import java.util.Map;
 public class EventSerializer {
     public Node serializeEvent(Document doc, GameEvent gameEvent) {
         Element eventElem = doc.createElement("ge");
-        eventElem.setAttribute("type", gameEvent.getType().getCode());
+        eventElem.setAttribute("type", gameEvent.getTypeCode());
         eventElem.setAttribute("timestamp", gameEvent.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS")));
 
         if (gameEvent.getBlueprintId() != null)
@@ -23,8 +25,8 @@ public class EventSerializer {
             eventElem.setAttribute("cardId", gameEvent.getCardId().toString());
         if (gameEvent.getImageUrl() != null)
             eventElem.setAttribute("imageUrl", gameEvent.getImageUrl());
-        if (gameEvent.getIndex() != null)
-            eventElem.setAttribute("index", gameEvent.getIndex().toString());
+        if (gameEvent.getIndexString() != null)
+            eventElem.setAttribute("index", gameEvent.getIndexString());
         if (gameEvent.getControllerId() != null)
             eventElem.setAttribute("controllerId", gameEvent.getControllerId());
         if (gameEvent.getParticipantId() != null)

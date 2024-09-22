@@ -2,15 +2,14 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.BasicCardItem;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
-import com.gempukku.stccg.cards.CardItem;
+import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.merchant.BasicCardItem;
 import com.gempukku.stccg.merchant.MerchantService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -147,11 +146,11 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
         Set<BasicCardItem> cardItems = new HashSet<>();
         if (ownedMin <= 0) {
             cardItems.addAll(_merchantService.getSellableItems());
-            final Iterable<CardCollection.Item> items = collection.getAll();
-            for (CardCollection.Item item : items)
+            final Iterable<GenericCardItem> items = collection.getAll();
+            for (GenericCardItem item : items)
                 cardItems.add(new BasicCardItem(item.getBlueprintId()));
         } else {
-            for (CardCollection.Item item : collection.getAll()) {
+            for (GenericCardItem item : collection.getAll()) {
                 if (item.getCount() >= ownedMin)
                     cardItems.add(new BasicCardItem(item.getBlueprintId()));
             }

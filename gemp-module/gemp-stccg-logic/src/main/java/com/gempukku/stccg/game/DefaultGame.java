@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
-import com.gempukku.stccg.gamestate.UserFeedback;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;

@@ -2,7 +2,6 @@ package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.game.User;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collections;

@@ -1,4 +1,7 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.collection;
+
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.GenericCardItem;
 
 import java.util.Collections;
 import java.util.Map;
@@ -18,9 +21,9 @@ public class CompleteCardCollection implements CardCollection {
     }
 
     @Override
-    public Iterable<Item> getAll() {
+    public Iterable<GenericCardItem> getAll() {
         return _library.getBaseCards().keySet().stream().map(blueprintId ->
-                Item.createItem(blueprintId, _completeCount)).collect(Collectors.toList());
+                GenericCardItem.createItem(blueprintId, _completeCount)).collect(Collectors.toList());
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.gempukku.stccg.decisions;
 
+import com.gempukku.stccg.common.AwaitingDecisionType;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+
 import java.util.List;
 
 public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDecision {

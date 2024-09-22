@@ -1,7 +1,7 @@
 package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 
 public class NoPrizes implements TournamentPrizes{
     @Override

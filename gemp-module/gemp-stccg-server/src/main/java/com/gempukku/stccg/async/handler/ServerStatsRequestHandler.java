@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.game.GameHistoryService;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.db.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;

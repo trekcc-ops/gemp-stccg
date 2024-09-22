@@ -4,7 +4,6 @@ import com.gempukku.stccg.async.handler.RootUriRequestHandler;
 import com.gempukku.stccg.builder.DaoBuilder;
 import com.gempukku.stccg.builder.ServerBuilder;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.LongPollingSystem;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

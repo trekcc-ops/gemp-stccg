@@ -2,7 +2,7 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.game.GameSnapshot;

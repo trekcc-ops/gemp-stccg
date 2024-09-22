@@ -6,8 +6,8 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.DecisionResultInvalidException;
+import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;

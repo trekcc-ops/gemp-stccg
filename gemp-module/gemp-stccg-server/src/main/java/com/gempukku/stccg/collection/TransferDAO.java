@@ -1,7 +1,5 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cards.CardCollection;
-
 import java.util.Map;
 
 public interface TransferDAO {

@@ -1,4 +1,4 @@
-package com.gempukku.stccg.common;
+package com.gempukku.stccg;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -81,9 +81,4 @@ public class DBDefs {
         }
     }
 
-    public static class FormatStats {
-        public String Format;
-        public int Count;
-        public boolean Casual;
-    }
 }

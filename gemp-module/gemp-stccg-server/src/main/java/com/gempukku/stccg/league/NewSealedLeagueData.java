@@ -2,14 +2,15 @@ package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.SoloDraft;
-import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.Collections;
@@ -73,7 +74,7 @@ public class NewSealedLeagueData implements LeagueData {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_leagueTemplateName);
                 var leagueProduct = sealedLeague.GetProductForSeries(i);
 
-                for (CardCollection.Item serieCollectionItem : leagueProduct)
+                for (GenericCardItem serieCollectionItem : leagueProduct)
                     startingCollection.addItem(serieCollectionItem.getBlueprintId(), serieCollectionItem.getCount());
             }
         }

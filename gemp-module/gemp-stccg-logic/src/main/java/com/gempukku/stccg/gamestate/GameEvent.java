@@ -2,12 +2,14 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.game.Player;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +45,6 @@ public class GameEvent {
     }
 
     private String _message;
-    private String _side;
     private final Type _type;
     private Zone _zone;
     private String _participantId;
@@ -58,7 +59,6 @@ public class GameEvent {
     private Integer _targetCardId;
     private String _phase;
     private Integer _count;
-    private Boolean _bool;
     private int[] _otherCardIds;
     private Map<String, CardDeck> _decks;
     private GameStats _gameStats;
@@ -72,6 +72,41 @@ public class GameEvent {
         _type = type;
         _timestamp = ZonedDateTime.now(ZoneOffset.UTC);
     }
+    public GameEvent(Type type, PhysicalCard card) {
+        this(type);
+        setCardData(card);
+    }
+    public GameEvent(Type type, Player player) {
+        this(type);
+        _participantId = player.getPlayerId();
+    }
+    public GameEvent(Type type, PhysicalCard card, Player player) {
+        this(type);
+        setCardData(card);
+        _participantId = player.getPlayerId();
+    }
+
+    public GameEvent(Type type, GameStats stats) {
+        this(type);
+        _gameStats = stats;
+    }
+
+    private void setCardData(PhysicalCard card) {
+        _cardId = card.getCardId();
+        _blueprintId = card.getBlueprintId();
+        _participantId = card.getOwnerName();
+        _zone = card.getZone();
+        _imageUrl = card.getImageUrl();
+        if (card.getCardControllerPlayerId() != null)
+            _controllerId = card.getCardControllerPlayerId();
+        if (card.getAttachedTo() != null)
+            _targetCardId = card.getAttachedTo().getCardId();
+        if (card.getStackedOn() != null)
+            _targetCardId = card.getStackedOn().getCardId();
+        _locationIndex = card.getLocationZoneIndex();
+        if (card.getCardType() == CardType.MISSION)
+            _quadrant = card.getQuadrant().name();
+    }
 
     public ZonedDateTime getTimestamp() { return _timestamp; }
     public Integer getVersion() { return _version; }
@@ -80,8 +115,10 @@ public class GameEvent {
         return this;
     }
 
-    public Integer getIndex() {
-        return _index;
+    public String getIndexString() {
+        if (_index == null)
+            return null;
+        else return _index.toString();
     }
 
     public GameEvent index(int index) {
@@ -92,6 +129,7 @@ public class GameEvent {
     public Type getType() {
         return _type;
     }
+    public String getTypeCode() { return _type.getCode(); }
 
     public GameStats getGameStats() {
         return _gameStats;
@@ -138,12 +176,8 @@ public class GameEvent {
         return this;
     }
 
-    public Boolean getBool() {
-        return _bool;
-    }
-
     public GameEvent bool(boolean bool) {
-        _bool = bool;
+        Boolean _bool = bool;
         return this;
     }
 
@@ -151,7 +185,13 @@ public class GameEvent {
         return _otherCardIds;
     }
 
-    public GameEvent otherCardIds(int[] otherCardIds) {
+    public GameEvent otherCardIds(Collection<PhysicalCard> cards) {
+        int[] otherCardIds = new int[cards.size()];
+        int index = 0;
+        for (PhysicalCard card : cards) {
+            otherCardIds[index] = card.getCardId();
+            index++;
+        }
         _otherCardIds = otherCardIds;
         return this;
     }
@@ -183,37 +223,8 @@ public class GameEvent {
         return this;
     }
 
-    public String getSide() {
-        return _side;
-    }
-
     public String getControllerId() {
         return _controllerId;
-    }
-
-    public GameEvent controllerId(String controllerId) {
-        _controllerId = controllerId;
-        return this;
-    }
-
-    public GameEvent card(PhysicalCard physicalCard) {
-        GameEvent gameEvent = cardId(physicalCard.getCardId()).blueprintId(physicalCard.getBlueprintId()).participantId(physicalCard.getOwnerName()).zone(physicalCard.getZone()).imageUrl(physicalCard.getImageUrl());
-        if (physicalCard.getCardControllerPlayerId() != null)
-            gameEvent = gameEvent.controllerId(physicalCard.getCardControllerPlayerId());
-
-        PhysicalCard attachedTo = physicalCard.getAttachedTo();
-        if (attachedTo != null)
-            gameEvent = gameEvent.targetCardId(attachedTo.getCardId());
-
-        PhysicalCard stackedOn = physicalCard.getStackedOn();
-        if (stackedOn != null)
-            gameEvent = gameEvent.targetCardId(stackedOn.getCardId());
-
-        gameEvent = gameEvent.locationIndex(physicalCard.getLocationZoneIndex());
-        if (physicalCard.getCardType() == CardType.MISSION) {
-            gameEvent = gameEvent.quadrant(physicalCard.getQuadrant().name());
-        }
-        return gameEvent;
     }
 
     public String getBlueprintId() {
@@ -244,11 +255,6 @@ public class GameEvent {
         return _targetCardId;
     }
 
-    public GameEvent targetCardId(int targetCardId) {
-        _targetCardId = targetCardId;
-        return this;
-    }
-
     public String getPhase() {
         return _phase;
     }
@@ -267,10 +273,6 @@ public class GameEvent {
         return this;
     }
 
-    public Integer getScore() {
-        return _score;
-    }
-
     public GameEvent score(Integer score) {
         _score = score;
         return this;
@@ -283,9 +285,5 @@ public class GameEvent {
     }
 
     public Integer getLocationIndex() { return _locationIndex; }
-    public GameEvent locationIndex(int locationIndex) {
-        _locationIndex = locationIndex;
-        return this;
-    }
 
 }

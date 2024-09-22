@@ -1,7 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.game.User;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

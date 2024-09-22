@@ -1,8 +1,8 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.collection.CollectionSerializer;
-import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import org.json.simple.JSONObject;

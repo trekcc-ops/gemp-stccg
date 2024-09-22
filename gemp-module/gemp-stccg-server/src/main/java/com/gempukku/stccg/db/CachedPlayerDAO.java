@@ -1,8 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cache.Cached;
-import com.gempukku.stccg.common.DBDefs;
-import com.gempukku.stccg.game.User;
+import com.gempukku.stccg.DBDefs;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.sql.SQLException;

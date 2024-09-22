@@ -1,4 +1,7 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.collection;
+
+import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.cards.SetDefinition;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,8 +32,8 @@ public class RarityPackBox implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack() {
-        List<CardCollection.Item> result = new LinkedList<>();
+    public List<GenericCardItem> openPack() {
+        List<GenericCardItem> result = new LinkedList<>();
             // TODO - Implement foils?
 //        boolean hasFoil = (ThreadLocalRandom.current().nextInt(6) == 0);
         boolean hasFoil = false;
@@ -52,16 +55,16 @@ public class RarityPackBox implements PackBox {
         return result;
     }
 
-    private void addCard(List<CardCollection.Item> result, String card, boolean foil) {
-        result.add(CardCollection.Item.createItem(card + (foil ? "*" : ""), 1));
+    private void addCard(List<GenericCardItem> result, String card, boolean foil) {
+        result.add(GenericCardItem.createItem(card + (foil ? "*" : ""), 1));
     }
 
-    private void addRandomCardsOfRarity(List<CardCollection.Item> result, int count, String rarity) {
+    private void addRandomCardsOfRarity(List<GenericCardItem> result, int count, String rarity) {
         final List<String> cardsOfRarity = _setRarity.getCardsOfRarity(rarity);
         addRandomCardsFromList(result, count, cardsOfRarity, false);
     }
 
-    private void addRandomCardsFromList(List<CardCollection.Item> result, int count, List<String> cardList, boolean foil) {
+    private void addRandomCardsFromList(List<GenericCardItem> result, int count, List<String> cardList, boolean foil) {
         for (Integer cardIndex : getRandomIndices(count, cardList.size()))
             addCard(result, cardList.get(cardIndex), foil);
     }
@@ -79,7 +82,7 @@ public class RarityPackBox implements PackBox {
     }
 
     @Override
-    public List<CardCollection.Item> openPack(int selection) { return openPack(); }
+    public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
     @Override
     public List<String> GetAllOptions() {

@@ -1,9 +1,10 @@
 package com.gempukku.stccg.draft.builder;
 
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.DraftChoiceDefinition;
 import com.gempukku.stccg.draft.SoloDraft;
-import com.gempukku.stccg.cards.CardCollection;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
@@ -51,14 +52,14 @@ public class DraftChoiceBuilder {
         final int optionCount = ((Number) data.get("optionCount")).intValue();
         String filter = ((String) data.get("filter")).replace(" ","|");
 
-        Iterable<CardCollection.Item> items = _collectionsManager.getCompleteCardCollection().getAll();
+        Iterable<GenericCardItem> items = _collectionsManager.getCompleteCardCollection().getAll();
 
-        final List<CardCollection.Item> possibleCards = _sortAndFilterCards.process(filter, items, _cardLibrary, _formatLibrary);
+        final List<GenericCardItem> possibleCards = _sortAndFilterCards.process(filter, items, _cardLibrary, _formatLibrary);
 
         return new DraftChoiceDefinition() {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
-                final List<CardCollection.Item> cards = getCards(seed, stage);
+                final List<GenericCardItem> cards = getCards(seed, stage);
 
                 List<SoloDraft.DraftChoice> draftChoices = new ArrayList<>(optionCount);
                 for (int i = 0; i < Math.min(optionCount, possibleCards.size()); i++) {
@@ -91,11 +92,11 @@ public class DraftChoiceBuilder {
                 return cardCollection;
             }
 
-            private List<CardCollection.Item> getCards(long seed, int stage) {
+            private List<GenericCardItem> getCards(long seed, int stage) {
                 Random rnd = getRandom(seed, stage);
                 // Fixing some weird issue with Random
                 float thisFixesRandomnessForSomeReason = rnd.nextInt();
-                final List<CardCollection.Item> cards = new ArrayList<>(possibleCards);
+                final List<GenericCardItem> cards = new ArrayList<>(possibleCards);
                 Collections.shuffle(cards, rnd);
                 return cards;
             }
@@ -227,9 +228,9 @@ public class DraftChoiceBuilder {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
                 
-                List<CardCollection.Item> possibleCards = _sortAndFilterCards.process(filter, draftPool.getAll(), _cardLibrary, _formatLibrary);
+                List<GenericCardItem> possibleCards = _sortAndFilterCards.process(filter, draftPool.getAll(), _cardLibrary, _formatLibrary);
 
-                final List<CardCollection.Item> cards = getCards(seed, stage, possibleCards);
+                final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
 
                 List<SoloDraft.DraftChoice> draftChoices = new ArrayList<>(optionCount);
                 for (int i = 0; i < Math.min(optionCount, possibleCards.size()); i++) {
@@ -262,7 +263,7 @@ public class DraftChoiceBuilder {
                 return cardCollection;
             }
 
-            private List<CardCollection.Item> getCards(long seed, int stage, List<CardCollection.Item> possibleCards) {
+            private List<GenericCardItem> getCards(long seed, int stage, List<GenericCardItem> possibleCards) {
                 Random rnd = getRandom(seed, stage);
                 // Fixing some weird issue with Random
                 rnd.nextInt();
@@ -279,14 +280,14 @@ public class DraftChoiceBuilder {
         return new DraftChoiceDefinition() {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
-                List<CardCollection.Item> fullDraftPool = new ArrayList<>();
-                for (CardCollection.Item item : draftPool.getAll())
+                List<GenericCardItem> fullDraftPool = new ArrayList<>();
+                for (GenericCardItem item : draftPool.getAll())
                     for (int i = 0; i < draftPool.getItemCount(item.getBlueprintId()); i++)
                         fullDraftPool.add(item);
 
-                List<CardCollection.Item> possibleCards = _sortAndFilterCards.process(filter, fullDraftPool, _cardLibrary, _formatLibrary);
+                List<GenericCardItem> possibleCards = _sortAndFilterCards.process(filter, fullDraftPool, _cardLibrary, _formatLibrary);
 
-                final List<CardCollection.Item> cards = getCards(seed, stage, possibleCards);
+                final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
 
                 List<SoloDraft.DraftChoice> draftChoices = new ArrayList<>(optionCount);
                 for (int i = 0; i < Math.min(optionCount, possibleCards.size()); i++) {
@@ -320,7 +321,7 @@ public class DraftChoiceBuilder {
                 return cardCollection;
             }
 
-            private List<CardCollection.Item> getCards(long seed, int stage, List<CardCollection.Item> possibleCards) {
+            private List<GenericCardItem> getCards(long seed, int stage, List<GenericCardItem> possibleCards) {
                 Random rnd = getRandom(seed, stage);
                 // Fixing some weird issue with Random
                 rnd.nextInt();

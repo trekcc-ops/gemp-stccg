@@ -3,8 +3,8 @@ package com.gempukku.stccg.collection;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.db.CollectionDAO;
 import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.packs.ProductLibrary;
 
 import java.io.IOException;
@@ -171,14 +171,14 @@ public class CollectionsManager {
         return result;
     }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player, CollectionType collectionType, Iterable<CardCollection.Item> items, Map<String, Object> extraInformation){
+    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player, CollectionType collectionType, Iterable<GenericCardItem> items, Map<String, Object> extraInformation){
         _readWriteLock.writeLock().lock();
         try {
             final CardCollection playerCollection = getPlayerCollection(player, collectionType.getCode());
             if (playerCollection != null) {
                 MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
                 MutableCardCollection addedCards = new DefaultCardCollection();
-                for (CardCollection.Item item : items) {
+                for (GenericCardItem item : items) {
                     mutableCardCollection.addItem(item.getBlueprintId(), item.getCount());
                     addedCards.addItem(item.getBlueprintId(), item.getCount());
                 }
@@ -200,11 +200,11 @@ public class CollectionsManager {
         }
     }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player, CollectionType collectionType, Iterable<CardCollection.Item> items)  {
+    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player, CollectionType collectionType, Iterable<GenericCardItem> items)  {
         addItemsToPlayerCollection(notifyPlayer, reason, player, collectionType, items, null);
     }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, String player, CollectionType collectionType, Iterable<CardCollection.Item> items)  {
+    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, String player, CollectionType collectionType, Iterable<GenericCardItem> items)  {
         addItemsToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, items);
     }
 
