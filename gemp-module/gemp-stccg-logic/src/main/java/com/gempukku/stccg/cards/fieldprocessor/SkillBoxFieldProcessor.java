@@ -15,7 +15,6 @@ public class SkillBoxFieldProcessor implements FieldProcessor {
     public void processField(String key, Object value, CardBlueprint blueprint,
                              CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         String skills = environment.getString(value, key);
-//        String[] splitString = skills.split("\\[\\*]");
         String[] splitString = skills.split("(?=\\[\\*])|(?=\\[DL])");
         int skillDots = 0;
         int sdIcons = 0;
@@ -34,9 +33,11 @@ public class SkillBoxFieldProcessor implements FieldProcessor {
     }
 
     public static Skill getSkill(String string) throws InvalidCardDefinitionException {
+        String skillName;
+        int skillLevel;
         Map<String, SkillName> skillMap = new HashMap<>();
         new ArrayList<>(Arrays.asList(SkillName.values()))
-                .forEach(regularSkill -> skillMap.put(regularSkill.get_humanReadable(), regularSkill));
+                .forEach(regularSkill -> skillMap.put(regularSkill.get_humanReadable().toUpperCase(), regularSkill));
         String iconSplit = "(?<=\\[\\*])|(?<=\\[DL])";
         String[] skillSplit = string.split(iconSplit);
 
@@ -44,18 +45,25 @@ public class SkillBoxFieldProcessor implements FieldProcessor {
             String skill = skillSplit[1].trim();
             String multiplierSplit = "(?=x\\d+)";
             if (skill.split(multiplierSplit).length > 1) {
+                // 1E-style multiplier (like Leadership x2)
                 String[] stringSplit = skill.split(multiplierSplit);
-                if (skillMap.get(stringSplit[0].trim()) != null) {
-                    return new RegularSkill(
-                            skillMap.get(stringSplit[0].trim()),
-                            Integer.parseInt(stringSplit[1].substring(1).trim())
-                    );
-                } else {
-                    throw new InvalidCardDefinitionException("Skill doesn't match known skills");
-                }
+                skillName = stringSplit[0].trim();
+                skillLevel = Integer.parseInt(stringSplit[1].substring(1).trim());
+            } else if (skill.substring(0,1).matches("\\d") && skill.charAt(1) == ' ') {
+                // 2E-style multiplier (like 2 Leadership)
+                skillName = skill.substring(2);
+                skillLevel = Integer.parseInt(skill.substring(0,1));
             } else {
-                return new RegularSkill(skillMap.get(skill), 1);
+                // No multiplier
+                skillName = skill;
+                skillLevel = 1;
             }
+            if (skillMap.get(skillName.toUpperCase()) != null)
+                return new RegularSkill(skillMap.get(skillName.toUpperCase()), skillLevel);
+            else
+                // TODO - Handler for special skills?
+                throw new InvalidCardDefinitionException("Skill " + skillName + " doesn't match known skills");
+
         } else if (skillSplit[0].trim().equals("[DL]")) {
             return new SpecialDownloadSkill();
         } else {

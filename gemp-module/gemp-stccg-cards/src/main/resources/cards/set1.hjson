@@ -83,19 +83,6 @@
         span: 2
         image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01166.jpg
     }
-    1_176: {
-        title: Intercept Renegade
-        uniqueness: unique
-        type: mission
-        mission-type: space
-        quadrant: alpha
-        point-box: 35
-        mission-requirements: 2 Intelligence, 2 Treachery, and Cunning>34 or 2 Leadership, Officer, Security, and Integrity>33
-        lore: "Orias system: Take whatever steps are necessary to prevent a hijacked starship from reaching this sector controlled by the Obsidian Order."
-        affiliation-icons: cardassian,federation,romulan
-        span: 3
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01176.jpg
-    }
     1_182: {
         title: Investigate Sighting
         uniqueness: unique
@@ -237,7 +224,7 @@
         species: Human
         icons: command, earth
         skills2e: "[*] Law [*] 2 Leadership [*] Navigation [*] Officer [*] Transporters"
-        keyword: admiral
+        // TODO - keyword: admiral
         lore: '"Your statements cannot be reconciled with the data collected from the NacCon satellite. ... We cannot escape the conclusion that either the data is faulty in some way... or you have lied to us."'
         integrity: 6
         cunning: 6
@@ -324,7 +311,7 @@
         icons: command, earth
         skills2e: "[*] Exobiology [*] Law [*] Leadership [*] Officer"
         lore: "\"This hearing will come to order. We are here to consider the request of the Klingon Empire that Lieutenant Commander Worf be extradited for trial on charges of murder. Advocate Ch'Pok, you may present your charges.\""
-        keyword: admiral
+        // TODO - keyword: admiral
         integrity: 6
         cunning: 7
         strength: 5
@@ -352,7 +339,7 @@
         species: Markalian
         icons: command
         skills2e: "[*] Acquisition [*] Geology [*] Science [*] Treachery"
-        keyword: smuggler
+        // TODO - keyword: smuggler
         lore: Middleman in a network that smuggled crystals off the Tallonian homeworld. In an uncharacteristic show of cooperation, Quark and Odo attempted a sting on the operation in 2372.
         integrity: 3
         cunning: 5

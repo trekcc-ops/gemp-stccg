@@ -1,7 +1,7 @@
 package com.gempukku.stccg.common.filterable;
 
 public enum SkillName implements Filterable {
-    // Classifications
+    // Personnel types
     ANIMAL("ANIMAL"), CIVILIAN("CIVILIAN"), ENGINEER("ENGINEER"),
     MEDICAL("MEDICAL"), OFFICER("OFFICER"), SCIENCE("SCIENCE"),
     SECURITY("SECURITY"), V_I_P_("V.I.P."),

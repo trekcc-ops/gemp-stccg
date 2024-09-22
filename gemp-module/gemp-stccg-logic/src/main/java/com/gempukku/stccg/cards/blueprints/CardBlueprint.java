@@ -26,6 +26,7 @@ public class CardBlueprint {
     private String _rarity;
     private PropertyLogo _propertyLogo;
     private String _lore;
+    private Species _species;
     private Uniqueness uniqueness = null;
     private List<CardIcon> _icons;
     private Quadrant quadrant;
@@ -189,11 +190,10 @@ public class CardBlueprint {
     public int getSkillDotCount() { return _skillDots; }
     public int getSpecialDownloadIconCount() { return _specialDownloadIcons; }
     public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
+    public void setSpecies(Species species) { _species = species; }
 
     // Tribbles
-    public void setTribbleValue(int tribbleValue) {
-        this.tribbleValue = tribbleValue;
-    }
+    public void setTribbleValue(int tribbleValue) { this.tribbleValue = tribbleValue; }
     public int getTribbleValue() { return tribbleValue; }
     public void setTribblePower(TribblePower tribblePower) {
         this.tribblePower = tribblePower;
@@ -403,7 +403,8 @@ public class CardBlueprint {
             if (tribblePower == null) throwException("Tribble card has to have a Tribble power");
             if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
                 throwException("Tribble card does not have a valid Tribble value");
-        } else if (_propertyLogo == null)
+        } else if (_propertyLogo == null && !_blueprintId.startsWith("1_"))
+            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
             // TODO - Technically tribbles should have property logos too, they're just never relevant
             throwException("Non-mission card has to have a property logo");
 

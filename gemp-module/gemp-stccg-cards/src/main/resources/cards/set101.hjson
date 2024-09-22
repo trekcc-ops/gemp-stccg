@@ -6,16 +6,6 @@
         type: java def
         rarity: R
     }
-    101_055: {
-        title: Engineering Kit
-        type: java def
-        rarity: C
-    }
-    101_056: {
-        title: Engineering PADD
-        type: java def
-        rarity: C
-    }
     101_057: {
         title: Federation PADD
         type: java def
@@ -24,34 +14,32 @@
     101_058: {
         title: Klingon Disruptor
         type: java def
+        rarity: C
     }
     101_059: {
         title: Klingon PADD
         type: java def
-    }
-    101_060: {
-        title: Medical Kit
-        type: java def
-    }
-    101_061: {
-        title: Medical Tricorder
-        type: java def
+        rarity: C
     }
     101_062: {
         title: Romulan Disruptor
         type: java def
+        rarity: C
     }
-    101_061: {
+    101_063: {
         title: Romulan PADD
         type: java def
+        rarity: C
     }
     101_064: {
         title: Starfleet Type II Phaser
         type: java def
+        rarity: C
     }
     101_065: {
         title: Tricorder
         type: java def
+        rarity: C
     }
     101_104: {
         title: Federation Outpost
@@ -75,6 +63,7 @@
         lore: "The Klingon Homeworld is Qo'noS. The Klingon Empire establishes outposts throughout its territory."
         shields: 32
         image-url: https://www.trekcc.org/1e/cardimages/errata/Klingon-Outpost.jpg
+        rarity: C
    }
     101_106: {
         title: Romulan Outpost
@@ -86,6 +75,7 @@
         lore: Romulus is one of the two homeworlds for the Romulans. The Romulan Star Empire establishes outposts throughout its territory.
         shields: 32
         image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg
+        rarity: C
     }
     101_147: {
         title: Cloaked Mission
@@ -370,6 +360,7 @@
         cunning: 4
         strength: 2
         image-url: https://www.trekcc.org/1e/cardimages/premiere/alexanderrozhenko95.jpg
+        rarity: U
     }
     101_197: {
         title: Alynna Nechayev
@@ -398,6 +389,7 @@
         cunning: 6
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/comingofage/8.jpg
+        rarity: U
     }
     101_199: {
         title: Benjamin Maxwell
@@ -412,6 +404,7 @@
         cunning: 7
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/sfls/18.jpg
+        rarity: U
     }
     101_200: {
         title: Beverly Crusher

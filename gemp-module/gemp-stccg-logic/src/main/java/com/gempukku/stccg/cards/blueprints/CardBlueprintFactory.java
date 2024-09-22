@@ -32,18 +32,18 @@ public class CardBlueprintFactory {
     private final ModifierSourceFactory modifierSourceFactory = new ModifierSourceFactory();
 
     public CardBlueprintFactory() {
-        fieldProcessors.put("title", new TitleFieldProcessor());
+        // String input
+        for (String fieldName : new String[]{"title", "lore", "subtitle", "rarity", "image-url"}) {
+            fieldProcessors.put(fieldName, new StringFieldProcessor());
+        }
+
         fieldProcessors.put("property-logo", new PropertyLogoFieldProcessor());
-        fieldProcessors.put("lore", new LoreFieldProcessor());
-        fieldProcessors.put("subtitle", new SubtitleFieldProcessor());
-        fieldProcessors.put("image-url", new StringFieldProcessor());
-        fieldProcessors.put("rarity", new StringFieldProcessor());
-        fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
-        fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
         fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
         fieldProcessors.put("seed", new SeedFieldProcessor());
         fieldProcessors.put("icons", new IconsFieldProcessor());
+        fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
+        fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
 
         fieldProcessors.put("quadrant", new QuadrantFieldProcessor());
         fieldProcessors.put("region", new RegionFieldProcessor());
@@ -62,6 +62,8 @@ public class CardBlueprintFactory {
         fieldProcessors.put("shields", new AttributeFieldProcessor(CardAttribute.SHIELDS));
         fieldProcessors.put("classification", new ClassificationFieldProcessor());
         fieldProcessors.put("skill-box", new SkillBoxFieldProcessor());
+        fieldProcessors.put("skills2e", new SkillBoxFieldProcessor());
+        fieldProcessors.put("species", new SpeciesFieldProcessor());
         fieldProcessors.put("image-options", new ImageOptionsFieldProcessor());
 
         fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
@@ -105,13 +107,8 @@ public class CardBlueprintFactory {
                 result = buildFromJava(blueprintId);    // TODO - This is awkwardly placed but should get the job done
             else {
                 final FieldProcessor fieldProcessor = fieldProcessors.get(field);
-                    // TODO - This granularity for 101_150 is just here for debugging. Not sure what's happening
-                if (Objects.equals(blueprintId, "101_150")) {
-                    if (fieldProcessor == null)
-                        throw new InvalidCardDefinitionException("Unrecognized field for 101_150: " + field);
-                }
                 if (fieldProcessor == null)
-                    throw new InvalidCardDefinitionException("Unrecognized field not for 101_150: " + field);
+                    throw new InvalidCardDefinitionException("Unrecognized field: " + field);
                 fieldProcessor.processField(field, fieldValue, result, this);
             }
         }
@@ -232,12 +229,20 @@ public class CardBlueprintFactory {
             throws InvalidCardDefinitionException {
         if (value == null)
             return null;
-        final String string = getString(value, key);
-        return Enum.valueOf(enumClass, string.toUpperCase().replaceAll("[ '\\-.]","_"));
+        final String string = getString(value, key).trim();
+        try {
+            return Enum.valueOf(enumClass, string.toUpperCase().replaceAll("[ '\\-.]", "_"));
+        } catch(Exception exp) {
+            throw new InvalidCardDefinitionException("Unable to process enum value " + string + " in " + key + " field");
+        }
     }
 
-    public <T extends Enum<T>> T getEnum(Class<T> enumClass, String string) {
-        return Enum.valueOf(enumClass, string.toUpperCase().replaceAll("[ '\\-.]","_"));
+    public <T extends Enum<T>> T getEnum(Class<T> enumClass, String string) throws InvalidCardDefinitionException {
+        try {
+            return Enum.valueOf(enumClass, string.trim().toUpperCase().replaceAll("[ '\\-.]", "_"));
+        } catch(Exception exp) {
+            throw new InvalidCardDefinitionException("Unable to process enum value " + string);
+        }
     }
 
     public PlayerSource getPlayerSource(JSONObject value, String key, String defaultValue)

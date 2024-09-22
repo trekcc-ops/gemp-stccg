@@ -5,7 +5,6 @@ import com.gempukku.stccg.common.filterable.Filterable;
 public enum Keyword implements Filterable {
 
     ;
-
     private final String _humanReadable;
     private final boolean _infoDisplayable;
     private final boolean _multiples;

@@ -86,19 +86,6 @@
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
-        effects: {
-            type: trigger
-            optional: true
-            trigger: {
-                type: solved
-                filter: self
-            }
-            effect: {
-                type: download
-                filter: name(Metaphasic Shields)
-                where: here
-            }
-        }
     }
     155_041: {
         title: Investigate Destruction
@@ -125,10 +112,6 @@
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
-        effects: {
-            type: maySeed
-            filter: name(Mercenary Ship)
-        }
     }
     155_043: {
         title: Revenge Plot
@@ -137,7 +120,8 @@
         location: Camor V
         lore: Lay genetic groundwork for vengeance against old foe.
         affiliation-icons: romulan,non-aligned,cardassian,ferengi
-        mission-requirements: MEDICAL + Exobiology + Treachery x2 OR any Bok + CUNNING>35
+            // TODO - Add the "any Bok" requirement
+        mission-requirements: MEDICAL + Exobiology + Treachery x2
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg

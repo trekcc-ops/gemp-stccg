@@ -7,10 +7,6 @@
         property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
     }
-    116_018: {
-        title: Romulan Disruptor Rifle
-        type: java def
-    }
     116_052: {
         title: Furel
         type: personnel
@@ -42,21 +38,6 @@
     116_054: {
         title: Riker Wil
         type: java def
-    }
-    116_059: {
-        title: Gul Madred
-        type: personnel
-        affiliation: cardassian
-        property-logo: tng-logo
-        classification: OFFICER
-        persona: Madred
-        icons: command
-        lore: "Ruthless Obsidian Order officer. Madred's torture of Jean-Luc Picard quickly degenerated into a desperate attempt to break Picard's will. A pitiable man."
-        skill-box: "[*] Obsidian Order [*] SECURITY [*] Treachery [*] Archaeology [DL] Torture"
-        integrity: 2
-        cunning: 8
-        strength: 6
-        image-url: https://www.trekcc.org/1e/cardimages/sfls/16.jpg
     }
     116_070: {
         title: Enrique Muniz
