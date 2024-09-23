@@ -916,8 +916,8 @@ export default class GempLotrDeckBuildingUI {
 
 export class TribblesDeckBuildingUI extends GempLotrDeckBuildingUI {
     constructor() {
-        deckBuildingUI = this;
         super();
+        deckBuildingUI = this;
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
             return (card.zone == "DRAW_DECK");
