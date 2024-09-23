@@ -1,26 +1,28 @@
-var CardGroup = Class.extend({
-    container:null,
-    x:null,
-    y:null,
-    width:null,
-    height:null,
-    belongTestFunc:null,
-    padding:5,
-    containerPadding:3,
-    maxCardHeight:497,
-    maxCardWidth:357,
-    descDiv:null,
+import Card from "./jCards.js";
 
-    init:function (container, belongTest, divId) {
+export default class CardGroup {
+    container;
+    x;
+    y;
+    width;
+    height;
+    belongTestFunc;
+    padding = 5;
+    containerPadding = 3;
+    maxCardHeight = 497;
+    maxCardWidth = 357;
+    descDiv;
+
+    constructor(container, belongTest, divId) {
         this.container = container;
         this.belongTestFunc = belongTest;
 
         if (divId != undefined) divId = '';
         this.descDiv = $("<div id='" + divId + "' class='ui-widget-content card-group'></div>");
         container.append(this.descDiv);
-    },
+    }
 
-    getCardElems:function () {
+    getCardElems() {
         var cardsToLayout = new Array();
         var that = this;
         $(".card", this.container).each(function (index) {
@@ -30,13 +32,13 @@ var CardGroup = Class.extend({
             }
         });
         return cardsToLayout;
-    },
+    }
 
-    cardBelongs:function (cardData) {
+    cardBelongs(cardData) {
         return this.belongTestFunc(cardData);
-    },
+    }
 
-    setBounds:function (x, y, width, height) {
+    setBounds(x, y, width, height) {
         this.x = x + this.containerPadding;
         this.y = y + this.containerPadding;
         this.width = width - (this.containerPadding * 2);
@@ -44,25 +46,25 @@ var CardGroup = Class.extend({
         if (this.descDiv != null)
             this.descDiv.css({left:x + "px", top:y + "px", width:width, height:height, position:"absolute"});
         this.layoutCards();
-    },
+    }
 
-    layoutCards:function () {
+    layoutCards() {
         alert("This should be overridden by the extending classes");
-    },
+    }
 
-    layoutCard:function (cardElem, x, y, width, height, index) {
+    layoutCard(cardElem, x, y, width, height, index) {
         layoutCardElem(cardElem, x, y, width, height, index);
 
         layoutTokens(cardElem);
     }
-});
+}
 
-var VerticalBarGroup = CardGroup.extend({
-    init:function (container, belongTest, createDiv) {
-        this._super(container, belongTest, createDiv);
-    },
+export class VerticalBarGroup extends CardGroup {
+    constructor(container, belongTest, createDiv) {
+        super(container, belongTest, createDiv);
+    }
 
-    layoutCards:function () {
+    layoutCards() {
         var cardsToLayout = this.getCardElems();
 
         var cardCount = cardsToLayout.length;
@@ -99,15 +101,15 @@ var VerticalBarGroup = CardGroup.extend({
             index++;
         }
     }
-});
+}
 
-var NormalCardGroup = CardGroup.extend({
+export class NormalCardGroup extends CardGroup {
 
-    init:function (container, belongTest, createDiv) {
-        this._super(container, belongTest, createDiv);
-    },
+    constructor(container, belongTest, createDiv) {
+        super(container, belongTest, createDiv);
+    }
 
-    layoutCards:function () {
+    layoutCards() {
         var cardsToLayout = this.getCardElems();
 
         var proportionsArray = this.getCardsWithAttachmentWidthProportion(cardsToLayout);
@@ -118,9 +120,9 @@ var NormalCardGroup = CardGroup.extend({
             rows++;
             result = this.layoutInRowsIfPossible(cardsToLayout, proportionsArray, rows);
         } while (!result);
-    },
+    }
 
-    getAttachedCardsWidth:function (maxDimension, cardData) {
+    getAttachedCardsWidth(maxDimension, cardData) {
         var result = 0;
         for (var i = 0; i < cardData.attachedCards.length; i++) {
             var attachedCardData = cardData.attachedCards[i].data("card");
@@ -128,9 +130,9 @@ var NormalCardGroup = CardGroup.extend({
             result += this.getAttachedCardsWidth(maxDimension, attachedCardData);
         }
         return result;
-    },
+    }
 
-    getCardsWithAttachmentWidthProportion:function (cardsToLayout) {
+    getCardsWithAttachmentWidthProportion(cardsToLayout) {
         var proportionsArray = new Array();
         for (var cardIndex in cardsToLayout) {
             var cardData = cardsToLayout[cardIndex].data("card");
@@ -139,9 +141,9 @@ var NormalCardGroup = CardGroup.extend({
             proportionsArray.push(cardWithAttachmentWidth / 1000);
         }
         return proportionsArray;
-    },
+    }
 
-    layoutInRowsIfPossible:function (cardsToLayout, proportionsArray, rowCount) {
+    layoutInRowsIfPossible(cardsToLayout, proportionsArray, rowCount) {
         if (rowCount == 1) {
             var oneRowHeight = this.getHeightForLayoutInOneRow(proportionsArray);
             if (oneRowHeight * 2 + this.padding > this.height) {
@@ -158,9 +160,9 @@ var NormalCardGroup = CardGroup.extend({
                 return false;
             }
         }
-    },
+    }
 
-    getHeightForLayoutInOneRow:function (proportionsArray) {
+    getHeightForLayoutInOneRow(proportionsArray) {
         var totalWidth = 0;
         for (var cardIndex in proportionsArray)
             totalWidth += proportionsArray[cardIndex] * this.height;
@@ -171,9 +173,9 @@ var NormalCardGroup = CardGroup.extend({
         } else {
             return this.height;
         }
-    },
+    }
 
-    tryIfCanLayoutInRows:function (rowCount, proportionsArray) {
+    tryIfCanLayoutInRows(rowCount, proportionsArray) {
         var rowHeight = (this.height - (this.padding * (rowCount - 1))) / rowCount;
         if (this.maxCardHeight != null)
             rowHeight = Math.min(this.maxCardHeight, rowHeight);
@@ -191,9 +193,9 @@ var NormalCardGroup = CardGroup.extend({
             totalWidth += this.padding;
         }
         return true;
-    },
+    }
 
-    layoutAttached:function (cardData, y, height, layoutVars) {
+    layoutAttached(cardData, y, height, layoutVars) {
         for (var i = 0; i < cardData.attachedCards.length; i++) {
             var attachedCardData = cardData.attachedCards[i].data("card");
             var attachedCardWidth = attachedCardData.getWidthForMaxDimension(height);
@@ -202,9 +204,9 @@ var NormalCardGroup = CardGroup.extend({
             layoutVars.x += Math.floor(attachedCardWidth * 0.2);
             layoutVars.index++;
         }
-    },
+    }
 
-    layoutInRow:function (cardsToLayout, height) {
+    layoutInRow(cardsToLayout, height) {
         if (this.maxCardHeight != null)
             height = Math.min(this.maxCardHeight, height);
         var layoutVars = {};
@@ -223,9 +225,9 @@ var NormalCardGroup = CardGroup.extend({
             layoutVars.x += cardWidth;
             layoutVars.x += this.padding;
         }
-    },
+    }
 
-    layoutInRows:function (rowCount, cardsToLayout) {
+    layoutInRows(rowCount, cardsToLayout) {
         var rowHeight = (this.height - ((rowCount - 1) * this.padding)) / rowCount;
         if (this.maxCardHeight != null)
             rowHeight = Math.min(this.maxCardHeight, rowHeight);
@@ -259,32 +261,32 @@ var NormalCardGroup = CardGroup.extend({
 
         return true;
     }
-});
+}
 
-var PlayPileCardGroup = CardGroup.extend({
+export class PlayPileCardGroup extends CardGroup {
     // PlayPileCardGroup assumes all cards are vertical
 
-    overlap:null,
-    player:null,
+    overlap;
+    player;
 
         // Stacked implementation
-    init:function (container, player, belongTest, createDiv) {
-        this._super(container, belongTest, createDiv);
+    constructor(container, player, belongTest, createDiv) {
+        super(container, belongTest, createDiv);
         this.player = player;
         this.overlap = 6;
         this.maxCardHeight = 150;
-    },
+    }
 
-    cardBelongs:function (cardData) {
+    cardBelongs(cardData) {
         if (cardData.owner != this.player) {
             return false;
         } else {
             return this.belongTestFunc(cardData);
         }
-    },
+    }
 
         // Stacked implementation
-    layoutCards:function () {
+    layoutCards() {
         var cardsToLayout = this.getCardElems();
 
         var proportionsArray = new Array();
@@ -296,10 +298,10 @@ var PlayPileCardGroup = CardGroup.extend({
         var oneRowHeight = this.getHeightForLayoutInOneRow(proportionsArray);
         this.layoutInStack(cardsToLayout, oneRowHeight);
 
-    },
+    }
 
         // Stacked implementation
-    scaleOverlapToFit:function (proportionsArray) {
+    scaleOverlapToFit(proportionsArray) {
         var newOverlap = this.overlap;
         var cardCount = proportionsArray.length - 1;
         var maxCardWidth = this.maxCardHeight * cardScale; // cardScale defined in jCards.js
@@ -315,10 +317,10 @@ var PlayPileCardGroup = CardGroup.extend({
 
         // Don't allow overlap to get smaller than 1
         return Math.max(newOverlap, 1);
-    },
+    }
 
         // Stacked implementation
-    getHeightForLayoutInOneRow:function (proportionsArray) {
+    getHeightForLayoutInOneRow(proportionsArray) {
         var maxHeightNeeded = this.maxCardHeight;
         var maxWidthNeeded = this.maxCardHeight * cardScale; // cardScale defined in jCards.js
 
@@ -328,10 +330,10 @@ var PlayPileCardGroup = CardGroup.extend({
 
         var scalingFactor = Math.min(1, (maxWidthAvailable / maxWidthNeeded), (maxHeightAvailable / maxHeightNeeded));
         return Math.floor(maxHeightNeeded * scalingFactor);
-    },
+    }
 
         // Stacked implementation
-    tryIfCanLayoutInRows:function (rowCount, proportionsArray) {
+    tryIfCanLayoutInRows(rowCount, proportionsArray) {
         var rowHeight = (this.height - (this.padding * (rowCount - 1))) / rowCount;
         if (this.maxCardHeight != null)
             rowHeight = Math.min(this.maxCardHeight, rowHeight);
@@ -349,10 +351,10 @@ var PlayPileCardGroup = CardGroup.extend({
             totalWidth += this.padding;
         }
         return true;
-    },
+    }
 
         // Stacked implementation
-    layoutInStack:function (cardsToLayout, height) {
+    layoutInStack(cardsToLayout, height) {
         if (this.maxCardHeight != null)
             height = Math.min(this.maxCardHeight, height);
         var layoutVars = {};
@@ -368,10 +370,10 @@ var PlayPileCardGroup = CardGroup.extend({
             layoutVars.x += this.overlap;
             layoutVars.y += this.overlap;
         }
-    },
+    }
 
         // Stacked implementation
-    layoutInRows:function (rowCount, cardsToLayout) {
+    layoutInRows(rowCount, cardsToLayout) {
         var rowHeight = (this.height - ((rowCount - 1) * this.padding)) / rowCount;
         if (this.maxCardHeight != null)
             rowHeight = Math.min(this.maxCardHeight, rowHeight);
@@ -402,18 +404,18 @@ var PlayPileCardGroup = CardGroup.extend({
 
         return true;
     }
-});
+}
 
-var NormalGameCardGroup = NormalCardGroup.extend({
+export class NormalGameCardGroup extends NormalCardGroup {
 
-    player:null,
+    player;
 
-    init:function (container, player, belongTest, createDiv) {
-        this._super(container, belongTest, createDiv);
+    constructor(container, player, belongTest, createDiv) {
+        super(container, belongTest, createDiv);
         this.player = player;
-    },
+    }
 
-    cardBelongs:function (cardData) {
+    cardBelongs(cardData) {
         if (cardData.owner != this.player) {
             return false;
         } else {
@@ -421,17 +423,17 @@ var NormalGameCardGroup = NormalCardGroup.extend({
         }
     }
 
-});
+}
 
-var TableCardGroup = CardGroup.extend({
+export class TableCardGroup extends CardGroup {
 
-    locationIndex:null,
-    bottomPlayerId:null,
+    locationIndex;
+    bottomPlayerId;
     /**
      * Initializes variables
      */
-     init:function (container, belongTest, createDiv, locationIndex, bottomPlayerId) {
-        this._super(container, belongTest, createDiv);
+     constructor(container, belongTest, createDiv, locationIndex, bottomPlayerId) {
+        super(container, belongTest, createDiv);
         this.descDiv.removeClass("card-group");
         this.descDiv.addClass("st1e-card-group");
         this.locationIndex = locationIndex;
@@ -439,12 +441,12 @@ var TableCardGroup = CardGroup.extend({
         this.heightPadding = 1;
         this.widthPadding = 5;
         this.columnWidthToAttachedHeightAboveRatio = 0.17;
-    },
+    }
 
    /**
     * Performs laying out the cards in the group.
     */
-    layoutCards:function () {
+    layoutCards(){
         // Get the cards to layout
         var cardsToLayout = this.getCardElems();
         if (cardsToLayout.length == 0) {
@@ -462,7 +464,7 @@ var TableCardGroup = CardGroup.extend({
             columnCount++;
             result = this.layoutInColumnsIfPossible(cardsToLayout, columnCount);
         } while (!result);
-    },
+    }
 
    /**
     * Get the total height the attached cards extend above (and below) the specified card.
@@ -471,7 +473,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} totalHeightSoFar the combined height of the specified card and any attached cards looked at so far
     * @return {Number} the total height of the attached cards
     */
-    getAttachedCardsHeight:function (cardData, columnWidth, totalHeightNotAboveSoFar) {
+    getAttachedCardsHeight(cardData, columnWidth, totalHeightNotAboveSoFar) {
         var result = 0;
         for (var i = 0; i < cardData.attachedCards.length; i++) {
             var attachedCardData = cardData.attachedCards[i].data("card");
@@ -484,7 +486,7 @@ var TableCardGroup = CardGroup.extend({
             result += this.getAttachedCardsHeight(attachedCardData, columnWidth, totalHeightNotAboveSoFar);
         }
         return result;
-    },
+    }
 
    /**
     * Attempts to layout cards in the specified number of columns.
@@ -492,7 +494,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} columnCount the number of columns in which to layout cards
     * @return {Boolean} true if layout was performed, otherwise false
     */
-    layoutInColumnsIfPossible:function (cardsToLayout, columnCount) {
+    layoutInColumnsIfPossible(cardsToLayout, columnCount) {
         // Determine column width if layout in multiple columns
         var columnWidth = this.getWidthForLayoutInColumns(cardsToLayout, columnCount);
 
@@ -514,7 +516,7 @@ var TableCardGroup = CardGroup.extend({
                 return false;
             }
         }
-    },
+    }
 
    /**
     * Determine the layout using the specified number of columns is valid.
@@ -522,7 +524,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} columnCount the number of columns in which to layout cards
     * @return {Number} the column width, or 0 if not valid
     */
-    getWidthForLayoutInColumns:function (cardsToLayout, columnCount) {
+    getWidthForLayoutInColumns(cardsToLayout, columnCount) {
         var columnWidth = Math.min(this.maxCardWidth, (this.width - (this.widthPadding * columnCount)) / columnCount);
         var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
         var numColumnsRemainingToLayout = columnCount;
@@ -562,7 +564,7 @@ var TableCardGroup = CardGroup.extend({
         } else {
             return Math.min(columnWidth, this.maxCardWidth);
         }
-    },
+    }
 
    /**
     * Layout the cards in a single column.
@@ -570,7 +572,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} the column width
     * @param {Number} the x-offset for the column
     */
-    layoutInColumn:function (cardsToLayout, columnWidth, xOffset) {
+    layoutInColumn(cardsToLayout, columnWidth, xOffset) {
         var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
         var totalCardHeight = this.heightPadding;
         var overlappedHeight = 0;
@@ -613,7 +615,7 @@ var TableCardGroup = CardGroup.extend({
             layoutVars.x += (maxVerticalCardWidth / 10);
             layoutVars.y += (Math.floor(cardHeight) / 2);
         }
-    },
+    }
 
    /**
     * Layout the attached cards.
@@ -621,7 +623,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} the column width
     * @param {Object} the layout variables
     */
-    layoutAttached:function (cardData, columnWidth, layoutVars) {
+    layoutAttached(cardData, columnWidth, layoutVars) {
         for (var i = 0; i < cardData.attachedCards.length; i++) {
             var attachedCardData = cardData.attachedCards[i].data("card");
             var attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
@@ -637,7 +639,7 @@ var TableCardGroup = CardGroup.extend({
             layoutVars.index++;
             layoutVars.y += Math.floor(columnWidth * this.columnWidthToAttachedHeightAboveRatio);
         }
-    },
+    }
 
    /**
     * Layout the cards in a specified number of columns.
@@ -645,7 +647,7 @@ var TableCardGroup = CardGroup.extend({
     * @param {Number} the column width
     * @param {Number} columnCount the number of columns in which to layout cards
     */
-    layoutInColumns:function (cardsToLayout, columnWidth, columnCount) {
+    layoutInColumns(cardsToLayout, columnWidth, columnCount) {
         var numCardsRemainingToLayout = cardsToLayout.length;
         var numColumnsRemainingToLayout = columnCount;
 
@@ -676,29 +678,29 @@ var TableCardGroup = CardGroup.extend({
             this.layoutInColumn(cardsToLayoutInColumn, columnWidth, xOffset);
         }
     }
-});
+}
 
 
-var MissionCardGroup = CardGroup.extend({
+export class MissionCardGroup extends CardGroup {
 
-    locationIndex:null,
-    bottomPlayerId:null,
+    locationIndex;
+    bottomPlayerId;
     /**
      * Initializes variables
      */
-     init:function (container, belongTest, createDiv, locationIndex, bottomPlayerId) {
-        this._super(container, belongTest, createDiv);
+     constructor(container, belongTest, createDiv, locationIndex, bottomPlayerId) {
+        super(container, belongTest, createDiv);
         this.descDiv.removeClass("card-group");
         this.descDiv.addClass("st1e-card-group");
         this.locationIndex = locationIndex;
         this.bottomPlayerId = bottomPlayerId;
         this.sharedOverlap = .60; // Percentage of a bottom shared mission card that will be covered by the mission on top
-    },
+    }
 
    /**
     * Performs laying out the cards in the group.
     */
-    layoutCards:function () {
+    layoutCards() {
         // Get the cards to layout
         var cardsToLayout = this.getCardElems();
         if (cardsToLayout.length == 0) {
@@ -739,11 +741,11 @@ var MissionCardGroup = CardGroup.extend({
             index++;
         }
     }
-});
+}
 
 
 
-function layoutCardElem(cardElem, x, y, width, height, index) {
+export function layoutCardElem(cardElem, x, y, width, height, index) {
     x = Math.floor(x);
     y = Math.floor(y);
     width = Math.floor(width);
@@ -775,7 +777,7 @@ function layoutCardElem(cardElem, x, y, width, height, index) {
             sizeListeners[i].sizeChanged(cardElem, width, height);
 }
 
-function layoutTokens(cardElem) {
+export function layoutTokens(cardElem) {
     var tokenOverlay = $(".tokenOverlay", cardElem);
 
     if (tokenOverlay.length > 0) {
