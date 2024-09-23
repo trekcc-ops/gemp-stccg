@@ -1,3 +1,6 @@
+import GempClientCommunication from "./communication.js";
+import { log } from "./common.js";
+
 export default class CardFilter {
     clearCollectionFunc;
     addCardFunc;
