@@ -1,25 +1,28 @@
-var GempLotrDeckBuildingUI = Class.extend({
-    comm:null,
-    notes:null,
-    selectionFunc:null,
-    start:0,
-    count:18,
-    filter:null,
-    deckName:null,
-    filterDirty:false,
-    deckValidationDirty:true,
-    deckContentsDirty:true,
-    checkDirtyInterval:500,
-    deckListDialog:null,
-    selectionDialog:null,
-    selectionGroup:null,
-    packSelectionId:null,
-    deckImportDialog:null,
-    notesDialog:null,
-    collectionType:null,
-    formatSelect:null,
+import GempClientCommunication from "./communication.js";
+import CardFilter from "./cardFilter.js";
 
-    init:function () {
+export default class GempLotrDeckBuildingUI {
+    comm;
+    notes;
+    selectionFunc;
+    start = 0;
+    count = 18
+    filter;
+    deckName;
+    filterDirty = false;
+    deckValidationDirty = true;
+    deckContentsDirty = true;
+    checkDirtyInterval = 500;
+    deckListDialog;
+    selectionDialog;
+    selectionGroup;
+    packSelectionId;
+    deckImportDialog;
+    notesDialog;
+    collectionType;
+    formatSelect;
+
+    constructor() {
         var that = this;
 
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
@@ -194,9 +197,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         }, this.checkDirtyInterval);
         
         this.updateFormatOptions();
-    },
+    }
     
-    renameCurrentDeck:function() {
+    renameCurrentDeck() {
         var that = this;
         that.renameDeck(that.deckName, function (newDeckName) {
             
@@ -207,9 +210,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             that.deckName = newDeckName;
             that.deckModified(that.deckContentsDirty);
         });
-    },
+    }
     
-    renameDeck:function(oldName, callback) {
+    renameDeck(oldName, callback) {
         var that = this;
         
         var newDeckName = prompt("Enter new name for the deck", oldName);
@@ -222,13 +225,13 @@ var GempLotrDeckBuildingUI = Class.extend({
                     }
                 });
         }
-    },
+    }
 
-    getCollectionType:function () {
+    getCollectionType() {
         return $("#collectionSelect option:selected").prop("value");
-    },
+    }
 
-    getCollectionTypes:function () {
+    getCollectionTypes() {
         var that = this;
         this.comm.getCollectionTypes(
                 function (xml) {
@@ -244,9 +247,9 @@ var GempLotrDeckBuildingUI = Class.extend({
                         }
                     }
                 });
-    },
+    }
     
-    importDecklist:function () {
+    importDecklist() {
         var that = this;
         if (that.deckImportDialog == null) {
             that.deckImportDialog = $('<div></div>').dialog({
@@ -271,9 +274,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             }
         );
         that.deckImportDialog.dialog("open");
-    },
+    }
     
-    parseDecklist:function(rawText) {
+    parseDecklist(rawText) {
         this.clearDeck();
         var that = this;
         var rawTextList = rawText.split("\n");
@@ -304,9 +307,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             that.layoutDeck();
             $("#editingDeck").text("Imported Deck (unsaved)");
         });
-    },
+    }
 
-    removeNotes:function(line) {
+    removeNotes(line) {
         var processedLine = line;
         var hasNotes = false;
         var start = line.indexOf("(");
@@ -329,9 +332,9 @@ var GempLotrDeckBuildingUI = Class.extend({
                 return this.removeNotes(processedLine);
             }
         return processedLine;
-    },
+    }
 
-    importDeckCollection:function (decklist, callback) {
+    importDeckCollection(decklist, callback) {
         this.comm.importCollection(decklist, function (xml) {
             callback(xml);
         }, {
@@ -339,9 +342,9 @@ var GempLotrDeckBuildingUI = Class.extend({
                 alert("Deck too large to import.");
             }
         });
-    },
+    }
     
-    editNotes:function() {
+    editNotes() {
         var that = this;
         that.notesDialog = $('<div class="notesDialog"></div>')
             .dialog({
@@ -365,9 +368,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         });
         
         that.notesDialog.dialog("open");
-    },
+    }
 
-    loadDeckList:function () {
+    loadDeckList() {
         var that = this;
         this.comm.getDecks(function (xml) {
             if (that.deckListDialog == null) {
@@ -472,9 +475,9 @@ var GempLotrDeckBuildingUI = Class.extend({
 
             that.deckListDialog.dialog("open");
         });
-    },
+    }
     
-    loadLibraryList:function () {
+    loadLibraryList() {
         var that = this;
         this.comm.getLibraryDecks(function (xml) {
             if (that.deckListDialog == null) {
@@ -539,9 +542,9 @@ var GempLotrDeckBuildingUI = Class.extend({
 
             that.deckListDialog.dialog("open");
         });
-    },
+    }
 
-    clickCardFunction:function (event) {
+    clickCardFunction(event) {
         var that = this;
 
         var tar = $(event.target);
@@ -635,9 +638,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             return false;
         }
         return true;
-    },
+    }
 
-    saveDeck:function (reloadList) {
+    saveDeck(reloadList) {
         var that = this;
 
         var deckContents = this.getDeckContents();
@@ -652,22 +655,22 @@ var GempLotrDeckBuildingUI = Class.extend({
                     alert("Invalid deck format.");
                 }
             });
-    },
+    }
 
-    addCardToContainer:function (blueprintId, imageUrl, subDeck, container, tokens) {
+    addCardToContainer(blueprintId, imageUrl, subDeck, container, tokens) {
         var card = new Card(blueprintId, subDeck, "deck", "player", imageUrl);
         var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         cardDiv.data("card", card);
         container.append(cardDiv);
         return cardDiv;
-    },
+    }
 
-    addCardToDeckDontLayout:function (blueprintId, imageUrl, zone) {
+    addCardToDeckDontLayout(blueprintId, imageUrl, zone) {
         var that = this;
         this.addCardToDeck(blueprintId, imageUrl, zone);
-    },
+    }
 
-    addCardToDeckAndLayout:function (cardElem, imageUrl, zone) {
+    addCardToDeckAndLayout(cardElem, imageUrl, zone) {
         var that = this;
         var cardData = cardElem.data("card");
         var blueprintId = cardData.blueprintId;
@@ -676,9 +679,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         that.deckModified(true);
         cardData.tokens = {count:(parseInt(cardData.tokens["count"]) + 1)};
         layoutTokens(cardElem);
-    },
+    }
 
-    deckModified:function (value) {
+    deckModified(value) {
         
         var name = (this.deckName == null) ? "New deck" : this.deckName;
         if (value)
@@ -692,9 +695,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             this.deckContentsDirty = false;
             $("#editingDeck").text(name);
         }
-    },
+    }
 
-    addCardToDeck:function (blueprintId, imageUrl, subDeck) {
+    addCardToDeck(blueprintId, imageUrl, subDeck) {
         var that = this;
         var added = false;
         $(".card.cardInDeck", this.drawDeckDiv).each(
@@ -717,9 +720,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         }
 
         this.deckModified(true);
-    },
+    }
 
-    updateDeckStats:function () {
+    updateDeckStats() {
         var that = this;
         var deckContents = this.getDeckContents();
         if (deckContents != null && deckContents != "") 
@@ -739,9 +742,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         } else {
             $("#deckStats").html("Deck is empty");
         }
-    },
+    }
     
-    updateFormatOptions:function() {
+    updateFormatOptions() {
         var that = this;
         var currentFormat = that.formatSelect.val();
         
@@ -766,9 +769,9 @@ var GempLotrDeckBuildingUI = Class.extend({
                     alert("Could not retrieve formats.");
                 }
             });
-    },
+    }
 
-    removeCardFromDeck:function (cardDiv) {
+    removeCardFromDeck(cardDiv) {
         var cardData = cardDiv.data("card");
         if (cardData.attachedCards.length > 0) {
             cardData.attachedCards[0].remove();
@@ -790,9 +793,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         }
         this.layoutDeck();
         this.deckModified(true);
-    },
+    }
 
-    clearDeck:function () {
+    clearDeck() {
         $(".cardInDeck").each(
                 function () {
                     var cardData = $(this).data("card");
@@ -804,9 +807,9 @@ var GempLotrDeckBuildingUI = Class.extend({
         this.layoutUI(false);
 
         this.deckValidationDirty = true;
-    },
+    }
 
-    setupDeck:function (xml, deckName) {
+    setupDeck(xml, deckName) {
         var root = xml.documentElement;
         if (root.tagName == "deck") {
             this.clearDeck();
@@ -834,13 +837,13 @@ var GempLotrDeckBuildingUI = Class.extend({
             this.cardFilter.getCollection();
         }
         this.deckModified(false);
-    },
+    }
 
-    clearCollection:function () {
+    clearCollection() {
         $(".card", this.normalCollectionDiv).remove();
-    },
+    }
 
-    addCardToCollection:function (type, blueprintId, count, side, contents, imageUrl) {
+    addCardToCollection(type, blueprintId, count, side, contents, imageUrl) {
         if (type == "pack") {
             if (blueprintId.substr(0, 3) == "(S)") {
                 var card = new Card(blueprintId, "pack", "collection", "player", imageUrl);
@@ -877,13 +880,13 @@ var GempLotrDeckBuildingUI = Class.extend({
             });
             this.normalCollectionDiv.append(cardDiv);
         }
-    },
+    }
 
-    finishCollection:function () {
+    finishCollection() {
         this.normalCollectionGroup.layoutCards();
-    },
+    }
 
-    processError:function (xhr, ajaxOptions, thrownError) {
+    processError(xhr, ajaxOptions, thrownError) {
         if (thrownError != "abort")
         {
             alert("There was a problem during communication with server");
@@ -891,9 +894,9 @@ var GempLotrDeckBuildingUI = Class.extend({
             console.log(ajaxOptions)
             console.log(thrownError)
         }
-    },
+    }
 
-    validateDeckName:function(deckName) {
+    validateDeckName(deckName) {
         if (deckName == null) {
             return false;
         } else if (deckName.length < 3 || deckName.length > 100) {
@@ -903,13 +906,13 @@ var GempLotrDeckBuildingUI = Class.extend({
             return true;
         }
     }
+}
 
-});
 
-var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
-    init:function () {
+export class TribblesDeckBuildingUI extends GempLotrDeckBuildingUI {
+    constructor() {
         deckBuildingUI = this;
-        this._super();
+        super();
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
             return (card.zone == "DRAW_DECK");
@@ -925,9 +928,9 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
             }
         });
         this.drawDeckGroup.maxCardHeight = 200;
-    },
+    }
 
-    layoutUI:function (layoutDivs) {
+    layoutUI(layoutDivs) {
         if (layoutDivs) {
             var manageHeight = 23;
 
@@ -953,9 +956,9 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
             this.normalCollectionGroup.layoutCards();
         }
         this.cardFilter.getCollection();
-    },
+    }
 
-    getDeckContents:function () {
+    getDeckContents() {
 
         var result = "";
         result += "DRAW_DECK|";
@@ -972,18 +975,17 @@ var TribblesDeckBuildingUI = GempLotrDeckBuildingUI.extend({
         }
 
         return result;
-    },
-
-    layoutDeck:function () {
-        this.drawDeckGroup.layoutCards();
     }
 
-});
+    layoutDeck() {
+        this.drawDeckGroup.layoutCards();
+    }
+}
 
-var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
-    init:function () {
+export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
+    constructor(){
         var deckBuildingUI = this;
-        this._super();
+        super();
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
             return (card.zone == "DRAW_DECK");
@@ -1028,9 +1030,9 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
                 );
             }
         });
-    },
+    }
 
-    layoutUI:function (layoutDivs) {
+    layoutUI(layoutDivs) {
         if (layoutDivs) {
             var padding = 5;
             var manageHeight = 23;
@@ -1077,9 +1079,9 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
             this.layoutDeck();
             this.normalCollectionGroup.layoutCards();
         }
-    },
+    }
 
-    getDeckContents:function () {
+    getDeckContents() {
 
         var result = "";
         var cards = new Array();
@@ -1119,15 +1121,15 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
         }
 
         return result;
-    },
+    }
 
-    layoutDeck:function () {
+    layoutDeck() {
         this.missionsGroup.layoutCards();
         this.seedDeckGroup.layoutCards();
         this.drawDeckGroup.layoutCards();
-    },
+    }
 
-    addCardToDeck:function (blueprintId, imageUrl, subDeck) {
+    addCardToDeck(blueprintId, imageUrl, subDeck) {
         var that = this;
         var added = false;
         var container = null;
@@ -1159,5 +1161,4 @@ var ST1EDeckBuildingUI = GempLotrDeckBuildingUI.extend({
 
         this.deckModified(true);
     }
-
-});
+}
