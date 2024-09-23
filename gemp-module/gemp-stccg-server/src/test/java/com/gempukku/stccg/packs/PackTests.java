@@ -1,7 +1,6 @@
-package com.gempukku.stccg.library;
+package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.AbstractServerTest;
-import com.gempukku.stccg.packs.ProductLibrary;
 import org.junit.Test;
 
 

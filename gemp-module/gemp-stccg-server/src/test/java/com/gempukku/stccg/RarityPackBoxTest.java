@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class RarityPackBoxTest extends AbstractLogicTest {
+public class RarityPackBoxTest extends AbstractServerTest {
 
     @Test
     public void openingPacks() {

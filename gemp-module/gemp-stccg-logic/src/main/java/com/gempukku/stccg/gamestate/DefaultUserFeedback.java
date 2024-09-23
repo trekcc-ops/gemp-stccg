@@ -1,7 +1,8 @@
-package com.gempukku.stccg.game;
+package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.UserFeedback;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.HashMap;
 import java.util.Map;

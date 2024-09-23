@@ -1,4 +1,4 @@
-package com.gempukku.stccg.library;
+package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.AbstractLogicTest;
 import org.junit.Test;

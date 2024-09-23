@@ -1,7 +1,6 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.ActionProxy;
-import com.gempukku.stccg.at.AbstractAtTest;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;

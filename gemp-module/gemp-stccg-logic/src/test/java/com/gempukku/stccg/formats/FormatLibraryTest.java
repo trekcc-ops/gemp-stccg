@@ -1,7 +1,6 @@
-package com.gempukku.stccg.library;
+package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.formats.FormatLibrary;
 import org.junit.Test;
 
 public class FormatLibraryTest {

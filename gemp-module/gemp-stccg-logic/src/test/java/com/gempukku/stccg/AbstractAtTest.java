@@ -1,23 +1,21 @@
-package com.gempukku.stccg.at;
+package com.gempukku.stccg;
 
-import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
+import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.DefaultUserFeedback;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 
 import java.util.*;
 
@@ -25,25 +23,13 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractAtTest extends AbstractLogicTest {
 
-    protected DefaultGame _game;
+    protected ST1EGame _game;
     protected DefaultUserFeedback _userFeedback;
     public static final String P1 = "player1";
     public static final String P2 = "player2";
 
     protected PhysicalCardGeneric createCard(String owner, String blueprintId) throws CardNotFoundException {
         return (PhysicalCardGeneric) _game.getGameState().createPhysicalCard(owner, _cardLibrary, blueprintId);
-    }
-
-    protected void initializeSimplestGame() throws DecisionResultInvalidException {
-        this.initializeSimplestGame(null);
-    }
-
-    protected void initializeSimplestGame(Map<String, Collection<String>> additionalCardsInDeck) throws DecisionResultInvalidException {
-        Map<String, CardDeck> decks = new HashMap<>();
-        addPlayerDeck(P1, decks, additionalCardsInDeck);
-        addPlayerDeck(P2, decks, additionalCardsInDeck);
-
-        initializeGameWithDecks(decks);
     }
 
     protected void initializeSimple1EGame(int deckSize) {

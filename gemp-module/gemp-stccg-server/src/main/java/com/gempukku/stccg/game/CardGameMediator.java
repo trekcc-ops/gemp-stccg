@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.hall.GameTimer;

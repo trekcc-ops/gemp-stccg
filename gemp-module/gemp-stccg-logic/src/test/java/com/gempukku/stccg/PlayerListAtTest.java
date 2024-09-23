@@ -1,4 +1,4 @@
-package com.gempukku.stccg.at;
+package com.gempukku.stccg;
 
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import org.junit.Test;
@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PlayerListAtTest extends AbstractAtTest {
     @Test
-    public void testAllPlayers() throws DecisionResultInvalidException {
+    public void testAllPlayers() {
         initializeSimple1EGame(30);
 
         final String[] allPlayers = _game.getAllPlayerIds();

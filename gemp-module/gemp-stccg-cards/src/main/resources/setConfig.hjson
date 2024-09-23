@@ -2,87 +2,70 @@
   {
     setId: "1"
     setName: Second Edition
-    needsLoading: false
   }
   {
     setId: "101"
     setName: Premiere
-    needsLoading: false
   }
   {
     setId: "103"
     setName: Alternate Universe
-    needsLoading: false
   }
   {
     setId: "105"
     setName: Q Continuum
-    needsLoading: false
   }
   {
     setId: "106"
     setName: Introductory 2-Player Game
-    needsLoading: false
   }
   {
     setId: "109"
     setName: First Contact
-    needsLoading: false
   }
   {
     setId: "112"
     setName: Deep Space Nine
-    needsLoading: false
   }
   {
     setId: "116"
     setName: Blaze of Glory
-    needsLoading: false
   }
   {
     setId: "123"
     setName: Voyager
-    needsLoading: false
   }
   {
     setId: "124"
     setName: The Borg
-    needsLoading: false
   }
   {
     setId: "125"
     setName: Holodeck Adventures
-    needsLoading: false
   }
   {
     setId: "127"
     setName: All Good Things
-    needsLoading: false
   }
   {
     setId: "128"
     setName: Enterprise Collection
-    needsLoading: false
   }
   {
     setId: "144"
     setName: "More Tribbles, More Troubles"
-    needsLoading: false
   }
   {
     setId: "145"
     setName: No Tribble at All
-    needsLoading: false
   }
   {
     setId: "147"
     setName: Virtual Promos [Tribbles]
-    needsLoading: false
   }
   {
     setId: "150"
     setName: Trials and Tribble-ations
-    needsLoading: false
   }
   {
     setId: "155"
@@ -97,71 +80,57 @@
   {
     setId: "159"
     setName: Homefront III
-    needsLoading: false
   }
   {
     setId: "161"
     setName: Engage
-    needsLoading: false
   }
   {
     setId: "163"
     setName: "The Sky's the Limit"
-    needsLoading: false
   }
   {
     setId: "164"
     setName: "Big Tribble in Little Qo'noS"
-    needsLoading: false
   }
   {
     setId: "172"
     setName: The Maquis
-    needsLoading: false
   }
   {
     setId: "178"
     setName: Homefront VI
-    needsLoading: false
   }
   {
     setId: "180"
     setName: Tribbles Royale
-    needsLoading: false
   }
   {
     setId: "190"
     setName: Star Trek 50 [Tribbles]
-    needsLoading: false
   }
   {
     setId: "202"
     setName: Metamorphosis
-    needsLoading: false
   }
   {
     setId: "204"
     setName: Coming of Age
-    needsLoading: false
   }
   {
     setId: "212"
     setName: The Cage
-    needsLoading: false
   }
   {
     setId: "221"
     setName: A Tribble of a Different Color
-    needsLoading: false
   }
   {
     setId: "244"
     setName: Ships of the Line
-    needsLoading: false
   }
   {
     setId: "245"
     setName: Showdown: Four Lights
-    needsLoading: false
   }
 ]
