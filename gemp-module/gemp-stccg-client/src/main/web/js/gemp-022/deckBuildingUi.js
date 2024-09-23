@@ -1,5 +1,8 @@
 import GempClientCommunication from "./communication.js";
+import Card from "./jCards.js";
+import { createCardDiv } from "./jCards.js";
 import CardFilter from "./cardFilter.js";
+import { NormalCardGroup, layoutTokens } from "./jCardGroup.js";
 
 export default class GempLotrDeckBuildingUI {
     comm;
@@ -861,7 +864,9 @@ export default class GempLotrDeckBuildingUI {
             }
             this.normalCollectionDiv.append(cardDiv);
         } else if (type == "card") {
-            var card = new Card(blueprintId, side, "collection", "player", imageUrl);
+            let locationIndex;
+            let upsideDown; 
+            var card = new Card(blueprintId, side, "collection", "player", imageUrl, locationIndex, upsideDown);
             var countInDeck = 0;
             $(".card", this.deckDiv).each(
                     function () {
@@ -984,8 +989,8 @@ export class TribblesDeckBuildingUI extends GempLotrDeckBuildingUI {
 
 export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
     constructor(){
-        var deckBuildingUI = this;
         super();
+        var deckBuildingUI = this;
         this.drawDeckDiv = $("#decksRegion");
         this.drawDeckGroup = new NormalCardGroup(this.drawDeckDiv, function (card) {
             return (card.zone == "DRAW_DECK");
