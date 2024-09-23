@@ -44,7 +44,7 @@ public class ReportCardEffect extends DefaultEffect {
         _game.sendMessage(_cardPlayed.getOwnerName() + " played " + _cardPlayed.getCardLink());
 
         gameState.removeCardFromZone(_cardPlayed);
-        _game.getGameState().getPlayer(_cardPlayed.getOwnerName()).addPlayedAffiliation(_cardPlayed.getCurrentAffiliation());
+        _game.getGameState().getPlayer(_cardPlayed.getOwnerName()).addPlayedAffiliation(_cardPlayed.getAffiliation());
         _cardPlayed.reportToFacility(_reportingDestination);
         _game.getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, _playedFrom, _cardPlayed));

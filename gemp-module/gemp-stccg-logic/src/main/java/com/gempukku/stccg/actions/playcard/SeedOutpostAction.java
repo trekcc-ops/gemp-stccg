@@ -36,7 +36,7 @@ public class SeedOutpostAction extends PlayCardAction {
             _affiliationWasChosen = false;
         } else {
             _affiliationWasChosen = true;
-            _selectedAffiliation = cardToSeed.getCurrentAffiliation();
+            _selectedAffiliation = cardToSeed.getAffiliation();
         }
     }
 

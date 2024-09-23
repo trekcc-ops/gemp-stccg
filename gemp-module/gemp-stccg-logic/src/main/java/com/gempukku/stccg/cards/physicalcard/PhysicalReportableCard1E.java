@@ -30,12 +30,12 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         // TODO - Does not perform any compatibility checks other than affiliation
         if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
                 facility.isUsableBy(_owner.getPlayerId()) && facility.getCurrentQuadrant() == _nativeQuadrant)
-            return isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(facility, affiliation);
+            return isCompatibleWithCardAndItsCrewAsAffiliation(facility, affiliation);
         else return false;
     }
 
-    public boolean isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(CardWithCrew cardWithCrew,
-                                                                         Affiliation affiliation) {
+    public boolean isCompatibleWithCardAndItsCrewAsAffiliation(CardWithCrew cardWithCrew,
+                                                               Affiliation affiliation) {
         if (!cardWithCrew.isCompatibleWith(affiliation))
             return false;
         for (PhysicalCard card : cardWithCrew.getCrew()) {
@@ -46,8 +46,8 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return true;
     }
 
-    public boolean isCompatibleWithFacilityOrShipAndItsCrew(CardWithCrew cardWithCrew) {
-        return isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(cardWithCrew, _currentAffiliation);
+    public boolean isCompatibleWithCardAndItsCrew(CardWithCrew cardWithCrew) {
+        return isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, _currentAffiliation);
     }
 
     public void reportToFacility(FacilityCard facility) {

@@ -165,10 +165,10 @@ public class Filters {
             List<Affiliation> filteredAffiliations = new LinkedList<>();
             if (cardToMatch.getZone().isInPlay())
                 affiliationsToMatch.addAll(cardToMatch.getBlueprint().getAffiliations());
-            else affiliationsToMatch.add(((PhysicalNounCard1E) cardToMatch).getCurrentAffiliation());
+            else affiliationsToMatch.add(((PhysicalNounCard1E) cardToMatch).getAffiliation());
             if (physicalCard.getZone().isInPlay())
                 filteredAffiliations.addAll(physicalCard.getBlueprint().getAffiliations());
-            else filteredAffiliations.add(((PhysicalNounCard1E) physicalCard).getCurrentAffiliation());
+            else filteredAffiliations.add(((PhysicalNounCard1E) physicalCard).getAffiliation());
             for (Affiliation matchAffiliation : affiliationsToMatch)
                 for (Affiliation filterAffiliation : filteredAffiliations)
                     if (matchAffiliation == filterAffiliation)

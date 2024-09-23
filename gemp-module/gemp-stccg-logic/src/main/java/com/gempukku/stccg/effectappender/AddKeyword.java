@@ -11,7 +11,7 @@ import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.modifiers.KeywordModifier;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;

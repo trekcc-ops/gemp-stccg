@@ -12,7 +12,7 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.*;
 import java.util.stream.Stream;

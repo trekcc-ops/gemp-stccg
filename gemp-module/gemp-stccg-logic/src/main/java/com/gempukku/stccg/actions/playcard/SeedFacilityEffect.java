@@ -21,7 +21,7 @@ public class SeedFacilityEffect extends SeedCardEffect {
         gameState.removeCardFromZone(_cardSeeded);
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
         gameState.getPlayer(_cardSeeded.getOwnerName())
-                .addPlayedAffiliation(((FacilityCard) _cardSeeded).getCurrentAffiliation());
+                .addPlayedAffiliation(((FacilityCard) _cardSeeded).getAffiliation());
         gameState.seedFacilityAtLocation((FacilityCard) _cardSeeded, _spacelineIndex);
         _game.getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, _fromZone, _cardSeeded));

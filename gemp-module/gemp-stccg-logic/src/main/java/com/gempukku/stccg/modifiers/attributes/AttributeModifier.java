@@ -7,7 +7,7 @@ import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.modifiers.AbstractModifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 public class AttributeModifier extends AbstractModifier {
     protected final Evaluator _evaluator;

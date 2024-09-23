@@ -6,9 +6,7 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
-import com.gempukku.stccg.actions.discard.DiscardCardFromPlayPileResult;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;

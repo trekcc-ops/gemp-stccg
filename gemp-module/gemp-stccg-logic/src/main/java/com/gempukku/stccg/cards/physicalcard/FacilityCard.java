@@ -13,7 +13,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.*;
 
@@ -57,7 +57,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         if (playerId.equals(_owner.getPlayerId()))
             return true;
         return getFacilityType() == FacilityType.HEADQUARTERS &&
-                _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getCurrentAffiliation());
+                _game.getGameState().getPlayer(playerId).isPlayingAffiliation(getAffiliation());
     }
 
     public boolean isUsableBy(String playerId) {

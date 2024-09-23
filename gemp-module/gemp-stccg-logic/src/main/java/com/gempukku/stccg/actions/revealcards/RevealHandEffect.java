@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ActionOrder;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.Collections;

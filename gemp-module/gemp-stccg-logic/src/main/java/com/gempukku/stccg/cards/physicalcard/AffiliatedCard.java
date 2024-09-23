@@ -8,7 +8,7 @@ import java.util.Set;
 public interface AffiliatedCard {
     ST1EGame getGame();
     boolean isMultiAffiliation();
-    Affiliation getCurrentAffiliation();
+    Affiliation getAffiliation();
     void setCurrentAffiliation(Affiliation affiliation);
     Set<Affiliation> getAffiliationOptions();
     String getCardLink();

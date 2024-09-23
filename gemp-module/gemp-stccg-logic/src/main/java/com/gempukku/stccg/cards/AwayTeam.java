@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,7 +25,7 @@ public class AwayTeam implements AttemptingUnit {
     public boolean hasAffiliation(Affiliation affiliation) {
         for (PhysicalCard card : _cardsInAwayTeam) {
             if (card instanceof PhysicalNounCard1E noun)
-                if (noun.getCurrentAffiliation() == affiliation)
+                if (noun.getAffiliation() == affiliation)
                     return true;
         }
         return false;

@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 

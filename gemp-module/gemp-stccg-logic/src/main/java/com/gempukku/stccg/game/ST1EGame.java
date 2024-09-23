@@ -20,6 +20,7 @@ public class ST1EGame extends DefaultGame {
     private TurnProcedure _turnProcedure;
     private final ST1EGame _thisGame;
     private AffiliationAttackRestrictions _affiliationAttackRestrictions;
+    private final ST1ERuleSet _rules;
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
                     final CardBlueprintLibrary library) {
@@ -27,7 +28,8 @@ public class ST1EGame extends DefaultGame {
         _thisGame = this;
 
         _gameState = new ST1EGameState(_allPlayerIds, decks, library, _format, this);
-        new ST1ERuleSet(this).applyRuleSet();
+        _rules = new ST1ERuleSet(this);
+        _rules.applyRuleSet();
 
         _gameState.createPhysicalCards();
         _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment
@@ -76,5 +78,7 @@ public class ST1EGame extends DefaultGame {
             // If false for a given phase, the user will still be prompted to "Pass" even if they have no legal actions.
         return phase == Phase.SEED_FACILITY || phase == Phase.SEED_DOORWAY || phase == Phase.SEED_MISSION;
     }
+
+    public ST1ERuleSet getRules() { return _rules; }
 
 }

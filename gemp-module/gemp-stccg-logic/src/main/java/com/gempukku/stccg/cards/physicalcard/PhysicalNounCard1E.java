@@ -23,7 +23,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     }
 
     public boolean isMultiAffiliation() { return _affiliationOptions.size() > 1; }
-    public Affiliation getCurrentAffiliation() { return _currentAffiliation; }
+    public Affiliation getAffiliation() { return _currentAffiliation; }
     public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
         if (_affiliationOptions.size() > 1) {
@@ -48,14 +48,16 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
 
     public Set<Affiliation> getAffiliationOptions() { return _affiliationOptions; }
     public boolean isCompatibleWith(Affiliation affiliation) {
-        if (getCurrentAffiliation() == affiliation)
+        if (getAffiliation() == affiliation)
             return true;
-        if (getCurrentAffiliation() == Affiliation.BORG || affiliation == Affiliation.BORG)
+        if (getAffiliation() == Affiliation.BORG || affiliation == Affiliation.BORG)
             return false;
-        return getCurrentAffiliation() == Affiliation.NON_ALIGNED || affiliation == Affiliation.NON_ALIGNED;
+        return getAffiliation() == Affiliation.NON_ALIGNED || affiliation == Affiliation.NON_ALIGNED;
     }
 
-    public boolean isCompatibleWith(PhysicalNounCard1E card) { return isCompatibleWith(card.getCurrentAffiliation()); }
+    public boolean isCompatibleWith(PhysicalNounCard1E card) {
+        return _game.getRules().areCardsCompatiblePerRules(this, card);
+    }
     public Quadrant getCurrentQuadrant() {
         return _currentLocation.getQuadrant();
     }

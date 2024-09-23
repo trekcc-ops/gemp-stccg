@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -10,8 +9,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
-import com.gempukku.stccg.actions.ReturnCardsToHandResult;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.HashSet;

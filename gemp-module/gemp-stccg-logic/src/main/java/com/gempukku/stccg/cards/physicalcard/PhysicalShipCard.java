@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 import com.google.common.collect.Lists;
 
 import java.util.*;
@@ -176,7 +176,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         boolean matchesShip = false;
         boolean matchesMission = false;
         for (PersonnelCard card : getAttemptingPersonnel()) {
-            Affiliation personnelAffiliation = card.getCurrentAffiliation();
+            Affiliation personnelAffiliation = card.getAffiliation();
             if (personnelAffiliation == _currentAffiliation)
                 matchesShip = true;
             if (mission.getAffiliationIcons(_owner.getPlayerId()).contains(personnelAffiliation))

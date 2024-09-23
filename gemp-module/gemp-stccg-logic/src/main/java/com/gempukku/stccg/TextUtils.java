@@ -1,4 +1,4 @@
-package com.gempukku.stccg.rules;
+package com.gempukku.stccg;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 

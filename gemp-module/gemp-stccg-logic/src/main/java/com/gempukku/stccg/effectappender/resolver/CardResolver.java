@@ -18,7 +18,7 @@ import com.gempukku.stccg.effectappender.DelayedAppender;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.List;

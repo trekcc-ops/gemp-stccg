@@ -36,7 +36,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             _affiliationWasChosen = false;
         } else {
             _affiliationWasChosen = true;
-            _selectedAffiliation = cardToPlay.getCurrentAffiliation();
+            _selectedAffiliation = cardToPlay.getAffiliation();
         }
     }
 

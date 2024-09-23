@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.rules.TextUtils;
+import com.gempukku.stccg.TextUtils;
 
 public class CostModifier extends AbstractModifier {
     private final ValueSource _valueSource;

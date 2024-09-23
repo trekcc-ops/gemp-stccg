@@ -26,13 +26,13 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         _card = card;
         _game = card.getGame();
         _card.getAffiliationOptions().forEach(affiliation -> {
-            if (affiliation != _card.getCurrentAffiliation())
+            if (affiliation != _card.getAffiliation())
                 _affiliationOptions.add(affiliation);
         });
         if (card instanceof PersonnelCard personnel) {
             if (personnel.getAttachedTo() != null && personnel.getAttachedTo() instanceof CardWithCrew cardWithCrew) {
                 _affiliationOptions.removeIf(affiliation ->
-                        !personnel.isCompatibleWithFacilityOrShipAndItsCrewAsAffiliation(cardWithCrew, affiliation));
+                        !personnel.isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, affiliation));
             }
         } else if (card instanceof CardWithCrew cardWithCrew) {
                 // TODO - Ignores carried ship interactions
