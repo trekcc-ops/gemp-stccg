@@ -1,19 +1,25 @@
-var GempLotrSoloDraftUI = Class.extend({
-    comm:null,
+import GempClientCommunication from './communication.js';
+import { getUrlParam } from './common.js';
+import Card from './jCards.js';
+import { createCardDiv } from './jCards.js';
+import NormalCardGroup from './jCardGroup.js';
 
-    topDiv:null,
-    bottomDiv:null,
+export default class GempLotrSoloDraftUI {
+    comm;
 
-    messageDiv:null,
-    picksDiv:null,
-    draftedDiv:null,
+    topDiv;
+    bottomDiv;
 
-    picksCardGroup:null,
-    draftedCardGroup:null,
+    messageDiv;
+    picksDiv;
+    draftedDiv;
 
-    leagueType:null,
+    picksCardGroup;
+    draftedCardGroup;
 
-    init:function () {
+    leagueType;
+
+    constructor() {
         var that = this;
 
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
@@ -77,9 +83,9 @@ var GempLotrSoloDraftUI = Class.extend({
         this.infoDialog.swipe(swipeOptions);
 
         this.getDraftState();
-    },
+    }
 
-    getDraftState:function () {
+    getDraftState() {
         var that = this;
         this.comm.getDraft(this.leagueType,
             function (xml) {
@@ -135,9 +141,9 @@ var GempLotrSoloDraftUI = Class.extend({
                     that.draftedCardGroup.layoutCards();
                 }
             });
-    },
+    }
 
-    clickCardFunction:function (event) {
+    clickCardFunction(event) {
         var that = this;
 
         var tar = $(event.target);
@@ -216,14 +222,14 @@ var GempLotrSoloDraftUI = Class.extend({
             return false;
         }
         return true;
-    },
+    }
 
-    dragCardData:null,
-    dragStartX:null,
-    dragStartY:null,
-    successfulDrag:null,
+    dragCardData;
+    dragStartX;
+    dragStartY;
+    successfulDrag;
 
-    dragStartCardFunction:function (event) {
+    dragStartCardFunction(event) {
         this.successfulDrag = false;
         var tar = $(event.target);
         if (tar.hasClass("actionArea")) {
@@ -236,9 +242,9 @@ var GempLotrSoloDraftUI = Class.extend({
             }
         }
         return true;
-    },
+    }
 
-    dragStopCardFunction:function (event) {
+    dragStopCardFunction(event) {
         that = this;
         if (this.dragCardData != null) {
             if (this.dragStartY - event.clientY >= 20) {
@@ -251,9 +257,9 @@ var GempLotrSoloDraftUI = Class.extend({
             return false;
         }
         return true;
-    },
+    }
 
-    layoutUI:function (layoutDivs) {
+    layoutUI(layoutDivs) {
         if (layoutDivs) {
             var messageHeight = 40;
             var padding = 5;
@@ -273,10 +279,10 @@ var GempLotrSoloDraftUI = Class.extend({
             this.picksCardGroup.layoutCards();
             this.draftedCardGroup.layoutCards();
         }
-    },
+    }
 
-    processError:function (xhr, ajaxOptions, thrownError) {
+    processError(xhr, ajaxOptions, thrownError) {
         if (thrownError != "abort")
             alert("There was a problem during communication with server");
     }
-});
+}
