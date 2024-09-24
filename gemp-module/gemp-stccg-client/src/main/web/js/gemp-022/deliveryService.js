@@ -1,6 +1,6 @@
 import { openSizeDialog } from "./common.js";
-// TODO: Import JCardGroup.js for NormalCardGroup
-// TODO: Import JCards.js for createCardDiv
+import NormalCardGroup from './jCardGroup.js';
+import { createCardDiv } from "./jCards.js";
 
 export default function deliveryService(xml) {
     var deliveryDialogs = {};
