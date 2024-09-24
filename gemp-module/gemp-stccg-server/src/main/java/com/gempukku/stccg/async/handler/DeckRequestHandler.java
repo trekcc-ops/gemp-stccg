@@ -3,18 +3,18 @@ package com.gempukku.stccg.async.handler;
 import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.db.DeckDAO;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.SealedLeagueDefinition;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.SealedLeagueDefinition;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -524,7 +524,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                 cardElement.setAttribute("blueprintId", card);
                 cardElement.setAttribute("subDeck", subDeck.name());
                 try {
-                    cardElement.setAttribute("imageUrl", deck.getLibrary().getCardBlueprint(card).getImageUrl());
+                    cardElement.setAttribute("imageUrl", _library.getCardBlueprint(card).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprints not found: " + card);
                 }

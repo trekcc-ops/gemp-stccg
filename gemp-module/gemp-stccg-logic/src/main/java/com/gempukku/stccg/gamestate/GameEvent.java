@@ -99,7 +99,8 @@ public class GameEvent {
 
     public GameEvent(Type type, GameState gameState, Player player) {
         this(type, player);
-        _eventAttributes.put(Attribute.allParticipantIds, TextUtils.listToCommaSeparated(gameState.getPlayerOrder().getAllPlayers()));
+        _eventAttributes.put(Attribute.allParticipantIds,
+                String.join(",", (gameState.getPlayerOrder().getAllPlayers())));
         _eventAttributes.put(Attribute.discardPublic, String.valueOf(gameState.getGame().getFormat().discardPileIsPublic()));
     }
 

@@ -3,12 +3,11 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.cards.CardDeck;
 import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.hall.GameTimer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +18,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public abstract class CardGameMediator {
     protected static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     protected final Map<String, GameCommunicationChannel> _communicationChannels = Collections.synchronizedMap(new HashMap<>());
-    protected final DefaultUserFeedback _userFeedback;
     protected final Map<String, CardDeck> _playerDecks = new HashMap<>();
     protected final Map<String, Integer> _playerClocks = new HashMap<>();
     protected final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
@@ -52,8 +50,6 @@ public abstract class CardGameMediator {
             _playerClocks.put(participantId, 0);
             _playersPlaying.add(participantId);
         }
-
-        _userFeedback = new DefaultUserFeedback();
     }
 
     public boolean isVisibleToUser(String username) {
@@ -210,11 +206,11 @@ public abstract class CardGameMediator {
             GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
             if (communicationChannel != null) {
                 if (communicationChannel.getChannelNumber() == channelNumber) {
-                    AwaitingDecision awaitingDecision = _userFeedback.getAwaitingDecision(playerName);
+                    AwaitingDecision awaitingDecision = getGame().getAwaitingDecision(playerName);
                     if (awaitingDecision != null) {
                         if (awaitingDecision.getAwaitingDecisionId() == decisionId && !getGame().isFinished()) {
                             try {
-                                _userFeedback.participantDecided(playerName);
+                                getGame().getGameState().playerDecisionFinished(playerName);
                                 awaitingDecision.decisionMade(answer);
 
                                 // Decision successfully made, add the time to user clock
@@ -226,7 +222,7 @@ public abstract class CardGameMediator {
                             } catch (DecisionResultInvalidException decisionResultInvalidException) {
                                 // Participant provided wrong answer - send a warning message, and ask again for the same decision
                                 getGame().getGameState().sendWarning(playerName, decisionResultInvalidException.getWarningMessage());
-                                _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
+                                getGame().sendAwaitingDecision(playerName, awaitingDecision);
                             } catch (RuntimeException runtimeException) {
                                 LOGGER.error("Error processing game decision", runtimeException);
                                 getGame().cancelGame();
@@ -309,7 +305,7 @@ public abstract class CardGameMediator {
 
     private void startClocksForUsersPendingDecision() {
         long currentTime = System.currentTimeMillis();
-        Set<String> users = _userFeedback.getUsersPendingDecision();
+        Set<String> users = getGame().getUsersPendingDecision();
         for (String user : users)
             _decisionQuerySentTimes.put(user, currentTime);
     }

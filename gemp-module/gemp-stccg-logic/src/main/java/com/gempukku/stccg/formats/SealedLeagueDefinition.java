@@ -1,6 +1,7 @@
 package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
 
 import java.util.ArrayList;

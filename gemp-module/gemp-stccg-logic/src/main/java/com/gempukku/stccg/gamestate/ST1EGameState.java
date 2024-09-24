@@ -2,20 +2,17 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.*;
-
-import static com.gempukku.stccg.gamestate.GameEvent.Type.UPDATE_CARD_IMAGE;
 
 public class ST1EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _seedDecks;

@@ -7,6 +7,8 @@ import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -135,4 +137,10 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         else
             return card.getCardInfoHTML();
     }
+
+    public void serializeConsumedEvents(Document doc, Element element) {
+        for (GameEvent event : consumeGameEvents())
+            element.appendChild(event.serialize(doc));
+    }
+
 }

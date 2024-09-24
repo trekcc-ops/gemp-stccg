@@ -2,7 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;

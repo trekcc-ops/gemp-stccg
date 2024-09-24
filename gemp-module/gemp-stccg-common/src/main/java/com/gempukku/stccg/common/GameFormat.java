@@ -1,7 +1,4 @@
-package com.gempukku.stccg.formats;
-
-import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.common.JSONDefs;
+package com.gempukku.stccg.common;
 
 import java.util.List;
 import java.util.Map;

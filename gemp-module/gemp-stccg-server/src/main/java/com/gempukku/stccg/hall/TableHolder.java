@@ -1,6 +1,6 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.game.CardGameMediator;

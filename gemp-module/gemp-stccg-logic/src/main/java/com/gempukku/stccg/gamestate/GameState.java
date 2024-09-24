@@ -3,17 +3,18 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardState;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import org.apache.logging.log4j.LogManager;
@@ -210,7 +211,13 @@ public abstract class GameState implements Snapshotable<GameState> {
             listener.decisionRequired(playerId, decision);
     }
 
+    public void playerDecisionFinished(String playerId, UserFeedback userFeedback) {
+        userFeedback.removeDecision(playerId);
+        _playerDecisions.remove(playerId);
+    }
+
     public void playerDecisionFinished(String playerId) {
+        getGame().getUserFeedback().removeDecision(playerId);
         _playerDecisions.remove(playerId);
     }
 

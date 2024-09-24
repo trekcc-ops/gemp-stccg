@@ -13,7 +13,6 @@ import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
-import com.gempukku.stccg.gamestate.GameEvent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -96,7 +95,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                 gameMediator.playerAnswered(resourceOwner, channelNumber, decisionId, decisionValue);
 
             GameCommunicationChannel pollableResource = gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
-            GameUpdateLongPollingResource pollingResource = new GameUpdateLongPollingResource(pollableResource, channelNumber, gameMediator, resourceOwner, responseWriter);
+            GameUpdateLongPollingResource pollingResource = new GameUpdateLongPollingResource(pollableResource, channelNumber, gameMediator, responseWriter);
             longPollingSystem.processLongPollingResource(pollingResource, pollableResource);
         } catch (SubscriptionConflictException exp) {
             throw new HttpProcessingException(409);
@@ -113,16 +112,14 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private class GameUpdateLongPollingResource implements LongPollingResource {
         private final GameCommunicationChannel _gameCommunicationChannel;
         private final CardGameMediator _gameMediator;
-        private final User _resourceOwner;
         private final int _channelNumber;
         private final ResponseWriter _responseWriter;
         private boolean _processed;
 
-        private GameUpdateLongPollingResource(GameCommunicationChannel gameCommunicationChannel, int channelNumber, CardGameMediator gameMediator, User resourceOwner, ResponseWriter responseWriter) {
+        private GameUpdateLongPollingResource(GameCommunicationChannel gameCommunicationChannel, int channelNumber, CardGameMediator gameMediator, ResponseWriter responseWriter) {
             _gameCommunicationChannel = gameCommunicationChannel;
             _channelNumber = channelNumber;
             _gameMediator = gameMediator;
-            _resourceOwner = resourceOwner;
             _responseWriter = responseWriter;
         }
 
@@ -202,7 +199,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         } else {
             int cardId = Integer.parseInt(cardIdStr);
 
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            getResourceOwnerSafely(request, participantId);
 
             CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             if (gameMediator == null)
@@ -279,8 +276,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         @Override
         public void visitGameEvents(GameCommunicationChannel channel) {
-            for (GameEvent event : channel.consumeGameEvents())
-                _element.appendChild(event.serialize(_doc));
+            channel.serializeConsumedEvents(_doc, _element);
         }
 
         @Override

@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.MultipleComparator;
 
 import java.text.Normalizer;

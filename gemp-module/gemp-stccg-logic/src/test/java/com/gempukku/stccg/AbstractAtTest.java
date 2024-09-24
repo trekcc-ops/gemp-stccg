@@ -3,17 +3,18 @@ package com.gempukku.stccg;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 
@@ -24,7 +25,7 @@ import static org.junit.Assert.fail;
 public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected ST1EGame _game;
-    protected DefaultUserFeedback _userFeedback;
+    protected UserFeedback _userFeedback;
     public static final String P1 = "player1";
     public static final String P2 = "player2";
 
@@ -41,13 +42,12 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
-        _userFeedback = new DefaultUserFeedback();
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
 
-        _game = new ST1EGame(format, decks, _userFeedback, _cardLibrary);
-        _userFeedback.setGame(_game);
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
     }
@@ -58,8 +58,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat("multipath");
 
-        _game = new ST1EGame(format, new HashMap<>(decks), _userFeedback, _cardLibrary);
-        _userFeedback.setGame(_game);
+        _game = new ST1EGame(format, new HashMap<>(decks), _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
         _game.startGame();
 
         // Bidding
@@ -146,7 +146,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void playerDecided(String player, String answer) throws DecisionResultInvalidException {
         AwaitingDecision decision = _userFeedback.getAwaitingDecision(player);
-        _userFeedback.participantDecided(player);
+        _game.getGameState().playerDecisionFinished(player, _userFeedback);
         try {
             decision.decisionMade(answer);
         } catch (DecisionResultInvalidException exp) {

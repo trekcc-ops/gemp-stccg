@@ -1,7 +1,5 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.gamestate.GameEvent;
-
 import java.util.Map;
 
 public interface ParticipantCommunicationVisitor {

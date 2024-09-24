@@ -1,9 +1,9 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
-import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
@@ -16,16 +16,15 @@ public class TribblesGame extends DefaultGame {
     private TurnProcedure _turnProcedure;
     private final TribblesGame _thisGame;
 
-    public TribblesGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
-                        final CardBlueprintLibrary library) {
-        super(format, decks, userFeedback, library);
+    public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
+        super(format, decks, library);
         _thisGame = this;
 
         _gameState = new TribblesGameState(_allPlayerIds, decks, library, _format, this);
         new TribblesRuleSet(this).applyRuleSet();
 
         _gameState.createPhysicalCards();
-        _turnProcedure = new TurnProcedure(this, userFeedback, _actionsEnvironment
+        _turnProcedure = new TurnProcedure(this, _userFeedback
         ) {
             @Override
             protected GameProcess setFirstGameProcess() {

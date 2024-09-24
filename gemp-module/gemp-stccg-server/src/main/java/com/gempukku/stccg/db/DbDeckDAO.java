@@ -1,7 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,11 +13,9 @@ import java.util.Set;
 
 public class DbDeckDAO implements DeckDAO {
     private final DbAccess _dbAccess;
-    private final CardBlueprintLibrary _library;
 
-    public DbDeckDAO(DbAccess dbAccess, CardBlueprintLibrary library) {
+    public DbDeckDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
-        _library = library;
     }
 
     public synchronized CardDeck getDeckForPlayer(User player, String name) {
@@ -80,7 +77,7 @@ public class DbDeckDAO implements DeckDAO {
                     try (ResultSet rs = statement.executeQuery()) {
                         if (rs.next())
                             return new CardDeck(name, rs.getString(1), rs.getString(2),
-                                    rs.getString(3), _library);
+                                    rs.getString(3));
 
                         return null;
                     }

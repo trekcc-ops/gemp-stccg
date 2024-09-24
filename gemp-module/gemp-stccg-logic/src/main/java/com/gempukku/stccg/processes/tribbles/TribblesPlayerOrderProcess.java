@@ -1,6 +1,6 @@
 package com.gempukku.stccg.processes.tribbles;
 
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.game.PlayerOrder;

@@ -39,13 +39,12 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
     }
 
 
-    public TurnProcedure(DefaultGame game, final UserFeedback userFeedback,
-                         ActionsEnvironment actionsEnvironment) {
-        _userFeedback = userFeedback;
+    public TurnProcedure(DefaultGame game, final UserFeedback userFeedback) {
         _game = game;
-        _actionStack = actionsEnvironment.getActionStack();
-        _gameStats = new GameStats();
         _actionsEnvironment = _game.getActionsEnvironment();
+        _actionStack = _actionsEnvironment.getActionStack();
+        _userFeedback = userFeedback;
+        _gameStats = new GameStats();
     }
 
     protected abstract GameProcess setFirstGameProcess();

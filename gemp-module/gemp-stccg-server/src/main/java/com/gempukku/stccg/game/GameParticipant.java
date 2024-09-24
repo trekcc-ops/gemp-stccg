@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 
 public class GameParticipant {
     private final String _playerId;

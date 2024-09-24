@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.hall.GameTimer;
 
 public class TribblesGameMediator extends CardGameMediator {
@@ -10,8 +10,7 @@ public class TribblesGameMediator extends CardGameMediator {
                                 CardBlueprintLibrary library, GameTimer gameTimer, boolean allowSpectators,
                                 boolean showInGameHall) {
         super(gameId, participants, gameTimer, allowSpectators, showInGameHall);
-        _tribblesgame = new TribblesGame(gameFormat, _playerDecks, _userFeedback, library);
-        _userFeedback.setGame(_tribblesgame);
+        _tribblesgame = new TribblesGame(gameFormat, _playerDecks, library);
     }
     @Override
     public TribblesGame getGame() { return _tribblesgame; }

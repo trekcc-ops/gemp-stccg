@@ -36,12 +36,9 @@ public class TextUtils {
     }
 
     public static String concatenateStrings(Collection<String> strings) {
-        StringJoiner sj = new StringJoiner(", ");
-        for (String string : strings)
-            sj.add(string);
-        if (sj.length() == 0)
+        if (strings.isEmpty())
             return "none";
-        else return sj.toString();
+        else return String.join(", ", strings);
     }
 
 
@@ -49,22 +46,10 @@ public class TextUtils {
         StringJoiner sj = new StringJoiner(", ");
         for (PhysicalCard card : cards)
             sj.add(card.getCardLink());
-
         if (sj.length() == 0)
             return "none";
         else
             return sj.toString();
-    }
-
-    public static String listToCommaSeparated(List<String> strings) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (String participantId : strings) {
-            if (!first) sb.append(",");
-            sb.append(participantId);
-            first = false;
-        }
-        return sb.toString();
     }
 
     public static String arrayToCommaSeparated(int[] integers) {

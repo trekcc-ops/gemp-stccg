@@ -2,6 +2,8 @@ package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;

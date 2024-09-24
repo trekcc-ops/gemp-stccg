@@ -3,12 +3,14 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
-import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
@@ -39,11 +41,11 @@ public abstract class DefaultGame {
     private int _nextSnapshotId;
     private final int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS;
 
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, UserFeedback userFeedback,
-                        final CardBlueprintLibrary library) {
+    public DefaultGame(GameFormat format, Map<String, CardDeck> decks,
+                       final CardBlueprintLibrary library) {
         NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
         _format = format;
-        _userFeedback = userFeedback;
+        _userFeedback = new DefaultUserFeedback(this);
         _library = library;
 
         _allPlayerIds = decks.keySet();
@@ -299,4 +301,16 @@ public abstract class DefaultGame {
     public void sendMessage(String message) { getGameState().sendMessage(message); }
     public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
+
+    public AwaitingDecision getAwaitingDecision(String playerName) {
+        return _userFeedback.getAwaitingDecision(playerName);
+    }
+
+    public Set<String> getUsersPendingDecision() {
+        return _userFeedback.getUsersPendingDecision();
+    }
+
+    public void sendAwaitingDecision(String playerName, AwaitingDecision awaitingDecision) {
+        _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
+    }
 }

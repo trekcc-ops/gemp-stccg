@@ -1,6 +1,6 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.User;

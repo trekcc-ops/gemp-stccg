@@ -3,7 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.db.DeckDAO;
@@ -191,7 +191,7 @@ public class GameServer extends AbstractServer {
 
     public CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
             // TODO: Deck checking
-        return new CardDeck(deckName, contents, targetFormat, notes, _CardBlueprintLibrary);
+        return new CardDeck(deckName, contents, targetFormat, notes);
     }
 
     public CardGameMediator getGameById(String gameId) {

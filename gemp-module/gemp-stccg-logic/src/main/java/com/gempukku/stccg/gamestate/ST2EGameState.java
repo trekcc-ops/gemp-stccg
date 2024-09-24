@@ -2,11 +2,9 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST2EGame;
 

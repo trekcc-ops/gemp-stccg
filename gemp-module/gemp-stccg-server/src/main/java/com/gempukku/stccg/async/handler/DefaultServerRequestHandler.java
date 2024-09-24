@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;

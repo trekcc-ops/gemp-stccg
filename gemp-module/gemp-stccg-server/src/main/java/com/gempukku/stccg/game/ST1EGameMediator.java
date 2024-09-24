@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.hall.GameTimer;
 
 public class ST1EGameMediator extends CardGameMediator {
@@ -10,8 +10,7 @@ public class ST1EGameMediator extends CardGameMediator {
                             CardBlueprintLibrary library, GameTimer gameTimer, boolean allowSpectators,
                             boolean showInGameHall) {
         super(gameId, participants, gameTimer, allowSpectators, showInGameHall);
-        _st1egame = new ST1EGame(gameFormat, _playerDecks, _userFeedback, library);
-        _userFeedback.setGame(_st1egame);
+        _st1egame = new ST1EGame(gameFormat, _playerDecks, library);
     }
 
     @Override

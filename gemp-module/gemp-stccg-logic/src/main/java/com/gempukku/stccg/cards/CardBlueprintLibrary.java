@@ -394,4 +394,5 @@ public class CardBlueprintLibrary {
     public boolean checkLoadSuccess() {
         return !_blueprintLoadErrorEncountered;
     }
+
 }

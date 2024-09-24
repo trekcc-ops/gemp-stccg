@@ -12,15 +12,16 @@ public class DefaultUserFeedback implements UserFeedback {
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
 
     private DefaultGame _game;
+    public DefaultUserFeedback() { }
+    public DefaultUserFeedback(DefaultGame game) {
+        _game = game;
+    }
 
     public void setGame(DefaultGame game) {
         _game = game;
     }
 
-    public void participantDecided(String playerId) {
-        _awaitingDecisionMap.remove(playerId);
-        _game.getGameState().playerDecisionFinished(playerId);
-    }
+    public void removeDecision(String playerId) { _awaitingDecisionMap.remove(playerId); }
 
     public AwaitingDecision getAwaitingDecision(String playerId) {
         return _awaitingDecisionMap.get(playerId);

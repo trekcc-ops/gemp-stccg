@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards;
+package com.gempukku.stccg.common;
 
 import com.gempukku.stccg.common.filterable.SubDeck;
 
@@ -9,7 +9,6 @@ public class CardDeck {
     protected final String _deckName;
     protected String _notes;
     protected String _targetFormat;
-    protected CardBlueprintLibrary _library;
     public CardDeck(String deckName) {
         _deckName = deckName;
     }
@@ -18,15 +17,13 @@ public class CardDeck {
         _subDecks = deck.getSubDecks();
         _notes = deck.getNotes();
         _targetFormat = deck.getTargetFormat();
-        _library = deck.getLibrary();
     }
 
-    public CardDeck(String deckName, String contents, String targetFormat, String notes, CardBlueprintLibrary library) {
+    public CardDeck(String deckName, String contents, String targetFormat, String notes) {
         _deckName = deckName;
         _targetFormat = targetFormat;
         _notes = notes;
         parseContents(contents);
-        _library = library;
     }
 
     public void parseContents(String contents) {
@@ -66,8 +63,6 @@ public class CardDeck {
 
     public void setSubDecks(Map<SubDeck, List<String>> subDecks) { _subDecks = subDecks; }
     public String getTargetFormat() { return _targetFormat; }
-    public CardBlueprintLibrary getLibrary() { return _library; }
-
     public String getNotes() {
         return _notes;
     }

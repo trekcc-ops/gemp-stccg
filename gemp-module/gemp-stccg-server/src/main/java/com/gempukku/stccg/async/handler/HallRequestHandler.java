@@ -13,7 +13,7 @@ import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.hall.*;

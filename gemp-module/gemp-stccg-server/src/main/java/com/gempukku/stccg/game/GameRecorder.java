@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

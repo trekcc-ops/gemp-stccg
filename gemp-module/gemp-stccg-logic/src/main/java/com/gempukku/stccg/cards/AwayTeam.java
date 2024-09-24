@@ -51,7 +51,7 @@ public class AwayTeam implements AttemptingUnit {
     }
 
     public String concatenateAwayTeam() {
-        return TextUtils.concatenateStrings(getCards().stream().map(PhysicalCard::getFullName).toList());
+        return TextUtils.concatenateStrings(_cardsInAwayTeam.stream().map(PhysicalCard::getFullName).toList());
     }
 
     public Collection<PersonnelCard> getAllPersonnel() {

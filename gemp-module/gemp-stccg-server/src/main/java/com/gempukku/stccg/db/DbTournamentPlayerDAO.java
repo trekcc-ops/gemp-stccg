@@ -1,7 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 
 import java.sql.Connection;
@@ -103,7 +103,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
                             String deckName = rs.getString(2);
                             String contents = rs.getString(3);
 
-                            result.put(player, new CardDeck(deckName, contents, format, "", library));
+                            result.put(player, new CardDeck(deckName, contents, format, ""));
                         }
                         return result;
                     }
@@ -143,7 +143,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
                     statement.setString(2, playerName);
                     try (ResultSet rs = statement.executeQuery()) {
                         if (rs.next())
-                            return new CardDeck(rs.getString(1), rs.getString(2), format, "", library);
+                            return new CardDeck(rs.getString(1), rs.getString(2), format, "");
                         else
                             return null;
                     }
