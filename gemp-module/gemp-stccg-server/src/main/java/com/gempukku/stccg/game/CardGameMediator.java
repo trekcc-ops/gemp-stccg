@@ -3,16 +3,12 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardDeck;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
-import com.gempukku.stccg.gamestate.GameEvent;
-import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.hall.GameTimer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +37,7 @@ public abstract class CardGameMediator {
     protected int _channelNextIndex = 0;
     protected volatile boolean _destroyed;
 
-    public CardGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary library,
+    public CardGameMediator(String gameId, GameParticipant[] participants,
                             GameTimer gameTimer, boolean allowSpectators, boolean showInGameHall) {
         _gameId = gameId;
         _timeSettings = gameTimer;
@@ -92,20 +88,12 @@ public abstract class CardGameMediator {
         getGame().sendMessage(message);
     }
 
-    public void addGameStateListener(String playerId, GameStateListener listener) {
+    public void addGameStateListener(String playerId, GameCommunicationChannel listener) {
         getGame().addGameStateListener(playerId, listener);
-    }
-
-    public void removeGameStateListener(GameStateListener listener) {
-        getGame().removeGameStateListener(listener);
     }
 
     public void addGameResultListener(GameResultListener listener) {
         getGame().addGameResultListener(listener);
-    }
-
-    public void removeGameResultListener(GameResultListener listener) {
-        getGame().removeGameResultListener(listener);
     }
 
     public String getWinner() {
@@ -131,14 +119,10 @@ public abstract class CardGameMediator {
         return getGame().isFinished();
     }
 
-    public String produceCardInfo(User player, int cardId) {
+    public String produceCardInfo(int cardId, String playerId) {
         _readLock.lock();
         try {
-            PhysicalCard card = getGame().getGameState().findCardById(cardId);
-            if (card == null || card.getZone() == null)
-                return null;
-            else
-                return card.getCardInfoHTML();
+            return _communicationChannels.get(playerId).produceCardInfo(cardId);
         } finally {
             _readLock.unlock();
         }
@@ -282,19 +266,12 @@ public abstract class CardGameMediator {
         }
     }
 
-    public void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber, String playerName, ParticipantCommunicationVisitor visitor) {
+    public void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber, ParticipantCommunicationVisitor visitor) {
         _readLock.lock();
         try {
             visitor.visitChannelNumber(channelNumber);
-            for (GameEvent gameEvent : communicationChannel.consumeGameEvents())
-                visitor.visitGameEvent(gameEvent);
-
-            Map<String, Integer> secondsLeft = new HashMap<>();
-            for (Map.Entry<String, Integer> playerClock : _playerClocks.entrySet()) {
-                String playerClockName = playerClock.getKey();
-                secondsLeft.put(playerClockName, _timeSettings.maxSecondsPerPlayer() - playerClock.getValue() - getCurrentUserPendingTime(playerClockName));
-            }
-            visitor.visitClock(secondsLeft);
+            visitor.visitGameEvents(communicationChannel);
+            visitor.visitClock(secondsLeft());
         } finally {
             _readLock.unlock();
         }
@@ -304,31 +281,30 @@ public abstract class CardGameMediator {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
             throw new PrivateInformationException();
+        GameCommunicationChannel channel;
+        int channelNumber;
 
         _readLock.lock();
         try {
-            int number = _channelNextIndex;
+            channelNumber = _channelNextIndex;
             _channelNextIndex++;
 
-            GameCommunicationChannel participantCommunicationChannel = new GameCommunicationChannel(playerName, number, getGame().getFormat());
-            _communicationChannels.put(playerName, participantCommunicationChannel);
+            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
+            _communicationChannels.put(playerName, channel);
 
-            getGame().addGameStateListener(playerName, participantCommunicationChannel);
-
-            visitor.visitChannelNumber(number);
-
-            for (GameEvent gameEvent : participantCommunicationChannel.consumeGameEvents())
-                visitor.visitGameEvent(gameEvent);
-
-            Map<String, Integer> secondsLeft = new HashMap<>();
-            for (Map.Entry<String, Integer> playerClock : _playerClocks.entrySet()) {
-                String playerId = playerClock.getKey();
-                secondsLeft.put(playerId, _timeSettings.maxSecondsPerPlayer() - playerClock.getValue() - getCurrentUserPendingTime(playerId));
-            }
-            visitor.visitClock(secondsLeft);
+            getGame().addGameStateListener(playerName, channel);
         } finally {
             _readLock.unlock();
         }
+        processVisitor(channel, channelNumber, visitor);
+    }
+
+    private Map<String, Integer> secondsLeft() {
+        Map<String, Integer> secondsLeft = new HashMap<>();
+        for (String playerId : _playersPlaying) {
+            secondsLeft.put(playerId, _timeSettings.maxSecondsPerPlayer() - _playerClocks.get(playerId) - getCurrentUserPendingTime(playerId));
+        }
+        return secondsLeft;
     }
 
     private void startClocksForUsersPendingDecision() {

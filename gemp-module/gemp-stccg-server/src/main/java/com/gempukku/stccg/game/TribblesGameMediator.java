@@ -9,7 +9,7 @@ public class TribblesGameMediator extends CardGameMediator {
     public TribblesGameMediator(String gameId, GameFormat gameFormat, GameParticipant[] participants,
                                 CardBlueprintLibrary library, GameTimer gameTimer, boolean allowSpectators,
                                 boolean showInGameHall) {
-        super(gameId, participants, library, gameTimer, allowSpectators, showInGameHall);
+        super(gameId, participants, gameTimer, allowSpectators, showInGameHall);
         _tribblesgame = new TribblesGame(gameFormat, _playerDecks, _userFeedback, library);
         _userFeedback.setGame(_tribblesgame);
     }

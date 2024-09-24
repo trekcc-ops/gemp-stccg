@@ -2,8 +2,9 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;
 
@@ -19,9 +20,11 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     private long _lastConsumed = System.currentTimeMillis();
     private final int _channelNumber;
     private volatile WaitingRequest _waitingRequest;
+    private final DefaultGame _game;
 
-    public GameCommunicationChannel(String self, int channelNumber, GameFormat format) {
-        _playerId = self;
+    public GameCommunicationChannel(DefaultGame game, String playerId, int channelNumber) {
+        _game = game;
+        _playerId = playerId;
         _channelNumber = channelNumber;
     }
 
@@ -29,14 +32,8 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return _channelNumber;
     }
 
-    @Override
-    public void initializeBoard(List<String> participants, boolean discardIsPublic) {
-        List<String> participantIds = new LinkedList<>(participants);
-        appendEvent(new GameEvent(PARTICIPANTS)
-                .participantId(_playerId)
-                .allParticipantIds(participantIds)
-                .discardPublic(discardIsPublic)
-        );
+    public void initializeBoard() {
+        appendEvent(new GameEvent(PARTICIPANTS, _game.getGameState(), _game.getGameState().getPlayer(_playerId)));
     }
 
     public String getPlayerId() { return _playerId; }
@@ -71,44 +68,44 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void setCurrentPhase(String phase) {
-        appendEvent(new GameEvent(GAME_PHASE_CHANGE).phase(phase));
+    public void setCurrentPhase(Phase phase) {
+        appendEvent(new GameEvent(GAME_PHASE_CHANGE, phase));
     }
 
     @Override
     public void setPlayerDecked(Player player, boolean bool) {
-        appendEvent(new GameEvent(PLAYER_DECKED, player).bool(bool));
+        appendEvent(new GameEvent(PLAYER_DECKED, player));
     }
 
     @Override
     public void setPlayerScore(String participant, int points) {
-        appendEvent(new GameEvent(PLAYER_SCORE).participantId(participant).score(points));
+        appendEvent(new GameEvent(PLAYER_SCORE, _game.getGameState().getPlayer(participant)));
     }
 
     @Override
     public void setTribbleSequence(String tribbleSequence) {
-        appendEvent(new GameEvent(TRIBBLE_SEQUENCE_UPDATE).message(tribbleSequence));
+        appendEvent(new GameEvent(TRIBBLE_SEQUENCE_UPDATE, tribbleSequence));
     }
 
     @Override
     public void setCurrentPlayerId(String currentPlayerId) {
-        appendEvent(new GameEvent(TURN_CHANGE).participantId(currentPlayerId));
+        appendEvent(new GameEvent(TURN_CHANGE, _game.getGameState().getPlayer(currentPlayerId)));
     }
 
     @Override
     public void sendMessage(String message) {
-        appendEvent(new GameEvent(SEND_MESSAGE).message(message));
+        appendEvent(new GameEvent(SEND_MESSAGE, message));
     }
 
     public void decisionRequired(String playerId, AwaitingDecision decision) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(DECISION).awaitingDecision(decision).participantId(playerId));
+            appendEvent(new GameEvent(DECISION, decision, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override
     public void sendWarning(String playerId, String warning) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(SEND_WARNING).message(warning));
+            appendEvent(new GameEvent(SEND_WARNING, warning));
     }
 
     public List<GameEvent> consumeGameEvents() {
@@ -131,4 +128,11 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         appendEvent(new GameEvent(GAME_ENDED));
     }
 
+    public String produceCardInfo(int cardId) {
+        PhysicalCard card = _game.getGameState().findCardById(cardId);
+        if (card == null || card.getZone() == null)
+            return null;
+        else
+            return card.getCardInfoHTML();
+    }
 }

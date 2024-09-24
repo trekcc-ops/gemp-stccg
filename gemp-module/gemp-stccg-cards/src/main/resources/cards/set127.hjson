@@ -1,6 +1,20 @@
 // Set 127: All Good Things
 
 {
+    127_026: {
+        title: "K'Temoc"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: "Captain of the sleeper ship <i>I.K.S. T'Ong</i>, on a crucial mission ordered by the High Command in the late 23rd century. Awoke 75 years later in a much-changed galaxy."
+        skill-box: "[*] Astrophysics [*] Transporter Skill [*] Geology [DL] Engage Cloak"
+        integrity: 6
+        cunning: 7
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/errata/KTemoc.jpg
+    }
     127_035: {
         title: U.S.S. Drake
         type: ship

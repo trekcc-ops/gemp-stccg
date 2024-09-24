@@ -678,6 +678,49 @@
         strength: 3
         image-url: https://www.trekcc.org/1e/cardimages/vpromos/252VP.jpg
     }
+    101_234: {
+        title: Satelk
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: "Captain Satelk is the Vulcan Starfleet officer who presided over the inquiry into Cadet Joshua Albert's death at the Academy Flight Range in 2368."
+        skill-box: "[*] Leadership [*] Mindmeld [*] Diplomacy"
+        integrity: 8
+        cunning: 9
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/satelk95.jpg
+    }
+    101_235: {
+        title: Shelby
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Lt. Commander Shelby is an ambitious Starfleet officer. Assigned to the <i>U.S.S. Enterprise</i> as a specialist on the Borg.
+        skill-box: "[*] Leadership [*] Exobiology"
+        integrity: 6
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/21V.jpg
+    }
+    101_236: {
+        title: Sito Jaxa
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: staff
+        lore: Ensign Sito Jaxa, a Bajoran, is one of a number of navigation officers aboard the <i>U.S.S. Enterprise</i>.
+        skill-box: "[*] Navigation [*] Youth"
+        integrity: 8
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/22V.jpg
+    }
     101_242: {
         title: Taitt
         type: personnel
@@ -924,6 +967,20 @@
         cunning: 7
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/gorta.jpg
+    }
+    101_299: {
+        title: "Jo'Bril"
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: command
+        lore: "Takaran male. Attempted to steal Dr. Reyga's metaphasic shield technology to claim as his own."
+        skill-box: "[*] Treachery [*] Astrophysics [*] Physics [*] Greed"
+        integrity: 3
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/34V.jpg
     }
     101_303: {
         title: Vekor

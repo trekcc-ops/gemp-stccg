@@ -9,7 +9,7 @@ public class ST2EGameMediator extends CardGameMediator {
     public ST2EGameMediator(String gameId, GameFormat gameFormat, GameParticipant[] participants,
                             CardBlueprintLibrary library, GameTimer gameTimer, boolean allowSpectators,
                             boolean showInGameHall) {
-        super(gameId, participants, library, gameTimer, allowSpectators, showInGameHall);
+        super(gameId, participants, gameTimer, allowSpectators, showInGameHall);
         _game = new ST2EGame(gameFormat, _playerDecks, _userFeedback, library);
         _userFeedback.setGame(_game);
     }

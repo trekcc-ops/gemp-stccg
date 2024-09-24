@@ -190,80 +190,53 @@ public class ST1EGameState extends GameState {
     }
 
     @Override
-    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-
+    protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         boolean sharedMission;
+        Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
+        Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
 
-        if (_playerOrder != null) {
-            listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
-            if (_currentPlayerId != null)
-                listener.setCurrentPlayerId(_currentPlayerId);
-            if (_currentPhase != null)
-                listener.setCurrentPhase(getPhaseString());
-
-            Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
-            Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
-
-            // Send missions in order
-            for (ST1ELocation location : _spacelineLocations) {
-                for (int i = 0; i < location.getMissions().size(); i++) {
-                    GameEvent.Type eventType;
-                    if (i == 0) {
-                        sharedMission = false;
-                        eventType = restoreSnapshot ? GameEvent.Type.PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING :
-                                GameEvent.Type.PUT_CARD_INTO_PLAY;
-                    } else {
-                        sharedMission = true;
-                        eventType = GameEvent.Type.PUT_SHARED_MISSION_INTO_PLAY;
-                    }
-                            // TODO SNAPSHOT - Pretty sure this sendCreatedCard function won't work with snapshotting
-                    PhysicalCard mission = location.getMissions().get(i);
-                    sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
-                    cardsLeftToSend.remove(mission);
-                    sentCardsFromPlay.add(mission);
-                }
+        // Send missions in order
+        for (ST1ELocation location : _spacelineLocations) {
+            for (int i = 0; i < location.getMissions().size(); i++) {
+                sharedMission = i != 0;
+                // TODO SNAPSHOT - Pretty sure this sendCreatedCard function won't work with snapshotting
+                PhysicalCard mission = location.getMissions().get(i);
+                sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
+                cardsLeftToSend.remove(mission);
+                sentCardsFromPlay.add(mission);
             }
-
-            int cardsToSendAtLoopStart;
-            do {
-                cardsToSendAtLoopStart = cardsLeftToSend.size();
-                Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
-                while (cardIterator.hasNext()) {
-                    PhysicalCard physicalCard = cardIterator.next();
-                    PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                    if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                        sentCardsFromPlay.add(physicalCard);
-
-                        cardIterator.remove();
-                    }
-                }
-            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
-
-            for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId)) {
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-            }
-
-            List<PhysicalCard> missionPile = _missionPiles.get(playerId);
-            if (missionPile != null) {
-                for (PhysicalCard physicalCard : missionPile) {
-                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                }
-            }
-
-            for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-            }
-
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
         }
 
-        for (String lastMessage : _lastMessages)
-            listener.sendMessage(lastMessage);
+        int cardsToSendAtLoopStart;
+        do {
+            cardsToSendAtLoopStart = cardsLeftToSend.size();
+            Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
+            while (cardIterator.hasNext()) {
+                PhysicalCard physicalCard = cardIterator.next();
+                PhysicalCard attachedTo = physicalCard.getAttachedTo();
+                if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
+                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                    sentCardsFromPlay.add(physicalCard);
 
-        final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
-        if (awaitingDecision != null)
-            listener.decisionRequired(playerId, awaitingDecision);
+                    cardIterator.remove();
+                }
+            }
+        } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
+
+        for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId)) {
+            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+        }
+
+        List<PhysicalCard> missionPile = _missionPiles.get(playerId);
+        if (missionPile != null) {
+            for (PhysicalCard physicalCard : missionPile) {
+                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+            }
+        }
+
+        for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
+            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+        }
     }
 
     public Set<AwayTeam> getAwayTeams() { return _awayTeams; }

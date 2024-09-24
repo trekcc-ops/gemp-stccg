@@ -28,6 +28,10 @@
     setName: Deep Space Nine
   }
   {
+    setId: "113"
+    setName: Starter Deck II
+  }
+  {
     setId: "116"
     setName: Blaze of Glory
   }
@@ -50,6 +54,10 @@
   {
     setId: "128"
     setName: Enterprise Collection
+  }
+  {
+    setId: "138"
+    setName: Life from Lifelessness
   }
   {
     setId: "144"

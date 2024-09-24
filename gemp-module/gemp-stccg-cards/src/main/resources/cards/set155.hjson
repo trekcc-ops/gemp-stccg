@@ -32,7 +32,7 @@
         mission-type: planet
         location: Klingon Salvage Yard
         affiliation-icons: klingon,ferengi
-        lore: "Complete illicit sale of decommissioned B'rel-class hardware."
+        lore: "Complete illicit sale of decommissioned <i>B'rel</i>-class hardware."
         mission-requirements: Acquisition + ENGINEER + Computer Skill OR Diplomacy + Greed + Treachery
         point-box: 30
         span: 4
@@ -164,6 +164,20 @@
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/53V.jpg
     }
+    155_054: {
+        title: Beverly
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: While hosting an experimental metaphasic shield test, <b>Beverly Crusher</b> took on the roles of diplomat, detective, coroner, and test pilot.
+        skill-box: "[*] Diplomacy [*] Law [*] Navigation [*] Exobiology [DL] Starfleet Type II Phaser"
+        integrity: 7
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/54V.jpg
+    }
     155_055: {
         title: Daniel Kwan
         type: personnel
@@ -187,12 +201,26 @@
         property-logo: tng-logo
         classification: SCIENCE
         icons: staff
-        lore: Geochemist representative of science specialists assigned to Galaxy-class starships. Intrigued by the symbiotic nature of the Trill species.
+        lore: Geochemist representative of science specialists assigned to <i>Galaxy</i>-class starships. Intrigued by the symbiotic nature of the Trill species.
         skill-box: "[*] Physics [*] Geology"
         integrity: 6
         cunning: 7
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/tng/57V.jpg
+    }
+    155_058: {
+        title: Deanna Troi
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: "Ship's counselor and occasional ambassador. 1/2 Betazoid, 1/2 human. Formerly romantically involved with William T. Riker as his <i>imzadi</i>."
+        skill-box: "[*] Empathy [*] Anthropology [*] Diplomacy [*] Honor [DL] Intuition [DL] Life-form Scan"
+        integrity: 7
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/tng/58V.jpg
     }
     155_059: {
         title: Dr. Christopher
@@ -207,6 +235,35 @@
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/59V.jpg
     }
+    155_062: {
+        title: "Lian T'su"
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: OFFICER
+        lore: Typical relief operations officer in the 24th century. Relishes the chance to explore new frontiers. Originally considered a security career.
+        skill-box: "[*] Navigation [*] Transporter Skill [*] Astrophysics"
+        integrity: 7
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/62V.jpg
+    }
+    155_063: {
+        title: Lopez
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: staff
+        lore: Representative of talented junior security officers aboard the <i>U.S.S. Enterprise</i>. Assigned to compile the duty roster for his department.
+        skill-box: "[*] Biology [*] Honor [DL] Federation PADD"
+        integrity: 7
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/63V.jpg
+    }
     155_064: {
         title: Martin
         type: personnel
@@ -215,7 +272,7 @@
         property-logo: tng-logo
         classification: MEDICAL
         icons: staff
-        lore: One of many staff doctors assigned to the U.S.S. Enterprise. Took charge of sickbay in 2368 after Beverly Crusher was incapacitated.
+        lore: One of many staff doctors assigned to the <i>U.S.S. Enterprise</i>. Took charge of sickbay in 2368 after Beverly Crusher was incapacitated.
         skill-box: "[*] Exobiology [*] Computer Skill"
         integrity: 7
         cunning: 6
@@ -236,6 +293,123 @@
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/tng/65V.jpg
     }
+    155_066: {
+        title: Baht
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: ENGINEER
+        icons: staff
+        lore: Conspired with Goss during the Barzan negotiations. Explored the wormhole with Kol. Prefers analysis to speculation.
+        skill-box: "[*] Anthropology [*] Transporter Skill"
+        integrity: 6
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/66V.jpg
+    }
+    155_069: {
+        title: Dr. Arridor
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        lore: Conspired with Goss during the Barzan negotiations. Explored the wormhole with Kol. Prefers analysis to speculation.
+        skill-box: "[*] Acquisition [*] Greed [*] Exobiology [*] Biology [*] Leadership [*] Treachery"
+        integrity: 4
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/69V.jpg
+    }
+    155_070: {
+        title: Gozar
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Talented Ferengi officer. Recruited by Bok to help in the capture and ransom of Jason Vigo. Devotee of the Rules of Acquisition.
+        skill-box: "[*] Acquisition [*] Exobiology [*] Leadership [*] Navigation [*] Treachery [*] Diplomacy"
+        integrity: 3
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Gozar.jpg
+    }
+    155_071: {
+        title: Kayron
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: SECURITY
+        icons: staff
+        lore: "One of many junior crew members often found on <i>D'Kora</i> marauders. Part of Letek's landing party. Berik's nephew. Former assay assistant on Lappa IV."
+        skill-box: "[*] SCIENCE"
+        integrity: 5
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tng/71V.jpg
+    }
+    155_073: {
+        title: Levin
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: MEDICAL
+        lore: Typical nurse found throughout the Ferengi Alliance. Now working with the privateer Lurin. Cousin of Broik. Collects antique musical recordings.
+        skill-box: "[*] Exobiology [*] Biology [*] Music"
+        integrity: 7
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/73V.jpg
+    }
+    155_074: {
+        title: Mordoc
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: SECURITY
+        icons: staff
+        lore: Representative Ferengi security officer. Often part of away teams to strange, new worlds. Helped steal an energy converter. Disgusted by clothed females.
+        skill-box: "[*] Stellar Cartography [*] Treachery [*] Transporter Skill"
+        integrity: 4
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/74V.jpg
+    }
+    155_075: {
+        title: Obol
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: SECURITY
+        icons: staff
+        lore: Typical Ferengi soldier. Aspiring inventor and employee of Lurin. Tired of Klingon rations.
+        skill-box: "[*] ENGINEER [*] Greed"
+        integrity: 4
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/75V.jpg
+    }
+    155_077: {
+        title: Rata
+        type: personnel
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        classification: OFFICER
+        icons: staff
+        lore: "Profiteer representative of Ferengi second officers. Opposed Bok's decision to give away the salvaged <i>U.S.S. Stargazer</i> at no cost."
+        skill-box: "[*] Treachery [*] Acquisition [*] Greed [*] Geology [*] Astrophysics"
+        integrity: 5
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tng/77V.jpg
+    }
     155_078: {
         title: "B'Somgh"
         type: personnel
@@ -250,6 +424,35 @@
         cunning: 6
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/tng/78V.jpg
+    }
+    155_078: {
+        title: "B'Somgh"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: ENGINEER
+        uniqueness: universal
+        icons: staff
+        lore: Warp drive specialist aboard the I.K.S. Pagh, representative of engineers in the Klingon Defense Force. Considered a gourmand by shipmates.
+        skill-box: "[*] Exobiology [*] Physics [*] Astrophysics [*] Biology"
+        integrity: 7
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/78V.jpg
+    }
+    155_080: {
+        title: "Commander K'Ehleyr"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: staff
+        lore: "1/2 Klingon, 1/2 human romantically involved with Worf. <b>K'Ehleyr</b> posed as first officer of the <i>U.S.S. Enterprise</i> in 2365. She left Worf incomplete."
+        skill-box: "[*] OFFICER [*] Honor [*] Anthropology [*] Diplomacy [*] Law"
+        integrity: 7
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/80V.jpg
     }
     155_082: {
         title: Kahless
@@ -271,12 +474,27 @@
         property-logo: tng-logo
         classification: MEDICAL
         icons: staff
-        lore: "\"The Tyrant Molor\" in the Kot'baval Festival. Eager to help warriors deepen their understanding of Klingon heritage. Researcher on Maranga IV outpost."
+        lore: "\"The Tyrant Molor\" in the <i>Kot'baval</i> Festival. Eager to help warriors deepen their understanding of Klingon heritage. Researcher on Maranga IV outpost."
         skill-box: "[*] SCIENCE [*] Geology [*] Computer Skill"
         integrity: 7
         cunning: 6
         strength: 8
         image-url: https://www.trekcc.org/1e/cardimages/tng/83V.jpg
+    }
+    155_087: {
+        title: Losta
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: OFFICER
+        uniqueness: universal
+        icons: staff
+        lore: Follower of Kahless. Representative of young male Klingons eager to study the teachings of Kahless at the sacred Boreth monastery.
+        skill-box: "[*] Geology [*] Navigation [*] Youth [DL] Lower Decks (if present with Kahless or on Boreth)"
+        integrity: 6
+        cunning: 6
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/87V.jpg
     }
     155_088: {
         title: "Q'elyn"
@@ -299,7 +517,7 @@
         property-logo: tng-logo
         classification: OFFICER
         icons: command
-        lore: The first Starfleet officer to serve on a Klingon ship as part of an exchange program. Commanded the I.K.S. Pagh after relieving Kargan of duty.
+        lore: The first Starfleet officer to serve on a Klingon ship as part of an exchange program. Commanded the <i>I.K.S. Pagh</i> after relieving Kargan of duty.
         skill-box: "[*] Leadership [*] Navigation [*] Anthropology [*] Honor [*] Transporter Skill [DL] Emergency Transport Unit"
         integrity: 7
         cunning: 7
@@ -314,12 +532,27 @@
         classification: ENGINEER
         uniqueness: universal
         icons: command
-        lore: "Typical Klingon female inspired by the Sisters of Duras. Ruthlessly supervised the I.K.S. Pagh engine room. Curious about William T. Riker's endurance."
+        lore: "Typical Klingon female inspired by the Sisters of Duras. Ruthlessly supervised the <i>I.K.S. Pagh</i> engine room. Curious about William T. Riker's endurance."
         skill-box: "[*] Astrophysics [*] Treachery [*] Greed [*] SECURITY"
         integrity: 4
         cunning: 5
         strength: 8
         image-url: https://www.trekcc.org/1e/cardimages/tng/90V.jpg
+    }
+    155_092: {
+        title: Dr. Syrus
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: MEDICAL
+        uniqueness: universal
+        icons: au-icon,staff
+        lore: Tilonian psychiatrist created by Suna as part of a plan to brainwash Riker. Worked in Ward 47 of the Tilonus Institute for Mental Disorders.
+        skill-box: "[*] Law"
+        integrity: 5
+        cunning: 8
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/tng/92V.jpg
     }
     155_093: {
         title: Koral

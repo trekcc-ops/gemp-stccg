@@ -9,5 +9,5 @@ public interface ParticipantCommunicationVisitor {
 
     void visitClock(Map<String, Integer> secondsLeft);
 
-    void visitGameEvent(GameEvent gameEvent);
+    void visitGameEvents(GameCommunicationChannel channel);
 }

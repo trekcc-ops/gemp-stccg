@@ -82,7 +82,7 @@ public abstract class GameState implements Snapshotable<GameState> {
         _playerOrder = playerOrder;
         setCurrentPlayerId(firstPlayer);
         for (GameStateListener listener : getAllGameStateListeners()) {
-            listener.initializeBoard(playerOrder.getAllPlayers(), _format.discardPileIsPublic());
+            listener.initializeBoard();
         }
     }
 
@@ -147,49 +147,48 @@ public abstract class GameState implements Snapshotable<GameState> {
             sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
     }
 
-    protected String getPhaseString() {
-        return _currentPhase.getHumanReadable();
-    }
-
     public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         if (_playerOrder != null) {
-            listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
+            listener.initializeBoard();
             if (_currentPlayerId != null) listener.setCurrentPlayerId(_currentPlayerId);
-            if (_currentPhase != null) listener.setCurrentPhase(getPhaseString());
+            if (_currentPhase != null) listener.setCurrentPhase(_currentPhase);
 
-            Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
-            Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
-
-            do {
-                Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
-                while (cardIterator.hasNext()) {
-                    PhysicalCard physicalCard = cardIterator.next();
-                    PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                    if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                        sentCardsFromPlay.add(physicalCard);
-                        cardIterator.remove();
-                    }
-                }
-            } while (!cardsLeftToSend.isEmpty());
-
-            List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
-            _stacked.values().forEach(cardsPutIntoPlay::addAll);
-            cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
-            cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
-            for (PhysicalCard physicalCard : cardsPutIntoPlay) {
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-            }
-
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
+            sendCardsToClient(playerId, listener, restoreSnapshot);
         }
-
         for (String lastMessage : _lastMessages)
             listener.sendMessage(lastMessage);
 
         final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
-        if (awaitingDecision != null)
-            listener.decisionRequired(playerId, awaitingDecision);
+        sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+    }
+
+    protected void sendCardsToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
+
+        Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
+        Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
+
+        do {
+            Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
+            while (cardIterator.hasNext()) {
+                PhysicalCard physicalCard = cardIterator.next();
+                PhysicalCard attachedTo = physicalCard.getAttachedTo();
+                if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
+                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+                    sentCardsFromPlay.add(physicalCard);
+                    cardIterator.remove();
+                }
+            }
+        } while (!cardsLeftToSend.isEmpty());
+
+        List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
+        _stacked.values().forEach(cardsPutIntoPlay::addAll);
+        cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
+        cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
+        for (PhysicalCard physicalCard : cardsPutIntoPlay) {
+            sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
+        }
+
+        listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
     }
 
     public void sendMessage(String message) {
@@ -203,7 +202,12 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void playerDecisionStarted(String playerId, AwaitingDecision awaitingDecision) {
         _playerDecisions.put(playerId, awaitingDecision);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.decisionRequired(playerId, awaitingDecision);
+            sendAwaitingDecisionToListener(listener, playerId, awaitingDecision);
+    }
+
+    private void sendAwaitingDecisionToListener(GameStateListener listener, String playerId, AwaitingDecision decision) {
+        if (decision != null)
+            listener.decisionRequired(playerId, decision);
     }
 
     public void playerDecisionFinished(String playerId) {
@@ -244,7 +248,7 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     public void cardAffectsCard(String playerPerforming, PhysicalCard card, Collection<PhysicalCard> affectedCards) {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card).participantId(playerPerforming).otherCardIds(affectedCards));
+            listener.sendEvent(new GameEvent(GameEvent.Type.CARD_AFFECTED_BY_CARD, card, affectedCards, getPlayer(playerPerforming)));
     }
 
     public void activatedCard(String playerPerforming, PhysicalCard card) {
@@ -312,8 +316,7 @@ public abstract class GameState implements Snapshotable<GameState> {
                     removedCardsVisibleByPlayer.add(card);
             }
             if (!removedCardsVisibleByPlayer.isEmpty())
-                listener.sendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY).otherCardIds(removedCardsVisibleByPlayer)
-                        .participantId(playerPerforming));
+                listener.sendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
         }
 
 
@@ -500,7 +503,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void setCurrentPhase(Phase phase) {
         _currentPhase = phase;
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setCurrentPhase(getPhaseString());
+            listener.setCurrentPhase(phase);
     }
 
     public Phase getCurrentPhase() {

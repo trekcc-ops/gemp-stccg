@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Player;
 
 import java.util.List;
@@ -10,7 +11,9 @@ public interface GameStateListener {
     void sendEvent(GameEvent gameEvent);
     void sendEvent(GameEvent.Type eventType);
 
-    void initializeBoard(List<String> playerIds, boolean discardIsPublic);
+    void initializeBoard();
+
+    void setCurrentPhase(Phase phase);
 
     void setPlayerDecked(Player player, boolean bool);
     void setPlayerScore(String playerId, int points);
@@ -18,8 +21,6 @@ public interface GameStateListener {
     void setTribbleSequence(String tribbleSequence);
 
     void setCurrentPlayerId(String playerId);
-
-    void setCurrentPhase(String currentPhase);
 
     void sendMessage(String message);
 

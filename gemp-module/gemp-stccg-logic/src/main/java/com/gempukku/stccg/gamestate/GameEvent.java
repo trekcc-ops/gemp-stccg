@@ -1,16 +1,21 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.CardDeck;
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class GameEvent {
@@ -39,51 +44,52 @@ public class GameEvent {
             this.code = code;
         }
 
-        String getCode() {
-            return code;
-        }
     }
 
-    private String _message;
+    public enum Attribute {
+        /* Don't change these names without editing the client code, as it relies on the .name() method */
+        allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
+        locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
+        type, zone
+    }
+
     private final Type _type;
     private Zone _zone;
-    private String _participantId;
-    private Integer _locationIndex;
-    private String _quadrant;
-    private String _controllerId;
-    private List<String> _allParticipantIds;
-    private Integer _index;
-    private String _blueprintId;
-    private Integer _cardId;
-    private String _imageUrl;
-    private Integer _targetCardId;
-    private String _phase;
-    private Integer _count;
-    private int[] _otherCardIds;
-    private Map<String, CardDeck> _decks;
     private GameStats _gameStats;
     private AwaitingDecision _awaitingDecision;
-    private final ZonedDateTime _timestamp;
-    private Integer _version;
-    private boolean _discardIsPublic;
-    private Integer _score;
+    private final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
     public GameEvent(Type type) {
         _type = type;
-        _timestamp = ZonedDateTime.now(ZoneOffset.UTC);
-    }
-    public GameEvent(Type type, PhysicalCard card) {
-        this(type);
-        setCardData(card);
+        _eventAttributes.put(Attribute.type, type.code);
+        _eventAttributes.put(Attribute.timestamp,
+                ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSSS")));
     }
     public GameEvent(Type type, Player player) {
         this(type);
-        _participantId = player.getPlayerId();
+        _eventAttributes.put(Attribute.participantId, player.getPlayerId());
+    }
+
+    public GameEvent(Type type, String message) {
+        this(type);
+        _eventAttributes.put(Attribute.message, message);
+    }
+    public GameEvent(Type type, PhysicalCard card) {
+        this(type, card.getOwner());
+        setCardData(card);
+    }
+
+    public GameEvent(Type type, Collection<PhysicalCard> cards, Player player) {
+        this(type, player);
+        setOtherCards(cards);
+    }
+    public GameEvent(Type type, Phase phase) {
+        this(type);
+        _eventAttributes.put(Attribute.phase, phase.getHumanReadable());
     }
     public GameEvent(Type type, PhysicalCard card, Player player) {
-        this(type);
+        this(type, player);
         setCardData(card);
-        _participantId = player.getPlayerId();
     }
 
     public GameEvent(Type type, GameStats stats) {
@@ -91,199 +97,114 @@ public class GameEvent {
         _gameStats = stats;
     }
 
-    private void setCardData(PhysicalCard card) {
-        _cardId = card.getCardId();
-        _blueprintId = card.getBlueprintId();
-        _participantId = card.getOwnerName();
-        _zone = card.getZone();
-        _imageUrl = card.getImageUrl();
-        if (card.getCardControllerPlayerId() != null)
-            _controllerId = card.getCardControllerPlayerId();
-        if (card.getAttachedTo() != null)
-            _targetCardId = card.getAttachedTo().getCardId();
-        if (card.getStackedOn() != null)
-            _targetCardId = card.getStackedOn().getCardId();
-        _locationIndex = card.getLocationZoneIndex();
-        if (card.getCardType() == CardType.MISSION)
-            _quadrant = card.getQuadrant().name();
+    public GameEvent(Type type, GameState gameState, Player player) {
+        this(type, player);
+        _eventAttributes.put(Attribute.allParticipantIds, TextUtils.listToCommaSeparated(gameState.getPlayerOrder().getAllPlayers()));
+        _eventAttributes.put(Attribute.discardPublic, String.valueOf(gameState.getGame().getFormat().discardPileIsPublic()));
     }
 
-    public ZonedDateTime getTimestamp() { return _timestamp; }
-    public Integer getVersion() { return _version; }
-    public GameEvent version(int version) {
-        _version = version;
-        return this;
+    public GameEvent(Type type, AwaitingDecision decision, Player player) {
+        this(type, player);
+        _awaitingDecision = decision;
+        _eventAttributes.put(Attribute.id, String.valueOf(decision.getAwaitingDecisionId()));
+        _eventAttributes.put(Attribute.decisionType, decision.getDecisionType().name());
+        if (decision.getText() != null)
+            _eventAttributes.put(Attribute.text, decision.getText());
     }
 
-    public String getIndexString() {
-        if (_index == null)
-            return null;
-        else return _index.toString();
+    public GameEvent(Type type, PhysicalCard card, Collection<PhysicalCard> cards, Player player) {
+        this(type, card, player);
+        setOtherCards(cards);
     }
 
-    public GameEvent index(int index) {
-        _index = index;
-        return this;
-    }
-
-    public Type getType() {
-        return _type;
-    }
-    public String getTypeCode() { return _type.getCode(); }
-
-    public GameStats getGameStats() {
-        return _gameStats;
-    }
-
-    public GameEvent gameStats(GameStats gameStats) {
-        _gameStats = gameStats;
-        return this;
-    }
-
-    public AwaitingDecision getAwaitingDecision() {
-        return _awaitingDecision;
-    }
-
-    public GameEvent awaitingDecision(AwaitingDecision awaitingDecision) {
-        _awaitingDecision = awaitingDecision;
-        return this;
-    }
-
-    public Zone getZone() {
-        return _zone;
-    }
-
-    public GameEvent zone(Zone zone) {
-        _zone = zone;
-        return this;
-    }
-
-    public String getMessage() {
-        return _message;
-    }
-
-    public GameEvent message(String message) {
-        _message = message;
-        return this;
-    }
-
-    public Integer getCount() {
-        return _count;
-    }
-
-    public GameEvent count(int count) {
-        _count = count;
-        return this;
-    }
-
-    public GameEvent bool(boolean bool) {
-        Boolean _bool = bool;
-        return this;
-    }
-
-    public int[] getOtherCardIds() {
-        return _otherCardIds;
-    }
-
-    public GameEvent otherCardIds(Collection<PhysicalCard> cards) {
+    private void setOtherCards(Collection<PhysicalCard> cards) {
         int[] otherCardIds = new int[cards.size()];
         int index = 0;
         for (PhysicalCard card : cards) {
             otherCardIds[index] = card.getCardId();
             index++;
         }
-        _otherCardIds = otherCardIds;
-        return this;
+        _eventAttributes.put(Attribute.otherCardIds, TextUtils.arrayToCommaSeparated(otherCardIds));
     }
 
-    public Map<String, CardDeck> getDecks() {
-        return _decks;
+    private void setCardData(PhysicalCard card) {
+        _eventAttributes.put(Attribute.cardId, String.valueOf(card.getCardId()));
+        _eventAttributes.put(Attribute.blueprintId, card.getBlueprintId());
+        _eventAttributes.put(Attribute.zone, card.getZone().name());
+        _zone = card.getZone();
+        _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
+        _eventAttributes.put(Attribute.controllerId, card.getCardControllerPlayerId());
+        _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
+
+        if (card.getCardType() == CardType.MISSION)
+            _eventAttributes.put(Attribute.quadrant, card.getQuadrant().name());
+
+        if (card.getStackedOn() != null)
+            _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
+        else if (card.getAttachedTo() != null)
+            _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getAttachedTo().getCardId()));
     }
 
-    public GameEvent decks(Map<String, CardDeck> decks) {
-        _decks = decks;
-        return this;
+    public Type getType() { return _type; }
+    public Zone getZone() { return _zone; }
+
+    public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
+    public Map<Attribute, String> getAttributes() { return _eventAttributes; }
+
+    public Node serialize(Document doc) {
+        Element eventElem = doc.createElement("ge");
+
+        for (Attribute attribute : _eventAttributes.keySet()) {
+            if (getAttribute(attribute) != null)
+                eventElem.setAttribute(attribute.name(), getAttribute(attribute));
+        }
+
+        if (_gameStats != null)
+            serializeGameStats(doc, eventElem);
+        if (_awaitingDecision != null)
+            serializeDecision(doc, eventElem);
+
+        return eventElem;
     }
 
-    public String getParticipantId() {
-        return _participantId;
+    private void serializeDecision(Document doc, Element eventElem) {
+        for (Map.Entry<String, String[]> paramEntry : _awaitingDecision.getDecisionParameters().entrySet()) {
+            for (String value : paramEntry.getValue()) {
+                Element decisionParam = doc.createElement("parameter");
+                decisionParam.setAttribute("name", paramEntry.getKey());
+                decisionParam.setAttribute("value", value);
+                eventElem.appendChild(decisionParam);
+            }
+        }
     }
 
-    public GameEvent participantId(String participantId) {
-        _participantId = participantId;
-        return this;
+    private void serializeGameStats(Document doc, Element eventElem) {
+        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameStats.getZoneSizes().entrySet()) {
+            final Element playerZonesElem = doc.createElement("playerZones");
+
+            playerZonesElem.setAttribute("name", playerZoneSizes.getKey());
+
+            for (Map.Entry<Zone, Integer> zoneSizes : playerZoneSizes.getValue().entrySet())
+                playerZonesElem.setAttribute(zoneSizes.getKey().name(), zoneSizes.getValue().toString());
+
+            eventElem.appendChild(playerZonesElem);
+        }
+
+        for (Map.Entry<String, Integer> playerScore : _gameStats.getPlayerScores().entrySet()) {
+            final Element playerScoreElem = doc.createElement("playerScores");
+            playerScoreElem.setAttribute("name", playerScore.getKey());
+            playerScoreElem.setAttribute("score", playerScore.getValue().toString());
+            eventElem.appendChild(playerScoreElem);
+        }
+
+        StringBuilder charStr = new StringBuilder();
+        if (!charStr.isEmpty())
+            charStr.delete(0, 1);
+
+        if (!charStr.isEmpty())
+            eventElem.setAttribute("charStats", charStr.toString());
     }
 
-    public List<String> getAllParticipantIds() {
-        return _allParticipantIds;
-    }
 
-    public GameEvent allParticipantIds(List<String> allParticipantIds) {
-        _allParticipantIds = allParticipantIds;
-        return this;
-    }
-
-    public String getControllerId() {
-        return _controllerId;
-    }
-
-    public String getBlueprintId() {
-        return _blueprintId;
-    }
-
-    public GameEvent blueprintId(String blueprintId) {
-        _blueprintId = blueprintId;
-        return this;
-    }
-
-    public Integer getCardId() {
-        return _cardId;
-    }
-
-    public GameEvent cardId(int cardId) {
-        _cardId = cardId;
-        return this;
-    }
-
-    public String getImageUrl() { return _imageUrl; }
-    public GameEvent imageUrl(String imageUrl) {
-        _imageUrl = imageUrl;
-        return this;
-    }
-
-    public Integer getTargetCardId() {
-        return _targetCardId;
-    }
-
-    public String getPhase() {
-        return _phase;
-    }
-
-    public GameEvent phase(String phase) {
-        _phase = phase;
-        return this;
-    }
-
-    public boolean isDiscardPublic() {
-        return _discardIsPublic;
-    }
-
-    public GameEvent discardPublic(boolean discardPublic) {
-        _discardIsPublic = discardPublic;
-        return this;
-    }
-
-    public GameEvent score(Integer score) {
-        _score = score;
-        return this;
-    }
-
-    public String getQuadrant() { return _quadrant; }
-    public GameEvent quadrant(String quadrant) {
-        _quadrant = quadrant;
-        return this;
-    }
-
-    public Integer getLocationIndex() { return _locationIndex; }
 
 }

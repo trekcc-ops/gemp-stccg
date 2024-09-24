@@ -56,4 +56,28 @@ public class TextUtils {
             return sj.toString();
     }
 
+    public static String listToCommaSeparated(List<String> strings) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (String participantId : strings) {
+            if (!first) sb.append(",");
+            sb.append(participantId);
+            first = false;
+        }
+        return sb.toString();
+    }
+
+    public static String arrayToCommaSeparated(int[] integers) {
+        int iMax = integers.length - 1;
+        if (iMax == -1)
+            return "";
+
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; ; i++) {
+            b.append(integers[i]);
+            if (i == iMax)
+                return b.toString();
+            b.append(",");
+        }
+    }
 }

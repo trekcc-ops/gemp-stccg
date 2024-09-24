@@ -46,7 +46,7 @@ public class GameRecorder {
         final ZonedDateTime startDate = ZonedDateTime.now(ZoneOffset.UTC);
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();
         for (String playerId : game.getPlayersPlaying()) {
-            var recordChannel = new GameCommunicationChannel(playerId, 0, format);
+            var recordChannel = new GameCommunicationChannel(game.getGame(), playerId, 0);
             game.addGameStateListener(playerId, recordChannel);
             recordingChannels.put(playerId, recordChannel);
         }
@@ -152,7 +152,6 @@ public class GameRecorder {
 
     private Map<String, String> saveRecordedChannels(Map<String, GameCommunicationChannel> gameProgress, DBDefs.GameHistory gameInfo, Map<String, CardDeck> decks) {
         Map<String, String> result = new HashMap<>();
-        var metadata = new ReplayMetadata(gameInfo, decks);
 
         for (Map.Entry<String, GameCommunicationChannel> playerRecordings : gameProgress.entrySet()) {
             String playerId = playerRecordings.getKey();
@@ -164,15 +163,10 @@ public class GameRecorder {
                 recordingId = gameInfo.lose_recording_id;
             }
 
-            final List<GameEvent> gameEvents = playerRecordings.getValue().consumeGameEvents();
-            metadata.ParseReplay(playerId, gameEvents);
-
             try {
                 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
                 Document doc = documentBuilder.newDocument();
-                Element gameReplay = doc.createElement("gameReplay");
-                EventSerializer serializer = new EventSerializer();
 
                 var info = doc.createElement("info");
 
@@ -198,13 +192,20 @@ public class GameRecorder {
                     info.appendChild(deckElement);
                 }
 
+                Element gameReplay = doc.createElement("gameReplay");
                 gameReplay.appendChild(info);
 
-                for (GameEvent gameEvent : gameEvents) {
-                    gameReplay.appendChild(serializer.serializeEvent(doc, gameEvent));
-                }
+                final List<GameEvent> gameEvents = playerRecordings.getValue().consumeGameEvents();
+                ReplayMetadata metadata = new ReplayMetadata(gameInfo, decks, playerId, gameEvents);
+
+                for (GameEvent gameEvent : gameEvents)
+                    gameReplay.appendChild(gameEvent.serialize(doc));
 
                 doc.appendChild(gameReplay);
+
+                try(var out = new PrintWriter(getSummaryFile(gameInfo).getAbsolutePath())) {
+                    out.println(JSON.toJSONString(metadata));
+                }
 
                 try (OutputStream replayStream = getRecordingWriteStream(playerId, recordingId, gameInfo.start_date)) {
                     // Prepare the DOM document for writing
@@ -217,9 +218,6 @@ public class GameRecorder {
                 }
                 result.put(playerId, recordingId);
 
-                try(var out = new PrintWriter(getSummaryFile(gameInfo).getAbsolutePath())) {
-                    out.println(JSON.toJSONString(metadata));
-                }
             } catch (Exception exp) {
 
             }

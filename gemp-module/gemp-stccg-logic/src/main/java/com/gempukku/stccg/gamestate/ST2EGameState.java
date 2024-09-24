@@ -15,7 +15,6 @@ import java.util.*;
 public class ST2EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _seedDecks;
     private final Map<String, List<PhysicalCard>> _missionPiles;
-    private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
     private final Map<String, List<PhysicalCard>> _tableCards;
     private final ST2EGame _game;
 
@@ -74,66 +73,4 @@ public class ST2EGameState extends GameState {
             }
         }
     }
-
-    @Override
-    public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
-        if (_playerOrder != null) {
-            listener.initializeBoard(_playerOrder.getAllPlayers(), _format.discardPileIsPublic());
-            if (_currentPlayerId != null)
-                listener.setCurrentPlayerId(_currentPlayerId);
-            if (_currentPhase != null)
-                listener.setCurrentPhase(getPhaseString());
-
-            Set<PhysicalCard> cardsLeftToSend = new LinkedHashSet<>(_inPlay);
-            Set<PhysicalCard> sentCardsFromPlay = new HashSet<>();
-
-            // Send missions in order
-            for (ST1ELocation location : _spacelineLocations) {
-                for (int i = 0; i < location.getMissions().size(); i++) {
-                    sendCreatedCardToListener(location.getMissions().get(i), false, listener, true);
-                    cardsLeftToSend.remove(location.getMissions().get(i));
-                }
-            }
-
-            int cardsToSendAtLoopStart;
-            do {
-                cardsToSendAtLoopStart = cardsLeftToSend.size();
-                Iterator<PhysicalCard> cardIterator = cardsLeftToSend.iterator();
-                while (cardIterator.hasNext()) {
-                    PhysicalCard physicalCard = cardIterator.next();
-                    PhysicalCard attachedTo = physicalCard.getAttachedTo();
-                    if (attachedTo == null || sentCardsFromPlay.contains(attachedTo)) {
-                        sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                        sentCardsFromPlay.add(physicalCard);
-
-                        cardIterator.remove();
-                    }
-                }
-            } while (cardsToSendAtLoopStart != cardsLeftToSend.size() && !cardsLeftToSend.isEmpty());
-
-            for (PhysicalCard physicalCard : _cardGroups.get(Zone.HAND).get(playerId))
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-
-            List<PhysicalCard> missionPile = _missionPiles.get(playerId);
-            if (missionPile != null) {
-                for (PhysicalCard physicalCard : missionPile) {
-                    sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-                }
-            }
-
-            for (PhysicalCard physicalCard : _cardGroups.get(Zone.DISCARD).get(playerId)) {
-                sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
-            }
-
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
-        }
-
-        for (String lastMessage : _lastMessages)
-            listener.sendMessage(lastMessage);
-
-        final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
-        if (awaitingDecision != null)
-            listener.decisionRequired(playerId, awaitingDecision);
-    }
-
 }

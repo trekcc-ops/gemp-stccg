@@ -30,9 +30,9 @@ public class ReplayMetadata {
 
     public final Map<String, String> AllCards = new HashMap<>();
 
-    public final Set<Integer> SeenCards = new HashSet<>();
+    public final Set<String> SeenCards = new HashSet<>();
 
-    public final HashSet<Integer> PlayedCards = new HashSet<>();
+    public final HashSet<String> PlayedCards = new HashSet<>();
 
     public ReplayMetadata(DBDefs.GameHistory game, Map<String, CardDeck> decks) {
         GameReplayInfo = game;
@@ -59,6 +59,11 @@ public class ReplayMetadata {
         }
     }
 
+    public ReplayMetadata(DBDefs.GameHistory game, Map<String, CardDeck> decks, String player, List<GameEvent> events) {
+        this(game, decks);
+        ParseReplay(player, events);
+    }
+
     public String GetOpponent(String player) {
         return PlayerIDs.keySet().stream().filter(x -> !x.equals(player)).findFirst().orElse(null);
     }
@@ -71,7 +76,7 @@ public class ReplayMetadata {
 
         for(var event : events) {
             if(event.getType() == GameEvent.Type.SEND_MESSAGE) {
-                var message = event.getMessage();
+                var message = event.getAttribute(GameEvent.Attribute.message);
                 if(StringUtils.isNullOrEmpty(message))
                     continue;
 
@@ -103,7 +108,7 @@ public class ReplayMetadata {
                 }
             }
             else if(!GameStarted && event.getType() == GameEvent.Type.GAME_PHASE_CHANGE) {
-                var phase = Phase.findPhase(event.getPhase());
+                var phase = Phase.findPhase(event.getAttribute(GameEvent.Attribute.phase));
                 if (phase == Phase.BETWEEN_TURNS)
                 {
                     GameStarted = true;
@@ -112,16 +117,16 @@ public class ReplayMetadata {
 
             else if(event.getType() == GameEvent.Type.PUT_CARD_INTO_PLAY) {
 
-                var bpID = event.getBlueprintId();
-                var cardID = event.getCardId();
-                var participantID = event.getParticipantId();
+                var bpID = event.getAttribute(GameEvent.Attribute.blueprintId);
+                var cardId = event.getAttribute(GameEvent.Attribute.cardId);
+                var participantId = event.getAttribute(GameEvent.Attribute.participantId);
                 var zone = event.getZone();
 
-                if (bpID != null && cardID != null && participantID != null && participantID.equals(player)) {
-                    AllCards.put(cardID.toString(), bpID);
-                    SeenCards.add(cardID);
+                if (bpID != null && cardId != null && participantId != null && participantId.equals(player)) {
+                    AllCards.put(cardId, bpID);
+                    SeenCards.add(cardId);
                     if (zone.isInPlay())
-                        PlayedCards.add(cardID);
+                        PlayedCards.add(cardId);
 
                 }
             }

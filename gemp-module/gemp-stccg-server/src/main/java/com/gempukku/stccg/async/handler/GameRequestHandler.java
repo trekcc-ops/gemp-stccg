@@ -4,16 +4,15 @@ import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
+import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.game.EventSerializer;
-import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.gamestate.GameEvent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
@@ -142,7 +141,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                     Document doc = documentBuilder.newDocument();
                     Element update = doc.createElement("update");
 
-                    _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, _resourceOwner.getName(), new SerializationVisitor(doc, update));
+                    _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, new SerializationVisitor(doc, update));
 
                     doc.appendChild(update);
 
@@ -209,7 +208,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             if (gameMediator == null)
                 throw new HttpProcessingException(404);
 
-            responseWriter.writeHtmlResponse(gameMediator.produceCardInfo(resourceOwner, cardId));
+            responseWriter.writeHtmlResponse(gameMediator.produceCardInfo(cardId, participantId));
         }
     }
 
@@ -267,7 +266,6 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private class SerializationVisitor implements ParticipantCommunicationVisitor {
         private final Document _doc;
         private final Element _element;
-        private final EventSerializer _eventSerializer = new EventSerializer();
 
         private SerializationVisitor(Document doc, Element element) {
             _doc = doc;
@@ -280,8 +278,9 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
 
         @Override
-        public void visitGameEvent(GameEvent gameEvent) {
-            _element.appendChild(_eventSerializer.serializeEvent(_doc, gameEvent));
+        public void visitGameEvents(GameCommunicationChannel channel) {
+            for (GameEvent event : channel.consumeGameEvents())
+                _element.appendChild(event.serialize(_doc));
         }
 
         @Override
