@@ -1,4 +1,5 @@
 import Card from "./jCards.js";
+import { cardScale } from "./jCards.js";
 
 export default class CardGroup {
     container;
@@ -453,6 +454,7 @@ export class TableCardGroup extends CardGroup {
             return;
         }
 
+        var columns;
         var columnCount = 0;
         if (((this.width / this.height) / 1) > (this.maxCardWidth / this.maxCardHeight)) {
             columns = Math.floor(cardsToLayout.length / 3);

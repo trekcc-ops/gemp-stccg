@@ -1,6 +1,10 @@
-import { log } from './common.js';
+import GempClientCommunication from './communication.js';
+import { log, getUrlParam } from './common.js';
 import Card from './jCards.js';
+import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js';
+import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
 import GameAnimations from './gameAnimations.js';
+import ChatBoxUI from './chat.js';
 
 export default class GameTableUI {
     padding = 5;
@@ -154,12 +158,12 @@ export default class GameTableUI {
                 return this.playerAtLocationCardGroups[i];
             }
         }
-        for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+        for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
         }
-        for ([playerId, cardGroup] of Object.entries(this.onTableAreas)) {
+        for (var [playerId, cardGroup] of Object.entries(this.onTableAreas)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
@@ -362,8 +366,8 @@ export default class GameTableUI {
 
         this.tabPane = $("#bottomLeftTabs").tabs();
 
-            // Process game settings
-        for (setting of that.gameSettings.entries()) {
+        // Process game settings
+        for (var setting of that.gameSettings.entries()) {
             var settingName = setting[0];
             if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
                 var optionSelection = $("#" + settingName);
@@ -982,6 +986,7 @@ export default class GameTableUI {
                 this.startAnimatingTitle();
             }
         } catch (e) {
+            console.error(e);
             this.showErrorDialog(
                 "Game error",
                 "There was an error while processing game events in your browser. Reload the game to continue",
@@ -1028,7 +1033,7 @@ export default class GameTableUI {
 
     layoutZones() {
 //        this.advPathGroup.layoutCards();
-        for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+        for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
         if (!this.spectatorMode)

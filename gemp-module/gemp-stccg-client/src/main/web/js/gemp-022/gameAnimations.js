@@ -1,3 +1,7 @@
+import Card from "./jCards.js";
+import { getCardDivFromId } from "./jCards.js";
+import { layoutCardElem } from "./jCardGroup.js";
+
 export default class GameAnimations {
     game;
     replaySpeed = 1;
@@ -302,7 +306,7 @@ export default class GameAnimations {
                             duration:that.getAnimationLength(that.putCardIntoPlayDuration / 8),
                             easing:"linear",
                             step:function (now, fx) {
-                                layoutCardElem(cardDiv,
+                                    layoutCardElem(cardDiv,
                                     (gameWidth / 2 - cardWidth / 4) - now * (cardWidth / 4),
                                     gameHeight * (3 / 8) - now * (gameHeight / 8),
                                     cardWidth / 2 + now * (cardWidth / 2),

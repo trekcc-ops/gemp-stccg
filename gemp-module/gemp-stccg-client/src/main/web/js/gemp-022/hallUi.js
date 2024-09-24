@@ -1,5 +1,5 @@
 import GempClientCommunication from './communication.js';
-import { formatPrice } from './common.js';
+import { formatPrice, getUrlParam } from './common.js';
 
 export default class GempHallUI {
 	comm;
