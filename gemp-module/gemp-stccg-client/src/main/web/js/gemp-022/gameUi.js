@@ -1,5 +1,6 @@
 import { log } from './common.js';
 import Card from './jCards.js';
+import GameAnimations from './gameAnimations.js';
 
 export default class GameTableUI {
     padding = 5;
