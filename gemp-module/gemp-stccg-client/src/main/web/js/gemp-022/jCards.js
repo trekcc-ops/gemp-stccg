@@ -318,7 +318,7 @@ export function getFoilPresentation() {
 }
 
 export function createFullCardDiv(image, foil, horizontal, noBorder) {
-
+    var orientation;
     if (horizontal) orientation = "Horizontal";
     else orientation = "Vertical";
 
