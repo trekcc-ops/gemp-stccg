@@ -3,7 +3,7 @@
 {
     112_046: {
         title: Bajoran Phaser
-        type: java def
+        java-blueprint: true
     }
     112_105: {
         title: Access Relay Station
@@ -77,7 +77,7 @@
     }
     112_153: {
         title: Kira Nerys
-        type: java def
+        java-blueprint: true
     }
     112_157: {
         title: Mora Pol
@@ -180,7 +180,7 @@
     }
     112_167: {
         title: Shakaar Edon
-        type: java def
+        java-blueprint: true
     }
     112_169: {
         title: Tahna Los

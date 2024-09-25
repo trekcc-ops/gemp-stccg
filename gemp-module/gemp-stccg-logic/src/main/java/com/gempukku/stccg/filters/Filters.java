@@ -13,6 +13,7 @@ import java.util.*;
 
 public class Filters {
         // TODO - There is almost certainly a cleaner way of implementing this
+
     private static final Map<CardType, Filter> _cardTypeFilterMap = new HashMap<>();
     private static final Map<SkillName, Filter> _skillNameFilterMap = new HashMap<>();
     private static final Map<FacilityType, Filter> _facilityTypeFilterMap = new HashMap<>();
@@ -239,6 +240,14 @@ public class Filters {
 
     public static final Filter unique = (game, physicalCard) ->
             physicalCard.getBlueprint().getUniqueness() == Uniqueness.UNIQUE;
+
+    public static Filter any(Characteristic characteristic) {
+        return (game, physicalCard) -> {
+            if (physicalCard instanceof PhysicalNounCard1E noun)
+                return noun.hasCharacteristic(characteristic);
+            else return false;
+        };
+    }
 
 
     private static Filter affiliation(final Affiliation affiliation) {

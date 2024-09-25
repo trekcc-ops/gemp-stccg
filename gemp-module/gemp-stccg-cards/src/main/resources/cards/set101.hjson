@@ -3,42 +3,42 @@
 {
     101_015: {
         title: Armus - Skin of Evil
-        type: java def
+        java-blueprint: true
         rarity: R
     }
     101_057: {
         title: Federation PADD
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_058: {
         title: Klingon Disruptor
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_059: {
         title: Klingon PADD
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_062: {
         title: Romulan Disruptor
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_063: {
         title: Romulan PADD
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_064: {
         title: Starfleet Type II Phaser
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_065: {
         title: Tricorder
-        type: java def
+        java-blueprint: true
         rarity: C
     }
     101_104: {
@@ -868,6 +868,21 @@
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/dukath.jpg
         rarity: C
     }
+    101_258: {
+        title: Duras
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: "Son of Ja'rod. Contender for leadership of the Klingon High Council. Member of a powerful political family."
+        skill-box: "[*] Leadership [*] Computer Skill [*] Treachery [*] Greed"
+        integrity: 4
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/duras95.jpg
+        rarity: R
+    }
     101_260: {
         title: Gorath
         type: personnel
@@ -884,6 +899,21 @@
         image-url: https://www.trekcc.org/1e/cardimages/premiere/gorath95.jpg
         rarity: C
     }
+    101_261: {
+        title: Gowron
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: "Son of M'Rel. Leader of the Klingon High Council after defeating the Duras forces in the Klingon Civil War of 2367-2368."
+        skill-box: "[*] Leadership x2 [*] Diplomacy [*] Honor"
+        integrity: 8
+        cunning: 7
+        strength: 9
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/28V.jpg
+        rarity: R
+    }
     101_262: {
         title: "J'Ddan"
         type: personnel
@@ -899,6 +929,21 @@
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/comingofage/15.jpg
         rarity: C
+    }
+    101_263: {
+        title: "K'mpec"
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: command
+        lore: Klingon High Council Leader prior to Gowron. Appointed Jean-Luc Picard as Arbiter of Succession in 2367.
+        skill-box: "[*] Leadership [*] Diplomacy"
+        integrity: 7
+        cunning: 8
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/kmpec95.jpg
+        rarity: U
     }
     101_277: {
         title: Kurak

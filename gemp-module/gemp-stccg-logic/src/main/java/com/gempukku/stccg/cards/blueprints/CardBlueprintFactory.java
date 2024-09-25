@@ -44,6 +44,7 @@ public class CardBlueprintFactory {
         fieldProcessors.put("icons", new IconsFieldProcessor());
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
+        fieldProcessors.put("characteristic", new CharacteristicFieldProcessor());
 
         fieldProcessors.put("quadrant", new QuadrantFieldProcessor());
         fieldProcessors.put("region", new RegionFieldProcessor());
@@ -100,17 +101,22 @@ public class CardBlueprintFactory {
         CardBlueprint result;
         result = new CardBlueprint(blueprintId);
         Set<Map.Entry<String, Object>> values = json.entrySet();
+        Iterator<Map.Entry<String, Object>> i = values.iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, Object> value = i.next();
+            if (value.getKey().equalsIgnoreCase("java-blueprint") &&
+                    value.getValue().toString().equals("true")) {
+                result = buildFromJava(blueprintId);
+                i.remove();
+            }
+        }
         for (Map.Entry<String, Object> value : values) {
             final String field = value.getKey().toLowerCase();
             final Object fieldValue = value.getValue();
-            if (field.equals("type") && fieldValue.equals("java def"))
-                result = buildFromJava(blueprintId);    // TODO - This is awkwardly placed but should get the job done
-            else {
-                final FieldProcessor fieldProcessor = fieldProcessors.get(field);
-                if (fieldProcessor == null)
-                    throw new InvalidCardDefinitionException("Unrecognized field: " + field);
-                fieldProcessor.processField(field, fieldValue, result, this);
-            }
+            final FieldProcessor fieldProcessor = fieldProcessors.get(field);
+            if (fieldProcessor == null)
+                throw new InvalidCardDefinitionException("Unrecognized field: " + field);
+            fieldProcessor.processField(field, fieldValue, result, this);
         }
 
         // Apply uniqueness based on ST1E glossary

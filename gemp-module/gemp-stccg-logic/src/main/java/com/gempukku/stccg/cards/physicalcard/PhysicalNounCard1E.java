@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -75,4 +76,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         else return _affiliationOptions.contains(affiliation);
     }
 
+    public boolean hasCharacteristic(Characteristic characteristic) {
+        return _blueprint.hasCharacteristic(characteristic);
+    }
 }

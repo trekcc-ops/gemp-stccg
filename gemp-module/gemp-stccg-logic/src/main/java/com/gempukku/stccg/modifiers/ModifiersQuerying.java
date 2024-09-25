@@ -49,8 +49,6 @@ public interface ModifiersQuerying {
     // Stats
     int getStrength(PhysicalCard physicalCard);
 
-    boolean appliesStrengthBonusModifier(PhysicalCard modifierSource, PhysicalCard modifierTarget);
-
     boolean isAdditionalCardType(DefaultGame game, PhysicalCard card, CardType cardType);
 
     boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);

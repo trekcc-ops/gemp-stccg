@@ -87,7 +87,7 @@
     }
     106_014: {
         title: Admiral McCoy
-        type: java def
+        java-blueprint: true
     }
     106_018: {
         title: Spock

@@ -36,7 +36,7 @@ public interface Modifier {
 
     boolean isKeywordRemoved(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
 
-    int getStrengthModifier(PhysicalCard physicalCard);
+    int getAttributeModifier(PhysicalCard physicalCard);
 
     boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTaget);
 

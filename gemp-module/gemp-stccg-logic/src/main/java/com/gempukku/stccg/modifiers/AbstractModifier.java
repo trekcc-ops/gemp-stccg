@@ -108,7 +108,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getStrengthModifier(PhysicalCard physicalCard) {
+    public int getAttributeModifier(PhysicalCard physicalCard) {
         return 0;
     }
 

@@ -26,6 +26,7 @@ public class CardBlueprint {
     private PropertyLogo _propertyLogo;
     private String _lore;
     private Species _species;
+    private final Set<Characteristic> _characteristics = new HashSet<>();
     private Uniqueness uniqueness = null;
     private List<CardIcon> _icons;
     private Quadrant quadrant;
@@ -463,4 +464,13 @@ public class CardBlueprint {
     public List<Modifier> getWhileInPlayModifiersNew(Player player, PhysicalCard card) {
         return new LinkedList<>(getGameTextWhileActiveInPlayModifiers(player, card));
     }
+
+    public boolean hasCharacteristic(Characteristic characteristic) {
+        return _characteristics.contains(characteristic);
+    }
+
+    public void addCharacteristic(Characteristic characteristic) {
+        _characteristics.add(characteristic);
+    }
+
 }

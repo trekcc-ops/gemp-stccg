@@ -358,7 +358,7 @@ public abstract class GameState implements Snapshotable<GameState> {
             if (end)
                 zoneCardList.add(card);
             else
-                zoneCardList.add(0, card);
+                zoneCardList.addFirst(card);
         }
 
         if (card.getZone() != null)

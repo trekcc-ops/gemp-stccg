@@ -1,7 +1,6 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.AbstractLogicTest;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

@@ -37,7 +37,7 @@
     }
     116_054: {
         title: Riker Wil
-        type: java def
+        java-blueprint: true
     }
     116_070: {
         title: Enrique Muniz

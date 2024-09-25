@@ -410,22 +410,23 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        if (attribute == CardAttribute.STRENGTH)
-            return getStrength(card);
-        else
-                // TODO
-            throw new RuntimeException("No code exists for getAttribute(" + attribute);
-    }
-
-    @Override
-    public int getStrength(PhysicalCard physicalCard) {
         LoggingThreadLocal.logMethodStart();
         try {
-            int result = physicalCard.getBlueprint().getAttribute(CardAttribute.STRENGTH);
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.STRENGTH_MODIFIER, physicalCard)) {
-                final int strengthModifier = modifier.getStrengthModifier(physicalCard);
-                if (strengthModifier <= 0 || appliesStrengthBonusModifier(modifier.getSource(), physicalCard))
-                    result += strengthModifier;
+            int result = card.getBlueprint().getAttribute(attribute);
+            ModifierEffect effectType = null;
+            if (attribute == CardAttribute.STRENGTH)
+                effectType = ModifierEffect.STRENGTH_MODIFIER;
+            else if (attribute == CardAttribute.CUNNING)
+                effectType = ModifierEffect.CUNNING_MODIFIER;
+            else if (attribute == CardAttribute.INTEGRITY)
+                effectType = ModifierEffect.INTEGRITY_MODIFIER;
+            List<Modifier> attributeModifiers = new LinkedList<>();
+            if (effectType != null)
+                attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
+                    // TODO - Need to separate ships vs. personnel here
+            attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
+            for (Modifier modifier : attributeModifiers) {
+                result += modifier.getAttributeModifier(card);
             }
             return Math.max(0, result);
         } finally {
@@ -434,20 +435,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean appliesStrengthBonusModifier(PhysicalCard modifierSource, PhysicalCard modifierTarget) {
-        if (modifierSource != null)
-            for (Modifier modifier :
-                    getModifiersAffectingCard(ModifierEffect.STRENGTH_BONUS_SOURCE_MODIFIER, modifierSource)) {
-                if (modifier.cancelsStrengthBonusModifier(_game, modifierSource, modifierTarget))
-                    return false;
-            }
-        if (modifierTarget != null)
-            for (Modifier modifier :
-                    getModifiersAffectingCard(ModifierEffect.STRENGTH_BONUS_TARGET_MODIFIER, modifierTarget)) {
-                if (modifier.cancelsStrengthBonusModifier(_game, modifierSource, modifierTarget))
-                    return false;
-            }
-        return true;
+    public int getStrength(PhysicalCard physicalCard) {
+        return getAttribute(physicalCard, CardAttribute.STRENGTH);
     }
 
     @Override

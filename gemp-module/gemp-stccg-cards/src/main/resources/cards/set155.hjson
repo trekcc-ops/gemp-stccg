@@ -440,6 +440,20 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/tng/78V.jpg
     }
+    155_079: {
+        title: Captain Worf
+        java-blueprint: true
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: command
+        lore: "To persuade K'Temoc not to attack, <b>Worf</b> served as acting captain of the <i>U.S.S. Enterprise</i>. Mate of K'Ehleyr. Finds the command chair \"comfortable\"."
+        integrity: 8
+        cunning: 6
+        strength: 10
+        image-url: https://www.trekcc.org/1e/cardimages/tng/79V.jpg
+    }
     155_080: {
         title: "Commander K'Ehleyr"
         type: personnel
@@ -447,6 +461,7 @@
         property-logo: tng-logo
         classification: V.I.P.
         icons: staff
+        characteristic: "k'ehleyr"
         lore: "1/2 Klingon, 1/2 human romantically involved with Worf. <b>K'Ehleyr</b> posed as first officer of the <i>U.S.S. Enterprise</i> in 2365. She left Worf incomplete."
         skill-box: "[*] OFFICER [*] Honor [*] Anthropology [*] Diplomacy [*] Law"
         integrity: 7
