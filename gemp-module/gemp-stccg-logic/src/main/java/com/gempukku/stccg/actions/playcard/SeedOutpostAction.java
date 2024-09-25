@@ -56,8 +56,10 @@ public class SeedOutpostAction extends PlayCardAction {
         Set<PhysicalCard> availableMissions = new HashSet<>();
         for (ST1ELocation location : gameState.getSpacelineLocations()) {
             MissionCard missionCard = location.getMissionForPlayer(playerId);
-            if (_cardEnteringPlay.canSeedAtMission(missionCard)) {
-                availableMissions.add(missionCard);
+            if (missionCard != null) {
+                if (_cardEnteringPlay.canSeedAtMission(missionCard)) {
+                    availableMissions.add(missionCard);
+                }
             }
         }
 
