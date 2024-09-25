@@ -233,7 +233,7 @@ export default class Card {
     }
 
     displayCardInfo(container) {
-        that = this;
+        let that = this;
         container.html("");
         container.html("<div style='scroll: auto'></div>");
         container.append(createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack()));
