@@ -6,7 +6,7 @@ import { NormalCardGroup, layoutTokens } from "./jCardGroup.js";
 
 export default class GempLotrDeckBuildingUI {
     comm;
-    notes;
+    notes = "";
     selectionFunc;
     start = 0;
     count = 18
