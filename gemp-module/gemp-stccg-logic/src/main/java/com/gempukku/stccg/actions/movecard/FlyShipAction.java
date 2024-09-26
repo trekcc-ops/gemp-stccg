@@ -41,7 +41,7 @@ public class FlyShipAction extends AbstractCostToEffectAction {
                         _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                     }
                 } catch(InvalidGameLogicException exp) {
-                    // TODO - Error thrown if distance cannot be calculated between two locations
+                    getGame().sendMessage(exp.getMessage());
                 }
             }
         }
@@ -64,7 +64,7 @@ public class FlyShipAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _flyingCard; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

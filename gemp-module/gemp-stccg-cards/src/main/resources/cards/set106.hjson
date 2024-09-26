@@ -12,6 +12,7 @@
         point-box: 25
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/agoodplacetodie.gif
+        rarity: P
     }
     106_003: {
         title: Avert Danger
@@ -24,6 +25,7 @@
         point-box: 30
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/avertdanger.gif
+        rarity: P
     }
     106_004: {
         title: Cargo Rendezvous
@@ -36,6 +38,7 @@
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/errata/Cargo-Rendezvous.jpg
+        rarity: P
     }
     106_005: {
         title: Distress Mission
@@ -48,6 +51,59 @@
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/vpromos/263VP.jpg
+        rarity: P
+    }
+    106_006: {
+        title: Gault
+        type: mission
+        location: Gault
+        lore: Open secret inquiry on early history of Klingon foster child raised on this Federation planet.
+        mission-type: planet
+        affiliation-icons: klingon
+        mission-requirements: Exobiology + OFFICER + Honor x2
+        point-box: 30
+        span: 2
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/gault.gif
+        rarity: P
+    }
+    106_007: {
+        title: Gravesworld
+        type: mission
+        location: Gravesworld
+        lore: Investigate distress call received from lab of Dr. Ira Graves here.
+        mission-type: planet
+        affiliation-icons: federation
+        mission-requirements: MEDICAL + OFFICER + Physics
+        point-box: 30
+        span: 5
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/gravesworld.gif
+        rarity: P
+    }
+    106_008: {
+        title: Homeward
+        type: mission
+        location: Boral II
+        lore: Aid study of primitive culture on planet threatened by intense radiation storms.
+        mission-type: planet
+        affiliation-icons: federation
+        mission-requirements: Anthropology + Computer Skill
+        point-box: 25
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/homeward.gif
+        rarity: P
+    }
+    106_009: {
+        title: Hostage Situation
+        type: mission
+        location: Mordan IV
+        lore: Coordinate with local authorities to free captives held hostage.
+        mission-type: planet
+        affiliation-icons: federation,klingon
+        mission-requirements: SECURITY x2 + MEDICAL + INTEGRITY>32
+        point-box: 25
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/hostagesituation.gif
+        rarity: P
     }
     106_010: {
         title: Reopen Dig
@@ -60,6 +116,7 @@
         point-box: 25
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/errata/ReopenDig.jpg
+        rarity: P
     }
     106_011: {
         title: Reported Activity
@@ -72,6 +129,19 @@
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/errata/Reported-Activity.jpg
+        rarity: P
+    }
+    106_012: {
+        title: Sensitive Search
+        type: mission
+        location: Nequencia System
+        lore: "Investigate reports of politically \"sensitive\" activities by an information dealer in sector."
+        mission-type: planet
+        affiliation-icons: federation,romulan,klingon
+        mission-requirements: Computer Skill + CUNNING>28
+        point-box: 30
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/sensitivesearch.gif
     }
     106_013: {
         title: Survey Instability

@@ -81,15 +81,19 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
                     }
                 } else {
                     Action action = _actionStack.peek();
-                    Effect effect = action.nextEffect();
-                    if (effect == null) {
-                        _actionStack.remove(_actionStack.lastIndexOf(action));
-                    }
-                    if (effect != null) {
-                        if (effect.getType() == null) {
-                            effect.playEffect();
-                        } else
-                            _actionStack.add(new PlayOutEffect(_game, effect));
+                    try {
+                        Effect effect = action.nextEffect();
+                        if (effect == null) {
+                            _actionStack.remove(_actionStack.lastIndexOf(action));
+                        }
+                        if (effect != null) {
+                            if (effect.getType() == null) {
+                                effect.playEffect();
+                            } else
+                                _actionStack.add(new PlayOutEffect(_game, effect));
+                        }
+                    } catch(InvalidGameLogicException exp) {
+                        _game.sendMessage(exp.getMessage());
                     }
                 }
             }
@@ -137,7 +141,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
 
         @Override
-        public Effect nextEffect() {
+        public Effect nextEffect() throws InvalidGameLogicException {
             if (!_initialized) {
                 _initialized = true;
                 appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
@@ -174,7 +178,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
 
         @Override
-        public Effect nextEffect() {
+        public Effect nextEffect() throws InvalidGameLogicException {
             if (!_initialized) {
                 _initialized = true;
                 List<Action> requiredResponses = _actionsEnvironment.getRequiredAfterTriggers(_effectResults);

@@ -623,6 +623,21 @@
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/premiere/jennadsora95.jpg
     }
+    101_217: {
+        title: "K'Ehleyr"
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: staff
+        characteristic: "k'ehleyr"
+        lore: "1/2 Klingon, 1/2 Human female. Federation Ambassador to the K'mpec government. Mate of Lieutenant Worf. Mother of Alexander."
+        skill-box: "[*] Diplomacy [*] Honor"
+        integrity: 8
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/kehleyr95.jpg
+    }
     101_225: {
         title: Mot the Barber
         type: personnel
@@ -945,6 +960,20 @@
         image-url: https://www.trekcc.org/1e/cardimages/premiere/kmpec95.jpg
         rarity: U
     }
+    101_268: {
+        title: Kargan
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Captain of the <i>I.K.S. Pagh</i> when Commander William T. Riker served as an exchange officer.
+        skill-box: "[*] Honor [*] Computer Skill"
+        integrity: 7
+        cunning: 5
+        strength: 9
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/30V.jpg
+    }
     101_277: {
         title: Kurak
         type: personnel
@@ -972,6 +1001,22 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/premiere/torak95.jpg
     }
+    101_288: {
+        title: Vekma
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: MEDICAL
+        icons: staff
+        uniqueness: universal
+        lore: Klingon female trained in Klingon anatomy and medicine. Propositioned Commander William T. Riker on the <i>I.K.S. Pagh</i> in 2365.
+        skill-box: "[*] Honor"
+        integrity: 6
+        cunning: 5
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/32V.jpg
+        rarity: C
+    }
     101_289: {
         title: Amarie
         type: personnel
@@ -984,6 +1029,20 @@
         cunning: 9
         strength: 2
         image-url: https://www.trekcc.org/1e/cardimages/premiere/amarie95.jpg
+    }
+    101_290: {
+        title: Baran
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Male captain of a mercenary ship raiding archaeological sites to find the Stone of Gol.
+        skill-box: "[*] Greed [*] Archaeology [*] Exobiology [*] Computer Skill"
+        integrity: 3
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tngsup/33V.jpg
     }
     101_292: {
         title: Devinoni Ral
@@ -1198,7 +1257,7 @@
         image-url: https://www.trekcc.org/1e/cardimages/errata/IKC-Bortas.jpg
     }
     101_347: {
-        title: "I.K.C. K'Vort"
+        title: "I.K.S. K'Vort"
         type: ship
         affiliation: klingon
         property-logo: tng-logo

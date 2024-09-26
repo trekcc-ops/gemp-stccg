@@ -39,16 +39,10 @@ public class ST1ELocation {
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
-    public Set<Affiliation> getAffiliationIcons(String playerId) {
-        if (_missionCards.isEmpty())
-            return null;
-        else
-            // TODO - Assumes that the mission is symmetric
-            return getMissionForPlayer(playerId).getBlueprint().getOwnerAffiliationIcons();
-    }
-    public MissionCard getMissionForPlayer(String playerId) {
+
+    public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
         if (_missionCards.size() == 1) {
-            return _missionCards.get(0);
+            return _missionCards.getFirst();
         }
         else if (_missionCards.size() == 2) {
             for (MissionCard mission : _missionCards) {
@@ -56,7 +50,7 @@ public class ST1ELocation {
                     return mission;
             }
         }
-        return null;
+        throw new InvalidGameLogicException("Could not find valid mission properties for player " + playerId + " at " + _locationName);
     }
 
     public void addNonMission(PhysicalCard card) {
@@ -108,5 +102,7 @@ public class ST1ELocation {
         return _game.getGameState().getSpacelineLocations().indexOf(this);
     }
 
-    public int getSpan(Player player) { return getMissionForPlayer(player.getPlayerId()).getSpan(player); }
+    public int getSpan(Player player) throws InvalidGameLogicException {
+        return getMissionForPlayer(player.getPlayerId()).getSpan(player);
+    }
 }

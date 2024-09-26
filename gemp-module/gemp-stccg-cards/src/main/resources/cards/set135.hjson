@@ -1,0 +1,18 @@
+// Set 135: Chain of Command
+
+{
+    135_004: {
+        title: Jean-Luc Picard
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command,communications-subcommand,navigation-subcommand,defense-subcommand
+        lore: Rescued Borg counterpart. After returning to his command of the <i>U.S.S. Enterprise</i>, Picard developed a violent vendetta against the Borg.
+        skill-box: "[*] Leadership x2 [*] Archaeology [*] Navigation"
+        integrity: 8
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg
+    }
+}

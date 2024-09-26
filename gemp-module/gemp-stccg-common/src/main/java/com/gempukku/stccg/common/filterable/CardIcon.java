@@ -10,6 +10,7 @@ public enum CardIcon implements Filterable {
     ENT_ERA("22nd Century", "https://www.trekcc.org/forum/images/smilies/icon_22nd_century.png"),
     FIRST_CONTACT_ICON("First Contact", "https://www.trekcc.org/images/icons/1e/icon_first_contact.jpg"),
     MAQUIS("Maquis", "https://www.trekcc.org/forum/images/smilies/icon_maquis.png"),
+    NAVIGATION_SUBCOMMAND("Navigation", "https://www.trekcc.org/forum/images/smilies/icon_sc_nav.png"),
     ORB("Orb", "https://www.trekcc.org/forum/images/smilies/icon_orb.jpg"),
     REACTOR_CORE("Reactor Core", "https://www.trekcc.org/forum/images/smilies/icon_reactorcore.jpg"),
     SKILL_DOT("Skill dot", "https://www.trekcc.org/forum/images/smilies/icon_skilldot.png"),

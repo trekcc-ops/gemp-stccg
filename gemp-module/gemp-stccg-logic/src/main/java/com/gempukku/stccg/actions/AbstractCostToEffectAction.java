@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.turn.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
@@ -142,7 +143,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return cost;
     }
 
-    protected final Effect getNextEffect() {
+    protected final Effect getNextEffect() throws InvalidGameLogicException {
         final Effect effect = _effects.poll();
         if (effect != null)
             _processedEffects.add(effect);

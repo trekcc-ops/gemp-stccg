@@ -14,6 +14,22 @@
         cunning: 7
         strength: 8
         image-url: https://www.trekcc.org/1e/cardimages/errata/KTemoc.jpg
+        rarity: P
+    }
+    127_031: {
+        title: Sunad
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Zalkonian captain. Sought to capture criminals undergoing a dangerous mutation before they could further disrupt society.
+        skill-box: "[*] SECURITY [*] Leadership [*] Physics [*] Law"
+        integrity: 5
+        cunning: 8
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Sunad.jpg
+        rarity: P
     }
     127_035: {
         title: U.S.S. Drake
@@ -28,5 +44,6 @@
         weapons: 8
         shields: 7
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/38V.jpg
+        rarity: P
     }
 }

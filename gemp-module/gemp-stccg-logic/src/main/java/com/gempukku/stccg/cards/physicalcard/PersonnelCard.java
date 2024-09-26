@@ -16,11 +16,7 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     }
 
     public Integer getAttribute(CardAttribute attribute) {
-        if (attribute == CardAttribute.STRENGTH)
-            return _game.getModifiersQuerying().getStrength(this);
-            // TODO - Does not apply modifiers for any attribute other than strength
-        else
-            return _blueprint.getAttribute(attribute);
+        return _game.getModifiersQuerying().getAttribute(this, attribute);
     }
 
     public Integer getSkillLevel(SkillName skill) {

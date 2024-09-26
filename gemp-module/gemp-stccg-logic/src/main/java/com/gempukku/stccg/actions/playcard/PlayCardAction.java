@@ -5,6 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
@@ -78,7 +79,7 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
     protected Effect getFinalEffect() { return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone); }
 
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;
             _game.getGameState().beginPlayCard(this);

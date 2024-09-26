@@ -76,7 +76,4 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         else return _affiliationOptions.contains(affiliation);
     }
 
-    public boolean hasCharacteristic(Characteristic characteristic) {
-        return _blueprint.hasCharacteristic(characteristic);
-    }
 }

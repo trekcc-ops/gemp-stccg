@@ -15,6 +15,20 @@
         strength: 3
         image-url: https://www.trekcc.org/1e/cardimages/errata/MontgomeryScott.jpg
     }
+    103_100: {
+        title: Tasha Yar - Alternate
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        icons: staff,au-icon
+        classification: SECURITY
+        lore: Traveled to 2344 and helped prevent a disastrous war. Survivor of the Battle of Narendra III. Consort of Romulan general. Mother of Sela.
+        skill-box: "[*] Honor [*] Leadership [DL] Starfleet Type II Phaser"
+        integrity: 8
+        cunning: 7
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Tasha-Yar-Alternate.jpg
+    }
     103_109: {
         title: Maques
         type: personnel

@@ -56,6 +56,10 @@
     setName: Enterprise Collection
   }
   {
+    setId: "135"
+    setName: Chain of Command
+  }
+  {
     setId: "138"
     setName: Life from Lifelessness
   }

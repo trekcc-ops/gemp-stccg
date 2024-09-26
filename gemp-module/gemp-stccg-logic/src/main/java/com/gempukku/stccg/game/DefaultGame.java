@@ -214,6 +214,8 @@ public abstract class DefaultGame {
         }
     }
 
+    public Player getPlayer(int index) { return getGameState().getPlayer(getAllPlayerIds()[index-1]); }
+
     public String[] getAllPlayerIds() {
         return _allPlayerIds.toArray(new String[0]);
     }
@@ -313,4 +315,5 @@ public abstract class DefaultGame {
     public void sendAwaitingDecision(String playerName, AwaitingDecision awaitingDecision) {
         _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
     }
+
 }

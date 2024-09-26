@@ -23,6 +23,7 @@ public class Filters {
     private static final Map<Uniqueness, Filter> _uniquenessFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
     private static final Map<Keyword, Filter> _keywordFilterMap = new HashMap<>();
+    private static final Map<Characteristic, Filter> _characteristicFilterMap = new HashMap<>();
 
     static {
         for (Zone zone : Zone.values())
@@ -43,6 +44,8 @@ public class Filters {
             _speciesFilterMap.put(species, species(species));
         for (Keyword keyword : Keyword.values())
             _keywordFilterMap.put(keyword, keyword(keyword));
+        for (Characteristic characteristic : Characteristic.values())
+            _characteristicFilterMap.put(characteristic, characteristic(characteristic));
     }
 
     public static Collection<PhysicalCard> filterYourActive(Player player, Filterable... filters) {
@@ -384,6 +387,11 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().hasKeyword(physicalCard, keyword);
     }
 
+    private static Filter characteristic(final Characteristic characteristic) {
+        return (game, physicalCard) -> physicalCard.hasCharacteristic(characteristic);
+    }
+
+
     public static Filter and(final Filterable... filters) {
         Filter[] filtersInt = convertToFilters(filters);
         if (filtersInt.length == 1)
@@ -412,6 +420,8 @@ public class Filters {
             return Filters.sameCard((PhysicalCard) filter);
         else if (filter instanceof CardType)
             return _cardTypeFilterMap.get((CardType) filter);
+        else if (filter instanceof Characteristic)
+            return _characteristicFilterMap.get((Characteristic) filter);
         else if (filter instanceof SkillName enumFilter)
             return _skillNameFilterMap.get(enumFilter);
         else if (filter instanceof CardIcon icon)

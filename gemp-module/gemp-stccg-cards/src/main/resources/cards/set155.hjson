@@ -126,6 +126,31 @@
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
     }
+    155_044: {
+        title: Salvage Borg Ship
+        type: mission
+        mission-type: planet
+        region: Argolis Cluster
+        location: Small Moon
+        lore: Study wreckage and crew member of lost scout.
+        affiliation-icons: federation,romulan,klingon,cardassian,ferengi
+        mission-requirements: Astrophysics + ENGINEER + MEDICAL + Computer Skill
+        point-box: 35
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/SalvageBorgShip.jpg
+    }
+    155_046: {
+        title: Steal Technology
+        type: mission
+        mission-type: space
+        location: Gamma Tauri IV
+        lore: Steal energy converter from remote Federation outpost.
+        affiliation-icons: romulan,klingon,non-aligned,cardassian,ferengi
+        mission-requirements: OFFICER + Greed + Transporter Skill + Treachery
+        point-box: 35
+        span: 4
+        image-url: https://www.trekcc.org/1e/cardimages/tng/46V.jpg
+    }
     155_047: {
         title: The Last Outpost
         type: mission
@@ -351,6 +376,20 @@
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/tng/71V.jpg
     }
+    155_072: {
+        title: Kol
+        type: personnel
+        java-blueprint: true
+        affiliation: ferengi
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: "Ferengi scientist serving under Goss. Studied the Barzan wormhole with Dr. Arridor. Didn't realize the significance of the meson and lepton fluctuations."
+        integrity: 6
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/72V.jpg
+    }
     155_073: {
         title: Levin
         type: personnel
@@ -409,21 +448,6 @@
         cunning: 7
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/tng/77V.jpg
-    }
-    155_078: {
-        title: "B'Somgh"
-        type: personnel
-        affiliation: klingon
-        property-logo: tng-logo
-        classification: ENGINEER
-        uniqueness: universal
-        icons: staff
-        lore: Warp drive specialist aboard the I.K.S. Pagh, representative of engineers in the Klingon Defense Force. Considered a gourmand by shipmates.
-        skill-box: "[*] Exobiology [*] Physics [*] Astrophysics [*] Biology"
-        integrity: 7
-        cunning: 6
-        strength: 7
-        image-url: https://www.trekcc.org/1e/cardimages/tng/78V.jpg
     }
     155_078: {
         title: "B'Somgh"

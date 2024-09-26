@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public interface Action {
     String getCardActionPrefix();
@@ -26,7 +27,7 @@ public interface Action {
 
     String getText();
 
-    Effect nextEffect();
+    Effect nextEffect() throws InvalidGameLogicException;
     SubAction createSubAction();
     DefaultGame getGame();
     boolean canBeInitiated();

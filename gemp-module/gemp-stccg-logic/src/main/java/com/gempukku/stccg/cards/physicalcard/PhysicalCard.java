@@ -566,4 +566,14 @@ public abstract class PhysicalCard implements Filterable {
     private ModifiersQuerying getModifiers() {
         return getGame().getModifiersQuerying();
     }
+
+    public boolean isInPlay() {
+        if (_zone == null)
+            return false;
+        else return _zone.isInPlay();
+    }
+
+    public boolean hasCharacteristic(Characteristic characteristic) {
+        return _blueprint.hasCharacteristic(characteristic);
+    }
 }

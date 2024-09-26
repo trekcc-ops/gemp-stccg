@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
@@ -49,7 +50,7 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
             String playerId = getPerformingPlayerId();
         ST1EGameState gameState = _game.getGameState();
 

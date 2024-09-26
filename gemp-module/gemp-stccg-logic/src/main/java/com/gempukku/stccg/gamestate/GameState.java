@@ -643,4 +643,10 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void generateSnapshot(GameState selfSnapshot, SnapshotData snapshotData) {
             // TODO SNAPSHOT - Add content here
     }
+
+    public int getAndIncrementNextCardId() {
+        int cardId = _nextCardId;
+        _nextCardId++;
+        return cardId;
+    }
 }
