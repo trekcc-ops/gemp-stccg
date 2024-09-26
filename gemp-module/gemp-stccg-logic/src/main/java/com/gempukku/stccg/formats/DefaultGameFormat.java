@@ -336,21 +336,6 @@ public class DefaultGameFormat implements GameFormat {
         for (String blueprintId : deck.getDrawDeckCards())
             processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
 
-        /* TODO - The actual rule is that missions need to be unique to location, not blueprint.
-            This is also specifically a 1E rule, as I imagine 2E has a different system for mission uniqueness.
-         */
-        List<String> distinctCardsInDeck = deck.getDrawDeckCards().stream().distinct().toList();
-        distinctCardsInDeck.forEach((card) -> {
-            try {
-                CardBlueprint blueprint = _library.getCardBlueprint(card);
-                if (blueprint.getCardType() == CardType.MISSION && blueprint.isUnique())
-                    if (Collections.frequency(deck.getDrawDeckCards(), card) > 1)
-                        result.add("Deck contains multiple copies of unique mission: " + blueprint.getTitle());
-            } catch (CardNotFoundException e) {
-                throw new RuntimeException("Deck contains card with no blueprint: " + card);
-            }
-        });
-
         for (Map.Entry<String, Integer> count : cardCountByName.entrySet()) {
             if (count.getValue() > _maximumSameName) {
                 result.add("Deck contains more of the same card than allowed - " + count.getKey() + " (" + count.getValue() + ">" + _maximumSameName + "): " + count.getKey());
@@ -446,13 +431,39 @@ public class DefaultGameFormat implements GameFormat {
                 result.append("Seed deck contains more than maximum number of cards: ")
                         .append(seedDeckSize).append(">").append(".\n");
             }
-            int missions = deck.getSubDeck(SubDeck.MISSIONS).size();
-            if (missions != _missions) {
-                result.append("Deck must contain exactly ").append(_missions).append(" missions").append(".\n");
-            }
+            result.append(validateMissionsPile(deck));
         }
         return result.toString();
     }
+
+    private String validateMissionsPile(CardDeck deck) {
+        StringBuilder result = new StringBuilder();
+        List<String> missionsPile = deck.getSubDeck(SubDeck.MISSIONS);
+        if (missionsPile.size() != _missions) {
+            result.append("Deck must contain exactly ").append(_missions).append(" missions").append(".\n");
+        }
+        List<String> uniqueLocations = new LinkedList<>();
+        for (String blueprintId : missionsPile) {
+            try {
+                CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
+                if (blueprint.getCardType() != CardType.MISSION)
+                    result.append("Missions pile contains non-mission card: ").append(blueprint.getTitle()).append(".\n");
+                else if (blueprint.isUnique()) {
+                    uniqueLocations.add(blueprint.getLocation());
+                }
+            } catch(CardNotFoundException exp) {
+                result.append("Deck contains card with no valid blueprint: ").append(blueprintId);
+            }
+        }
+        List<String> distinctUniqueLocations = uniqueLocations.stream().distinct().toList();
+        for (String location : distinctUniqueLocations) {
+            int locationCount = Collections.frequency(uniqueLocations, location);
+            if (locationCount > 1)
+                result.append("Deck has ").append(locationCount).append(" unique missions at location: ").append(location);
+        }
+        return result.toString();
+    }
+
 
     private void processCardCounts(String blueprintId, Map<String, Integer> cardCountByName,
                                    Map<String, Integer> cardCountByBaseBlueprintId)  {

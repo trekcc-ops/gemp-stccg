@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.junit.Test;
 
@@ -16,8 +17,7 @@ public class CardBlueprintTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void kolTest()
-            throws DecisionResultInvalidException, CardNotFoundException {
+    public void kolTest() {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 
@@ -30,7 +30,11 @@ public class CardBlueprintTest extends AbstractAtTest {
         assertEquals("Kol", kol.getTitle());
         assertEquals("Dr. Arridor", arridor.getTitle());
 
-        _game.getGameState().addToSpaceline(mission, 0, false);
+        try {
+            _game.getGameState().addToSpaceline(mission, 0, false);
+        } catch(InvalidGameLogicException exp) {
+            System.out.println(exp.getMessage());
+        }
         _game.getGameState().seedFacilityAtLocation(outpost, 0);
 
         assertTrue(outpost.isInPlay());
@@ -58,15 +62,13 @@ public class CardBlueprintTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void captainWorfTest()
-            throws DecisionResultInvalidException, CardNotFoundException {
+    public void captainWorfTest() {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
         Player player2 = _game.getPlayer(2);
 
         final MissionCard mission = new MissionCard(_game, 101, player1, _cardLibrary.get("101_174"));
         final FacilityCard outpost1 = new FacilityCard(_game, 102, player1, _cardLibrary.get("101_105"));
-        final FacilityCard outpost2 = new FacilityCard(_game, 103, player2, _cardLibrary.get("101_105"));
         final PersonnelCard worf = new PersonnelCard(_game, 104, player1, _cardLibrary.get("155_079"));
         final PersonnelCard kehleyr1 = new PersonnelCard(_game, 105, player1, _cardLibrary.get("155_080"));
         final PersonnelCard kehleyr2 = new PersonnelCard(_game, 106, player2, _cardLibrary.get("101_217"));
@@ -76,7 +78,11 @@ public class CardBlueprintTest extends AbstractAtTest {
         assertEquals("Commander K'Ehleyr", kehleyr1.getTitle()); // 7-8-7
         assertEquals("K'Ehleyr", kehleyr2.getTitle()); // 8-7-7
 
-        _game.getGameState().addToSpaceline(mission, 0, false);
+        try {
+            _game.getGameState().addToSpaceline(mission, 0, false);
+        } catch(InvalidGameLogicException exp) {
+            System.out.println(exp.getMessage());
+        }
         _game.getGameState().seedFacilityAtLocation(outpost1, 0);
 
         assertTrue(outpost1.isInPlay());

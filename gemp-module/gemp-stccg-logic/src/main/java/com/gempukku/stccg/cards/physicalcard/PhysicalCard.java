@@ -105,12 +105,11 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public void stopAffectingGameInZone(Zone zone) {
-        if (_modifierHooksInZone != null)
-            if (_modifierHooksInZone.get(zone) != null) {
-                for (ModifierHook modifierHook : _modifierHooksInZone.get(zone))
-                    modifierHook.stop();
-                _modifierHooksInZone.remove(zone);
-            }
+        if (_modifierHooksInZone.get(zone) != null) {
+            for (ModifierHook modifierHook : _modifierHooksInZone.get(zone))
+                modifierHook.stop();
+            _modifierHooksInZone.remove(zone);
+        }
     }
 
     public CardBlueprint getBlueprint() {
@@ -165,13 +164,17 @@ public abstract class PhysicalCard implements Filterable {
 
     public boolean isAffectingGame() { return getGame().getCurrentPlayer() == _owner; }
     public boolean canEnterPlay(List<Requirement> requirements) {
-        if (isUnique() && _owner.hasACopyOfCardInPlay(this))
+        if (cannotEnterPlayPerUniqueness())
             return false;
-        ActionContext context = createActionContext();
-        if (requirements != null && !context.acceptsAllRequirements(requirements))
+        if (requirements != null && !createActionContext().acceptsAllRequirements(requirements))
             return false;
         return !getModifiers().canNotPlayCard(getOwnerName(), this);
     }
+
+    protected boolean cannotEnterPlayPerUniqueness() {
+        return isUnique() && _owner.hasACopyOfCardInPlay(this);
+    }
+
     public boolean canBeSeeded() { return canEnterPlay(_blueprint.getSeedRequirements()); }
     public boolean canBePlayed() { return canEnterPlay(_blueprint.getPlayRequirements()); }
 
@@ -193,16 +196,12 @@ public abstract class PhysicalCard implements Filterable {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public Filter getFullValidTargetFilter() {
-        return Filters.and(getBlueprint().getValidTargetFilter());
-    }
-
     public CostToEffectAction getPlayCardAction() {
         return getPlayCardAction(false);
     }
     public abstract CostToEffectAction getPlayCardAction(boolean forFree);
 
-    public CostToEffectAction getPlayCardAction(int twilightModifier, Filterable additionalAttachmentFilter,
+    public CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter,
                                                 boolean ignoreRoamingPenalty) {
 
             final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
@@ -339,7 +338,7 @@ public abstract class PhysicalCard implements Filterable {
             if (canBePlayed()) {
                 for (Requirement playInOtherPhaseCondition : _blueprint.getPlayInOtherPhaseConditions()) {
                     if (playInOtherPhaseCondition.accepts(actionContext))
-                        playCardActions.add(getPlayCardAction(0, Filters.any, false));
+                        playCardActions.add(getPlayCardAction(Filters.any, false));
                 }
             }
             return playCardActions;
@@ -481,16 +480,6 @@ public abstract class PhysicalCard implements Filterable {
     public ActionContext createActionContext(String playerId, Effect effect) { return createActionContext(playerId, effect, null); }
     public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
         return new DefaultActionContext(playerId, getGame(), this, effect, effectResult);
-    }
-
-    public boolean playRequirementsNotMet() {
-        ActionContext context = createActionContext();
-        List<Requirement> requirements = _blueprint.getPlayRequirements();
-
-        if (requirements != null)
-            if (!context.acceptsAllRequirements(requirements)) return true;
-
-        return !(_blueprint.getPlayEventAction() == null || _blueprint.getPlayEventAction().isValid(context));
     }
 
     public int getPotentialDiscount() {

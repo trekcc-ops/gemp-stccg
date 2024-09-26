@@ -36,6 +36,14 @@
     setName: Blaze of Glory
   }
   {
+    setId: "117"
+    setName: Rules of Acquisition
+  }
+  {
+    setId: "119"
+    setName: The Trouble with Tribbles
+  }
+  {
     setId: "123"
     setName: Voyager
   }
@@ -46,6 +54,10 @@
   {
     setId: "125"
     setName: Holodeck Adventures
+  }
+  {
+    setId: "126"
+    setName: The Motion Pictures
   }
   {
     setId: "127"

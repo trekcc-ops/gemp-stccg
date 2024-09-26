@@ -2,19 +2,21 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.service.AdminService;
@@ -305,36 +307,20 @@ public class HallServer extends AbstractServer {
             tournamentQueue.leaveAllPlayers(_collectionsManager);
     }
 
-    /**
-     * @return If table created, otherwise <code>false</code> (if the user already is sitting at a table or playing).
-     */
-    public void createNewTable(String format, User player, String deckName, String timer, String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden) throws HallException {
-        if (_shutdown)
-            throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
-
-        GameSettings gameSettings = createGameSettings(format, timer, description, isInviteOnly, isPrivate, isHidden);
-
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), player, deckName, gameSettings.getCollectionType());
-
-        _hallDataAccessLock.writeLock().lock();
-        try {
-            final GameTable table = tableHolder.createTable(player, gameSettings, cardDeck);
-            if (table != null)
-                createGameFromTable(table);
-
-            hallChanged();
-        } finally {
-            _hallDataAccessLock.writeLock().unlock();
-        }
+    public void createNewTable(String format, User player, String deckName, String timer,
+                               String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
+            throws HallException {
+        createNewTable(format, player, player, deckName, timer, description, isInviteOnly, isPrivate, isHidden);
     }
 
-    public void spoofNewTable(String type, User player, User librarian, String deckName, String timer, String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden) throws HallException {
+    public void createNewTable(String type, User player, User deckOwner, String deckName, String timer,
+                               String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
+            throws HallException {
         if (_shutdown)
-            throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
-
+            throw new HallException("Server is in shutdown mode. " +
+                    "Server will be restarted after all running games are finished.");
         GameSettings gameSettings = createGameSettings(type, timer, description, isInviteOnly, isPrivate, isHidden);
-
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), librarian, deckName, gameSettings.getCollectionType());
+        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName);
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -405,7 +391,7 @@ public class HallServer extends AbstractServer {
 
             CardDeck cardDeck = null;
             if (tournamentQueue.isRequiresDeck())
-                cardDeck = validateUserAndDeck(_formatLibrary.getFormat(tournamentQueue.getFormat()), player, deckName, tournamentQueue.getCollectionType());
+                cardDeck = validateUserAndDeck(_formatLibrary.getFormat(tournamentQueue.getFormat()), player, deckName);
 
             tournamentQueue.joinPlayer(_collectionsManager, player, cardDeck);
 
@@ -425,7 +411,7 @@ public class HallServer extends AbstractServer {
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), player, deckName, gameSettings.getCollectionType());
+        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), player, deckName);
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -445,7 +431,7 @@ public class HallServer extends AbstractServer {
             throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), librarian, deckName, gameSettings.getCollectionType());
+        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), librarian, deckName);
 
         _hallDataAccessLock.writeLock().lock();
         try {
@@ -582,105 +568,18 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName, CollectionType collectionType) throws HallException {
-        LOGGER.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deckName);
+    private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName) throws HallException {
         CardDeck cardDeck = _gameServer.getParticipantDeck(player, deckName);
-        if (cardDeck == null) {
-            LOGGER.debug("Player '" + player.getName() + "' attempting to use deck '" + deckName + "' but failed.");
+        if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
-        }
-
-        cardDeck = validateUserAndDeck(format, player, collectionType, format.applyErrata(cardDeck));
-
+        /* TODO - Removed code from LotR that checked against user's collection.
+            Revisit if collections are being implemented. */
+        String validation = format.validateDeckForHall(format.applyErrata(cardDeck));
+        if(!validation.isEmpty())
+            throw new HallException("Your selected deck is not valid for this format: " + validation);
         return cardDeck;
     }
 
-    private CardDeck validateUserAndDeck(GameFormat format, User player, CollectionType collectionType, CardDeck deck) {
-        // TODO - Removing this functionality since it seems closely related to the collections feature which will not be implemented in ST:CCG. Review to make sure it is not needed.
-/*        LOGGER.debug("HallServer - calling validateUserAndDeck function for player " + player.getName() + " " + player.getId() + " and deck " + deck);
-        String validation = format.validateDeckForHall(deck);
-        if(validation == null || !validation.isEmpty())
-        {
-            throw new DeckInvalidException(validation);
-        }
-
-        // Now check if player owns all the cards
-        if (collectionType.getCode().equals("default")) {
-            CardCollection ownedCollection = _collectionsManager.getPlayerCollection(player, "permanent+trophy");
-
-            CardDeck filteredSpecialCardsDeck = new CardDeck(deck);
-
-            for (Map.Entry<String, Integer> cardCount : CollectionUtils.getTotalCardCount(deck.getDrawDeckCards()).entrySet()) {
-                String blueprintId = cardCount.getKey();
-                int count = cardCount.getValue();
-
-                int owned = ownedCollection.getItemCount(blueprintId);
-                //Since the cards we are validating may be automatic errata IDs, we check and see
-                // if the base version of the errata ID is owned in foil, and count that if so.
-                if(blueprintId.endsWith("*")) {
-                    var ids = format.findBaseCards(_library.getBaseBlueprintId(blueprintId));
-                    if(ids.size() == 1) {
-                        owned += ownedCollection.getItemCount(ids.stream().findFirst() + "*");
-                    }
-                }
-                int fromOwned = Math.min(owned, count);
-
-                int set = Integer.parseInt(blueprintId.split("_")[0]);
-
-                for (int i = 0; i < fromOwned; i++)
-                    filteredSpecialCardsDeck.addCard(blueprintId);
-                if (count - fromOwned > 0) {
-                    String baseBlueprintId = _library.getBaseBlueprintId(blueprintId);
-                    for (int i = 0; i < (count - fromOwned); i++) {
-                        //hacking in foil support for errata foils
-                        if(set > 19 && blueprintId.endsWith("*")) {
-                            filteredSpecialCardsDeck.addCard(blueprintId);
-                        }
-                        else {
-                            filteredSpecialCardsDeck.addCard(baseBlueprintId);
-                        }
-                    }
-                }
-            }
-
-            deck = filteredSpecialCardsDeck;
-        } else {
-            CardCollection collection = _collectionsManager.getPlayerCollection(player, collectionType.getCode());
-            if (collection == null)
-                throw new HallException("You don't have cards in the required collection to play in this format");
-
-            Map<String, Integer> deckCardCounts = CollectionUtils.getTotalCardCountForDeck(deck);
-
-            for (Map.Entry<String, Integer> cardCount : deckCardCounts.entrySet()) {
-                int collectionCount = collection.getItemCount(cardCount.getKey()) +
-                        collection.getItemCount(format.applyErrata(cardCount.getKey()));
-
-                var alts = _library.getAllAlternates(cardCount.getKey());
-                if(alts != null) {
-                    for (String id : alts) {
-                        collectionCount += collection.getItemCount(id);
-                    }
-                }
-
-                if (collectionCount < cardCount.getValue()) {
-                    String cardName;
-                    try {
-                        cardName = GameUtils.getFullName(_library.getCardBlueprint(cardCount.getKey()));
-                        throw new HallException("You don't have the required cards in collection: " + cardName + " required " + cardCount.getValue() + ", owned " + collectionCount);
-                    } catch (CardNotFoundException e) {
-                        // Ignore, card player has in a collection, should not disappear
-                    }
-                }
-            }
-        }*/
-        return deck;
-    }
-
-    private String filterCard(String blueprintId, CardCollection ownedCollection) {
-        if (ownedCollection.getItemCount(blueprintId) == 0)
-            return _library.getBaseBlueprintId(blueprintId);
-        return blueprintId;
-    }
 
     private String getTournamentName(GameTable table) {
         final League league = table.getGameSettings().getLeague();

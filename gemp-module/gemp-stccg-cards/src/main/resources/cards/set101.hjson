@@ -72,6 +72,18 @@
         image-url: https://www.trekcc.org/1e/cardimages/errata/Romulan-Outpost.jpg
         rarity: C
     }
+    101_146: {
+        title: Avert Disaster
+        type: mission
+        location: Artrea
+        affiliation-icons: federation
+        mission-type: planet
+        lore: "Aid project to delay solidification of the planet's core."
+        mission-requirements: Geology + Honor + INTEGRITY>35
+        point-box: 40
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/avertdisaster95.jpg
+    }
     101_147: {
         title: Cloaked Mission
         type: mission
@@ -122,6 +134,18 @@
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/premiere/culturalobservation95.jpg
         rarity: R
+    }
+    101_151: {
+        title: Diplomacy Mission
+        type: mission
+        mission-type: planet
+        location: Peliar Zel
+        lore: "Mediate dispute between civilizations on Peliar Zel's two moons."
+        affiliation-icons: federation
+        mission-requirements: Diplomacy + INTEGRITY>30 + CUNNING>30
+        point-box: 30
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/diplomacymission.jpg
     }
     101_153: {
         title: Evaluate Terraforming
@@ -633,6 +657,65 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/premiere/kehleyr95.jpg
     }
+    101_218: {
+        title: Kareel Odan
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: Famous Trill Ambassador Kareel Odan. Romantically involved with Dr. Beverly Crusher. Symbiont transplant from male to female host in 2367.
+        skill-box: "[*] Diplomacy [*] Computer Skill"
+        integrity: 9
+        cunning: 7
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/kareelodan95.jpg
+        rarity: U
+    }
+    101_219: {
+        title: Leah Brahms
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Dr. Leah Brahms was responsible for much of the warp engine design for Galaxy-class starships.
+        skill-box: "[*] ENGINEER"
+        integrity: 8
+        cunning: 9
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/leahbrahms95.jpg
+        rarity: U
+    }
+    101_221: {
+        title: Lwaxana Troi
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: Betazoid mother of Deanna Troi. Daughter of the Fifth House, Holder of the Sacred Chalice of Rixx, Heir to the Holy Rings of Betazed.
+        skill-box: "[*] Empathy x2"
+        integrity: 7
+        cunning: 8
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Lwaxana-Troi.jpg
+        rarity: U
+    }
+    101_222: {
+        title: McKnight
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        uniqueness: universal
+        lore: Ensign McKnight is one of many helm officers serving aboard the <i>U.S.S. Enterprise</i>. Distant relative of a famous 20th century game designer.
+        skill-box: "[*] Navigation [*] Youth [*] Music"
+        integrity: 5
+        cunning: 6
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/mcknight95.jpg
+        rarity: U
+    }
     101_225: {
         title: Mot the Barber
         type: personnel
@@ -659,6 +742,20 @@
         cunning: 8
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/premiere/neeladaren95.jpg
+    }
+    101_229: {
+        title: Reginald Barclay
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Lieutenant Reginald Barclay is a talented but socially shy systems diagnostic engineer. Former victim of holodiction. Has phobia of traveling by transporter.
+        skill-box: "[*] Computer Skill"
+        integrity: 7
+        cunning: 7
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/reginaldbarclay95.jpg
     }
     101_232: {
         title: Ro Laren

@@ -64,7 +64,7 @@ public abstract class PlayCardEffectAppenderProducer implements EffectAppenderPr
                                     onFilterableSource.getFilterable(context) : Filters.any;
 
                             final CostToEffectAction playCardAction = cardsToPlay.iterator().next().getPlayCardAction(
-                                    costModifier, onFilterable, false);
+                                    onFilterable, false);
                             return new StackActionEffect(game, playCardAction);
                         } else {
                             return null;

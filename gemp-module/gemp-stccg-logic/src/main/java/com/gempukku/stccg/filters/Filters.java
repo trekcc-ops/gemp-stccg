@@ -201,6 +201,8 @@ public class Filters {
 
     public static final Filter inPlay = (game, physicalCard) -> physicalCard.getZone().isInPlay();
     public static final Filter active = (game, physicalCard) -> game.getGameState().isCardInPlayActive(physicalCard);
+    public static final Filter multiAffiliation = (game, physicalCard) ->
+            physicalCard instanceof AffiliatedCard affilCard && affilCard.isMultiAffiliation();
 
     public static Filter canBeDiscarded(final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(source.getOwnerName(), physicalCard, source);
@@ -299,6 +301,13 @@ public class Filters {
 
     public static Filter youHaveNoCopiesInPlay(final Player player) {
         return (game, physicalCard) -> filterYourActive(player, copyOfCard(physicalCard)).isEmpty();
+    }
+
+    public static Filter hasAttributeMatchingPersonnel(final PersonnelCard cardToMatch) {
+        return (game, matchingCard) -> matchingCard instanceof PersonnelCard matchingPersonnel && (
+                Objects.equals(matchingPersonnel.getAttribute(CardAttribute.INTEGRITY), cardToMatch.getAttribute(CardAttribute.INTEGRITY)) ||
+                Objects.equals(matchingPersonnel.getAttribute(CardAttribute.CUNNING), cardToMatch.getAttribute(CardAttribute.CUNNING)) ||
+                Objects.equals(matchingPersonnel.getAttribute(CardAttribute.STRENGTH), cardToMatch.getAttribute(CardAttribute.STRENGTH)));
     }
 
     public static Filter hasStacked(final Filterable... filter) {
@@ -520,6 +529,7 @@ public class Filters {
 
     public static final Filter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final Filter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
+    public static final Filter Ferengi = Filters.or(Affiliation.FERENGI, Species.FERENGI);
 
     public static Filter classification(SkillName skillName) {
         return (game, physicalCard) -> physicalCard.getBlueprint().getClassification() == skillName;

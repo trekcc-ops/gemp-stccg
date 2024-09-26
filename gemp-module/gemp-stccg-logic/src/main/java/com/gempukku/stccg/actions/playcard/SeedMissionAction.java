@@ -40,7 +40,6 @@ public class SeedMissionAction extends PlayCardAction {
         _quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         _missionLocation = _cardEnteringPlay.getBlueprint().getLocation();
         _gameState = _game.getGameState();
-
         _sharedMission = _gameState.indexOfLocation(_missionLocation, _quadrant) != null &&
                 !_cardEnteringPlay.getBlueprint().isUniversal();
     }
@@ -149,7 +148,7 @@ public class SeedMissionAction extends PlayCardAction {
         return null;
     }
 
-    protected Effect getFinalEffect() { return new SeedMissionEffect(_performingPlayerId, _fromZone, _cardEnteringPlay,
+    protected Effect getFinalEffect() { return new SeedMissionEffect(_performingPlayerId, _cardEnteringPlay,
             _locationZoneIndex, _sharedMission); }
 
     public boolean wasCarriedOut() {

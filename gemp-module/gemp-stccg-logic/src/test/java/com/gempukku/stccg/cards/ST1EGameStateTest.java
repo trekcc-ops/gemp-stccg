@@ -3,20 +3,17 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ST1EGameStateTest extends AbstractAtTest {
 
     @Test
-    @SuppressWarnings("SpellCheckingInspection")
-    public void seedFacilityTest()
-            throws DecisionResultInvalidException, CardNotFoundException {
+    public void seedFacilityTest() {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 
@@ -25,7 +22,11 @@ public class ST1EGameStateTest extends AbstractAtTest {
 
         assertFalse(outpost1.isInPlay());
 
-        _game.getGameState().addToSpaceline(mission, 0, false);
+        try {
+            _game.getGameState().addToSpaceline(mission, 0, false);
+        } catch(InvalidGameLogicException exp) {
+            System.out.println(exp.getMessage());
+        }
         _game.getGameState().seedFacilityAtLocation(outpost1, 0);
 
         assertTrue(outpost1.isInPlay());

@@ -30,7 +30,7 @@ public class CanPlayStackedCards implements ModifierSourceProducer {
             public List<? extends Action> getExtraPhaseActionFromStacked(DefaultGame game, PhysicalCard card) {
                 if (card.canBePlayed())
                     return Collections.singletonList(
-                            card.getPlayCardAction(0, Filters.any, false));
+                            card.getPlayCardAction(Filters.any, false));
                 return null;
             }
         };

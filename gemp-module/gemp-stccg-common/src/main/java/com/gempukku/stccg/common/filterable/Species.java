@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 public enum Species implements Filterable {
     ANDROID("android"),
-    BAJORAN, BENZITE,
+    BAJORAN, BENZITE, FERENGI,
     HOLOGRAM("hologram"),
     HUMAN("human"),
     KLINGON, MARKALIAN, ROMULAN, VULCAN;

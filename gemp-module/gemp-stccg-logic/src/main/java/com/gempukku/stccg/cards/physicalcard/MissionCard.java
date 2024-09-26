@@ -73,16 +73,8 @@ public class MissionCard extends ST1EPhysicalCard {
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(Player player) {
         return getAwayTeamsOnSurface().filter(awayTeam -> awayTeam.getPlayer() == player);
     }
-
     private Stream<AwayTeam> getAwayTeamsOnSurface() {
         return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
-    }
-
-    private Collection<PhysicalCard> getCardsOnSurface() {
-        if (_missionType == MissionType.SPACE)
-            return new LinkedList<>();
-        else
-            return getAttachedCards();
     }
 
     @Override

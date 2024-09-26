@@ -188,8 +188,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 try
                 {
                     //try again assuming it's a new player with one of the default library decks selected
-                    User librarian = _playerDao.getPlayer("Librarian");
-                    _hallServer.spoofNewTable(format, resourceOwner, librarian, deckName, timer, "(New Player) " + desc, isInviteOnly, isPrivate, isHidden);
+                    _hallServer.createNewTable(format, resourceOwner, _playerDao.getPlayer("Librarian"),
+                            deckName, timer, "(New Player) " + desc, isInviteOnly, isPrivate, isHidden);
                     responseWriter.writeXmlResponse(null);
                     return;
                 }
@@ -513,86 +513,62 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
         @Override
         public void addTournamentQueue(String queueId, Map<String, String> props) {
-            Element queue = _doc.createElement("queue");
-            queue.setAttribute("action", "add");
-            queue.setAttribute("id", queueId);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                queue.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(queue);
+            appendElementWithProperties("queue", queueId, props, "add");
         }
 
         @Override
         public void updateTournamentQueue(String queueId, Map<String, String> props) {
-            Element queue = _doc.createElement("queue");
-            queue.setAttribute("action", "update");
-            queue.setAttribute("id", queueId);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                queue.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(queue);
+            appendElementWithProperties("queue", queueId, props, "update");
         }
 
         @Override
         public void removeTournamentQueue(String queueId) {
-            Element queue = _doc.createElement("queue");
-            queue.setAttribute("action", "remove");
-            queue.setAttribute("id", queueId);
-            _hall.appendChild(queue);
+            appendRemoveElement("queue", queueId);
         }
 
         @Override
         public void addTournament(String tournamentId, Map<String, String> props) {
-            Element tournament = _doc.createElement("tournament");
-            tournament.setAttribute("action", "add");
-            tournament.setAttribute("id", tournamentId);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                tournament.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(tournament);
+            appendElementWithProperties("tournament", tournamentId, props, "add");
         }
 
         @Override
         public void updateTournament(String tournamentId, Map<String, String> props) {
-            Element tournament = _doc.createElement("tournament");
-            tournament.setAttribute("action", "update");
-            tournament.setAttribute("id", tournamentId);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                tournament.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(tournament);
+            appendElementWithProperties("tournament", tournamentId, props, "update");
         }
 
         @Override
         public void removeTournament(String tournamentId) {
-            Element tournament = _doc.createElement("tournament");
-            tournament.setAttribute("action", "remove");
-            tournament.setAttribute("id", tournamentId);
-            _hall.appendChild(tournament);
+            appendRemoveElement("tournament", tournamentId);
         }
 
         @Override
         public void addTable(String tableId, Map<String, String> props) {
-            Element table = _doc.createElement("table");
-            table.setAttribute("action", "add");
-            table.setAttribute("id", tableId);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                table.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(table);
+            appendElementWithProperties("table", tableId, props, "add");
         }
 
         @Override
         public void updateTable(String tableId, Map<String, String> props) {
-            Element table = _doc.createElement("table");
-            table.setAttribute("action", "update");
-            table.setAttribute("id", tableId);
-            for (Map.Entry<String, String> attribute : props.entrySet())
-                table.setAttribute(attribute.getKey(), attribute.getValue());
-            _hall.appendChild(table);
+            appendElementWithProperties("table", tableId, props, "update");
         }
-
         @Override
         public void removeTable(String tableId) {
-            Element table = _doc.createElement("table");
-            table.setAttribute("action", "remove");
-            table.setAttribute("id", tableId);
-            _hall.appendChild(table);
+            appendRemoveElement("table", tableId);
+        }
+
+        private void appendElementWithProperties(String tagName, String id, Map<String, String> props, String action) {
+            Element elem = _doc.createElement(tagName);
+            elem.setAttribute("action", action);
+            elem.setAttribute("id", id);
+            for (Map.Entry<String, String> attribute : props.entrySet())
+                elem.setAttribute(attribute.getKey(), attribute.getValue());
+            _hall.appendChild(elem);
+        }
+
+        private void appendRemoveElement(String tagName, String id) {
+            Element elem = _doc.createElement(tagName);
+            elem.setAttribute("action", "remove");
+            elem.setAttribute("id", id);
+            _hall.appendChild(elem);
         }
     }
 }

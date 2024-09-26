@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -100,9 +101,15 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared) {
+    public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared)
+            throws InvalidGameLogicException {
         if (shared) {
-            assert _spacelineLocations.get(indexNumber).getMissions().size() == 1;
+            List<MissionCard> missionsAtLocation = _spacelineLocations.get(indexNumber).getMissions();
+            if (missionsAtLocation.size() != 1 ||
+                    Objects.equals(missionsAtLocation.getFirst().getOwnerName(), missionCard.getOwnerName()))
+                throw new InvalidGameLogicException("Cannot seed " + missionCard.getTitle() + " because " +
+                        missionCard.getOwnerName() + " already has a mission at " +
+                        missionCard.getBlueprint().getLocation());
             missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().iterator().next());
             _spacelineLocations.get(indexNumber).addMission(missionCard);
         } else {
@@ -196,7 +203,7 @@ public class ST1EGameState extends GameState {
         for (ST1ELocation location : _spacelineLocations) {
             for (int i = 0; i < location.getMissions().size(); i++) {
                 sharedMission = i != 0;
-                // TODO SNAPSHOT - Pretty sure this sendCreatedCard function won't work with snapshotting
+                // TODO SNAPSHOT - Pretty sure this sendCreatedCardToListener function won't work with snapshotting
                 PhysicalCard mission = location.getMissions().get(i);
                 sendCreatedCardToListener(mission, sharedMission, listener, !restoreSnapshot);
                 cardsLeftToSend.remove(mission);
