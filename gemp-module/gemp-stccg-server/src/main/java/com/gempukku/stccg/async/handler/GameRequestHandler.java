@@ -199,13 +199,13 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         } else {
             int cardId = Integer.parseInt(cardIdStr);
 
-            getResourceOwnerSafely(request, participantId);
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
 
             CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             if (gameMediator == null)
                 throw new HttpProcessingException(404);
 
-            responseWriter.writeHtmlResponse(gameMediator.produceCardInfo(cardId, participantId));
+            responseWriter.writeHtmlResponse(gameMediator.produceCardInfo(cardId));
         }
     }
 

@@ -3,6 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.actions.ActionsEnvironment;
 import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.UserFeedback;
@@ -314,6 +315,13 @@ public abstract class DefaultGame {
 
     public void sendAwaitingDecision(String playerName, AwaitingDecision awaitingDecision) {
         _userFeedback.sendAwaitingDecision(playerName, awaitingDecision);
+    }
+    public String produceCardInfo(int cardId) {
+        PhysicalCard card = getGameState().findCardById(cardId);
+        if (card == null || card.getZone() == null)
+            return null;
+        else
+            return card.getCardInfoHTML();
     }
 
 }

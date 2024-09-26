@@ -115,10 +115,10 @@ public abstract class CardGameMediator {
         return getGame().isFinished();
     }
 
-    public String produceCardInfo(int cardId, String playerId) {
+    public String produceCardInfo(int cardId) {
         _readLock.lock();
         try {
-            return _communicationChannels.get(playerId).produceCardInfo(cardId);
+            return getGame().produceCardInfo(cardId);
         } finally {
             _readLock.unlock();
         }
