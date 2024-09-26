@@ -4,6 +4,7 @@ import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 
 import java.util.List;
+import java.util.Set;
 
 public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDecision {
     private final String[] _possibleResults;
@@ -14,6 +15,10 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     public MultipleChoiceAwaitingDecision(String text, List<String> possibleResults) {
         this(text, possibleResults.toArray(new String[0]), -1);
     }
+    public MultipleChoiceAwaitingDecision(String text, Set<String> possibleResults) {
+        this(text, possibleResults.toArray(new String[0]), -1);
+    }
+
     public MultipleChoiceAwaitingDecision(String text, String[] possibleResults, int defaultIndex) {
         super(1, text, AwaitingDecisionType.MULTIPLE_CHOICE);
         _possibleResults = possibleResults;

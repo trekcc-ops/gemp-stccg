@@ -218,6 +218,20 @@
         strength: 6
         image-url: https://www.trekcc.org/1e/cardimages/tng/55V.jpg
     }
+    155_056: {
+        title: Data
+        java-blueprint: true
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: 'Pinocchio-like in his desire, the Soong-type android would gladly trade his superior abilities to be human. Learning to whistle "Pop Goes the Weasel."'
+        integrity: 7
+        cunning: 12
+        strength: 12
+        image-url: https://www.trekcc.org/1e/cardimages/tng/56V.jpg
+    }
     155_057: {
         title: Davies
         type: personnel

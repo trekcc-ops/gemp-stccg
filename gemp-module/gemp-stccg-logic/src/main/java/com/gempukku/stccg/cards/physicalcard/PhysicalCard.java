@@ -412,7 +412,7 @@ public abstract class PhysicalCard implements Filterable {
         return actionSource.createActionAndAppendToContext(this, createActionContext(playerId, effect));
     }
 
-    private Action getActionFromActionSource(ActionSource actionSource, String playerId, Effect effect, EffectResult effectResult) {
+    public Action getActionFromActionSource(ActionSource actionSource, String playerId, Effect effect, EffectResult effectResult) {
         return actionSource.createActionAndAppendToContext(this, createActionContext(playerId, effect, effectResult));
     }
 
@@ -460,18 +460,10 @@ public abstract class PhysicalCard implements Filterable {
                 playerId, effect, _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
     }
 
-    public List<Action> getAfterTriggerActions(EffectResult effectResult, RequiredType requiredType) {
-        return getActionsFromActionSources(getOwnerName(), effectResult, _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.AFTER));
+    public List<Action> getRequiredAfterTriggerActions(EffectResult effectResult) {
+        return _blueprint.getRequiredAfterTriggerActions(effectResult, this);
     }
 
-    public List<Action> getAfterTriggerActions(Player player, EffectResult effectResult, RequiredType requiredType) {
-        return getActionsFromActionSources(player.getPlayerId(), effectResult, _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.AFTER));
-    }
-
-
-    public List<Action> getOptionalInHandAfterTriggerActions(String playerId, EffectResult effectResult) {
-        return getActionsFromActionSources(playerId, effectResult, getBlueprint().getOptionalInHandTriggers(TriggerTiming.AFTER));
-    }
 
     public ActionContext createActionContext() { return createActionContext(getOwnerName(), null, null); }
     public ActionContext createActionContext(String playerId) { return createActionContext(playerId, null, null); }
@@ -565,4 +557,5 @@ public abstract class PhysicalCard implements Filterable {
     public boolean hasCharacteristic(Characteristic characteristic) {
         return _blueprint.hasCharacteristic(characteristic);
     }
+
 }

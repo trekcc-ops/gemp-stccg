@@ -18,7 +18,7 @@ public class PlayCardResult extends EffectResult {
 
     public PlayCardResult(Effect effect, Zone playedFrom, PhysicalCard playedCard,
                           PhysicalCard attachedTo, PhysicalCard attachedOrStackedPlayedFrom) {
-        super(EffectResult.Type.PLAY, effect, playedCard);
+        super(EffectResult.Type.PLAY_CARD, effect, playedCard);
         _performingPlayerId = effect.getPerformingPlayerId();
         _playedFrom = playedFrom;
         _playedCard = playedCard;

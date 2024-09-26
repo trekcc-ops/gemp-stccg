@@ -13,6 +13,10 @@ public class RegularSkill extends Skill {
         _level = level;
     }
 
+    public RegularSkill(SkillName skill) {
+        this(skill, 1);
+    }
+
     public SkillName getRegularSkill() { return _SkillName; }
     public int getLevel() { return _level; }
 }

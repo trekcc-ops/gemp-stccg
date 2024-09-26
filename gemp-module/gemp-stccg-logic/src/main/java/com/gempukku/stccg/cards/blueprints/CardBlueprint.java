@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.actions.sources.TriggerActionSource;
 import com.gempukku.stccg.cards.*;
@@ -472,5 +474,20 @@ public class CardBlueprint {
     public void addCharacteristic(Characteristic characteristic) {
         _characteristics.add(characteristic);
     }
+
+    public List<Action> getRequiredAfterTriggerActions(EffectResult effectResult, PhysicalCard card) {
+        List<Action> result = new LinkedList<>();
+        getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
+            if (actionSource != null) {
+                Action action =
+                        card.getActionFromActionSource(actionSource, card.getOwnerName(), null, effectResult);
+                if (action != null)
+                    result.add(action);
+            }
+        });
+        return result;
+    }
+
+    public List<Skill> getSkills() { return _skills; }
 
 }

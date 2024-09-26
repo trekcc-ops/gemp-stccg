@@ -138,7 +138,7 @@ public class TriggerConditions {
     }
 
     public static boolean played(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY) {
+        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
             PhysicalCard playedCard = ((PlayCardResult) effectResult).getPlayedCard();
             return Filters.and(filters).accepts(game, playedCard);
         }
@@ -146,7 +146,7 @@ public class TriggerConditions {
     }
 
     public static boolean played(String playerId, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY) {
+        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
             if (effectResult.getPerformingPlayerId().equals(playerId)) {
                 PhysicalCard playedCard = ((PlayCardResult) effectResult).getPlayedCard();
                 return Filters.and(filters).accepts(effectResult.getGame(), playedCard);
@@ -156,7 +156,7 @@ public class TriggerConditions {
     }
 
     public static boolean playedFromZone(DefaultGame game, EffectResult effectResult, Zone zone, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY) {
+        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
             final PlayCardResult playResult = (PlayCardResult) effectResult;
             PhysicalCard playedCard = playResult.getPlayedCard();
             return (playResult.getPlayedFrom() == zone && Filters.and(filters).accepts(game, playedCard));
@@ -165,7 +165,7 @@ public class TriggerConditions {
     }
 
     public static boolean playedFromStacked(DefaultGame game, EffectResult effectResult, Filterable stackedOnFilter, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY) {
+        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
             final PlayCardResult playResult = (PlayCardResult) effectResult;
             PhysicalCard playedCard = playResult.getPlayedCard();
             return (playResult.getPlayedFrom() == Zone.STACKED
@@ -176,7 +176,7 @@ public class TriggerConditions {
     }
 
     public static boolean playedOn(EffectResult effectResult, Filterable targetFilter, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY) {
+        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
             final PlayCardResult playResult = (PlayCardResult) effectResult;
             final PhysicalCard attachedTo = playResult.getAttachedTo();
             if (attachedTo == null)

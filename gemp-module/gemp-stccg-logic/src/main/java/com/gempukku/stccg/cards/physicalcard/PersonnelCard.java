@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -9,10 +10,16 @@ import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
+
+    List<Skill> _skills;
 
     public PersonnelCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
+        _skills = new LinkedList<>(blueprint.getSkills());
     }
 
     public Integer getAttribute(CardAttribute attribute) {
@@ -56,4 +63,7 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
 
     @Override
     public boolean hasSkill(SkillName skillName) { return getSkillLevel(skillName) >= 1; }
+
+    public void addSkill(SkillName skill) { _skills.add(new RegularSkill(skill)); }
+
 }
