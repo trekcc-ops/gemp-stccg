@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.Collections;
@@ -44,7 +45,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToPlay.getZone();

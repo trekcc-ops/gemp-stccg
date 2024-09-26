@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class RequiredTriggerAction extends AbstractCostToEffectAction {
     private final PhysicalCard _physicalCard;
@@ -36,7 +37,7 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)

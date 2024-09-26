@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.google.common.collect.Iterables;
@@ -47,7 +48,7 @@ public class DockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToDock; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

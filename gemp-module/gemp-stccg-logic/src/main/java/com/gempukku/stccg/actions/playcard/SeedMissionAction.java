@@ -9,6 +9,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
@@ -48,7 +49,7 @@ public class SeedMissionAction extends PlayCardAction {
     public ST1EGame getGame() { return _game; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
         String playerId = getPerformingPlayerId();
         String[] directions = {"LEFT", "RIGHT"};

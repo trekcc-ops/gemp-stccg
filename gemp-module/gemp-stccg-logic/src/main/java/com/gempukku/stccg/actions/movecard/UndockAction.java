@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -23,7 +24,7 @@ public class UndockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToUndock; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

@@ -1,11 +1,6 @@
 // Set 101: Premiere [1E]
 
 {
-    101_015: {
-        title: Armus - Skin of Evil
-        java-blueprint: true
-        rarity: R
-    }
     101_057: {
         title: Federation PADD
         java-blueprint: true

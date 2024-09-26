@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
@@ -62,7 +63,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override    
-    public Effect nextEffect() {
+    public Effect nextEffect() throws InvalidGameLogicException {
 
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
