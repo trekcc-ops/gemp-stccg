@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class CardBlueprintLibraryTest extends AbstractLogicTest {
 
     // TODO - Add check that all card images are valid URLs
+    // TODO - Remove this later
     @Test
     public void AllBlueprintsAreBuilt() {
         assertTrue(_cardLibrary.checkLoadSuccess());
