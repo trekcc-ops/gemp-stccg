@@ -196,6 +196,7 @@
         property-logo: tng-logo
         classification: MEDICAL
         icons: staff
+        persona: Beverly Crusher
         lore: While hosting an experimental metaphasic shield test, <b>Beverly Crusher</b> took on the roles of diplomat, detective, coroner, and test pilot.
         skill-box: "[*] Diplomacy [*] Law [*] Navigation [*] Exobiology [DL] Starfleet Type II Phaser"
         integrity: 7
@@ -273,6 +274,20 @@
         cunning: 8
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/59V.jpg
+    }
+    155_060: {
+        title: Geordi La Forge
+        java-blueprint: true
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: staff
+        lore: Conn officer of the <i>U.S.S. Enterprise</i> in 2364. Son of two Starfleet officers. Blind at birth, he has used the VISOR to see since the age of five.
+        integrity: 7
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/tng/60V.jpg
     }
     155_062: {
         title: "Lian T'su"
@@ -471,7 +486,7 @@
         classification: ENGINEER
         uniqueness: universal
         icons: staff
-        lore: Warp drive specialist aboard the I.K.S. Pagh, representative of engineers in the Klingon Defense Force. Considered a gourmand by shipmates.
+        lore: Warp drive specialist aboard the <i>I.K.S. Pagh</i>, representative of engineers in the Klingon Defense Force. Considered a gourmand by shipmates.
         skill-box: "[*] Exobiology [*] Physics [*] Astrophysics [*] Biology"
         integrity: 7
         cunning: 6
@@ -486,6 +501,7 @@
         property-logo: tng-logo
         classification: SECURITY
         icons: command
+        persona: Worf
         lore: "To persuade K'Temoc not to attack, <b>Worf</b> served as acting captain of the <i>U.S.S. Enterprise</i>. Mate of K'Ehleyr. Finds the command chair \"comfortable\"."
         integrity: 8
         cunning: 6
@@ -499,6 +515,7 @@
         property-logo: tng-logo
         classification: V.I.P.
         icons: staff
+        persona: "K'Ehleyr"
         characteristic: "k'ehleyr"
         lore: "1/2 Klingon, 1/2 human romantically involved with Worf. <b>K'Ehleyr</b> posed as first officer of the <i>U.S.S. Enterprise</i> in 2365. She left Worf incomplete."
         skill-box: "[*] OFFICER [*] Honor [*] Anthropology [*] Diplomacy [*] Law"
@@ -643,5 +660,45 @@
         cunning: 7
         strength: 5
         image-url: https://www.trekcc.org/1e/cardimages/tng/94V.jpg
+    }
+    155_095: {
+        title: Will Riker
+        type: personnel
+        java-blueprint: true
+        affiliation: non-aligned,federation
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        persona: William T. Riker
+        lore: "<b>William T. Riker</b> \"went renegade\" to penetrate Baran's crew during the hunt for the Stone of Gol."
+        skill-box: "[*] SECURITY [*] Diplomacy [*] Anthropology [*] Treachery [*] Transporter Skill [DL] Dropping In"
+        integrity: 5
+        cunning: 7
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
+        image-options: [
+            {
+                affiliation: non-aligned
+                image-url: https://www.trekcc.org/1e/cardimages/tng/95AV.jpg
+            }
+            {
+                affiliation: federation
+                image-url: https://www.trekcc.org/1e/cardimages/tng/95V.jpg
+            }
+        ]
+    }
+    155_096: {
+        title: Ferengi Scout Vessel
+        type: ship
+        affiliation: ferengi
+        property-logo: tng-logo
+        uniqueness: universal
+        ship-class: SCOUT CLASS
+        lore: Typical of small Ferengi craft converted for long-range missions. Often used to search for new business opportunities.
+        staffing: staff
+        range: 7
+        weapons: 4
+        shields: 5
+        image-url: https://www.trekcc.org/1e/cardimages/tng/96V.jpg
     }
 }
