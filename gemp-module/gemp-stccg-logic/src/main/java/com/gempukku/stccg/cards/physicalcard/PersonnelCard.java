@@ -26,14 +26,16 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         return _game.getModifiersQuerying().getAttribute(this, attribute);
     }
 
-    public Integer getSkillLevel(SkillName skill) {
+    public Integer getSkillLevel(SkillName skillName) {
         int level = 0;
-        for (RegularSkill blueprintRegularSkill : _blueprint.getRegularSkills()) {
-            if (blueprintRegularSkill.getRegularSkill() == skill) {
-                level += blueprintRegularSkill.getLevel();
+        for (Skill skill : _skills) {
+            if (skill instanceof RegularSkill regularSkill) {
+                if (regularSkill.getRegularSkill() == skillName) {
+                    level += regularSkill.getLevel();
+                }
             }
         }
-        if (_blueprint.getClassification() == skill)
+        if (_blueprint.getClassification() == skillName)
             level += 1;
         return level;
     }
