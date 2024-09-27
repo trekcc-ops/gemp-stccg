@@ -25,7 +25,7 @@ import java.util.List;
 
 public class Blueprint155_056 extends CardBlueprint {
     Blueprint155_056() {
-        super("155_056");
+        super("155_056"); // Data (The Next Generation)
         addSkill(SkillName.COMPUTER_SKILL);
         addSkill(SkillName.ASTROPHYSICS);
         addSkill(SkillName.ENGINEER);

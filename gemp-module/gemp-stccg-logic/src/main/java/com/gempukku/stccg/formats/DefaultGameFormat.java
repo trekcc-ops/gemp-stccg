@@ -310,7 +310,7 @@ public class DefaultGameFormat implements GameFormat {
         ArrayList<String> errataResult = new ArrayList<>();
         String valid;
 
-        // Deck
+        // Additional deck checks in validateDeckStructure
         valid = validateDeckStructure(deck);
         if(!valid.isEmpty()) {
             result.add(valid);

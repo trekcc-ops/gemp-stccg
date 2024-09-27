@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Blueprint155_079 extends CardBlueprint {
     Blueprint155_079() {
-        super("155_079");
+        super("155_079"); // Captain Worf (The Next Generation)
         addSkill(SkillName.OFFICER);
         addSkill(SkillName.DIPLOMACY);
         addSkill(SkillName.NAVIGATION);
