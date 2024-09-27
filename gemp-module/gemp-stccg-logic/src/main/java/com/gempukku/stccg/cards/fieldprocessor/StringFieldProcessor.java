@@ -25,6 +25,9 @@ public class StringFieldProcessor implements FieldProcessor {
             case "title":
                 blueprint.setTitle(valueString);
                 break;
+            case "persona":
+                blueprint.setPersona(valueString);
+                break;
             default:
                 throw new InvalidCardDefinitionException("Card definition error - Tried to use StringFieldProcessor on key " + key);
         }

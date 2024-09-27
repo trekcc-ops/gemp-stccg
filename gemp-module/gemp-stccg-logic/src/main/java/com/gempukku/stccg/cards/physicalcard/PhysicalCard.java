@@ -172,7 +172,7 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     protected boolean cannotEnterPlayPerUniqueness() {
-        return isUnique() && _owner.hasACopyOfCardInPlay(this);
+        return isUnique() && (_owner.hasACopyOfCardInPlay(this));
     }
 
     public boolean canBeSeeded() { return canEnterPlay(_blueprint.getSeedRequirements()); }

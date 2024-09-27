@@ -26,6 +26,7 @@ public class CardBlueprint {
     private String imageUrl;
     private String _rarity;
     private PropertyLogo _propertyLogo;
+    private String _persona;
     private String _lore;
     private Species _species;
     private final Set<Characteristic> _characteristics = new HashSet<>();
@@ -490,4 +491,15 @@ public class CardBlueprint {
 
     public List<Skill> getSkills() { return _skills; }
 
+    public void setPersona(String persona) { _persona = persona; }
+
+    public String getPersona() {
+        if (_persona == null)
+            return title;
+        else return _persona;
+    }
+
+    public boolean doesNotWorkWithPerRestrictionBox(PhysicalNounCard1E thisCard, PhysicalNounCard1E otherCard) {
+        return false;
+    }
 }

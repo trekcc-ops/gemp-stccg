@@ -33,7 +33,7 @@ public class CardBlueprintFactory {
 
     public CardBlueprintFactory() {
         // String input
-        for (String fieldName : new String[]{"title", "lore", "subtitle", "rarity", "image-url"}) {
+        for (String fieldName : new String[]{"title", "lore", "subtitle", "rarity", "image-url", "persona"}) {
             fieldProcessors.put(fieldName, new StringFieldProcessor());
         }
 
