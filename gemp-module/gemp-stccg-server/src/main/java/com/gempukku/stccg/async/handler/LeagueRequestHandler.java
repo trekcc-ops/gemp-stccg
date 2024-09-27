@@ -93,10 +93,10 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             throw new HttpProcessingException(404);
 
         final LeagueData leagueData = league.getLeagueData(_library, _formatLibrary, _soloDraftDefinitions);
-        final List<LeagueSeriesData> series = leagueData.getSeries();
+        final List<LeagueSeriesData> allSeries = leagueData.getSeries();
 
-        int end = series.get(series.size() - 1).getEnd();
-        int start = series.get(0).getStart();
+        int end = allSeries.getLast().getEnd();
+        int start = allSeries.getFirst().getStart();
         int currentDate = DateUtils.getCurrentDateAsInt();
 
         Element leagueElem = doc.createElement("league");
@@ -108,22 +108,22 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         leagueElem.setAttribute("type", league.getType());
         leagueElem.setAttribute("name", league.getName());
         leagueElem.setAttribute("cost", String.valueOf(league.getCost()));
-        leagueElem.setAttribute("start", String.valueOf(series.get(0).getStart()));
+        leagueElem.setAttribute("start", String.valueOf(allSeries.getFirst().getStart()));
         leagueElem.setAttribute("end", String.valueOf(end));
 
-        for (LeagueSeriesData serie : series) {
+        for (LeagueSeriesData series : allSeries) {
             Element seriesElem = doc.createElement("series");
-            seriesElem.setAttribute("type", serie.getName());
-            seriesElem.setAttribute("maxMatches", String.valueOf(serie.getMaxMatches()));
-            seriesElem.setAttribute("start", String.valueOf(serie.getStart()));
-            seriesElem.setAttribute("end", String.valueOf(serie.getEnd()));
-            seriesElem.setAttribute("formatType", serie.getFormat().getCode());
-            seriesElem.setAttribute("format", serie.getFormat().getName());
-            seriesElem.setAttribute("collection", serie.getCollectionType().getFullName());
-            seriesElem.setAttribute("limited", String.valueOf(serie.isLimited()));
+            seriesElem.setAttribute("type", series.getName());
+            seriesElem.setAttribute("maxMatches", String.valueOf(series.getMaxMatches()));
+            seriesElem.setAttribute("start", String.valueOf(series.getStart()));
+            seriesElem.setAttribute("end", String.valueOf(series.getEnd()));
+            seriesElem.setAttribute("formatType", series.getFormat().getCode());
+            seriesElem.setAttribute("format", series.getFormat().getName());
+            seriesElem.setAttribute("collection", series.getCollectionType().getFullName());
+            seriesElem.setAttribute("limited", String.valueOf(series.isLimited()));
 
             Element matchesElem = doc.createElement("matches");
-            Collection<LeagueMatchResult> playerMatches = _leagueService.getPlayerMatchesInSerie(league, serie, resourceOwner.getName());
+            Collection<LeagueMatchResult> playerMatches = _leagueService.getPlayerMatchesInSerie(league, series, resourceOwner.getName());
             for (LeagueMatchResult playerMatch : playerMatches) {
                 Element matchElem = doc.createElement("match");
                 matchElem.setAttribute("winner", playerMatch.getWinner());
@@ -132,7 +132,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             }
             seriesElem.appendChild(matchesElem);
 
-            final List<PlayerStanding> standings = _leagueService.getLeagueSerieStandings(league, serie);
+            final List<PlayerStanding> standings = _leagueService.getLeagueSerieStandings(league, series);
             for (PlayerStanding standing : standings) {
                 Element standingElem = doc.createElement("standing");
                 setStandingAttributes(standing, standingElem);
