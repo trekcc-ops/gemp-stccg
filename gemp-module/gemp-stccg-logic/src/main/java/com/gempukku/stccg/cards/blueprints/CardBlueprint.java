@@ -194,6 +194,7 @@ public class CardBlueprint {
     public int getSpecialDownloadIconCount() { return _specialDownloadIcons; }
     public void setSpecialDownloadIcons(int icons) { _specialDownloadIcons = icons; }
     public void setSpecies(Species species) { _species = species; }
+    public Species getSpecies() { return _species; }
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) { this.tribbleValue = tribbleValue; }
@@ -222,7 +223,7 @@ public class CardBlueprint {
 
     public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
-    public void setAnyCrewOrAwayTeamCanAttempt(boolean canAttempt) { }
+    public void setAnyCrewOrAwayTeamCanAttempt() { }
     public Affiliation homeworldAffiliation() {
         if (this._cardType != CardType.MISSION)
             return null;

@@ -155,7 +155,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
     }
 
-    protected class PlayEffect extends UnrespondableEffect {
+    protected static class PlayEffect extends UnrespondableEffect {
         private final Effect _effect;
 
         private PlayEffect(Effect effect) {

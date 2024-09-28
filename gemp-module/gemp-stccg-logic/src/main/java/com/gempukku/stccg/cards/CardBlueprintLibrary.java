@@ -398,14 +398,9 @@ public class CardBlueprintLibrary {
     public CardBlueprint get(String blueprintId) { return _blueprints.get(blueprintId); }
 
     public CardBlueprint getBlueprintByName(String title, String setName) throws CardNotFoundException {
-        String setId;
-        for (SetDefinition set : _allSets.values()) {
-            if (set.getSetName() == setName)
-                setId = set.getSetId();
-        }
 
         for (CardBlueprint blueprint : _blueprints.values()) {
-            if (blueprint.getTitle() == title)
+            if (Objects.equals(blueprint.getTitle(), title))
                 return blueprint;
         }
 

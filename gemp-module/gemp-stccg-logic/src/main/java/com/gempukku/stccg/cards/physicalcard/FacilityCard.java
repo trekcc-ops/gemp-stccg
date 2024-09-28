@@ -18,7 +18,6 @@ import com.gempukku.stccg.TextUtils;
 import java.util.*;
 
 public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew {
-    private final Set<PhysicalCard> _cardsAboard = new HashSet<>();
     public FacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
     }
@@ -64,10 +63,6 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return isControlledBy(playerId);
     }
 
-    public void addCardAboard(PhysicalCard card) {
-        _cardsAboard.add(card);
-    }
-
     @Override
     public List<? extends Action> getPhaseActionsInPlay(Player player) {
         List<Action> actions = new LinkedList<>();
@@ -87,8 +82,6 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return new SeedOutpostAction(this);
         // TODO - Add actions for non-outposts
     }
-
-    public boolean allowsDocking() { return true; } // TODO - not always true
 
     Collection<PhysicalCard> getDockedShips() {
         return Filters.filter(getAttachedCards(), Filters.ship);

@@ -145,10 +145,7 @@ public class Filters {
 
 
     private static Filter species(final Species species) {
-        return (game, physicalCard) -> {
-            return false;
-            // TODO - Have not implemented this because there is no card data for species yet
-        };
+        return (game, physicalCard) -> physicalCard.getBlueprint().getSpecies() == species;
     }
 
 

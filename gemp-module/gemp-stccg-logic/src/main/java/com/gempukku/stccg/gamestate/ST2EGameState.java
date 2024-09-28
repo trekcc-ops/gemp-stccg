@@ -11,16 +11,12 @@ import com.gempukku.stccg.game.ST2EGame;
 import java.util.*;
 
 public class ST2EGameState extends GameState {
-    private final Map<String, List<PhysicalCard>> _seedDecks;
-    private final Map<String, List<PhysicalCard>> _missionPiles;
     private final Map<String, List<PhysicalCard>> _tableCards;
     private final ST2EGame _game;
 
     public ST2EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST2EGame game) {
         super(players, decks, library, format, game);
         _game = game;
-        _seedDecks = new HashMap<>();
-        _missionPiles = new HashMap<>();
         _tableCards = new HashMap<>();
         for (String player : players) {
             _tableCards.put(player, new LinkedList<>());
@@ -61,12 +57,6 @@ public class ST2EGameState extends GameState {
                 if (entry.getKey() == SubDeck.DRAW_DECK) {
                     _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
                     subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
-                } else if (entry.getKey() == SubDeck.SEED_DECK) {
-                    _seedDecks.put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.SEED_DECK));
-                } else if (entry.getKey() == SubDeck.MISSIONS) {
-                    _missionPiles.put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.MISSIONS_PILE));
                 }
             }
         }

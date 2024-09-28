@@ -15,7 +15,7 @@ import java.util.List;
 
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
 
-    List<Skill> _skills;
+    private final List<Skill> _skills;
 
     public PersonnelCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);

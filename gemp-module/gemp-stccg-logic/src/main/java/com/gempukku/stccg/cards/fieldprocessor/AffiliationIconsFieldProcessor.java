@@ -11,7 +11,7 @@ public class AffiliationIconsFieldProcessor implements FieldProcessor {
                              CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         for (String icon : environment.getString(value, key).split(",")) {
             if (icon.equals("any")) {
-                blueprint.setAnyCrewOrAwayTeamCanAttempt(true);
+                blueprint.setAnyCrewOrAwayTeamCanAttempt();
             } else {
                 blueprint.addOwnerAffiliationIcon(environment.getEnum(Affiliation.class, icon));
             }

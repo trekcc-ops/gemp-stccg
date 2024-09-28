@@ -106,7 +106,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                     staffed = false;
             }
             if (staffed)
-                return staffed;
+                return true;
         }
         return false;
     }

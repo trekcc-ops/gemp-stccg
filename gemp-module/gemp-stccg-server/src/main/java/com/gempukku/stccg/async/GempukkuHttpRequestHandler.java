@@ -131,7 +131,6 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     private Map<String, String> getHeadersForFile(Map<String, String> headers, File file) {
         Map<String, String> fileHeaders = new HashMap<>(headers);
 
-        boolean disableCaching = false;
         boolean cache = false;
 
         String fileName = file.getName();
@@ -163,11 +162,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
             contentType = "application/octet-stream";
         }
 
-        if (disableCaching) {
-            fileHeaders.put(HttpHeaderNames.CACHE_CONTROL.toString(), "no-cache");
-            fileHeaders.put(HttpHeaderNames.PRAGMA.toString(), "no-cache");
-            fileHeaders.put(HttpHeaderNames.EXPIRES.toString(), String.valueOf(-1));
-        } else if (cache) {
+        if (cache) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
             long sixMonthsFromNow = System.currentTimeMillis() + SIX_MONTHS;
             fileHeaders.put(HttpHeaderNames.EXPIRES.toString(), dateFormat.format(new Date(sixMonthsFromNow)));
