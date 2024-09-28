@@ -1,3 +1,5 @@
+import { TribblesDeckBuildingUI, ST1EDeckBuildingUI } from "../../js/gemp-022/deckBuildingUi.js";
+
 $(document).ready(
     function () {
 

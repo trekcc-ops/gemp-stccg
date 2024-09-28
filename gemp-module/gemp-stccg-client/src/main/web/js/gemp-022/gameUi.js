@@ -1,50 +1,58 @@
-var GameTableUI = Class.extend({
-    padding: 5,
-    spectatorMode: null,
+import GempClientCommunication from './communication.js';
+import { log, getUrlParam } from './common.js';
+import Card from './jCards.js';
+import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js';
+import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
+import GameAnimations from './gameAnimations.js';
+import ChatBoxUI from './chat.js';
 
-    currentPlayerId: null,
-    bottomPlayerId: null,
-    allPlayerIds: null,
+export default class GameTableUI {
+    padding = 5;
+    spectatorMode;
 
-    gameUiInitialized:false,
-    cardActionDialog: null,
-    smallDialog: null,
-    gameStateElem: null,
-    alertBox: null,
-    alertText: null,
-    alertButtons: null,
-    infoDialog: null,
+    currentPlayerId;
+    bottomPlayerId;
+    allPlayerIds;
 
-//    playPiles: null,
-    hand: null,
-    specialGroup: null,
+    gameUiInitialized = false
+    cardActionDialog;
+    smallDialog;
+    gameStateElem;
+    alertBox;
+    alertText;
+    alertButtons;
+    infoDialog;
 
-    discardPileDialogs: null,
-    discardPileGroups: null,
-    adventureDeckDialogs: null,
-    adventureDeckGroups: null,
-    removedPileDialogs: null,
-    removedPileGroups: null,
-    miscPileDialogs: null,
-    miscPileGroups: null,
+//    playPiles;
+    hand;
+    specialGroup;
 
-    statsDiv: null,
+    discardPileDialogs;
+    discardPileGroups;
+    adventureDeckDialogs;
+    adventureDeckGroups;
+    removedPileDialogs;
+    removedPileGroups;
+    miscPileDialogs;
+    miscPileGroups;
 
-    selectionFunction: null,
+    statsDiv;
 
-    chatBox: null,
-    communication: null,
-    channelNumber: null,
+    selectionFunction;
 
-    windowWidth: null,
-    windowHeight: null,
+    chatBox;
+    communication;
+    channelNumber;
 
-    tabPane: null,
+    windowWidth;
+    windowHeight;
 
-    animations: null,
-    replayPlay: false,
+    tabPane;
 
-    init: function (url, replayMode) {
+    animations;
+    replayPlay = false;
+
+    constructor(url, replayMode) {
         this.replayMode = replayMode;
 
         log("ui initialized");
@@ -129,9 +137,9 @@ var GameTableUI = Class.extend({
         this.initializeDialogs();
 
         this.addBottomLeftTabPane();
-    },
+    }
 
-    getReorganizableCardGroupForCardData: function (cardData) {
+    getReorganizableCardGroupForCardData(cardData) {
         if (cardData.zone == "ATTACHED") {
             return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
         }
@@ -150,12 +158,12 @@ var GameTableUI = Class.extend({
                 return this.playerAtLocationCardGroups[i];
             }
         }
-        for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+        for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
         }
-        for ([playerId, cardGroup] of Object.entries(this.onTableAreas)) {
+        for (var [playerId, cardGroup] of Object.entries(this.onTableAreas)) {
             if (cardGroup.cardBelongs(cardData)) {
                 return cardGroup;
             }
@@ -165,9 +173,9 @@ var GameTableUI = Class.extend({
                 return this.hand;
             }
         return null;
-    },
+    }
 
-    layoutGroupWithCard: function (cardId) {
+    layoutGroupWithCard(cardId) {
         var cardData = getCardDivFromId(cardId).data("card");
         var tempGroup = this.getReorganizableCardGroupForCardData(cardData);
         if (tempGroup != null) {
@@ -175,9 +183,9 @@ var GameTableUI = Class.extend({
             return;
         }
         this.layoutUI(false);
-    },
+    }
 
-    initializeGameUI: function (discardPublic) {
+    initializeGameUI(discardPublic) {
         var that = this;
 
 //        this.advPathGroup = new AdvPathCardGroup($("#main"));
@@ -325,9 +333,9 @@ var GameTableUI = Class.extend({
 
         this.gameUiInitialized = true;
 
-    },
+    }
 
-    processGameEnd: function() {
+    processGameEnd() {
         var that = this;
         if(this.allPlayerIds == null)
             return;
@@ -342,9 +350,9 @@ var GameTableUI = Class.extend({
                     group.layoutCards();
                 };
             })(that.bottomPlayerId));
-    },
+    }
 
-    addBottomLeftTabPane: function () {
+    addBottomLeftTabPane() {
         var that = this;
 
         if (this.replayMode) {
@@ -358,8 +366,8 @@ var GameTableUI = Class.extend({
 
         this.tabPane = $("#bottomLeftTabs").tabs();
 
-            // Process game settings
-        for (setting of that.gameSettings.entries()) {
+        // Process game settings
+        for (var setting of that.gameSettings.entries()) {
             var settingName = setting[0];
             if (settingName != "autoPass") { // TODO: currently, autoPass always set to false
                 var optionSelection = $("#" + settingName);
@@ -468,9 +476,9 @@ var GameTableUI = Class.extend({
                     that.communication.cancel();
                 });
         }
-    },
+    }
 
-    clickCardFunction: function (event) {
+    clickCardFunction(event) {
         var tar = $(event.target);
 
         if (tar.hasClass("cardHint")) {
@@ -504,17 +512,17 @@ var GameTableUI = Class.extend({
         }
 
         return true;
-    },
+    }
 
-    dragCardId: null,
-    dragCardIndex: null,
-    draggedCardIndex: null,
-    dragStartX: null,
-    dragStartY: null,
-    successfulDrag: null,
-    draggingHorizontaly: false,
+    dragCardId;
+    dragCardIndex;
+    draggedCardIndex;
+    dragStartX;
+    dragStartY;
+    successfulDrag;
+    draggingHorizontaly = false;
 
-    dragStartCardFunction: function (event) {
+    dragStartCardFunction(event) {
         this.successfulDrag = false;
         var tar = $(event.target);
         if (tar.hasClass("actionArea")) {
@@ -530,9 +538,9 @@ var GameTableUI = Class.extend({
             }
         }
         return true;
-    },
+    }
 
-    dragContinuesCardFunction: function (event) {
+    dragContinuesCardFunction(event) {
         if (this.dragCardId != null) {
             if (!this.draggingHorizontaly && Math.abs(this.dragStartX - event.clientX) >= 20) {
                 var cardElems = getCardDivFromId(this.dragCardId);
@@ -585,9 +593,9 @@ var GameTableUI = Class.extend({
                 }
             }
         }
-    },
+    }
 
-    dragStopCardFunction: function (event) {
+    dragStopCardFunction(event) {
         if (this.dragCardId != null) {
             if (this.dragStartY - event.clientY >= 20 && !this.draggingHorizontaly) {
                 var cardElems = getCardDivFromId(this.dragCardId);
@@ -605,9 +613,9 @@ var GameTableUI = Class.extend({
             return false;
         }
         return true;
-    },
+    }
 
-    displayCard: function (card, extraSpace) {
+    displayCard(card, extraSpace) {
         this.infoDialog.html("");
         this.infoDialog.html("<div style='scroll: auto'></div>");
         var floatCardDiv = $("<div style='float: left;'></div>");
@@ -637,9 +645,9 @@ var GameTableUI = Class.extend({
             });
         }
         this.infoDialog.dialog("open");
-    },
+    }
 
-    displayCardInfo: function (card) {
+    displayCardInfo(card) {
         var showModifiers = false;
         var cardId = card.cardId;
         if (!this.replayMode && (cardId.length < 4 || cardId.substring(0, 4) != "temp"))
@@ -649,14 +657,14 @@ var GameTableUI = Class.extend({
 
         if (showModifiers)
             this.getCardModifiersFunction(cardId, this.setCardModifiers);
-    },
+    }
 
-    setCardModifiers: function (html) {
+    setCardModifiers(html) {
         $("#cardEffects").append(html);
         $("#cardEffects").addClass("cardInfoText");
-    },
+    }
 
-    initializeDialogs: function () {
+    initializeDialogs() {
         this.smallDialog = $("<div></div>")
             .dialog({
                 autoOpen: false,
@@ -706,35 +714,35 @@ var GameTableUI = Class.extend({
             }
         };
         this.infoDialog.swipe(swipeOptions);
-    },
+    }
 
-    windowResized: function () {
+    windowResized() {
         this.animations.windowResized();
-    },
+    }
 
-    startReplaySession: function (replayId) {
+    startReplaySession(replayId) {
         var that = this;
         this.communication.getReplay(replayId, function (xml) { that.processXmlReplay(xml, true); });
-    },
+    }
 
-    startGameSession: function () {
+    startGameSession() {
         var that = this;
         this.communication.startGameSession(
             function (xml) {
                 that.processXml(xml, false);
             }, this.gameErrorMap());
-    },
+    }
 
-    updateGameState: function () {
+    updateGameState() {
         var that = this;
         this.communication.updateGameState(
             this.channelNumber,
             function (xml) {
                 that.processXml(xml, true);
             }, this.gameErrorMap());
-    },
+    }
 
-    decisionFunction: function (decisionId, result) {
+    decisionFunction(decisionId, result) {
         var that = this;
         this.stopAnimatingTitle();
         this.communication.gameDecisionMade(decisionId, result,
@@ -742,9 +750,9 @@ var GameTableUI = Class.extend({
             function (xml) {
                 that.processXml(xml, true);
             }, this.gameErrorMap());
-    },
+    }
 
-    gameErrorMap: function () {
+    gameErrorMap() {
         var that = this;
         return {
             "0": function () {
@@ -780,9 +788,9 @@ var GameTableUI = Class.extend({
                 );
             }
         };
-    },
+    }
 
-    showErrorDialog: function (title, text, reloadButton, mainPageButton, gameHallButton) {
+    showErrorDialog(title, text, reloadButton, mainPageButton, gameHallButton) {
         var buttons = {};
         if (reloadButton) {
             buttons["Refresh page"] =
@@ -810,27 +818,27 @@ var GameTableUI = Class.extend({
             modal: true,
             buttons: buttons
         }).text(text);
-    },
+    }
 
-    getCardModifiersFunction: function (cardId, func) {
+    getCardModifiersFunction(cardId, func) {
         var that = this;
         this.communication.getGameCardModifiers(cardId,
             function (html) {
                 that.setCardModifiers(html);
             });
-    },
+    }
 
-    processXml: function (xml, animate) {
+    processXml(xml, animate) {
         log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'gameState' || root.tagName == 'update')
             this.processGameEventsXml(root, animate);
-    },
+    }
 
-    replayGameEventNextIndex: 0,
-    replayGameEvents: null,
+    replayGameEventNextIndex = 0;
+    replayGameEvents;
 
-    processXmlReplay: function (xml, animate) {
+    processXmlReplay(xml, animate) {
         var that = this;
         log(xml);
         var root = xml.documentElement;
@@ -852,11 +860,13 @@ var GameTableUI = Class.extend({
 
             this.playNextReplayEvent();
         }
-    },
+    }
 
-    shouldPlay: function () { return this.replayPlay; },
+    shouldPlay() {
+        return this.replayPlay;
+    }
 
-    playNextReplayEvent: function () {
+    playNextReplayEvent() {
         if (this.shouldPlay()) {
             var that = this;
             if (this.replayGameEventNextIndex < this.replayGameEvents.length) {
@@ -877,9 +887,9 @@ var GameTableUI = Class.extend({
                     });
             }
         }
-    },
+    }
 
-    processGameEvent: function (gameEvent, animate) {
+    processGameEvent(gameEvent, animate) {
         var eventType = gameEvent.getAttribute("type");
         if (eventType == "PCIP") {
             this.animations.putCardIntoPlay(gameEvent, animate, eventType);
@@ -919,9 +929,9 @@ var GameTableUI = Class.extend({
         else if (eventType == "EG") {
             this.processGameEnd();
         }
-    },
+    }
 
-    processGameEventsXml: function (element, animate) {
+    processGameEventsXml(element, animate) {
         try {
             this.channelNumber = element.getAttribute("cn");
 
@@ -976,25 +986,26 @@ var GameTableUI = Class.extend({
                 this.startAnimatingTitle();
             }
         } catch (e) {
+            console.error(e);
             this.showErrorDialog(
                 "Game error",
                 "There was an error while processing game events in your browser. Reload the game to continue",
                 true, false, false
             );
         }
-    },
+    }
 
-    keepAnimating: false,
+    keepAnimating = false;
 
-    startAnimatingTitle: function () {
+    startAnimatingTitle() {
         var that = this;
         this.keepAnimating = true;
         setTimeout(function () {
             that.setAlternatingTitle();
         }, 500);
-    },
+    }
 
-    setAlternatingTitle: function () {
+    setAlternatingTitle() {
         if (this.keepAnimating) {
             if (window.document.title == "Game of Star Trek CCG") {
                 window.document.title = "Waiting for your decision";
@@ -1006,30 +1017,30 @@ var GameTableUI = Class.extend({
                 that.setAlternatingTitle();
             }, 500);
         }
-    },
+    }
 
-    stopAnimatingTitle: function () {
+    stopAnimatingTitle() {
         this.keepAnimating = false;
         window.document.title = "Game of Star Trek CCG";
-    },
+    }
 
-    getPlayerIndex: function (playerId) {
+    getPlayerIndex(playerId) {
         for (var plId = 0; plId < this.allPlayerIds.length; plId++)
             if (this.allPlayerIds[plId] == playerId)
                 return plId;
         return -1;
-    },
+    }
 
-    layoutZones: function () {
+    layoutZones() {
 //        this.advPathGroup.layoutCards();
-        for ([playerId, cardGroup] of Object.entries(this.playPiles)) {
+        for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
         if (!this.spectatorMode)
             this.hand.layoutCards();
-    },
+    }
 
-    participant: function (element) {
+    participant(element) {
         var participantId = element.getAttribute("participantId");
         this.allPlayerIds = element.getAttribute("allParticipantIds").split(",");
         var discardPublic = element.getAttribute("discardPublic") === 'true';
@@ -1065,9 +1076,9 @@ var GameTableUI = Class.extend({
 
         this.initializeGameUI(discardPublic);
         this.layoutUI(true);
-    },
+    }
 
-    createPile: function(playerId, name, dialogsName, groupsName) {
+    createPile(playerId, name, dialogsName, groupsName) {
         var dialog = $("<div></div>").dialog({
             autoOpen: false,
             closeOnEscape: true,
@@ -1093,18 +1104,18 @@ var GameTableUI = Class.extend({
         dialog.bind("dialogresize", function () {
             that.dialogResize(dialog, that[groupsName][playerId]);
         });
-    },
+    }
 
-    getDecisionParameter: function (decision, name) {
+    getDecisionParameter(decision, name) {
         var parameters = decision.getElementsByTagName("parameter");
         for (var i = 0; i < parameters.length; i++)
             if (parameters[i].getAttribute("name") == name)
                 return parameters[i].getAttribute("value");
 
         return null;
-    },
+    }
 
-    getDecisionParameters: function (decision, name) {
+    getDecisionParameters(decision, name) {
         var result = new Array();
         var parameters = decision.getElementsByTagName("parameter");
         for (var i = 0; i < parameters.length; i++)
@@ -1112,9 +1123,9 @@ var GameTableUI = Class.extend({
                 result.push(parameters[i].getAttribute("value"));
 
         return result;
-    },
+    }
 
-    cleanupDecision: function () {
+    cleanupDecision() {
         this.smallDialog.dialog("close");
         this.cardActionDialog.dialog("close");
         this.clearSelection();
@@ -1135,9 +1146,9 @@ var GameTableUI = Class.extend({
             });
         if (this.hand != null)
             this.hand.layoutCards();
-    },
+    }
 
-    integerDecision: function (decision) {
+    integerDecision(decision) {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
         var val = 0;
@@ -1182,9 +1193,9 @@ var GameTableUI = Class.extend({
 
         this.smallDialog.dialog("open");
         $('.ui-dialog :button').blur();
-    },
+    }
 
-    multipleChoiceDecision: function (decision) {
+    multipleChoiceDecision(decision) {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
@@ -1237,9 +1248,9 @@ var GameTableUI = Class.extend({
 
         this.smallDialog.dialog("open");
         $('.ui-dialog :button').blur();
-    },
+    }
 
-    ensureCardHasBoxes: function (cardDiv) {
+    ensureCardHasBoxes(cardDiv) {
         if ($(".cardStrength", cardDiv).length == 0) {
             var tokenOverlay = $(".tokenOverlay", cardDiv);
 
@@ -1375,9 +1386,9 @@ var GameTableUI = Class.extend({
             cardDiv.data("sizeListeners", sizeListeners);
             sizeListeners[0].sizeChanged(cardDiv, $(cardDiv).width(), $(cardDiv).height());
         }
-    },
+    }
 
-    createCardDiv: function (card, text) {
+    createCardDiv(card, text) {
         var cardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), true, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
         cardDiv.data("card", card);
@@ -1401,9 +1412,9 @@ var GameTableUI = Class.extend({
         cardDiv.swipe(swipeOptions);
 
         return cardDiv;
-    },
+    }
 
-    attachSelectionFunctions: function (cardIds, selection) {
+    attachSelectionFunctions(cardIds, selection) {
         if (selection) {
             if (cardIds.length > 0)
                 $(".card:cardId(" + cardIds + ")").addClass("selectableCard");
@@ -1411,10 +1422,10 @@ var GameTableUI = Class.extend({
             if (cardIds.length > 0)
                 $(".card:cardId(" + cardIds + ")").addClass("actionableCard");
         }
-    },
+    }
 
     // Choosing cards from a predefined selection (for example stating fellowship)
-    arbitraryCardsDecision: function (decision) {
+    arbitraryCardsDecision(decision) {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
@@ -1512,10 +1523,10 @@ var GameTableUI = Class.extend({
         openSizeDialog(this.cardActionDialog);
         this.arbitraryDialogResize(false);
         $('.ui-dialog :button').blur();
-    },
+    }
 
     // Choosing one action to resolve, for example phase actions
-    cardActionChoiceDecision: function (decision) {
+    cardActionChoiceDecision(decision) {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
@@ -1656,17 +1667,17 @@ var GameTableUI = Class.extend({
         }
 
         $(':button').blur();
-    },
+    }
 
-    PlaySound: function(soundObj) {
+    PlaySound(soundObj) {
         var myAudio = document.getElementById(soundObj);
         if(!document.hasFocus() || document.hidden || document.msHidden || document.webkitHidden)
         {
             myAudio.play();
         }
-    },
+    }
 
-    createActionChoiceContextMenu: function (actions, event, selectActionFunction) {
+    createActionChoiceContextMenu(actions, event, selectActionFunction) {
         // Remove context menus that may be showing
         $(".contextMenu").remove();
 
@@ -1712,10 +1723,10 @@ var GameTableUI = Class.extend({
         setTimeout(function () { // Delay for Mozilla
             $(document).click(getRidOfContextMenu);
         }, 0);
-    },
+    }
 
     // Choosing one action to resolve, for example required triggered actions
-    actionChoiceDecision: function (decision) {
+    actionChoiceDecision(decision) {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
@@ -1802,10 +1813,10 @@ var GameTableUI = Class.extend({
         openSizeDialog(this.cardActionDialog);
         this.arbitraryDialogResize(false);
         $('.ui-dialog :button').blur();
-    },
+    }
 
     // Choosing some number of cards, for example to wound
-    cardSelectionDecision: function (decision) {
+    cardSelectionDecision(decision) {
         var id = decision.getAttribute("id");
         var text = decision.getAttribute("text");
 
@@ -1879,22 +1890,22 @@ var GameTableUI = Class.extend({
             processButtons();
             this.PlaySound("awaitAction");
         }
-    },
+    }
 
-    clearSelection: function () {
+    clearSelection() {
         $(".selectableCard").removeClass("selectableCard").data("action", null);
         $(".actionableCard").removeClass("actionableCard").data("action", null);
         $(".selectedCard").removeClass("selectedCard");
         this.selectionFunction = null;
-    },
+    }
 
-    dialogResize: function (dialog, group) {
+    dialogResize(dialog, group) {
         var width = dialog.width() + 10;
         var height = dialog.height() + 10;
         group.setBounds(this.padding, this.padding, width - 2 * this.padding, height - 2 * this.padding);
-    },
+    }
 
-    arbitraryDialogResize: function (texts) {
+    arbitraryDialogResize(texts) {
         if (texts) {
             var width = this.cardActionDialog.width() + 10;
             var height = this.cardActionDialog.height() - 10;
@@ -1904,14 +1915,14 @@ var GameTableUI = Class.extend({
         } else
             this.dialogResize(this.cardActionDialog, this.specialGroup);
     }
-});
+}
 
-var TribblesGameTableUI = GameTableUI.extend({
-    init: function (url, replayMode) {
-        this._super(url, replayMode);
-    },
+export class TribblesGameTableUI extends GameTableUI {
+    constructor(url, replayMode) {
+        super(url, replayMode);
+    }
 
-    layoutUI: function (sizeChanged) {
+    layoutUI(sizeChanged) {
         var padding = this.padding;
         var width = $(window).width();
         var height = $(window).height();
@@ -2107,21 +2118,21 @@ var TribblesGameTableUI = GameTableUI.extend({
             });
         }
     }
-});
+}
 
-var ST1EGameTableUI = GameTableUI.extend({
+export class ST1EGameTableUI extends GameTableUI {
 
-    topPlayerId: null,
+    topPlayerId;
 
-    init: function (url, replayMode) {
-        this._super(url, replayMode);
-    },
+    constructor(url, replayMode) {
+        super(url, replayMode);
+    }
 
-    addSharedMission:function (index, quadrant) {
+    addSharedMission(index, quadrant) {
         // TODO - no code here yet
-    },
+    }
 
-    addLocationDiv:function (index, quadrant) {
+    addLocationDiv(index, quadrant) {
         var that = this;
 
         // Increment locationIndex for existing cards on the table to the right of the added location
@@ -2177,9 +2188,9 @@ var ST1EGameTableUI = GameTableUI.extend({
         this.playerAtLocationCardGroups.splice(index, 0, playerAtLocationCardGroup);
 
         this.layoutUI(false);
-    },
+    }
 
-    layoutUI: function (sizeChanged) {
+    layoutUI(sizeChanged) {
         var padding = this.padding;
 
         var width = $(window).width();
@@ -2394,4 +2405,4 @@ var ST1EGameTableUI = GameTableUI.extend({
             });
         }
     }
-});
+}

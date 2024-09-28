@@ -1,25 +1,28 @@
-var GempHallUI = Class.extend({
-	comm:null,
-	chat:null,
-	supportedFormatsInitialized:false,
-	supportedFormatsSelect:null,
-	decksSelect:null,
-	tableDescInput:null,
-	timerSelect:null,
-	createTableButton:null,
-	isPrivateCheckbox:null,
-	isInviteOnlyCheckbox:null,
+import GempClientCommunication from './communication.js';
+import { formatPrice, getUrlParam } from './common.js';
 
-	tablesDiv:null,
-	buttonsDiv:null,
-	adminTab:null,
-	userInfo:null,
+export default class GempHallUI {
+	comm;
+	chat;
+	supportedFormatsInitialized = false;
+	supportedFormatsSelect;
+	decksSelect;
+	tableDescInput;
+	timerSelect;
+	createTableButton;
+	isPrivateCheckbox;
+	isInviteOnlyCheckbox;
 
-	pocketDiv:null,
-	pocketValue:null,
-	hallChannelId: null,
+	tablesDiv;
+	buttonsDiv;
+	adminTab;
+	userInfo;
 
-	init:function (url, chat) {
+	pocketDiv;
+	pocketValue;
+	hallChannelId;
+
+	constructor(url, chat) {
 		var that = this;
 		
 		this.chat = chat;
@@ -131,9 +134,9 @@ var GempHallUI = Class.extend({
 		this.updateDecks();
 		
 		
-	},
+	}
 	
-	initTable: function(displayed, headerID, tableID) {
+	initTable(displayed, headerID, tableID) {
 		var header = $("#" + headerID);
 
 		var content = $("#" + tableID);
@@ -156,10 +159,10 @@ var GempHallUI = Class.extend({
 			content.addClass("hidden");
 			content.hide();
 		}
-	},
+	}
 
 
-	updateHallSettings: function() {
+	updateHallSettings() {
 		var visibilityToggle = $(".visibilityToggle", this.tablesDiv);
 		var getSettingValue =
 			function(index) {
@@ -169,26 +172,26 @@ var GempHallUI = Class.extend({
 		var newHallSettings = getSettingValue(0) + "|" + getSettingValue(1) + "|" + getSettingValue(2) + "|" + getSettingValue(3) + "|" + getSettingValue(4);
 		console.log("New settings: " + newHallSettings);
 		$.cookie("hallSettings", newHallSettings, { expires:365 });
-	},
+	}
 
-	getHall: function() {
+	getHall() {
 		var that = this;
 
 		this.comm.getHall(
 			function(xml) {
 				that.processHall(xml);
 			}, this.hallErrorMap());
-	},
+	}
 
-	updateHall:function () {
+	updateHall() {
 		var that = this;
 		this.comm.updateHall(
 			function (xml) {
 				that.processHall(xml);
 			}, this.hallChannelId, this.hallErrorMap());
-	},
+	}
 
-	hallErrorMap:function() {
+	hallErrorMap() {
 		var that = this;
 		return {
 			"0": function() {
@@ -204,9 +207,9 @@ var GempHallUI = Class.extend({
 				that.showErrorDialog("Inactivity error", "You were inactive for too long and have been removed from the Game Hall. If you wish to re-enter, click \"Refresh page\".", true, false);
 			}
 		};
-	},
+	}
 
-	showErrorDialog:function(title, text, reloadButton, mainPageButton) {
+	showErrorDialog(title, text, reloadButton, mainPageButton) {
 		var buttons = {};
 		if (reloadButton) {
 			buttons["Refresh page"] =
@@ -229,12 +232,12 @@ var GempHallUI = Class.extend({
 			buttons: buttons,
 			closeText: ''
 		}).text(text);
-	},
+	}
 
-	updateDecks:function () {
+	updateDecks() {
 		var that = this;
 		this.comm.getDecks(function (xml) {
-			count = xml.documentElement.getElementsByTagName("deck").length;
+			var count = xml.documentElement.getElementsByTagName("deck").length;
 			if(count == 0)
 			{
 				that.comm.getLibraryDecks(function(xml) {
@@ -247,9 +250,9 @@ var GempHallUI = Class.extend({
 			}
 			
 		});
-	},
+	}
 
-	processResponse:function (xml) {
+	processResponse(xml) {
 		if (xml != null) {
 			var root = xml.documentElement;
 			if (root.tagName == "error") {
@@ -257,9 +260,9 @@ var GempHallUI = Class.extend({
 				this.chat.appendMessage(message, "warningMessage");
 			}
 		}
-	},
+	}
 
-	processDecks:function (xml) {
+	processDecks(xml) {
 		var root = xml.documentElement;
 		
 		function formatDeckName(formatName, deckName)
@@ -280,36 +283,36 @@ var GempHallUI = Class.extend({
 			}
 			this.decksSelect.css("display", "");
 		}
-	},
+	}
 
-	animateRowUpdate: function(rowSelector) {
+	animateRowUpdate(rowSelector) {
 		$(rowSelector, this.tablesDiv)
 			.css({borderTopColor:"#000000", borderLeftColor:"#000000", borderBottomColor:"#000000", borderRightColor:"#000000"})
 			.animate({borderTopColor:"#ffffff", borderLeftColor:"#ffffff", borderBottomColor:"#ffffff", borderRightColor:"#ffffff"}, "fast");
-	},
+	}
 	
-	PlaySound: function(soundObj) {
+	PlaySound(soundObj) {
 		var myAudio = document.getElementById(soundObj);
 		myAudio.play();
-	},
+	}
 	
-	AddTesterFlag: function() {
+	AddTesterFlag() {
 		var that = this;
 		
 		that.comm.addTesterFlag(function () {
 			window.location.reload(true);
 		});
-	},
+	}
 	
-	RemoveTesterFlag: function() {
+	RemoveTesterFlag() {
 		var that = this;
 		
 		that.comm.removeTesterFlag(function () {
 			window.location.reload(true);
 		});
-	},
+	}
 
-	processHall:function (xml) {
+	processHall(xml) {
 		var that = this;
 		
 		var root = xml.documentElement;
@@ -319,7 +322,6 @@ var GempHallUI = Class.extend({
 			var currency = parseInt(root.getAttribute("currency"));
 			if (currency != this.pocketValue) {
 				this.pocketValue = currency;
-				//this.pocketDiv.html(formatPrice(currency));
 			}
 
 			var motd = root.getAttribute("motd");
@@ -665,4 +667,4 @@ var GempHallUI = Class.extend({
 			}, 100);
 		}
 	}
-});
+}

@@ -1,45 +1,46 @@
-var ChatBoxUI = Class.extend({
-    name:null,
-    userInfo:null,
-    userName:null,
-    pingRegex:null,
-    mentionRegex:null,
-    everyoneRegex:/(@everyone|@anyone)/,
-    div:null,
-    comm:null,
+import GempClientCommunication from './communication.js';
+import { monthNames } from './common.js';
 
-    chatMessagesDiv:null,
-    chatTalkDiv:null,
-    chatListDiv:null,
+export default class ChatBoxUI {
+    name;
+    userInfo;
+    userName;
+    pingRegex;
+    mentionRegex;
+    everyoneRegex = new RegExp('/(@everyone|@anyone)/');
+    div;
+    comm;
 
-    showTimestamps:false,
-    maxMessageCount:500,
-    talkBoxHeight:25,
+    chatMessagesDiv;
+    chatTalkDiv;
+    chatListDiv;
 
-    chatUpdateInterval:100,
+    showTimestamps = false;
+    maxMessageCount = 500;
+    talkBoxHeight = 25;
 
-    playerListener:null,
-    hiddenClasses:null,
+    chatUpdateInterval = 100;
 
-    hideSystemButton:null,
+    playerListener;
+    hiddenClasses;
 
-    lockChat:false,
-    stopUpdates: false,
+    hideSystemButton;
+
+    lockChat = false;
+    stopUpdates = false;
     
-    dialogListener: null,
+    dialogListener;
     
-    enableDiscord: false,
-    discordDiv:null,
-    discordWidget:null,
-    chatEmbed:null,
-    displayDiscord:true,
+    enableDiscord = false;
+    discordDiv;
+    discordWidget;
+    chatEmbed;
+    displayDiscord = true;
     
-    toggleChatButton:null,
-
-
-    init:function (name, div, url, showList, playerListener, showHideSystemButton, displayChatListener, allowDiscord=false) {
+    toggleChatButton;
+    
+    constructor(name, div, url, showList, playerListener, showHideSystemButton, displayChatListener, allowDiscord=false) {
         var that = this;
-             
         this.hiddenClasses = new Array();
         this.playerListener = playerListener;
         this.dialogListener = displayChatListener;
@@ -49,170 +50,170 @@ var ChatBoxUI = Class.extend({
         //This needs to be done before the comm object is instantiated, as otherwise it's too slow for immediate errors
 
         if(this.name == "Game Hall")
-        {
-            this.chatMessagesDiv = $("#chatMessages");
-        }
-        else
-        {
-            this.chatMessagesDiv = $("<div class='chatMessages'></div>");
-            this.div.append(this.chatMessagesDiv);
-        }
-
-        
-        this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
-            that.appendMessage("Unknown chat problem occurred (error=" + xhr.status + ")", "warningMessage");
-        });
-        this.enableDiscord = allowDiscord;
-
-        this.comm.getPlayerInfo(function(json)
-        { 
-            that.initPlayerInfo(json);
-        }, this.chatErrorMap());
-
-        if (this.name != null) {
-            
-            if(this.name == "Game Hall")
             {
-                this.discordDiv = $("#discordChat");
-
-                this.chatTalkDiv = $("#chatTalk");
-
-                this.hideSystemButton = $("#showSystemButton");
-                if (showHideSystemButton) {
-                    hideSystemButton.button({icons:{
-                         primary:"ui-icon-zoomin"
-                     }, text:false});
-
-                    this.hideSystemButton.click(
-                            function () {
-                                if (that.isShowingMessageClass("systemMessage")) {
-                                    $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
-                                    that.hideMessageClass("systemMessage");
-                                } else {
-                                    $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
-                                    that.showMessageClass("systemMessage");
-                                }
-                            });
-                    this.hideMessageClass("systemMessage");
-                }
-                else
-                {
-                    this.hideSystemButton.hide();
-                    this.hideSystemButton = null;
-                }
-
-                this.comm.startChat(this.name,
-                        function (xml) {
-                            that.processMessages(xml, true);
-                            that.scrollChatToBottom();
-                        }, this.chatErrorMap());
-
-                this.chatTalkDiv.keydown(function (e) {
-                    if (e.keyCode == 13) {
-                        if(!e.shiftKey)
-                        {
-                            e.preventDefault();
-                            var value = $(this).val();
-                            if (value != "")
-                                that.sendMessage(value);
-                            $(this).val("").trigger("oninput");
-                            that.scrollChatToBottom();
-                        }
-                    }
-                });
-
-                
-                if (showList) {
-                    this.chatListDiv = $("#userList");
-                    this.toggleChatButton = $("#toggleChatButt");
-
-                    this.toggleChatButton.button();
-                    this.toggleChatButton.click( function() {
-                        that.toggleChat();
-                    });
-                }
-                
-                this.setDiscordVisible(false);
+                this.chatMessagesDiv = $("#chatMessages");
             }
             else
             {
-                this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
-
-                if (showHideSystemButton) {
-                    this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button(
-                    {icons:{
-                        primary:"ui-icon-zoomin"
-                    }, text:false});
-                    this.hideSystemButton.click(
-                            function () {
-                                if (that.isShowingMessageClass("systemMessage")) {
-                                    $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
-                                    that.hideMessageClass("systemMessage");
-                                } else {
-                                    $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
-                                    that.showMessageClass("systemMessage");
-                                }
-                            });
-                    this.hideMessageClass("systemMessage");
-                }
-
-                if (showList) {
-                    this.chatListDiv = $("<div class='userList'></div>");
-                    this.div.append(this.chatListDiv);
-                }
-                if (this.hideSystemButton != null)
-                    this.div.append(this.hideSystemButton);
-
-                this.div.append(this.chatTalkDiv);
-
-                this.comm.startChat(this.name,
-                        function (xml) {
-                            that.processMessages(xml, true);
-                        }, this.chatErrorMap());
-
-                this.chatTalkDiv.bind("keypress", function (e) {
-                    var code = (e.keyCode ? e.keyCode : e.which);
-                    if (code == 13) {
-                        var value = $(this).val();
-                        if (value != "")
-                            that.sendMessage(value);
-                        $(this).val("");
-                    }
-                });
+                this.chatMessagesDiv = $("<div class='chatMessages'></div>");
+                this.div.append(this.chatMessagesDiv);
             }
-            
-        } else {
-            this.talkBoxHeight = 0;
-        }
-    },
     
-    initPlayerInfo:function (playerInfo) {
+            
+            this.comm = new GempClientCommunication(url, function (xhr, ajaxOptions, thrownError) {
+                that.appendMessage("Unknown chat problem occurred (error=" + xhr.status + ")", "warningMessage");
+            });
+            this.enableDiscord = allowDiscord;
+    
+            this.comm.getPlayerInfo(function(json)
+            { 
+                that.initPlayerInfo(json);
+            }, this.chatErrorMap());
+    
+            if (this.name != null) {
+                
+                if(this.name == "Game Hall")
+                {
+                    this.discordDiv = $("#discordChat");
+    
+                    this.chatTalkDiv = $("#chatTalk");
+    
+                    this.hideSystemButton = $("#showSystemButton");
+                    if (showHideSystemButton) {
+                        hideSystemButton.button({icons:{
+                             primary:"ui-icon-zoomin"
+                         }, text:false});
+    
+                        this.hideSystemButton.click(
+                                function () {
+                                    if (that.isShowingMessageClass("systemMessage")) {
+                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
+                                        that.hideMessageClass("systemMessage");
+                                    } else {
+                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
+                                        that.showMessageClass("systemMessage");
+                                    }
+                                });
+                        this.hideMessageClass("systemMessage");
+                    }
+                    else
+                    {
+                        this.hideSystemButton.hide();
+                        this.hideSystemButton = null;
+                    }
+    
+                    this.comm.startChat(this.name,
+                            function (xml) {
+                                that.processMessages(xml, true);
+                                that.scrollChatToBottom();
+                            }, this.chatErrorMap());
+    
+                    this.chatTalkDiv.keydown(function (e) {
+                        if (e.keyCode == 13) {
+                            if(!e.shiftKey)
+                            {
+                                e.preventDefault();
+                                var value = $(this).val();
+                                if (value != "")
+                                    that.sendMessage(value);
+                                $(this).val("").trigger("oninput");
+                                that.scrollChatToBottom();
+                            }
+                        }
+                    });
+    
+                    
+                    if (showList) {
+                        this.chatListDiv = $("#userList");
+                        this.toggleChatButton = $("#toggleChatButt");
+    
+                        this.toggleChatButton.button();
+                        this.toggleChatButton.click( function() {
+                            that.toggleChat();
+                        });
+                    }
+                    
+                    this.setDiscordVisible(false);
+                }
+                else
+                {
+                    this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
+    
+                    if (showHideSystemButton) {
+                        this.hideSystemButton = $("<button id='showSystemMessages'>Toggle system messages</button>").button(
+                        {icons:{
+                            primary:"ui-icon-zoomin"
+                        }, text:false});
+                        this.hideSystemButton.click(
+                                function () {
+                                    if (that.isShowingMessageClass("systemMessage")) {
+                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomin'});
+                                        that.hideMessageClass("systemMessage");
+                                    } else {
+                                        $('#showSystemMessages').button("option", "icons", {primary:'ui-icon-zoomout'});
+                                        that.showMessageClass("systemMessage");
+                                    }
+                                });
+                        this.hideMessageClass("systemMessage");
+                    }
+    
+                    if (showList) {
+                        this.chatListDiv = $("<div class='userList'></div>");
+                        this.div.append(this.chatListDiv);
+                    }
+                    if (this.hideSystemButton != null)
+                        this.div.append(this.hideSystemButton);
+    
+                    this.div.append(this.chatTalkDiv);
+    
+                    this.comm.startChat(this.name,
+                            function (xml) {
+                                that.processMessages(xml, true);
+                            }, this.chatErrorMap());
+    
+                    this.chatTalkDiv.bind("keypress", function (e) {
+                        var code = (e.keyCode ? e.keyCode : e.which);
+                        if (code == 13) {
+                            var value = $(this).val();
+                            if (value != "")
+                                that.sendMessage(value);
+                            $(this).val("");
+                        }
+                    });
+                }
+                
+            } else {
+                this.talkBoxHeight = 0;
+            }
+    }
+    
+    initPlayerInfo(playerInfo) {
         this.userInfo = playerInfo;
         this.userName = this.userInfo.name; 
         this.pingRegex = new RegExp("@" + this.userName + "\\b");
         this.mentionRegex = new RegExp("(?<!<b>)\\b" + this.userName + "\\b");
-    },
+    }
 
 
-    hideMessageClass:function (msgClass) {
+    hideMessageClass(msgClass) {
         this.hiddenClasses.push(msgClass);
         $("div.message." + msgClass, this.chatMessagesDiv).hide();
-    },
+    }
 
-    isShowingMessageClass:function (msgClass) {
+    isShowingMessageClass(msgClass) {
         var index = $.inArray(msgClass, this.hiddenClasses);
         return index == -1;
-    },
+    }
 
-    showMessageClass:function (msgClass) {
+    showMessageClass(msgClass) {
         var index = $.inArray(msgClass, this.hiddenClasses);
         if (index > -1) {
             this.hiddenClasses.splice(index, 1);
             $("div.message." + msgClass, this.chatMessagesDiv).show();
         }
-    },
+    }
 
-    setBounds:function (x, y, width, height) {
+    setBounds(x, y, width, height) {
         
         if(this.name != "Game Hall")
         {
@@ -245,9 +246,9 @@ var ChatBoxUI = Class.extend({
         }
 
         this.handleChatVisibility();       
-    },
+    }
     
-    handleChatVisibility:function() {
+    handleChatVisibility() {
         
         if(this.enableDiscord)
         {
@@ -299,21 +300,20 @@ var ChatBoxUI = Class.extend({
             //     this.lockButton.show(); 
         }
         
-    },
+    }
     
-    toggleChat:function() {
+    toggleChat(){
         this.setDiscordVisible(!this.displayDiscord);
-    },
+    }
     
-    setDiscordVisible:function(visible)
-    {
+    setDiscordVisible(visible) {
       this.displayDiscord = visible;
       
       this.handleChatVisibility();
         
-    },
+    }
     
-    checkForEnd:function (message, msgClass) {
+    checkForEnd(message, msgClass) {
         // if(msgClass != "systemMessage")
         // {
         //     return;
@@ -324,10 +324,10 @@ var ChatBoxUI = Class.extend({
                 this.dialogListener("Give us feedback!", message);
             }
         }
-    },
+    }
     
 
-    appendMessage:function (message, msgClass) {
+    appendMessage(message, msgClass) {
         if (msgClass == undefined)
             msgClass = "chatMessage";
         
@@ -370,37 +370,35 @@ var ChatBoxUI = Class.extend({
             this.scrollChatToBottom();
         
         this.checkForEnd(message, msgClass);
-    },
+    }
 
-    appendNotLoggedIntoGameMessage:function() {
+    appendNotLoggedIntoGameMessage() {
         message = "Game problem - You're not logged in. Go to the <a href='index.html'>main page</a> to log in.";
         msgClass = "warningMessage";
         this.appendMessage(message, msgClass);
-    },
+    }
 
-    appendServerCommunicationProblemMessage:function(xhr_status) {
+    appendServerCommunicationProblemMessage(xhr_status) {
         message = "There was a problem communicating with the server" + xhr_status + ". " +
             "If the game is finished, it has been removed. Otherwise, you have lost connection to the server.";
         this.appendMessage(message, "warningMessage");
         message = "Refresh the page (press F5) to resume the game, " +
             "or press back on your browser to get back to the Game Hall.";
         this.appendMessage(message, "warningMessage");
-    },
+    }
 
-    monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-
-    scrollChatToBottom:function() {
+    scrollChatToBottom() {
         this.chatMessagesDiv.prop({ scrollTop:this.chatMessagesDiv.prop("scrollHeight") })
-    },
+    }
     
-    formatToTwoDigits:function (no) {
+    formatToTwoDigits(no) {
         if (no < 10)
             return "0" + no;
         else
             return no;
-    },
+    }
 
-    processMessages:function (xml, processAgain) {
+    processMessages(xml, processAgain) {
         var root = xml.documentElement;
         if (root.tagName == 'chat') {
             this.retryCount = 0;
@@ -416,7 +414,7 @@ var ChatBoxUI = Class.extend({
                 var prefix = "<div class='msg-identifier'>";
                 if (this.showTimestamps) {
                     var date = new Date(parseInt(message.getAttribute("date")));
-                    var dateStr = this.monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
+                    var dateStr = monthNames[date.getMonth()] + " " + date.getDate() + " " + this.formatToTwoDigits(date.getHours()) + ":" + this.formatToTwoDigits(date.getMinutes()) + ":" + this.formatToTwoDigits(date.getSeconds());
                     prefix += "<span class='timestamp'>[" + dateStr + "]</span>";
                 }
                 
@@ -453,24 +451,24 @@ var ChatBoxUI = Class.extend({
                     that.updateChatMessages();
                 }, that.chatUpdateInterval);
         }
-    },
+    }
 
-    updateChatMessages:function () {
+    updateChatMessages() {
         var that = this;
 
         this.comm.updateChat(this.name, function (xml) {
             that.processMessages(xml, true);
         }, this.chatErrorMap());
-    },
+    }
 
-    sendMessage:function (message) {
+    sendMessage(message) {
         var that = this;
         this.comm.sendChatMessage(this.name, message, this.chatErrorMap());
         
         //this.chatEmbed.emit("sendMessage", message);
-    },
+    }
 
-    chatMalfunction: function() {
+    chatMalfunction() {
         this.stopUpdates = true;
         this.chatTalkDiv.prop('disabled', true);
         this.chatTalkDiv.css({"background-color": "#ff9999"});
@@ -480,9 +478,9 @@ var ChatBoxUI = Class.extend({
             this.discordDiv.prop('disabled', true);
             this.discordDiv.css({"background-color": "#ff9999"});
         }
-    },
+    }
 
-    chatErrorMap:function() {
+    chatErrorMap() {
         var that = this;
         return {
             "0":function() {
@@ -506,7 +504,5 @@ var ChatBoxUI = Class.extend({
                 that.appendMessage("You have been inactive for too long and were removed from the chat room. Refresh the page if you wish to re-enter.", "warningMessage");
             }
         };
-    },
-    
-    
-});
+    }
+}
