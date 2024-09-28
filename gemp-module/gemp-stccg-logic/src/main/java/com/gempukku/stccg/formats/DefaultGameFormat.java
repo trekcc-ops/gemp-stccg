@@ -448,7 +448,7 @@ public class DefaultGameFormat implements GameFormat {
                 CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
                 if (blueprint.getCardType() != CardType.MISSION)
                     result.append("Missions pile contains non-mission card: ").append(blueprint.getTitle()).append(".\n");
-                else if (blueprint.isUnique()) {
+                else if (!blueprint.isUniversal()) {
                     uniqueLocations.add(blueprint.getLocation());
                 }
             } catch(CardNotFoundException exp) {
