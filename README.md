@@ -3,11 +3,6 @@ GEMP is a platform for running a rules-enforced CCG in a web-hosted fashion, so 
 
 The engine is adaptable to other games, but essentially requires forking and ripping out all the Star Trek-based stuff and replacing it with context specific to the game of your choice.  The [Star Wars CCG Players Committee](https://www.starwarsccg.org/) has done so with [their SWCCG GEMP](https://github.com/PlayersCommittee/gemp-swccg-public), which is [hosted publicly here](https://www.starwarsccg.org/).  If forking for a new game, we recommend using this one as the base, as it contains several advancements not in the SW GEMP, including JSON-based card definitions and an updated Java version.
 
-# Getting Help
-
-If the below instructions do not tell you what you need, please contact ketura in [the #gemp-dev channel of the PC Discord](https://lotrtcgpc.net/discord) and ask whatever questions you may have there.
-
-
 # Overview
 
 GEMP is a server written for Java 18, using MariaDB for a MySQL database instance, and serving raw Javascript and barebones HTML/CSS for the client front-end (although a client rewrite is in progress to modernize the JS to something more palatable to modern developers).  
