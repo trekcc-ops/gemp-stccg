@@ -47,7 +47,7 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	* It is exposed on localhost:35001 (unless you changed this port in step 7.2) and uses the user/pass of `gempuser`/`gemppassword` (unless you changed this in step 6).  
 	* If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.
 11. Now we need to compile the gemp code.
-    a. Open a terminal inside the `gemp_app` container
+    1. Open a terminal inside the `gemp_app` container
         * If using portainer.io, 
             * log in
             * select your 'Local' endpoint
@@ -58,8 +58,8 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
             * Select the "Container" option in the left navbar
             * expand the `gemp_1` container
             * click the actiosn button and select `Open in Terminal`
-    b. Navigate to the gemp codebase: `cd etc/gemp-module`
-    c. Now tell Maven to compile the project: `mvn install`
+    2. Navigate to the gemp codebase: `cd etc/gemp-module`
+    3. Now tell Maven to compile the project: `mvn install`
         * This process will take upwards of 5-10 minutes.  You should see a green "BUILD SUCCESS" when it is successfully done.  In portainer.io or another rich command line context, you should see lots of red text if it failed.
 12. On your host machine cycle your docker container
 	* In a terminal navigate to `gemp-module/docker`
