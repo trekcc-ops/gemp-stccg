@@ -14,21 +14,21 @@ public class DilemmaEffectFieldProcessor implements FieldProcessor {
             throw new InvalidCardDefinitionException("Currently code is not designed to take more than one dilemma effect item");
         else {
             for (JSONObject effectItem : effectArray) {
-                ActionSource actionSource = new RequiredTriggerActionSource(TriggerTiming.AFTER);
+                ActionSource source = new RequiredTriggerActionSource(TriggerTiming.AFTER);
                 if (effectItem.get("type") != null) {
                     final String effectType = environment.getString(effectItem.get("type"), "type");
-                    actionSource.addEffect();
-                    actionSource.addPlayRequirement(
+                    source.addEffect();
+                    source.addPlayRequirement(
                             (actionContext) -> actionContext.getSource()
                                     .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer()) < limit);
                 }
                 if (effectItem.get("where") != null) {
                     final String where = environment.getString(effectItem.get("where"), "where");
                     if (Objects.equals(where, "table"))
-                        actionSource.setSeedZone(Zone.TABLE);
+                        source.setSeedZone(Zone.TABLE);
                     else throw new InvalidCardDefinitionException("Unknown parameter in seed:where field");
                 }
-                blueprint.setSeedCardActionSource(actionSource);
+                blueprint.setSeedCardActionSource(source);
             }
         } */
     }

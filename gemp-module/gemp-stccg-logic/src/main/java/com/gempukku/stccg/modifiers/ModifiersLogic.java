@@ -170,15 +170,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         try {
-/*            if (isCandidateForKeywordRemovalWithTextRemoval(_game, physicalCard, icon) &&
-                    (hasTextRemoved(_game, physicalCard) || hasAllKeywordsRemoved(_game, physicalCard)))
-                return false;
-*/
-/*            for (Modifier modifier : getIconModifiersAffectingCard(_game, ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (modifier.isKeywordRemoved(game, physicalCard, keyword))
-                    return false;
-            }*/
-
                     // TODO - Not accurate if the card has LOST an icon
             if (physicalCard.getBlueprint().hasIcon(icon))
                 return true;
@@ -196,14 +187,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, CardIcon icon) {
- /*       if (modifierSource == null)
-            return true;
-        for (Modifier modifier : getIconModifiersAffectingCard(
-                game, ModifierEffect.CANCEL_KEYWORD_BONUS_TARGET_MODIFIER, keyword, affecting)) {
-            if (!modifier.appliesIconModifier(modifierSource, icon))
-                return false;
-        } */
-        return true;
+        return false;
+            // TODO - No real code here
     }
 
 
