@@ -72,7 +72,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
                     }
                 });
                 return getNextCost();
-            } else _selectedAffiliation = _affiliationOptions.get(0);
+            } else _selectedAffiliation = _affiliationOptions.getFirst();
             _affiliationWasChosen = true;
         }
 

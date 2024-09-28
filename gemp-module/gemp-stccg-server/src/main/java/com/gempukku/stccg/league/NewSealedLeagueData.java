@@ -103,7 +103,7 @@ public class NewSealedLeagueData implements LeagueData {
             maxGamesTotal+=sery.getMaxMatches();
 
         if (status == _series.size()) {
-            LeagueSeriesData lastSerie = _series.get(_series.size() - 1);
+            LeagueSeriesData lastSerie = _series.getLast();
             if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesTotal, _collectionType);

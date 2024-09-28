@@ -170,7 +170,7 @@ public class DefaultDraft implements Draft {
     }
 
     private boolean haveAllCardsBeenChosen() {
-        return _cardChoices.isEmpty() || !_cardChoices.get(0).getAll().iterator().hasNext();
+        return _cardChoices.isEmpty() || !_cardChoices.getFirst().getAll().iterator().hasNext();
     }
 
     private boolean haveAllPlayersPicked() {

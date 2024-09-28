@@ -12,8 +12,8 @@ public class PlayerOrder {
     public PlayerOrder(List<String> turnOrder) {
         _turnOrder = turnOrder;
         _isReversed = false;
-        _firstPlayer = turnOrder.get(0);
-        _currentPlayer = turnOrder.get(0);
+        _firstPlayer = turnOrder.getFirst();
+        _currentPlayer = turnOrder.getFirst();
     }
 
     public String getFirstPlayer() {

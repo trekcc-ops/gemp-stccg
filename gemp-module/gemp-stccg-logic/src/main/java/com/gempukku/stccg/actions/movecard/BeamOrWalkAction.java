@@ -108,11 +108,11 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
         StringBuilder sb = new StringBuilder();
         sb.append(StringUtils.capitalize(getVerb())).append(" cards");
         List<PhysicalCard> destinations = _destinationOptions.stream().toList();
-        if (destinations.size() == 1 && destinations.get(0) != _cardSource) {
-            sb.append(" to ").append(destinations.get(0).getTitle());
+        if (destinations.size() == 1 && destinations.getFirst() != _cardSource) {
+            sb.append(" to ").append(destinations.getFirst().getTitle());
         }
-        else if (_validFromCards.size() == 1 && _validFromCards.get(0) != _cardSource)
-            sb.append(" from ").append(_validFromCards.get(0).getTitle());
+        else if (_validFromCards.size() == 1 && _validFromCards.getFirst() != _cardSource)
+            sb.append(" from ").append(_validFromCards.getFirst().getTitle());
         return sb.toString();
     }
 

@@ -20,7 +20,7 @@ public abstract class ChooseAwayTeamEffect extends UnrespondableEffect {
     @Override
     public void doPlayEffect() {
         if (_awayTeams.size() == 1)
-            awayTeamChosen(_awayTeams.get(0));
+            awayTeamChosen(_awayTeams.getFirst());
         else
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new MultipleChoiceAwaitingDecision("Choose an Away Team", _awayTeams) {

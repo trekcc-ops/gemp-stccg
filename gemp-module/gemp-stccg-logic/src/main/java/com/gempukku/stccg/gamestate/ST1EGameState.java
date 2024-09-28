@@ -110,7 +110,7 @@ public class ST1EGameState extends GameState {
                 throw new InvalidGameLogicException("Cannot seed " + missionCard.getTitle() + " because " +
                         missionCard.getOwnerName() + " already has a mission at " +
                         missionCard.getBlueprint().getLocation());
-            missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().iterator().next());
+            missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().getFirst());
             _spacelineLocations.get(indexNumber).addMission(missionCard);
         } else {
             _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));

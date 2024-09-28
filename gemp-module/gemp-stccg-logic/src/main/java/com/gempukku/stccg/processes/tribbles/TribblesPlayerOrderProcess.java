@@ -82,7 +82,7 @@ public class TribblesPlayerOrderProcess extends GameProcess {
             }
         }
 
-        _firstPlayer = playersSelecting.get(0);
+        _firstPlayer = playersSelecting.getFirst();
 
         _playerOrderFeedback.setPlayerOrder(new PlayerOrder(_players), _firstPlayer);
     }
@@ -99,7 +99,7 @@ public class TribblesPlayerOrderProcess extends GameProcess {
             }
         }
         if (uniqueValues.size() == 1)
-            return uniqueValues.get(0);
+            return uniqueValues.getFirst();
         else return 0;
     }
 

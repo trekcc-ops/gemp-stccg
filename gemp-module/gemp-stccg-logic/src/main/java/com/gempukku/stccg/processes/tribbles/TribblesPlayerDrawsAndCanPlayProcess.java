@@ -30,7 +30,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
             _game.getGameState().playerDrawsCard(_playerId);
             _game.sendMessage(_playerId + " drew a card");
             List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(_playerId);
-            PhysicalCard cardDrawn = playerHand.get(playerHand.size() - 1);
+            PhysicalCard cardDrawn = playerHand.getLast();
             final List<Action> playableActions = new LinkedList<>();
             if (cardDrawn.canBePlayed()) {
                 TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);

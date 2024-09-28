@@ -168,7 +168,7 @@ public abstract class DefaultGame {
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
-                    gameWon(allPlayers.get(0), "Last remaining player in game");
+                    gameWon(allPlayers.getFirst(), "Last remaining player in game");
                 }
             }
         }

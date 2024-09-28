@@ -92,7 +92,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                                 if (!selectedCards.isEmpty()) {
-                                    final PhysicalCard selectedCard = selectedCards.get(0);
+                                    final PhysicalCard selectedCard = selectedCards.getFirst();
                                     playCard(selectedCard);
                                 }
                             }

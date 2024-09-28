@@ -218,7 +218,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
             requiredBeforeTriggers.removeIf(action -> _cardTriggersUsed.contains(action.getActionSource()));
             
             if (requiredBeforeTriggers.size() == 1) {
-                _actionsEnvironment.addActionToStack(requiredBeforeTriggers.get(0));
+                _actionsEnvironment.addActionToStack(requiredBeforeTriggers.getFirst());
             } else if (requiredBeforeTriggers.size() > 1) {
                 _game.getUserFeedback().sendAwaitingDecision(_game.getGameState().getCurrentPlayerId(),
                         new ActionSelectionDecision(_game, 1, _effect.getText() + " - Required \"is about to\" responses", requiredBeforeTriggers) {
@@ -362,10 +362,10 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         @Override
         public void doPlayEffect() {
             if (_actions.size() == 1) {
-                _actionStack.add(_actions.get(0));
+                _actionStack.add(_actions.getFirst());
             } else if (_actions.stream().allMatch(action -> action.getActionSource() != null &&
-                    action.getActionSource().getBlueprint() == _actions.get(0).getActionSource().getBlueprint())) {
-                Action anyAction = _actions.get(0);
+                    action.getActionSource().getBlueprint() == _actions.getFirst().getActionSource().getBlueprint())) {
+                Action anyAction = _actions.getFirst();
                 _actions.remove(anyAction);
                 _actionStack.add(anyAction);
                 _action.insertEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(_action, _actions));

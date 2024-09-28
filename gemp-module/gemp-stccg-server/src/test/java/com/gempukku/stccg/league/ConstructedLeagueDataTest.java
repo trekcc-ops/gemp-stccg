@@ -25,7 +25,7 @@ public class ConstructedLeagueDataTest extends AbstractServerTest {
         ConstructedLeagueData leagueData = new ConstructedLeagueData(_cardLibrary, _formatLibrary, params);
         final List<LeagueSeriesData> series = leagueData.getSeries();
         assertEquals(3, series.size());
-        assertEquals(20120312, series.get(0).getStart());
+        assertEquals(20120312, series.getFirst().getStart());
         assertEquals(20120318, series.get(0).getEnd());
         assertEquals("st1emoderncomplete", series.get(0).getFormat().getCode());
         assertEquals(20120319, series.get(1).getStart());

@@ -340,8 +340,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         LeagueData leagueData =
                 new NewConstructedLeagueData(_cardLibrary, _formatLibrary, parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
-        int leagueStart = series.get(0).getStart();
-        int displayEnd = DateUtils.offsetDate(series.get(series.size() - 1).getEnd(), 2);
+        int leagueStart = series.getFirst().getStart();
+        int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
 
         _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
                 parameters.get("serializedParams"), leagueStart, displayEnd);
@@ -366,11 +366,11 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         int cost = Integer.parseInt(leagueParameters.get("cost"));
         Element leagueElem = doc.createElement("league");
         final List<LeagueSeriesData> allSeries = leagueData.getSeries();
-        int end = allSeries.get(allSeries.size() - 1).getEnd();
+        int end = allSeries.getLast().getEnd();
 
         leagueElem.setAttribute("name", leagueParameters.get("name"));
         leagueElem.setAttribute("cost", String.valueOf(cost));
-        leagueElem.setAttribute("start", String.valueOf(allSeries.get(0).getStart()));
+        leagueElem.setAttribute("start", String.valueOf(allSeries.getFirst().getStart()));
         leagueElem.setAttribute("end", String.valueOf(end));
 
         for (LeagueSeriesData series : allSeries) {
@@ -394,8 +394,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         LeagueData leagueData = new SoloDraftLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions,
                 parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
-        int leagueStart = series.get(0).getStart();
-        int displayEnd = DateUtils.offsetDate(series.get(series.size() - 1).getEnd(), 2);
+        int leagueStart = series.getFirst().getStart();
+        int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
         int cost = Integer.parseInt(parameters.get("cost"));
 
         _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"),
@@ -498,8 +498,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         String serializedParameters = serializeSealedLeagueParameters(parameters);
         LeagueData leagueData = new NewSealedLeagueData(_cardLibrary, _formatLibrary, serializedParameters);
         List<LeagueSeriesData> series = leagueData.getSeries();
-        int leagueStart = series.get(0).getStart();
-        int displayEnd = DateUtils.offsetDate(series.get(series.size() - 1).getEnd(), 2);
+        int leagueStart = series.getFirst().getStart();
+        int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
         _leagueDao.addLeague(cost, parameters.get("name"), parameters.get("code"), leagueData.getClass().getName(),
                 serializedParameters, leagueStart, displayEnd);
         _leagueService.clearCache();

@@ -31,7 +31,7 @@ public class LeagueServiceTest extends AbstractServerTest {
         League league = new League(5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), sb, 0);
         leagues.add(league);
 
-        LeagueSeriesData leagueSerie = league.getLeagueData(_cardLibrary, _formatLibrary, null).getSeries().get(0);
+        LeagueSeriesData leagueSerie = league.getLeagueData(_cardLibrary, _formatLibrary, null).getSeries().getFirst();
 
         Mockito.when(leagueDao.loadActiveLeagues(Mockito.anyInt())).thenReturn(leagues);
 
@@ -82,7 +82,7 @@ public class LeagueServiceTest extends AbstractServerTest {
         );
         leagues.add(league);
 
-        LeagueSeriesData leagueSerie = league.getLeagueData(_cardLibrary, _formatLibrary, null).getSeries().get(0);
+        LeagueSeriesData leagueSerie = league.getLeagueData(_cardLibrary, _formatLibrary, null).getSeries().getFirst();
 
         Mockito.when(leagueDao.loadActiveLeagues(Mockito.anyInt())).thenReturn(leagues);
 
@@ -124,7 +124,7 @@ public class LeagueServiceTest extends AbstractServerTest {
         League league = new League(5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), sb, 0);
         leagues.add(league);
 
-        LeagueSeriesData leagueSerie = league.getLeagueData(_cardLibrary, _formatLibrary,null).getSeries().get(0);
+        LeagueSeriesData leagueSerie = league.getLeagueData(_cardLibrary, _formatLibrary,null).getSeries().getFirst();
 
         Mockito.when(leagueDao.loadActiveLeagues(Mockito.anyInt())).thenReturn(leagues);
 
@@ -150,8 +150,8 @@ public class LeagueServiceTest extends AbstractServerTest {
 
         final List<PlayerStanding> leagueSerieStandings = leagueService.getLeagueSerieStandings(league, leagueSerie);
         assertEquals(3, leagueSerieStandings.size());
-        assertEquals("player1", leagueSerieStandings.get(0).getPlayerName());
-        assertEquals(4, leagueSerieStandings.get(0).getPoints());
+        assertEquals("player1", leagueSerieStandings.getFirst().getPlayerName());
+        assertEquals(4, leagueSerieStandings.getFirst().getPoints());
         assertEquals(2, leagueSerieStandings.get(0).getGamesPlayed());
         assertEquals(1, leagueSerieStandings.get(0).getStanding());
         assertEquals("player2", leagueSerieStandings.get(1).getPlayerName());
@@ -165,8 +165,8 @@ public class LeagueServiceTest extends AbstractServerTest {
 
         final List<PlayerStanding> leagueStandings = leagueService.getLeagueStandings(league);
         assertEquals(3, leagueStandings.size());
-        assertEquals("player1", leagueStandings.get(0).getPlayerName());
-        assertEquals(4, leagueStandings.get(0).getPoints());
+        assertEquals("player1", leagueStandings.getFirst().getPlayerName());
+        assertEquals(4, leagueStandings.getFirst().getPoints());
         assertEquals(2, leagueStandings.get(0).getGamesPlayed());
         assertEquals(1, leagueStandings.get(0).getStanding());
         assertEquals("player2", leagueStandings.get(1).getPlayerName());

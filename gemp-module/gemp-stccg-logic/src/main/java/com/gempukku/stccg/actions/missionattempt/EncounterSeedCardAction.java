@@ -40,10 +40,10 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
             return cost;
 
         if (!_seedCardWasRevealed) {
-            String cardEncountered = _seedCards.get(0);
+            String cardEncountered = _seedCards.getFirst();
             _game.sendMessage("Seed card encountered: " + cardEncountered);
             _seedCardWasRevealed = true;
-            _seedCards.remove(0);
+            _seedCards.removeFirst();
         }
 
         return getNextEffect();

@@ -41,7 +41,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
         String firstPlayer = diceResults.keySet().iterator().next();
 
         List<String> playerOrder = new ArrayList<>();
-        playerOrder.add(0, firstPlayer);
+        playerOrder.addFirst(firstPlayer);
         int playerOrderIndex = 1;
         for (String player : _players) {
             if (!Objects.equals(player, firstPlayer)) {

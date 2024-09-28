@@ -194,14 +194,12 @@ public class CardBlueprintFactory {
     }
 
     public String[] getStringArray(Object value, String key) throws InvalidCardDefinitionException {
-        if (value == null)
-            return new String[0];
-        else if (value instanceof String)
-            return new String[]{(String) value};
-        else if (value instanceof final JSONArray array) {
-            return (String[]) array.toArray(new String[0]);
-        }
-        throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
+        return switch (value) {
+            case null -> new String[0];
+            case String s -> new String[]{s};
+            case final JSONArray array -> (String[]) array.toArray(new String[0]);
+            default -> throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
+        };
     }
 
     public FilterableSource getFilterable(JSONObject object)
@@ -262,13 +260,12 @@ public class CardBlueprintFactory {
     }
 
     public JSONObject[] getObjectArray(Object value, String key) throws InvalidCardDefinitionException {
-        if (value == null)
-            return new JSONObject[0];
-        else if (value instanceof JSONObject)
-            return new JSONObject[]{(JSONObject) value};
-        else if (value instanceof final JSONArray array)
-            return (JSONObject[]) array.toArray(new JSONObject[0]);
-        else throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
+        return switch (value) {
+            case null -> new JSONObject[0];
+            case JSONObject jsonObject -> new JSONObject[]{jsonObject};
+            case final JSONArray array -> (JSONObject[]) array.toArray(new JSONObject[0]);
+            default -> throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
+        };
     }
 
     public Requirement[] getRequirementsFromJSON(JSONObject object) throws InvalidCardDefinitionException {

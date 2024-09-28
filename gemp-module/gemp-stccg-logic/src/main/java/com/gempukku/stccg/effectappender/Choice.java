@@ -55,7 +55,7 @@ public class Choice implements EffectAppenderProducer {
 
                 if (playableEffectAppenders.size() == 1) {
                     SubAction subAction = action.createSubAction();
-                    playableEffectAppenders.get(0).appendEffect(cost, subAction, delegateActionContext);
+                    playableEffectAppenders.getFirst().appendEffect(cost, subAction, delegateActionContext);
                     context.setValueToMemory(memorize, textArray[0]);
                     return new StackActionEffect(context.getGame(), subAction);
                 }

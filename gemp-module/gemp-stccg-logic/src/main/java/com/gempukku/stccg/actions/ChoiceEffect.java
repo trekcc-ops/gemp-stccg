@@ -53,7 +53,7 @@ public class ChoiceEffect extends AbstractSubActionEffect {
 
         if (possibleEffects.size() == 1) {
             SubAction subAction = _action.createSubAction();
-            subAction.appendEffect(possibleEffects.get(0));
+            subAction.appendEffect(possibleEffects.getFirst());
             processSubAction(_game, subAction);
         } else if (!possibleEffects.isEmpty()) {
             _game.getUserFeedback().sendAwaitingDecision(_choicePlayerId,

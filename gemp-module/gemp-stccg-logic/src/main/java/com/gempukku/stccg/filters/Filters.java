@@ -423,37 +423,25 @@ public class Filters {
     }
 
     private static Filter changeToFilter(Filterable filter) {
-        if (filter instanceof Filter)
-            return (Filter) filter;
-        else if (filter instanceof PhysicalCard)
-            return Filters.sameCard((PhysicalCard) filter);
-        else if (filter instanceof CardType)
-            return _cardTypeFilterMap.get((CardType) filter);
-        else if (filter instanceof Characteristic)
-            return _characteristicFilterMap.get((Characteristic) filter);
-        else if (filter instanceof SkillName enumFilter)
-            return _skillNameFilterMap.get(enumFilter);
-        else if (filter instanceof CardIcon icon)
-            return (game, physicalCard) -> physicalCard.hasIcon(icon);
-        else if (filter instanceof Keyword)
-            return _keywordFilterMap.get((Keyword) filter);
-        else if (filter instanceof MissionType missionType)
+        return switch (filter) {
+            case Filter filter1 -> filter1;
+            case PhysicalCard card -> Filters.sameCard(card);
+            case CardType cardType -> _cardTypeFilterMap.get(cardType);
+            case Characteristic characteristic -> _characteristicFilterMap.get(characteristic);
+            case SkillName enumFilter -> _skillNameFilterMap.get(enumFilter);
+            case CardIcon icon -> (game, physicalCard) -> physicalCard.hasIcon(icon);
+            case Keyword keyword -> _keywordFilterMap.get(keyword);
+            case MissionType missionType ->
                 // TODO - Does not properly account for dual missions
-            return (game, physicalCard) -> physicalCard.getBlueprint().getMissionType() == missionType;
-        else if (filter instanceof FacilityType)
-            return _facilityTypeFilterMap.get((FacilityType) filter);
-        else if (filter instanceof PropertyLogo)
-            return _propertyLogoFilterMap.get((PropertyLogo) filter);
-        else if (filter instanceof Species enumFilter)
-            return _speciesFilterMap.get(enumFilter);
-        else if (filter instanceof Uniqueness enumFilter)
-            return _uniquenessFilterMap.get(enumFilter);
-        else if (filter instanceof Affiliation enumFilter)
-            return _affiliationFilterMap.get(enumFilter);
-        else if (filter instanceof Zone)
-            return _zoneFilterMap.get((Zone) filter);
-        else
-            throw new IllegalArgumentException("Unknown type of filterable: " + filter);
+                    (game, physicalCard) -> physicalCard.getBlueprint().getMissionType() == missionType;
+            case FacilityType facilityType -> _facilityTypeFilterMap.get(facilityType);
+            case PropertyLogo propertyLogo -> _propertyLogoFilterMap.get(propertyLogo);
+            case Species enumFilter -> _speciesFilterMap.get(enumFilter);
+            case Uniqueness enumFilter -> _uniquenessFilterMap.get(enumFilter);
+            case Affiliation enumFilter -> _affiliationFilterMap.get(enumFilter);
+            case Zone zone -> _zoneFilterMap.get(zone);
+            case null, default -> throw new IllegalArgumentException("Unknown type of filterable: " + filter);
+        };
     }
 
     public static final Filter ownedByCurrentPlayer = (game, physicalCard) -> physicalCard.getOwnerName().equals(game.getGameState().getCurrentPlayerId());

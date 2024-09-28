@@ -67,7 +67,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             throw new HttpProcessingException(404);
 
         LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
-        int leagueStart = leagueData.getSeries().get(0).getStart();
+        int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
             throw new HttpProcessingException(404);
@@ -130,7 +130,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             throw new HttpProcessingException(404);
 
         LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
-        int leagueStart = leagueData.getSeries().get(0).getStart();
+        int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
             throw new HttpProcessingException(404);

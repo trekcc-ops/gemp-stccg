@@ -532,7 +532,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void playerDrawsCard(String playerId) {
         List<PhysicalCard> deck = _cardGroups.get(Zone.DRAW_DECK).get(playerId);
         if (!deck.isEmpty()) {
-            PhysicalCard card = deck.get(0);
+            PhysicalCard card = deck.getFirst();
             removeCardsFromZone(playerId, Collections.singleton(card));
             addCardToZone(card, Zone.HAND);
         }
@@ -600,7 +600,7 @@ public abstract class GameState implements Snapshotable<GameState> {
                 && topPlayCardState.getPlayCardAction().getCardEnteringPlay().getCardId() ==
                 sourceCardToSkip.getCardId()) {
             int numPlayCardStates = _playCardState.size();
-            return (numPlayCardStates > 1 ? _playCardState.subList(numPlayCardStates - 2, numPlayCardStates - 1).get(0) : null);
+            return (numPlayCardStates > 1 ? _playCardState.subList(numPlayCardStates - 2, numPlayCardStates - 1).getFirst() : null);
         }
         return topPlayCardState;
     }

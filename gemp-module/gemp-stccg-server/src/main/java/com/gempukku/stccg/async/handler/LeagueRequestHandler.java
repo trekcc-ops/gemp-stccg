@@ -165,13 +165,13 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             final LeagueData leagueData = league.getLeagueData(_library, _formatLibrary, _soloDraftDefinitions);
             final List<LeagueSeriesData> series = leagueData.getSeries();
 
-            int end = series.get(series.size() - 1).getEnd();
+            int end = series.getLast().getEnd();
 
             Element leagueElem = doc.createElement("league");
 
             leagueElem.setAttribute("type", league.getType());
             leagueElem.setAttribute("name", league.getName());
-            leagueElem.setAttribute("start", String.valueOf(series.get(0).getStart()));
+            leagueElem.setAttribute("start", String.valueOf(series.getFirst().getStart()));
             leagueElem.setAttribute("end", String.valueOf(end));
 
             leagues.appendChild(leagueElem);
