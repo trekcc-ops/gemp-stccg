@@ -33,7 +33,7 @@ public class DbCollectionDAO implements CollectionDAO {
         return result;
     }
 
-    public CardCollection getPlayerCollection(int playerId, String type) throws SQLException, IOException {
+    public CardCollection getPlayerCollection(int playerId, String type) throws IOException {
 
         var collection = getCollectionInfo(playerId, type);
         if(collection == null)
@@ -273,7 +273,6 @@ public class DbCollectionDAO implements CollectionDAO {
 
             try (org.sql2o.Connection conn = db.beginTransaction()) {
                 Query query = conn.createQuery(sql, true);
-                int i = 0;
                 //TODO: maybe detect when the batch is 1000 entries long and execute then to prevent errors
                 for(var card : collection.getAll()) {
                     query.addParameter("collid", collID)

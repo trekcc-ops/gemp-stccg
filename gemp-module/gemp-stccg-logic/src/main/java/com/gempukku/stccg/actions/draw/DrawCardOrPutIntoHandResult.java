@@ -3,14 +3,13 @@ package com.gempukku.stccg.actions.draw;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 
 public class DrawCardOrPutIntoHandResult extends EffectResult {
     private final String _playerId;
     private final boolean _draw;
 
-    public DrawCardOrPutIntoHandResult(Effect effect, DefaultGame game, boolean draw) {
-        super(EffectResult.Type.DRAW_CARD_OR_PUT_INTO_HAND, effect, game);
+    public DrawCardOrPutIntoHandResult(Effect effect, boolean draw) {
+        super(EffectResult.Type.DRAW_CARD_OR_PUT_INTO_HAND, effect);
         _playerId = effect.getPerformingPlayerId();
         _draw = draw;
     }

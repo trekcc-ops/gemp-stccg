@@ -50,7 +50,7 @@ public class DrawOneCardEffect extends DefaultEffect implements Preventable {
         }
 
         if (drawn == 1) {
-            _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(this, _game, true));
+            _game.getActionsEnvironment().emitEffectResult(new DrawCardOrPutIntoHandResult(this, true));
             return new FullEffectResult(true);
         } else
             return new FullEffectResult(false);
