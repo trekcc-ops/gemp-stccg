@@ -11,11 +11,10 @@ import java.util.Objects;
 public abstract class ChoosePlayerExceptEffect extends UnrespondableEffect {
     private final String _playerId;
     private final String _excludedPlayerId;
-    private final DefaultGame _game;
 
     public ChoosePlayerExceptEffect(ActionContext actionContext, String excludedPlayerId) {
+        super(actionContext);
         _playerId = actionContext.getPerformingPlayerId();
-        _game = actionContext.getGame();
         _excludedPlayerId = excludedPlayerId;
     }
 

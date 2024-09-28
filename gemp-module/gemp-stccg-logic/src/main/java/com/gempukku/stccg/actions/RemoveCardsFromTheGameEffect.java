@@ -14,15 +14,13 @@ public class RemoveCardsFromTheGameEffect extends DefaultEffect {
     private final String _playerPerforming;
     private final PhysicalCard _source;
     private final Collection<? extends PhysicalCard> _cardsToRemove;
-    private final DefaultGame _game;
 
     public RemoveCardsFromTheGameEffect(DefaultGame game, String playerPerforming, PhysicalCard source,
                                         Collection<? extends PhysicalCard> cardsToRemove) {
-        super(playerPerforming);
+        super(game, playerPerforming);
         _playerPerforming = playerPerforming;
         _source = source;
         _cardsToRemove = cardsToRemove;
-        _game = game;
     }
 
     @Override

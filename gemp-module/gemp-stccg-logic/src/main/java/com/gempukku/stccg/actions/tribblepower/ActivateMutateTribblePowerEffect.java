@@ -18,7 +18,7 @@ public class ActivateMutateTribblePowerEffect extends ActivateTribblePowerEffect
     @Override
     protected FullEffectResult playEffectReturningResult() {
         SubAction subAction = _action.createSubAction();
-        TribblesGameState gameState = _game.getGameState();
+        TribblesGameState gameState = getGame().getGameState();
         List<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(_activatingPlayer));
 
         // Count the number of cards in your play pile.
@@ -32,7 +32,7 @@ public class ActivateMutateTribblePowerEffect extends ActivateTribblePowerEffect
         gameState.shuffleDeck(_activatingPlayer);
 
         // Then put that many cards from the top of your draw deck in your play pile
-        subAction.appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(_game, _activatingPlayer, cardsInPlayPile));
-        return addActionAndReturnResult(_game, subAction);
+        subAction.appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect(getGame(), _activatingPlayer, cardsInPlayPile));
+        return addActionAndReturnResult(getGame(), subAction);
     }
 }

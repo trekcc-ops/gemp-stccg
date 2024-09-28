@@ -20,16 +20,15 @@ public class ChooseAndRemoveFromTheGameCardsInDiscardEffect extends AbstractSubA
     private final int _maximum;
     private final Filterable[] _filters;
     private boolean _success;
-    private final DefaultGame _game;
 
     public ChooseAndRemoveFromTheGameCardsInDiscardEffect(DefaultGame game, Action action, PhysicalCard source, String playerId, int minimum, int maximum, Filterable... filters) {
+        super(game);
         _action = action;
         _source = source;
         _playerId = playerId;
         _minimum = minimum;
         _maximum = maximum;
         _filters = filters;
-        _game = game;
     }
 
     @Override

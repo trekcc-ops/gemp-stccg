@@ -19,7 +19,6 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
     private final boolean _forced;
     private final PhysicalCard _source;
     private final Zone _fromZone;
-    private final DefaultGame _game;
 
     public DiscardCardsFromZoneEffect(DefaultGame game, PhysicalCard source, Zone fromZone,
                                       PhysicalCard cardToDiscard) {
@@ -43,13 +42,12 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
 
     public DiscardCardsFromZoneEffect(DefaultGame game, PhysicalCard source, Zone fromZone, String playerId,
                                       Collection<PhysicalCard> cards, boolean forced) {
-        super(playerId);
+        super(game, playerId);
         _source = source;
         _playerId = playerId;
         _cards = cards;
         _forced = forced;
         _fromZone = fromZone;
-        _game = game;
     }
 
     @Override

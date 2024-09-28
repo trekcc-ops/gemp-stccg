@@ -20,7 +20,7 @@ public class TribblesStartOfTurnGameProcess extends GameProcess {
 
         SystemQueueAction action = new SystemQueueAction(_game);
 
-        action.appendEffect(new UnrespondableEffect() {
+        action.appendEffect(new UnrespondableEffect(_game) {
             @Override
             protected void doPlayEffect() {
                 var state = _game.getGameState();

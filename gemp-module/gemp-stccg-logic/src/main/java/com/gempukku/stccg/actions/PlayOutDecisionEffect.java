@@ -40,5 +40,6 @@ public class PlayOutDecisionEffect implements Effect {
     }
 
     public String getPerformingPlayerId() { return _playerId; }
+    public DefaultGame getGame() { return _game; }
 
 }

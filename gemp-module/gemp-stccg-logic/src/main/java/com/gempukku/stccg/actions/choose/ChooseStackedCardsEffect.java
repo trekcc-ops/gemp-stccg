@@ -19,16 +19,14 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
     private final int _maximum;
     private final Filterable _stackedOnFilter;
     private final Filterable _stackedCardFilter;
-    private final DefaultGame _game;
 
     public ChooseStackedCardsEffect(DefaultGame game, String playerId, int minimum, int maximum, Filterable stackedOnFilter, Filterable stackedCardFilter) {
-        super(playerId);
+        super(game, playerId);
         _playerId = playerId;
         _minimum = minimum;
         _maximum = maximum;
         _stackedOnFilter = stackedOnFilter;
         _stackedCardFilter = stackedCardFilter;
-        _game = game;
     }
 
     @Override

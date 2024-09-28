@@ -64,4 +64,5 @@ public class RevealCardEffect implements Effect {
 
     // TODO - Added null here so this class implements this method. Not clear how it should be determined.
     public String getPerformingPlayerId() { return null; }
+    public DefaultGame getGame() { return _game; }
 }

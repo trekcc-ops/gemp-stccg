@@ -26,8 +26,8 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
     public boolean isPlayableInFull() {
         // There must be at least two players with cards in their hands
         int playersWithHands = 0;
-        for (String player : _game.getAllPlayerIds()) {
-            if (!_game.getGameState().getHand(player).isEmpty())
+        for (String player : getGame().getAllPlayerIds()) {
+            if (!getGame().getGameState().getHand(player).isEmpty())
                 playersWithHands++;
         }
         return playersWithHands >= 2;
@@ -38,16 +38,16 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         if (!isPlayableInFull())
             return new FullEffectResult(false);
         else {
-            List<String> players = Arrays.asList(_game.getAllPlayerIds());
-            players.removeIf(player -> _game.getGameState().getHand(player).isEmpty());
-            _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
+            List<String> players = Arrays.asList(getGame().getAllPlayerIds());
+            players.removeIf(player -> getGame().getGameState().getHand(player).isEmpty());
+            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision("Choose a player to discard a card", players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            firstPlayerChosen(players, result, _game);
+                            firstPlayerChosen(players, result, getGame());
                         }
                     });
-            _game.getActionsEnvironment().emitEffectResult(_result);
+            getGame().getActionsEnvironment().emitEffectResult(_result);
             return new FullEffectResult(true);
         }
     }
@@ -72,7 +72,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
 
     private void secondPlayerChosen(String secondPlayerChosen, TribblesGame game) {
         SubAction subAction = _action.createSubAction();
-        subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(_game, _action, _discardingPlayer,false,1));
+        subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(getGame(), _action, _discardingPlayer,false,1));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
                 game, _action, secondPlayerChosen, 1, false, Filters.any));
         if (!(Objects.equals(_discardingPlayer, _activatingPlayer) ||

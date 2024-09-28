@@ -15,15 +15,15 @@ public class SeedFacilityEffect extends SeedCardEffect {
 
     @Override
     protected DefaultEffect.FullEffectResult playEffectReturningResult() {
-        ST1EGameState gameState = _game.getGameState();
+        ST1EGameState gameState = getGame().getGameState();
 
-        _game.sendMessage(_cardSeeded.getOwnerName() + " seeded " + _cardSeeded.getCardLink());
+        getGame().sendMessage(_cardSeeded.getOwnerName() + " seeded " + _cardSeeded.getCardLink());
         gameState.removeCardFromZone(_cardSeeded);
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
         gameState.getPlayer(_cardSeeded.getOwnerName())
                 .addPlayedAffiliation(((FacilityCard) _cardSeeded).getAffiliation());
         gameState.seedFacilityAtLocation((FacilityCard) _cardSeeded, _spacelineIndex);
-        _game.getActionsEnvironment().emitEffectResult(
+        getGame().getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, _fromZone, _cardSeeded));
 
         return new DefaultEffect.FullEffectResult(true);

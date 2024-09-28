@@ -21,22 +21,19 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
     private final Set<PhysicalCard> _preventedTargets = new HashSet<>();
     private final String _performingPlayer;
     private int _requiredTargets;
-    private final DefaultGame _game;
 
     public DiscardCardsFromPlayEffect(DefaultGame game, String performingPlayer, PhysicalCard source, Filterable... filters) {
-        super(performingPlayer);
-        _game = game;
+        super(game, performingPlayer);
         _filter = Filters.and(filters);
         _performingPlayer = performingPlayer;
         _source = source;
     }
 
     public DiscardCardsFromPlayEffect(ActionContext actionContext, String performingPlayer, Filterable... filters) {
-        super(performingPlayer);
+        super(actionContext, performingPlayer);
         _filter = Filters.and(filters);
         _performingPlayer = performingPlayer;
         _source = actionContext.getSource();
-        _game = actionContext.getGame();
     }
 
     public PhysicalCard getSource() {

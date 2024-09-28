@@ -23,6 +23,7 @@ public class PreventSubAction extends SubAction {
     }
 
     private class DecideIfPossible extends UnrespondableEffect {
+        private DecideIfPossible() { super(_effectToExecute.getGame()); }
         @Override
         protected void doPlayEffect() {
             if (_choicePlayers.hasNext()) {
@@ -57,6 +58,7 @@ public class PreventSubAction extends SubAction {
     }
 
     private class CheckIfPreventingCostWasSuccessful extends UnrespondableEffect {
+        private CheckIfPreventingCostWasSuccessful() { super(_effectToExecute.getGame()); }
         @Override
         protected void doPlayEffect() {
             if (!_playerPreventionCost.wasCarriedOut())

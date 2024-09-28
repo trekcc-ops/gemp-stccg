@@ -15,13 +15,12 @@ public class ChoiceEffect extends AbstractSubActionEffect {
     private final Action _action;
     private final String _choicePlayerId;
     private final List<Effect> _possibleEffects;
-    private final DefaultGame _game;
 
     public ChoiceEffect(DefaultGame game, Action action, String choicePlayerId, List<Effect> possibleEffects) {
+        super(game);
         _action = action;
         _choicePlayerId = choicePlayerId;
         _possibleEffects = possibleEffects;
-        _game = game;
     }
 
     @Override
@@ -76,4 +75,6 @@ public class ChoiceEffect extends AbstractSubActionEffect {
             result[i] = possibleEffects.get(i).getText();
         return result;
     }
+
+    public DefaultGame getGame() { return _game; }
 }

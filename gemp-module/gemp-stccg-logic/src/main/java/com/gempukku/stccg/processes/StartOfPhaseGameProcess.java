@@ -64,6 +64,9 @@ public class StartOfPhaseGameProcess extends GameProcess {
                         ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalStartOfPhase(_phase);
                         _game.sendMessage("\nStart of " + _phase + " phase.");
                     }
+
+                    @Override
+                    public DefaultGame getGame() { return _game; }
                 });
 
         _game.getActionsEnvironment().addActionToStack(action);

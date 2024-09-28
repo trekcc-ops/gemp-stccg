@@ -16,15 +16,14 @@ public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends Abstract
     private final Filterable[] _filters;
 
     private final boolean _reveal;
-    private final DefaultGame _game;
 
     public PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(DefaultGame game, Action action, String playerId,
                                                               boolean reveal, Filterable... filters) {
+        super(game);
         _action = action;
         _playerId = playerId;
         _filters = filters;
         _reveal = reveal;
-        _game = game;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends Abstract
         private final CostToEffectAction _subAction;
 
         public ChooseAndPutNextCardFromHandOnBottomOfLibrary(CostToEffectAction subAction, Collection<PhysicalCard> remainingCards) {
-            super(_game, _playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
+            super(subAction.getGame(), _playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
             _subAction = subAction;
             _remainingCards = remainingCards;
         }

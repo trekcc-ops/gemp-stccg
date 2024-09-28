@@ -6,21 +6,20 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 public class ReportCardEffect extends DefaultEffect {
     private final Zone _playedFrom;
     private final PhysicalReportableCard1E _cardPlayed;
     private final FacilityCard _reportingDestination;
-    private final ST1EGame _game;
 
     public ReportCardEffect(String performingPlayerId, Zone playedFrom, PhysicalReportableCard1E cardPlayed,
                             FacilityCard reportingDestination) {
-        super(performingPlayerId);
+        super(cardPlayed.getGame(), performingPlayerId);
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
         _reportingDestination = reportingDestination;
-        _game = cardPlayed.getGame();
     }
 
     public PhysicalCard getPlayedCard() {
@@ -39,7 +38,7 @@ public class ReportCardEffect extends DefaultEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        ST1EGameState gameState = _game.getGameState();
+        GameState gameState = _game.getGameState();
 
         _game.sendMessage(_cardPlayed.getOwnerName() + " played " + _cardPlayed.getCardLink());
 

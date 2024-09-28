@@ -16,12 +16,10 @@ public abstract class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final String _playerId;
     private final int _count;
-    private final DefaultGame _game;
 
     public RevealBottomCardsOfDrawDeckEffect(ActionContext actionContext, String playerId, int count) {
-        super(playerId);
+        super(actionContext.getGame(), playerId);
         _source = actionContext.getSource();
-        _game = actionContext.getGame();
         _playerId = playerId;
         _count = count;
     }

@@ -17,8 +17,8 @@ public class ActivateCycleTribblePowerEffect extends ActivateTribblePowerEffect 
     protected FullEffectResult playEffectReturningResult() {
         SubAction subAction = _action.createSubAction();
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
-                _game, _action, _activatingPlayer, 1, false, Filters.any));
-        subAction.appendEffect(new DrawCardsEffect(_game, _action, _activatingPlayer, 1));
-        return addActionAndReturnResult(_game, subAction);
+                getGame(), _action, _activatingPlayer, 1, false, Filters.any));
+        subAction.appendEffect(new DrawCardsEffect(getGame(), _action, _activatingPlayer, 1));
+        return addActionAndReturnResult(getGame(), subAction);
     }
 }

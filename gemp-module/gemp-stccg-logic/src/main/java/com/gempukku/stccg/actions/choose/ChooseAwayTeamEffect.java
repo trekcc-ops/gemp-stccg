@@ -8,12 +8,11 @@ import java.util.List;
 
 public abstract class ChooseAwayTeamEffect extends UnrespondableEffect {
     protected final String _playerId;
-    protected final DefaultGame _game;
     protected final List<String> _awayTeams;
 
     public ChooseAwayTeamEffect(DefaultGame game, String playerId, List<String> awayTeams) {
+        super(game, playerId);
         _playerId = playerId;
-        _game = game;
         _awayTeams = awayTeams;
     }
 

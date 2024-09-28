@@ -1,24 +1,18 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.AbstractSubActionEffect;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.Action;
 
 public class OptionalEffect extends AbstractSubActionEffect {
     private final Action _action;
     private final String _playerId;
     private final Effect _optionalEffect;
-    private final DefaultGame _game;
 
     public OptionalEffect(DefaultGame game, Action action, String playerId, Effect optionalEffect) {
+        super(game);
         _action = action;
         _playerId = playerId;
         _optionalEffect = optionalEffect;
-        _game = game;
     }
 
     @Override

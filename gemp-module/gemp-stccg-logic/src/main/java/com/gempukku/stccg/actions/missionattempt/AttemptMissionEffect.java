@@ -8,13 +8,11 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
 
 public class AttemptMissionEffect extends DefaultEffect {
-    private final DefaultGame _game;
     private final MissionCard _mission;
     private final AttemptingUnit _attemptingUnit;
 
     public AttemptMissionEffect(Player player, AttemptingUnit attemptingUnit, MissionCard missionCard) {
-        super(player.getPlayerId());
-        _game = player.getGame();
+        super(player);
         _mission = missionCard;
         _attemptingUnit = attemptingUnit;
     }

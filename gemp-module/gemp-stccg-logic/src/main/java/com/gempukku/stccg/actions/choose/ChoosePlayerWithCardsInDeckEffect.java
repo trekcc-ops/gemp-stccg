@@ -11,10 +11,9 @@ import java.util.List;
 
 public abstract class ChoosePlayerWithCardsInDeckEffect extends UnrespondableEffect {
     private final String _playerId;
-    private final DefaultGame _game;
 
     public ChoosePlayerWithCardsInDeckEffect(ActionContext actionContext) {
-        _game = actionContext.getGame();
+        super(actionContext);
         _playerId = actionContext.getPerformingPlayerId();
     }
 

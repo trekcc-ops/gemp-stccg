@@ -44,6 +44,9 @@ public class StartOfPhaseAction extends SystemQueueAction {
                         ((DefaultActionsEnvironment) _game.getActionsEnvironment()).signalStartOfPhase(phase);
                         _game.sendMessage("\n" + message);
                     }
+
+                    @Override
+                    public DefaultGame getGame() { return _game; }
                 });
     }
 }

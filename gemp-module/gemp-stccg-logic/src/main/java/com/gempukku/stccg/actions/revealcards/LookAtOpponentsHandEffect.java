@@ -13,12 +13,10 @@ import java.util.List;
 public class LookAtOpponentsHandEffect extends DefaultEffect {
     private final String _playerId;
     private final String _opponentId;
-    private final DefaultGame _game;
 
     public LookAtOpponentsHandEffect(ActionContext actionContext, String opponentId) {
-        super(actionContext.getPerformingPlayerId());
+        super(actionContext);
         _playerId = actionContext.getPerformingPlayerId();
-        _game = actionContext.getGame();
         _opponentId = opponentId;
     }
 

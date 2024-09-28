@@ -8,13 +8,11 @@ public class ScorePointsEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final String _scoringPlayer;
     private final int _points;
-    private final DefaultGame _game;
     public ScorePointsEffect(DefaultGame game, PhysicalCard source, String scoringPlayer, int points) {
-        super(scoringPlayer);
+        super(game, scoringPlayer);
         _source = source;
         _scoringPlayer = scoringPlayer;
         _points = points;
-        _game = game;
     }
 
     @Override

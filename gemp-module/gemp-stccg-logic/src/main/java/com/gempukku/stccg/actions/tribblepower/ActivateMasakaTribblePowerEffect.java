@@ -18,18 +18,18 @@ public class ActivateMasakaTribblePowerEffect extends ActivateTribblePowerEffect
 
     @Override
     public boolean isPlayableInFull() {
-        return (_game.getGameState().getHand(_activatingPlayer).size() >= 4);
+        return (getGame().getGameState().getHand(_activatingPlayer).size() >= 4);
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
         SubAction subAction = _action.createSubAction();
-        for (String player : _game.getPlayerIds()) {
-            for (PhysicalCard card : _game.getGameState().getHand(player)) {
+        for (String player : getGame().getPlayerIds()) {
+            for (PhysicalCard card : getGame().getGameState().getHand(player)) {
                 subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(
-                        _game, false, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
+                        getGame(), false, Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, card));
             }
-            subAction.appendEffect(new DrawCardsEffect(_game, _action, player, 3));
+            subAction.appendEffect(new DrawCardsEffect(getGame(), _action, player, 3));
         }
-        return addActionAndReturnResult(_game, subAction);
+        return addActionAndReturnResult(getGame(), subAction);
     }
 }

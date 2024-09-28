@@ -16,18 +16,18 @@ public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        String[] players = _game.getAllPlayerIds();
+        String[] players = getGame().getAllPlayerIds();
         if (players.length == 1)
-            playerChosen(players[0], _game);
+            playerChosen(players[0], getGame());
         else
-            _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
+            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision("Choose a player", players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, _game);
+                            playerChosen(result, getGame());
                         }
                     });
-        _game.getActionsEnvironment().emitEffectResult(_result);
+        getGame().getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 

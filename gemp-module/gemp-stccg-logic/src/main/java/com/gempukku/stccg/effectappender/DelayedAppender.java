@@ -20,7 +20,7 @@ public abstract class DelayedAppender implements EffectAppender {
 
     @Override
     public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-        final UnrespondableEffect effect = new UnrespondableEffect() {
+        final UnrespondableEffect effect = new UnrespondableEffect(actionContext) {
             @Override
             protected void doPlayEffect() {
                 // Need to insert them, but in the reverse order

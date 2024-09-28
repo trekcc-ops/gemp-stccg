@@ -9,10 +9,9 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class ChooseTribblePowerEffect extends UnrespondableEffect {
     private final String _playerId;
-    private final DefaultGame _game;
     public ChooseTribblePowerEffect(ActionContext actionContext) {
+        super(actionContext);
         _playerId = actionContext.getPerformingPlayerId();
-        _game = actionContext.getGame();
     }
 
     @Override

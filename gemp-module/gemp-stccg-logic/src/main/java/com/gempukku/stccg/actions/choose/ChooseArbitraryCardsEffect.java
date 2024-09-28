@@ -20,14 +20,13 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
     private final Filterable _filter;
     private final int _minimum;
     private final int _maximum;
-    private final DefaultGame _game;
 
     public ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText, Collection<? extends PhysicalCard> cards, int minimum, int maximum) {
         this(game, playerId, choiceText, cards, Filters.any, minimum, maximum, false);
     }
 
     public ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText, Collection<? extends PhysicalCard> cards, Filterable filter, int minimum, int maximum, boolean showMatchingOnly) {
-        super(playerId);
+        super(game, playerId);
         _playerId = playerId;
         _choiceText = choiceText;
         _showMatchingOnly = showMatchingOnly;
@@ -35,7 +34,6 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
         _filter = filter;
         _minimum = minimum;
         _maximum = maximum;
-        _game = game;
     }
 
     @Override

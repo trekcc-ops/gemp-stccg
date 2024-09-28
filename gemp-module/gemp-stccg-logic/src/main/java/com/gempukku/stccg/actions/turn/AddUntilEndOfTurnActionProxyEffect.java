@@ -6,11 +6,10 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class AddUntilEndOfTurnActionProxyEffect extends UnrespondableEffect {
     private final ActionProxy _actionProxy;
-    private final DefaultGame _game;
 
     public AddUntilEndOfTurnActionProxyEffect(DefaultGame game, ActionProxy actionProxy) {
+        super(game);
         _actionProxy = actionProxy;
-        _game = game;
     }
 
     @Override

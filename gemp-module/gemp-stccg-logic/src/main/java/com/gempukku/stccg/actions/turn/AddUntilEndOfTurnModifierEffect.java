@@ -7,11 +7,10 @@ import com.gempukku.stccg.modifiers.Modifier;
 
 public class AddUntilEndOfTurnModifierEffect extends UnrespondableEffect {
     private final Modifier _modifier;
-    private final DefaultGame _game;
 
     public AddUntilEndOfTurnModifierEffect(DefaultGame game, Modifier modifier) {
+        super(game);
         _modifier = modifier;
-        _game = game;
     }
 
     @Override

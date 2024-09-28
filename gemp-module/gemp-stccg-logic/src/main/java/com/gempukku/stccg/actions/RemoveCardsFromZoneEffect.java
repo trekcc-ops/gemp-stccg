@@ -13,23 +13,20 @@ public class RemoveCardsFromZoneEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final Collection<PhysicalCard> _cardsToRemove;
     private final Zone _fromZone;
-    private final DefaultGame _game;
 
     public RemoveCardsFromZoneEffect(DefaultGame game, String playerPerforming, PhysicalCard source,
                                      Collection<PhysicalCard> cardsToRemove, Zone fromZone) {
-        super(playerPerforming);
+        super(game, playerPerforming);
         _playerPerforming = playerPerforming;
         _source = source;
         _cardsToRemove = cardsToRemove;
         _fromZone = fromZone;
-        _game = game;
     }
 
     public RemoveCardsFromZoneEffect(ActionContext actionContext, Collection<PhysicalCard> cardsToRemove, Zone fromZone) {
         super(actionContext);
         _playerPerforming = actionContext.getPerformingPlayerId();
         _source = actionContext.getSource();
-        _game = actionContext.getGame();
         _cardsToRemove = cardsToRemove;
         _fromZone = fromZone;
     }

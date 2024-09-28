@@ -19,22 +19,22 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
     protected FullEffectResult playEffectReturningResult() {
         // Choose a player to shuffle his or her discard pile into his or her draw deck
         List<String> playersWithCards = new ArrayList<>();
-        for (String player : _game.getAllPlayerIds()) {
-            if (!_game.getGameState().getDiscard(player).isEmpty())
+        for (String player : getGame().getAllPlayerIds()) {
+            if (!getGame().getGameState().getDiscard(player).isEmpty())
                 playersWithCards.add(player);
         }
         String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);
         if (playersWithCardsArr.length == 1)
-            playerChosen(playersWithCardsArr[0], _game);
+            playerChosen(playersWithCardsArr[0], getGame());
         else
-            _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
+            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision("Choose a player", playersWithCardsArr) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, _game);
+                            playerChosen(result, getGame());
                         }
                     });
-        _game.getActionsEnvironment().emitEffectResult(_result);
+        getGame().getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 

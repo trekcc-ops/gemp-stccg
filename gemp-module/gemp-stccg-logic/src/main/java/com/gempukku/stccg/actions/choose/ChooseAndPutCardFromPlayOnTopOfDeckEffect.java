@@ -20,7 +20,7 @@ public class ChooseAndPutCardFromPlayOnTopOfDeckEffect extends ChooseActiveCardE
     @Override
     protected void cardSelected(PhysicalCard card) {
         _resultSubAction = _action.createSubAction();
-        _resultSubAction.appendEffect(new PutCardFromPlayOnTopOfDeckEffect(_game, card));
+        _resultSubAction.appendEffect(new PutCardFromPlayOnTopOfDeckEffect(card));
         _game.getActionsEnvironment().addActionToStack(_resultSubAction);
     }
 

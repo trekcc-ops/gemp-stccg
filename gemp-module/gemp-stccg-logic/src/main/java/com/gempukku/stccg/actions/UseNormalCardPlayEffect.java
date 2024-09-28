@@ -7,11 +7,10 @@ import com.gempukku.stccg.game.ST1EGame;
 
 public class UseNormalCardPlayEffect extends AbstractSubActionEffect {
     private final Player _player;
-    private final ST1EGame _game;
 
     public UseNormalCardPlayEffect(ST1EGame game, Player player) {
+        super(game);
         _player = player;
-        _game = game;
     }
 
     @Override

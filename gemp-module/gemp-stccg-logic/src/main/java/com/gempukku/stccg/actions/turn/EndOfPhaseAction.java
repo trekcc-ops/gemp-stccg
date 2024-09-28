@@ -42,6 +42,9 @@ public class EndOfPhaseAction extends SystemQueueAction {
                         _game.getActionsEnvironment().signalEndOfPhase();
                         _game.sendMessage(message);
                     }
+
+                    @Override
+                    public DefaultGame getGame() { return _game; }
                 });
     }
 

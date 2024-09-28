@@ -16,12 +16,10 @@ public class DiscardCardAtRandomFromHandEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final String _playerId;
     private final boolean _forced;
-    private final DefaultGame _game;
 
     public DiscardCardAtRandomFromHandEffect(ActionContext actionContext, String playerId, boolean forced) {
-        super(playerId);
+        super(actionContext, playerId);
         _source = actionContext.getSource();
-        _game = actionContext.getGame();
         _playerId = playerId;
         _forced = forced;
     }

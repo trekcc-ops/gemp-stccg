@@ -16,12 +16,9 @@ public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
     private final CostToEffectAction _action;
     private final boolean _allPlayersMustBeAble;
     private final boolean _forced;
-    private final TribblesGame _game;
 
-    public AllPlayersDiscardFromHandEffect(TribblesGame game, CostToEffectAction action,
-                                           boolean allPlayersMustBeAble, boolean forced) {
-        super(action.getPerformingPlayerId());
-        _game = game;
+    public AllPlayersDiscardFromHandEffect(CostToEffectAction action, boolean allPlayersMustBeAble, boolean forced) {
+        super(action);
         _action = action;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;

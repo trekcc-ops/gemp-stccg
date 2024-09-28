@@ -21,16 +21,16 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
 
     @Override
     public boolean isPlayableInFull() {
-        return (_game.getGameState().getHand(_activatingPlayer).size() >= 4);
+        return (getGame().getGameState().getHand(_activatingPlayer).size() >= 4);
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
         SubAction subAction = _action.createSubAction();
-        subAction.appendEffect(new DrawCardsEffect(_game, _action, _activatingPlayer, 1));
+        subAction.appendEffect(new DrawCardsEffect(getGame(), _action, _activatingPlayer, 1));
             // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
-        for (String player : _game.getPlayerIds()) {
-            if (_game.getGameState().getHand(player).size() >= 4) {
-                subAction.appendEffect(new ChooseCardsFromZoneEffect(_game, Zone.HAND, player, 1, 1) {
+        for (String player : getGame().getPlayerIds()) {
+            if (getGame().getGameState().getHand(player).size() >= 4) {
+                subAction.appendEffect(new ChooseCardsFromZoneEffect(getGame(), Zone.HAND, player, 1, 1) {
                     @Override
                     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
                         game.getGameState().removeCardsFromZone(player, selectedCards);
@@ -42,7 +42,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
                 });
             }
         }
-        subAction.appendEffect(new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(_game, _action, _activatingPlayer, false, Filters.any));
-        return addActionAndReturnResult(_game, subAction);
+        subAction.appendEffect(new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(getGame(), _action, _activatingPlayer, false, Filters.any));
+        return addActionAndReturnResult(getGame(), subAction);
     }
 }

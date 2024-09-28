@@ -45,7 +45,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                                 costAppender.appendEffect(false, subAction, delegate);
 
                                             subAction.appendEffect(
-                                                    new UnrespondableEffect() {
+                                                    new UnrespondableEffect(context) {
                                                         @Override
                                                         protected void doPlayEffect() {
                                                             // If the prevention was not carried out, need to do the original action anyway

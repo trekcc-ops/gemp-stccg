@@ -28,7 +28,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
     private final Filterable _filters;
     private final String _choiceText;
     private final Action _action;
-    private final DefaultGame _game;
 
     public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, Collection<? extends PhysicalCard> cards) {
         this(action, playerId, choiceText, 1,1,cards,Filters.any);
@@ -58,7 +57,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
      */
     public ChooseCardsOnTableEffect(Action action, String playerId, String choiceText, int minimum, int maximum,
                                     Collection<? extends PhysicalCard> cards, Filterable filters) {
-        super(playerId);
+        super(action.getGame(), playerId);
         _action = action;
         _playerId = playerId;
         _choiceText = choiceText;
@@ -66,7 +65,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         _maximum = maximum;
         _cards = cards;
         _filters = Filters.and(Filters.onTable, filters);
-        _game = action.getGame();
     }
 
     @Override

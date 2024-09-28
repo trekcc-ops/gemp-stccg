@@ -7,14 +7,11 @@ import com.gempukku.stccg.actions.ActivateCardResult;
 
 public class ActivateCardEffect extends DefaultEffect {
     private final PhysicalCard _source;
-    private final DefaultGame _game;
-
     private final ActivateCardResult _activateCardResult;
 
-    public ActivateCardEffect(DefaultGame game, PhysicalCard source) {
-        super(source.getOwnerName());
+    public ActivateCardEffect(PhysicalCard source) {
+        super(source);
         _source = source;
-        _game = game;
 
         _activateCardResult = new ActivateCardResult(this);
     }

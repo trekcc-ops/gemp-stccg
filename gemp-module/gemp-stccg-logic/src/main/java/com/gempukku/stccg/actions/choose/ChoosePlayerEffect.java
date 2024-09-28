@@ -8,11 +8,10 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class ChoosePlayerEffect extends UnrespondableEffect {
     protected final String _playerId;
-    protected final DefaultGame _game;
 
     public ChoosePlayerEffect(ActionContext actionContext) {
+        super(actionContext);
         _playerId = actionContext.getPerformingPlayerId();
-        _game = actionContext.getGame();
     }
 
     @Override

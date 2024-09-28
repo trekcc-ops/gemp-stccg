@@ -20,22 +20,22 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
     protected FullEffectResult playEffectReturningResult() {
         // You and one other player (your choice) each score 25,000 points.
         List<String> opponents = new ArrayList<>();
-        for (String player : _game.getAllPlayerIds()) {
+        for (String player : getGame().getAllPlayerIds()) {
             if (!Objects.equals(player, _activatingPlayer))
                 opponents.add(player);
         }
         String[] opponentsArray = opponents.toArray(new String[0]);
         if (opponentsArray.length == 1)
-            playerChosen(opponentsArray[0], _game);
+            playerChosen(opponentsArray[0], getGame());
         else
-            _game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
+            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
                     new MultipleChoiceAwaitingDecision("Choose a player to score 25,000 points", opponentsArray) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, _game);
+                            playerChosen(result, getGame());
                         }
                     });
-        _game.getActionsEnvironment().emitEffectResult(_result);
+        getGame().getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 

@@ -21,26 +21,23 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
     private final int _minimum;
     private final int _maximum;
     private final Filterable[] _filters;
-    protected final DefaultGame _game;
     private boolean _shortcut = true;
 
     public ChooseActiveCardsEffect(PhysicalCard source, String playerId, String choiceText, int minimum, int maximum,
                                    Filterable... filters) {
-        super(playerId);
+        super(source.getGame(), playerId);
         _source = source;
         _playerId = playerId;
         _choiceText = choiceText;
         _minimum = minimum;
         _maximum = maximum;
         _filters = filters;
-        _game = source.getGame();
     }
 
     public ChooseActiveCardsEffect(ActionContext actionContext, String playerId, String choiceText, int minimum,
                                    int maximum, Filterable... filters) {
-        super(playerId);
+        super(actionContext.getGame(), playerId);
         _source = actionContext.getSource();
-        _game = actionContext.getGame();
         _playerId = playerId;
         _choiceText = choiceText;
         _minimum = minimum;

@@ -18,15 +18,15 @@ public class ActivateEvolveTribblePowerEffect extends ActivateTribblePowerEffect
         SubAction subAction = _action.createSubAction();
 
         // Count the number of cards in your hand
-        int cardsInHand = _game.getGameState().getHand(_activatingPlayer).size();
+        int cardsInHand = getGame().getGameState().getHand(_activatingPlayer).size();
 
         // Place your hand in your discard pile
-        subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(_game, _action, _activatingPlayer, false,
+        subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(getGame(), _action, _activatingPlayer, false,
                         cardsInHand, cardsInHand, Filters.any));
 
         // Draw that many cards
-        subAction.appendEffect(new DrawCardsEffect(_game, _action, _activatingPlayer, cardsInHand));
+        subAction.appendEffect(new DrawCardsEffect(getGame(), _action, _activatingPlayer, cardsInHand));
 
-        return addActionAndReturnResult(_game, subAction);
+        return addActionAndReturnResult(getGame(), subAction);
     }
 }

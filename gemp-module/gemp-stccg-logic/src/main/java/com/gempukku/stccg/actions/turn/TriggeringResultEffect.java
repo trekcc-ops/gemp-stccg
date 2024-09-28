@@ -43,4 +43,5 @@ public class TriggeringResultEffect implements Effect {
     }
 
     public String getPerformingPlayerId() { return null; }
+    public DefaultGame getGame() { return _game; }
 }

@@ -19,7 +19,6 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
     private final boolean _forced;
     private final Zone _fromZone;
     private final EndOfPile _endOfPile;
-    private final DefaultGame _game;
 
     public DiscardCardsFromEndOfCardPileEffect(DefaultGame game, PhysicalCard source, Zone fromZone, EndOfPile endOfPile, String playerId) {
         this(game, source, fromZone, endOfPile, playerId, 1, true);
@@ -27,14 +26,13 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
 
     public DiscardCardsFromEndOfCardPileEffect(DefaultGame game, PhysicalCard source, Zone fromZone, EndOfPile endOfPile,
                                                String playerId, int count, boolean forced) {
-        super(playerId);
+        super(game, playerId);
         _source = source;
         _fromZone = fromZone;
         _playerId = playerId;
         _count = count;
         _forced = forced;
         _endOfPile = endOfPile;
-        _game = game;
     }
 
     @Override

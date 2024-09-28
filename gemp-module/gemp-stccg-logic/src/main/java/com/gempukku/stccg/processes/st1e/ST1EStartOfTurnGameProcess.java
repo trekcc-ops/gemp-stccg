@@ -19,7 +19,7 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
 
         SystemQueueAction action = new SystemQueueAction(_game);
 
-        action.appendEffect(new UnrespondableEffect() {
+        action.appendEffect(new UnrespondableEffect(_game) {
             @Override
             protected void doPlayEffect() {
                 _game.sendMessage("\n\n========\n\nStart of " + _game.getCurrentPlayerId() + "'s turn.");

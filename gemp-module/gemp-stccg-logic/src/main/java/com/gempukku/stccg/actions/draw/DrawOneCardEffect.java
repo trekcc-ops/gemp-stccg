@@ -8,12 +8,10 @@ import com.gempukku.stccg.game.Preventable;
 public class DrawOneCardEffect extends DefaultEffect implements Preventable {
     private final String _playerId;
     private boolean _prevented;
-    private final DefaultGame _game;
 
     public DrawOneCardEffect(DefaultGame game, String playerId) {
-        super(playerId);
+        super(game, playerId);
         _playerId = playerId;
-        _game = game;
     }
 
     @Override

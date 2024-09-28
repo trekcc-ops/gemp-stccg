@@ -11,12 +11,11 @@ import com.gempukku.stccg.game.DefaultGame;
 public class PreventCardEffect extends UnrespondableEffect {
     private final PreventableCardEffect _effect;
     private final Filter _filter;
-    private final DefaultGame _game;
 
     public PreventCardEffect(DefaultGame game, PreventableCardEffect effect, Filterable... filters) {
+        super(game);
         _effect = effect;
         _filter = Filters.and(filters);
-        _game = game;
     }
 
     @Override

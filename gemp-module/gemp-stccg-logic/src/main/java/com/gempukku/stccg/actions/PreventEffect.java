@@ -8,7 +8,7 @@ public class PreventEffect extends DefaultEffect {
     private final Preventable _preventable;
 
     public PreventEffect(DefaultGame game, Preventable preventable) {
-        super("dummy value here"); // TODO - Preventable has no player associated??
+        super(game,"dummy value here"); // TODO - Preventable has no player associated??
         _preventable = preventable;
     }
 

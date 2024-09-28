@@ -8,12 +8,11 @@ import com.gempukku.stccg.game.DefaultGame;
 public class AddUntilStartOfPhaseActionProxyEffect extends UnrespondableEffect {
     private final ActionProxy _actionProxy;
     private final Phase _phase;
-    private final DefaultGame _game;
 
     public AddUntilStartOfPhaseActionProxyEffect(DefaultGame game, ActionProxy actionProxy, Phase phase) {
+        super(game);
         _actionProxy = actionProxy;
         _phase = phase;
-        _game = game;
     }
 
     @Override

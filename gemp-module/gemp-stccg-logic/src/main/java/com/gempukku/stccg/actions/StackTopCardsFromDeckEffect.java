@@ -10,14 +10,12 @@ public class StackTopCardsFromDeckEffect extends DefaultEffect {
     private final String _playerId;
     private final int _count;
     private final PhysicalCard _target;
-    private final DefaultGame _game;
 
     public StackTopCardsFromDeckEffect(DefaultGame game, String playerId, int count, PhysicalCard target) {
-        super(playerId);
+        super(game, playerId);
         _playerId = playerId;
         _count = count;
         _target = target;
-        _game = game;
     }
 
     @Override

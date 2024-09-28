@@ -13,17 +13,15 @@ public class ShuffleCardsIntoDrawDeckEffect extends DefaultEffect {
     private final Collection<PhysicalCard> _cards;
     private final Zone _fromZone;
     private final boolean _validateInPlay;
-    private final DefaultGame _game;
 
     public ShuffleCardsIntoDrawDeckEffect(DefaultGame game, PhysicalCard source, Zone fromZone, String shufflingPlayer,
                                           Collection<PhysicalCard> cards) {
-        super(shufflingPlayer);
+        super(game, shufflingPlayer);
         _source = source;
         _fromZone = fromZone;
         _shufflingPlayer = shufflingPlayer;
         _cards = cards;
         _validateInPlay = false;
-        _game = game;
     }
 
     @Override

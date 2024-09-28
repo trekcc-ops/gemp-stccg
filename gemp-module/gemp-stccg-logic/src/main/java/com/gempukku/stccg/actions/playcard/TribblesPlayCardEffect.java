@@ -10,13 +10,14 @@ import com.gempukku.stccg.gamestate.TribblesGameState;
 public class TribblesPlayCardEffect extends DefaultEffect {
     private final Zone _playedFrom;
     private final PhysicalCard _cardPlayed;
-    private final TribblesGame _game;
+    // TODO - _tribblesGame member is redundant with the DefaultEffect already having _game
+    private final TribblesGame _tribblesGame;
 
     public TribblesPlayCardEffect(TribblesPhysicalCard cardPlayed, Zone playedTo) {
-        super(cardPlayed.getOwnerName());
+        super(cardPlayed);
         _playedFrom = cardPlayed.getZone();
         _cardPlayed = cardPlayed;
-        _game = cardPlayed.getGame();
+        _tribblesGame = cardPlayed.getGame();
     }
 
     public PhysicalCard getPlayedCard() {
@@ -35,7 +36,7 @@ public class TribblesPlayCardEffect extends DefaultEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        TribblesGameState gameState = _game.getGameState();
+        TribblesGameState gameState = _tribblesGame.getGameState();
 /*        gameState.removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
         gameState.addCardToZone(_game, _cardPlayed, _zone); */
 
@@ -48,7 +49,7 @@ public class TribblesPlayCardEffect extends DefaultEffect {
             gameState.setNextTribbleInSequence(tribbleValue * 10);
         }
         gameState.setChainBroken(false);
-        _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _playedFrom, _cardPlayed));
+        _tribblesGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _playedFrom, _cardPlayed));
 
         return new FullEffectResult(true);
     }

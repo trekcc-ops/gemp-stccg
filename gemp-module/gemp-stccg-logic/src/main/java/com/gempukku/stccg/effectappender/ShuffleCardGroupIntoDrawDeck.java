@@ -33,7 +33,7 @@ public class ShuffleCardGroupIntoDrawDeck implements EffectAppenderProducer {
             protected Effect createEffect(boolean cost, CostToEffectAction action,
                                           ActionContext context) {
                 final String cardGroupOwner = playerSource.getPlayerId(context);
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         List<PhysicalCard> cardGroup =

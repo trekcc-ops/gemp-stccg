@@ -11,8 +11,8 @@ public class ActivateFamineTribblePowerEffect extends ActivateTribblePowerEffect
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        _game.getGameState().setNextTribbleInSequence(1);
-        _game.getActionsEnvironment().emitEffectResult(_result);
+        getGame().getGameState().setNextTribbleInSequence(1);
+        getGame().getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 }

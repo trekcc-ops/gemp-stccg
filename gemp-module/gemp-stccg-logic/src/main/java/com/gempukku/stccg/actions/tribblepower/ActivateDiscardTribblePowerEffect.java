@@ -12,8 +12,8 @@ public class ActivateDiscardTribblePowerEffect extends ActivateTribblePowerEffec
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        new ChooseAndDiscardCardsFromHandEffect(_game, _action, _source.getOwnerName(),false,1).playEffect();
-        _game.getActionsEnvironment().emitEffectResult(_result);
+        new ChooseAndDiscardCardsFromHandEffect(getGame(), _action, _source.getOwnerName(),false,1).playEffect();
+        getGame().getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 }

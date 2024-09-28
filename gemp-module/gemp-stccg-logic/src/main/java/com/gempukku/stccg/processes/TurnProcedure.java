@@ -159,6 +159,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         private final Effect _effect;
 
         private PlayEffect(Effect effect) {
+            super(effect.getGame());
             _effect = effect;
         }
 
@@ -206,6 +207,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
 
         private PlayOutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
                                                      Effect effect) {
+            super(action.getGame());
             _action = action;
             _cardTriggersUsed = cardTriggersUsed;
             _effect = effect;
@@ -247,6 +249,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         private final Effect _effect;
 
         private PlayOutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed, ActionOrder actionOrder, int passCount, Effect effect) {
+            super(action.getGame());
             _action = action;
             _cardTriggersUsed = cardTriggersUsed;
             _actionOrder = actionOrder;
@@ -305,6 +308,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
 
         private PlayOutOptionalAfterResponsesEffect(SystemQueueAction action, ActionOrder actionOrder, int passCount,
                                                     Collection<? extends EffectResult> effectResults) {
+            super(action.getGame());
             _action = action;
             _actionOrder = actionOrder;
             _passCount = passCount;
@@ -355,6 +359,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         private final List<Action> _actions;
 
         private PlayOutAllActionsIfEffectNotCancelledEffect(SystemQueueAction action, List<Action> actions) {
+            super(action.getGame());
             _action = action;
             _actions = actions;
         }

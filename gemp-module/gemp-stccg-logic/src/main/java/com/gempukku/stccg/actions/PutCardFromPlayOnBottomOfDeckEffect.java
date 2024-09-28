@@ -14,12 +14,10 @@ import java.util.Set;
 
 public class PutCardFromPlayOnBottomOfDeckEffect extends DefaultEffect {
     private final PhysicalCard _physicalCard;
-    private final DefaultGame _game;
 
-    public PutCardFromPlayOnBottomOfDeckEffect(DefaultGame game, PhysicalCard physicalCard) {
-        super(physicalCard.getOwnerName());
+    public PutCardFromPlayOnBottomOfDeckEffect(PhysicalCard physicalCard) {
+        super(physicalCard);
         _physicalCard = physicalCard;
-        _game = game;
     }
 
     @Override

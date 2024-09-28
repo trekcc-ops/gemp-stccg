@@ -46,4 +46,5 @@ public class StackActionEffect implements Effect {
     public boolean wasCarriedOut() {
         return _action.wasCarriedOut();
     }
+    public DefaultGame getGame() { return _game; }
 }

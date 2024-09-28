@@ -133,7 +133,7 @@ public class CardResolver {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 final String handPlayer = targetPlayerSource.getPlayerId(context);
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         List<? extends PhysicalCard> hand = context.getGameState().getHand(handPlayer);
@@ -164,7 +164,7 @@ public class CardResolver {
                 @Override
                 protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                     final String handPlayer = handSource.getPlayerId(actionContext);
-                    return new UnrespondableEffect() {
+                    return new UnrespondableEffect(actionContext) {
                         @Override
                         protected void doPlayEffect() {
                             List<? extends PhysicalCard> hand = actionContext.getGame().getGameState().getHand(handPlayer);
@@ -369,7 +369,7 @@ public class CardResolver {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 Collection<PhysicalCard> result = filterCards(context, choiceFilter);
-                return new DefaultEffect(choicePlayer.getPlayerId(context)) {
+                return new DefaultEffect(context.getGame(), choicePlayer.getPlayerId(context)) {
                     @Override
                     public boolean isPlayableInFull() {
                         int min = countSource.getMinimum(context);
@@ -421,7 +421,7 @@ public class CardResolver {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 Collection<PhysicalCard> result = filterCards(context, choiceFilter);
-                return new DefaultEffect(choicePlayerSource.getPlayerId(context)) {
+                return new DefaultEffect(context.getGame(), choicePlayerSource.getPlayerId(context)) {
                     @Override
                     public boolean isPlayableInFull() {
                         int min = countSource.getMinimum(context);
@@ -494,7 +494,7 @@ public class CardResolver {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         context.setCardMemory(memory, filterCards(context, additionalFilter));

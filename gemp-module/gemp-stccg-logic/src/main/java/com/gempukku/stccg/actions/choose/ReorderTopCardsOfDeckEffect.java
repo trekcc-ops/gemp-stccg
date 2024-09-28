@@ -16,14 +16,13 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
     private final String _playerId;
     private final String _deckId;
     private final int _count;
-    private final DefaultGame _game;
 
     public ReorderTopCardsOfDeckEffect(DefaultGame game, Action action, String playerId, String deckId, int count) {
+        super(game);
         _action = action;
         _playerId = playerId;
         _deckId = deckId;
         _count = count;
-        _game = game;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
         private final CostToEffectAction _subAction;
 
         public ChooseAndPutNextCardFromDeckOnTopOfDeck(CostToEffectAction subAction, Collection<PhysicalCard> remainingCards) {
-            super(_game, _playerId, "Choose a card to put on top of the deck", remainingCards, 1, 1);
+            super(subAction.getGame(), _playerId, "Choose a card to put on top of the deck", remainingCards, 1, 1);
             _subAction = subAction;
             _remainingCards = remainingCards;
         }

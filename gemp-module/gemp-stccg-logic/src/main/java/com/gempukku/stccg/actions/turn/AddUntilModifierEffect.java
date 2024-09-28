@@ -9,12 +9,11 @@ import com.gempukku.stccg.modifiers.Modifier;
 public class AddUntilModifierEffect extends UnrespondableEffect {
     private final Modifier _modifier;
     private final TimeResolver.Time until;
-    private final DefaultGame _game;
 
     public AddUntilModifierEffect(DefaultGame game, Modifier modifier, TimeResolver.Time until) {
+        super(game);
         _modifier = modifier;
         this.until = until;
-        _game = game;
     }
 
     @Override

@@ -54,6 +54,8 @@ public class EndOfPhaseGameProcess extends GameProcess {
                         _game.getActionsEnvironment().signalEndOfPhase();
                         _game.sendMessage("End of " + _phase + " phase.");
                     }
+
+                    public DefaultGame getGame() { return _game; }
                 });
         _game.getActionsEnvironment().addActionToStack(action);
     }

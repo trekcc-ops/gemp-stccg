@@ -25,10 +25,11 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
     private final Filterable _selectionFilter;
     private final int _minChosen;
     private final int _maxChosen;
-    private final ActionContext _actionContext;
-    private final DefaultGame _game;
 
-    protected RevealAndChooseCardsFromOpponentHandEffect(ActionContext actionContext, String playerId, String opponentId, PhysicalCard source, String text, Filterable selectionFilter, int minChosen, int maxChosen) {
+    protected RevealAndChooseCardsFromOpponentHandEffect(ActionContext actionContext, String playerId,
+                                                         String opponentId, PhysicalCard source, String text,
+                                                         Filterable selectionFilter, int minChosen, int maxChosen) {
+        super(actionContext.getGame());
         _playerId = playerId;
         _opponentId = opponentId;
         _source = source;
@@ -36,14 +37,12 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
         _selectionFilter = selectionFilter;
         _minChosen = minChosen;
         _maxChosen = maxChosen;
-        _game = actionContext.getGame();
-        _actionContext = actionContext;
     }
 
     @Override
     public boolean isPlayableInFull() {
-        return (_actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(_actionContext.getGame(), _opponentId, _playerId))
-                && _actionContext.getGameState().getHand(_opponentId).size() >= _minChosen;
+        return (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _opponentId, _playerId))
+                && _game.getGameState().getHand(_opponentId).size() >= _minChosen;
     }
 
     @Override

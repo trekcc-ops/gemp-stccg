@@ -10,13 +10,11 @@ import java.util.Collections;
 public class PutCardFromDeckIntoHandOrDiscardEffect extends DefaultEffect {
     private final PhysicalCard _physicalCard;
     private final boolean _reveal;
-    private final DefaultGame _game;
 
     public PutCardFromDeckIntoHandOrDiscardEffect(DefaultGame game, PhysicalCard physicalCard, boolean reveal) {
-        super(physicalCard.getOwnerName());
+        super(physicalCard);
         _physicalCard = physicalCard;
         _reveal = reveal;
-        _game = game;
     }
 
     public PhysicalCard getCard() {

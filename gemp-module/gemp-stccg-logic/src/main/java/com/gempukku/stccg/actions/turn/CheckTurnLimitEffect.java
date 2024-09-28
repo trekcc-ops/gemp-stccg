@@ -7,14 +7,12 @@ import com.gempukku.stccg.game.DefaultGame;
 public class CheckTurnLimitEffect extends AbstractUsageLimitEffect {
     private final PhysicalCard _card;
     private final int _limit;
-    private final DefaultGame _game;
     private final String _prefix;
 
     public CheckTurnLimitEffect(Action action, int limit) {
         super(action);
         _card = action.getActionSource();
         _limit = limit;
-        _game = action.getGame();
         _prefix = action.getCardActionPrefix();
     }
 

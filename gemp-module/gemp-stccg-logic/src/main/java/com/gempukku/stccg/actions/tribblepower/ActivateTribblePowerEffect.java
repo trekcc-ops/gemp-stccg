@@ -16,15 +16,15 @@ public abstract class ActivateTribblePowerEffect extends DefaultEffect {
     protected final TribblePower _tribblePower;
     protected final ActivateTribblePowerResult _result;
     protected final CostToEffectAction _action;
-    protected final TribblesGame _game;
+    protected final TribblesGame _tribblesGame; // TODO - Redundant with "_game" in DefaultEffect
     public ActivateTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
-        super(actionContext.getSource().getOwnerName());
+        super(actionContext.getGame(), actionContext.getSource().getOwnerName());
         _source = actionContext.getSource();
         _activatingPlayer = actionContext.getSource().getOwnerName();
         _tribblePower = actionContext.getSource().getBlueprint().getTribblePower();
-        _game = actionContext.getGame();
         _action = action;
         _result = new ActivateTribblePowerResult(this);
+        _tribblesGame = actionContext.getGame();
     }
 
     @Override
@@ -53,4 +53,7 @@ public abstract class ActivateTribblePowerEffect extends DefaultEffect {
         game.getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
+
+    @Override
+    public TribblesGame getGame() { return _tribblesGame; }
 }

@@ -2,29 +2,25 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collections;
 
 public class PlacePlayedCardBeneathDrawDeckEffect extends DefaultEffect {
-    private final PhysicalCard card;
-    private final DefaultGame _game;
+    private final PhysicalCard _card;
 
     public PlacePlayedCardBeneathDrawDeckEffect(ActionContext actionContext) {
         super(actionContext);
-        this.card = actionContext.getSource();
-        _game = actionContext.getGame();
+        _card = actionContext.getSource();
     }
 
-    public PlacePlayedCardBeneathDrawDeckEffect(DefaultGame game, PhysicalCard card) {
-        super(card.getOwnerName());
-        this.card = card;
-        _game = game;
+    public PlacePlayedCardBeneathDrawDeckEffect(PhysicalCard card) {
+        super(card);
+        _card = card;
     }
 
     @Override
     public String getText() {
-        return "Put " + card.getFullName() + " on bottom of your deck";
+        return "Put " + _card.getFullName() + " on bottom of your deck";
     }
 
     @Override
@@ -35,9 +31,9 @@ public class PlacePlayedCardBeneathDrawDeckEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            _game.sendMessage(card.getOwnerName() + " puts " + card.getCardLink() + " on bottom of their deck");
-            _game.getGameState().removeCardsFromZone(card.getOwnerName(), Collections.singletonList(card));
-            _game.getGameState().putCardOnBottomOfDeck(card);
+            _game.sendMessage(_card.getOwnerName() + " puts " + _card.getCardLink() + " on bottom of their deck");
+            _game.getGameState().removeCardsFromZone(_card.getOwnerName(), Collections.singletonList(_card));
+            _game.getGameState().putCardOnBottomOfDeck(_card);
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);

@@ -31,7 +31,7 @@ public class FilterCardsInMemory implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         final Filterable filterable = filterableSource.getFilterable(context);

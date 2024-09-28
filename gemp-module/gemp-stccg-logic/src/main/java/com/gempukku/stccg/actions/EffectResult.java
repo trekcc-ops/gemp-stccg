@@ -47,7 +47,7 @@ public abstract class EffectResult {
 
     protected EffectResult(Type type, Effect effect) {
         _type = type;
-        _game = effect.getSource().getGame();
+        _game = effect.getGame();
         _source = effect.getSource();
         _performingPlayerId = effect.getPerformingPlayerId();
     }

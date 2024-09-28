@@ -16,10 +16,10 @@ public class CheckPhaseLimitPerPlayerEffect extends UnrespondableEffect {
     private final int _limit;
     private final Phase _phase;
     private final Effect _limitedEffect;
-    private final DefaultGame _game;
 
     public CheckPhaseLimitPerPlayerEffect(DefaultGame game, Action action, PhysicalCard card, String limitPrefix,
                                           String playerId, int limit, Phase phase, Effect limitedEffect) {
+        super(game);
         _card = card;
         _limitPrefix = limitPrefix;
         _playerId = playerId;
@@ -27,7 +27,6 @@ public class CheckPhaseLimitPerPlayerEffect extends UnrespondableEffect {
         _phase = phase;
         _limitedEffect = limitedEffect;
         _action = action;
-        _game = game;
     }
 
     @Override

@@ -2,24 +2,45 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 public abstract class DefaultEffect implements Effect {
     protected Action _action;
     private Boolean _carriedOut;
     protected boolean _prevented;
     protected final String _performingPlayerId;
+    protected final DefaultGame _game;
 
-    protected DefaultEffect(String performingPlayerId) { _performingPlayerId = performingPlayerId; }
-    protected DefaultEffect(ActionContext actionContext) {
-        _performingPlayerId = actionContext.getPerformingPlayerId();
+    protected DefaultEffect(DefaultGame game, String performingPlayerId) {
+        _performingPlayerId = performingPlayerId;
+        _game = game;
     }
 
-    protected DefaultEffect(PhysicalCard card) { _performingPlayerId = card.getOwnerName(); }
+    protected DefaultEffect(Player player) {
+        _performingPlayerId = player.getPlayerId();
+        _game = player.getGame();
+    }
+
+    protected DefaultEffect(ActionContext actionContext, String playerId) {
+        _performingPlayerId = playerId;
+        _game = actionContext.getGame();
+    }
+
+    protected DefaultEffect(ActionContext actionContext) {
+        _performingPlayerId = actionContext.getPerformingPlayerId();
+        _game = actionContext.getGame();
+    }
+
+    protected DefaultEffect(PhysicalCard card) {
+        _performingPlayerId = card.getOwnerName();
+        _game = card.getGame();
+    }
     protected DefaultEffect(Action action) {
         _action = action;
         _performingPlayerId = action.getPerformingPlayerId();
+        _game = action.getGame();
     }
-    protected DefaultEffect() { _performingPlayerId = null; } // Should be reserved for automatic game effects
 
     protected abstract FullEffectResult playEffectReturningResult();
 
@@ -60,5 +81,7 @@ public abstract class DefaultEffect implements Effect {
 
     public String getPerformingPlayerId() {
         return _performingPlayerId; }
+
+    public DefaultGame getGame() { return _game; }
 
 }

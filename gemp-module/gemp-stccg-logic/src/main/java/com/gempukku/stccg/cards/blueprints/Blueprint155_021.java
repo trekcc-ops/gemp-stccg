@@ -60,7 +60,7 @@ public class Blueprint155_021 extends CardBlueprint {
                                 }
                                               });
                             getPlayCardAction().appendEffect(
-                                    new UnrespondableEffect() {
+                                    new UnrespondableEffect(card.getGame()) {
                                         @Override
                                         protected void doPlayEffect() {
                                             afterCardPlayed(selectedCard);

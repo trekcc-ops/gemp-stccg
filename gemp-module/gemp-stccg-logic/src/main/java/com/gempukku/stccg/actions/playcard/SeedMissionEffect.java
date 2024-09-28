@@ -19,19 +19,19 @@ public class SeedMissionEffect extends SeedCardEffect {
 
     @Override
     protected DefaultEffect.FullEffectResult playEffectReturningResult() {
-        ST1EGameState gameState = _game.getGameState();
+        ST1EGameState gameState = getGame().getGameState();
 
-        _game.sendMessage(_cardSeeded.getOwnerName() + " seeded " +
+        getGame().sendMessage(_cardSeeded.getOwnerName() + " seeded " +
                 _cardSeeded.getCardLink() +  " from " + _fromZone.getHumanReadable());
 
         gameState.removeCardFromZone(_cardSeeded);
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
         try {
-            _game.getGameState().addToSpaceline((MissionCard) _cardSeeded, _spacelineIndex, _sharedMission);
-            _game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardSeeded));
+            getGame().getGameState().addToSpaceline((MissionCard) _cardSeeded, _spacelineIndex, _sharedMission);
+            getGame().getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardSeeded));
             return new DefaultEffect.FullEffectResult(true);
         } catch(InvalidGameLogicException exp) {
-            _game.sendMessage(exp.getMessage());
+            getGame().sendMessage(exp.getMessage());
             return new DefaultEffect.FullEffectResult(false);
         }
     }

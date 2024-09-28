@@ -8,12 +8,11 @@ import com.gempukku.stccg.modifiers.Modifier;
 public class AddUntilStartOfPhaseModifierEffect extends UnrespondableEffect {
     private final Modifier _modifier;
     private final Phase _phase;
-    private final DefaultGame _game;
 
     public AddUntilStartOfPhaseModifierEffect(DefaultGame game, Modifier modifier, Phase phase) {
+        super(game);
         _modifier = modifier;
         _phase = phase;
-        _game = game;
     }
 
     @Override

@@ -4,11 +4,10 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class ShuffleDeckEffect extends UnrespondableEffect {
     private final String _playerId;
-    private final DefaultGame _game;
 
     public ShuffleDeckEffect(DefaultGame game, String playerId) {
+        super(game, playerId);
         _playerId = playerId;
-        _game = game;
     }
 
     @Override

@@ -61,7 +61,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                         if (TriggerConditions.forEachCardDrawn(effectResult, playerId)) {
                             RequiredTriggerAction action = new RequiredTriggerAction(picard);
                             action.appendEffect(
-                                    new IncrementEffect(triggerCount));
+                                    new IncrementEffectForTesting(_game, triggerCount));
                             return Collections.singletonList(action);
                         }
                         return null;
@@ -74,7 +74,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                             action.appendEffect(
                                     new PreventEffect(_game, (Preventable) effect));
                             action.appendEffect(
-                                    new IncrementEffect(preventCount));
+                                    new IncrementEffectForTesting(_game, preventCount));
                             return Collections.singletonList(action);
                         }
                         return null;

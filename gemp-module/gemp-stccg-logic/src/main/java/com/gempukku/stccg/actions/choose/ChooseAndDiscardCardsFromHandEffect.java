@@ -22,7 +22,6 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
     private final String _playerId;
     private final boolean _forced;
     private final Filterable[] _filter;
-    private final DefaultGame _game;
     private final int _minimum;
     private final int _maximum;
     private String _text = "Choose cards to discard";
@@ -33,13 +32,13 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
 
     public ChooseAndDiscardCardsFromHandEffect(DefaultGame game, Action action, String playerId, boolean forced, 
                                                int minimum, int maximum, Filterable... filters) {
+        super(game);
         _action = action;
         _playerId = playerId;
         _forced = forced;
         _minimum = minimum;
         _maximum = maximum;
         _filter = filters;
-        _game = game;
     }
     
     public void setText(String text) {

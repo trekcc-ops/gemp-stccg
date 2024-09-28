@@ -12,13 +12,12 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
     private final Action _action;
     private final String _playerId;
     private final int _count;
-    private final DefaultGame _game;
 
     public DrawCardsEffect(DefaultGame game, Action action, String playerId, int count) {
+        super(game);
         _action = action;
         _playerId = playerId;
         _count = count;
-        _game = game;
     }
 
     @Override
@@ -46,7 +45,7 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
             drawEffects.add(effect);
         }
         subAction.appendEffect(
-                new UnrespondableEffect() {
+                new UnrespondableEffect(_action.getGame()) {
                     @Override
                     protected void doPlayEffect() {
                         int count = 0;

@@ -20,7 +20,7 @@ public class SetNextTribble implements EffectAppenderProducer {
                 if (context instanceof TribblesActionContext) {
                     int value = amount.evaluateExpression(context, null);
 
-                    return new UnrespondableEffect() {
+                    return new UnrespondableEffect(context) {
                         @Override
                         protected void doPlayEffect() {
                             ((TribblesActionContext) context).getGame().getGameState().setNextTribbleInSequence(value);

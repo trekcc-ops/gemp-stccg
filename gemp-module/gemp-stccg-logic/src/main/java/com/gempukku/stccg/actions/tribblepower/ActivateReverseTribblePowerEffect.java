@@ -11,8 +11,8 @@ public class ActivateReverseTribblePowerEffect extends ActivateTribblePowerEffec
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        _game.getGameState().getPlayerOrder().reversePlayerOrder();
-        _game.getActionsEnvironment().emitEffectResult(_result);
+        getGame().getGameState().getPlayerOrder().reversePlayerOrder();
+        getGame().getActionsEnvironment().emitEffectResult(_result);
         return new FullEffectResult(true);
     }
 }

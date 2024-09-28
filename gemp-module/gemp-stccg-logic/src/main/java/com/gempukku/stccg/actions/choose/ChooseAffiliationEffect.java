@@ -10,14 +10,12 @@ import java.util.*;
 public abstract class ChooseAffiliationEffect extends DefaultEffect {
     private final String _playerId;
     private final List<Affiliation> _affiliationOptions;
-    private final DefaultGame _game;
 
     public ChooseAffiliationEffect(DefaultGame game, String playerId,
                                    List<Affiliation> affiliationOptions) {
-        super(playerId);
+        super(game, playerId);
         _playerId = playerId;
         _affiliationOptions = affiliationOptions;
-        _game = game;
     }
 
     @Override

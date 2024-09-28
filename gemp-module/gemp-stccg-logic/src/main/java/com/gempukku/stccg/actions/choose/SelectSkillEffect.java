@@ -16,11 +16,10 @@ import java.util.Map;
 
 public abstract class SelectSkillEffect extends UnrespondableEffect {
     private final String _playerId;
-    private final DefaultGame _game;
     private final Map<String, SkillName> _skillOptions = new HashMap<>();
     public SelectSkillEffect(DefaultGame game, Player player, List<SkillName> skillOptions) {
+        super(game);
         _playerId = player.getPlayerId();
-        _game = game;
         for (SkillName skill : skillOptions)
             _skillOptions.put(skill.get_humanReadable(), skill);
     }

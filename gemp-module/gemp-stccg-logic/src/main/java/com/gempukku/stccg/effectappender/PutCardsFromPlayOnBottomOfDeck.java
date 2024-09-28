@@ -36,7 +36,7 @@ public class PutCardsFromPlayOnBottomOfDeck implements EffectAppenderProducer {
                         final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard card : cards) {
-                            result.add(new PutCardFromPlayOnBottomOfDeckEffect(actionContext.getGame(), card));
+                            result.add(new PutCardFromPlayOnBottomOfDeckEffect(card));
                         }
                         return result;
                     }

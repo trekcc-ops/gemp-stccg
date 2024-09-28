@@ -8,11 +8,10 @@ import com.gempukku.stccg.game.DefaultGame;
 public class IncrementTurnLimitEffect extends UnrespondableEffect {
     private final PhysicalCard card;
     private final int limit;
-    private final DefaultGame _game;
 
     public IncrementTurnLimitEffect(ActionContext actionContext, int limit) {
+        super(actionContext);
         this.card = actionContext.getSource();
-        _game = actionContext.getGame();
         this.limit = limit;
     }
 

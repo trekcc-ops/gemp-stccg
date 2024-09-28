@@ -32,7 +32,7 @@ public class GetCardsFromTopOfDeck implements EffectAppenderProducer {
                 DefaultGame game = context.getGame();
                 final Filterable filterable = filterableSource.getFilterable(context);
                 final Filter acceptFilter = Filters.and(filterable);
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         final List<? extends PhysicalCard> deck =

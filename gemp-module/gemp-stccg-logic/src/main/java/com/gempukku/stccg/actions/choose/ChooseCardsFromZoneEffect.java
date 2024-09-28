@@ -23,21 +23,19 @@ public abstract class ChooseCardsFromZoneEffect extends DefaultEffect {
     private int _maximum;
     private final Filter _filter;
     protected final Zone _fromZone;
-    private final DefaultGame _game;
 
     public ChooseCardsFromZoneEffect(DefaultGame game, Zone zone, String playerId, int minimum, int maximum, Filterable... filters) {
         this(game, zone, playerId, playerId, minimum, maximum, filters);
     }
 
     public ChooseCardsFromZoneEffect(DefaultGame game, Zone zone, String playerId, String deckId, int minimum, int maximum, Filterable... filters) {
-        super(playerId);
+        super(game, playerId);
         _performingPlayer = playerId;
         _zoneOwner = deckId;
         _minimum = minimum;
         _maximum = maximum;
         _filter = Filters.and(filters);
         _fromZone = zone;
-        _game = game;
     }
 
     @Override

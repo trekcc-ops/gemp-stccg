@@ -19,7 +19,7 @@ public class AppendCardIdsToWhileInZone implements EffectAppenderProducer {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         String value = (String) context.getSource().getWhileInZoneData();

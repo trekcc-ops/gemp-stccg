@@ -15,16 +15,15 @@ public class CheckPhaseLimitEffect extends UnrespondableEffect {
     private final int _limit;
     private final Phase _phase;
     private final Effect _limitedEffect;
-    private final DefaultGame _game;
 
     public CheckPhaseLimitEffect(DefaultGame game, Action action, PhysicalCard card, String limitPrefix, int limit, Phase phase, Effect limitedEffect) {
+        super(game);
         _card = card;
         _limitPrefix = limitPrefix;
         _limit = limit;
         _phase = phase;
         _limitedEffect = limitedEffect;
         _action = action;
-        _game = game;
     }
 
     @Override

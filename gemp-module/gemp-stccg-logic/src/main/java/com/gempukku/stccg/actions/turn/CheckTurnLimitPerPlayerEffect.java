@@ -13,15 +13,14 @@ public class CheckTurnLimitPerPlayerEffect extends UnrespondableEffect {
     private final String _playerId;
     private final int _limit;
     private final Effect _limitedEffect;
-    private final DefaultGame _game;
 
     public CheckTurnLimitPerPlayerEffect(DefaultGame game, Action action, PhysicalCard card, String playerId, int limit, Effect limitedEffect) {
+        super(game);
         _card = card;
         this._playerId = playerId;
         _limit = limit;
         _limitedEffect = limitedEffect;
         _action = action;
-        _game = game;
     }
 
     @Override

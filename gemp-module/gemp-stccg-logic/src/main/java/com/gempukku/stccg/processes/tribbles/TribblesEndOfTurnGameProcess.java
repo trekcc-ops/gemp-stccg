@@ -51,6 +51,9 @@ public class TribblesEndOfTurnGameProcess extends GameProcess {
                         _game.getActionsEnvironment().signalEndOfTurn();
                         _game.getGameState().stopAffectingCardsForCurrentPlayer();
                     }
+
+                    @Override
+                    public TribblesGame getGame() { return _game; }
                 });
         boolean playerWentOut = false;
         for (String playerId : _game.getPlayerIds()) {

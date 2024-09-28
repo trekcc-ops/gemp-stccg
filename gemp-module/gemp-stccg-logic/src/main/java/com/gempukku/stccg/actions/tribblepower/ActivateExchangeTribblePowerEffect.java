@@ -19,9 +19,9 @@ public class ActivateExchangeTribblePowerEffect extends ActivateTribblePowerEffe
     protected DefaultEffect.FullEffectResult playEffectReturningResult() {
         SubAction subAction = _action.createSubAction();
         subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(
-                _game, _action, _activatingPlayer, false, 1, 1, Filters.any));
+                getGame(), _action, _activatingPlayer, false, 1, 1, Filters.any));
         subAction.appendEffect(new ChooseCardAndMoveBetweenZonesEffect(
-                _game, Zone.DISCARD, Zone.HAND, _action, _activatingPlayer, 1, 1, Filters.any));
-        return addActionAndReturnResult(_game, subAction);
+                getGame(), Zone.DISCARD, Zone.HAND, _action, _activatingPlayer, 1, 1, Filters.any));
+        return addActionAndReturnResult(getGame(), subAction);
     }
 }

@@ -25,7 +25,7 @@ public class ScorePoints implements EffectAppenderProducer {
                 int points = amount.evaluateExpression(context, null);
                 final String scoringPlayer = playerSource.getPlayerId(context);
 
-                return new UnrespondableEffect() {
+                return new UnrespondableEffect(context) {
                     @Override
                     protected void doPlayEffect() {
                         context.getGameState().addToPlayerScore(scoringPlayer, points);

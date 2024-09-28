@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.actions.EffectType;
+import com.gempukku.stccg.game.DefaultGame;
 
 public interface Effect {
 
@@ -50,5 +51,7 @@ public interface Effect {
     default PhysicalCard getSource() { return null; }
 
     String getPerformingPlayerId();
+
+    DefaultGame getGame();
 
 }

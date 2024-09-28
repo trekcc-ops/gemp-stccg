@@ -11,7 +11,6 @@ public class IncrementPhaseLimitEffect extends UnrespondableEffect {
     private final int limit;
     private Phase phase;
     private final String prefix;
-    private final DefaultGame _game;
 
     public IncrementPhaseLimitEffect(ActionContext actionContext, int limit) {
         this(actionContext.getGame(), actionContext.getSource(), null, "", limit);
@@ -26,11 +25,11 @@ public class IncrementPhaseLimitEffect extends UnrespondableEffect {
     }
 
     private IncrementPhaseLimitEffect(DefaultGame game, PhysicalCard card, Phase phase, String prefix, int limit) {
+        super(game);
         this.card = card;
         this.phase = phase;
         this.prefix = prefix;
         this.limit = limit;
-        _game = game;
     }
 
     @Override

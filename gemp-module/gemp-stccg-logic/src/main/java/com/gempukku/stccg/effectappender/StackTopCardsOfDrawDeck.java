@@ -40,7 +40,7 @@ public class StackTopCardsOfDrawDeck implements EffectAppenderProducer {
 
                             return new StackTopCardsFromDeckEffect(context.getGame(), deckId, count, card);
                         } else
-                            return new DoNothingEffect();
+                            return new DoNothingEffect(context);
                     }
                 });
 

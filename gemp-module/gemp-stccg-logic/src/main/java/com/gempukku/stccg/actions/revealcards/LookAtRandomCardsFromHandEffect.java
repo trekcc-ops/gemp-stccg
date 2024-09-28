@@ -15,12 +15,10 @@ public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
     private final int _count;
     private final String _actingPlayer;
     private final String _playerHand;
-    private final DefaultGame _game;
 
     public LookAtRandomCardsFromHandEffect(ActionContext actionContext, String handOfPlayer, int count) {
-        super(actionContext.getPerformingPlayerId());
+        super(actionContext);
         _source = actionContext.getSource();
-        _game = actionContext.getGame();
         _count = count;
         _actingPlayer = actionContext.getPerformingPlayerId();
         _playerHand = handOfPlayer;

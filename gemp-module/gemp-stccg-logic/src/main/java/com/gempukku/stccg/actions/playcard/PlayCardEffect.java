@@ -13,39 +13,25 @@ public class PlayCardEffect extends DefaultEffect {
     private PhysicalCard _attachedToCard;
     private final Zone _zone;
     private final PhysicalCard _attachedOrStackedPlayedFrom;
-    protected final DefaultGame _game;
     protected final String _performingPlayerId;
 
     public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo) {
-        super(performingPlayerId);
+        super(cardPlayed.getGame(), performingPlayerId);
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
         _zone = playedTo;
         _attachedOrStackedPlayedFrom = null;
-        _game = cardPlayed.getGame();
         _performingPlayerId = performingPlayerId;
-    }
-
-    public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo,
-                          PhysicalCard attachedOrStackedPlayedFrom) {
-        super(performingPlayerId);
-        _playedFrom = playedFrom;
-        _cardPlayed = cardPlayed;
-        _zone = playedTo;
-        _game = cardPlayed.getGame();
-        _performingPlayerId = performingPlayerId;
-        _attachedOrStackedPlayedFrom = attachedOrStackedPlayedFrom;
     }
 
     public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed,
                           PhysicalCard attachedToCard, PhysicalCard attachedOrStackedPlayedFrom) {
-        super(performingPlayerId);
+        super(cardPlayed.getGame(), performingPlayerId);
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
         _attachedToCard = attachedToCard;
         _attachedOrStackedPlayedFrom = attachedOrStackedPlayedFrom;
         _zone = Zone.ATTACHED;
-        _game = cardPlayed.getGame();
         _performingPlayerId = performingPlayerId;
     }
 

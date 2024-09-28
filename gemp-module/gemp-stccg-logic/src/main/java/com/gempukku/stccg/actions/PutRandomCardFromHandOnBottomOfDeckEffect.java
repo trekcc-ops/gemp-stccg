@@ -10,12 +10,10 @@ import java.util.List;
 
 public class PutRandomCardFromHandOnBottomOfDeckEffect extends DefaultEffect {
     private final String _playerId;
-    private final DefaultGame _game;
 
     public PutRandomCardFromHandOnBottomOfDeckEffect(DefaultGame game, String playerId) {
-        super(playerId);
+        super(game, playerId);
         _playerId = playerId;
-        _game = game;
     }
 
     @Override

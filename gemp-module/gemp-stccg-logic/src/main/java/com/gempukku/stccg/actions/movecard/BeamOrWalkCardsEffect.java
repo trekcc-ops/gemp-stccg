@@ -13,17 +13,15 @@ public class BeamOrWalkCardsEffect extends DefaultEffect {
     private final Collection<PhysicalReportableCard1E> _cardsToBeam;
     private final PhysicalCard _toCard;
     private final PhysicalCard _fromCard;
-    private final DefaultGame _game;
     private final String _performingPlayerId;
     private final String _actionName;
 
     public BeamOrWalkCardsEffect(Collection<PhysicalReportableCard1E> cardsToBeam, PhysicalCard fromCard,
                                  PhysicalCard toCard, String playerId, String actionName) {
-        super(playerId);
+        super(fromCard.getGame(), playerId);
         _toCard = toCard;
         _cardsToBeam = cardsToBeam;
         _fromCard = fromCard;
-        _game = fromCard.getGame();
         _performingPlayerId = playerId;
         _actionName = actionName;
     }

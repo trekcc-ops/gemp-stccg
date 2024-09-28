@@ -4,6 +4,11 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class AbstractSubActionEffect implements Effect {
     private CostToEffectAction _subAction;
+    protected final DefaultGame _game;
+
+    protected AbstractSubActionEffect(DefaultGame game) {
+        _game = game;
+    }
 
     protected void processSubAction(DefaultGame game, CostToEffectAction subAction) {
         _subAction = subAction;
@@ -18,4 +23,6 @@ public abstract class AbstractSubActionEffect implements Effect {
     public String getPerformingPlayerId() {
         return _subAction.getPerformingPlayerId();
     }
+
+    public DefaultGame getGame() { return _game; }
 }
