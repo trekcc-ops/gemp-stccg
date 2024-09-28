@@ -46,7 +46,7 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	* You can verify this by connecting to the database on your host machine with your DB manager of choice (I recommend [DBeaver](https://dbeaver.io/)).  
 	* It is exposed on localhost:35001 (unless you changed this port in step 7.2) and uses the user/pass of `gempuser`/`gemppassword` (unless you changed this in step 6).  
 	* If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.
-11. Now we need to compile the gemp code.
+11. Now we need to compile and install the gemp code. This can be done within some Java IDEs. Otherwise, follow these steps:
     1. Open a terminal inside the `gemp_app` container
         * If using portainer.io, 
             * log in
