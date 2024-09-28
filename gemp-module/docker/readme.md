@@ -3,7 +3,6 @@ Welcome to the wonderful world of containerized installation!
 
 Using Docker, all the fiddly setup and installation details can be coded into scripts so that people like you looking to set up an instance of the software don't have to worry about the database, server, Java installation, and all the hokey prerequisites that go along with it.  Just copy the files, open docker, run the docker-compose, and your instance is ready to be accessed.  
 
-
 ## Container Overview
 
 The entry point is the docker-compose.yml YAML file, which defines two containers and all of their interfaces that are exposed to the outside world and to each other.  These files call gemp_app.Dockerfile and gemp_db.Dockerfile which are concerned with actually constructing the environments on these two containers. 
@@ -26,6 +25,8 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 	* If you're installing this on Linux, I assume you know more than I do about how to set it up properly.
 2. Install your container manager of choice.  I would HIGHLY recommend [PortainerIO](https://www.portainer.io/), which itself runs in a docker container and exposes itself as an interactable web page.  This will give you a graphical readout of all your currently running containers, registered images, networks, volumes, and just about anything else you might want, PLUS have interactive command lines for when the GUI just doesn't cut it.  The manager that comes with Docker Desktop by default is pretty much only just barely enough to run portainer with, so don't bother with it otherwise.
 3. Pull the git repository down to your host machine; you may have already done this.
+	* Open a command line window and navigate to the folder that you want to put GEMP in
+	* Run the following command: 'git clone https://github.com/trekcc-ops/gemp-stccg.git'
 4. In the repository folder, copy the `env.example` file and paste it as `.env`.
 5. Open a code editor of your choice and navigate to the repository folder.
 6. Edit the `.env` file to suit your needs:
@@ -44,13 +45,31 @@ gemp_app is slightly more complicated.  Gemp is a Java server, is built using Ma
 10. The database should have automatically created the gemp databases that are needed.  
 	* You can verify this by connecting to the database on your host machine with your DB manager of choice (I recommend [DBeaver](https://dbeaver.io/)).  
 	* It is exposed on localhost:35001 (unless you changed this port in step 7.2) and uses the user/pass of `gempuser`/`gemppassword` (unless you changed this in step 6).  
-	* If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.  
-11. On your host machine cycle your docker container
+	* If you can see the `gemp_db` database with `league_participation` and other tables, you're golden.
+11. Now we need to compile the gemp code.
+    a. Open a terminal inside the `gemp_app` container
+        * If using portainer.io, 
+            * log in
+            * select your 'Local' endpoint
+            * click the Containers tab on the left
+            * click the `>_` icon next to gemp_app and click the Connect button
+        * If using Docker Desktop
+            * Open Docker Desktop
+            * Select the "Container" option in the left navbar
+            * expand the `gemp_1` container
+            * click the actiosn button and select `Open in Terminal`
+    b. Navigate to the gemp codebase: `cd etc/gemp-module`
+    c. Now tell Maven to compile the project: `mvn install`
+        * This process will take upwards of 5-10 minutes.  You should see a green "BUILD SUCCESS" when it is successfully done.  In portainer.io or another rich command line context, you should see lots of red text if it failed.
+12. On your host machine cycle your docker container
 	* In a terminal navigate to `gemp-module/docker`
 	* Run `docker-compose down`
 	* After that completes run `docker-compose up -d`	
-12. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  
+    * This is how you restart GEMP any time that you need to incorporate changes to the Docker container.  If you just need to reload freshly-compiled code, then restart the container directly via Docker or portainer.io.
+13. If all has gone as planned, you should now be able to navigate to your own personal instance of Gemp.  
 	* Open your browser of choice and navigate to http://localhost:17001/gemp-module/ .  (If you need a different port to be bound to, then repeat step 7 and edit the exposed port, then repeat step 11 to load those changes.)
-13. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
+14. If you're presented with the home page, register a new user and log in. It's possible for the login page to present but login itself to fail if configured incorrectly, so don't celebrate until you see the (empty) lobby.  If you get that far, then congrats, you now have a working local version of Gemp.
 
 At this point, editing the code is a matter of changing the files on your local machine and re-running `docker-compose down` and `docker-compose up --build -d`.
+
+By default, the above instructions will create 3 admin accounts: `asdf`, `qwer`, and `Librarian`, all with a password of `asdf`.  Decks on the Librarian user will be automatically included in the Deck Library for all users, and the other accounts can be used for personal testing.  Be sure to delete and/or change the credentials of these accounts if deploying to a production environment.
