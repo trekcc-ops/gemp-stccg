@@ -15,11 +15,10 @@
             <artifactId>jsoup</artifactId>
             <version>1.15.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.99.Final</version>
+            <version>4.1.113.Final</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
