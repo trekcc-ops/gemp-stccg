@@ -1,12 +1,10 @@
 package com.gempukku.stccg.formats;
 
-import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.JsonUtils;
-import org.hjson.JsonValue;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -58,30 +56,25 @@ public class FormatLibrary {
             if (JsonUtils.IsInvalidHjsonFile(path))
                 return;
             try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
-                var defs = JsonUtils.ConvertArray(reader, JSONDefs.SealedTemplate.class);
+                List<JSONDefs.SealedTemplate> defs =
+                        JsonUtils.readListOfClassFromReader(reader, JSONDefs.SealedTemplate.class);
 
                 if(defs == null)
                 {
-                    var def= JsonUtils.Convert(reader, JSONDefs.SealedTemplate.class);
-                    if(def != null)
-                    {
-                        defs = Collections.singletonList(def);
-                    }
-                    else {
-                        System.out.println(path + " is not a SealedTemplate nor an array of SealedTemplate.  Could not load from file.");
-                        return;
-                    }
+                    System.out.println(path + " is not a SealedTemplate nor an array of SealedTemplate. " +
+                            "Could not load from file.");
+                    return;
                 }
 
                 for (var def : defs) {
                     if(def == null)
                         continue;
-                    var sealed = new SealedLeagueDefinition(def.Name, def.ID, _allFormats.get(def.Format), def.SeriesProduct);
+                    var sealed = new SealedLeagueDefinition(def.name, def.id, _allFormats.get(def.format), def.seriesProduct);
 
-                    if(_sealedTemplates.containsKey(def.ID)) {
-                        System.out.println("Overwriting existing sealed definition '" + def.ID + "'!");
+                    if(_sealedTemplates.containsKey(def.id)) {
+                        System.out.println("Overwriting existing sealed definition '" + def.id + "'!");
                     }
-                    _sealedTemplates.put(def.ID, sealed);
+                    _sealedTemplates.put(def.id, sealed);
                 }
 
             } catch (IOException e) {
@@ -95,7 +88,7 @@ public class FormatLibrary {
             _allFormats.clear();
             _hallFormats.clear();
 
-            for (JSONDefs.Format def : JSON.parseObject(JsonValue.readHjson(reader).toString(), JSONDefs.Format[].class)) {
+            for (JSONDefs.Format def : JsonUtils.readListOfClassFromReader(reader, JSONDefs.Format.class)) {
                 if (def == null)
                     continue;
 

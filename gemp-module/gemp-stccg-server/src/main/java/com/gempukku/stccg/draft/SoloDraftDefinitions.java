@@ -1,20 +1,15 @@
 package com.gempukku.stccg.draft;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.AppConfig;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.draft.builder.*;
 import com.gempukku.stccg.formats.FormatLibrary;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -59,43 +54,38 @@ public class SoloDraftDefinitions {
 
     private void loadDraft(File file) {
         try {
-            final InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-            try {
-                JSONParser parser = new JSONParser();
-                JSONObject object = (JSONObject) parser.parse(reader);
-                String format = (String) object.get("format");
-                String code = (String) object.get("code");
+            JsonNode node = JsonUtils.readJsonFromFile(file);
+            String code = node.get("code").textValue();
 
-                CardCollectionProducer cardCollectionProducer = null;
-                JSONObject startingPool = (JSONObject) object.get("startingPool");
-                if (startingPool != null)
-                    cardCollectionProducer = StartingPoolBuilder.buildCardCollectionProducer(startingPool);
+            CardCollectionProducer cardCollectionProducer =
+                    StartingPoolBuilder.buildCardCollectionProducer(node.get("startingPool"));
+            DraftPoolProducer draftPoolProducer =
+                    DraftPoolBuilder.buildDraftPoolProducer(node.get("draftPool"));
 
-                DraftPoolProducer draftPoolProducer = null;
-                JSONArray draftPoolComponents = (JSONArray) object.get("draftPool");
-                if (draftPoolComponents != null)
-                    draftPoolProducer = DraftPoolBuilder.buildDraftPoolProducer(draftPoolComponents);
-
-                List<DraftChoiceDefinition> draftChoiceDefinitions = new ArrayList<>();
-                JSONArray choices = (JSONArray) object.get("choices");
-                for (JSONObject choice : (Iterable<JSONObject>) choices) {
-                    DraftChoiceDefinition draftChoiceDefinition = _draftChoiceBuilder.buildDraftChoiceDefinition(choice);
-                    int repeatCount = ((Number) choice.get("repeat")).intValue();
+            List<DraftChoiceDefinition> draftChoiceDefinitions = new ArrayList<>();
+            JsonNode choices = node.get("choices");
+            if (choices.isArray()) {
+                for (JsonNode choice : choices) {
+                    DraftChoiceDefinition draftChoiceDefinition =
+                            _draftChoiceBuilder.buildDraftChoiceDefinition(choice);
+                    int repeatCount = choice.get("repeat").asInt();
                     for (int i = 0; i < repeatCount; i++)
                         draftChoiceDefinitions.add(draftChoiceDefinition);
                 }
-
-//                _logger.debug("Loaded draft definition: " + file);
-                var result = new DefaultSoloDraft(code, format, cardCollectionProducer, draftChoiceDefinitions, draftPoolProducer);
-
-                if(_draftTypes.containsKey(code))
-                    System.out.println("Duplicate draft loaded: " + code);
-
-                _draftTypes.put(code, result);
-
-            } catch (ParseException exp) {
-                throw new RuntimeException("Problem loading solo draft " + file, exp);
+            } else {
+                DraftChoiceDefinition draftChoiceDefinition =
+                        _draftChoiceBuilder.buildDraftChoiceDefinition(choices);
+                int repeatCount = choices.get("repeat").asInt();
+                for (int i = 0; i < repeatCount; i++)
+                    draftChoiceDefinitions.add(draftChoiceDefinition);
             }
+
+            if(_draftTypes.containsKey(code))
+                System.out.println("Duplicate draft loaded: " + code);
+
+            _draftTypes.put(code, new DefaultSoloDraft(code, node.get("format").textValue(),
+                    cardCollectionProducer, draftChoiceDefinitions, draftPoolProducer));
+
         } catch (IOException exp) {
             throw new RuntimeException("Problem loading solo draft " + file, exp);
         }

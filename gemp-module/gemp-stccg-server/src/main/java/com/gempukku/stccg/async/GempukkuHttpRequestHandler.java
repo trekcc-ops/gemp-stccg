@@ -1,6 +1,5 @@
 package com.gempukku.stccg.async;
 
-import com.alibaba.fastjson.JSONObject;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.db.IpBanDAO;
 import io.netty.buffer.Unpooled;
@@ -280,12 +279,11 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 json = "{}";
 
             if(!json.startsWith("{") && !json.startsWith("[")) {
-                JSONObject obj = new JSONObject();
-                obj.put("response", json);
-                json = obj.toString();
+                json = "{ \"response\": " + json + " }";
             }
             // Build the response object.
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(json.getBytes(CharsetUtil.UTF_8)), headers, EmptyHttpHeaders.INSTANCE);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK,
+                    Unpooled.wrappedBuffer(json.getBytes(CharsetUtil.UTF_8)), headers, EmptyHttpHeaders.INSTANCE);
             sendResponse(ctx, request, response);
         }
 

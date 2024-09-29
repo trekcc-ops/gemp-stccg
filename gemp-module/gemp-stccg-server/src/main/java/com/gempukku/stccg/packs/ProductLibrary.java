@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.JsonUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -60,81 +59,73 @@ public class ProductLibrary {
     private void loadPackFromFile(File file) {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
-        JSONParser parser = new JSONParser();
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            var defs = JsonUtils.ConvertArray(reader, JSONDefs.Pack.class);
+            List<JSONDefs.Pack> defs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
 
             if(defs == null)
             {
-                var def= JsonUtils.Convert(reader, JSONDefs.Pack.class);
-                if(def != null)
-                {
-                    defs = new ArrayList<>();
-                    defs.add(def);
-                }
-                else {
-                    System.out.println(file + " is not a PackDefinition nor an array of PackDefinitions.  Could not load from file.");
-                    return;
-                }
+                System.out.println(
+                        file + " is not a PackDefinition nor an array of PackDefinitions.  Could not load from file.");
+                return;
             }
 
             for (var def : defs) {
-                LOGGER.debug("Loading pack definitions for " + def.Name);
+                LOGGER.debug("Loading pack definitions for " + def.name);
 
                 PackBox result = null;
                 String[] rarities;
                 String[] sets;
-                switch (def.Type) {
-                    case RANDOM -> {
-                        if (def.Items == null || def.Items.isEmpty())
+                switch (def.type) {
+                    case random -> {
+                        if (def.items == null || def.items.isEmpty())
                             continue;
-                        if (def.Items.stream().anyMatch(x -> x.contains("%"))) {
-                            result = WeightedRandomPack.LoadFromArray(def.Items);
+                        if (def.items.stream().anyMatch(x -> x.contains("%"))) {
+                            result = WeightedRandomPack.LoadFromArray(def.items);
                         } else {
-                            result = UnweightedRandomPack.LoadFromArray(def.Items);
+                            result = UnweightedRandomPack.LoadFromArray(def.items);
                         }
                     }
-                    case RANDOM_FOIL -> {
-                        if (def.Data == null || !def.Data.containsKey("rarities") || !def.Data.containsKey("sets")) {
-                            System.out.println(def.Name + " RANDOM_FOIL pack type must contain a definition for 'rarities' and 'sets' within data.");
+                    case random_foil -> {
+                        if (def.data == null || !def.data.containsKey("rarities") || !def.data.containsKey("sets")) {
+                            System.out.println(def.name + " RANDOM_FOIL pack type must contain a definition for 'rarities' and 'sets' within data.");
                             continue;
                         }
-                        rarities = def.Data.get("rarities").toUpperCase().split("\\s*,\\s*");
-                        sets = def.Data.get("sets").split("\\s*,\\s*");
+                        rarities = def.data.get("rarities").toUpperCase().split("\\s*,\\s*");
+                        sets = def.data.get("sets").split("\\s*,\\s*");
                         result = new RandomFoilPack(rarities, sets, _cardLibrary);
                     }
-                    case BOOSTER -> {
-                        if (def.Data == null || !def.Data.containsKey("set")) {
-                            System.out.println(def.Name + " BOOSTER pack type must contain a definition for 'set' within data.");
+                    case booster -> {
+                        if (def.data == null || !def.data.containsKey("set")) {
+                            System.out.println(def.name + " BOOSTER pack type must contain a definition for 'set' within data.");
                             continue;
                         }
-                        if (def.Data.get("set").contains(",")) {
-                            System.out.println(def.Name + " BOOSTER pack type must define exactly one set.");
+                        if (def.data.get("set").contains(",")) {
+                            System.out.println(def.name + " BOOSTER pack type must define exactly one set.");
                             continue;
                         }
-                        String set = def.Data.get("set").trim();
+                        String set = def.data.get("set").trim();
                         if (set.equals("9")) {
                             result = new ReflectionsPackBox(_cardLibrary);
                         } else {
                             result = new RarityPackBox(_cardLibrary.getSetDefinitions().get(set));
                         }
                     }
-                    case PACK, SELECTION -> {
-                        if (def.Items == null || def.Items.isEmpty())
+                    case pack, selection -> {
+                        if (def.items == null || def.items.isEmpty())
                             continue;
-                        result = FixedPackBox.LoadFromArray(def.Items, def.Recursive);
+                        result = FixedPackBox.LoadFromArray(def.items);
                     }
                 }
                 if(result == null)
                 {
-                    System.out.println("Unrecognized pack type: " + def.Type);
+                    System.out.println("Unrecognized pack type: " + def.type);
                     continue;
                 }
 
-                if(_products.containsKey(def.Name)) {
-                    System.out.println("Overwriting existing pack '" + def.Name + "'!");
+                if(_products.containsKey(def.name)) {
+                    System.out.println("Overwriting existing pack '" + def.name + "'!");
                 }
-                _products.put(def.Name, result);
+                _products.put(def.name, result);
             }
 
 

@@ -56,11 +56,6 @@ public class CachedCollectionDAO implements CollectionDAO, Cached {
     }
 
     @Override
-    public void convertCollection(int playerId, String type) throws SQLException, IOException {
-        _delegate.convertCollection(playerId, type);
-    }
-
-    @Override
     public List<DBDefs.Collection> getAllCollectionsForPlayer(int playerId) {
         return _delegate.getAllCollectionsForPlayer(playerId);
     }

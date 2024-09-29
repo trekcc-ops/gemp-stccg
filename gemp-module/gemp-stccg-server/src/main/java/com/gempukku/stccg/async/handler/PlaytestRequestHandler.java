@@ -1,13 +1,12 @@
 package com.gempukku.stccg.async.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.db.User;
-import com.google.gson.Gson;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
@@ -24,7 +23,6 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
 
     private final PlayerDAO _playerDAO;
     private final GameHistoryService _gameHistoryService;
-    private final Gson JsonConvert = new Gson();
 
     public PlaytestRequestHandler(Map<Type, Object> context) {
         super(context);
@@ -103,7 +101,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
 
             final List<DBDefs.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
 
-            responseWriter.writeJsonResponse(JSON.toJSONString(gameHistory));
+            responseWriter.writeJsonResponse(JsonUtils.toJsonString(gameHistory));
 
         } finally {
             postDecoder.destroy();

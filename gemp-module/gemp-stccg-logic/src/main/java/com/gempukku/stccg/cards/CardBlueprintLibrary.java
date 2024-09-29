@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -14,11 +13,6 @@ import com.gempukku.stccg.game.ICallback;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hjson.JsonValue;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +33,7 @@ public class CardBlueprintLibrary {
     private final File _cardPath = AppConfig.getCardsPath();
     private final List<ICallback> _refreshCallbacks = new ArrayList<>();
     private boolean _blueprintLoadErrorEncountered;
+    private final ObjectMapper _objectMapper = new ObjectMapper();
 
     public CardBlueprintLibrary() {
         LOGGER.info("Locking blueprint library in constructor");
@@ -118,28 +113,20 @@ public class CardBlueprintLibrary {
             final InputStreamReader reader = new InputStreamReader(
                     new FileInputStream(AppConfig.getSetDefinitionsPath()), StandardCharsets.UTF_8);
             try {
-                String json = JsonValue.readHjson(reader).toString();
-                JSONParser parser = new JSONParser();
-                JSONArray object = (JSONArray) parser.parse(json);
-                for (Object setDefinitionObj : object) {
-                    JSONObject setJsonDef = (JSONObject) setDefinitionObj;
+                for (JsonNode setDefinitionObj : _objectMapper.readTree(JsonUtils.readJson(reader))) {
 
-                    String setId = (String) setJsonDef.get("setId");
-                    String setName = (String) setJsonDef.get("setName");
+                    String setId = setDefinitionObj.get("setId").textValue();
+                    String setName = setDefinitionObj.get("setName").textValue();
 
                     Set<String> flags = new HashSet<>();
-                    determineOriginalSetFlag(setJsonDef, flags);
-                    determineMerchantableFlag(setJsonDef, flags);
-                    determineNeedsLoadingFlag(setJsonDef, flags);
+                    determineNeedsLoadingFlag(setDefinitionObj, flags);
 
                     SetDefinition setDefinition = new SetDefinition(setId, setName, flags);
                     _allSets.put(setId, setDefinition);
                 }
-            } finally {
+        } finally {
                 IOUtils.closeQuietly(reader);
             }
-        } catch (ParseException e) {
-            throw new RuntimeException("Unable to parse setConfig.json file");
         } catch (IOException exp) {
             throw new RuntimeException("Unable to read card rarities: " + exp);
         }
@@ -181,17 +168,8 @@ public class CardBlueprintLibrary {
     private void loadCardsFromFile(File file, boolean validateNew) {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
-        JSONParser parser = new JSONParser();
-        try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            //This will read both json and hjson, producing standard json
-            String json = JsonValue.readHjson(reader).toString();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> testBlueprintMap = objectMapper.readValue(json, new TypeReference<>() {});
-            JsonNode jsonNode = objectMapper.readTree(json);
-            final JSONObject cardsFile = (JSONObject) parser.parse(json);
-            final Set<Map.Entry<String, JSONObject>> cardsInFile = cardsFile.entrySet();
-
+        try {
+            JsonNode jsonNode = JsonUtils.readJsonFromFile(file);
             List<String> blueprintIds = new ArrayList<>();
             jsonNode.fieldNames().forEachRemaining(blueprintIds::add);
 
@@ -203,49 +181,15 @@ public class CardBlueprintLibrary {
                     String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
                     _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (Exception exp){
-                    // invaldcarddefinition
                     _blueprintLoadErrorEncountered = true;
                     LOGGER.error("Unable to load card ", exp);
-
                 }
             }
-
-            jsonNode.forEach((JsonNode node) -> {
-                try {
-                    boolean check;
-                    String blueprintId;
-                    JsonNode blueprintIdObj = node.get("blueprintId");
-                    if (blueprintIdObj != null) {
-                        blueprintId = blueprintIdObj.textValue();
-                        if (Objects.equals(blueprintId, "105_015")) {
-                            final CardBlueprint cardBlueprint = cardBlueprintBuilder.buildFromJsonNew(blueprintId, node);
-                            _blueprints.put(blueprintId, cardBlueprint);
-                            String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
-                            _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
-                        }
-                    }
-                } catch (Exception exp){
-                // invaldcarddefinition
-                    _blueprintLoadErrorEncountered = true;
-                    LOGGER.error("Unable to load card ", exp);
-
-                }
-            }
-            );
-/*
-            for (Map.Entry<String, JSONObject> cardEntry : cardsInFile) {
-                String blueprintId = cardEntry.getKey();
-                if (validateNew)
-                    if (_blueprints.containsKey(blueprintId))
-                        LOGGER.error(blueprintId + " - Replacing existing card definition!");
-            }
-*/
         } catch (Exception exp) {
             _blueprintLoadErrorEncountered = true;
             String errorMessage = switch (exp) {
                 case FileNotFoundException fileNotFoundException -> "Failed to find file";
                 case IOException ioException -> "Error while loading file";
-                case ParseException parseException -> "Failed to parse file";
                 default -> "Unexpected error while parsing file";
             };
             LOGGER.error(errorMessage + " " + file.getAbsolutePath(), exp);
@@ -399,28 +343,12 @@ public class CardBlueprintLibrary {
         return blueprintId;
     }
 
-    private void determineNeedsLoadingFlag(JSONObject setDefinition, Set<String> flags) {
-        Boolean needsLoading = (Boolean) setDefinition.get("needsLoading");
-        if (needsLoading == null)
-            needsLoading = true;
+    private void determineNeedsLoadingFlag(JsonNode setDefinition, Set<String> flags) {
+        boolean needsLoading = setDefinition.get("needsLoading") == null ||
+                !setDefinition.get("needsLoading").isBoolean() ||
+                setDefinition.get("needsLoading").asBoolean();
         if (needsLoading)
             flags.add("needsLoading");
-    }
-
-    private void determineMerchantableFlag(JSONObject setDefinition, Set<String> flags) {
-        Boolean merchantable = (Boolean) setDefinition.get("merchantable");
-        if (merchantable == null)
-            merchantable = true;
-        if (merchantable)
-            flags.add("merchantable");
-    }
-
-    private void determineOriginalSetFlag(JSONObject setDefinition, Set<String> flags) {
-        Boolean originalSet = (Boolean) setDefinition.get("originalSet");
-        if (originalSet == null)
-            originalSet = true;
-        if (originalSet)
-            flags.add("originalSet");
     }
 
     public String getRandomBlueprintId() {

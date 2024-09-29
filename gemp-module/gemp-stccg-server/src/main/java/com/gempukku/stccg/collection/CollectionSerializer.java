@@ -1,19 +1,22 @@
 package com.gempukku.stccg.collection;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DBDefs;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.gempukku.stccg.common.JsonUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CollectionSerializer {
     private final List<String> _doubleByteCountItems = new ArrayList<>();
     private final List<String> _singleByteCountItems = new ArrayList<>();
+
+    private final ObjectMapper _mapper = new ObjectMapper();
+
 
     public CollectionSerializer() {
 
@@ -53,12 +56,8 @@ public class CollectionSerializer {
             }
         }
 
-        Map<String, Object> extraInformation = collection.getExtraInformation();
-        JSONObject json = new JSONObject();
-        json.putAll(extraInformation);
-
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-        writer.write(json.toJSONString());
+        writer.write(_mapper.valueToTree(collection.getExtraInformation()).toString());
         writer.flush();
     }
 
@@ -83,14 +82,10 @@ public class CollectionSerializer {
             throws IOException {
         DefaultCardCollection newColl = new DefaultCardCollection();
 
-        JSONParser parser = new JSONParser();
-        try {
-            if(coll.extra_info != null) {
-                JSONObject object = (JSONObject) parser.parse(coll.extra_info);
-                newColl.setExtraInformation(object);
-            }
-        } catch (ParseException exp) {
-            throw new IOException(exp);
+        if(coll.extra_info != null) {
+            JsonNode object = _mapper.readTree(coll.extra_info);
+            newColl.setExtraInformation(_mapper.convertValue(object, new TypeReference<>() {
+            }));
         }
 
         for(var entry : entries) {
@@ -204,8 +199,7 @@ public class CollectionSerializer {
         int byte1 = inputStream.read();
         int byte2 = inputStream.read();
         int byte3 = inputStream.read();
-        int currency = convertToInt(byte1, byte2, byte3);
-        collection.addCurrency(currency);
+        collection.addCurrency(convertToInt(byte1, byte2, byte3));
 
         int packTypes = convertToInt(inputStream.read());
 
@@ -272,14 +266,9 @@ public class CollectionSerializer {
         }
 
         Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject object = (JSONObject) parser.parse(reader);
-            collection.setExtraInformation(object);
-        } catch (ParseException exp) {
-            throw new IOException(exp);
-        }
+        collection.setExtraInformation(_mapper.convertValue(
+                _mapper.readTree(JsonUtils.readJson(reader)), new TypeReference<>() {
+                }));
 
         return collection;
     }

@@ -1,7 +1,9 @@
 package com.gempukku.stccg.draft.builder;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.draft.DraftChoiceDefinition;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.collection.CardCollection;
@@ -9,8 +11,6 @@ import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.formats.FormatLibrary;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.*;
 
@@ -29,13 +29,9 @@ public class DraftChoiceBuilder {
         _sortAndFilterCards = new SortAndFilterCards();
     }
 
-    public DraftChoiceDefinition buildDraftChoiceDefinition(JSONObject choiceDefinition) {
-        return constructDraftChoiceDefinition(choiceDefinition);
-    }
-
-    private DraftChoiceDefinition constructDraftChoiceDefinition(JSONObject choiceDefinition) {
-        String choiceDefinitionType = (String) choiceDefinition.get("type");
-        JSONObject data = (JSONObject) choiceDefinition.get("data");
+    public DraftChoiceDefinition buildDraftChoiceDefinition(JsonNode choiceDefinition) {
+        String choiceDefinitionType = choiceDefinition.get("type").textValue();
+        JsonNode data = choiceDefinition.get("data");
         return switch (choiceDefinitionType) {
             case "singleCollectionPick" -> buildSingleCollectionPickDraftChoiceDefinition(data);
             case "weightedSwitch" -> buildWeightedSwitchDraftChoiceDefinition(data);
@@ -48,17 +44,18 @@ public class DraftChoiceBuilder {
         };
     }
 
-    private DraftChoiceDefinition buildFilterPickDraftChoiceDefinition(JSONObject data) {
-        final int optionCount = ((Number) data.get("optionCount")).intValue();
-        String filter = ((String) data.get("filter")).replace(" ","|");
 
-        Iterable<GenericCardItem> items = _collectionsManager.getCompleteCardCollection().getAll();
+    private DraftChoiceDefinition buildFilterPickDraftChoiceDefinition(JsonNode data) {
+        final int optionCount = data.get("optionCount").asInt();
+        String filter = data.get("filter").textValue().replace(" ","|");
 
-        final List<GenericCardItem> possibleCards = _sortAndFilterCards.process(filter, items, _cardLibrary, _formatLibrary);
+        final List<GenericCardItem> possibleCards = _sortAndFilterCards.process(
+                filter, _collectionsManager.getCompleteCardCollection().getAll(), _cardLibrary, _formatLibrary);
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
                 final List<GenericCardItem> cards = getCards(seed, stage);
 
                 List<SoloDraft.DraftChoice> draftChoices = new ArrayList<>(optionCount);
@@ -103,20 +100,15 @@ public class DraftChoiceBuilder {
         };
     }
 
-    private DraftChoiceDefinition buildSingleCollectionPickDraftChoiceDefinition(JSONObject data) {
-        JSONArray switchResult = (JSONArray) data.get("possiblePicks");
-
+    private DraftChoiceDefinition buildSingleCollectionPickDraftChoiceDefinition(JsonNode data) {
+        List<JsonNode> switchResult = JsonUtils.toArray(data.get("possiblePicks"));
         final Map<String, List<String>> cardsMap = new HashMap<>();
         final List<SoloDraft.DraftChoice> draftChoices = new ArrayList<>();
 
-        for (JSONObject pickDefinition : (Iterable<JSONObject>) switchResult) {
-            final String choiceId = (String) pickDefinition.get("choiceId");
-            final String url = (String) pickDefinition.get("url");
-            JSONArray cards = (JSONArray) pickDefinition.get("cards");
-
-            List<String> cardIds = new ArrayList<>();
-            for (String card : (Iterable<String>) cards)
-                cardIds.add(card);
+        for (JsonNode pickDefinition : switchResult) {
+            final String choiceId = pickDefinition.get("choiceId").textValue();
+            final String url = pickDefinition.get("url").textValue();
+            List<String> cardIds = JsonUtils.toStringArray(pickDefinition.get("cards"));
 
             draftChoices.add(
                     new SoloDraft.DraftChoice() {
@@ -157,17 +149,15 @@ public class DraftChoiceBuilder {
         };
     }
 
-    private DraftChoiceDefinition buildMultipleCardPickDraftChoiceDefinition(JSONObject data) {
-        final int count = ((Number) data.get("count")).intValue();
-        JSONArray availableCards = (JSONArray) data.get("availableCards");
 
-        final List<String> cards = new ArrayList<>();
-        for (String availableCard : (Iterable<String>) availableCards)
-            cards.add(availableCard);
+    private DraftChoiceDefinition buildMultipleCardPickDraftChoiceDefinition(JsonNode data) {
+        final int count = data.get("count").asInt();
+        List<String> cards = JsonUtils.toStringArray(data.get("availableCards"));
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
                 final List<String> shuffledCards = getShuffledCards(seed, stage);
 
                 List<SoloDraft.DraftChoice> draftableCards = new ArrayList<>(count);
@@ -219,16 +209,18 @@ public class DraftChoiceBuilder {
             }
         };
     }
-    
-    private DraftChoiceDefinition buildDraftPoolFilterPickDraftChoiceDefinition(JSONObject data) {
-        final int optionCount = ((Number) data.get("optionCount")).intValue();
-        String filter = (String) data.get("filter");
+
+
+    private DraftChoiceDefinition buildDraftPoolFilterPickDraftChoiceDefinition(JsonNode data) {
+        final int optionCount = data.get("optionCount").asInt();
+        String filter = data.get("filter").textValue();
 
         return new DraftChoiceDefinition() {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
-                
-                List<GenericCardItem> possibleCards = _sortAndFilterCards.process(filter, draftPool.getAll(), _cardLibrary, _formatLibrary);
+
+                List<GenericCardItem> possibleCards = _sortAndFilterCards.process(
+                        filter, draftPool.getAll(), _cardLibrary, _formatLibrary);
 
                 final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
 
@@ -272,10 +264,10 @@ public class DraftChoiceBuilder {
             }
         };
     }
-    
-    private DraftChoiceDefinition buildDraftPoolFilterPluckDraftChoiceDefinition(JSONObject data) {
-        final int optionCount = ((Number) data.get("optionCount")).intValue();
-        String filter = (String) data.get("filter");
+
+    private DraftChoiceDefinition buildDraftPoolFilterPluckDraftChoiceDefinition(JsonNode data) {
+        final int optionCount = data.get("optionCount").asInt();
+        String filter = data.get("filter").textValue();
 
         return new DraftChoiceDefinition() {
             @Override
@@ -285,7 +277,8 @@ public class DraftChoiceBuilder {
                     for (int i = 0; i < draftPool.getItemCount(item.getBlueprintId()); i++)
                         fullDraftPool.add(item);
 
-                List<GenericCardItem> possibleCards = _sortAndFilterCards.process(filter, fullDraftPool, _cardLibrary, _formatLibrary);
+                List<GenericCardItem> possibleCards =
+                        _sortAndFilterCards.process(filter, fullDraftPool, _cardLibrary, _formatLibrary);
 
                 final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
 
@@ -331,12 +324,13 @@ public class DraftChoiceBuilder {
         };
     }
 
-    private DraftChoiceDefinition buildRandomSwitchDraftChoiceDefinition(JSONObject data) {
-        JSONArray switchResult = (JSONArray) data.get("switchResult");
+
+    private DraftChoiceDefinition buildRandomSwitchDraftChoiceDefinition(JsonNode data) {
+        List<JsonNode> switchResult = JsonUtils.toArray(data.get("switchResult"));
 
         final List<DraftChoiceDefinition> draftChoiceDefinitionList = new ArrayList<>();
-        for (JSONObject switchResultObject : (Iterable<JSONObject>) switchResult)
-            draftChoiceDefinitionList.add(constructDraftChoiceDefinition(switchResultObject));
+        for (JsonNode switchResultObject : switchResult)
+            draftChoiceDefinitionList.add(buildDraftChoiceDefinition(switchResultObject));
 
         return new DraftChoiceDefinition() {
             @Override
@@ -357,15 +351,15 @@ public class DraftChoiceBuilder {
         };
     }
 
-    private DraftChoiceDefinition buildWeightedSwitchDraftChoiceDefinition(JSONObject data) {
-        JSONArray switchResult = (JSONArray) data.get("switchResult");
+    private DraftChoiceDefinition buildWeightedSwitchDraftChoiceDefinition(JsonNode data) {
+        List<JsonNode> switchResult = JsonUtils.toArray(data.get("switchResult"));
 
         final Map<Float, DraftChoiceDefinition> draftChoiceDefinitionMap = new LinkedHashMap<>();
         float weightTotal = 0;
-        for (JSONObject switchResultObject : (Iterable<JSONObject>) switchResult) {
-            float weight = ((Number) switchResultObject.get("weight")).floatValue();
+        for (JsonNode switchResultObject : switchResult) {
+            float weight = switchResultObject.get("weight").floatValue();
             weightTotal += weight;
-            draftChoiceDefinitionMap.put(weightTotal, constructDraftChoiceDefinition(switchResultObject));
+            draftChoiceDefinitionMap.put(weightTotal, buildDraftChoiceDefinition(switchResultObject));
         }
 
         return new DraftChoiceDefinition() {
@@ -394,6 +388,7 @@ public class DraftChoiceBuilder {
             }
         };
     }
+
 
     private Random getRandom(long seed, int stage) {
         return new Random(seed + (long) stage * HIGH_ENOUGH_PRIME_NUMBER);

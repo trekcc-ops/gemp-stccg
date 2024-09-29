@@ -1,12 +1,12 @@
 package com.gempukku.stccg.game;
 
-import com.alibaba.fastjson.JSON;
-import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.DBDefs;
-import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.gamestate.GameEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -204,7 +204,7 @@ public class GameRecorder {
                 doc.appendChild(gameReplay);
 
                 try(var out = new PrintWriter(getSummaryFile(gameInfo).getAbsolutePath())) {
-                    out.println(JSON.toJSONString(metadata));
+                    out.println(JsonUtils.toJsonString(metadata));
                 }
 
                 try (OutputStream replayStream = getRecordingWriteStream(playerId, recordingId, gameInfo.start_date)) {

@@ -1,16 +1,20 @@
 package com.gempukku.stccg.draft.builder;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.*;
 
 public class DraftPoolBuilder {
-    public static DraftPoolProducer buildDraftPoolProducer(JSONArray draftPoolComponents) {
-    
+
+    public static DraftPoolProducer buildDraftPoolProducer(JsonNode draftPoolComponents) {
+        if (draftPoolComponents == null)
+            return null;
         List<DraftPoolElement> fullDraftPool = new ArrayList<>();
-        for (JSONObject draftPoolComponent : (Iterable<JSONObject>) draftPoolComponents) {
-            fullDraftPool.add(buildDraftPool(draftPoolComponent));
+        if (draftPoolComponents.isArray()) {
+            for (JsonNode component : draftPoolComponents)
+                fullDraftPool.add(buildDraftPool(component));
+        } else {
+            fullDraftPool.add(buildDraftPool(draftPoolComponents));
         }
 
         return (seed, code) -> {
@@ -37,43 +41,40 @@ public class DraftPoolBuilder {
         };
     }
 
-    public static DraftPoolElement buildDraftPool(JSONObject draftPool) {
-        String draftPoolProducerType = (String) draftPool.get("type");
+    public static DraftPoolElement buildDraftPool(JsonNode draftPool) {
+        String draftPoolProducerType = draftPool.get("type").textValue();
         if (draftPoolProducerType.equals("singleDraft")) {
-            return buildSingleDraftPool((JSONObject) draftPool.get("data"));
+            return buildSingleOrSharedDraftPool(draftPool.get("data"));
         } else if (draftPoolProducerType.equals("sharedDraft")) {
-            return buildSharedDraftPool((JSONObject) draftPool.get("data"));
+            return buildSingleOrSharedDraftPool(draftPool.get("data"));
         }
         throw new RuntimeException("Unknown draftPoolProducer type: " + draftPoolProducerType);
     }
-    
-    private static DefaultDraftPoolElement buildSingleDraftPool(JSONObject data) {
-        int choose = ((Number) data.get("choose")).intValue();
-        JSONArray draftPackPool = (JSONArray) data.get("packs");
+
+
+    private static DefaultDraftPoolElement buildSingleOrSharedDraftPool(JsonNode data) {
+        int choose = data.get("choose").asInt();
+        JsonNode draftPackPool = data.get("packs");
 
         List<List<String>> draftPacks = new ArrayList<>();
-        for (JSONArray cards : (Iterable<JSONArray>) draftPackPool) {
+        if (draftPackPool.isArray()) {
+            for (JsonNode cards : draftPackPool) {
+                List<String> draftPack = new ArrayList<>();
+                for (JsonNode card : cards) {
+                    draftPack.add(card.textValue());
+                }
+                draftPacks.add(draftPack);
+            }
+        } else {
             List<String> draftPack = new ArrayList<>();
-            for (String card : (Iterable<String>) cards) {
-                draftPack.add(card);
+            for (JsonNode card : draftPackPool) {
+                draftPack.add(card.textValue());
             }
             draftPacks.add(draftPack);
         }
+
         return new DefaultDraftPoolElement("singleDraft", draftPacks, choose);
     }
 
-    private static DefaultDraftPoolElement buildSharedDraftPool(JSONObject data) {
-        int choose = ((Number) data.get("choose")).intValue();
-        JSONArray draftPackPool = (JSONArray) data.get("packs");
 
-        List<List<String>> draftPacks = new ArrayList<>();
-        for (JSONArray cards : (Iterable<JSONArray>) draftPackPool) {
-            List<String> draftPack = new ArrayList<>();
-            for (String card : (Iterable<String>) cards) {
-                draftPack.add(card);
-            }
-            draftPacks.add(draftPack);
-        }
-        return new DefaultDraftPoolElement("sharedDraft", draftPacks, choose);
-    }
 }

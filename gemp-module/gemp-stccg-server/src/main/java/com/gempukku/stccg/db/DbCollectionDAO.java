@@ -1,17 +1,13 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.collection.CollectionSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.collection.MutableCardCollection;
-import org.json.simple.JSONObject;
+import com.gempukku.stccg.collection.CollectionSerializer;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -211,58 +207,14 @@ public class DbCollectionDAO implements CollectionDAO {
         updateCollectionContents(playerId, type, collection, source, sql, error);
     }
 
-    public void convertCollection(int playerId, String type) throws SQLException, IOException {
-        MutableCardCollection oldCollection = getOldPlayerCollection(playerId, type);
-        var oldInfo = new HashMap<>(oldCollection.getExtraInformation());
-        oldInfo.put(DefaultCardCollection.CurrencyKey, oldCollection.getCurrency());
-        oldCollection.setExtraInformation(oldInfo);
-        overwriteCollectionContents(playerId, type, oldCollection, "Initial Convert");
-    }
-
-    public MutableCardCollection getOldPlayerCollection(int playerId, String type) throws SQLException, IOException {
-        try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select collection from collection where player_id=? and type=?")) {
-                statement.setInt(1, playerId);
-                statement.setString(2, type);
-                try (ResultSet rs = statement.executeQuery()) {
-                    if (rs.next()) {
-                        Blob blob = rs.getBlob(1);
-                        return extractCollectionAndClose(blob);
-                    } else {
-                        return null;
-                    }
-                }
-            }
-        }
-    }
-
-    private MutableCardCollection extractCollectionAndClose(Blob blob) throws SQLException, IOException {
-        try {
-            try (InputStream inputStream = blob.getBinaryStream()) {
-                return _collectionSerializer.deserializeCollection(inputStream);
-            }
-        } finally {
-            blob.free();
-        }
-    }
-
     @Override
     public void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation) {
         upsertCollectionInfo(playerId, type, extraInformation);
     }
 
 
-    //TODO:
-    // + Convert currency to an extra info entry
-    // + add data field to the original collection table to hold the extra info as json
-    // + create player-looping function to convert all collections and see if it blows up via test
-    // + add CollectionsManager mirror functions to read/writing into the new table
-    // + write unit tests to convert and compare a bajillion collections
-    // + sunset the old collection handling functions
-    // ~ test a: draft, new art card reward, my cards reward, pack openings
-    // - write script to back up db and delete the old binary blob column
-    // - write script to convert all leagues to use IDs instead of names
-    private void updateCollectionContents(int playerId, String type, CardCollection collection, String source, String sql, String error) {
+    private void updateCollectionContents(int playerId, String type, CardCollection collection, String source,
+                                          String sql, String error) {
         if(getCollectionID(playerId, type) <= 0) {
             upsertCollectionInfo(playerId, type, collection.getExtraInformation());
         }
@@ -273,7 +225,6 @@ public class DbCollectionDAO implements CollectionDAO {
 
             try (org.sql2o.Connection conn = db.beginTransaction()) {
                 Query query = conn.createQuery(sql, true);
-                //TODO: maybe detect when the batch is 1000 entries long and execute then to prevent errors
                 for(var card : collection.getAll()) {
                     query.addParameter("collid", collID)
                             .addParameter("quantity", card.getCount())
@@ -300,9 +251,8 @@ public class DbCollectionDAO implements CollectionDAO {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
-            var jsonObj = new JSONObject();
-            jsonObj.putAll(extraInformation);
-            json = jsonObj.toJSONString();
+            ObjectMapper mapper = new ObjectMapper();
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.valueToTree(extraInformation));
 
             try (org.sql2o.Connection conn = db.beginTransaction()) {
                 Query query = conn.createQuery(sql, true);

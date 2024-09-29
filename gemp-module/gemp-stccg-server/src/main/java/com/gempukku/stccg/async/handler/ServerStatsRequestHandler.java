@@ -1,11 +1,11 @@
 package com.gempukku.stccg.async.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.JSONDefs;
-import com.gempukku.stccg.game.GameHistoryService;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -32,7 +32,8 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+                              ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
             String participantId = getQueryParameterSafely(queryDecoder, "participantId");
@@ -65,7 +66,7 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                 stats.EndDate = to.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 stats.Stats = _gameHistoryService.getGameHistoryStatistics(from, to);
 
-                responseWriter.writeJsonResponse(JSON.toJSONString(stats));
+                responseWriter.writeJsonResponse(JsonUtils.toJsonString(stats));
             } catch (Exception exp) {
                 logHttpError(LOGGER, 400, request.uri(), exp);
                 throw new HttpProcessingException(400);

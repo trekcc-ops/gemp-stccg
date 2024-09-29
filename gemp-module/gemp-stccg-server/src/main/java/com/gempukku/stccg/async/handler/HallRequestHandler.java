@@ -1,21 +1,22 @@
 package com.gempukku.stccg.async.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
+import com.gempukku.stccg.async.LongPollingResource;
+import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.async.LongPollingResource;
-import com.gempukku.stccg.async.LongPollingSystem;
+import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.GameServer;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.hall.*;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
@@ -347,12 +348,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void getErrataInfo(ResponseWriter responseWriter) {
-
-        var errata = _library.getErrata();
-        String json = JSON.toJSONString(errata);
-
-        responseWriter.writeJsonResponse(json);
+    private void getErrataInfo(ResponseWriter responseWriter) throws JsonProcessingException {
+        responseWriter.writeJsonResponse(JsonUtils.toJsonString(_library.getErrata()));
     }
 
     private void getHall(HttpRequest request, ResponseWriter responseWriter) {

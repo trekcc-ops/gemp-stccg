@@ -5,21 +5,20 @@ import java.util.*;
 public class JSONDefs {
     public static class Pack {
         public enum PackType {
-            SELECTION, PACK, RANDOM, RANDOM_FOIL, BOOSTER
+            selection, pack, random, random_foil, booster
         }
 
-        public String Name;
-        public PackType Type;
-        public final boolean Recursive = false;
-        public List<String> Items;
-        public Map<String, String> Data;
+        public String name;
+        public PackType type;
+        public List<String> items;
+        public Map<String, String> data;
     }
 
     public static class SealedTemplate {
-        public String Name;
-        public String ID;
-        public String Format;
-        public List<List<String>> SeriesProduct;
+        public String name;
+        public String id;
+        public String format;
+        public List<List<String>> seriesProduct;
     }
 
     public static class ItemStub {

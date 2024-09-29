@@ -1,17 +1,17 @@
 package com.gempukku.stccg.async.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.db.DeckDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.formats.SealedLeagueDefinition;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.SortAndFilterCards;
@@ -98,12 +98,12 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                         .collect(Collectors.toMap(x-> x.code, x-> x));
                 data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
                         .map(SealedLeagueDefinition::Serialize)
-                        .collect(Collectors.toMap(x-> x.Name, x-> x));
+                        .collect(Collectors.toMap(x-> x.name, x-> x));
                 data.DraftTemplates = _draftLibrary.getAllSoloDrafts().values().stream()
                         .map(soloDraft -> new JSONDefs.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))
                         .collect(Collectors.toMap(x-> x.code, x-> x));
 
-                json = JSON.toJSONString(data);
+                json = JsonUtils.toJsonString(data);
             }
             else {
                 Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
@@ -112,7 +112,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                         .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue().getName()))
                         .toArray();
 
-                json = JSON.toJSONString(output);
+                json = JsonUtils.toJsonString(output);
             }
 
             responseWriter.writeJsonResponse(json);
@@ -127,15 +127,12 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             String format = getFormParameterSafely(postDecoder, "format");
             GameFormat currentFormat = _formatLibrary.getFormat(format);
 
-            String json;
             Map<String, String> sets = currentFormat.getValidSets();
             Object[] output = sets.entrySet().stream()
                     .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue()))
                     .toArray();
 
-            json = JSON.toJSONString(output);
-
-            responseWriter.writeJsonResponse(json);
+            responseWriter.writeJsonResponse(JsonUtils.toJsonString(output));
         } finally {
             postDecoder.destroy();
         }

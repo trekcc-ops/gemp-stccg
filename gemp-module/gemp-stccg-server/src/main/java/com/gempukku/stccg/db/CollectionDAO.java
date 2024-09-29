@@ -15,8 +15,6 @@ public interface CollectionDAO {
 
     void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) throws SQLException, IOException;
 
-    void convertCollection(int playerId, String type) throws SQLException, IOException;
-
     List<DBDefs.Collection> getAllCollectionsForPlayer(int playerId);
 
     DBDefs.Collection getCollectionInfo(int playerId, String type);
