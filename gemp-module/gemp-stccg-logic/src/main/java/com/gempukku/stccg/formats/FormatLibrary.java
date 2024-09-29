@@ -59,13 +59,6 @@ public class FormatLibrary {
                 List<JSONDefs.SealedTemplate> defs =
                         JsonUtils.readListOfClassFromReader(reader, JSONDefs.SealedTemplate.class);
 
-                if(defs == null)
-                {
-                    System.out.println(path + " is not a SealedTemplate nor an array of SealedTemplate. " +
-                            "Could not load from file.");
-                    return;
-                }
-
                 for (var def : defs) {
                     if(def == null)
                         continue;

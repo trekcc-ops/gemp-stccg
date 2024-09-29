@@ -19,7 +19,6 @@ public class DeckRequestHandlerTest extends AbstractServerTest {
     public void formatTest() throws JsonProcessingException {
         GameFormat currentFormat = _formatLibrary.getFormat("st1emoderncomplete");
 
-        String json;
         Map<String, String> sets = currentFormat.getValidSets();
         Object[] output = sets.entrySet().stream()
                 .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue()))

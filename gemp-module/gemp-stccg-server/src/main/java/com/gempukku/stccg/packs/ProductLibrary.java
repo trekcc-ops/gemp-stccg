@@ -62,13 +62,6 @@ public class ProductLibrary {
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
             List<JSONDefs.Pack> defs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
 
-            if(defs == null)
-            {
-                System.out.println(
-                        file + " is not a PackDefinition nor an array of PackDefinitions.  Could not load from file.");
-                return;
-            }
-
             for (var def : defs) {
                 LOGGER.debug("Loading pack definitions for " + def.name);
 
