@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.SealedLeagueDefinition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.stream.Collectors;

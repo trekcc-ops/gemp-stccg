@@ -8,7 +8,7 @@ import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LeagueServiceTest extends AbstractServerTest {
 

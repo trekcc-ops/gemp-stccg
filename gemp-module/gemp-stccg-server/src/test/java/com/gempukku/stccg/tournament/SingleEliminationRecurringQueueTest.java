@@ -4,13 +4,13 @@ import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test

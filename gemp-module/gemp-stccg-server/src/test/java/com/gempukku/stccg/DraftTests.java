@@ -5,7 +5,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Random;

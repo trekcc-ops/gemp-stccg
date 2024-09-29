@@ -9,14 +9,14 @@ import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.db.User;
 import com.google.common.collect.Iterables;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.Times;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SealedLeagueDataTest extends AbstractServerTest {
 

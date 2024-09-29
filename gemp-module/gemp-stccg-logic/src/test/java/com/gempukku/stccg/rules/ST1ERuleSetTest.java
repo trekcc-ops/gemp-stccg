@@ -6,9 +6,9 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ST1ERuleSetTest extends AbstractAtTest {
     @Test

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FormatLibraryTest {
     @Test

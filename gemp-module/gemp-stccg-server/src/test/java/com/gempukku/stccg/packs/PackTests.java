@@ -1,7 +1,7 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.AbstractServerTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class PackTests extends AbstractServerTest {

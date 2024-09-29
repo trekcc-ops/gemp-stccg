@@ -17,10 +17,9 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
-
-import static org.junit.Assert.fail;
 
 public abstract class AbstractAtTest extends AbstractLogicTest {
 
@@ -78,11 +77,11 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void validateContents(String[] array1, String[] array2) {
         if (array1.length != array2.length)
-            fail("Array sizes differ");
+            Assertions.fail("Array sizes differ");
         List<String> values = new ArrayList<>(Arrays.asList(array1));
         for (String s : array2) {
             if (!values.remove(s))
-                fail("Arrays contents differ");
+                Assertions.fail("Arrays contents differ");
         }
     }
 

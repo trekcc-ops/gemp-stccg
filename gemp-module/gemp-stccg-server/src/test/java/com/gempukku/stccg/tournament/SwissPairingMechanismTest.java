@@ -4,12 +4,12 @@ import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SwissPairingMechanismTest extends AbstractServerTest {
 
@@ -60,24 +60,30 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         for (int i = 1; i < 20; i++) {
             if (!pairing.isFinished(i - 1, players, droppedPlayers)) {
                 System.out.println("Pairing round " + i);
-                List<PlayerStanding> standings = BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
+                List<PlayerStanding> standings =
+                        BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
                 for (PlayerStanding standing : standings) {
                     String player = standing.getPlayerName();
-                    log(player + " points - " + standing.getPoints() + " played against: " + StringUtils.join(previouslyPaired.get(player), ","));
+                    log(player + " points - " + standing.getPoints() + " played against: " +
+                            StringUtils.join(previouslyPaired.get(player), ","));
                 }
 
                 Map<String, String> newPairings = new LinkedHashMap<>();
                 Set<String> newByes = new HashSet<>();
 
-                assertFalse("Unable to pair for round " + i, pairing.pairPlayers(i, players, droppedPlayers, byes, standings, previouslyPaired, newPairings, newByes));
-                assertEquals("Invalid number of pairings", playerCount / 2, newPairings.size());
+                assertFalse(
+                        pairing.pairPlayers(
+                                i, players, droppedPlayers, byes, standings, previouslyPaired, newPairings, newByes),
+                        "Unable to pair for round " + i
+                );
+                assertEquals(playerCount / 2, newPairings.size(), "Invalid number of pairings");
                 if (playerCount % 2 == 0)
-                    assertEquals("Invalid number of byes", 0, newByes.size());
+                    assertEquals(0, newByes.size(), "Invalid number of byes");
                 else {
-                    assertEquals("Invalid number of byes", 1, newByes.size());
+                    assertEquals(1, newByes.size(), "Invalid number of byes");
                     String newBye = newByes.iterator().next();
                     log("Bye - " + newBye);
-                    assertNull("Player already received bye", byes.get(newBye));
+                    assertNull(byes.get(newBye), "Player already received bye");
                     byes.put(newBye, 1);
                 }
 
@@ -88,7 +94,8 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                     assertFalse(previouslyPaired.get(playerOne).contains(playerTwo));
                     assertFalse(previouslyPaired.get(playerTwo).contains(playerOne));
 
-                    System.out.println("Paired " + playerOne + " against " + playerTwo + " points - " + getPlayerPoints(standings, playerOne) + " vs " + getPlayerPoints(standings, playerTwo));
+                    System.out.println("Paired " + playerOne + " against " + playerTwo + " points - " +
+                            getPlayerPoints(standings, playerOne) + " vs " + getPlayerPoints(standings, playerTwo));
                     String winner = ThreadLocalRandom.current().nextBoolean() ? playerOne : playerTwo;
                     log("Winner - " + winner);
 
@@ -100,10 +107,12 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
             }
         }
         System.out.println("Final standings:");
-        List<PlayerStanding> standings = BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
+        List<PlayerStanding> standings =
+                BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
         for (PlayerStanding standing : standings) {
             String player = standing.getPlayerName();
-            System.out.println(standing.getStanding() + ". " + player + " points - " + standing.getPoints() + " played against: " + StringUtils.join(previouslyPaired.get(player), ","));
+            System.out.println(standing.getStanding() + ". " + player + " points - " + standing.getPoints() +
+                    " played against: " + StringUtils.join(previouslyPaired.get(player), ","));
         }
     }
 

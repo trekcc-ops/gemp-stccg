@@ -2,7 +2,7 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.RarityPackBox;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
