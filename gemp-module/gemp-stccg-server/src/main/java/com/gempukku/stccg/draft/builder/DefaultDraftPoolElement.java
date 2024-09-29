@@ -21,8 +21,8 @@ public class DefaultDraftPoolElement implements DraftPoolElement {
     }
 
     @Override
-    public List<ArrayList<String>> getDraftPackList() {
-        return (List) new ArrayList(_draftPackList);
+    public List<List<String>> getDraftPackList() {
+        return _draftPackList;
     }
 
     @Override

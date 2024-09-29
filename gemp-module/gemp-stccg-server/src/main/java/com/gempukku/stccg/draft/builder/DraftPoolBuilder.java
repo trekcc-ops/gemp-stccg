@@ -23,7 +23,7 @@ public class DraftPoolBuilder {
             int mod = 0;
 
             for (DraftPoolElement element : fullDraftPool) {
-                List<ArrayList<String>> draftPacks;
+                List<List<String>> draftPacks;
                 draftPacks = element.getDraftPackList();
                 if (Objects.equals(element.getDraftPoolType(), "singleDraft"))
                     randomSource = new Random(seed+mod);

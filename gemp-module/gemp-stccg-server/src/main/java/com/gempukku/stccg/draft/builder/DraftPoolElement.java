@@ -6,7 +6,7 @@ import java.util.List;
 public interface DraftPoolElement {
     String getDraftPoolType();
 
-    List<ArrayList<String>> getDraftPackList();
+    List<List<String>> getDraftPackList();
 
     int getPacksToDraft();
 }
