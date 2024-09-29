@@ -1,17 +1,19 @@
 package com.gempukku.stccg.effectappender.resolver;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Phase;
 
 public class TimeResolver {
-    public static Time resolveTime(Object value, String defaultValue) throws InvalidCardDefinitionException {
+
+    public static Time resolveTime(JsonNode value, String defaultValue) throws InvalidCardDefinitionException {
         if (value == null)
             return parseTime(defaultValue.toLowerCase());
-        if (value instanceof String)
-            return parseTime(((String) value).toLowerCase());
-
+        if (value.isTextual())
+            return parseTime(value.textValue().toLowerCase());
         throw new InvalidCardDefinitionException("Unable to resolve time: " + value);
     }
+
 
     private static Time parseTime(String value) throws InvalidCardDefinitionException {
         final String phaseName = value.substring(value.indexOf("(") + 1, value.lastIndexOf(")"));

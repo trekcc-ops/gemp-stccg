@@ -14,7 +14,7 @@ public class PlayCardFromHandNew extends PlayCardEffectAppenderProducer {
                                                   FilterableSource onFilterableSource, ValueSource countSource,
                                                   String memorize, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        return CardResolver.resolveCardsInHandNEw(filter,
+        return CardResolver.resolveCardsInHandNew(filter,
                 (actionContext) -> {
                     final DefaultGame game = actionContext.getGame();
                     final int costModifier = costModifierSource.evaluateExpression(actionContext);

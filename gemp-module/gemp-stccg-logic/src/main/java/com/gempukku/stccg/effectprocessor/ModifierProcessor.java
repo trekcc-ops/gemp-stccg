@@ -1,18 +1,17 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import org.json.simple.JSONObject;
 
 public class ModifierProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "modifier");
+    public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "modifier");
 
-        JSONObject jsonObject = (JSONObject) value.get("modifier");
-        final ModifierSource modifier = environment.getModifierSourceFactory().getModifier(jsonObject, environment);
-
-        blueprint.appendInPlayModifier(modifier);
+        blueprint.appendInPlayModifier(
+                environment.getModifierSourceFactory().getModifier(node.get("modifier"), environment));
     }
 }

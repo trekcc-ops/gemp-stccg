@@ -1,6 +1,5 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

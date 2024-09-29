@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;

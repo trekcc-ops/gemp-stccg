@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collections;
 import java.util.LinkedList;

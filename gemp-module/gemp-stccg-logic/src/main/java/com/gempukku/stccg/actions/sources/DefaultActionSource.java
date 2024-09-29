@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.sources;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
@@ -14,7 +15,6 @@ import com.gempukku.stccg.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.effectappender.EffectAppenderFactory;
 import com.gempukku.stccg.requirement.Requirement;
-import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -69,31 +69,50 @@ public class DefaultActionSource implements ActionSource {
         // TODO - This class should eventually be made abstract so that this method can be defined differently for different types of ActionSources
     }
 
-    public void processRequirementsCostsAndEffects(JSONObject value, CardBlueprintFactory environment)
+    public void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        final JSONObject[] requirementArray = environment.getObjectArray(value.get("requires"), "requires");
-        final JSONObject[] costArray = environment.getObjectArray(value.get("cost"), "cost");
-        final JSONObject[] effectArray = environment.getObjectArray(value.get("effect"), "effect");
 
-        if (costArray.length == 0 && effectArray.length == 0)
+        if (!node.has("cost") && !node.has("effect"))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
-
-        for (JSONObject requirement : requirementArray) {
-            addRequirement(environment.getRequirement(requirement));
+        
+        if (node.has("requires")) {
+            if (node.get("requires").isArray()) {
+                for (JsonNode requirement : node.get("requires")) {
+                    addRequirement(environment.getRequirement(requirement));
+                }
+            } else addRequirement(environment.getRequirement(node.get("requires")));
         }
 
         final EffectAppenderFactory effectAppenderFactory = environment.getEffectAppenderFactory();
-        for (JSONObject cost : costArray) {
-            final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(cost);
-            addRequirement(effectAppender::isPlayableInFull);
-            addCost(effectAppender);
-        }
 
-        for (JSONObject effect : effectArray) {
-            final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(effect);
-            if (effectAppender.isPlayabilityCheckedForEffect())
+        if (node.has("cost")) {
+            if (node.get("cost").isArray()) {
+                for (JsonNode cost : node.get("cost")) {
+                    final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(cost);
+                    addRequirement(effectAppender::isPlayableInFull);
+                    addCost(effectAppender);
+                }
+            } else {
+                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(node.get("cost"));
                 addRequirement(effectAppender::isPlayableInFull);
-            addEffect(effectAppender);
+                addCost(effectAppender);
+            }
+        }
+        
+        if (node.has("effect")) {
+            if (node.get("effect").isArray()) {
+                for (JsonNode effect : node.get("effect")) {
+                    final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(effect);
+                    if (effectAppender.isPlayabilityCheckedForEffect())
+                        addRequirement(effectAppender::isPlayableInFull);
+                    addEffect(effectAppender);
+                }
+            } else {
+                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(node.get("effect"));
+                if (effectAppender.isPlayabilityCheckedForEffect())
+                    addRequirement(effectAppender::isPlayableInFull);
+                addEffect(effectAppender);
+            }
         }
     }
 

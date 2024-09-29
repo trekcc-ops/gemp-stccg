@@ -6,18 +6,10 @@ import com.gempukku.stccg.actions.RequiredTriggerAction;
 import com.gempukku.stccg.actions.choose.SelectSkillEffect;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.ActionSkill;
-import com.gempukku.stccg.cards.ModifierSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Characteristic;
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.condition.PresentWithYourCardCondition;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
 
 import java.util.LinkedList;
 import java.util.List;

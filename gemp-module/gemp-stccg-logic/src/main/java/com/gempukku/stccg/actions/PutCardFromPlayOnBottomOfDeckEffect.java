@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.discard.DiscardUtils;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
 
 import java.util.Collections;

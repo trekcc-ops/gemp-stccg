@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -12,7 +13,6 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.modifiers.KeywordModifier;
 import com.gempukku.stccg.TextUtils;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -21,17 +21,17 @@ import java.util.function.Function;
 
 public class AddKeyword implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject,
+        environment.validateAllowedFields(node,
                 "count", "filter", "memorize", "keyword", "amount", "until");
 
         final ValueSource valueSource =
-                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject.get("filter"), "filter");
-        final String memory = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
-        final String keywordString = environment.getString(effectObject.get("keyword"), "keyword");
-        final TimeResolver.Time until = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
+                ValueResolver.resolveEvaluator(node.get("count"), 1, environment);
+        final String filter = node.get("filter").textValue();
+        final String memory = environment.getString(node, "memorize", "_temp");
+        final String keywordString = node.get("keyword").textValue();
+        final TimeResolver.Time until = TimeResolver.resolveTime(node.get("until"), "end(current)");
 
         Function<ActionContext, Keyword> keywordFunction;
         ValueSource amount;
@@ -48,7 +48,7 @@ public class AddKeyword implements EffectAppenderProducer {
             if (keywordSplit.length == 2)
                 value = Integer.parseInt(keywordSplit[1]);
 
-            amount = ValueResolver.resolveEvaluator(effectObject.get("amount"), value, environment);
+            amount = ValueResolver.resolveEvaluator(node.get("amount"), value, environment);
         }
 
         MultiEffectAppender result = new MultiEffectAppender();

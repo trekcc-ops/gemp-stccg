@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
@@ -10,18 +11,17 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class MemorizeActive implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "filter", "memory");
+        environment.validateAllowedFields(node, "filter", "memory");
 
-        final FilterableSource filterSource = environment.getFilterable(effectObject);
-        final String memory = environment.getString(effectObject.get("memory"), "memory");
+        final FilterableSource filterSource = environment.getFilterable(node);
+        final String memory = node.get("memory").textValue();
 
         return new DefaultDelayedAppender() {
             @Override

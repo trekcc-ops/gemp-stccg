@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.*;
@@ -7,17 +8,16 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
-import org.json.simple.JSONObject;
 
 public class Repeat implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "amount", "effect");
+        environment.validateAllowedFields(node, "amount", "effect");
 
-        final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"), environment);
+        final ValueSource amountSource = ValueResolver.resolveEvaluator(node.get("amount"), environment);
         final EffectAppender effectAppender =
-                environment.getEffectAppenderFactory().getEffectAppender((JSONObject) effectObject.get("effect"));
+                environment.getEffectAppenderFactory().getEffectAppender(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override

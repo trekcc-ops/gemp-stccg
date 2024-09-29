@@ -1,30 +1,38 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
-import org.json.simple.JSONObject;
 
 public class ResponseEventEffectProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment)
+    public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "trigger", "requires", "cost", "effect");
+        environment.validateAllowedFields(node, "trigger", "requires", "cost", "effect");
 
-        final JSONObject[] triggerArray = environment.getObjectArray(value.get("trigger"), "trigger");
-
-        for (JSONObject trigger : triggerArray) {
-            final TriggerChecker triggerChecker =
-                    environment.getTriggerCheckerFactory().getTriggerChecker(trigger, environment);
-
-            DefaultActionSource triggerActionSource = new DefaultActionSource();
-            triggerActionSource.addRequirement(triggerChecker);
-            triggerActionSource.processRequirementsCostsAndEffects(value, environment);
-            blueprint.appendOptionalInHandTrigger(
-                    triggerActionSource, triggerChecker.isBefore() ? TriggerTiming.BEFORE : TriggerTiming.AFTER);
+        if (node.get("trigger").isArray()) {
+            for (JsonNode trigger : node.get("trigger")) {
+                appendTrigger(trigger, node, blueprint, environment);
+            }
+        } else {
+            appendTrigger(node.get("trigger"), node, blueprint, environment);
         }
+
+    }
+
+    private void appendTrigger(JsonNode trigger, JsonNode parentNode, CardBlueprint blueprint,
+                               CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        final TriggerChecker triggerChecker =
+                environment.getTriggerCheckerFactory().getTriggerChecker(trigger, environment);
+
+        DefaultActionSource triggerActionSource = new DefaultActionSource();
+        triggerActionSource.addRequirement(triggerChecker);
+        triggerActionSource.processRequirementsCostsAndEffects(parentNode, environment);
+        blueprint.appendOptionalInHandTrigger(
+                triggerActionSource, triggerChecker.isBefore() ? TriggerTiming.BEFORE : TriggerTiming.AFTER);
     }
 }

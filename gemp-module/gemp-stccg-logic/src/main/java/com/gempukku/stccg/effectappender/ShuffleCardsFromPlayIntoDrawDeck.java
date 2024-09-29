@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.ShuffleCardsFromPlayIntoDeckEffect;
@@ -9,20 +10,19 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class ShuffleCardsFromPlayIntoDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "filter", "count", "memorize");
 
-        String player = environment.getString(effectObject.get("player"), "player", "you");
+        String player = environment.getString(effectObject, "player", "you");
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
-        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final String memorize = environment.getString(effectObject, "memorize", "_temp");
 
         MultiEffectAppender result = new MultiEffectAppender();
 

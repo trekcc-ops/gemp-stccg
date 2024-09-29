@@ -1,15 +1,16 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import org.json.simple.JSONObject;
 
 public class OrRequirementProducer extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "requires");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "requires");
 
-        final Requirement[] requirements = environment.getRequirementsFromJSON(object);
+        final Requirement[] requirements = environment.getRequirementsFromJSON(node);
 
         return (actionContext) -> actionContext.acceptsAnyRequirements(requirements);
     }

@@ -1,24 +1,23 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ReorderTopCardsOfDeckEffect;
-import org.json.simple.JSONObject;
 
 public class ReorderTopCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "count", "player", "deck");
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String player = environment.getString(effectObject.get("player"), "player", "you");
-        final String deck = environment.getString(effectObject.get("deck"), "deck", "you");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
-        final PlayerSource deckSource = PlayerResolver.resolvePlayer(deck);
+        final ValueSource valueSource =
+                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
+        final PlayerSource deckSource = environment.getPlayerSource(effectObject, "deck", true);
 
         return new DefaultDelayedAppender() {
             @Override

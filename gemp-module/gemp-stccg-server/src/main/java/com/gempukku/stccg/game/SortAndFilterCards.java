@@ -3,7 +3,6 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.MultipleComparator;

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PutCardsFromZoneOnEndOfPileEffect;
@@ -12,7 +13,6 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,14 +26,13 @@ public class PutCardsFromDeckOnEndOfDrawDeck implements EffectAppenderProducer {
         _fromZone = Zone.DRAW_DECK;
     }
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "count", "filter", "reveal");
 
-        final boolean defaultReveal = true;
-
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final boolean reveal = environment.getBoolean(effectObject.get("reveal"), "reveal", defaultReveal);
+        final String filter = environment.getString(effectObject, "filter", "choose(any)");
+        final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
 
         MultiEffectAppender result = new MultiEffectAppender();
 

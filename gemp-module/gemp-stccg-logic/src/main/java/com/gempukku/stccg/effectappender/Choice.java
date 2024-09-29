@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.*;
@@ -9,25 +10,26 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.StackActionEffect;
-import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class Choice implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "player", "effects", "texts", "memorize");
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "player", "effects", "texts", "memorize");
 
-        final String player = environment.getString(effectObject.get("player"), "player", "you");
-        final JSONObject[] effectArray = environment.getObjectArray(effectObject.get("effects"), "effects");
-        final String[] textArray = environment.getStringArray(effectObject.get("texts"), "texts");
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final String player = environment.getString(node, "player", "you");
+        final JsonNode[] effectArray = environment.getNodeArray(node.get("effects"));
+        final String[] textArray = environment.getStringArray(node.get("texts"));
+        final String memorize = environment.getString(node, "memorize", "_temp");
 
         if (effectArray.length != textArray.length)
             throw new InvalidCardDefinitionException("Number of texts and effects does not match in choice effect");
 
-        EffectAppender[] possibleEffectAppenders = environment.getEffectAppenderFactory().getEffectAppenders(effectArray);
+        EffectAppender[] possibleEffectAppenders =
+                environment.getEffectAppenderFactory().getEffectAppenders(effectArray);
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
@@ -63,10 +65,12 @@ public class Choice implements EffectAppenderProducer {
                 SubAction subAction = action.createSubAction();
                 subAction.appendCost(
                         new PlayOutDecisionEffect(context.getGame(), choosingPlayer,
-                                new MultipleChoiceAwaitingDecision("Choose action to perform", effectTexts.toArray(new String[0])) {
+                                new MultipleChoiceAwaitingDecision("Choose action to perform",
+                                        effectTexts.toArray(new String[0])) {
                                     @Override
                                     protected void validDecisionMade(int index, String result) {
-                                        playableEffectAppenders.get(index).appendEffect(cost, subAction, delegateActionContext);
+                                        playableEffectAppenders.get(index)
+                                                .appendEffect(cost, subAction, delegateActionContext);
                                         context.setValueToMemory(memorize, result);
                                     }
                                 }));

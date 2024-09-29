@@ -1,5 +1,6 @@
 package com.gempukku.stccg.requirement.producers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -7,18 +8,18 @@ import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementProducer;
-import org.json.simple.JSONObject;
 
 public class HasCardInHand extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "player", "count", "filter");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "player", "count", "filter");
 
-        final String player = environment.getString(object.get("player"), "player", "you");
-        final int count = environment.getInteger(object.get("count"), "count", 1);
-        final String filter = environment.getString(object.get("filter"), "filter");
+        final int count = node.get("count").asInt(1);
+        final String filter = node.get("filter").textValue();
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
+        final PlayerSource playerSource =
+                PlayerResolver.resolvePlayer(node.has("player") ? node.get("player").textValue() : "you");
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
         return (actionContext) -> {

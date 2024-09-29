@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.revealcards.RevealTopCardsOfDrawDeckEffect;
@@ -8,19 +9,18 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import org.json.simple.JSONObject;
 
 import java.util.List;
 
 public class RevealTopCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "deck", "count", "memorize");
 
         final ValueSource valueSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
+        final String memorize = effectObject.get("memorize").textValue();
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(
                 environment.getString(effectObject.get("deck"), "deck", "you"));

@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.ST1EGameState;
 
 public class SeedCardEffect extends DefaultEffect {
     protected final Zone _fromZone;

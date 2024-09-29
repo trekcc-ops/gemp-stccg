@@ -64,11 +64,15 @@ public class CardResolver {
     }
 
     public static EffectAppender resolveCardsInHand(String type, ValueSource countSource, String memory, String choicePlayer, String handPlayer, String choiceText, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        return resolveCardsInHandNEw(type, null, countSource, memory, choicePlayer, handPlayer, choiceText, false, environment);
+        return resolveCardsInHandNew(type, null, countSource, memory, choicePlayer, handPlayer, choiceText, false, environment);
     }
 
-    public static EffectAppender resolveCardsInHand(String type, ValueSource countSource, String memory, String choicePlayer, String handPlayer, String choiceText, boolean showMatchingOnly, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        return resolveCardsInHandNEw(type, null, countSource, memory, choicePlayer, handPlayer, choiceText, showMatchingOnly, environment);
+    public static EffectAppender resolveCardsInHand(String type, ValueSource countSource, String memory,
+                                                    String choicePlayer, String handPlayer, String choiceText,
+                                                    boolean showMatchingOnly, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        return resolveCardsInHandNew(type, null, countSource, memory, choicePlayer, handPlayer, choiceText,
+                showMatchingOnly, environment);
     }
 
 
@@ -205,7 +209,7 @@ public class CardResolver {
 
 
 
-    public static EffectAppender resolveCardsInHandNEw(String type, FilterableSource additionalFilter,
+    public static EffectAppender resolveCardsInHandNew(String type, FilterableSource additionalFilter,
                                                        ValueSource countSource, String memory, String choicePlayer,
                                                        String handPlayer, String choiceText, boolean showMatchingOnly,
                                                        CardBlueprintFactory environment)

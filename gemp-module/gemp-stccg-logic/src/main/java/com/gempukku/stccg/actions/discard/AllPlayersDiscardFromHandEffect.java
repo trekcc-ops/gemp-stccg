@@ -7,7 +7,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.Collection;
 import java.util.Set;

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -10,26 +11,25 @@ import com.gempukku.stccg.actions.turn.AddUntilEndOfTurnActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilStartOfPhaseActionProxyEffect;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
-import org.json.simple.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
 
 public class AddTrigger implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject,
+        environment.validateAllowedFields(node,
                 "trigger", "until", "optional", "requires", "cost", "effect");
 
-        final TimeResolver.Time until = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
-        final TriggerChecker trigger = environment.getTriggerCheckerFactory().getTriggerChecker(
-                (JSONObject) effectObject.get("trigger"), environment);
-        final boolean optional = environment.getBoolean(effectObject.get("optional"), "optional", false);
+        final TimeResolver.Time until = TimeResolver.resolveTime(node.get("until"), "end(current)");
+        final TriggerChecker trigger =
+                environment.getTriggerCheckerFactory().getTriggerChecker(node.get("trigger"), environment);
+        final boolean optional = environment.getBoolean(node, "optional", false);
 
-        final Requirement[] requirements = environment.getRequirementsFromJSON(effectObject);
-        final EffectAppender[] costs = environment.getEffectAppendersFromJSON(effectObject,"cost");
-        final EffectAppender[] effects = environment.getEffectAppendersFromJSON(effectObject,"effect");
+        final Requirement[] requirements = environment.getRequirementsFromJSON(node);
+        final List<EffectAppender> costs = environment.getEffectAppendersFromJSON(node.get("cost"));
+        final List<EffectAppender> effects = environment.getEffectAppendersFromJSON(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override
@@ -51,8 +51,8 @@ public class AddTrigger implements EffectAppenderProducer {
     }
 
     private ActionProxy createActionProxy(ActionContext actionContext, boolean optional, TriggerChecker trigger,
-                                          Requirement[] requirements, EffectAppender[] costs,
-                                          EffectAppender[] effects) {
+                                          Requirement[] requirements, List<EffectAppender> costs,
+                                          List<EffectAppender> effects) {
         return new AbstractActionProxy() {
             private boolean checkRequirements(ActionContext actionContext) {
                 if (actionContext.acceptsAllRequirements(requirements))

@@ -1,17 +1,15 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import org.json.simple.JSONObject;
 
 public class MovesFrom implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(value, "filter");
 
-        String filter = environment.getString(value.get("filter"), "filter", "any");
-
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
+        final FilterableSource filterableSource = environment.getFilterable(value, "any");
 
         return new TriggerChecker() {
             @Override

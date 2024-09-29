@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -7,17 +8,16 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import org.json.simple.JSONObject;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class PreventableAppenderProducer implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "text", "player", "effect", "cost");
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "text", "player", "effect", "cost");
 
-        final String text = environment.getString(effectObject.get("text"), "text");
-        final String player = environment.getString(effectObject.get("player"), "player");
+        final String text = node.get("text").textValue();
+        final String player = node.get("player").textValue();
 
         if (text == null)
             throw new InvalidCardDefinitionException("Text is required for preventable effect");
@@ -25,8 +25,8 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
             throw new InvalidCardDefinitionException("Player is required for preventable effect");
 
         final PlayerSource preventingPlayerSource = PlayerResolver.resolvePlayer(player);
-        final EffectAppender[] effectAppenders = environment.getEffectAppendersFromJSON(effectObject,"effect");
-        final EffectAppender[] costAppenders = environment.getEffectAppendersFromJSON(effectObject,"cost");
+        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final List<EffectAppender> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
 
         return new DefaultDelayedAppender() {
             @Override
@@ -82,12 +82,12 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
             }
 
             private boolean areCostsPlayable(ActionContext actionContext) {
-                return Arrays.stream(costAppenders).allMatch(costAppender -> costAppender.isPlayableInFull(actionContext));
+                return costAppenders.stream().allMatch(costAppender -> costAppender.isPlayableInFull(actionContext));
             }
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                return Arrays.stream(effectAppenders).allMatch(effectAppender -> effectAppender.isPlayableInFull(actionContext));
+                return effectAppenders.stream().allMatch(effectAppender -> effectAppender.isPlayableInFull(actionContext));
             }
         };
     }

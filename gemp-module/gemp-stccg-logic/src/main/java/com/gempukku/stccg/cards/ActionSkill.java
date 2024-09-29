@@ -3,8 +3,6 @@ package com.gempukku.stccg.cards;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillType;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.modifiers.Modifier;
 
 public abstract class ActionSkill extends Skill {
     private final String _text;

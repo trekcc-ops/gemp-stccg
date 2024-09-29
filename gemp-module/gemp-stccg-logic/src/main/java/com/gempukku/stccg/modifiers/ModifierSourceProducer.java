@@ -1,10 +1,13 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.ModifierSource;
-import org.json.simple.JSONObject;
 
 public interface ModifierSourceProducer {
-    ModifierSource getModifierSource(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException;
+
+    ModifierSource getModifierSource(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException;
+
 }

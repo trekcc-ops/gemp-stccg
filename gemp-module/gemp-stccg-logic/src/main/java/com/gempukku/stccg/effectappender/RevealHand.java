@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.revealcards.RevealHandEffect;
@@ -10,19 +11,18 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.game.DefaultGame;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class RevealHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "hand", "memorize");
 
-        final String player = environment.getString(effectObject.get("hand"), "hand", "you");
+        final String player = environment.getString(effectObject, "hand", "you");
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
+        final String memorize = effectObject.get("memorize").textValue();
 
         return new DefaultDelayedAppender() {
             @Override

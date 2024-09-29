@@ -1,9 +1,9 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.producers.*;
-import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,18 +45,12 @@ public class RequirementFactory {
         requirementProducers.put("tribblesequencebroken", new TribbleSequenceBroken());
     }
 
-    public Requirement getRequirement(JSONObject object) throws InvalidCardDefinitionException {
-        final String type = _environment.getString(object.get("type"), "type");
-        final RequirementProducer requirementProducer = requirementProducers.get(type.toLowerCase());
+    public Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
+        final String type = object.get("type").textValue().toLowerCase();
+        final RequirementProducer requirementProducer = requirementProducers.get(type);
         if (requirementProducer == null)
             throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
         return requirementProducer.getPlayRequirement(object, _environment);
     }
 
-    public Requirement[] getRequirements(JSONObject[] object) throws InvalidCardDefinitionException {
-        Requirement[] result = new Requirement[object.length];
-        for (int i = 0; i < object.length; i++)
-            result[i] = getRequirement(object[i]);
-        return result;
-    }
 }

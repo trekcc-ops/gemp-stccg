@@ -1,20 +1,23 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.cards.FilterableSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.ModifierSource;
+import com.gempukku.stccg.cards.ValueSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.requirement.Requirement;
-import org.json.simple.JSONObject;
 
 public class AddIcon implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JSONObject object, CardBlueprintFactory environment)
+    public ModifierSource getModifierSource(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "filter", "requires", "icon", "amount");
+        environment.validateAllowedFields(node, "filter", "requires", "icon", "amount");
 
-        final String filter = environment.getString(object.get("filter"), "filter");
-        final String iconString = environment.getString(object.get("icon"), "icon");
+        final String filter = node.get("filter").textValue();
+        final String iconString = node.get("icon").textValue();
 
         final String[] iconSplit = iconString.split("\\+");
         CardIcon icon = environment.getEnum(CardIcon.class, iconSplit[0], "icon");
@@ -22,11 +25,10 @@ public class AddIcon implements ModifierSourceProducer {
         if (iconSplit.length == 2)
             value = Integer.parseInt(iconSplit[1]);
 
-        final ValueSource amount = ValueResolver.resolveEvaluator(object.get("amount"), value, environment);
+        final ValueSource amount = ValueResolver.resolveEvaluator(node.get("amount"), value, environment);
 
         final FilterableSource filterableSource = environment.getFilterFactory().parseSTCCGFilter(filter);
-        final Requirement[] requirements =
-                environment.getRequirementsFromJSON(object);
+        final Requirement[] requirements = environment.getRequirementsFromJSON(node);
 
         return actionContext -> new GainIconModifier(actionContext,
                 filterableSource.getFilterable(actionContext),

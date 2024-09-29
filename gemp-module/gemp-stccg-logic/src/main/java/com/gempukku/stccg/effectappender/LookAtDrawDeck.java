@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.ShuffleDeckEffect;
@@ -10,17 +11,16 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import org.json.simple.JSONObject;
 
 import java.util.List;
 
 public class LookAtDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "deck", "memorize");
 
-        final String deck = environment.getString(effectObject.get("deck"), "deck", "you");
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
+        final String deck = environment.getString(effectObject, "deck", "you");
+        final String memorize = effectObject.get("memorize").textValue();
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
 

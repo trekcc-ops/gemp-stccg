@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
@@ -171,7 +170,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("strengthlessthan",
                 (parameter, environment) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
+                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
 
                     return (actionContext) -> {
                         int amount = valueSource.evaluateExpression(actionContext, null);
@@ -180,7 +179,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("strengthmorethan",
                 (parameter, environment) -> {
-                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter, environment);
+                    final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
 
                     return (actionContext) -> {
                         int amount = valueSource.evaluateExpression(actionContext, null);

@@ -1,13 +1,13 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import org.json.simple.JSONObject;
 
 public class PlayerGoesOut implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(value);
         PlayerSource playerSource = PlayerResolver.resolvePlayer("you");

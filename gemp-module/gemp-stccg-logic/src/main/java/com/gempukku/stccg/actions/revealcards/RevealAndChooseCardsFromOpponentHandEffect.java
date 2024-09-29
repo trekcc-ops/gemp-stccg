@@ -8,7 +8,6 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.TextUtils;
 

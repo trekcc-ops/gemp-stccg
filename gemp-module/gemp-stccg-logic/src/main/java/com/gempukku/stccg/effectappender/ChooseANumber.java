@@ -1,33 +1,29 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.Effect;
-import org.json.simple.JSONObject;
 
 public class ChooseANumber implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "text", "from", "to", "memorize");
 
-        final String player = environment.getString(effectObject.get("player"), "player", "you");
         final String displayText =
-                environment.getString(effectObject.get("text"), "text", "Choose a number");
+                environment.getString(effectObject, "text", "Choose a number");
         final ValueSource fromSource =
                 ValueResolver.resolveEvaluator(effectObject.get("from"), 0, environment);
         final ValueSource toSource =
                 ValueResolver.resolveEvaluator(effectObject.get("to"), 1, environment);
 
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
-
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
+        final String memorize = effectObject.get("memorize").textValue();
 
         if (memorize == null)
             throw new InvalidCardDefinitionException("ChooseANumber requires a field to memorize the value");

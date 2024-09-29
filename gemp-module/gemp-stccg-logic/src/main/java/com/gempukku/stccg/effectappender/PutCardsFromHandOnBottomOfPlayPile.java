@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PutCardsFromZoneOnEndOfPileEffect;
@@ -12,7 +13,6 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -20,18 +20,19 @@ import java.util.List;
 
 public class PutCardsFromHandOnBottomOfPlayPile implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "optional", "filter", "count", "reveal");
 
-        final String player = environment.getString(effectObject.get("player"), "player", "you");
-        final boolean optional = environment.getBoolean(effectObject.get("optional"), "optional", false);
-        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
+        final String player = environment.getString(effectObject, "player", "you");
+        final boolean optional = environment.getBoolean(effectObject, "optional", false);
+        final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean reveal = environment.getBoolean(effectObject.get("reveal"), "reveal", true);
+        final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
 
         ValueSource valueSource;
         if (optional)
-            valueSource = ValueResolver.resolveEvaluator("0-" + count, environment);
+            valueSource = ValueResolver.resolveEvaluator("0-" + count);
         else
             valueSource = count;
 

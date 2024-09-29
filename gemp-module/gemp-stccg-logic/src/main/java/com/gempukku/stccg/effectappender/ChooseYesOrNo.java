@@ -1,26 +1,26 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.decisions.YesNoDecision;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
-import org.json.simple.JSONObject;
 
 public class ChooseYesOrNo implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "text", "player", "memorize", "yes", "no");
 
-        final String text = environment.getString(effectObject.get("text"), "text");
+        final String text = effectObject.get("text").textValue();
         if (text == null)
             throw new InvalidCardDefinitionException("Text is required for Yes or No decision");
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
-        final String yesAnswer = environment.getString(effectObject.get("yes"), "yes", "yes");
-        final String noAnswer = environment.getString(effectObject.get("no"), "no", "no");
-        PlayerSource playerSource = PlayerResolver.resolvePlayer(environment.getString(effectObject.get("player"), "player", "you"));
+        final String memorize = effectObject.get("memorize").textValue();
+        final String yesAnswer = environment.getString(effectObject, "yes", "yes");
+        final String noAnswer = environment.getString(effectObject, "no", "no");
+        PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

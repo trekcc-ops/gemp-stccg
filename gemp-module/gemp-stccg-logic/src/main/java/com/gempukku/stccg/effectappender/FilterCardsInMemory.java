@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
@@ -10,7 +11,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,15 +18,17 @@ import java.util.List;
 
 public class FilterCardsInMemory implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "filter", "memory", "memorizeMatching", "memorizeNotMatching");
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
 
-        final String filter = environment.getString(effectObject.get("filter"), "filter");
-        final String memory = environment.getString(effectObject.get("memory"), "memory");
-        final String memorizeMatching = environment.getString(effectObject.get("memorizeMatching"), "memorizeMatching");
-        final String memorizeNotMatching = environment.getString(effectObject.get("memorizeNotMatching"), "memorizeNotMatching");
+        environment.validateAllowedFields(effectObject,
+                "filter", "memory", "memorizeMatching", "memorizeNotMatching");
 
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
+        final String memory = effectObject.get("memory").textValue();
+        final String memorizeMatching = effectObject.get("memorizeMatching").textValue();
+        final String memorizeNotMatching = effectObject.get("memorizeNotMatching").textValue();
+
+        final FilterableSource filterableSource = environment.getFilterable(effectObject);
 
         return new DefaultDelayedAppender() {
             @Override

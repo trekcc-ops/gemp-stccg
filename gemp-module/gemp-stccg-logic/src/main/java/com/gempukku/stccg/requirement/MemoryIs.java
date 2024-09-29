@@ -1,16 +1,17 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import org.json.simple.JSONObject;
 
 public class MemoryIs extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "memory", "value");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "memory", "value");
 
-        final String memory = environment.getString(object.get("memory"), "memory");
-        final String value = environment.getString(object.get("value"), "value");
+        final String memory = environment.getString(node, "memory");
+        final String value = environment.getString(node, "value");
 
         return (actionContext) -> {
             String valueFromMemory = actionContext.getValueFromMemory(memory);

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.fieldprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -12,9 +13,9 @@ import java.util.Map;
 
 public class SkillBoxFieldProcessor implements FieldProcessor {
     @Override
-    public void processField(String key, Object value, CardBlueprint blueprint,
+    public void processField(String key, JsonNode value, CardBlueprint blueprint,
                              CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        String skills = environment.getString(value, key);
+        String skills = value.textValue();
         String[] splitString = skills.split("(?=\\[\\*])|(?=\\[DL])");
         int skillDots = 0;
         int sdIcons = 0;

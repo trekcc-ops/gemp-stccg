@@ -1,17 +1,18 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
-import org.json.simple.JSONObject;
 
 public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "filter");
+    public TriggerChecker getTriggerChecker(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "filter");
 
-        final FilterableSource filterableSource = environment.getFilterable(value, "any");
+        final FilterableSource filterableSource = environment.getFilterable(node, "any");
 
         return new TriggerChecker() {
             @Override

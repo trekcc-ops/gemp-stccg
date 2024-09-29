@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.fieldprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -10,11 +11,10 @@ import java.util.List;
 
 public class StaffingFieldProcessor implements FieldProcessor {
     @Override
-    public void processField(String key, Object value, CardBlueprint blueprint,
+    public void processField(String key, JsonNode value, CardBlueprint blueprint,
                              CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        final String[] staffing = environment.getString(value, key).split(",");
         List<CardIcon> staffingIcons = new LinkedList<>();
-        for (String icon : staffing) {
+        for (String icon : value.textValue().split(",")) {
             staffingIcons.add(environment.getEnum(CardIcon.class, icon));
         }
         blueprint.setStaffing(staffingIcons);

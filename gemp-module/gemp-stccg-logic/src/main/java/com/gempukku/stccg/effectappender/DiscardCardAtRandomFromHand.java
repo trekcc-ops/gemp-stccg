@@ -1,27 +1,27 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.discard.DiscardCardAtRandomFromHandEffect;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
-import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class DiscardCardAtRandomFromHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "hand", "count", "forced");
 
-        final String player = environment.getString(effectObject.get("hand"), "hand", "you");
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
-        final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean forced = environment.getBoolean(effectObject.get("forced"), "forced");
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "hand", true);
+        final ValueSource countSource =
+                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final boolean forced = environment.getBoolean(effectObject, "forced");
 
         return new DefaultDelayedAppender() {
             @Override

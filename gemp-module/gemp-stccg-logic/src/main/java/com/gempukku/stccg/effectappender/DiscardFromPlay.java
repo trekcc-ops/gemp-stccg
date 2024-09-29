@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
@@ -7,10 +8,8 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.filters.Filters;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,15 +17,17 @@ import java.util.List;
 
 public class DiscardFromPlay implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "count", "filter", "memorize", "memorizeStackedCards");
 
         final String player = environment.getString(effectObject.get("player"), "player", "you");
-        final PlayerSource discardingPlayer = PlayerResolver.resolvePlayer(player);
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject.get("filter"), "filter");
-        final String memory = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
-        final String stackedCardsMemory = environment.getString(effectObject.get("memorizeStackedCards"), "memorizeStackedCards");
+        final PlayerSource discardingPlayer =
+                environment.getPlayerSource(effectObject, "player", true);
+        final ValueSource valueSource =
+                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final String filter = effectObject.get("filter").textValue();
+        final String memory = environment.getString(effectObject, "memorize", "_temp");
+        final String stackedCardsMemory = environment.getString(effectObject, "memorizeStackedCards");
 
         MultiEffectAppender result = new MultiEffectAppender();
 

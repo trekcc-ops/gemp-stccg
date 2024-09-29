@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -8,16 +9,18 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.requirement.Requirement;
-import org.json.simple.JSONObject;
+
+import java.util.List;
 
 public class CostToEffect implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "cost", "effect", "requires");
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "cost", "effect", "requires");
 
-        final EffectAppender[] costAppenders = environment.getEffectAppendersFromJSON(effectObject,"cost");
-        final EffectAppender[] effectAppenders = environment.getEffectAppendersFromJSON(effectObject,"effect");
-        final Requirement[] requirements = environment.getRequirementsFromJSON(effectObject);
+        final List<EffectAppender> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
+        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final Requirement[] requirements = environment.getRequirementsFromJSON(node);
 
         return new DefaultDelayedAppender() {
             @Override

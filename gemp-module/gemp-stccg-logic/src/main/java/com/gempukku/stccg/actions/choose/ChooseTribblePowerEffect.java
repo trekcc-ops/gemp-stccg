@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class ChooseTribblePowerEffect extends UnrespondableEffect {
     private final String _playerId;

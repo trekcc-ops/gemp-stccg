@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
@@ -8,24 +9,22 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.game.DefaultGame;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "deck", "count", "forced", "memorize");
 
-        final String deck = environment.getString(effectObject.get("deck"), "deck", "you");
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize");
+        final String memorize = effectObject.get("memorize").textValue();
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean forced = environment.getBoolean(effectObject.get("forced"), "forced");
+        final boolean forced = environment.getBoolean(effectObject, "forced");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "deck", true);
 
         return new DefaultDelayedAppender() {
             @Override

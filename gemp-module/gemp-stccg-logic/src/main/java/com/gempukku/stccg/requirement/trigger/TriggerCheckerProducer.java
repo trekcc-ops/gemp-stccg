@@ -1,9 +1,11 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import org.json.simple.JSONObject;
 
 public interface TriggerCheckerProducer {
-    TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment) throws InvalidCardDefinitionException;
+
+    TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException;
 }

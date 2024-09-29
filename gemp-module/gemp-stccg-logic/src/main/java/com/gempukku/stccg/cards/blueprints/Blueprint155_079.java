@@ -9,8 +9,6 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.AllAttributeModifier;
-import com.gempukku.stccg.modifiers.attributes.CunningModifier;
-import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
 import java.util.LinkedList;
 import java.util.List;

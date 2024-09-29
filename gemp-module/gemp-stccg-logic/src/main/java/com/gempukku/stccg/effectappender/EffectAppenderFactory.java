@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.EndOfPile;
@@ -7,7 +8,6 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.playcard.PlayCardFromDiscard;
 import com.gempukku.stccg.actions.playcard.PlayCardFromDrawDeck;
 import com.gempukku.stccg.actions.playcard.PlayCardFromHand;
-import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,42 +89,31 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("addkeyword", new AddKeyword());
         effectAppenderProducers.put("addmodifier", new AddModifier());
         effectAppenderProducers.put("appendcardidstowhileinzone", new AppendCardIdsToWhileInZone());
-        effectAppenderProducers.put("chooseakeyword", new ChooseAKeyword());
         effectAppenderProducers.put("conditional", new ConditionalEffect());
         effectAppenderProducers.put("costtoeffect", new CostToEffect());
         effectAppenderProducers.put("discard", new DiscardFromPlay());
-        effectAppenderProducers.put("discardstackedcards", new DiscardStackedCards());
-        effectAppenderProducers.put("memorizestacked", new MemorizeStacked());
         effectAppenderProducers.put("modifystrength", new ModifyStrength());
         effectAppenderProducers.put("preventable", new PreventableAppenderProducer());
         effectAppenderProducers.put("preventdiscard", new PreventCardEffectAppender());
         effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new PutCardsFromPlayOnBottomOfDeck());
-        effectAppenderProducers.put("putplayedeventintohand", new PutPlayedEventIntoHand());
-        effectAppenderProducers.put("putstackedcardsintohand", new PutStackedCardsIntoHand());
-        effectAppenderProducers.put("removekeyword", new RemoveKeyword());
         effectAppenderProducers.put("removetext", new RemoveText());
         effectAppenderProducers.put("resetwhileinzonedata", new ResetWhileInZoneData());
         effectAppenderProducers.put("shufflecardsfromplayintodrawdeck", new ShuffleCardsFromPlayIntoDrawDeck());
-        effectAppenderProducers.put("stackcards", new StackCardsFromPlay());
-        effectAppenderProducers.put("stackcardsfromdeck", new StackCardsFromDeck());
-        effectAppenderProducers.put("stackcardsfromdiscard", new StackCardsFromDiscard());
-        effectAppenderProducers.put("stackcardsfromhand", new StackCardsFromHand());
-        effectAppenderProducers.put("stacktopcardsofdrawdeck", new StackTopCardsOfDrawDeck());
         effectAppenderProducers.put("storewhileinzone", new StoreWhileInZone());
     }
 
-    public EffectAppender getEffectAppender(JSONObject effectObject) throws InvalidCardDefinitionException {
-        final String type = _environment.getString(effectObject.get("type"), "type");
+    public EffectAppender getEffectAppender(JsonNode effectObject) throws InvalidCardDefinitionException {
+        final String type = effectObject.get("type").textValue();
         final EffectAppenderProducer effectAppenderProducer = effectAppenderProducers.get(type.toLowerCase());
         if (effectAppenderProducer == null)
             throw new InvalidCardDefinitionException("Unable to find effect of type: " + type);
         return effectAppenderProducer.createEffectAppender(effectObject, _environment);
     }
 
-    public EffectAppender[] getEffectAppenders(JSONObject[] effectArray) throws InvalidCardDefinitionException {
+    public EffectAppender[] getEffectAppenders(JsonNode[] effectArray) throws InvalidCardDefinitionException {
         EffectAppender[] result = new EffectAppender[effectArray.length];
         for (int i = 0; i < result.length; i++) {
-            final String type = _environment.getString(effectArray[i].get("type"), "type");
+            final String type = effectArray[i].get("type").textValue();
             final EffectAppenderProducer effectAppenderProducer = effectAppenderProducers.get(type.toLowerCase());
             if (effectAppenderProducer == null)
                 throw new InvalidCardDefinitionException("Unable to find effect of type: " + type);
@@ -132,4 +121,5 @@ public class EffectAppenderFactory {
         }
         return result;
     }
+
 }

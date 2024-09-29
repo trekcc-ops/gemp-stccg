@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -9,15 +10,14 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PreventableCardEffect;
 import com.gempukku.stccg.actions.PreventCardEffect;
 import com.gempukku.stccg.filters.Filters;
-import org.json.simple.JSONObject;
 
 public class PreventCardEffectAppender implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "memorize");
 
-        String filter = environment.getString(effectObject.get("filter"), "filter");
-        final String memory = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
+        String filter = effectObject.get("filter").textValue();
+        final String memory = environment.getString(effectObject, "memorize", "_temp");
 
         MultiEffectAppender result = new MultiEffectAppender();
         result.addEffectAppender(

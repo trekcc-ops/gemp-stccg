@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.missionattempt;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
 

@@ -1,17 +1,18 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import org.json.simple.JSONObject;
 
 public class PlayerIsNotSelf extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "memory");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "memory");
 
-        final String memory = environment.getString(object.get("memory"), "memory");
+        final String memory = node.get("memory").textValue();
         final PlayerSource selfPlayerSource = PlayerResolver.resolvePlayer("you");
 
         return (actionContext) -> {

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.*;
@@ -9,22 +10,23 @@ import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.StackActionEffect;
-import org.json.simple.JSONObject;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class Optional implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "player", "text", "effect");
+    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "player", "text", "effect");
 
-        final String text = environment.getString(effectObject.get("text"), "text");
+        final String text = node.get("text").textValue();
 
         if (text == null)
             throw new InvalidCardDefinitionException("There is a text required for optional effects");
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(environment.getString(effectObject.get("player"), "player", "you"));
-        final EffectAppender[] effectAppenders = environment.getEffectAppendersFromJSON(effectObject,"effect");
+        final PlayerSource playerSource =
+                PlayerResolver.resolvePlayer(environment.getString(node, "player", "you"));
+        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override
@@ -36,8 +38,7 @@ public class Optional implements EffectAppenderProducer {
                         new YesNoDecision(context.substituteText(_text)) {
                             @Override
                             protected void yes() {
-                                Arrays.stream(effectAppenders).forEach(effectAppender ->
-                                        effectAppender.appendEffect(
+                                effectAppenders.forEach(effectAppender -> effectAppender.appendEffect(
                                                 cost, subAction, context.createDelegateContext(choosingPlayer)));
                             }
                         }));
@@ -57,7 +58,7 @@ public class Optional implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayabilityCheckedForEffect() {
-                return Arrays.stream(effectAppenders).anyMatch(EffectAppender::isPlayabilityCheckedForEffect);
+                return effectAppenders.stream().anyMatch(EffectAppender::isPlayabilityCheckedForEffect);
             }
         };
     }

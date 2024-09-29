@@ -1,18 +1,18 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
-import org.json.simple.JSONObject;
 
 public class PlayOutOfSequenceProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment)
+    public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "requires");
+        environment.validateAllowedFields(node, "requires");
 
-        final Requirement[] conditions = environment.getRequirementsFromJSON(value);
+        final Requirement[] conditions = environment.getRequirementsFromJSON(node);
 
         blueprint.appendPlayOutOfSequenceCondition(actionContext -> actionContext.acceptsAllRequirements(conditions));
     }

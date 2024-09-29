@@ -1,19 +1,18 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import org.json.simple.JSONObject;
 
 public class CancelStrengthBonusTo implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "filter", "from");
+    public ModifierSource getModifierSource(JsonNode node, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "filter", "from");
 
-        final String filter = environment.getString(object.get("filter"), "filter");
-        final String from = environment.getString(object.get("from"), "from");
-
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
-        final FilterableSource fromFilterableSource = environment.getFilterFactory().generateFilter(from);
+        final FilterableSource filterableSource =
+                environment.getFilterFactory().generateFilter(node.get("filter").textValue());
+        final FilterableSource fromFilterableSource =
+                environment.getFilterFactory().generateFilter(node.get("from").textValue());
 
         return actionContext -> new CancelStrengthBonusTargetModifier(actionContext.getSource(),
                 filterableSource.getFilterable(actionContext),

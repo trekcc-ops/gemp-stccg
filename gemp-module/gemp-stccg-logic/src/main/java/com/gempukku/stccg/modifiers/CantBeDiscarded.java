@@ -1,20 +1,20 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.requirement.Requirement;
-import org.json.simple.JSONObject;
 
 public class CantBeDiscarded implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JSONObject object, CardBlueprintFactory environment)
+    public ModifierSource getModifierSource(JsonNode object, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(object, "filter", "requires", "by");
 
         final FilterableSource filterableSource =
-                environment.getFilterFactory().generateFilter(environment.getString(object.get("filter"), "filter"));
+                environment.getFilterFactory().generateFilter(object.get("filter").textValue());
         final FilterableSource byFilterableSource =
-                environment.getFilterFactory().generateFilter(environment.getString(object.get("by"), "by", "any"));
+                environment.getFilterFactory().generateFilter(environment.getString(object, "by", "any"));
         final Requirement[] requirements =
                 environment.getRequirementsFromJSON(object);
 

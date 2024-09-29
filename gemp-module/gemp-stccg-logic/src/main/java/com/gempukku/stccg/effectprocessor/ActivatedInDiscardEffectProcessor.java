@@ -1,23 +1,23 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.actions.sources.DefaultActionSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.Phase;
-import org.json.simple.JSONObject;
 
 public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment)
+    public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value,
+        environment.validateAllowedFields(node,
                 "phase", "requires", "cost", "effect", "limitPerPhase", "limitPerTurn", "text");
 
-        final String text = environment.getString(value.get("text"), "text");
-        final String[] phaseArray = environment.getStringArray(value.get("phase"), "phase");
-        final int limitPerPhase = environment.getInteger(value.get("limitPerPhase"), "limitPerPhase", 0);
-        final int limitPerTurn = environment.getInteger(value.get("limitPerTurn"), "limitPerTurn", 0);
+        final String text = node.get("text").textValue();
+        final String[] phaseArray = environment.getStringArray(node.get("phase"));
+        final int limitPerPhase = environment.getInteger(node, "limitPerPhase", 0);
+        final int limitPerTurn = environment.getInteger(node, "limitPerTurn", 0);
 
         if (phaseArray.length == 0)
             throw new InvalidCardDefinitionException("Unable to find phase for an activated effect");
@@ -33,7 +33,7 @@ public class ActivatedInDiscardEffectProcessor implements EffectProcessor {
                 actionSource.setTurnLimit(limitPerTurn);
             actionSource.addRequirement(
                     (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
-            actionSource.processRequirementsCostsAndEffects(value, environment);
+            actionSource.processRequirementsCostsAndEffects(node, environment);
 
             blueprint.appendInDiscardPhaseAction(actionSource);
         }

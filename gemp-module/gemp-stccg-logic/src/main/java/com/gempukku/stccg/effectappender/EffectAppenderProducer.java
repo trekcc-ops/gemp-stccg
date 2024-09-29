@@ -1,9 +1,11 @@
 package com.gempukku.stccg.effectappender;
 
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import org.json.simple.JSONObject;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 public interface EffectAppenderProducer {
-    EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException;
+    EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException;
+
 }

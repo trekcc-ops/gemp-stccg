@@ -1,20 +1,20 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.CardPlayedInCurrentPhaseCondition;
-import org.json.simple.JSONObject;
 
 public class PlayedCardThisPhase extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "filter");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "filter");
 
-        final String filter = environment.getString(object.get("filter"), "filter");
-
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
+        final FilterableSource filterableSource =
+                environment.getFilterFactory().generateFilter(node.get("filter").textValue());
 
         return actionContext -> {
             final Filterable filterable = filterableSource.getFilterable(actionContext);

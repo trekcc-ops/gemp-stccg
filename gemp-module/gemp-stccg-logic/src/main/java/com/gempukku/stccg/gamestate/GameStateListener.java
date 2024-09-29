@@ -4,8 +4,6 @@ import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Player;
 
-import java.util.List;
-
 public interface GameStateListener {
     String getPlayerId();
     void sendEvent(GameEvent gameEvent);

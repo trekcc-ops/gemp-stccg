@@ -1,26 +1,29 @@
 package com.gempukku.stccg.requirement.trigger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
-import org.json.simple.JSONObject;
 
 public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JSONObject value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(value, "filter", "player", "on", "memorize");
 
-        final PlayerSource playingPlayer = environment.getPlayerSource(value, "player","you");
-        final FilterableSource filter = environment.getFilterFactory().parseSTCCGFilter(
-                environment.getString(value.get("filter"), "filter"));
-        final FilterableSource onFilter = environment.getFilterFactory().parseSTCCGFilter(
-                environment.getString(value.get("on"), "on"));
+        final PlayerSource playingPlayer = environment.getPlayerSource(value, "player",true);
+        final FilterableSource filter =
+                environment.getFilterFactory().parseSTCCGFilter(value.get("filter").textValue());
+        final FilterableSource onFilter;
 
-        final String memorize = environment.getString(value.get("memorize"), "memorize");
-
+        if (value.has("on")) {
+            onFilter = environment.getFilterFactory().parseSTCCGFilter(value.get("on").textValue());
+        } else {
+            onFilter = null;
+        }
+        final String memorize = environment.getString(value, "memorize");
 
         return new TriggerChecker() {
             @Override

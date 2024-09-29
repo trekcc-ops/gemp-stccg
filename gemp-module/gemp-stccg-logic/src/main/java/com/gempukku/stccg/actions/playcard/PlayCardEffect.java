@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collections;
 

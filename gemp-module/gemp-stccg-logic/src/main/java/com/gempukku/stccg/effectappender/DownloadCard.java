@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -12,21 +13,20 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.ModifierFlag;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class DownloadCard implements EffectAppenderProducer {
         // TODO - Adapted from PlayCardFromDrawDeck EffectAppenderProducer. Eventually would like to append this as a DownloadAction.
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment)
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         // TODO - Assumes the base definition of "download" for 1E, i.e. can search through eligible decks,
         // find card, and immediately play. Assumes no target for downloading is given (e.g., "download to your outpost")
         environment.validateAllowedFields(effectObject, "filter", "nocheck");
 
-        final String filter = environment.getString(effectObject.get("filter"), "filter");
-        final boolean noCheck = environment.getBoolean(effectObject.get("nocheck"), "nocheck", false);
+        final String filter = effectObject.get("filter").textValue();
+        final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
         final String memorize = "_temp";
 
         ValueSource countSource = new ConstantValueSource(1);
@@ -35,7 +35,7 @@ public class DownloadCard implements EffectAppenderProducer {
             // This range will cause choice checks to succeed even if no valid choices are found (which is how draw deck
             // searching is supposed to work RAW).  However, we don't want this to be the default, else dual-choice
             // cards that play "from draw deck or discard pile" would allow empty sources to be chosen, which is NPE.
-            countSource = ValueResolver.resolveEvaluator("0-1", 1, environment);
+            countSource = ValueResolver.resolveEvaluator("0-1");
         }
 
         MultiEffectAppender result = new MultiEffectAppender();

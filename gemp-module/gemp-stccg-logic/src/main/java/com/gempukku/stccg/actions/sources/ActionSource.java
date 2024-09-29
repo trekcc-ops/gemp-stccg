@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.sources;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -8,7 +9,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.effectappender.EffectAppender;
 import com.gempukku.stccg.requirement.Requirement;
-import org.json.simple.JSONObject;
 
 public interface ActionSource {
 
@@ -22,6 +22,6 @@ public interface ActionSource {
     Action createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext);
     void addCost(EffectAppender effectAppender);
     void addEffect(EffectAppender effectAppender);
-    void processRequirementsCostsAndEffects(JSONObject value, CardBlueprintFactory environment)
+    void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException;
 }

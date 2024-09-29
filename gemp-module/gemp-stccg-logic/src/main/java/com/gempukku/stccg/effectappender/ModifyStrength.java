@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -11,19 +12,19 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class ModifyStrength implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "amount", "count", "filter", "until", "memorize");
 
         final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"), environment);
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject.get("filter"), "filter");
-        final String memory = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
+        final String filter = effectObject.get("filter").textValue();
+        final String memory = environment.getString(effectObject, "memorize", "_temp");
         final TimeResolver.Time time = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
 
         MultiEffectAppender result = new MultiEffectAppender();

@@ -1,16 +1,17 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import org.json.simple.JSONObject;
 
 public class PerPhaseLimit extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "limit", "perPlayer");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "limit", "perPlayer");
 
-        final int limit = environment.getInteger(object.get("limit"), "limit", 1);
-        final boolean perPlayer = environment.getBoolean(object.get("perPlayer"), "perPlayer", false);
+        final int limit = environment.getInteger(node, "limit", 1);
+        final boolean perPlayer = environment.getBoolean(node, "perPlayer", false);
 
         return (actionContext) -> {
             if (perPlayer)

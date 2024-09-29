@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
@@ -15,21 +16,21 @@ import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class PlayCardFromHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "on", "cost", "ignoreInDeadPile", "memorize", "nocheck");
 
-        final String filter = environment.getString(effectObject.get("filter"), "filter");
-        final String onFilter = environment.getString(effectObject.get("on"), "on");
-        final ValueSource costModifierSource = ValueResolver.resolveEvaluator(effectObject.get("cost"), 0, environment);
-        final boolean ignoreInDeadPile = environment.getBoolean(effectObject.get("ignoreInDeadPile"), "ignoreInDeadPile", false);
-        final String memorize = environment.getString(effectObject.get("memorize"), "memorize", "_temp");
-        final boolean noCheck = environment.getBoolean(effectObject.get("nocheck"), "nocheck", false);
+        final String filter = environment.getString(effectObject, "filter");
+        final String onFilter = effectObject.get("on").textValue();
+        final ValueSource costModifierSource =
+                ValueResolver.resolveEvaluator(effectObject.get("cost"), 0, environment);
+        final boolean ignoreInDeadPile = environment.getBoolean(effectObject, "ignoreInDeadPile", false);
+        final String memorize = environment.getString(effectObject, "memorize", "_temp");
+        final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
 
         ValueSource countSource = new ConstantValueSource(1);
         if(noCheck)
@@ -37,7 +38,7 @@ public class PlayCardFromHand implements EffectAppenderProducer {
             //This range will cause choice checks to succeed even if no valid choices are found (which is how draw deck
             // searching is supposed to work RAW). But we don't want this to be the default, or else dual-choice cards
             // that play "from draw deck or discard pile" would allow empty sources to be chosen, which is NPE.
-            countSource = ValueResolver.resolveEvaluator("0-1", 1, environment);
+            countSource = ValueResolver.resolveEvaluator("0-1");
         }
 
         final FilterableSource onFilterableSource = (onFilter != null) ? environment.getFilterFactory().generateFilter(onFilter) : null;

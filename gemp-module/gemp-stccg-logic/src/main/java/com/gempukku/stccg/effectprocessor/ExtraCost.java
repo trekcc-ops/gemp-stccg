@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectprocessor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
@@ -9,14 +10,15 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.condition.Condition;
-import org.json.simple.JSONObject;
 
 public class ExtraCost implements EffectProcessor {
     @Override
-    public void processEffect(JSONObject value, CardBlueprint blueprint, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "cost");
+    public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "cost");
 
-        final EffectAppender costAppender = environment.getEffectAppenderFactory().getEffectAppender((JSONObject) value.get("cost"));
+        final EffectAppender costAppender =
+                environment.getEffectAppenderFactory().getEffectAppender(node.get("cost"));
 
         blueprint.appendExtraPlayCost(
                 (actionContext) -> new ExtraPlayCost() {

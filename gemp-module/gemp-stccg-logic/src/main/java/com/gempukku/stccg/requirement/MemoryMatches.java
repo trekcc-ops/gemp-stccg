@@ -1,22 +1,23 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.FilterableSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
 public class MemoryMatches extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JSONObject object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "memory", "filter");
+    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(node, "memory", "filter");
 
-        final String memory = environment.getString(object.get("memory"), "memory");
-        final String filter = environment.getString(object.get("filter"), "filter");
+        final String memory = node.get("memory").textValue();
+        final String filter = node.get("filter").textValue();
 
         final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
 

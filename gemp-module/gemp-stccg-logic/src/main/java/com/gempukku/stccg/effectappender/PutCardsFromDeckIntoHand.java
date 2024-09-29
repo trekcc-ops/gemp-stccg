@@ -1,5 +1,6 @@
 package com.gempukku.stccg.effectappender;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PutCardFromZoneIntoHandEffect;
@@ -12,7 +13,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.effectappender.resolver.CardResolver;
 import com.gempukku.stccg.effectappender.resolver.ValueResolver;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -20,18 +20,21 @@ import java.util.List;
 
 public class PutCardsFromDeckIntoHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JSONObject effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "count", "filter", "shuffle", "reveal");
 
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final boolean shuffle = environment.getBoolean(effectObject.get("shuffle"), "shuffle", true);
-        final boolean reveal = environment.getBoolean(effectObject.get("reveal"), "reveal", true);
+        final ValueSource valueSource =
+                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final String filter = environment.getString(effectObject, "filter", "choose(any)");
+        final boolean shuffle = environment.getBoolean(effectObject, "shuffle", true);
+        final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
 
         MultiEffectAppender result = new MultiEffectAppender();
 
         result.addEffectAppender(
-                CardResolver.resolveCardsInDeck(filter, valueSource, "_temp", "you", "Choose cards from deck", environment));
+                CardResolver.resolveCardsInDeck(filter, valueSource, "_temp", "you",
+                        "Choose cards from deck", environment));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override
@@ -39,8 +42,8 @@ public class PutCardsFromDeckIntoHand implements EffectAppenderProducer {
                         final Collection<? extends PhysicalCard> cards = actionContext.getCardsFromMemory("_temp");
                         List<Effect> result = new LinkedList<>();
                         for (PhysicalCard card : cards) {
-                            result.add(
-                                    new PutCardFromZoneIntoHandEffect(actionContext.getGame(), card, Zone.DRAW_DECK, reveal));
+                            result.add(new PutCardFromZoneIntoHandEffect(
+                                    actionContext.getGame(), card, Zone.DRAW_DECK, reveal));
                         }
 
                         return result;

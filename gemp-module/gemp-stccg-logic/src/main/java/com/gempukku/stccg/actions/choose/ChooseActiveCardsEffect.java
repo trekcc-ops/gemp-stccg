@@ -8,7 +8,6 @@ import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.Collections;
