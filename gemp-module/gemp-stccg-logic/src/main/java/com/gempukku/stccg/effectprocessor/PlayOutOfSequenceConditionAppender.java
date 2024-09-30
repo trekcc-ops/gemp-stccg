@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.requirement.Requirement;
 
-public class PlayOutOfSequenceProcessor implements EffectProcessor {
+public class PlayOutOfSequenceConditionAppender implements EffectProcessor {
     @Override
     public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {

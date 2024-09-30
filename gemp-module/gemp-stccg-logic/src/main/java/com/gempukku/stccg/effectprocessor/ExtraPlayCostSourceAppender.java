@@ -11,7 +11,7 @@ import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.condition.Condition;
 
-public class ExtraCost implements EffectProcessor {
+public class ExtraPlayCostSourceAppender implements EffectProcessor {
     @Override
     public void processEffect(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {

@@ -15,7 +15,7 @@ public class EffectFieldProcessor implements FieldProcessor {
     public EffectFieldProcessor() {
         effectProcessors.put("action", new ActionSourceAppender()); // appends ActionSource
         effectProcessors.put("modifier", new ModifierSourceAppender()); // appends ModifierSource
-        effectProcessors.put("playoutofsequence", new PlayOutOfSequenceProcessor()); // appends Requirement
+        effectProcessors.put("playoutofsequence", new PlayOutOfSequenceConditionAppender()); // appends Requirement
         effectProcessors.put("seed", new SeedCardActionSourceAppender());
     }
 
