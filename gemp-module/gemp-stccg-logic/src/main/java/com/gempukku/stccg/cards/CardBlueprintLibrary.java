@@ -1,8 +1,12 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AppConfig;
@@ -21,7 +25,6 @@ import java.util.concurrent.Semaphore;
 
 public class CardBlueprintLibrary {
     private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
-
     private final Map<String, CardBlueprint> _blueprints = new HashMap<>();
     private final Map<String, String> _blueprintMapping = new HashMap<>();
     private final Map<String, Set<String>> _fullBlueprintMapping = new HashMap<>();
@@ -37,6 +40,11 @@ public class CardBlueprintLibrary {
 
     public CardBlueprintLibrary() {
         LOGGER.info("Locking blueprint library in constructor");
+
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(CardBlueprint.class, new CardBlueprintDeserializer());
+        _objectMapper.registerModule(module);
+
         //This will be released after the library has been initialized. Until then, all functional uses will be blocked.
         collectionReady.acquireUninterruptibly();
         _blueprintLoadErrorEncountered = false;
@@ -175,12 +183,13 @@ public class CardBlueprintLibrary {
 
             for (String blueprintId : blueprintIds) {
                 try {
-                    final CardBlueprint cardBlueprint =
-                            cardBlueprintBuilder.buildFromJsonNew(blueprintId, jsonNode.get(blueprintId));
+                        // TODO - Trying both methods below. Ultimate goal is to use loadCardFromDeserializer.
+                    final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, jsonNode);
+//                    final CardBlueprint cardBlueprint = loadCardFromFactory(blueprintId, jsonNode);
                     _blueprints.put(blueprintId, cardBlueprint);
                     String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
                     _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
-                } catch (Exception exp){
+                } catch (Exception exp) {
                     _blueprintLoadErrorEncountered = true;
                     LOGGER.error("Unable to load card ", exp);
                 }
@@ -195,6 +204,23 @@ public class CardBlueprintLibrary {
             LOGGER.error(errorMessage + " " + file.getAbsolutePath(), exp);
         }
         LOGGER.debug("Loaded JSON card file " + file.getName());
+    }
+
+    private CardBlueprint loadCardFromFactory(String blueprintId, JsonNode node)
+            throws InvalidCardDefinitionException {
+        return cardBlueprintBuilder.buildFromJsonNew(blueprintId, node.get(blueprintId));
+    }
+    private CardBlueprint loadCardFromDeserializer(String blueprintId, JsonNode node)
+            throws JsonProcessingException, InvalidCardDefinitionException {
+        JsonNode cardNode = node.get(blueprintId);
+        if (cardNode == null)
+            throw new InvalidCardDefinitionException("Could not find node for blueprintId " + blueprintId);
+        if (!cardNode.has("blueprintId"))
+            ((ObjectNode) cardNode).put("blueprintId", blueprintId);
+        else if (!cardNode.get("blueprintId").textValue().equals(blueprintId))
+            throw new InvalidCardDefinitionException("Non-matching card blueprint property 'blueprintId' " +
+                    cardNode.get("blueprintId").textValue() + " for blueprint " + blueprintId);
+        return _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
     }
 
     public String getBaseBlueprintId(String blueprintId) {
