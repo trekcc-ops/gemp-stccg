@@ -6,18 +6,16 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effectprocessor.*;
+import com.gempukku.stccg.effectprocessor.ActionSourceAppender;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
-public class SeedFieldProcessor implements FieldProcessor {
-    private final Map<String, EffectProcessor> _seedProcessors = new HashMap<>();
-    public SeedFieldProcessor() { }
+public class SeedCardActionSourceAppender extends ActionSourceAppender {
+    public SeedCardActionSourceAppender() { }
     @Override
-    public void processField(String key, JsonNode value, CardBlueprint blueprint,
-                             CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public void processEffect(JsonNode value, CardBlueprint blueprint, CardBlueprintFactory environment)
+            throws InvalidCardDefinitionException {
+        environment.validateAllowedFields(value, "limit", "where");
         if (value.isArray())
             throw new InvalidCardDefinitionException("Currently code is not designed to take more than one seed item");
         else {

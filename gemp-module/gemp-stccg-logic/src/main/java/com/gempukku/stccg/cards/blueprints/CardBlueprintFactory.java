@@ -23,7 +23,6 @@ import java.util.*;
 
 public class CardBlueprintFactory {
     private final Map<String, FieldProcessor> fieldProcessors = new HashMap<>();
-
     private final EffectAppenderFactory effectAppenderFactory = new EffectAppenderFactory(this);
     private final FilterFactory filterFactory = new FilterFactory(this);
     private final RequirementFactory requirementFactory = new RequirementFactory(this);
@@ -39,7 +38,6 @@ public class CardBlueprintFactory {
         fieldProcessors.put("property-logo", new PropertyLogoFieldProcessor());
         fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
         fieldProcessors.put("type", new CardTypeFieldProcessor());
-        fieldProcessors.put("seed", new SeedFieldProcessor());
         fieldProcessors.put("icons", new IconsFieldProcessor());
         fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
         fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
@@ -54,6 +52,7 @@ public class CardBlueprintFactory {
         fieldProcessors.put("mission-requirements", new MissionRequirementsFieldProcessor());
         fieldProcessors.put("point-box", new PointBoxFieldProcessor());
         fieldProcessors.put("span", new SpanFieldProcessor());
+
         fieldProcessors.put("integrity", new AttributeFieldProcessor(CardAttribute.INTEGRITY));
         fieldProcessors.put("cunning", new AttributeFieldProcessor(CardAttribute.CUNNING));
         fieldProcessors.put("strength", new AttributeFieldProcessor(CardAttribute.STRENGTH));
@@ -79,8 +78,6 @@ public class CardBlueprintFactory {
         // Fields in the JSON, but not yet implemented
         fieldProcessors.put("gametext", new NullProcessor());
         fieldProcessors.put("ship-class", new NullProcessor());
-        fieldProcessors.put("restriction-box", new NullProcessor());
-        fieldProcessors.put("dilemma-type", new NullProcessor());
         fieldProcessors.put("headquarters", new NullProcessor());   // Flavor text for 2E headquarters?
         fieldProcessors.put("playable", new NullProcessor()); // Cards that can be played to a 2E headquarters
     }

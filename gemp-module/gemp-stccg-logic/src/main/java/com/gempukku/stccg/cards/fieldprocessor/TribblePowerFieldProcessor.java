@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.effectprocessor.TriggerEffectProcessor;
+import com.gempukku.stccg.effectprocessor.ActionSourceAppender;
 
 public class TribblePowerFieldProcessor implements FieldProcessor {
     @Override
@@ -31,8 +31,7 @@ public class TribblePowerFieldProcessor implements FieldProcessor {
                 throw new RuntimeException(e);
             }
 
-            new TriggerEffectProcessor().processEffect(node, blueprint, environment);
-
+            new ActionSourceAppender().processEffect(node, blueprint, environment);
         }
     }
 }

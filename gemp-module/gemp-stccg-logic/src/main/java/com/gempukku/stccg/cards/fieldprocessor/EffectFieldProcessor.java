@@ -13,16 +13,10 @@ public class EffectFieldProcessor implements FieldProcessor {
     private final Map<String, EffectProcessor> effectProcessors = new HashMap<>();
 
     public EffectFieldProcessor() {
-        effectProcessors.put("activated", new ActivatedEffectProcessor());
-        effectProcessors.put("activatedindiscard", new ActivatedInDiscardEffectProcessor());
-        effectProcessors.put("discardedfromplaytrigger", new DiscardedFromPlayTriggerEffectProcessor());
-        effectProcessors.put("extracost", new ExtraCost());
-        effectProcessors.put("inhandtrigger", new InHandTriggerEffectProcessor());
-        effectProcessors.put("modifier", new ModifierProcessor());
-        effectProcessors.put("playedinotherphase", new PlayedInOtherPhase());
-        effectProcessors.put("playoutofsequence", new PlayOutOfSequenceProcessor());
-        effectProcessors.put("responseevent", new ResponseEventEffectProcessor());
-        effectProcessors.put("trigger", new TriggerEffectProcessor());
+        effectProcessors.put("action", new ActionSourceAppender()); // appends ActionSource
+        effectProcessors.put("modifier", new ModifierSourceAppender()); // appends ModifierSource
+        effectProcessors.put("playoutofsequence", new PlayOutOfSequenceProcessor()); // appends Requirement
+        effectProcessors.put("seed", new SeedCardActionSourceAppender());
     }
 
     @Override

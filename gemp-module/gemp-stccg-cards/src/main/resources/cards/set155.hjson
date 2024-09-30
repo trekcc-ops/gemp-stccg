@@ -13,7 +13,8 @@
 //        }
         effects: [
             {
-                type: activated
+                type: action
+                optional: true
                 phase: execute-orders
                 limitPerTurn: 1
                 effect: {
