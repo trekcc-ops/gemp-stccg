@@ -125,9 +125,11 @@ $(document).ready(function () {
 							break;
 						case 4:
 							// PC Eratta
-							// BUG: This seems to throw a 500 server error;
+							// BUG: https://github.com/trekcc-ops/gemp-stccg/issues/38
+							//      This seems to throw a 500 server error;
 							//      possibly related to missing cards or wrong errata type.
 							//      At the very least, the json passed back is empty.
+							/*
 							hall.comm.getErrata(
 								function(json){
 									//$("#errata-readout").text(JSON.stringify(json, null, 2));
@@ -185,6 +187,7 @@ $(document).ready(function () {
 									$("#errata-readout").html(top);
 								},
 								hall.hallErrorMap());
+							*/
 							break;
 						default:
 							console.error("helpMain.tabs(): Unknown selected tab number" + selected_help_tab_num);
