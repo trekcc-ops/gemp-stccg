@@ -1,26 +1,30 @@
-var GameAnimations = Class.extend({
-    game:null,
-    replaySpeed:1,
-    playEventDuration:1500,
-    putCardIntoPlayDuration:1500,
-    cardAffectsCardDuration:1200,
-    cardActivatedDuration:1200,
-    decisionDuration:1200,
-    removeCardFromPlayDuration:600,
-    cardId:null,
-    cardData:null,
+import Card from "./jCards.js";
+import { getCardDivFromId } from "./jCards.js";
+import { layoutCardElem } from "./jCardGroup.js";
 
-    init:function (gameUI) {
+export default class GameAnimations {
+    game;
+    replaySpeed = 1;
+    playEventDuration = 1500;
+    putCardIntoPlayDuration = 1500;
+    cardAffectsCardDuration = 1200;
+    cardActivatedDuration = 1200;
+    decisionDuration = 1200;
+    removeCardFromPlayDuration = 600;
+    cardId;
+    cardData;
+
+    constructor(gameUI) {
         this.game = gameUI;
-    },
+    }
 
-    getAnimationLength:function (origValue) {
+    getAnimationLength(origValue) {
         if (this.game.replayMode)
             return origValue * this.replaySpeed;
         return origValue;
-    },
+    }
 
-    cardActivated:function (element, animate) {
+    cardActivated(element, animate) {
         if (animate) {
             var that = this;
 
@@ -47,9 +51,9 @@ var GameAnimations = Class.extend({
                     });
             }
         }
-    },
+    }
 
-    eventPlayed:function (element, animate) {
+    eventPlayed(element, animate) {
         if (animate) {
             var that = this;
 
@@ -115,9 +119,9 @@ var GameAnimations = Class.extend({
                     });
             }
         }
-    },
+    }
 
-    cardAffectsCard:function (element, animate) {
+    cardAffectsCard(element, animate) {
         if (animate) {
             var that = this;
 
@@ -200,9 +204,9 @@ var GameAnimations = Class.extend({
                     });
             }
         }
-    },
+    }
 
-    putCardIntoPlay:function (element, animate, eventType) {
+    putCardIntoPlay(element, animate, eventType) {
         var participantId = element.getAttribute("participantId");
         var cardId = element.getAttribute("cardId");
         var zone = element.getAttribute("zone");
@@ -302,7 +306,7 @@ var GameAnimations = Class.extend({
                             duration:that.getAnimationLength(that.putCardIntoPlayDuration / 8),
                             easing:"linear",
                             step:function (now, fx) {
-                                layoutCardElem(cardDiv,
+                                    layoutCardElem(cardDiv,
                                     (gameWidth / 2 - cardWidth / 4) - now * (cardWidth / 4),
                                     gameHeight * (3 / 8) - now * (gameHeight / 8),
                                     cardWidth / 2 + now * (cardWidth / 2),
@@ -344,9 +348,9 @@ var GameAnimations = Class.extend({
                     next();
                 });
         }
-    },
+    }
 
-    updateCardImage:function (element) {
+    updateCardImage(element) {
             $("#main").queue(
                 function (next) {
                     var cardId = element.getAttribute("cardId");
@@ -360,9 +364,9 @@ var GameAnimations = Class.extend({
                         cardDiv.data("card").imageUrl = imageUrl;
                     next();
                 });
-    },
+    }
 
-    moveCardInPlay:function (element) {
+    moveCardInPlay(element) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -407,9 +411,9 @@ var GameAnimations = Class.extend({
                     that.cardData.oldGroup = null;
                     next();
                 });
-    },
+    }
 
-    removeCardFromPlay:function (element, animate) {
+    removeCardFromPlay(element, animate) {
         var that = this;
         var cardRemovedIds = element.getAttribute("otherCardIds").split(",");
         var participantId = element.getAttribute("participantId");
@@ -454,9 +458,9 @@ var GameAnimations = Class.extend({
                     next();
                 });
         }
-    },
+    }
 
-    gamePhaseChange:function (element, animate) {
+    gamePhaseChange(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -464,9 +468,9 @@ var GameAnimations = Class.extend({
                 $(".phase").text(phase);
                 next();
             });
-    },
+    }
 
-    tribbleSequence:function (element, animate) {
+    tribbleSequence(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -474,9 +478,9 @@ var GameAnimations = Class.extend({
                 $(".tribbleSequence").html("Next Tribble in sequence:<b>" + message + "</b>");
                 next();
             });
-    },
+    }
 
-    turnChange:function (element, animate) {
+    turnChange(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -497,9 +501,9 @@ var GameAnimations = Class.extend({
                     next();
                 });
         }
-    },
+    }
 
-    playerScore:function (element, animate) {
+    playerScore(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -514,9 +518,9 @@ var GameAnimations = Class.extend({
 
                 next();
             });
-    },
+    }
 
-    gameStats:function (element, animate) {
+    gameStats(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -596,9 +600,9 @@ var GameAnimations = Class.extend({
                 }
                 next();
             });
-    },
+    }
 
-    message:function (element, animate) {
+    message(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -608,9 +612,9 @@ var GameAnimations = Class.extend({
 
                 next();
             });
-    },
+    }
 
-    warning:function (element, animate) {
+    warning(element, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -620,9 +624,9 @@ var GameAnimations = Class.extend({
 
                 next();
             });
-    },
+    }
 
-    processDecision:function (decision, animate) {
+    processDecision(decision, animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -652,9 +656,9 @@ var GameAnimations = Class.extend({
                     setTimeout(next, that.getAnimationLength(that.decisionDuration));
                 });
         }
-    },
+    }
 
-    updateGameState:function (animate) {
+    updateGameState(animate) {
         var that = this;
         $("#main").queue(
             function (next) {
@@ -668,18 +672,18 @@ var GameAnimations = Class.extend({
 
                 next();
             });
-    },
+    }
 
-    windowResized:function () {
+    windowResized() {
         var that = this;
         $("#main").queue(
             function (next) {
                 that.game.layoutUI(true);
                 next();
             });
-    },
+    }
 
-    removeFromAttached:function (cardId) {
+    removeFromAttached(cardId) {
             // TODO - This can probably be greatly simplified now that "attachedToCard" has been created, but not messing with it for now
         $(".card").each(
             function () {
@@ -696,7 +700,7 @@ var GameAnimations = Class.extend({
                 }
             }
         );
-    },
+    }
 
     attachCardDivToTargetCardId(cardDiv, targetCardId) {
         var targetCardData = getCardDivFromId(targetCardId).data("card");
@@ -704,4 +708,4 @@ var GameAnimations = Class.extend({
         cardDiv.data("card").attachedToCard = targetCardData;
     }
 
-});
+}

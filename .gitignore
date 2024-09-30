@@ -21,3 +21,4 @@ remote-sync
 replay
 !replay/.placeholder
 logs/nohup.out
+.vscode

@@ -1,26 +1,3 @@
-<script type="text/javascript">
-	$("eventsMain").ready(
-		function () {
-			$("#eventsMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-			$("#event-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
-			
-			var leagueUI = new LeagueResultsUI("/gemp-stccg-server");
-			
-			var tourneyUI = new TournamentResultsUI("/gemp-stccg-server");
-
-			$(".loadFinishedTournaments").button().click(
-				function() {
-					tourneyUI.loadHistoryTournaments();
-				});
-		});
-	
-	$("tournamentResults").ready(
-				function () {
-					
-				});
-
-</script>
-
 <div id="eventsMain" class="hall-tab flex-horizontal">
 	<div id="event-tabs" class="sub-tabs">
 		<ol>

@@ -1,27 +1,30 @@
-var CardFilter = Class.extend({
-    clearCollectionFunc: null,
-    addCardFunc: null,
-    finishCollectionFunc: null,
-    getCollectionFunc: null,
+import GempClientCommunication from "./communication.js";
+import { log } from "./common.js";
 
-    filter: "",
-    start: 0,
-    count: 18,
+export default class CardFilter {
+    clearCollectionFunc;
+    addCardFunc;
+    finishCollectionFunc;
+    getCollectionFunc;
 
-    collectionDiv: null,
+    filter = "";
+    start = 0;
+    count = 18;
 
-    previousPageBut: null,
-    nextPageBut: null,
-    countSlider: null,
+    collectionDiv;
 
-    setSelect: $("#setSelect"),
-    nameInput: $("#nameInput"),
-    sortSelect: $("#sortSelect"),
-    raritySelect: null,
-    format: null,
-    comm: null,
+    previousPageBut;
+    nextPageBut;
+    countSlider;
 
-    init: function (pageElem, getCollectionFunc, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
+    setSelect = $("#setSelect");
+    nameInput = $("#nameInput");
+    sortSelect = $("#sortSelect");
+    raritySelect;
+    format;
+    comm;
+
+    constructor(pageElem, getCollectionFunc, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
         var that = this;
         this.getCollectionFunc = getCollectionFunc;
         this.clearCollectionFunc = clearCollectionFunc;
@@ -32,32 +35,32 @@ var CardFilter = Class.extend({
 
         this.buildUi(pageElem);
         this.updateSetOptions();
-    },
+    }
 
-    enableDetailFilters: function (enable) {
+    enableDetailFilters(enable) {
         $("#affiliation-buttons").buttonset("option", "disabled", !enable);
         $("#cardType").prop("disabled", !enable);
         $("#keyword").prop("disabled", !enable);
         $("#tribblePower").prop("disabled", !enable);
         $("#phase").prop("disabled", !enable);
-    },
+    }
 
-    setFilter: function (filter) {
+    setFilter(filter) {
         this.filter = filter;
 
         this.start = 0;
         this.getCollection();
-    },
+    }
 
-    setFormat: function (format) {
+    setFormat(format) {
         this.format = format;
-    },
+    }
 
-    setType: function (typeValue) {
+    setType(typeValue) {
         $("#type").val(typeValue);
-    },
+    }
 
-    updateSetOptions:function() {
+    updateSetOptions() {
         var that = this;
         var currentSet = that.setSelect.val();
 
@@ -84,9 +87,9 @@ var CardFilter = Class.extend({
                     alert("Could not retrieve sets.");
                 }
             });
-    },
+    }
 
-    buildUi: function (pageElem) {
+    buildUi(pageElem) {
         var that = this;
 
         this.previousPageBut = $("#previousPage").button({
@@ -194,27 +197,27 @@ var CardFilter = Class.extend({
         this.collectionDiv = $("#collection-display");
         //collection-display
         pageElem.append(this.collectionDiv);
-    },
+    }
 
-    layoutUi: function (x, y, width, height) {
+    layoutUi(x, y, width, height) {
         //$("#filter-main").css({position: "absolute", left: x, top: y, width: width, height: 34});
         //this.countSlider.css({width: width - 100});
         //$("#filter-inputs").css({position: "absolute", left: x, top: y + 34, width: width, height: 34});
         //this.filterDiv.css({position: "absolute", left: x, top: y + 68, width: width, height: 80});
-    },
+    }
 
-    layoutPageUi: function (x, y, width) {
+    layoutPageUi(x, y, width) {
         //$("#filter-main").css({left: x, top: y, width: width, height: 36});
         //this.countSlider.css({width: width - 100});
-    },
+    }
 
-    disableNavigation: function () {
+    disableNavigation() {
         this.previousPageBut.button("option", "disabled", true);
         this.nextPageBut.button("option", "disabled", true);
         this.countSlider.button("option", "disabled", true);
-    },
+    }
 
-    calculateNormalFilter: function () {
+    calculateNormalFilter() {
         var normalFilterArray = new Array("cardType", "affiliation", "keyword", "type", "phase");
         var filterString = "";
 
@@ -235,9 +238,9 @@ var CardFilter = Class.extend({
             }
         }
         return filterString;
-    },
+    }
 
-    calculateFullFilterPostfix: function () {
+    calculateFullFilterPostfix() {
         var filterString = "";
 
         var setNo = $("option:selected", this.setSelect).prop("value");
@@ -274,16 +277,16 @@ var CardFilter = Class.extend({
 //            filterString = filterString + "|rarity:" + rarity;
 
         return filterString;
-    },
+    }
 
-    getCollection: function () {
+    getCollection() {
         var that = this;
         this.getCollectionFunc((this.filter + this.calculateFullFilterPostfix()).trim(), this.start, this.count, function (xml) {
             that.displayCollection(xml);
         });
-    },
+    }
 
-    displayCollection: function (xml) {
+    displayCollection(xml) {
         log(xml);
         var root = xml.documentElement;
 
@@ -313,4 +316,4 @@ var CardFilter = Class.extend({
         $("#nextPage").button("option", "disabled", (this.start + this.count) >= cnt);
         $("#countSlider").slider("option", "disabled", false);
     }
-});
+}

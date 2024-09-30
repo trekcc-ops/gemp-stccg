@@ -1,24 +1,28 @@
-var PlayerStatsUI = Class.extend({
-    communication:null,
+import GempClientCommunication from "./communication.js";
 
-    init:function (url) {
+export default class PlayerStatsUI {
+    communication;
+
+    constructor(url) {
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
 
         this.loadPlayerStats();
-    },
+    }
 
-    loadPlayerStats:function () {
+    loadPlayerStats() {
         var that = this;
         this.communication.getPlayerStats(
             function (xml) {
+                // BUG: Can't get this callback function to get called, despite having game history.
+                // The communications.getPlayerStats function is called but returns a 404 XHR. Broken lookup?
                 that.loadedPlayerStats(xml);
             });
-    },
+    }
 
-    loadedPlayerStats:function (xml) {
-        log(xml);
+    loadedPlayerStats(xml) {
+        // log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'playerStats') {
             $("#playerStats").html("");
@@ -33,9 +37,9 @@ var PlayerStatsUI = Class.extend({
             $("#playerStats").append("<div class='playerStatHeader'>Competitive statistics</div>");
             this.appendStats(competitive);
         }
-    },
+    }
 
-    appendStats:function (stats) {
+    appendStats(stats) {
         var entries = stats.getElementsByTagName("entry");
         if (entries.length == 0) {
             $("#playerStats").append("<i>You have not played any games counting for this statistics</i>");
@@ -51,4 +55,4 @@ var PlayerStatsUI = Class.extend({
             $("#playerStats").append(table);
         }
     }
-});
+}

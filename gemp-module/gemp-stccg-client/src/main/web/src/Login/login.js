@@ -1,3 +1,4 @@
+import GempClientCommunication from "../../js/gemp-022/communication.js";
 
 var comm = new GempClientCommunication("/gemp-stccg-server", function () {
     alert("Unable to contact the server");

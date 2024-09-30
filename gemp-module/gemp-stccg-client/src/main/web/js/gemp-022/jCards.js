@@ -1,25 +1,25 @@
-var cardCache = {};
-var cardScale = 357 / 497;
+export var cardCache = {};
+export var cardScale = 357 / 497;
 
-var packBlueprints = {
+export var packBlueprints = {
     "Special-01": "/gemp-module/images/boosters/special-01.png"
 };
 
-var Card = Class.extend({
-    blueprintId: null,
-    foil: null,
-    tengwar: null,
-    hasWiki: null,
-    horizontal: null,
-    locationIndex: null,
-    zone: null,
-    cardId: null,
-    owner: null,
-    siteNumber: 1,
-    attachedCards: null,
-    errata: null,
+export default class Card {
+    blueprintId;
+    foil;
+    tengwar;
+    hasWiki;
+    horizontal;
+    locationIndex;
+    zone;
+    cardId;
+    owner;
+    siteNumber = 1;
+    attachedCards;
+    errata;
 
-    init: function (blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown) {
+    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown) {
         this.blueprintId = blueprintId;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
@@ -70,21 +70,21 @@ var Card = Class.extend({
                 };
             }
         }
-    },
+    }
 
-    isTengwar: function () {
+    isTengwar() {
         return this.tengwar;
-    },
+    }
 
-    isFoil: function () {
+    isFoil() {
         return this.foil;
-    },
+    }
 
-    isUpsideDown: function () {
+    isUpsideDown() {
         return this.upsideDown;
-    },
+    }
 
-    hasErrata: function () {
+    hasErrata() {
         var separator = this.blueprintId.indexOf("_");
         var setNo = parseInt(this.blueprintId.substr(0, separator));
         
@@ -92,17 +92,17 @@ var Card = Class.extend({
             return true;
         
         return this.errata;
-    },
+    }
 
-    isPack: function () {
+    isPack() {
         return packBlueprints[this.blueprintId] != null;
-    },
+    }
 
-    isHorizontal: function (blueprintId) {
+    isHorizontal(blueprintId) {
         return false;
-    },
+    }
 
-    getUrlByBlueprintId: function (blueprintId, ignoreErrata) {
+    getUrlByBlueprintId(blueprintId, ignoreErrata) {
         if (packBlueprints[blueprintId] != null)
             return packBlueprints[blueprintId];
 
@@ -124,29 +124,29 @@ var Card = Class.extend({
             cardStr = this.formatCardNo(setNo, cardNo);
 
         return mainLocation + "LOTR" + cardStr + (this.isTengwar() ? "T" : "") + ".jpg";
-    },
+    }
 
-    getWikiLink: function () {
+    getWikiLink() {
         var imageUrl = this.getUrlByBlueprintId(this.blueprintId, true);
         var afterLastSlash = imageUrl.lastIndexOf("/") + 1;
         var countAfterLastSlash = imageUrl.length - 4 - afterLastSlash;
         return "http://wiki.lotrtcgpc.net/wiki/" + imageUrl.substr(afterLastSlash, countAfterLastSlash);
-    },
+    }
 
-    hasWikiInfo: function () {
+    hasWikiInfo() {
         return this.hasWiki;
-    },
+    }
 
-    formatSetNo: function (setNo) {
+    formatSetNo(setNo) {
         var setNoStr;
         if (setNo < 10)
             setNoStr = "0" + setNo;
         else
             setNoStr = setNo;
         return setNoStr;
-    },
+    }
 
-    formatCardNo: function (setNo, cardNo) {
+    formatCardNo(setNo, cardNo) {
         var setNoStr = this.formatSetNo(setNo);
 
         var cardStr;
@@ -158,21 +158,21 @@ var Card = Class.extend({
             cardStr = setNoStr + "" + cardNo;
 
         return cardStr;
-    },
+    }
 
-    getMainLocation: function (setNo, cardNo) {
+    getMainLocation(setNo, cardNo) {
         return "https://i.lotrtcgpc.net/decipher/";
-    },
+    }
 
-    getMasterworksOffset: function (setNo) {
+    getMasterworksOffset(setNo) {
         if (setNo == 17)
             return 148;
         if (setNo == 18)
             return 140;
         return 194;
-    },
+    }
 
-    isMasterworks: function (setNo, cardNo) {
+    isMasterworks(setNo, cardNo) {
         if (setNo == 12)
             return cardNo > 194;
         if (setNo == 13)
@@ -184,9 +184,9 @@ var Card = Class.extend({
         if (setNo == 18)
             return cardNo > 140;
         return false;
-    },
+    }
 
-    remadeErratas: {
+    remadeErratas = {
         "0": [7],
         "1": [3, 12, 43, 46, 55, 109, 113, 138, 162, 211, 235, 263, 309, 318, 331, 338, 343, 360],
         "3": [48, 110],
@@ -196,44 +196,44 @@ var Card = Class.extend({
         "8": [20, 33, 69],
         "17": [15, 87, 96, 118],
         "18": [8, 12, 20, 25, 35, 48, 50, 55, 77, 78, 79, 80, 82, 94, 97, 133]
-    },
+    }
 
-    getErrata: function (setNo, cardNo) {
+    getErrata(setNo, cardNo) {
         if (this.remadeErratas["" + setNo] != null && $.inArray(cardNo, this.remadeErratas["" + setNo]) != -1)
             return "/gemp-module/images/erratas/LOTR" + this.formatCardNo(setNo, cardNo) + ".jpg";
         return null;
-    },
+    }
 
-    getHeightForColumnWidth:function (columnWidth) {
+    getHeightForColumnWidth(columnWidth) {
         if (this.horizontal)
             return columnWidth;
         else
             return Math.floor(columnWidth / cardScale);
-    },
+    }
 
-    getHeightForWidth: function (width) {
+    getHeightForWidth(width) {
         if (this.horizontal)
             return Math.floor(width * cardScale);
         else
             return Math.floor(width / cardScale);
-    },
+    }
 
-    getWidthForHeight: function (height) {
+    getWidthForHeight(height) {
         if (this.horizontal)
             return Math.floor(height / cardScale);
         else
             return Math.floor(height * cardScale);
-    },
+    }
 
-    getWidthForMaxDimension: function (maxDimension) {
+    getWidthForMaxDimension(maxDimension) {
         if (this.horizontal)
             return maxDimension;
         else
             return Math.floor(maxDimension * cardScale);
-    },
+    }
 
-    displayCardInfo: function (container) {
-        that = this;
+    displayCardInfo(container) {
+        let that = this;
         container.html("");
         container.html("<div style='scroll: auto'></div>");
         container.append(createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack()));
@@ -258,14 +258,14 @@ var Card = Class.extend({
         );
         container.dialog("open");
     }
-
-});
-
-function createCardDiv(image, text, foil, tokens, noBorder, errata) {
-    return createCardDiv(image, text, foil, tokens, noBorder, errata, false);
 }
 
-function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
+
+export function createCardDiv(image, text, foil, tokens, noBorder, errata) {
+    return createCardDiv2(image, text, foil, tokens, noBorder, errata, false);
+}
+
+export function createCardDiv2(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     if (cardId == null) {
         if (upsideDown)
             var imgClass = "card_img upside-down";
@@ -306,7 +306,7 @@ function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, 
     return cardDiv;
 }
 
-function getFoilPresentation() {
+export function getFoilPresentation() {
     var result = $.cookie("foilPresentation");
     if (result === null)
         result = "static";
@@ -317,8 +317,8 @@ function getFoilPresentation() {
     return result;
 }
 
-function createFullCardDiv(image, foil, horizontal, noBorder) {
-
+export function createFullCardDiv(image, foil, horizontal, noBorder) {
+    var orientation;
     if (horizontal) orientation = "Horizontal";
     else orientation = "Vertical";
 
@@ -340,12 +340,12 @@ function createFullCardDiv(image, foil, horizontal, noBorder) {
     return cardDiv;
 }
 
-function createSimpleCardDiv(image) {
+export function createSimpleCardDiv(image) {
     var cardDiv = $("<div class='card'><img src='" + image + "' width='100%' height='100%'></div>");
 
     return cardDiv;
 }
 
-function getCardDivFromId(cardId) {
+export function getCardDivFromId(cardId) {
     return $(".card:cardId(" + cardId + ")");
 }

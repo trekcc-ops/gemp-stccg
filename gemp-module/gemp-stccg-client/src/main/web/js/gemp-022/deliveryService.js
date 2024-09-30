@@ -1,9 +1,13 @@
-var deliveryDialogs = {};
-var deliveryGroups = {};
+import { openSizeDialog } from "./common.js";
+import NormalCardGroup from './jCardGroup.js';
+import { createCardDiv } from "./jCards.js";
 
-function deliveryService(xml) {
-    log("Delivered a package:");
-    log(xml);
+export default function deliveryService(xml) {
+    var deliveryDialogs = {};
+    var deliveryGroups = {};
+
+    console.log("Delivered a package:");
+    console.log(xml);
 
     var root = xml.documentElement;
     if (root.tagName == "delivery") {

@@ -1,13 +1,4 @@
 
-<script type="text/javascript">
-	$("#helpMain").ready(
-	function () {
-	  	$("#helpMain").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-			$("#help-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-		
-	  }
-	);
-</script>
 <div id="helpMain" class="hall-tab flex-horizontal">
 	<div id="help-tabs" class="sub-tabs">
 		<ol>
@@ -26,6 +17,7 @@
 			<p>
 				If you're new to GEMP, you can watch one of the below videos or read on for the manual.
 			</p>
+			<!-- BUG: This embed throws all sorts of CORS complaints. -->
 			<p>
 					<iframe width="420" height="315"
 						src="https://www.youtube.com/embed/azvdgl4LScs">
