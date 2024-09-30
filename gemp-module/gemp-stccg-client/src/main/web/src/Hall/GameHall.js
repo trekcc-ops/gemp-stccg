@@ -277,18 +277,21 @@ $(document).ready(function () {
 					
 					$("#landingTab").parent().hide();
 					$("#landing").hide();
-					
-					if(!hall.userInfo.type.includes("a"))
+
+					hall.comm.getPlayerInfo(function(json)
 					{
-						$("#generalTab").parent().hide();
-						$("#banTab").parent().hide();
-					}
-					/*
-					if(!hall.userInfo.type.includes("l"))
-					{
-						$("#leagueTab").parent().hide();
-					}
-					*/
+						let userInfo = json;
+						if(!userInfo.type.includes("a"))
+						{
+							$("#generalTab").parent().hide();
+							$("#banTab").parent().hide();
+						}
+
+						if(!userInfo.type.includes("l"))
+						{
+							$("#leagueTab").parent().hide();
+						}
+					});
 
 					let selected_admin_tab = $("#adminMain").tabs("option", "active");
 					switch(selected_admin_tab) {
