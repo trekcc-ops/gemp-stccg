@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.AttachPermanentAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
-import com.gempukku.stccg.actions.sources.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;

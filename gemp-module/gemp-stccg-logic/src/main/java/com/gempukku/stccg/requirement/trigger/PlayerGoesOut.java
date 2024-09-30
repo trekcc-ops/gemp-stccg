@@ -3,7 +3,7 @@ package com.gempukku.stccg.requirement.trigger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
+import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 
 public class PlayerGoesOut implements TriggerCheckerProducer {
     @Override

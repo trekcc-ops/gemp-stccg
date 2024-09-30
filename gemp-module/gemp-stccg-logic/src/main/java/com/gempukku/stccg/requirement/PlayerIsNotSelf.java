@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
+import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 
 public class PlayerIsNotSelf extends RequirementProducer {
     @Override

@@ -10,9 +10,9 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
-import com.gempukku.stccg.cards.fieldprocessor.EffectFieldProcessor;
+import com.gempukku.stccg.cards.blueprints.fieldprocessor.EffectFieldProcessor;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.effectprocessor.ActionSourceAppender;
+import com.gempukku.stccg.cards.blueprints.fieldprocessor.ActionSourceAppender;
 import com.gempukku.stccg.requirement.missionrequirements.*;
 
 import java.io.IOException;
@@ -25,6 +25,9 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     final private EffectFieldProcessor _effectProcessor = new EffectFieldProcessor();
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
+    final String multiplierSplit1e = "(?=x\\d+)";
+    final String multiplierSplit2e = "(?<=\\d).*(?=\\s\\w)";
+
 
     public CardBlueprintDeserializer() {
         this(null);
@@ -244,8 +247,6 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             return null;
         String orNoParens = "\\s+(?i)OR\\s+(?![^(]*\\))";
         String andNoParens = "(\\s\\+\\s+|,\\sand\\s+|,\\s+|\\sand\\s)(?![^(]*\\))";
-        String multiplierSplit1e = "(?=x\\d+)";
-        String multiplierSplit2e = "(?<=\\d).*(?=\\s\\w)";
         String attributeSplit = "(?=>\\d+)|(?=<\\d+)";
 
         if (text.split(orNoParens).length > 1) {
@@ -354,16 +355,16 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
 
         if (skillSplit[0].trim().equals("[*]")) {
             String skill = skillSplit[1].trim();
-            String multiplierSplit = "(?=x\\d+)";
-            if (skill.split(multiplierSplit).length > 1) {
+            if (skill.split(multiplierSplit1e).length > 1) {
                 // 1E-style multiplier (like Leadership x2)
-                String[] stringSplit = skill.split(multiplierSplit);
+                String[] stringSplit = skill.split(multiplierSplit1e);
                 skillName = stringSplit[0].trim();
                 skillLevel = Integer.parseInt(stringSplit[1].substring(1).trim());
-            } else if (skill.substring(0,1).matches("\\d") && skill.charAt(1) == ' ') {
+            } else if (skill.split(multiplierSplit2e).length > 1) {
                 // 2E-style multiplier (like 2 Leadership)
-                skillName = skill.substring(2);
-                skillLevel = Integer.parseInt(skill.substring(0,1));
+                String[] stringSplit = skill.split(multiplierSplit2e);
+                skillName = stringSplit[1].trim();
+                skillLevel = Integer.parseInt(stringSplit[0]);
             } else {
                 // No multiplier
                 skillName = skill;
@@ -376,7 +377,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                 throw new InvalidCardDefinitionException("Skill " + skillName + " doesn't match known skills");
 
         } else if (skillSplit[0].trim().equals("[DL]")) {
-            return new SpecialDownloadSkill();
+            return new SpecialDownloadSkill(); // TODO - Identify what is being allowed to download
         } else {
             throw new InvalidCardDefinitionException("Invalid skill syntax in JSON file");
         }

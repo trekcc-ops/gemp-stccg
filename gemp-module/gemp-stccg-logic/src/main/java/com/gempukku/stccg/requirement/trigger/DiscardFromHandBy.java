@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 
 public class DiscardFromHandBy implements TriggerCheckerProducer {
     @Override

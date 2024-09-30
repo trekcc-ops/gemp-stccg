@@ -3,8 +3,8 @@ package com.gempukku.stccg.requirement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.ValueSource;
-import com.gempukku.stccg.effectappender.resolver.ValueResolver;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 public class IsNotEqual extends RequirementProducer {
     @Override

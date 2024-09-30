@@ -1,19 +1,19 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.fieldprocessor.*;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Quadrant;
-import com.gempukku.stccg.common.filterable.Uniqueness;
-import com.gempukku.stccg.effectappender.EffectAppender;
-import com.gempukku.stccg.effectappender.EffectAppenderFactory;
-import com.gempukku.stccg.effectappender.resolver.PlayerResolver;
-import com.gempukku.stccg.filters.FilterFactory;
-import com.gempukku.stccg.modifiers.ModifierSourceFactory;
+import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
+import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
+import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
+import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
+import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
+import com.gempukku.stccg.modifiers.GainIconModifier;
+import com.gempukku.stccg.modifiers.RequirementCondition;
+import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.RequirementFactory;
 import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
@@ -27,7 +27,6 @@ public class CardBlueprintFactory {
     private final FilterFactory filterFactory = new FilterFactory(this);
     private final RequirementFactory requirementFactory = new RequirementFactory(this);
     private final TriggerCheckerFactory triggerCheckerFactory = new TriggerCheckerFactory();
-    private final ModifierSourceFactory modifierSourceFactory = new ModifierSourceFactory();
 
     public CardBlueprintFactory() {
         // String input
@@ -152,10 +151,6 @@ public class CardBlueprintFactory {
         return triggerCheckerFactory;
     }
 
-    public ModifierSourceFactory getModifierSourceFactory() {
-        return modifierSourceFactory;
-    }
-
     private static class NullProcessor implements FieldProcessor {
         @Override
         public void processField(String key, JsonNode value, CardBlueprint blueprint,
@@ -226,6 +221,18 @@ public class CardBlueprintFactory {
         }
     }
 
+    public <T extends Enum<T>> T getEnum(Class<T> enumClass, JsonNode parentNode, String key)
+            throws InvalidCardDefinitionException {
+        if (parentNode.get(key) == null || !parentNode.get(key).isTextual())
+            return null;
+        try {
+            return Enum.valueOf(enumClass,
+                    parentNode.get(key).textValue().toUpperCase().replaceAll("[ '\\-.]", "_"));
+        } catch(Exception exp) {
+            throw new InvalidCardDefinitionException(
+                    "Unable to process enum value " + parentNode.get(key) + " in " + key + " field");
+        }
+    }
 
     public <T extends Enum<T>> T getEnum(Class<T> enumClass, String value, String key)
             throws InvalidCardDefinitionException {
@@ -317,4 +324,70 @@ public class CardBlueprintFactory {
                 throw new InvalidCardDefinitionException("Unrecognized field: " + key);
         }
     }
+
+    public ModifierSource getModifier(JsonNode node) throws InvalidCardDefinitionException {
+        return getModifierSource(node);
+    }
+
+    private ModifierSource getModifierSource(JsonNode node)
+            throws InvalidCardDefinitionException {
+        ModifierSourceProcessorType modifierType = getEnum(ModifierSourceProcessorType.class, node, "type");
+        validateAllowedFields(node, modifierType, this);
+
+        final Requirement[] requirements = getRequirementsFromJSON(node);
+        final FilterableSource filterableSource;
+
+        switch(modifierType) {
+            case CANTPLAYCARDS:
+                filterableSource = getFilterable(node);
+                return (actionContext) -> new CantPlayCardsModifier(actionContext.getSource(),
+                        new RequirementCondition(requirements, actionContext),
+                        filterableSource.getFilterable(actionContext));
+            case GAINICON:
+                CardIcon icon = getEnum(CardIcon.class, node, "icon");
+                filterableSource = getFilterFactory().parseSTCCGFilter(node.get("filter").textValue());
+                return actionContext -> new GainIconModifier(actionContext,
+                        filterableSource.getFilterable(actionContext),
+                        new RequirementCondition(requirements, actionContext), icon);
+            case MODIFYSTRENGTH:
+                ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("amount"), this);
+                filterableSource = getFilterable(node);
+                return (actionContext) -> {
+                    final Evaluator evaluator = valueSource.getEvaluator(actionContext);
+                    return new StrengthModifier(actionContext,
+                            filterableSource.getFilterable(actionContext),
+                            new RequirementCondition(requirements, actionContext), evaluator);
+                };
+            case OPPONENTMAYNOTDISCARD:
+                filterableSource = getFilterable(node);
+                return (actionContext) -> new CantDiscardFromPlayByPlayerModifier(
+                        actionContext.getSource(), "Can't be discarded by opponent",
+                        filterableSource.getFilterable(actionContext), actionContext.getPerformingPlayerId());
+            default:
+                throw new InvalidCardDefinitionException("Unable to resolve modifier of type: " + modifierType);
+        }
+    }
+
+    private enum ModifierSourceProcessorType { CANTPLAYCARDS, GAINICON, MODIFYSTRENGTH, OPPONENTMAYNOTDISCARD }
+
+    private void validateAllowedFields(JsonNode node, ModifierSourceProcessorType modifierType,
+                                       CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+        switch(modifierType) {
+            case CANTPLAYCARDS:
+                environment.validateAllowedFields(node, "filter", "requires");
+                break;
+            case GAINICON:
+                environment.validateAllowedFields(node, "filter", "requires", "icon");
+                break;
+            case MODIFYSTRENGTH:
+                environment.validateAllowedFields(node, "filter", "requires", "amount");
+                break;
+            case OPPONENTMAYNOTDISCARD:
+                environment.validateAllowedFields(node, "filter");
+                break;
+            default:
+                throw new InvalidCardDefinitionException("Unable to resolve modifier of type : " + modifierType);
+        }
+    }
+
 }

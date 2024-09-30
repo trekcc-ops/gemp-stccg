@@ -3,7 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Keyword;
