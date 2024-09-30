@@ -76,7 +76,7 @@ export default class GempHallUI {
 		this.timerSelect = $("#timerSelect");
 		this.buttonsDiv = $("#buttonsDiv");
 		
-		this.adminTab = $("#tabs > ul :nth-child(7)");
+		this.adminTab = $("#tabs > ul :nth-child(6)");
 		this.adminTab.hide();
 		
 		this.comm.getPlayerInfo(function(json)
