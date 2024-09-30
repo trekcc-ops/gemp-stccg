@@ -573,6 +573,7 @@ $(document).ready(function () {
 									});
 							
 							// BUG: getFormats causes a 500 server error, probably due to LOTR decks or something.
+							//      https://github.com/trekcc-ops/gemp-stccg/issues/39
 							hall.comm.getFormats(true,
 								function (json) 
 								{
