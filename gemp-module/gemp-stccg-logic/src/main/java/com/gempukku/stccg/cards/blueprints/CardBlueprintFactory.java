@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
+import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;

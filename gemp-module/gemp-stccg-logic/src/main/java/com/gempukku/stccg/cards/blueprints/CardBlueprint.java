@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;

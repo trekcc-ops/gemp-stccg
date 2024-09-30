@@ -22,13 +22,12 @@ import java.util.Collection;
 public class PlayCardFromHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "filter", "on", "cost", "ignoreInDeadPile", "memorize", "nocheck");
+        environment.validateAllowedFields(effectObject, "filter", "on", "cost", "memorize", "nocheck");
 
         final String filter = environment.getString(effectObject, "filter");
         final String onFilter = effectObject.get("on").textValue();
         final ValueSource costModifierSource =
                 ValueResolver.resolveEvaluator(effectObject.get("cost"), 0, environment);
-        final boolean ignoreInDeadPile = environment.getBoolean(effectObject, "ignoreInDeadPile", false);
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
         final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
 
