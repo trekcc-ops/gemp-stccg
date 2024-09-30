@@ -14,13 +14,10 @@ import java.util.List;
 
 public class Blueprint101_062 extends CardBlueprint {
     Blueprint101_062() {
-        super("101_062");
-        setTitle("Romulan Disruptor");
-        setCardType(CardType.EQUIPMENT);
+        super("101_062"); // Romulan Disruptor
         setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Directed-energy weapon used by Romulans and other races. Disruptor fire can be identified by a high residue of antiprotons that linger for several hours.");
 //        setGameText("Romulan and Non-Aligned use only. Each of your personnel STRENGTH +2 where present. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/romulandisruptor95.jpg");
     }
 
     @Override

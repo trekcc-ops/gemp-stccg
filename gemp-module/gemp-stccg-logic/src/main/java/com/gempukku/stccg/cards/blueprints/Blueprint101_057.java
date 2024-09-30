@@ -16,13 +16,10 @@ import java.util.List;
 
 public class Blueprint101_057 extends CardBlueprint {
     Blueprint101_057() {
-        super("101_057");
-        setTitle("Federation PADD");
-        setCardType(CardType.EQUIPMENT);
+        super("101_057"); // Federation PADD
         setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Standard Federation Personal Access Display Device for computerized information.");
 //        setGameText("Federation use only. Each of your personnel CUNNING +2 where present. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/federationpadd95.jpg");
     }
 
     @Override

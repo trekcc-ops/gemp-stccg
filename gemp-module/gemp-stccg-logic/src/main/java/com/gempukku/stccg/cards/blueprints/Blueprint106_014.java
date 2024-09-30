@@ -15,23 +15,12 @@ import java.util.List;
 
 public class Blueprint106_014 extends CardBlueprint {
     Blueprint106_014() {
-        super("106_014");
-        setTitle("Admiral McCoy");
-        addAffiliation(Affiliation.FEDERATION);
-        setCardType(CardType.PERSONNEL);
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
-        setClassification(SkillName.V_I_P_);
-        addIcons(CardIcon.STAFF);
-        setLore("Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.");
+        super("106_014"); // Admiral McCoy
         addSkill(SkillName.MEDICAL);
         addSkill(SkillName.EXOBIOLOGY);
         addSkill(SkillName.CANTANKEROUSNESS);
         addSkill(specialSkill());
         setSkillDotIcons(4);
-        setAttribute(CardAttribute.INTEGRITY, 8);
-        setAttribute(CardAttribute.CUNNING, 6);
-        setAttribute(CardAttribute.STRENGTH, 1);
-        setImageUrl("https://www.trekcc.org/1e/cardimages/vpromos/63VP.jpg");
     }
 
     @Override

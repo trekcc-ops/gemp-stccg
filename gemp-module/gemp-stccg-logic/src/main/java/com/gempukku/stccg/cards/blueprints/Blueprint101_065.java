@@ -17,13 +17,10 @@ import java.util.List;
 
 public class Blueprint101_065 extends CardBlueprint {
     Blueprint101_065() {
-        super("101_065");
-        setTitle("Tricorder");
-        setCardType(CardType.EQUIPMENT);
+        super("101_065"); // Tricorder
         setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.");
 //        setGameText("Gives all of your ENGINEER-classification personnel the extra skill of SCIENCE where present.");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/tricorder95.jpg");
     }
 
     @Override

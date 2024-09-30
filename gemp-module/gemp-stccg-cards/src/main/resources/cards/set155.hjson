@@ -2,15 +2,17 @@
 
 {
     155_021: {
-    // TODO - This JSON implementation seems correct, but is not working as of 3/5/24. Replaced with Java class Blueprint155_021
-       title: Attention All Hands
+        blueprintId: 155_021
+        title: Attention All Hands
+        java-blueprint: true
         type: incident
         icons: warp-core
         property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
-//        seed-or-play: {
-//            where: on table
-//        }
+/*      TODO - This JSON implementation seems correct, but is not working as of 3/5/24. Replaced with Java class Blueprint155_021
+        seed-or-play: {
+            where: on table
+        }
         effects: [
             {
                 type: action
@@ -20,12 +22,12 @@
                 effect: {
                     type: play
                     filter: choose(personnel)
-//                    filter: choose(yours + universal + tng-icon + personnel + not(android OR hologram OR au-icon) + you have no copies in play)
-//                    filter: choose(any)
+                    filter: choose(yours + universal + tng-icon + personnel + not(android OR hologram OR au-icon) + you have no copies in play)
+                    filter: choose(any)
                     on: federation,outpost
                 }
             }
-        ]
+        ] */
     }
     155_035: {
         title: Acquire Surplus Ships

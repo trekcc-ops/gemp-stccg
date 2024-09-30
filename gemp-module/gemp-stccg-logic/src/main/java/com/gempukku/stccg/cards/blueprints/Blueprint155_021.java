@@ -16,12 +16,7 @@ import java.util.List;
 
 public class Blueprint155_021 extends CardBlueprint {
     Blueprint155_021() {
-        super("155_021");
-        setTitle("Attention All Hands");
-        setCardType(CardType.INCIDENT);
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
-        setImageUrl("https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg");
-        addIcons(CardIcon.WARP_CORE);
+        super("155_021"); // Attention All Hands
     }
 
     private Collection<PhysicalCard> getDestinationOptionsForCard(PhysicalCard card) {

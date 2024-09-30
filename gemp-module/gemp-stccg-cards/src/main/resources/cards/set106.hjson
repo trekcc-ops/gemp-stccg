@@ -171,6 +171,16 @@
         blueprintId: 106_014
         title: Admiral McCoy
         java-blueprint: true
+        affiliation: federation
+        type: personnel
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: staff
+        lore: Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.
+        integrity: 8
+        cunning: 6
+        strength: 1
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/63VP.jpg
     }
     106_018: {
         blueprintId: 106_018

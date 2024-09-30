@@ -14,13 +14,10 @@ import java.util.List;
 
 public class Blueprint101_058 extends CardBlueprint {
     Blueprint101_058() {
-        super("101_058");
-        setTitle("Klingon Disruptor");
-        setCardType(CardType.EQUIPMENT);
+        super("101_058"); // Klingon Disruptor
         setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Phase-disruptor used by Klingons and other races. Similar to a phaser.");
 //        setGameText("Klingon and Non-Aligned use only. Each of your personnel STRENGTH +2 where present. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/klingondisruptor95.jpg");
     }
 
     @Override
