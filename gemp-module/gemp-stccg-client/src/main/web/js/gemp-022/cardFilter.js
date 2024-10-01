@@ -38,7 +38,7 @@ export default class CardFilter {
     }
 
     enableDetailFilters(enable) {
-        $("#affiliation-buttons").buttonset("option", "disabled", !enable);
+        $("#affiliation-buttons").controlgroup("option", "disabled", !enable);
         $("#cardType").prop("disabled", !enable);
         $("#keyword").prop("disabled", !enable);
         $("#tribblePower").prop("disabled", !enable);
@@ -131,7 +131,7 @@ export default class CardFilter {
             }
         });
 
-        $("#affiliation-buttons").buttonset();
+        $("#affiliation-buttons").controlgroup();
 /*        this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
             + "<option value=''>All Rarities</option>"
             + "<option value='R'>Rare</option>"
@@ -214,7 +214,6 @@ export default class CardFilter {
     disableNavigation() {
         this.previousPageBut.button("option", "disabled", true);
         this.nextPageBut.button("option", "disabled", true);
-        this.countSlider.button("option", "disabled", true);
     }
 
     calculateNormalFilter() {
