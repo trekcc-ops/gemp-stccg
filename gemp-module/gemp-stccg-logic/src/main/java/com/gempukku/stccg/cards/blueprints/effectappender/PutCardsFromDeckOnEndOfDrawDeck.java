@@ -30,14 +30,13 @@ public class PutCardsFromDeckOnEndOfDrawDeck implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "count", "filter", "reveal");
 
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
 
         MultiEffectAppender result = new MultiEffectAppender();
+        EffectAppender targetCardAppender =
+                environment.buildTargetCardAppender(effectObject, "Choose cards from draw deck", Zone.DRAW_DECK, "_temp");
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInDeck(filter, valueSource, "_temp", "you", "Choose cards from deck", environment));
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

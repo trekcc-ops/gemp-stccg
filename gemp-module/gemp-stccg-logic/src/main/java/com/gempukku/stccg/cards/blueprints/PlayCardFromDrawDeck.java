@@ -16,17 +16,18 @@ public class PlayCardFromDrawDeck extends PlayCardEffectAppenderProducer {
                                                   FilterableSource onFilterableSource, ValueSource countSource,
                                                   String memorize, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         PlayerSource you = PlayerResolver.resolvePlayer("you");
-        return CardResolver.resolveCardsInZone(filter,
-                (actionContext) -> {
-                    final DefaultGame game = actionContext.getGame();
-                    final int costModifier = costModifierSource.evaluateExpression(actionContext);
-                    if (onFilterableSource != null) {
-                        final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
-                        return Filters.and(Filters.playable(game, costModifier), Filters.attachableTo(game, onFilterable));
-                    }
-                    return Filters.playable(costModifier, false, false, true);
-                },
-                countSource, memorize, you, you, "Choose card to play", environment, Zone.DRAW_DECK);
+        FilterableSource filterable = (actionContext) -> {
+            final DefaultGame game = actionContext.getGame();
+            final int costModifier = costModifierSource.evaluateExpression(actionContext);
+            if (onFilterableSource != null) {
+                final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
+                return Filters.and(Filters.playable(costModifier), Filters.attachableTo(game, onFilterable));
+            }
+            return Filters.playable(costModifier, false, false, true);
+        };
+
+        return CardResolver.resolveCardsInZone(filter, filterable, countSource, memorize, you, you,
+                "Choose card to play", environment, Zone.DRAW_DECK);
     }
 
     @Override

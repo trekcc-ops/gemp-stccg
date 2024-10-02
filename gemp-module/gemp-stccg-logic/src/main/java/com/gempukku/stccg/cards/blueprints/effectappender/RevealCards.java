@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
@@ -24,9 +26,12 @@ public class RevealCards implements EffectAppenderProducer {
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 
         MultiEffectAppender result = new MultiEffectAppender();
+        PlayerSource you = ActionContext::getPerformingPlayerId;
+        FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         result.addEffectAppender(
-                CardResolver.resolveCards(filter, countSource, memorize, "you", "Choose cards to reveal", environment));
+                CardResolver.resolveCardsInPlay(filter, countSource, memorize, you, "Choose cards to reveal",
+                        cardFilter));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

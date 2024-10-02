@@ -20,37 +20,36 @@ public class DiscardFromHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize", "hand", "player");
+        environment.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize", "targetPlayer", "selectingPlayer");
 
         final boolean forced = environment.getBoolean(effectObject, "forced");
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
 
-        final PlayerSource handSource =
-                PlayerResolver.resolvePlayer(environment.getString(effectObject, "hand", "you"));
-        final PlayerSource playerSource =
-                PlayerResolver.resolvePlayer(environment.getString(effectObject, "player", "you"));
-        final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final PlayerSource targetPlayer =
+                PlayerResolver.resolvePlayer(environment.getString(effectObject, "targetPlayer", "you"));
+        final PlayerSource selectingPlayer =
+                PlayerResolver.resolvePlayer(environment.getString(effectObject, "selectingPlayer", "you"));
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInHand(filter, countSource, memorize, playerSource, handSource,
-                        "Choose cards from hand to discard", true, environment));
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(effectObject, selectingPlayer,
+                targetPlayer, "Choose cards from hand to discard", Zone.HAND, memorize, true);
+        result.addEffectAppender(targetCardAppender);
+
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                         final Collection<PhysicalCard> cardsToDiscard = context.getCardsFromMemory(memorize);
-                        return new DiscardCardsFromZoneEffect(context, Zone.HAND, handSource.getPlayerId(context), cardsToDiscard, forced);
+                        return new DiscardCardsFromZoneEffect(context, Zone.HAND, targetPlayer.getPlayerId(context), cardsToDiscard, forced);
                     }
 
                     @Override
                     public boolean isPlayableInFull(ActionContext actionContext) {
                         final DefaultGame game = actionContext.getGame();
 
-                        final String handPlayer = handSource.getPlayerId(actionContext);
-                        final String choosingPlayer = playerSource.getPlayerId(actionContext);
+                        final String handPlayer = targetPlayer.getPlayerId(actionContext);
+                        final String choosingPlayer = selectingPlayer.getPlayerId(actionContext);
                         if (!handPlayer.equals(choosingPlayer)
                                 && !game.getModifiersQuerying().canLookOrRevealCardsInHand(game, handPlayer, choosingPlayer))
                             return false;

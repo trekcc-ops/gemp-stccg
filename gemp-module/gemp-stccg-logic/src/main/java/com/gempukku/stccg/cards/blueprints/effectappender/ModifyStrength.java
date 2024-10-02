@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -27,11 +28,14 @@ public class ModifyStrength implements EffectAppenderProducer {
         final String filter = effectObject.get("filter").textValue();
         final String memory = environment.getString(effectObject, "memorize", "_temp");
         final TimeResolver.Time time = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
+        final PlayerSource you = ActionContext::getPerformingPlayerId;
 
         MultiEffectAppender result = new MultiEffectAppender();
+        FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         result.addEffectAppender(
-                CardResolver.resolveCards(filter, valueSource, memory, "you", "Choose cards to modify strength of", environment));
+                CardResolver.resolveCardsInPlay(filter, valueSource, memory, you,
+                        "Choose cards to modify strength of", cardFilter));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

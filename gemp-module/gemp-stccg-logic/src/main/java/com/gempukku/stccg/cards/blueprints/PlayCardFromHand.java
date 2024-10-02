@@ -46,33 +46,31 @@ public class PlayCardFromHand implements EffectAppenderProducer {
         result.setPlayabilityCheckedForEffect(true);
         PlayerSource you = PlayerResolver.resolvePlayer("you");
 
+        FilterableSource choiceFilter = (actionContext) -> {
+            final DefaultGame game = actionContext.getGame();
+            final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
+            if (onFilterableSource != null) {
+                final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
+                return Filters.and(Filters.playable(costModifier),
+                        Filters.attachableTo(game, onFilterable));
+            }
+            return Filters.playable(costModifier);
+        };
+
         result.addEffectAppender(
-                CardResolver.resolveCardsInHand(filter,
-                        (actionContext) -> {
-                            final DefaultGame game = actionContext.getGame();
-                            final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
-                            if (onFilterableSource != null) {
-                                final Filterable onFilterable = onFilterableSource.getFilterable(actionContext);
-                                return Filters.and(Filters.playable(game, costModifier),
-                                        Filters.attachableTo(game, onFilterable));
-                            }
-                            return Filters.playable(game, costModifier);
-                        },
-                        countSource, memorize, you, "Choose card to play from hand", environment));
+                CardResolver.resolveCardsInHand(filter, choiceFilter, countSource, memorize, you, "Choose card to play from hand", environment));
         result.addEffectAppender(
                 new DelayedAppender() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         final Collection<? extends PhysicalCard> cardsToPlay = actionContext.getCardsFromMemory(memorize);
                         if (cardsToPlay.size() == 1) {
-                            final DefaultGame game = actionContext.getGame();
-                            final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
 
                             Filterable onFilterable = (onFilterableSource != null) ? onFilterableSource.getFilterable(actionContext) : Filters.any;
 
                             final CostToEffectAction playCardAction = cardsToPlay.iterator().next().getPlayCardAction(
                                     onFilterable, false);
-                            return new StackActionEffect(game, playCardAction);
+                            return new StackActionEffect(actionContext.getGame(), playCardAction);
                         } else {
                             return null;
                         }

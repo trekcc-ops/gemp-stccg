@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -26,24 +27,13 @@ public class PutCardsFromHandOnBottomOfPlayPile implements EffectAppenderProduce
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "optional", "filter", "count", "reveal");
 
-        final boolean optional = environment.getBoolean(effectObject, "optional", false);
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
-        final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
 
-        ValueSource valueSource;
-        if (optional)
-            valueSource = ValueResolver.resolveEvaluator("0-" + count);
-        else
-            valueSource = count;
-
         MultiEffectAppender result = new MultiEffectAppender();
-        PlayerSource playerSource =
-                PlayerResolver.resolvePlayer(environment.getString(effectObject, "player", "you"));
+        final EffectAppender targetCardAppender = environment.buildTargetCardAppender(
+                effectObject, "Choose cards from hand to put beneath play pile", Zone.HAND, "_temp");
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInHand(filter, valueSource, "_temp", playerSource,
-                        "Choose cards from hand to put beneath play pile", environment));
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

@@ -26,40 +26,15 @@ import java.util.Objects;
 public class PutCardsFromHandOnTopOfDeck implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "player", "hand", "optional", "filter", "count", "reveal");
+        environment.validateAllowedFields(effectObject, "selectingPlayer", "targetPlayer", "optional", "filter", "count", "reveal");
 
-        final boolean optional = environment.getBoolean(effectObject.get("optional"), "optional", false);
-        final String filter = environment.getString(effectObject.get("filter"), "filter", "choose(any)");
-        final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean reveal = environment.getBoolean(effectObject.get("reveal"), "reveal", true);
-
-        PlayerSource playerSource = PlayerResolver.resolvePlayer(environment.getString(effectObject.get("player"), "player", "you"));
-        PlayerSource handSource = PlayerResolver.resolvePlayer(environment.getString(effectObject.get("hand"), "hand", "you"));
-
-        JsonNode countObj = effectObject.get("count");
-
-        ValueSource valueSource;
-        if (optional) {
-            String countStr = "1";
-            if(countObj != null && !Objects.equals(countObj.toString().replaceAll(" +", ""), "{}")) {
-                countStr = countObj.toString();
-            }
-            try {
-                JsonNode obj = new ObjectMapper()
-                        .readTree("{ \"type\": \"range\", \"from\": 0, \"to\": " + countStr + " }");
-                valueSource = ValueResolver.resolveEvaluator(obj, environment);
-            } catch (JsonProcessingException e) {
-                valueSource = ValueResolver.resolveEvaluator("0-1");
-            }
-        }
-        else {
-            valueSource = count;
-        }
+        final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
 
         MultiEffectAppender result = new MultiEffectAppender();
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(effectObject,
+                "Choose cards from hand", Zone.HAND, "_temp", true);
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInHand(filter, valueSource, "_temp", playerSource, handSource, "Choose cards from hand", true, environment));
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

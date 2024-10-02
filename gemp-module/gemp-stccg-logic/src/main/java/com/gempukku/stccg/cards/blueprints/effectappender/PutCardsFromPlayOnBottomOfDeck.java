@@ -5,8 +5,10 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PutCardFromPlayOnBottomOfDeckEffect;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -21,14 +23,16 @@ public class PutCardsFromPlayOnBottomOfDeck implements EffectAppenderProducer {
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "filter", "count");
 
-        final String player = environment.getString(effectObject, "player", "you");
+        final PlayerSource player = environment.getPlayerSource(effectObject, "player", true);
         final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 
         MultiEffectAppender result = new MultiEffectAppender();
+        FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         result.addEffectAppender(
-                CardResolver.resolveCards(filter, valueSource, "_temp", player, "Choose cards in play", environment));
+                CardResolver.resolveCardsInPlay(filter, valueSource, "_temp", player,
+                        "Choose cards in play", cardFilter));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

@@ -101,6 +101,8 @@ public class CardBlueprintTest extends AbstractAtTest {
 
         kehleyr1.reportToFacility(outpost1);
         kehleyr2.reportToFacility(outpost1);
+        assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr1));
+        assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr2));
 
         assertTrue(kehleyr1.isPresentWith(worf));
 

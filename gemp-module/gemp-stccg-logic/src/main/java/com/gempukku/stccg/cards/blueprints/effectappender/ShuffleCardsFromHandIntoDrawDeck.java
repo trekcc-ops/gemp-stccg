@@ -20,17 +20,13 @@ public class ShuffleCardsFromHandIntoDrawDeck implements EffectAppenderProducer 
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "filter", "count", "memorize");
 
-        final PlayerSource playerSource =
-                PlayerResolver.resolvePlayer(environment.getString(effectObject, "player", "you"));
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
 
         MultiEffectAppender result = new MultiEffectAppender();
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(effectObject, "Choose cards to shuffle into the draw deck", Zone.HAND, memorize);
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInHand(filter, valueSource, memorize, playerSource,
-                        "Choose cards to shuffle into the draw deck", environment));
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

@@ -212,15 +212,15 @@ public class Filters {
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed();
 
     public static Filter playable(final DefaultGame game) {
-        return playable(game, 0);
+        return playable(0);
     }
     public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(); }
 
-    public static Filter playable(final DefaultGame game, final int twilightModifier) {
-        return playable(game, twilightModifier, false);
+    public static Filter playable(final int twilightModifier) {
+        return playable(twilightModifier, false);
     }
 
-    public static Filter playable(final DefaultGame game, final int twilightModifier, final boolean ignoreRoamingPenalty) {
+    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty) {
         return playable(twilightModifier, ignoreRoamingPenalty, false);
     }
 
@@ -497,7 +497,7 @@ public class Filters {
     }
 
     public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
-        return Filters.and(Filters.playable(game, twilightModifier),
+        return Filters.and(Filters.playable(twilightModifier),
                 (Filter) (game1, physicalCard) -> {
                     if (physicalCard.getBlueprint().getValidTargetFilter() == null)
                         return false;

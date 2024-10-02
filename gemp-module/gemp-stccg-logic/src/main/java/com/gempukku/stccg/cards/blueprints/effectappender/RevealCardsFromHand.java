@@ -13,25 +13,23 @@ import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.Collection;
 
 public class RevealCardsFromHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "count", "filter", "memorize", "hand");
+        environment.validateAllowedFields(effectObject, "count", "filter", "memorize", "player");
 
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
-
-        final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        PlayerSource playerSource = PlayerResolver.resolvePlayer(environment.getString(effectObject, "hand", "you"));
-
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(CardResolver.resolveCardsInHand(filter, countSource, memorize,
-                playerSource, "Choose cards to reveal", environment));
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(
+                effectObject, "Choose cards to reveal", Zone.HAND, memorize);
+        result.addEffectAppender(targetCardAppender);
+
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

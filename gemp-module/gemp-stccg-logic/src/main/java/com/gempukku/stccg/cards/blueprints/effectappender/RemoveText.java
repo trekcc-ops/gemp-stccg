@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -29,10 +30,12 @@ public class RemoveText implements EffectAppenderProducer {
         final TimeResolver.Time time = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
 
         MultiEffectAppender result = new MultiEffectAppender();
+        PlayerSource you = ActionContext::getPerformingPlayerId;
+        FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         result.addEffectAppender(
-                CardResolver.resolveCards(filter, valueSource, memory, "you",
-                        "Choose cards to remove text from", environment));
+                CardResolver.resolveCardsInPlay(filter, valueSource, memory, you,
+                        "Choose cards to remove text from", cardFilter));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -15,13 +16,13 @@ import com.gempukku.stccg.filters.Filters;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 public class DiscardFromPlay implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "count", "filter", "memorize", "memorizeStackedCards");
 
-        final String player = environment.getString(effectObject.get("player"), "player", "you");
         final PlayerSource discardingPlayer =
                 environment.getPlayerSource(effectObject, "player", true);
         final ValueSource valueSource =
@@ -31,11 +32,15 @@ public class DiscardFromPlay implements EffectAppenderProducer {
         final String stackedCardsMemory = environment.getString(effectObject, "memorizeStackedCards");
 
         MultiEffectAppender result = new MultiEffectAppender();
+        FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
+        Function<ActionContext, List<PhysicalCard>> cardSource =
+                actionContext -> Filters.filterActive(actionContext.getGame(), Filters.any).stream().toList();
+
 
         result.addEffectAppender(
-                CardResolver.resolveCards(filter,
+                CardResolver.resolveCardsInPlay(filter,
                         (actionContext) -> Filters.canBeDiscarded(actionContext.getPerformingPlayerId(), actionContext.getSource()),
-                        valueSource, memory, player, "Choose cards to discard", environment));
+                        valueSource, memory, discardingPlayer, "Choose cards to discard", cardFilter, cardSource));
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

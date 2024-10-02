@@ -2,8 +2,10 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
@@ -150,6 +152,15 @@ public class CardBlueprintFactory {
 
     public TriggerCheckerFactory getTriggerCheckerFactory() {
         return triggerCheckerFactory;
+    }
+
+    public FilterableSource getCardFilterableIfChooseOrAll(String filter) throws InvalidCardDefinitionException {
+        FilterableSource typeFilter = null;
+        if (filter.startsWith("all(") || filter.startsWith("choose("))
+            typeFilter = getFilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")));
+        // TODO - Code below may be needed for 1E cards that rely on this method
+//        typeFilter = getFilterFactory().parseSTCCGFilter(filter);
+        return typeFilter;
     }
 
     private static class NullProcessor implements FieldProcessor {
@@ -391,4 +402,50 @@ public class CardBlueprintFactory {
         }
     }
 
+    public EffectAppender buildTargetCardAppender(JsonNode node, String choiceText, Zone fromZone, String saveMemory,
+                                                          boolean showMatchingOnly) throws InvalidCardDefinitionException {
+        PlayerSource selectingPlayer;
+        PlayerSource targetPlayer;
+
+        if (node.has("player") && !node.has("selectingPlayer") && !node.has("targetPlayer")) {
+            selectingPlayer = getPlayerSource(node, "player", true);
+            targetPlayer = selectingPlayer;
+        } else if ((node.has("selectingPlayer") || node.has("targetPlayer")) && !node.has("player")) {
+            selectingPlayer = getPlayerSource(node, "selectingPlayer", true);
+            targetPlayer = getPlayerSource(node, "targetPlayer", true);
+        } else if (!node.has("player") && !node.has("targetPlayer") && !node.has("selectingPlayer")) {
+            selectingPlayer = ActionContext::getPerformingPlayerId;
+            targetPlayer = selectingPlayer;
+        } else {
+            throw new InvalidCardDefinitionException("Unable to identify player making card selection from blueprint");
+        }
+        return buildTargetCardAppender(node, selectingPlayer, targetPlayer, choiceText, fromZone, saveMemory, showMatchingOnly);
+    }
+
+    public EffectAppender buildTargetCardAppender(JsonNode node, String choiceText, Zone fromZone, String saveMemory)
+            throws InvalidCardDefinitionException {
+        return buildTargetCardAppender(node, choiceText, fromZone, saveMemory, false);
+    }
+
+    public EffectAppender buildTargetCardAppender(JsonNode node, PlayerSource player, String choiceText, Zone fromZone, String saveMemory)
+            throws InvalidCardDefinitionException {
+        return buildTargetCardAppender(node, player, player, choiceText, fromZone, saveMemory, false);
+    }
+
+    public EffectAppender buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
+                                                  String choiceText, Zone fromZone, String saveMemory,
+                                                  boolean showMatchingOnly) throws InvalidCardDefinitionException {
+
+        // TODO - Does this work properly? Specifically allowing player to see what's in the deck even if no valid cards exist?
+
+        String filter = getString(node, "filter", "choose(any)");
+        FilterableSource cardFilter = getCardFilterableIfChooseOrAll(filter);
+        boolean optional = getBoolean(node, "optional", false);
+
+        ValueSource count = ValueResolver.resolveEvaluator(node.get("count"), 1, this);
+        if (optional) count = ValueResolver.resolveEvaluator("0-" + count);
+
+        return CardResolver.resolveCardsInZone(filter, count, saveMemory, selectingPlayer, targetPlayer, choiceText,
+                fromZone, cardFilter, showMatchingOnly);
+    }
 }

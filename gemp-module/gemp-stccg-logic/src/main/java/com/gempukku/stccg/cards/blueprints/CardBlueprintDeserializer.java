@@ -187,8 +187,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     private <T extends Enum<T>> Set<T> getEnumSetFromCommaDelimited(
             JsonNode parentNode, String fieldName, Class<T> enumClass) throws InvalidCardDefinitionException {
         Set<T> result = new HashSet<>();
-        if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull() ||
-                parentNode.get(fieldName).isEmpty())
+        if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull())
             return result;
         for (String item : parentNode.get(fieldName).textValue().split(",")) {
             result.add(getEnum(enumClass, item, fieldName));

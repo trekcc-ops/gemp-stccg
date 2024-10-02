@@ -5,9 +5,12 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PutCardsFromZoneOnEndOfPileEffect;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -24,13 +27,12 @@ public class PutCardsFromDiscardOnBottomOfDeck implements EffectAppenderProducer
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "count", "filter");
 
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
-
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInDiscard(filter, valueSource, "_temp", "you", "Choose cards from discard", environment));
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(effectObject, "Choose cards from discard",
+                Zone.DISCARD, "_temp");
+
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

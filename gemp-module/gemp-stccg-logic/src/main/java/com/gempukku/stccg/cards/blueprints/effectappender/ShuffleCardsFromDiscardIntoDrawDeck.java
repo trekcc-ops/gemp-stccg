@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.ShuffleCardsIntoDrawDeckEffect;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -21,16 +22,13 @@ public class ShuffleCardsFromDiscardIntoDrawDeck implements EffectAppenderProduc
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "count", "player");
 
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
-        final String player = environment.getString(effectObject, "player", "you");
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
-
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInDiscard(filter, valueSource, "_temp", player, "Choose cards to shuffle in", environment));
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(effectObject, playerSource, "Choose cards to shuffle in", Zone.DISCARD, "_temp");
+
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

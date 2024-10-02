@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -25,20 +26,13 @@ public class PutCardsFromDiscardIntoHand implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "count", "filter", "player", "discard", "memorize");
 
-        final String player = environment.getString(effectObject, "player", "you");
-        final ValueSource valueSource =
-                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final String filter = environment.getString(effectObject, "filter", "choose(any)");
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
-
-        PlayerSource choicePlayer = PlayerResolver.resolvePlayer(player);
-        PlayerSource discardPlayer = PlayerResolver.resolvePlayer(environment.getString(effectObject, "discard", player));
 
         MultiEffectAppender result = new MultiEffectAppender();
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInDiscard(filter, valueSource, memorize, choicePlayer, discardPlayer,
-                        "Choose cards from discard", environment));
+        EffectAppender targetCardAppender = environment.buildTargetCardAppender(effectObject, "Choose cards from discard", Zone.DISCARD, memorize);
+
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override
