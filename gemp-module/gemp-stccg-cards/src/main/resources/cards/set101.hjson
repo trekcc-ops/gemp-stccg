@@ -686,6 +686,22 @@
         image-url: https://www.trekcc.org/1e/cardimages/premiere/leahbrahms95.jpg
         rarity: U
     }
+    101_220: {
+        title: Linda Larson
+        type: personnel
+        uniqueness: universal
+        affiliation: federation
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Lieutenant Linda Larson is representative of staff engineers serving in Starfleet.
+        skill-box: "[*] Youth"
+        integrity: 7
+        cunning: 5
+        strength: 4
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/lindalarson95.jpg
+        rarity: C
+    }
     101_221: {
         title: Lwaxana Troi
         type: personnel
@@ -715,6 +731,22 @@
         strength: 3
         image-url: https://www.trekcc.org/1e/cardimages/premiere/mcknight95.jpg
         rarity: U
+    }
+    101_223: {
+        title: Mendon
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        uniqueness: universal
+        lore: Ensign Mendon is a Benzite male representative of science specialists within Starfleet. Served aboard the <i>U.S.S. Enterprise</i> in 2365. Looks like Mordock.
+        skill-box: "[*] Physics"
+        integrity: 7
+        cunning: 5
+        strength: 2
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Mendon.jpg
+        rarity: C
     }
     101_225: {
         title: Mot the Barber
@@ -942,6 +974,22 @@
         cunning: 6
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/premiere/bael95.jpg
+        rarity: U
+    }
+    101_254: {
+        title: Batrell
+        type: personnel
+        affiliation: klingon
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Klingon trained as an officer for the Klingon Defense Force. Formerly in command of Narendra III outpost.
+        skill-box: "[*] Honor"
+        integrity: 7
+        cunning: 3
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/batrell95.jpg
     }
     101_256: {
         title: Divok
@@ -1149,6 +1197,22 @@
         cunning: 9
         strength: 3
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/devinoniral.jpg
+    }
+    101_293: {
+        title: Dr. Farek
+        type: personnel
+        affiliation: non-aligned
+        property-logo: tng-logo
+        classification: MEDICAL
+        uniqueness: universal
+        icons: command
+        lore: "Dr. Farek is representative of male Ferengi trained in medicine. Seized control of the <i>D'Kora</i> class Ferengi Marauder, <i>Krayton</i>, in 2366."
+        skill-box: "[*] Greed"
+        integrity: 2
+        cunning: 8
+        strength: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/drfarek95.jpg
+        rarity: C
     }
     101_297: {
         title: Gorta
