@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.effectappender;
+package com.gempukku.stccg.cards.blueprints.effectappender.memorize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
@@ -8,6 +8,9 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 public class MemorizeNumber implements EffectAppenderProducer {

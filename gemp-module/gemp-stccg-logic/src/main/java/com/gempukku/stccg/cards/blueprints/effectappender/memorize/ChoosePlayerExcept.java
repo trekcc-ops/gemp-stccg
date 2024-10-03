@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.effectappender;
+package com.gempukku.stccg.cards.blueprints.effectappender.memorize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
@@ -6,6 +6,9 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChoosePlayerExceptEffect;
+import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderProducer;
 
 public class ChoosePlayerExcept implements EffectAppenderProducer {
     @Override

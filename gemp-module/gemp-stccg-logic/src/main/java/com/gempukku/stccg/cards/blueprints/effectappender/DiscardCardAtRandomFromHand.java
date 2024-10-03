@@ -17,9 +17,9 @@ public class DiscardCardAtRandomFromHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "hand", "count", "forced");
+        environment.validateAllowedFields(effectObject, "player", "count", "forced");
 
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "hand", true);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
         final ValueSource countSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final boolean forced = environment.getBoolean(effectObject, "forced");

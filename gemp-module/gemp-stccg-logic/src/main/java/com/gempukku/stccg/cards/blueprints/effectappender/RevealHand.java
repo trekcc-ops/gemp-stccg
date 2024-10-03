@@ -17,9 +17,9 @@ import java.util.Collection;
 public class RevealHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "hand", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "memorize");
 
-        final String player = environment.getString(effectObject, "hand", "you");
+        final String player = environment.getString(effectObject, "player", "you");
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 
         final String memorize = effectObject.get("memorize").textValue();

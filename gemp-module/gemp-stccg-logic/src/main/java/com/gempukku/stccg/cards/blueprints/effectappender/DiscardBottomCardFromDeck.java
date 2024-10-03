@@ -19,13 +19,12 @@ public class DiscardBottomCardFromDeck implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "deck", "count", "forced", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "count", "forced", "memorize");
 
         final String memorize = effectObject.get("memorize").textValue();
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final boolean forced = environment.getBoolean(effectObject, "forced");
-
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "deck", true);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

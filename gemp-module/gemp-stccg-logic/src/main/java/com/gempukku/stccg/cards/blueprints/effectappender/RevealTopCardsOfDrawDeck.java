@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.revealcards.RevealTopCardsOfDrawDeckEffect;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.List;
 
@@ -17,14 +18,13 @@ public class RevealTopCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "deck", "count", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "count", "memorize");
 
         final ValueSource valueSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String memorize = effectObject.get("memorize").textValue();
 
-        final PlayerSource playerSource = PlayerResolver.resolvePlayer(
-                environment.getString(effectObject.get("deck"), "deck", "you"));
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

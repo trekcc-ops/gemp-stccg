@@ -12,13 +12,13 @@ import com.gempukku.stccg.actions.choose.ReorderTopCardsOfDeckEffect;
 public class ReorderTopCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "count", "player", "deck");
+        environment.validateAllowedFields(effectObject, "count", "selectingPlayer", "targetPlayer");
 
         final ValueSource valueSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
-        final PlayerSource deckSource = environment.getPlayerSource(effectObject, "deck", true);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "selectingPlayer", true);
+        final PlayerSource deckSource = environment.getPlayerSource(effectObject, "targetPlayer", true);
 
         return new DefaultDelayedAppender() {
             @Override

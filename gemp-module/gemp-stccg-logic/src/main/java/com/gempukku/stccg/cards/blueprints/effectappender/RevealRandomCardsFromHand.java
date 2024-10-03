@@ -16,14 +16,14 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "hand", "forced", "count", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "forced", "count", "memorize");
 
         final boolean forced = environment.getBoolean(effectObject, "forced");
         final String memorized = environment.getString(effectObject, "memorize", "_temp");
 
         final ValueSource countSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final PlayerSource handSource = environment.getPlayerSource(effectObject, "hand", true);
+        final PlayerSource handSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

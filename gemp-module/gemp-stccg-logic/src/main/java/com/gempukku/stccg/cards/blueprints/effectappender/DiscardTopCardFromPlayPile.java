@@ -17,11 +17,11 @@ import java.util.Collection;
 public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "deck", "count", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "count", "memorize");
 
         final String memorize = effectObject.get("memorize").textValue();
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "deck", true);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new TribblesDelayedAppender() {
             @Override

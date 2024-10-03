@@ -2,11 +2,11 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -24,14 +24,16 @@ public abstract class ChooseCardsFromZoneEffect extends DefaultEffect {
     private final Filter _filter;
     protected final Zone _fromZone;
 
-    public ChooseCardsFromZoneEffect(DefaultGame game, Zone zone, String playerId, int minimum, int maximum, Filterable... filters) {
+    public ChooseCardsFromZoneEffect(DefaultGame game, Zone zone, String playerId,
+                                     int minimum, int maximum, Filterable... filters) {
         this(game, zone, playerId, playerId, minimum, maximum, filters);
     }
 
-    public ChooseCardsFromZoneEffect(DefaultGame game, Zone zone, String playerId, String deckId, int minimum, int maximum, Filterable... filters) {
-        super(game, playerId);
-        _performingPlayer = playerId;
-        _zoneOwner = deckId;
+    public ChooseCardsFromZoneEffect(DefaultGame game, Zone zone, String selectingPlayerId, String targetPlayerId,
+                                     int minimum, int maximum, Filterable... filters) {
+        super(game, selectingPlayerId);
+        _performingPlayer = selectingPlayerId;
+        _zoneOwner = targetPlayerId;
         _minimum = minimum;
         _maximum = maximum;
         _filter = Filters.and(filters);
@@ -45,27 +47,22 @@ public abstract class ChooseCardsFromZoneEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        if (_fromZone == Zone.DRAW_DECK) {
-            return Filters.filter(_game.getGameState().getDrawDeck(_zoneOwner), _game, _filter).size() >= _minimum;
-        } else if (_fromZone == Zone.DISCARD) {
-            return Filters.filter(_game.getGameState().getDiscard(_zoneOwner), _game, _filter).size() >= _minimum;
-        } else if (_fromZone == Zone.HAND) {
-            return Filters.filter(_game.getGameState().getHand(_zoneOwner), _game, _filter).size() >= _minimum;
-        }
-        return false;
+        return switch (_fromZone) {
+            case DRAW_DECK, DISCARD, HAND ->
+                    Filters.filter(_game.getGameState().getZoneCards(_zoneOwner, _fromZone), _filter).size() >=
+                            _minimum;
+            default -> false;
+        };
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
-            Collection<PhysicalCard> cards = null;
-            if (_fromZone == Zone.DRAW_DECK) {
-                cards = Filters.filter(_game.getGameState().getDrawDeck(_zoneOwner), _game, _filter);
-            } else if (_fromZone == Zone.DISCARD) {
-                cards = Filters.filter(_game.getGameState().getDiscard(_zoneOwner), _game, _filter);
-            } else if (_fromZone == Zone.HAND) {
-                cards = Filters.filter(_game.getGameState().getHand(_zoneOwner), _game, _filter);
-            }
+            Collection<PhysicalCard> cards = switch (_fromZone) {
+                case DRAW_DECK, DISCARD, HAND ->
+                        Filters.filter(_game.getGameState().getZoneCards(_zoneOwner, _fromZone), _filter);
+                default -> null;
+            };
 
             assert cards != null;
             if (_fromZone == Zone.HAND)

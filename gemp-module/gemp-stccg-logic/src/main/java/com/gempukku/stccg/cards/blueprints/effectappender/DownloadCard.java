@@ -2,16 +2,19 @@ package com.gempukku.stccg.cards.blueprints.effectappender;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
+import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
@@ -42,12 +45,16 @@ public class DownloadCard implements EffectAppenderProducer {
         MultiEffectAppender result = new MultiEffectAppender();
         result.setPlayabilityCheckedForEffect(true);
 
-        PlayerSource you = PlayerResolver.resolvePlayer("you");
+        FilterableSource playableCardsFilter = (actionContext) -> Filters.playable;
+        PlayerSource you = ActionContext::getPerformingPlayerId;
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInZone(filter, (actionContext) -> Filters.playable(actionContext.getGame()),
-                        countSource, memorize, you, you,
-                        "Choose card to download", environment, Zone.DRAW_DECK));
+        EffectAppender targetCardAppender = CardResolver.resolveCardsInZone(filter, playableCardsFilter, countSource,
+                memorize, you, you, "Choose card to play",
+                environment.getCardFilterableIfChooseOrAll(filter), Zone.DRAW_DECK, false,
+                environment.getCardSourceFromZone(you, Zone.DRAW_DECK, filter));
+
+
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

@@ -205,6 +205,9 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(source.getOwnerName(), physicalCard, source);
     }
 
+    public static final Filter canBeRemovedFromTheGame = (game, physicalCard) -> true;
+
+
     public static Filter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
     }
@@ -523,6 +526,7 @@ public class Filters {
     public static Filterable yourCardsPresentWith(Player player, PhysicalCard card) {
         return and(your(player), presentWith(card));
     }
+
 
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {

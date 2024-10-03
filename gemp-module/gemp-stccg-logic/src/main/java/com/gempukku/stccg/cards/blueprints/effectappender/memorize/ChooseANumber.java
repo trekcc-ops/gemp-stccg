@@ -1,9 +1,12 @@
-package com.gempukku.stccg.cards.blueprints.effectappender;
+package com.gempukku.stccg.cards.blueprints.effectappender.memorize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -15,14 +18,13 @@ public class ChooseANumber implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "player", "text", "from", "to", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "text", "amount", "memorize");
+        // TODO - Removed "to" and "from" here. Implement a choose option in ValueResolver to take one parameter here.
 
         final String displayText =
                 environment.getString(effectObject, "text", "Choose a number");
-        final ValueSource fromSource =
+        final ValueSource valueSource =
                 ValueResolver.resolveEvaluator(effectObject.get("from"), 0, environment);
-        final ValueSource toSource =
-                ValueResolver.resolveEvaluator(effectObject.get("to"), 1, environment);
 
         final String memorize = effectObject.get("memorize").textValue();
 
@@ -34,8 +36,8 @@ public class ChooseANumber implements EffectAppenderProducer {
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 return new PlayOutDecisionEffect(context.getGame(), context.getPerformingPlayerId(),
                     new IntegerAwaitingDecision(1, context.substituteText(displayText),
-                        fromSource.evaluateExpression(context, null),
-                        toSource.evaluateExpression(context, null))
+                        valueSource.getMinimum(context),
+                        valueSource.getMaximum(context))
                 {
                     @Override
                     public void decisionMade(String result) throws DecisionResultInvalidException {

@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.cards.blueprints.effectappender.AbstractEffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
@@ -76,39 +77,23 @@ public class DefaultActionSource implements ActionSource {
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
         
         if (node.has("requires")) {
-            if (node.get("requires").isArray()) {
-                for (JsonNode requirement : node.get("requires")) {
+            for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
                     addRequirement(environment.getRequirement(requirement));
-                }
-            } else addRequirement(environment.getRequirement(node.get("requires")));
         }
 
         final EffectAppenderFactory effectAppenderFactory = environment.getEffectAppenderFactory();
 
         if (node.has("cost")) {
-            if (node.get("cost").isArray()) {
-                for (JsonNode cost : node.get("cost")) {
-                    final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(cost);
-                    addRequirement(effectAppender::isPlayableInFull);
-                    addCost(effectAppender);
-                }
-            } else {
-                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(node.get("cost"));
+            for (JsonNode cost : JsonUtils.toArray(node.get("cost"))) {
+                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(cost);
                 addRequirement(effectAppender::isPlayableInFull);
                 addCost(effectAppender);
             }
         }
         
         if (node.has("effect")) {
-            if (node.get("effect").isArray()) {
-                for (JsonNode effect : node.get("effect")) {
-                    final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(effect);
-                    if (effectAppender.isPlayabilityCheckedForEffect())
-                        addRequirement(effectAppender::isPlayableInFull);
-                    addEffect(effectAppender);
-                }
-            } else {
-                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(node.get("effect"));
+            for (JsonNode effect : JsonUtils.toArray(node.get("effect"))) {
+                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(effect);
                 if (effectAppender.isPlayabilityCheckedForEffect())
                     addRequirement(effectAppender::isPlayableInFull);
                 addEffect(effectAppender);

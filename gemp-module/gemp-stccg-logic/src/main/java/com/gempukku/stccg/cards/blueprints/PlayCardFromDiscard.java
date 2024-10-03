@@ -4,16 +4,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.effectappender.MultiEffectAppender;
+import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifierFlag;
@@ -34,7 +38,7 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
         final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
 
-        // TODO - Took out LotR "nocheck" property because this should be in the overall code, not the JSON definition
+        // TODO - LotR "nocheck" property should be in the overall function, not the individual Json definitions
         ValueSource countSource = new ConstantValueSource(1);
         if(noCheck)
         {
@@ -63,10 +67,11 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
             return Filters.playable(costModifier);
         };
 
-        result.addEffectAppender(CardResolver.resolveCardsInDiscard(filter, playableCardsFilter, playableCardsFilter,
-                countSource, memorize, you, you,"Choose card to play", cardFilter));
+        EffectAppender targetCardAppender = CardResolver.resolveCardsInZone(filter, playableCardsFilter, countSource,
+                memorize, you, you, "Choose card to play", cardFilter, Zone.DISCARD, false,
+                environment.getCardSourceFromZone(you, Zone.DISCARD, filter));
 
-
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DefaultDelayedAppender() {
                     @Override

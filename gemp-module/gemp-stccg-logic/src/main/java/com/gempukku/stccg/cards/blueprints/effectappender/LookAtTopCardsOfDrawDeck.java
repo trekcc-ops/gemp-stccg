@@ -15,12 +15,12 @@ import java.util.List;
 public class LookAtTopCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "deck", "count", "memorize");
+        environment.validateAllowedFields(effectObject, "player", "count", "memorize");
 
         final int count = environment.getInteger(effectObject, "count", 1);
         final String memorize = effectObject.get("memorize").textValue();
 
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "deck", true);
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

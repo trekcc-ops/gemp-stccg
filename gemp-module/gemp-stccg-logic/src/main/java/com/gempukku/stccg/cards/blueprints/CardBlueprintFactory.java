@@ -1,17 +1,20 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.evaluator.Evaluator;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
 import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
@@ -23,6 +26,7 @@ import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
 
 public class CardBlueprintFactory {
     private final Map<String, FieldProcessor> fieldProcessors = new HashMap<>();
@@ -438,14 +442,33 @@ public class CardBlueprintFactory {
 
         // TODO - Does this work properly? Specifically allowing player to see what's in the deck even if no valid cards exist?
 
+
         String filter = getString(node, "filter", "choose(any)");
         FilterableSource cardFilter = getCardFilterableIfChooseOrAll(filter);
         boolean optional = getBoolean(node, "optional", false);
 
+        Function<ActionContext, List<PhysicalCard>> cardSource = getCardSourceFromZone(targetPlayer, fromZone, filter);
+
         ValueSource count = ValueResolver.resolveEvaluator(node.get("count"), 1, this);
         if (optional) count = ValueResolver.resolveEvaluator("0-" + count);
 
-        return CardResolver.resolveCardsInZone(filter, count, saveMemory, selectingPlayer, targetPlayer, choiceText,
-                fromZone, cardFilter, showMatchingOnly);
+        return CardResolver.resolveCardsInZone(filter, null, count, saveMemory,
+                selectingPlayer, targetPlayer, choiceText, cardFilter, fromZone, showMatchingOnly, cardSource);
     }
+
+    public Function<ActionContext, List<PhysicalCard>> getCardSourceFromZone(PlayerSource player, Zone zone,
+                                                                                    String filter)
+            throws InvalidCardDefinitionException {
+        String sourceMemory = (filter.startsWith("memory(")) ?
+                filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")) : null;
+        return switch (zone) {
+            case HAND, DISCARD, DRAW_DECK -> actionContext -> Filters.filter(
+                    actionContext.getGameState().getZoneCards(player.getPlayerId(actionContext), zone),
+                    sourceMemory == null ?
+                            Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+            default -> throw new InvalidCardDefinitionException(
+                    "getCardSource function not defined for zone " + zone.getHumanReadable());
+        };
+    }
+
 }

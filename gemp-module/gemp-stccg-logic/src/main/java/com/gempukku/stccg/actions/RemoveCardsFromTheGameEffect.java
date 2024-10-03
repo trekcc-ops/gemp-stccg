@@ -8,20 +8,22 @@ import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 public class RemoveCardsFromTheGameEffect extends DefaultEffect {
     private final String _playerPerforming;
     private final PhysicalCard _source;
-    private final Collection<? extends PhysicalCard> _cardsToRemove;
+    private final Collection<PhysicalCard> _cardsToRemove;
 
     public RemoveCardsFromTheGameEffect(DefaultGame game, String playerPerforming, PhysicalCard source,
-                                        Collection<? extends PhysicalCard> cardsToRemove) {
+                                        Collection<PhysicalCard> cardsToRemove) {
         super(game, playerPerforming);
         _playerPerforming = playerPerforming;
         _source = source;
         _cardsToRemove = cardsToRemove;
     }
+
 
     @Override
     public boolean isPlayableInFull() {

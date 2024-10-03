@@ -4,16 +4,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.effectappender.DelayedAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.effectappender.MultiEffectAppender;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -42,10 +45,6 @@ public class PlayCardFromHand implements EffectAppenderProducer {
 
         final FilterableSource onFilterableSource = (onFilter != null) ? environment.getFilterFactory().generateFilter(onFilter) : null;
 
-        MultiEffectAppender result = new MultiEffectAppender();
-        result.setPlayabilityCheckedForEffect(true);
-        PlayerSource you = PlayerResolver.resolvePlayer("you");
-
         FilterableSource choiceFilter = (actionContext) -> {
             final DefaultGame game = actionContext.getGame();
             final int costModifier = costModifierSource.getEvaluator(actionContext).evaluateExpression(game, actionContext.getSource());
@@ -56,9 +55,18 @@ public class PlayCardFromHand implements EffectAppenderProducer {
             }
             return Filters.playable(costModifier);
         };
+        FilterableSource typeFilter = environment.getCardFilterableIfChooseOrAll(filter);
+        PlayerSource you = ActionContext::getPerformingPlayerId;
+        EffectAppender targetCardAppender = CardResolver.resolveCardsInZone(filter, choiceFilter, countSource,
+                memorize, you, you, "Choose card to play", typeFilter, Zone.HAND, false,
+                environment.getCardSourceFromZone(you, Zone.HAND, filter));
 
-        result.addEffectAppender(
-                CardResolver.resolveCardsInHand(filter, choiceFilter, countSource, memorize, you, "Choose card to play from hand", environment));
+        MultiEffectAppender result = new MultiEffectAppender();
+        result.setPlayabilityCheckedForEffect(true);
+
+
+
+        result.addEffectAppender(targetCardAppender);
         result.addEffectAppender(
                 new DelayedAppender() {
                     @Override

@@ -15,8 +15,8 @@ public class LookAtHand implements EffectAppenderProducer {
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
-        environment.validateAllowedFields(effectObject, "hand");
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "hand", true);
+        environment.validateAllowedFields(effectObject, "player");
+        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

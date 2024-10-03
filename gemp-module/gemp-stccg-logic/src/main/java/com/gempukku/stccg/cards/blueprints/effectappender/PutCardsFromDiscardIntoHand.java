@@ -5,16 +5,10 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PutCardFromZoneIntoHandEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
-import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -24,7 +18,7 @@ public class PutCardsFromDiscardIntoHand implements EffectAppenderProducer {
     @Override
     public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "count", "filter", "player", "discard", "memorize");
+        environment.validateAllowedFields(effectObject, "count", "filter", "selectingPlayer", "targetPlayer", "memorize");
 
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
 
