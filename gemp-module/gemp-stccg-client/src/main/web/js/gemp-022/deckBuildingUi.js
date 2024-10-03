@@ -1070,15 +1070,15 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
             var seedDeckWidth = subDeckRight - seedDeckLeft;
             
             this.missionsDiv.css({ position:"absolute", left:padding, top:subDeckTop, width:missionsWidth,
-                height:deckRowHeight});
+                height:deckRowHeight, "z-index": 9});
             this.missionsGroup.setBounds(0, 0, missionsWidth, deckRowHeight);
 
             this.seedDeckDiv.css({ position:"absolute", left:seedDeckLeft, top:subDeckTop, width:seedDeckWidth,
-                height:deckRowHeight});
+                height:deckRowHeight, "z-index": 9});
             this.seedDeckGroup.setBounds(0, 0, seedDeckWidth, deckRowHeight);
 
             this.drawDeckDiv.css({ position:"absolute", left:padding, top:drawDeckTop, width:subDeckWidth,
-                height:deckRowHeight });
+                height:deckRowHeight, "z-index": 9 });
             this.drawDeckGroup.setBounds(0, 0, subDeckWidth, deckRowHeight);
 
         } else {

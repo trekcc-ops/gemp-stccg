@@ -200,3 +200,12 @@ button.navigation-butt {
 .notesDialog {
     display: flex;
 }
+
+#missionsLabel,
+#seedDeckLabel,
+#drawDeckLabel {
+    z-index: 11;
+    position: absolute;
+    padding-left: 10px;
+    color: white;
+}
