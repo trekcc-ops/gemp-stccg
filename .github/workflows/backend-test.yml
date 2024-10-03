@@ -18,7 +18,7 @@ jobs:
         cache: maven
         cache-dependency-path: 'gemp-module/pom.xml'
     - name: Run tests with Maven
-      run: mvn test -X --file gemp-module/pom.xml
+      run: mvn test --file gemp-module/pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
