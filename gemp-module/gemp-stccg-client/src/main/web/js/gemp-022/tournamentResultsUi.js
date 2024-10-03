@@ -1,8 +1,10 @@
-var TournamentResultsUI = Class.extend({
-    communication:null,
-    formatDialog:null,
+import GempClientCommunication from "./communication.js";
 
-    init:function (url) {
+export default class TournamentResultsUI {
+    communication;
+    formatDialog;
+
+    constructor(url) {
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
@@ -17,27 +19,27 @@ var TournamentResultsUI = Class.extend({
             });
 
         this.loadLiveTournaments();
-    },
+    }
 
-    loadLiveTournaments:function () {
+    loadLiveTournaments() {
         var that = this;
         this.communication.getLiveTournaments(
             function (xml) {
                 that.loadedTournaments(xml);
             });
-    },
+    }
 
-    loadHistoryTournaments:function () {
+    loadHistoryTournaments() {
         var that = this;
         this.communication.getHistoryTournaments(
             function (xml) {
                 that.loadedTournaments(xml);
             });
-    },
+    }
 
-    loadedTournament:function (xml) {
+    loadedTournament(xml) {
         var that = this;
-        log(xml);
+        //log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'tournament') {
             $("#tournamentExtraInfo").html("");
@@ -61,11 +63,11 @@ var TournamentResultsUI = Class.extend({
             if (standings.length > 0)
                 $("#tournamentExtraInfo").append(this.createStandingsTable(standings, tournamentId, tournamentStage));
         }
-    },
+    }
 
-    loadedTournaments:function (xml) {
+    loadedTournaments(xml) {
         var that = this;
-        log(xml);
+        //log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'tournaments') {
             $("#tournamentResults").html("");
@@ -101,9 +103,9 @@ var TournamentResultsUI = Class.extend({
             $("#tournamentResults").append("<hr />");
             $("#tournamentResults").append("<div id='tournamentExtraInfo'></div>");
         }
-    },
+    }
 
-    createStandingsTable:function (standings, tournamentId, tournamentStage) {
+    createStandingsTable(standings, tournamentId, tournamentStage) {
         var standingsTable = $("<table class='standings'></table>");
 
         standingsTable.append("<tr><th>Standing</th><th>Player</th><th>Points</th><th>Games played</th><th>Opp. Win %</th><th></th><th>Standing</th><th>Player</th><th>Points</th><th>Games played</th><th>Opp. Win %</th></tr>");
@@ -146,4 +148,4 @@ var TournamentResultsUI = Class.extend({
 
         return standingsTable;
     }
-});
+}

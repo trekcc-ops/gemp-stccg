@@ -1,24 +1,28 @@
-var GameHistoryUI = Class.extend({
-    communication:null,
-    itemStart:0,
-    pageSize:20,
+import GempClientCommunication from "./communication.js";
 
-    init:function (url) {
+export default class GameHistoryUI {
+    communication;
+    itemStart = 0;
+    pageSize = 20;
+
+    constructor(url) {
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
         this.loadHistory();
-    },
+    }
 
-    loadHistory:function () {
+    loadHistory() {
         var that = this;
         this.communication.getGameHistory(this.itemStart, this.pageSize,
             function (xml) {
+                // BUG: Can't get this callback function to get called, despite having game history.
+                // The communications.getGameHistory function is called but returns a 404 XHR. Broken lookup?
                 that.loadedGameHistory(xml);
             });
-    },
+    }
 
-    loadedGameHistory:function (xml) {
+    loadedGameHistory(xml) {
         log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'gameHistory') {
@@ -71,4 +75,4 @@ var GameHistoryUI = Class.extend({
             $("#gameHistory").append(historyTable);
         }
     }
-});
+}

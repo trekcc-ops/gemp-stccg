@@ -1,9 +1,11 @@
-var LeagueResultsUI = Class.extend({
-    communication:null,
-    questionDialog:null,
-    formatDialog:null,
+import GempClientCommunication from "./communication.js";
 
-    init:function (url) {
+export default class LeagueResultsUI {
+    communication;
+    questionDialog;
+    formatDialog;
+
+    constructor(url) {
         this.communication = new GempClientCommunication(url,
             function (xhr, ajaxOptions, thrownError) {
             });
@@ -29,17 +31,17 @@ var LeagueResultsUI = Class.extend({
             });
 
         this.loadResults();
-    },
+    }
 
-    loadResults:function () {
+    loadResults() {
         var that = this;
         this.communication.getLeagues(
             function (xml) {
                 that.loadedLeagueResults(xml);
             });
-    },
+    }
 
-    loadResultsWithLeague:function (type) {
+    loadResultsWithLeague(type) {
         var that = this;
         this.communication.getLeagues(
             function (xml) {
@@ -49,11 +51,11 @@ var LeagueResultsUI = Class.extend({
                         that.loadedLeague(xml);
                     });
             });
-    },
+    }
 
-    loadedLeague:function (xml) {
+    loadedLeague(xml) {
         var that = this;
-        log(xml);
+        //log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'league') {
             $("#leagueExtraInfo").html("");
@@ -187,11 +189,11 @@ var LeagueResultsUI = Class.extend({
 
             $("#leagueExtraInfo").append(tabDiv);
         }
-    },
+    }
 
-    loadedLeagueResults:function (xml) {
+    loadedLeagueResults(xml) {
         var that = this;
-        log(xml);
+        //log(xml);
         var root = xml.documentElement;
         if (root.tagName == 'leagues') {
             $("#leagueResults").html("");
@@ -225,9 +227,9 @@ var LeagueResultsUI = Class.extend({
             $("#leagueResults").append("<hr />");
             $("#leagueResults").append("<div id='leagueExtraInfo'></div>");
         }
-    },
+    }
 
-    displayBuyAction:function (text, yesFunc) {
+    displayBuyAction(text, yesFunc) {
         var that = this;
         this.questionDialog.html("");
         this.questionDialog.html("<div style='scroll: auto'></div>");
@@ -252,9 +254,9 @@ var LeagueResultsUI = Class.extend({
 
         this.questionDialog.dialog({width:Math.min(horSpace, windowWidth), height:Math.min(vertSpace, windowHeight)});
         this.questionDialog.dialog("open");
-    },
+    }
 
-    createStandingsTable:function (standings) {
+    createStandingsTable(standings) {
         var standingsTable = $("<table class='standings'></table>");
 
         standingsTable.append("<tr><th>Standing</th><th>Player</th><th>Points</th><th>Games played</th><th>Opp. Win %</th><th></th><th>Standing</th><th>Player</th><th>Points</th><th>Games played</th><th>Opp. Win %</th></tr>");
@@ -285,4 +287,4 @@ var LeagueResultsUI = Class.extend({
 
         return standingsTable;
     }
-});
+}

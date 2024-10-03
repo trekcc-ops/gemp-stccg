@@ -1,3 +1,7 @@
+import { getUrlParam } from "../../js/gemp-022/common.js";
+import GameTableUI from "../../js/gemp-022/gameUi.js";
+import { TribblesGameTableUI, ST1EGameTableUI } from "../../js/gemp-022/gameUi.js";
+
 var ui;
 var communication;
 

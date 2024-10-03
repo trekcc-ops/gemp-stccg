@@ -1,3 +1,5 @@
+import GempLotrSoloDraftUI from "../../js/gemp-022/soloDraftUi.js";
+
 $(document).ready(
     function () {
         var ui = new GempLotrSoloDraftUI();

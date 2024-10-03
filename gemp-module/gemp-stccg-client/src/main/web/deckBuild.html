@@ -1,5 +1,4 @@
-<!DOCTYPE html
-	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 
 <head>
@@ -70,14 +69,14 @@
 			</select>
 		</div>
 
-		<div id="missionsDiv">Missions</div>
-		<div id="seedDeckDiv">Seed Deck</div>
+		<div id="missionsDiv"><div id="missionsLabel">Missions</div></div>
+		<div id="seedDeckDiv"><div id="seedDeckLabel">Seed Deck</div></div>
 
 		<div id="statsDiv">
 			<div id="deckStats"></div>
 		</div>
 
-		<div id="decksRegion"></div>
+		<div id="decksRegion"><div id="drawDeckLabel">Draw Deck</div></div>
 	</div>
 
 	<div id="collectionDiv" class="ui-layout-east ui-layout-pane ui-layout-pane-east">
@@ -191,18 +190,8 @@
 	<script type="text/javascript" src="js/jquery/jquery.layout.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.touchSwipe.js"></script>
 
-	<!-- Code shared by other pages -->
-	<script type="text/javascript" src="js/gemp-022/inheritance.js"></script>
-	<script type="text/javascript" src="js/gemp-022/common.js"></script>
-	<script type="text/javascript" src="js/gemp-022/communication.js"></script>
-	<script type="text/javascript" src="js/gemp-022/deliveryService.js"></script>
-	<script type="text/javascript" src="js/gemp-022/jCardGroup.js"></script>
-	<script type="text/javascript" src="js/gemp-022/jCards.js"></script>
-
 	<!-- Deck building JS -->
-	<script type="text/javascript" src="js/gemp-022/cardFilter.js"></script>
-	<script type="text/javascript" src="js/gemp-022/deckBuildingUi.js"></script>
-	<script type="text/javascript" src="src/DeckBuilder/deckBuilder.js"></script>
+	<script type="module" src="src/DeckBuilder/deckBuilder.js"></script>
 
 </body>
 

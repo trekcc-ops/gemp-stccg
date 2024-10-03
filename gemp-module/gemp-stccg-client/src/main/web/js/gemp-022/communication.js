@@ -1,13 +1,12 @@
-var GempClientCommunication = Class.extend({
-    url:null,
-    failure:null,
+import { getUrlParam } from './common.js';
 
-    init:function (url, failure) {
-        this.url = serverDomain + url;
+export default class GempClientCommunication {
+    constructor(url, failure) {
+        this.url = url;
         this.failure = failure;
-    },
+    }
 
-    errorCheck:function (errorMap) {
+    errorCheck(errorMap) {
         var that = this;
         return function (xhr, status, request) {
             var errorStatus = "" + xhr.status;
@@ -15,10 +14,11 @@ var GempClientCommunication = Class.extend({
                 errorMap[errorStatus](xhr, status, request);
             else if (""+xhr.status != "200")
                 that.failure(xhr, status, request);
-        };
-    },
+        }
+    }
 
-    logout:function (callback, errorMap) {
+    logout(callback, errorMap) {
+        /* TODO ES6 */
         $.ajax({
             type:"POST",
             url:this.url + "/logout",
@@ -28,9 +28,10 @@ var GempClientCommunication = Class.extend({
             success:this.deliveryCheck(callback),
             error:this.errorCheck(errorMap)
         });
-    },
+    }
 
-    getDelivery:function (callback) {
+    getDelivery(callback) {
+        /* TODO ES6 */
         $.ajax({
             type:"GET",
             url:this.url + "/delivery",
@@ -41,9 +42,9 @@ var GempClientCommunication = Class.extend({
             error:null,
             dataType:"xml"
         });
-    },
+    }
 
-    deliveryCheck:function (callback) {
+    deliveryCheck(callback) {
         var that = this;
         return function (xml, status, request) {
             var delivery = request.getResponseHeader("Delivery-Service-Package");
@@ -51,9 +52,9 @@ var GempClientCommunication = Class.extend({
                 that.getDelivery(window.deliveryService);
             callback(xml);
         };
-    },
+    }
     
-    deliveryCheckStatus:function (callback) {
+    deliveryCheckStatus(callback) {
         var that = this;
         return function (xml, status, request) {
             var delivery = request.getResponseHeader("Delivery-Service-Package");
@@ -61,9 +62,10 @@ var GempClientCommunication = Class.extend({
                 that.getDelivery(window.deliveryService);
             callback(xml, request.status);
         };
-    },
+    }
 
-    getGameHistory:function (start, count, callback, errorMap) {
+    getGameHistory(start, count, callback, errorMap) {
+        /* TODO ES6 */
         $.ajax({
             type:"GET",
             url:this.url + "/gameHistory",
@@ -76,9 +78,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    getStats:function (startDay, length, callback, errorMap) {
+    getStats(startDay, length, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/stats",
@@ -91,9 +93,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
+    }
 
-    getPlayerStats:function (callback, errorMap) {
+    getPlayerStats(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/playerStats",
@@ -104,9 +106,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-
-    getLiveTournaments:function (callback, errorMap) {
+    }
+    
+    getLiveTournaments(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/tournament",
@@ -117,9 +119,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    getHistoryTournaments:function (callback, errorMap) {
+    getHistoryTournaments(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/tournament/history",
@@ -130,9 +132,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    getTournament:function (tournamentId, callback, errorMap) {
+    getTournament(tournamentId, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/tournament/" + tournamentId,
@@ -143,9 +145,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    getLeagues:function (callback, errorMap) {
+    getLeagues(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/league",
@@ -156,9 +158,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    getLeague:function (type, callback, errorMap) {
+    getLeague(type, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/league/" + type,
@@ -169,9 +171,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    joinLeague:function (code, callback, errorMap) {
+    joinLeague(code, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/league/" + code,
@@ -182,9 +184,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
 
-    getReplay:function (replayId, callback, errorMap) {
+    getReplay(replayId, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/replay/" + replayId,
@@ -193,8 +195,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    startGameSession:function (callback, errorMap) {
+    }
+
+    startGameSession(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/game/" + getUrlParam("gameId"),
@@ -204,8 +207,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    updateGameState:function (channelNumber, callback, errorMap) {
+    }
+
+    updateGameState(channelNumber, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/game/" + getUrlParam("gameId"),
@@ -218,8 +222,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getGameCardModifiers:function (cardId, callback, errorMap) {
+    }
+
+    getGameCardModifiers(cardId, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/game/" + getUrlParam("gameId") + "/cardInfo",
@@ -231,8 +236,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    gameDecisionMade:function (decisionId, response, channelNumber, callback, errorMap) {
+    }
+
+    gameDecisionMade(decisionId, response, channelNumber, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/game/" + getUrlParam("gameId"),
@@ -247,8 +253,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    concede:function (errorMap) {
+    }
+    
+    concede(errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/game/" + getUrlParam("gameId") + "/concede",
@@ -258,8 +265,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    cancel:function (errorMap) {
+    }
+
+    cancel(errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/game/" + getUrlParam("gameId") + "/cancel",
@@ -269,8 +277,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getDeck:function (deckName, callback, errorMap) {
+    }
+
+    getDeck(deckName, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/deck",
@@ -282,8 +291,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    shareDeck:function (deckName, callback, errorMap) {
+    }
+
+    shareDeck(deckName, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/deck/share",
@@ -295,8 +305,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    getLibraryDeck:function (deckName, callback, errorMap) {
+    }
+    
+    getLibraryDeck(deckName, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/deck/library",
@@ -308,8 +319,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getDecks:function (callback, errorMap) {
+    }
+
+    getDecks(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/deck/list",
@@ -320,8 +332,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getLibraryDecks:function (callback, errorMap) {
+    }
+
+    getLibraryDecks(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/deck/libraryList",
@@ -332,8 +345,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getCollectionTypes:function (callback, errorMap) {
+    }
+
+    getCollectionTypes(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/collection",
@@ -344,8 +358,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getMerchant:function (filter, ownedMin, start, count, callback, errorMap) {
+    }
+    
+    getMerchant(filter, ownedMin, start, count, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/merchant",
@@ -360,8 +375,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    buyItem:function (blueprintId, price, callback, errorMap) {
+    }
+
+    buyItem(blueprintId, price, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/merchant/buy",
@@ -374,8 +390,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    sellItem:function (blueprintId, price, callback, errorMap) {
+    }
+
+    sellItem(blueprintId, price, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/merchant/sell",
@@ -388,8 +405,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    tradeInFoil:function (blueprintId, callback, errorMap) {
+    }
+
+    tradeInFoil(blueprintId, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/merchant/tradeFoil",
@@ -401,8 +419,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    getCollection:function (collectionType, filter, start, count, callback, errorMap) {
+    }
+
+    getCollection(collectionType, filter, start, count, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/collection/" + collectionType,
@@ -416,8 +435,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    importCollection:function (decklist, callback, errorMap) {
+    }
+
+    importCollection(decklist, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/collection/import/",
@@ -429,8 +449,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    openPack:function (collectionType, pack, callback, errorMap) {
+    }
+
+    openPack(collectionType, pack, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/collection/" + collectionType,
@@ -442,8 +463,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    openSelectionPack:function (collectionType, pack, selection, callback, errorMap) {
+    }
+
+    openSelectionPack(collectionType, pack, selection, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/collection/" + collectionType,
@@ -456,8 +478,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    saveDeck:function (deckName, targetFormat, notes, contents, callback, errorMap) {
+    }
+
+    saveDeck(deckName, targetFormat, notes, contents, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck",
@@ -473,8 +496,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    renameDeck:function (oldDeckName, deckName, callback, errorMap) {
+    }
+
+    renameDeck(oldDeckName, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck/rename",
@@ -487,8 +511,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    deleteDeck:function (deckName, callback, errorMap) {
+    }
+
+    deleteDeck(deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck/delete",
@@ -500,8 +525,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getDeckStats:function (contents, targetFormat, callback, errorMap) {
+    }
+
+    getDeckStats(contents, targetFormat, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck/stats",
@@ -514,8 +540,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    getSets:function (format, callback, errorMap) {
+    }
+
+    getSets(format, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck/sets",
@@ -527,8 +554,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
-    getFormats:function (includeEvents, callback, errorMap) {
+    }
+
+    getFormats(includeEvents, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/deck/formats",
@@ -540,8 +568,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
-    startChat:function (room, callback, errorMap) {
+    }
+
+    startChat(room, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/chat/" + room,
@@ -552,8 +581,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    updateChat:function (room, callback, errorMap) {
+    }
+
+    updateChat(room, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/chat/" + room,
@@ -565,8 +595,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    sendChatMessage:function (room, messages, errorMap) {
+    }
+
+    sendChatMessage(room, messages, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/chat/" + room,
@@ -579,8 +610,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getHall:function (callback, errorMap) {
+    }
+
+    getHall(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/hall",
@@ -591,8 +623,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    updateHall:function (callback, channelNumber, errorMap) {
+    }
+
+    updateHall(callback, channelNumber, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall/update",
@@ -605,8 +638,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    joinQueue:function (queueId, deckName, callback, errorMap) {
+    }
+
+    joinQueue(queueId, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall/queue/" + queueId,
@@ -618,8 +652,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    leaveQueue:function (queueId, errorMap) {
+    }
+
+    leaveQueue(queueId, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall/queue/" + queueId + "/leave",
@@ -629,8 +664,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    dropFromTournament:function(tournamentId, callback, errorMap) {
+    }
+
+    dropFromTournament(tournamentId, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall/tournament/" + tournamentId + "/leave",
@@ -640,8 +676,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    joinTable:function (tableId, deckName, callback, errorMap) {
+    }
+
+    joinTable(tableId, deckName, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall/" + tableId,
@@ -653,8 +690,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    leaveTable:function (tableId, errorMap) {
+    }
+
+    leaveTable(tableId, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall/"+tableId+"/leave",
@@ -664,8 +702,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    createTable:function (format, deckName, timer, desc, isPrivate, isInviteOnly, callback, errorMap) {
+    }
+
+    createTable(format, deckName, timer, desc, isPrivate, isInviteOnly, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/hall",
@@ -682,8 +721,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    getFormat:function (formatCode, callback, errorMap) {
+    }
+
+    getFormat(formatCode, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/hall/format/" + formatCode,
@@ -694,8 +734,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    getFormatRules:function (callback, errorMap) {
+    }
+
+    getFormatRules(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/hall/formats/html",
@@ -706,9 +747,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    getErrata:function (callback, errorMap) {
+    getErrata(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/hall/errata/json",
@@ -719,9 +760,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
+    }
     
-    addTesterFlag:function (callback, errorMap) {
+    addTesterFlag(callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/playtesting/addTesterFlag",
@@ -732,9 +773,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    removeTesterFlag:function (callback, errorMap) {
+    removeTesterFlag(callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/playtesting/removeTesterFlag",
@@ -745,9 +786,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    getRecentReplays:function (format, count, callback, errorMap) {
+    getRecentReplays(format, count, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/playtesting/getRecentReplays",
@@ -760,9 +801,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
+    }
     
-    setShutdownMode:function (shutdown, callback, errorMap) {
+    setShutdownMode(shutdown, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/shutdown",
@@ -774,9 +815,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    
-    clearServerCache:function (callback, errorMap) {
+    }
+
+    clearServerCache(callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/clearCache",
@@ -786,9 +827,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    reloadCardDefinitions:function (callback, errorMap) {
+    reloadCardDefinitions(callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/reloadCards",
@@ -798,9 +839,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    getDailyMessage:function (callback, errorMap) {
+    getDailyMessage(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/admin/getDailyMessage",
@@ -809,9 +850,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
+    }
     
-    setDailyMessage:function (motd, callback, errorMap) {
+    setDailyMessage(motd, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/setDailyMessage",
@@ -823,9 +864,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    addItems:function (collectionType, product, players, callback, errorMap) {
+    addItems(collectionType, product, players, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addItems",
@@ -839,9 +880,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    resetUserPassword:function (login, callback, errorMap) {
+    resetUserPassword(login, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/resetUserPassword",
@@ -853,9 +894,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    permabanUser:function (login, callback, errorMap) {
+    permabanUser(login, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/banUser",
@@ -867,9 +908,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    tempbanUser:function (login, duration, callback, errorMap) {
+    tempbanUser(login, duration, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/banUserTemp",
@@ -882,9 +923,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    unbanUser:function (login, callback, errorMap) {
+    unbanUser(login, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/unBanUser",
@@ -896,9 +937,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    susUserSearch:function (login, callback, errorMap) {
+    susUserSearch(login, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/findMultipleAccounts",
@@ -910,9 +951,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    banMultiple:function (login, callback, errorMap) {
+    banMultiple(login, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/banMultiple",
@@ -924,9 +965,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    previewSealedLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
+    previewSealedLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/previewSealedLeague",
@@ -943,9 +984,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
     
-    addSealedLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
+    addSealedLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addSealedLeague",
@@ -962,9 +1003,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    previewSoloDraftLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
+    previewSoloDraftLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/previewSoloDraftLeague",
@@ -981,9 +1022,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
     
-    addSoloDraftLeague:function (format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
+    addSoloDraftLeague(format, start, seriesDuration, maxMatches, name, cost, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addSoloDraftLeague",
@@ -1000,9 +1041,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
-    previewConstructedLeague:function (start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
+    previewConstructedLeague(start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/previewConstructedLeague",
@@ -1021,9 +1062,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
+    }
     
-    addConstructedLeague:function (start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
+    addConstructedLeague(start, collectionType, prizeMultiplier, name, cost, formats, seriesDurations, maxMatches, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/admin/addConstructedLeague",
@@ -1042,7 +1083,7 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
+    }
     
     
     
@@ -1052,7 +1093,7 @@ var GempClientCommunication = Class.extend({
     // gated behind authorization, it goes on the server
     // and not in here.
     
-    getPlayerInfo:function (callback, errorMap) {
+    getPlayerInfo(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/player",
@@ -1064,9 +1105,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"json"
         });
-    },
+    }
     
-    getStatus:function (callback, errorMap) {
+    getStatus(callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/",
@@ -1077,8 +1118,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    login:function (login, password, callback, errorMap) {
+    }
+
+    login(login, password, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/login",
@@ -1092,8 +1134,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    register:function (login, password, callback, errorMap) {
+    }
+
+    register(login, password, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/register",
@@ -1106,8 +1149,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    getRegistrationForm:function (callback, errorMap) {
+    }
+
+    getRegistrationForm(callback, errorMap) {
         $.ajax({
             type:"POST",
             url:"/gemp-module/includes/registrationForm.html",
@@ -1119,8 +1163,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"html"
         });
-    },
-    getDraft:function (leagueType, callback, errorMap) {
+    }
+
+    getDraft(leagueType, callback, errorMap) {
         $.ajax({
             type:"GET",
             url:this.url + "/soloDraft/"+leagueType,
@@ -1131,8 +1176,9 @@ var GempClientCommunication = Class.extend({
             error:this.errorCheck(errorMap),
             dataType:"xml"
         });
-    },
-    makeDraftPick:function (leagueType, choiceId, callback, errorMap) {
+    }
+
+    makeDraftPick(leagueType, choiceId, callback, errorMap) {
         $.ajax({
             type:"POST",
             url:this.url + "/soloDraft/"+leagueType,
@@ -1145,4 +1191,4 @@ var GempClientCommunication = Class.extend({
             dataType:"xml"
         });
     }
-});
+};

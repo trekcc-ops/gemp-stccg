@@ -1,26 +1,3 @@
-<script type="text/javascript">
-	$("adminMain").ready(
-		function () {
-			$("#adminMain").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-			$("#admin-tabs > ol > li").removeClass("ui-corner-top").addClass("ui-corner-left");
-			
-			$("#landingTab").parent().hide();
-			$("#landing").hide();
-			
-			if(!hall.userInfo.type.includes("a"))
-			{
-				$("#generalTab").parent().hide();
-				$("#banTab").parent().hide();
-			}
-			
-			if(!hall.userInfo.type.includes("l"))
-			{
-				$("#leagueTab").parent().hide();
-			}
-		});
-	
-</script>
-
 <div id="adminMain" class="hall-tab flex-horizontal">
 	<div id="admin-tabs" class="sub-tabs">
 		<ol>
@@ -30,8 +7,7 @@
 			<li><a id="banTab" href="includes/admin/userAdmin.html">Manage Users</a></li>
 		</ol>
 	</div>  
-	<div id="landing" style="">
-	</div>
+	<div id="landing"></div>
 	<div id="generalAdmin">
 		
 	</div>
