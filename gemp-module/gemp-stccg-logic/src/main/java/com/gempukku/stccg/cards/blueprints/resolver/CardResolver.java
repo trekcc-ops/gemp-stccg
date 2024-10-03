@@ -146,8 +146,6 @@ public class CardResolver {
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
                                                       PlayerSource choicePlayer, String selectionType, FilterableSource typeFilter) {
 
-        // TODO - "choose" not fully implemented in this method
-
         return new DefaultDelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {

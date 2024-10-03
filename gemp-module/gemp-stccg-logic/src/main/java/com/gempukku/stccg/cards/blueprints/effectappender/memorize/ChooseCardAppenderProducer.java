@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.blueprints.effectappender.memorize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderProducer;
@@ -13,7 +14,9 @@ import com.gempukku.stccg.common.filterable.Zone;
 public class ChooseCardAppenderProducer implements EffectAppenderProducer {
 
     private enum EffectType {
-        CHOOSEACTIVECARDS(null), CHOOSECARDSFROMDISCARD(Zone.DISCARD), CHOOSECARDSFROMDRAWDECK(Zone.DRAW_DECK);
+        CHOOSEACTIVECARDS(null),
+        CHOOSECARDSFROMDISCARD(Zone.DISCARD),
+        CHOOSECARDSFROMDRAWDECK(Zone.DRAW_DECK);
 
         private final Zone fromZone;
         EffectType(Zone fromZone) { this.fromZone = fromZone; }
@@ -27,10 +30,12 @@ public class ChooseCardAppenderProducer implements EffectAppenderProducer {
         EffectType effectType = environment.getEnum(EffectType.class, effectObject, "type");
         switch(effectType) {
             case CHOOSEACTIVECARDS, CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK:
-                environment.validateAllowedFields(effectObject, "count", "filter", "memorize", "text");
+                environment.validateAllowedFields(effectObject, "count", "filter", "memorize", "text", "player");
                 break;
         }
 
+        final PlayerSource selectingPlayer = environment.getSelectingPlayerSource(effectObject);
+        final PlayerSource targetPlayer = environment.getTargetPlayerSource(effectObject);
         final String memorize = effectObject.get("memorize").textValue();
         if (memorize == null)
             throw new InvalidCardDefinitionException("You need to define what memory to use to store chosen cards");
@@ -53,7 +58,8 @@ public class ChooseCardAppenderProducer implements EffectAppenderProducer {
                             environment.getCardFilterableIfChooseOrAll(
                                     environment.getString(effectObject, "filter", "choose(any)")));
             case CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK ->
-                    environment.buildTargetCardAppender(effectObject, text, effectType.fromZone, memorize);
+                    environment.buildTargetCardAppender(effectObject, selectingPlayer, targetPlayer, text,
+                            effectType.fromZone, memorize, false);
         };
     }
 }

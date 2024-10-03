@@ -67,10 +67,6 @@ public interface ModifiersQuerying {
 
     List<? extends Action> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
 
-    List<? extends Action> getExtraPhaseActionsFromStacked(DefaultGame game, PhysicalCard target);
-
-    boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard target);
-
     void appendExtraCosts(CostToEffectAction action, PhysicalCard target);
 
     // Others
@@ -79,15 +75,12 @@ public interface ModifiersQuerying {
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
     boolean canDrawCardNoIncrement(String playerId);
-    boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId);
 
-    boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
+    boolean canLookOrRevealCardsInHand(String revealingPlayerId, String performingPlayerId);
 
     boolean canDiscardCardsFromHand(String playerId, PhysicalCard source);
 
     boolean canDiscardCardsFromTopOfDeck(String playerId, PhysicalCard source);
-
-    boolean canBeLiberated(DefaultGame game, String playerId, PhysicalCard card, PhysicalCard source);
 
     int getSpotBonus(Filterable filter);
 

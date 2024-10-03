@@ -7,10 +7,7 @@ import com.gempukku.stccg.actions.revealcards.RevealBottomCardsOfDrawDeckEffect;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
-
-import java.util.List;
 
 public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
@@ -37,13 +34,7 @@ public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
                 final String deckId = playerSource.getPlayerId(context);
                 final int count = valueSource.evaluateExpression(context, null);
 
-                return new RevealBottomCardsOfDrawDeckEffect(context, deckId, count) {
-                    @Override
-                    protected void cardsRevealed(List<PhysicalCard> revealedCards) {
-                        if (memorize != null)
-                            context.setCardMemory(memorize, revealedCards);
-                    }
-                };
+                return new RevealBottomCardsOfDrawDeckEffect(context, deckId, count, memorize);
             }
         };
     }

@@ -45,8 +45,8 @@ public class RevealRandomCardsFromHand implements EffectAppenderProducer {
                 final int count = countSource.evaluateExpression(actionContext, null);
                 if (actionContext.getGameState().getHand(handPlayer).size() < count)
                     return false;
-                return !forced
-                        || actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(actionContext.getGame(), handPlayer, actionContext.getPerformingPlayerId());
+                return !forced ||
+                        actionContext.getGame().getModifiersQuerying().canLookOrRevealCardsInHand(handPlayer, actionContext.getPerformingPlayerId());
             }
         };
     }

@@ -530,37 +530,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public List<? extends Action> getExtraPhaseActionsFromStacked(DefaultGame game, PhysicalCard target) {
-        List<Action> activateCardActions = new LinkedList<>();
-
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.EXTRA_ACTION_MODIFIER, target)) {
-            List<? extends Action> actions = modifier.getExtraPhaseActionFromStacked(game, target);
-            if (actions != null)
-                activateCardActions.addAll(actions);
-        }
-
-        return activateCardActions;
-    }
-
-    @Override
-    public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard target) {
-        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay();
-        if (playCosts != null)
-            for (ExtraPlayCost playCost : playCosts) {
-                final Condition condition = playCost.getCondition();
-                if ((condition == null || condition.isFulfilled()) && !playCost.canPayExtraCostsToPlay(game, target))
-                    return false;
-            }
-
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.EXTRA_COST_MODIFIER, target)) {
-            if (!modifier.canPayExtraCostsToPlay(game, target))
-                return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public void appendExtraCosts(CostToEffectAction action, PhysicalCard target) {
         final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay();
         if (playCosts != null)
@@ -613,26 +582,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         return true;
     }
 
-    /**
-     * Rule of 4. "You cannot draw (or take into hand) more than 4 cards during your fellowship phase."
-     *
-     * @param game
-     * @param playerId
-     * @return
-     */
     @Override
-    public boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId) {
-        game.getGameState().getCurrentPlayerId();
-        return true;
-    }
-
-    @Override
-    public boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId) {
+    public boolean canLookOrRevealCardsInHand(String revealingPlayerId, String performingPlayerId) {
         for (Modifier modifier : getModifiers(ModifierEffect.LOOK_OR_REVEAL_MODIFIER))
-            if (!modifier.canLookOrRevealCardsInHand(game, revealingPlayerId, performingPlayerId))
+            if (!modifier.canLookOrRevealCardsInHand(_game, revealingPlayerId, performingPlayerId))
                 return false;
         return true;
     }
+
 
     @Override
     public boolean canDiscardCardsFromHand(String playerId, PhysicalCard source) {
@@ -656,19 +613,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                 return true;
             }
         return false;
-    }
-
-    @Override
-    public boolean canBeLiberated(DefaultGame game, String playerId, PhysicalCard card, PhysicalCard source) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.LIBERATION_MODIFIER, card))
-                if (!modifier.canBeLiberated(game, playerId, card, source))
-                    return false;
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
     }
 
     @Override

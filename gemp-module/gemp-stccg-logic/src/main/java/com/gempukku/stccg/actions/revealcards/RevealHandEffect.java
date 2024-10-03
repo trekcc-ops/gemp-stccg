@@ -33,12 +33,12 @@ public class RevealHandEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _handPlayerId, _actingPlayer);
+        return _game.getModifiersQuerying().canLookOrRevealCardsInHand(_handPlayerId, _actingPlayer);
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _handPlayerId, _actingPlayer)) {
+        if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_handPlayerId, _actingPlayer)) {
             final List<? extends PhysicalCard> hand = _game.getGameState().getHand(_handPlayerId);
             _game.sendMessage(
                     _source.getCardLink() + " revealed " + _handPlayerId + " cards in hand - " +

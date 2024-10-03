@@ -11,6 +11,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.StackActionEffect;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,8 +29,10 @@ public class Choice implements EffectAppenderProducer {
         if (effectArray.length != textArray.length)
             throw new InvalidCardDefinitionException("Number of texts and effects does not match in choice effect");
 
-        EffectAppender[] possibleEffectAppenders =
-                environment.getEffectAppenderFactory().getEffectAppenders(effectArray);
+        List<EffectAppender> possibleEffectAppenders = new ArrayList<>();
+        for (JsonNode effect : effectArray) {
+            possibleEffectAppenders.add(environment.getEffectAppenderFactory().getEffectAppender(effect));
+        }
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
 

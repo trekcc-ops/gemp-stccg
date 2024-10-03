@@ -29,7 +29,7 @@ public class RevealHand implements EffectAppenderProducer {
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final DefaultGame game = actionContext.getGame();
                 final String revealingPlayer = playerSource.getPlayerId(actionContext);
-                return game.getModifiersQuerying().canLookOrRevealCardsInHand(game, revealingPlayer, actionContext.getPerformingPlayerId());
+                return game.getModifiersQuerying().canLookOrRevealCardsInHand(revealingPlayer, actionContext.getPerformingPlayerId());
             }
 
             @Override

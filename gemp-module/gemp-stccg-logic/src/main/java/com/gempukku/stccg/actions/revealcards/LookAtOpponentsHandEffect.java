@@ -21,12 +21,12 @@ public class LookAtOpponentsHandEffect extends DefaultEffect {
 
     @Override
     public boolean isPlayableInFull() {
-        return _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _opponentId, _playerId);
+        return _game.getModifiersQuerying().canLookOrRevealCardsInHand(_opponentId, _playerId);
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _opponentId, _playerId)) {
+        if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_opponentId, _playerId)) {
             List<PhysicalCard> opponentHand = new LinkedList<>(_game.getGameState().getHand(_opponentId));
 
             _game.sendMessage(_playerId + " looked at " + _opponentId + "'s entire hand");

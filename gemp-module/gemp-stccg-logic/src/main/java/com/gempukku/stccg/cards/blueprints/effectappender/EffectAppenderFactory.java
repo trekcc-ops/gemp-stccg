@@ -25,13 +25,19 @@ public class EffectAppenderFactory {
             // Card resolver multi-effect appenders (choose a card and perform an action with it)
         effectAppenderProducers.put("discard", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("discardcardsfromdrawdeck", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("discardfromhand", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdeckintohand", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdeckontopofdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("putcardsfromdiscardintohand", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("putcardsfromdiscardonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdiscardontopofdeck", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("putcardsfromhandonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromhandontopofdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("removecardsindiscardfromgame", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("removefromthegame", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("revealcardsfromhand", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromdiscardintodrawdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromplayintodrawdeck", new CardResolverMultiEffectAppenderProducer());
@@ -40,39 +46,35 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("choosecardsfromdiscard", new ChooseCardAppenderProducer());
         effectAppenderProducers.put("choosecardsfromdrawdeck", new ChooseCardAppenderProducer());
 
-            // Card resolver misc.
+            // Misc effect appender producers
+        effectAppenderProducers.put("discardcardatrandomfromhand", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("drawcards", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("lookattopcardsofdrawdeck", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("lookathand", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("lookatrandomcardsfromhand", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("placeplayedcardbeneathdrawdeck", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("reordertopcardsofdrawdeck", new MiscEffectAppenderProducer());
+        effectAppenderProducers.put("revealbottomcardsofdrawdeck", new MiscEffectAppenderProducer());
+
+            // Other card business
         effectAppenderProducers.put("discardbottomcardsfromdeck", new DiscardBottomCardFromDeck());
-        effectAppenderProducers.put("discardcardatrandomfromhand", new DiscardCardAtRandomFromHand());
-        effectAppenderProducers.put("discardfromhand", new DiscardFromHand());
         effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
         effectAppenderProducers.put("discardtopcardsfromdeck", new DiscardTopCardFromDeck());
         effectAppenderProducers.put("download", new DownloadCard());
-        effectAppenderProducers.put("drawcards", new DrawCards());
-        effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck());
-        effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck());
-        effectAppenderProducers.put("lookathand", new LookAtHand());
-        effectAppenderProducers.put("lookatrandomcardsfromhand", new LookAtRandomCardsFromHand());
-        effectAppenderProducers.put("lookattopcardsofdrawdeck", new LookAtTopCardsOfDrawDeck());
-        effectAppenderProducers.put("placeplayedcardbeneathdrawdeck", new PlacePlayedCardBeneathDrawDeck());
-        effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new PlaceTopCardOfDrawDeckOnTopOfPlayPile());
-        effectAppenderProducers.put("play", new PlayCardFromHand());
-        effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard());
-        effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck());
-        effectAppenderProducers.put("putcardsfromdiscardintohand", new PutCardsFromDiscardIntoHand());
-        effectAppenderProducers.put("putcardsfromdiscardonbottomofdeck", new PutCardsFromDiscardOnBottomOfDeck());
-        effectAppenderProducers.put("putcardsfromhandonbottomofdeck", new PutCardsFromHandOnBottomOfDeck());
-        effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new PutCardsFromHandOnBottomOfPlayPile());
-        effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new PutCardsFromPlayOnBottomOfDeck());
-        effectAppenderProducers.put("reordertopcardsofdrawdeck", new ReorderTopCardsOfDrawDeck());
-        effectAppenderProducers.put("returntohand", new ReturnToHand());
-        effectAppenderProducers.put("revealbottomcardsofdrawdeck", new RevealBottomCardsOfDrawDeck());
-        effectAppenderProducers.put("revealcards", new RevealCards());
-        effectAppenderProducers.put("revealcardsfromhand", new RevealCardsFromHand());
-        effectAppenderProducers.put("revealhand", new RevealHand());
-        effectAppenderProducers.put("revealrandomcardsfromhand", new RevealRandomCardsFromHand());
-        effectAppenderProducers.put("revealtopcardsofdrawdeck", new RevealTopCardsOfDrawDeck());
-        effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.HAND));
-        effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.PLAY_PILE));
+        effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck()); // unrespondable
+        effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck()); // multi
+        effectAppenderProducers.put("play", new PlayCardFromHand()); // multi
+        effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard()); // multi
+        effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck()); // multi
+        effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new PutCardsFromPlayOnBottomOfDeck()); // multi
+        effectAppenderProducers.put("returntohand", new ReturnToHand()); // multi
+        effectAppenderProducers.put("revealcards", new RevealCards()); // multi
+        effectAppenderProducers.put("revealhand", new RevealHand()); // default
+        effectAppenderProducers.put("revealrandomcardsfromhand", new RevealRandomCardsFromHand()); // default
+        effectAppenderProducers.put("revealtopcardsofdrawdeck", new RevealTopCardsOfDrawDeck()); // default
+        effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.HAND)); // unrespondable
+        effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.PLAY_PILE)); // unrespondable
 
             // Modifiers
         effectAppenderProducers.put("addkeyword", new AddKeyword());
@@ -114,18 +116,6 @@ public class EffectAppenderFactory {
         if (effectAppenderProducer == null)
             throw new InvalidCardDefinitionException("Unable to find effect of type: " + type);
         return effectAppenderProducer.createEffectAppender(effectObject, _environment);
-    }
-
-    public EffectAppender[] getEffectAppenders(JsonNode[] effectArray) throws InvalidCardDefinitionException {
-        EffectAppender[] result = new EffectAppender[effectArray.length];
-        for (int i = 0; i < result.length; i++) {
-            final String type = effectArray[i].get("type").textValue();
-            final EffectAppenderProducer effectAppenderProducer = effectAppenderProducers.get(type.toLowerCase());
-            if (effectAppenderProducer == null)
-                throw new InvalidCardDefinitionException("Unable to find effect of type: " + type);
-            result[i] = effectAppenderProducer.createEffectAppender(effectArray[i], _environment);
-        }
-        return result;
     }
 
 }

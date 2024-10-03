@@ -34,7 +34,7 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        if (_actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer)) {
+        if (_actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_playerHand, _actingPlayer)) {
             List<PhysicalCard> randomCards = TextUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
@@ -68,7 +68,7 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
     public boolean isPlayableInFull() {
         if (_game.getGameState().getHand(_playerHand).size() < _count)
             return false;
-        return _actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer);
+        return _actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_playerHand, _actingPlayer);
     }
 
     protected abstract void cardsRevealed(List<PhysicalCard> revealedCards);

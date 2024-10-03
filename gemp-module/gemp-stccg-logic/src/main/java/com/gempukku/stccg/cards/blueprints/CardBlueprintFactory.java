@@ -268,7 +268,7 @@ public class CardBlueprintFactory {
             throw new InvalidCardDefinitionException("Unable to process enum value " + string);
         }
     }
-
+    
     public PlayerSource getPlayerSource(JsonNode parentNode, String key, boolean useYouAsDefault)
             throws InvalidCardDefinitionException {
         String playerString;
@@ -333,13 +333,33 @@ public class CardBlueprintFactory {
 
 
     public void validateAllowedFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
+        // Always allowed - type, player, selectingPlayer, targetPlayer
+        List<String> allowedFields = Arrays.asList(fields);
+        List<String> unrecognizedFields = new LinkedList<>();
+        node.fieldNames().forEachRemaining(fieldName -> {
+            switch(fieldName) {
+                case "player", "selectingPlayer", "targetPlayer", "type":
+                    break;
+                default:
+                    if (!allowedFields.contains(fieldName)) unrecognizedFields.add(fieldName);
+                    break;
+            }
+        });
+        if (!unrecognizedFields.isEmpty())
+            throw new InvalidCardDefinitionException("Unrecognized field: " + unrecognizedFields.getFirst());
+        if (node.has("player") && (node.has("selectingPlayer") || (node.has("targetPlayer"))))
+            throw new InvalidCardDefinitionException("Blueprint has both 'player' and either 'selectingPlayer' or 'targetPlayer'");
+    }
+
+    public void validateRequiredFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
         List<String> keys = new ArrayList<>();
         node.fieldNames().forEachRemaining(keys::add);
-        for (String key : keys) {
-            if (!key.equals("type") && !Arrays.asList(fields).contains(key))
-                throw new InvalidCardDefinitionException("Unrecognized field: " + key);
+        for (String field : fields) {
+            if (!keys.contains(field))
+                throw new InvalidCardDefinitionException("Missing field: " + field);
         }
     }
+
 
     public ModifierSource getModifier(JsonNode node) throws InvalidCardDefinitionException {
         return getModifierSource(node);
@@ -383,9 +403,9 @@ public class CardBlueprintFactory {
                 throw new InvalidCardDefinitionException("Unable to resolve modifier of type: " + modifierType);
         }
     }
-
+    
     private enum ModifierSourceProcessorType { CANTPLAYCARDS, GAINICON, MODIFYSTRENGTH, OPPONENTMAYNOTDISCARD }
-
+    
     private void validateAllowedFields(JsonNode node, ModifierSourceProcessorType modifierType,
                                        CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         switch(modifierType) {
@@ -406,35 +426,44 @@ public class CardBlueprintFactory {
         }
     }
 
-    public EffectAppender buildTargetCardAppender(JsonNode node, String choiceText, Zone fromZone, String saveMemory,
-                                                          boolean showMatchingOnly) throws InvalidCardDefinitionException {
-        PlayerSource selectingPlayer;
-        PlayerSource targetPlayer;
-
-        if (node.has("player") && !node.has("selectingPlayer") && !node.has("targetPlayer")) {
-            selectingPlayer = getPlayerSource(node, "player", true);
-            targetPlayer = selectingPlayer;
-        } else if ((node.has("selectingPlayer") || node.has("targetPlayer")) && !node.has("player")) {
-            selectingPlayer = getPlayerSource(node, "selectingPlayer", true);
-            targetPlayer = getPlayerSource(node, "targetPlayer", true);
-        } else if (!node.has("player") && !node.has("targetPlayer") && !node.has("selectingPlayer")) {
-            selectingPlayer = ActionContext::getPerformingPlayerId;
-            targetPlayer = selectingPlayer;
-        } else {
-            throw new InvalidCardDefinitionException("Unable to identify player making card selection from blueprint");
-        }
-        return buildTargetCardAppender(node, selectingPlayer, targetPlayer, choiceText, fromZone, saveMemory, showMatchingOnly);
-    }
-
-    public EffectAppender buildTargetCardAppender(JsonNode node, String choiceText, Zone fromZone, String saveMemory)
+    public PlayerSource getSelectingPlayerSource(JsonNode parentNode)
             throws InvalidCardDefinitionException {
-        return buildTargetCardAppender(node, choiceText, fromZone, saveMemory, false);
+
+        if (parentNode == null)
+            throw new InvalidCardDefinitionException("Unable to find JsonNode node");
+        if (parentNode.has("player") && (parentNode.has("selectingPlayer") || parentNode.has("targetPlayer")))
+            throw new InvalidCardDefinitionException("Unable to identify selecting player from JSON blueprint");
+
+        if (parentNode.has("player") && parentNode.get("player").isTextual())
+            return PlayerResolver.resolvePlayer(parentNode.get("player").textValue());
+        if (parentNode.has("selectingPlayer") && parentNode.get("selectingPlayer").isTextual())
+            return PlayerResolver.resolvePlayer(parentNode.get("selectingPlayer").textValue());
+        if (parentNode.has("targetPlayer") && parentNode.get("targetPlayer").isTextual())
+            return PlayerResolver.resolvePlayer(parentNode.get("targetPlayer").textValue());
+
+        return ActionContext::getPerformingPlayerId;
+
     }
 
-    public EffectAppender buildTargetCardAppender(JsonNode node, PlayerSource player, String choiceText, Zone fromZone, String saveMemory)
+    public PlayerSource getTargetPlayerSource(JsonNode parentNode)
             throws InvalidCardDefinitionException {
-        return buildTargetCardAppender(node, player, player, choiceText, fromZone, saveMemory, false);
+
+        if (parentNode == null)
+            throw new InvalidCardDefinitionException("Unable to find JsonNode node");
+        if (parentNode.has("player") && (parentNode.has("selectingPlayer") || parentNode.has("targetPlayer")))
+            throw new InvalidCardDefinitionException("Unable to identify selecting player from JSON blueprint");
+
+        if (parentNode.has("player") && parentNode.get("player").isTextual())
+            return PlayerResolver.resolvePlayer(parentNode.get("player").textValue());
+        if (parentNode.has("targetPlayer") && parentNode.get("targetPlayer").isTextual())
+            return PlayerResolver.resolvePlayer(parentNode.get("targetPlayer").textValue());
+        if (parentNode.has("selectingPlayer") && parentNode.get("selectingPlayer").isTextual())
+            return PlayerResolver.resolvePlayer(parentNode.get("selectingPlayer").textValue());
+
+        return ActionContext::getPerformingPlayerId;
+
     }
+
 
     public EffectAppender buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
                                                   String choiceText, Zone fromZone, String saveMemory,
