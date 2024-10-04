@@ -11,6 +11,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.TribblesGame;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -18,9 +19,11 @@ import java.util.*;
 public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected ST1EGame _game;
+    protected TribblesGame _tribblesGame;
     protected UserFeedback _userFeedback;
     public static final String P1 = "player1";
     public static final String P2 = "player2";
+    FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
@@ -32,12 +35,29 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
 
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
+
+    }
+
+    protected void initializeSimpleTribblesGame(int deckSize) {
+        Map<String, CardDeck> decks = new HashMap<>();
+        CardDeck testDeck = new CardDeck("Test");
+        for (int i = 0; i < deckSize; i++) {
+            testDeck.addCard(SubDeck.DRAW_DECK, "221_002"); // 1 Tribble - Kindness
+        }
+
+        decks.put(P1, testDeck);
+        decks.put(P2, testDeck);
+
+        GameFormat format = formatLibrary.getFormat("tribbles");
+
+        _tribblesGame = new TribblesGame(format, decks, _cardLibrary);
+        _userFeedback = _tribblesGame.getUserFeedback();
+        _tribblesGame.startGame();
 
     }
 
