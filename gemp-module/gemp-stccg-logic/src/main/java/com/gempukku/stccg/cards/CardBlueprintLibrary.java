@@ -21,10 +21,9 @@ import java.util.concurrent.Semaphore;
 
 public class CardBlueprintLibrary {
     private static final Logger LOGGER = LogManager.getLogger(CardBlueprintLibrary.class);
-
     private final Map<String, CardBlueprint> _blueprints = new HashMap<>();
     private final Map<String, String> _blueprintMapping = new HashMap<>();
-    private final Map<String, Set<String>> _fullBlueprintMapping = new HashMap<>();
+    private final Map<String, Set<String>> _alternateBlueprintMapping = new HashMap<>();
     private final Map<String, SetDefinition> _allSets = new LinkedHashMap<>();
 
     private final CardBlueprintFactory cardBlueprintBuilder = new CardBlueprintFactory();
@@ -42,8 +41,8 @@ public class CardBlueprintLibrary {
         _blueprintLoadErrorEncountered = false;
 
         loadSets();
-        loadMappings();
         loadCards(_cardPath, true);
+        loadMappings();
 
         LOGGER.info("Unlocking blueprint library in constructor");
         collectionReady.release();
@@ -65,15 +64,9 @@ public class CardBlueprintLibrary {
 
     public void reloadAllDefinitions() {
         reloadSets();
-        reloadMappings();
         reloadCards();
-            // TODO - Removing getErrata functionality. Undecided about long-term STCCG goals for this, but for now there are none in Gemp.
-/*        errataMappings = null;
-        getErrata(); */
-
-        for(var callback : _refreshCallbacks) {
-            callback.Invoke();
-        }
+        reloadMappings();
+        _refreshCallbacks.forEach(ICallback::Invoke);
     }
 
     private void reloadSets() {
@@ -86,7 +79,7 @@ public class CardBlueprintLibrary {
         }
     }
 
-    private void reloadMappings() {
+    public void reloadMappings() {
         try {
             collectionReady.acquire();
             loadMappings();
@@ -133,25 +126,31 @@ public class CardBlueprintLibrary {
     }
 
     private void loadMappings() {
-        try {
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(AppConfig.getMappingsPath()), StandardCharsets.UTF_8))) {
-                String line;
+        _blueprintMapping.clear();
+        _alternateBlueprintMapping.clear();
 
-                _blueprintMapping.clear();
-                _fullBlueprintMapping.clear();
+        for (CardBlueprint blueprint : _blueprints.values()) {
+            String childBlueprintId = blueprint.getBlueprintId();
+            String parentBlueprintId = blueprint.getBaseBlueprintId();
 
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (!line.startsWith("#")) {
-                        String[] split = line.split(",");
-                        _blueprintMapping.put(split[0], split[1]);
-                        addAlternatives(split[0], split[1]);
-                    }
-                }
+            // If the blueprint has a parent ID, associate the blueprint with that parent and all its other children
+            if (parentBlueprintId != null) {
+                _blueprintMapping.put(childBlueprintId, parentBlueprintId);
+
+                // If the parent blueprint already has other children, they are considered alternates for the new child
+                if (_alternateBlueprintMapping.get(parentBlueprintId) != null)
+                    for (String existingAlternate : _alternateBlueprintMapping.get(parentBlueprintId))
+                        addAsAlternates(existingAlternate, childBlueprintId);
+
+                // The parent and new child are also alternates for each other
+                addAsAlternates(parentBlueprintId, childBlueprintId);
             }
-        } catch (IOException exp) {
-            throw new RuntimeException("Problem loading blueprintMapping.txt", exp);
         }
+    }
+
+    private void addAsAlternates(String blueprint1, String blueprint2) {
+        _alternateBlueprintMapping.computeIfAbsent(blueprint1, k -> new HashSet<>()).add(blueprint2);
+        _alternateBlueprintMapping.computeIfAbsent(blueprint2, k -> new HashSet<>()).add(blueprint1);
     }
 
     private void loadCards(File path, boolean initial) {
@@ -198,28 +197,9 @@ public class CardBlueprintLibrary {
     }
 
     public String getBaseBlueprintId(String blueprintId) {
-        blueprintId = stripBlueprintModifiers(blueprintId);
-        String base = _blueprintMapping.get(blueprintId);
-        if (base != null)
-            return base;
-        return blueprintId;
-    }
-
-    private void addAlternatives(String newBlueprint, String existingBlueprint) {
-        Set<String> existingAlternates = _fullBlueprintMapping.get(existingBlueprint);
-        if (existingAlternates != null) {
-            for (String existingAlternate : existingAlternates) {
-                addAlternative(newBlueprint, existingAlternate);
-                addAlternative(existingAlternate, newBlueprint);
-            }
-        }
-        addAlternative(newBlueprint, existingBlueprint);
-        addAlternative(existingBlueprint, newBlueprint);
-    }
-
-    private void addAlternative(String from, String to) {
-        Set<String> list = _fullBlueprintMapping.computeIfAbsent(from, k -> new HashSet<>());
-        list.add(to);
+        String rawBlueprintId = stripBlueprintModifiers(blueprintId);
+        String base = _blueprintMapping.get(rawBlueprintId);
+        return (base != null) ? base : rawBlueprintId;
     }
 
     public Map<String, CardBlueprint> getBaseCards() {
@@ -236,7 +216,7 @@ public class CardBlueprintLibrary {
     public Set<String> getAllAlternates(String blueprintId) {
         try {
             collectionReady.acquire();
-            var data = _fullBlueprintMapping.get(blueprintId);
+            Set<String> data = _alternateBlueprintMapping.get(blueprintId);
             collectionReady.release();
             return data;
         } catch (InterruptedException exp) {
@@ -295,7 +275,7 @@ public class CardBlueprintLibrary {
     public boolean hasAlternateInSet(String blueprintId, int setNo) {
         try {
             collectionReady.acquire();
-            var alternatives = _fullBlueprintMapping.get(blueprintId);
+            var alternatives = _alternateBlueprintMapping.get(blueprintId);
             collectionReady.release();
 
             if (alternatives != null)
