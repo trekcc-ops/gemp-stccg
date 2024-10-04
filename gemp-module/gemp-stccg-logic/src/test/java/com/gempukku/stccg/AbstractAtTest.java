@@ -95,7 +95,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         // Taurik
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_293"); // Dr. Farek
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_297"); // Gorta
-        // Narik
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_300"); // Narik
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_303"); // Vekor
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_331"); // Runabout
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_332"); // Type VI Shuttlecraft
@@ -125,16 +125,18 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_260"); // Gorath
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_262"); // J'Ddan
         // K'Tesh x2
-        // Klag
-        // Kle'eg x2
-        // Kromm
-        // Torin x2
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_270"); // Klag
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_276"); // Kromm
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_286"); // Torin
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_286"); // Torin
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_288"); // Vekma
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_293"); // Dr. Farek
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_297"); // Gorta
-        // Narik
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_300"); // Narik
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_303"); // Vekor
-        // I.K.C. K'Ratak
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "103_118"); // I.K.C. K'Ratak
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_347"); // I.K.S. K'Vort
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_347"); // I.K.S. K'Vort
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_347"); // I.K.S. K'Vort

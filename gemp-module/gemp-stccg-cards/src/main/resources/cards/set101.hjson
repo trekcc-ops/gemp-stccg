@@ -1113,6 +1113,69 @@
         cunning: 5
         strength: 9
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/30V.jpg
+        rarity: R
+    }
+    101_269: {
+        title: Kell
+        type: personnel
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: V.I.P.
+        lore: Male High Council emissary. Covert Romulan agent. Attempted to use Lt. Commander Geordi La Forge to assassinate Klingon Governor Vagh.
+        skill-box: "[*] Treachery"
+        integrity: 2
+        cunning: 6
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/kell95.jpg
+        rarity: U
+    }
+    101_270: {
+        title: Klag
+        type: personnel
+        uniqueness: universal
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: OFFICER
+        icons: command
+        lore: Second Officer Klag, of the <i>I.K.C. Pagh</i>, is representative of Klingon warriors throughout the Klingon Empire.
+        skill-box: "[*] Navigation"
+        integrity: 6
+        cunning: 5
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/klag95.jpg
+        rarity: C
+    }
+    101_271: {
+        title: "Kle'eg"
+        type: personnel
+        uniqueness: universal
+        affiliation: klingon
+        property-logo: tng-logo
+        classification: SECURITY
+        icons: staff
+        lore: "Klingon trained in the specific field of security. Guarded the House of K'mpec when K'mpec was poisoned in 2367."
+        skill-box: "[*] Honor"
+        integrity: 6
+        cunning: 4
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/kleeg95.jpg
+        rarity: C
+    }
+    101_276: {
+        title: Kromm
+        type: personnel
+        affiliation: klingon
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Klingon trained in the field of engineering. Reputed to have consumed fifteen rokeg blood pies at one sitting.
+        skill-box: "[*] Physics"
+        integrity: 5
+        cunning: 6
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/kromm.jpg
+        rarity: C
     }
     101_277: {
         title: Kurak
@@ -1140,6 +1203,22 @@
         cunning: 4
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/premiere/torak95.jpg
+    }
+    101_286: {
+        title: Torin
+        type: personnel
+        affiliation: klingon
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: SCIENCE
+        icons: staff
+        lore: Klingon trained in the field of science. Studied the effects of warp propulsion on subspace.
+        skill-box: "[*] Astrophysics"
+        integrity: 7
+        cunning: 6
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/torin95.jpg
+        rarity: C
     }
     101_288: {
         title: Vekma
@@ -1241,6 +1320,22 @@
         cunning: 8
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/34V.jpg
+    }
+    101_300: {
+        title: Narik
+        type: personnel
+        affiliation: non-aligned
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: staff
+        lore: Representative of male mercenaries operating throughout the galaxy. Worked with Baran to find the Stone of Gol.
+        skill-box: "[*] Computer Skill"
+        integrity: 2
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/narik95.jpg
+        rarity: C
     }
     101_303: {
         title: Vekor
