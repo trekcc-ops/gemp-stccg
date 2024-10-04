@@ -2,6 +2,11 @@
 	{
 		name: Premiere - Booster
 		type: booster
+		items: [
+		    1xR
+		    3xU
+		    11xC
+		]
 		data: {
 			set: "101"
 		}

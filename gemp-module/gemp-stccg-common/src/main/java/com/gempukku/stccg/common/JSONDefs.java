@@ -1,5 +1,7 @@
 package com.gempukku.stccg.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import java.util.*;
 
 public class JSONDefs {
@@ -11,7 +13,7 @@ public class JSONDefs {
         public String name;
         public PackType type;
         public List<String> items;
-        public Map<String, String> data;
+        public JsonNode data;
     }
 
     public static class SealedTemplate {
