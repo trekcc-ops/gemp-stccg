@@ -74,6 +74,7 @@ public class AppConfig {
     }
 
     public static String getWebPath() { return getProperty("web.path"); }
+    public static File getReplayPath() { return new File(getProperty("replay.path")); }
     public static File getCardsPath() { return getResourceFile("cards"); }
     public static File getMappingsPath() { return getResourceFile("blueprintMapping.txt"); }
     public static File getSetDefinitionsPath() { return getResourceFile("setConfig.hjson"); }
@@ -81,5 +82,7 @@ public class AppConfig {
     public static File getProductPath() { return getResourceFile("product"); }
     public static File getSealedPath() { return getResourceFile("sealed"); }
     public static File getDraftPath() { return getResourceFile("draft"); }
+    public static String getPlaytestUrl() { return getProperty("playtest.url"); }
+    public static String getPlaytestPrefixUrl() { return getProperty("playtest.prefix.url"); }
 
 }
