@@ -98,11 +98,13 @@ public class GameRecorder {
 
             if(format.isPlaytest())
             {
-                String url = "https://docs.google.com/forms/d/e/1FAIpQLSdKJrCmjoyUqDTusDcpNoWAmvkGdzQqTxWGpdNIFX9biCee-A/viewform?usp=pp_url&entry.1592109986=";
-                String winnerURL = "https://play.lotrtcgpc.net/gemp-lotr/game.html%3FreplayId%3D" + winnerName + "$" + playerRecordingId.get(winnerName);
-                String loserURL = "https://play.lotrtcgpc.net/gemp-lotr/game.html%3FreplayId%3D" + loserName + "$" + playerRecordingId.get(loserName);
-                url += winnerURL + "%20" + loserURL;
-                game.sendMessageToPlayers("Thank you for playtesting!  If you have any feedback, bugs, or other issues to report about this match, <a href= '" + url + "'>please do so using this form.</a>");
+                String url = AppConfig.getPlaytestUrl() +
+                        AppConfig.getPlaytestPrefixUrl() + winnerName + "$" + playerRecordingId.get(winnerName) + "%20" +
+                        AppConfig.getPlaytestPrefixUrl() + loserName + "$" + playerRecordingId.get(loserName);
+                String message = "Thank you for playtesting!  " +
+                        "If you have any feedback, bugs, or other issues to report about this match, <a href= '" +
+                        url + "'>please do so using this form.</a>";
+                game.sendMessageToPlayers(message);
             }
 
         };
@@ -113,28 +115,25 @@ public class GameRecorder {
     }
 
     private File getRecordingFileVersion0(String playerId, String gameId) {
-        File gameReplayFolder = new File(AppConfig.getProperty("application.root"), "replay");
-        File playerReplayFolder = new File(gameReplayFolder, playerId);
+        File playerReplayFolder = new File(AppConfig.getReplayPath(), playerId);
         return new File(playerReplayFolder, gameId + ".xml.gz");
     }
 
     private File getRecordingFileVersion1(String playerId, String gameId, ZonedDateTime startDate) {
-        var gameReplayFolder = new File(AppConfig.getProperty("application.root"), "replay");
         //This dumb-ass formatting output is because anything that otherwise interacts with the
         // year subfield appears to trigger a JVM segfault in the guts of the java ecosystem.
         // Super-dumb.  Don't touch these two lines.
         var year = startDate.format(DateTimeFormatter.ofPattern("yyyy"));
         var month = startDate.format(DateTimeFormatter.ofPattern("MM"));
 
-        var yearFolder = new File(gameReplayFolder, year);
+        var yearFolder = new File(AppConfig.getReplayPath(), year);
         var monthFolder = new File(yearFolder, month);
         var playerReplayFolder = new File(monthFolder, playerId);
         return new File(playerReplayFolder, gameId + ".xml.gz");
     }
 
     private File getSummaryFile(DBDefs.GameHistory history) {
-        var gameReplayFolder = new File(AppConfig.getProperty("application.root"), "replay");
-        var summaryFolder = new File(gameReplayFolder, "summaries");
+        var summaryFolder = new File(AppConfig.getReplayPath(), "summaries");
         var yearFolder = new File(summaryFolder, String.format("%04d", history.start_date.getYear()));
         var monthFolder = new File(yearFolder, String.format("%02d", history.start_date.getMonthValue()));
         monthFolder.mkdirs();
