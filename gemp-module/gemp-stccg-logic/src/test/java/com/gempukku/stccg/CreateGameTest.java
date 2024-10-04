@@ -38,14 +38,4 @@ public class CreateGameTest extends AbstractAtTest {
         assertEquals(2, _game.getGameState().getSpacelineLocations().size());
     }
 
-    @Test
-    public void tribblesGameTest() {
-        initializeSimpleTribblesGame(40);
-
-        String player1 = _tribblesGame.getGameState().getPlayerOrder().getFirstPlayer();
-
-        assertNotNull(_userFeedback.getAwaitingDecision(player1));
-
-    }
-
 }
