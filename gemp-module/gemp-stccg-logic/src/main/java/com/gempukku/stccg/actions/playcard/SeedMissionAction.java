@@ -48,7 +48,7 @@ public class SeedMissionAction extends PlayCardAction {
     public ST1EGame getGame() { return _game; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
         String playerId = getPerformingPlayerId();
         String[] directions = {"LEFT", "RIGHT"};

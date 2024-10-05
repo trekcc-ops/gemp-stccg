@@ -3,7 +3,6 @@ package com.gempukku.stccg.filters;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;

@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 public class DaoBuilder {
+
     public static void CreateDatabaseAccessObjects(Map<Type, Object> objectMap) {
         DbAccess dbAccess = new DbAccess();
 
@@ -40,8 +41,8 @@ public class DaoBuilder {
         CachedDeckDAO deckDao = new CachedDeckDAO(dbDeckDao);
         objectMap.put(DeckDAO.class, deckDao);
 
-        CollectionDAO dbCollectionDao =
-                LoggingProxy.createLoggingProxy(CollectionDAO.class, new DbCollectionDAO(dbAccess, extract(objectMap, CollectionSerializer.class)));
+        CollectionDAO dbCollectionDao = LoggingProxy.createLoggingProxy(
+                CollectionDAO.class, new DbCollectionDAO(dbAccess, getCollectionSerializer(objectMap)));
         CachedCollectionDAO collectionDao = new CachedCollectionDAO(dbCollectionDao);
         objectMap.put(CollectionDAO.class, collectionDao);
 
@@ -70,11 +71,11 @@ public class DaoBuilder {
         objectMap.put(CacheManager.class, cacheManager);
     }
 
-    private static <T> T extract(Map<Type, Object> objectMap, Class<T> clazz) {
-        T result = (T) objectMap.get(clazz);
-        if (result == null)
-            throw new RuntimeException("Unable to find class " + clazz.getName());
-        return result;
+    private static CollectionSerializer getCollectionSerializer(Map<Type, Object> objectMap) {
+        CollectionSerializer serializer = (CollectionSerializer) objectMap.get(CollectionSerializer.class);
+        if (serializer == null)
+            throw new RuntimeException("Unable to find class " + CollectionSerializer.class.getName());
+        return serializer;
     }
 
 }

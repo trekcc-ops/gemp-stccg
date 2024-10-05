@@ -74,5 +74,4 @@ public interface Modifier {
 
     boolean lostAllKeywords(PhysicalCard card);
 
-    void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard card);
 }

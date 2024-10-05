@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 
 public class LocationFieldProcessor implements FieldProcessor {
     @Override
-    public void processField(String key, JsonNode value, CardBlueprint blueprint, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public void processField(String key, JsonNode value, CardBlueprint blueprint, CardBlueprintFactory environment) {
         blueprint.setLocation(value.textValue());
     }
 }

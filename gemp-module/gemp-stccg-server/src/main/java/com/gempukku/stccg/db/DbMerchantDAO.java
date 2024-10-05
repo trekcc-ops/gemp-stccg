@@ -77,7 +77,7 @@ public class DbMerchantDAO implements MerchantDAO {
                             String type = rs.getString(4);
                             int stock = rs.getInt(5);
 
-                            return new Transaction(date, price, TransactionType.valueOf(type), stock);
+                            return new Transaction(date, price, TransactionType.valueOf(type));
                         } else {
                             return null;
                         }

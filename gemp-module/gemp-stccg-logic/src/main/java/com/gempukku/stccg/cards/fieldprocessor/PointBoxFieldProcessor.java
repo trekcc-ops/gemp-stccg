@@ -10,7 +10,7 @@ import java.util.Objects;
 public class PointBoxFieldProcessor implements FieldProcessor {
     @Override
     public void processField(String key, JsonNode value, CardBlueprint blueprint,
-                             CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+                             CardBlueprintFactory environment) {
         String str;
         if (value.isTextual())
             str = value.textValue();

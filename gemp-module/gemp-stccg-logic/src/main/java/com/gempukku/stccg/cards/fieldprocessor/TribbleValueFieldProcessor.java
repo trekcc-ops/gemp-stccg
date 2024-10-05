@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 public class TribbleValueFieldProcessor implements FieldProcessor {
     @Override
     public void processField(String key, JsonNode value, CardBlueprint blueprint,
-                             CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+                             CardBlueprintFactory environment) {
         blueprint.setTribbleValue(value.asInt());
     }
 }

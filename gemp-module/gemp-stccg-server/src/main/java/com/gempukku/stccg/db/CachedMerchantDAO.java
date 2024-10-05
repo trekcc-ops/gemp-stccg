@@ -11,7 +11,7 @@ import java.util.Objects;
 public class CachedMerchantDAO implements MerchantDAO, Cached {
     private final MerchantDAO _delegate;
     private final Map<String, Transaction> _blueprintIdLastTransaction = Collections.synchronizedMap(new LRUMap<>(4000));
-    private final Transaction _nullTransaction = new Transaction(null, 0, null, 0);
+    private final Transaction _nullTransaction = new Transaction(null, 0, null);
 
     public CachedMerchantDAO(MerchantDAO delegate) {
         _delegate = delegate;

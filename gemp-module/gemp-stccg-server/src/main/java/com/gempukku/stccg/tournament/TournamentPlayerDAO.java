@@ -1,6 +1,5 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 
 import java.util.Map;

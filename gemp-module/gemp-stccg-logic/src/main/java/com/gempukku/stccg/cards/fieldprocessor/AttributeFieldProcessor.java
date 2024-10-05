@@ -13,7 +13,7 @@ public class AttributeFieldProcessor implements FieldProcessor {
     }
     @Override
     public void processField(String key, JsonNode value, CardBlueprint blueprint,
-                             CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+                             CardBlueprintFactory environment) {
         blueprint.setAttribute(_attribute, value.asInt());
     }
 }

@@ -68,7 +68,8 @@ public class DraftCommunicationChannel implements LongPollableResource {
         return sb.toString();
     }
 
-    public synchronized void processCommunicationChannel(DraftCardChoice draftCardChoice, CardCollection chosenCards, DraftChannelVisitor draftChannelVisitor) {
+    public synchronized void processCommunicationChannel(DraftCardChoice draftCardChoice, CardCollection chosenCards,
+                                                         DraftChannelVisitor draftChannelVisitor) {
         updateLastAccess();
 
         CardCollection cardCollection = draftCardChoice.getCardCollection();

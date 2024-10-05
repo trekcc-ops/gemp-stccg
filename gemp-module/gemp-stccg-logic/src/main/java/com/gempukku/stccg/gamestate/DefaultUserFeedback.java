@@ -17,10 +17,6 @@ public class DefaultUserFeedback implements UserFeedback {
         _game = game;
     }
 
-    public void setGame(DefaultGame game) {
-        _game = game;
-    }
-
     public void removeDecision(String playerId) { _awaitingDecisionMap.remove(playerId); }
 
     public AwaitingDecision getAwaitingDecision(String playerId) {

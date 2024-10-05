@@ -15,13 +15,11 @@ public interface MerchantDAO {
         private final float _price;
         private final Date _date;
         private final TransactionType _transactionType;
-        private final int _stock;
 
-        public Transaction(Date date, float price, TransactionType transactionType, int stock) {
+        public Transaction(Date date, float price, TransactionType transactionType) {
             _date = date;
             _price = price;
             _transactionType = transactionType;
-            _stock = stock;
         }
 
         public Date getDate() {
@@ -36,8 +34,5 @@ public interface MerchantDAO {
             return _transactionType;
         }
 
-        public int getStock() {
-            return _stock;
-        }
     }
 }

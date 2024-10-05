@@ -67,7 +67,7 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
                             String winner = rs.getString(3);
                             int round = rs.getInt(4);
 
-                            result.add(new TournamentMatch(playerOne, playerTwo, winner, round));
+                            result.add(new TournamentMatch(playerOne, playerTwo, winner));
                         }
                         return result;
                     }

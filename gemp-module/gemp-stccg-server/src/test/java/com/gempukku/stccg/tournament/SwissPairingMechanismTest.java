@@ -95,7 +95,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                     previouslyPaired.get(playerOne).add(playerTwo);
                     previouslyPaired.get(playerTwo).add(playerOne);
 
-                    matches.add(new TournamentMatch(playerOne, playerTwo, winner, i));
+                    matches.add(new TournamentMatch(playerOne, playerTwo, winner));
                 }
             }
         }

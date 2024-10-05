@@ -20,10 +20,6 @@ public class TribblesPlayCardEffect extends DefaultEffect {
         _tribblesGame = cardPlayed.getGame();
     }
 
-    public PhysicalCard getPlayedCard() {
-        return _cardPlayed;
-    }
-
     @Override
     public String getText() {
         return "Play " + _cardPlayed.getFullName();

@@ -143,18 +143,11 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return cost;
     }
 
-    protected final Effect getNextEffect() throws InvalidGameLogicException {
+    protected final Effect getNextEffect() {
         final Effect effect = _effects.poll();
         if (effect != null)
             _processedEffects.add(effect);
         return effect;
-    }
-
-    protected final DiscountEffect getNextPotentialDiscount() {
-        DiscountEffect discount = _potentialDiscounts.poll();
-        if (discount != null)
-            _processedDiscounts.add(discount);
-        return discount;
     }
 
     public boolean wasCarriedOut() {

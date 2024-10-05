@@ -197,11 +197,6 @@ public abstract class AbstractModifier implements Modifier {
         return false;
     }
 
-    @Override
-    public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard card) {
-
-    }
-
     public String getForPlayer() {
         return _playerId;
     }

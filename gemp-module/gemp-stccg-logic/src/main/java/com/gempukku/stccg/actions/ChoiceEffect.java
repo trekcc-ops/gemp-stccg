@@ -75,6 +75,4 @@ public class ChoiceEffect extends AbstractSubActionEffect {
             result[i] = possibleEffects.get(i).getText();
         return result;
     }
-
-    public DefaultGame getGame() { return _game; }
 }

@@ -37,7 +37,6 @@ public interface Tournament {
 
     void reportGameFinished(String winner, String loser);
 
-    void playerChosenCard(String playerName, String cardId);
     void playerSubmittedDeck(String player, CardDeck deck);
     CardDeck getPlayerDeck(String player);
     void dropPlayer(String player);

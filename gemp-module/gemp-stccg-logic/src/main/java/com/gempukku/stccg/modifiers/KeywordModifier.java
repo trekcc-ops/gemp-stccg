@@ -14,14 +14,6 @@ public class KeywordModifier extends AbstractModifier implements KeywordAffectin
     private final ValueSource _valueSource;
     private final ActionContext _context;
 
-    public KeywordModifier(PhysicalCard physicalCard, Filterable affectFilter, Keyword keyword) {
-        super(physicalCard, null, affectFilter, null, ModifierEffect.GIVE_KEYWORD_MODIFIER);
-        _keyword = keyword;
-        _valueSource = new ConstantValueSource(1);
-        _context = new DefaultActionContext(
-                physicalCard.getOwnerName(), physicalCard.getGame(), physicalCard, null, null);
-    }
-
     public KeywordModifier(ActionContext context, Filterable affectFilter, Keyword keyword, int count) {
         this(context, affectFilter, null, keyword, new ConstantValueSource(count));
     }

@@ -51,30 +51,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     }
 
-    protected void initializeGameWithDecks(Map<String, CardDeck> decks) throws DecisionResultInvalidException {
-        _userFeedback = new DefaultUserFeedback();
-
-        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.getFormat("multipath");
-
-        _game = new ST1EGame(format, new HashMap<>(decks), _cardLibrary);
-        _userFeedback = _game.getUserFeedback();
-        _game.startGame();
-
-        // Bidding
-        playerDecided(P1, "1");
-        playerDecided(P2, "0");
-
-        // Seating choice
-        playerDecided(P1, "0");
-    }
-
-    protected void skipMulligans() throws DecisionResultInvalidException {
-        // Mulligans
-        playerDecided(P1, "0");
-        playerDecided(P2, "0");
-    }
-
     protected void validateContents(String[] array1, String[] array2) {
         if (array1.length != array2.length)
             Assertions.fail("Array sizes differ");

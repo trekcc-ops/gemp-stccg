@@ -326,51 +326,43 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            if ((physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
-                return false;
-
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (modifier.isKeywordRemoved(_game, physicalCard, keyword))
-                    return false;
-            }
-
-            if (physicalCard.getBlueprint().hasKeyword(keyword))
-                return true;
-
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.GIVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (appliesKeywordModifier(physicalCard, modifier.getSource(), keyword))
-                    if (modifier.hasKeyword(physicalCard, keyword))
-                        return true;
-            }
+        if ((physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
             return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
+
+        for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
+            if (modifier.isKeywordRemoved(_game, physicalCard, keyword))
+                return false;
         }
+
+        if (physicalCard.getBlueprint().hasKeyword(keyword))
+            return true;
+
+        for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.GIVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
+            if (appliesKeywordModifier(physicalCard, modifier.getSource(), keyword))
+                if (modifier.hasKeyword(physicalCard, keyword))
+                    return true;
+        }
+        return false;
     }
 
     @Override
     public int getKeywordCount(PhysicalCard physicalCard, Keyword keyword) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            if (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard))
+        if (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard))
+            return 0;
+
+        for (Modifier modifier :
+                getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
+            if (modifier.isKeywordRemoved(_game, physicalCard, keyword))
                 return 0;
-
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (modifier.isKeywordRemoved(_game, physicalCard, keyword))
-                    return 0;
-            }
-
-            int result = physicalCard.getBlueprint().getKeywordCount(keyword);
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.GIVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (appliesKeywordModifier(physicalCard, modifier.getSource(), keyword))
-                    result += modifier.getKeywordCountModifier(physicalCard, keyword);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
         }
+
+        int result = physicalCard.getBlueprint().getKeywordCount(keyword);
+        for (Modifier modifier :
+                getKeywordModifiersAffectingCard(ModifierEffect.GIVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
+            if (appliesKeywordModifier(physicalCard, modifier.getSource(), keyword))
+                result += modifier.getKeywordCountModifier(physicalCard, keyword);
+        }
+        return Math.max(0, result);
     }
 
     private boolean appliesKeywordModifier(PhysicalCard affecting, PhysicalCard modifierSource, Keyword keyword) {
@@ -386,28 +378,23 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            int result = card.getBlueprint().getAttribute(attribute);
-            ModifierEffect effectType = null;
-            if (attribute == CardAttribute.STRENGTH)
-                effectType = ModifierEffect.STRENGTH_MODIFIER;
-            else if (attribute == CardAttribute.CUNNING)
-                effectType = ModifierEffect.CUNNING_MODIFIER;
-            else if (attribute == CardAttribute.INTEGRITY)
-                effectType = ModifierEffect.INTEGRITY_MODIFIER;
-            List<Modifier> attributeModifiers = new LinkedList<>();
-            if (effectType != null)
-                attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
-                    // TODO - Need to separate ships vs. personnel here
-            attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
-            for (Modifier modifier : attributeModifiers) {
-                result += modifier.getAttributeModifier(card);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
+        int result = card.getBlueprint().getAttribute(attribute);
+        ModifierEffect effectType = null;
+        if (attribute == CardAttribute.STRENGTH)
+            effectType = ModifierEffect.STRENGTH_MODIFIER;
+        else if (attribute == CardAttribute.CUNNING)
+            effectType = ModifierEffect.CUNNING_MODIFIER;
+        else if (attribute == CardAttribute.INTEGRITY)
+            effectType = ModifierEffect.INTEGRITY_MODIFIER;
+        List<Modifier> attributeModifiers = new LinkedList<>();
+        if (effectType != null)
+            attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
+                // TODO - Need to separate ships vs. personnel here
+        attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
+        for (Modifier modifier : attributeModifiers) {
+            result += modifier.getAttributeModifier(card);
         }
+        return Math.max(0, result);
     }
 
     @Override
@@ -516,28 +503,16 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.DISCARD_FROM_PLAY_MODIFIER, card))
-                if (!modifier.canBeDiscardedFromPlay(_game, performingPlayer, card, source))
-                    return false;
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
+        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.DISCARD_FROM_PLAY_MODIFIER, card))
+            if (!modifier.canBeDiscardedFromPlay(_game, performingPlayer, card, source))
+                return false;
+        return true;
     }
 
     @Override
     public boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.RETURN_TO_HAND_MODIFIER, card))
-                if (!modifier.canBeReturnedToHand(_game, card, source))
-                    return false;
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
+        return getModifiersAffectingCard(ModifierEffect.RETURN_TO_HAND_MODIFIER, card).stream()
+                .allMatch(modifier -> modifier.canBeReturnedToHand(_game, card, source));
     }
 
     /**

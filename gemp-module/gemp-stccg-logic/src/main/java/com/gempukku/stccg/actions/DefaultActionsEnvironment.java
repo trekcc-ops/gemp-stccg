@@ -26,7 +26,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     public DefaultGame getGame() { return _game; }
-    public GameState getGameState() { return _game.getGameState(); }
 
     public List<ActionProxy> getUntilStartOfPhaseActionProxies(Phase phase) {
         return _untilStartOfPhaseActionProxies.get(phase);

@@ -11,13 +11,6 @@ import java.util.List;
 public abstract class DelayedAppender implements EffectAppender {
     protected String _text;
 
-    public DelayedAppender() {
-    }
-
-    public DelayedAppender(String text) {
-        this._text = text;
-    }
-
     @Override
     public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         final UnrespondableEffect effect = new UnrespondableEffect(actionContext) {

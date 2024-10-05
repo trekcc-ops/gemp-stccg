@@ -155,7 +155,7 @@ public class DefaultTournament implements Tournament {
                 _currentlyPlayingPlayers.remove(winner);
                 _currentlyPlayingPlayers.remove(loser);
                 _finishedTournamentMatches.add(
-                        new TournamentMatch(winner, loser, winner, _tournamentRound));
+                        new TournamentMatch(winner, loser, winner));
                 if (_pairingMechanism.shouldDropLoser()) {
                     _tournamentService.dropPlayer(_tournamentId, loser);
                     _droppedPlayers.add(loser);
@@ -191,18 +191,6 @@ public class DefaultTournament implements Tournament {
 
     public Draft getDraft() {
         return _draft;
-    }
-
-    @Override
-    public void playerChosenCard(String playerName, String cardId) {
-        _lock.writeLock().lock();
-        try {
-            if (_tournamentStage == Stage.DRAFT) {
-                _draft.playerChosenCard(playerName, cardId);
-            }
-        } finally {
-            _lock.writeLock().unlock();
-        }
     }
 
     @Override

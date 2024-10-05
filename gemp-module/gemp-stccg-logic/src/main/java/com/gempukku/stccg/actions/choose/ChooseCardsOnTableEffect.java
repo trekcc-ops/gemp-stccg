@@ -116,11 +116,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         return new FullEffectResult(true);
     }
 
-    @Override
-    public boolean wasCarriedOut() {
-        return super.wasCarriedOut();
-    }
-
     /**
      * This method is called when cards have been selected.
      * @param selectedCards the selected cards

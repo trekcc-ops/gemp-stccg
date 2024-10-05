@@ -179,14 +179,13 @@ public class CardBlueprintFactory {
     }
 
 
-    public String getString(JsonNode parentNode, String key) throws InvalidCardDefinitionException {
+    public String getString(JsonNode parentNode, String key) {
         if (!parentNode.has(key))
             return null;
         else return parentNode.get(key).textValue();
     }
 
-    public String getString(JsonNode parentNode, String key, String defaultValue)
-            throws InvalidCardDefinitionException {
+    public String getString(JsonNode parentNode, String key, String defaultValue) {
         if (parentNode == null || !parentNode.has(key))
             return defaultValue;
         else

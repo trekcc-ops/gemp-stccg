@@ -1,7 +1,6 @@
 package com.gempukku.stccg.collection;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.common.JsonUtils;
@@ -17,49 +16,6 @@ public class CollectionSerializer {
 
     private final ObjectMapper _mapper = new ObjectMapper();
 
-
-    public CollectionSerializer() {
-
-    }
-
-    public void serializeCollection(CardCollection collection, OutputStream outputStream) throws IOException {
-        byte version = 4;
-        outputStream.write(version);
-
-        int currency = collection.getCurrency();
-        printInt(outputStream, currency, 3);
-
-        byte packTypes = (byte) _doubleByteCountItems.size();
-        outputStream.write(packTypes);
-
-        for (String itemId : _doubleByteCountItems) {
-            final int count = collection.getItemCount(itemId);
-            if (count == 0) {
-                printInt(outputStream, 0, 2);
-            } else {
-                int itemCount = Math.min((int) Math.pow(255, 2), count);
-                printInt(outputStream, itemCount, 2);
-            }
-        }
-
-        int cardBytes = _singleByteCountItems.size();
-        printInt(outputStream, cardBytes, 2);
-
-        for (String itemId : _singleByteCountItems) {
-            final int count = collection.getItemCount(itemId);
-            if (count == 0)
-                outputStream.write(0);
-            else {
-                // Apply the maximum of 255
-                int cardCount = Math.min(255, count);
-                printInt(outputStream, cardCount, 1);
-            }
-        }
-
-        OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-        writer.write(_mapper.valueToTree(collection.getExtraInformation()).toString());
-        writer.flush();
-    }
 
     public MutableCardCollection deserializeCollection(InputStream inputStream) throws IOException {
         int version = inputStream.read();
@@ -83,9 +39,8 @@ public class CollectionSerializer {
         DefaultCardCollection newColl = new DefaultCardCollection();
 
         if(coll.extra_info != null) {
-            JsonNode object = _mapper.readTree(coll.extra_info);
-            newColl.setExtraInformation(_mapper.convertValue(object, new TypeReference<>() {
-            }));
+            newColl.setExtraInformation(_mapper.convertValue(
+                    _mapper.readTree(coll.extra_info), new TypeReference<>() {}));
         }
 
         for(var entry : entries) {
@@ -282,11 +237,6 @@ public class CollectionSerializer {
             result += value;
         }
         return result;
-    }
-
-    private void printInt(OutputStream outputStream, int value, int byteCount) throws IOException {
-        for (int i = 0; i < byteCount; i++)
-            outputStream.write((value >> (8 * (byteCount - i - 1))) & 0x000000ff);
     }
 
     private static int readWholeArray(InputStream stream, byte[] array) throws IOException {

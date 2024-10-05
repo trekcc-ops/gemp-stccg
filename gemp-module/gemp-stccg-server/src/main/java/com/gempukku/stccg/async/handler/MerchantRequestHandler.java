@@ -87,11 +87,6 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
             int price = Integer.parseInt(getFormParameterSafely(postDecoder, "price"));
 
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-            Document doc = documentBuilder.newDocument();
-
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             try {
                 _merchantService.merchantBuysCard(resourceOwner, blueprintId, price);
@@ -111,11 +106,6 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
             int price = Integer.parseInt(getFormParameterSafely(postDecoder, "price"));
-
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-            Document doc = documentBuilder.newDocument();
 
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);

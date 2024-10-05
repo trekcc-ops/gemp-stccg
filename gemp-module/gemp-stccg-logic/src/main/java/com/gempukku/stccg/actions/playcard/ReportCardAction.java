@@ -63,7 +63,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override    
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
