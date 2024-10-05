@@ -36,7 +36,6 @@ public class DefaultDraft {
     private boolean _finishedDraft;
 
     private final Map<String, DraftCommunicationChannel> _playerDraftCommunications = new HashMap<>();
-    private int _nextChannelNumber = 0;
 
     public DefaultDraft(CollectionsManager collectionsManager, CollectionType collectionType, ProductLibrary productLibrary, DraftPack draftPack, Set<String> players) {
         _collectionsManager = collectionsManager;

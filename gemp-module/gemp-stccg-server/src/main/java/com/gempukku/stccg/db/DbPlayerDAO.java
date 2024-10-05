@@ -13,15 +13,8 @@ import java.util.*;
 
 public class DbPlayerDAO implements PlayerDAO {
     private final String _selectPlayer = """
-        SELECT 
-            id, 
-            name, 
-            password, 
-            type, 
-            last_login_reward, 
-            banned_until, 
-            create_ip, 
-            last_ip 
+        SELECT
+            id, name password, type, last_login_reward, banned_until, create_ip, last_ip
         FROM player
         """;
 

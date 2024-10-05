@@ -49,18 +49,23 @@ public class SingleEliminationPairing implements PairingMechanism {
                 playersInContention.remove(playerId);
             }
         }
-        playersGroupedByByes.put(0, playersInContention.stream().toList());
+        playersGroupedByByes.put(0, new ArrayList<>());
+        for (String playerId : playersInContention)
+            playersGroupedByByes.get(0).add(playerId);
 
-        for (List<String> list : playersGroupedByByes.values()) Collections.shuffle(list);
+        for (int i = 0; i <= maxByes; i++) {
+            if (playersGroupedByByes.get(i) != null)
+                Collections.shuffle(playersGroupedByByes.get(i));
+        }
 
-        int i = 0;
+        int i = maxByes;
         String player1 = null;
         String player2 = null;
 
-        while (i <= maxByes) {
+        while (i >= 0) {
             List<String> byePlayers = playersGroupedByByes.get(i);
             if (byePlayers == null || byePlayers.isEmpty()) {
-                i++;
+                i--;
             } else {
                 if (player1 == null) player1 = byePlayers.getFirst();
                 else player2 = byePlayers.getFirst();

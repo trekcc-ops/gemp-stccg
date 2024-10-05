@@ -40,19 +40,11 @@ public class DbCollectionDAO implements CollectionDAO {
 
             try (org.sql2o.Connection conn = db.open()) {
                 String sql = """
-                        SELECT 
-                            collection_id, 
-                            quantity, 
-                            product_type, 
-                            product_variant, 
-                            product, 
-                            source, 
-                            created_date, 
-                            modified_date, 
-                            notes
+                        SELECT
+                            collection_id, quantity, product_type, product_variant, product,
+                            source, created_date, modified_date, notes
                         FROM gemp_db.collection_entries
                         WHERE collection_id = :collID;
-                                                
                         """;
 
                 return conn.createQuery(sql)
