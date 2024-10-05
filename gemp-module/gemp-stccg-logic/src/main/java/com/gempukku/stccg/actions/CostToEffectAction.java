@@ -17,8 +17,6 @@ public interface CostToEffectAction extends Action {
      */
     void appendCost(Effect cost);
 
-    void appendTargeting(Effect targeting);
-
     /**
      * Inserts the specified effects as the next effects to be executedD.
      *
@@ -38,6 +36,5 @@ public interface CostToEffectAction extends Action {
 
     boolean wasCarriedOut();
 
-    void setCardActionPrefix(String number);
     String getCardActionPrefix();
 }

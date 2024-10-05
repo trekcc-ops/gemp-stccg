@@ -61,7 +61,7 @@ public class RevealCardsFromYourHandEffect extends DefaultEffect {
         }
 
         for (PhysicalCard card : _cards) {
-            _game.getActionsEnvironment().emitEffectResult(new RevealCardFromHandResult(_source, _handPlayerId, card));
+            _game.getActionsEnvironment().emitEffectResult(new RevealCardFromHandResult(_source));
         }
 
         return new FullEffectResult(true);

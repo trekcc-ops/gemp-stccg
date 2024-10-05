@@ -29,6 +29,8 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
             private Effect createTribblePowerEffect(TribblePower tribblePower, TribblesActionContext actionContext,
                                                     CostToEffectAction action) {
 
+                if (tribblePower == TribblePower.ACQUIRE)
+                    return new ActivateAcquireTribblePowerEffect(action, actionContext);
                 if (tribblePower == TribblePower.AVALANCHE)
                     return new ActivateAvalancheTribblePowerEffect(action, actionContext);
                 if (tribblePower == TribblePower.CONVERT)

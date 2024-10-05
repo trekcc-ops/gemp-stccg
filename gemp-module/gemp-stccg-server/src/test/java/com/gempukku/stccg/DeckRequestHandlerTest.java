@@ -6,7 +6,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.formats.SealedLeagueDefinition;
+import com.gempukku.stccg.formats.SealedEventDefinition;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -25,7 +25,7 @@ public class DeckRequestHandlerTest extends AbstractServerTest {
                     .map(GameFormat::Serialize)
                     .collect(Collectors.toMap(x-> x.code, x-> x));
             data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
-                    .map(SealedLeagueDefinition::Serialize)
+                    .map(SealedEventDefinition::Serialize)
                     .collect(Collectors.toMap(x-> x.name, x-> x));
             data.DraftTemplates = soloDraftDefinitions.getAllSoloDrafts().values().stream()
                     .map(soloDraft -> new JSONDefs.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))

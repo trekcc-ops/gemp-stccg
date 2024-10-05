@@ -165,7 +165,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
 
         CardCollection selectedCards = soloDraft.getCardsForChoiceId(selectedChoiceId, playerSeed, stage);
         Map<String, Object> extraInformationChanges = new HashMap<>();
-        boolean hasNextStage = soloDraft.hasNextStage(playerSeed, stage);
+        boolean hasNextStage = soloDraft.hasNextStage(stage);
         extraInformationChanges.put("stage", stage + 1);
         if (!hasNextStage)
             extraInformationChanges.put("finished", true);

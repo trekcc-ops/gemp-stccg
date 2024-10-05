@@ -140,7 +140,6 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
         _delegate.updateLastLoginIp(login, remoteAddress);
     }
 
-    @Override
     public List<DBDefs.DBPlayer> getAllPlayers() {
         return _delegate.getAllPlayers();
     }

@@ -51,14 +51,14 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
         final boolean success = stackedCards.size() >= _minimum;
 
         if (stackedCards.size() <= _minimum) {
-            cardsChosen(_game, stackedCards);
+            cardsChosen(stackedCards);
         } else {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardsSelectionDecision(1, getText(), stackedCards, _minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> stackedCards = getSelectedCardsByResponse(result);
-                            cardsChosen(_game, stackedCards);
+                            cardsChosen(stackedCards);
                         }
                     });
         }
@@ -66,5 +66,5 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
         return new FullEffectResult(success);
     }
 
-    protected abstract void cardsChosen(DefaultGame game, Collection<PhysicalCard> stackedCards);
+    protected abstract void cardsChosen(Collection<PhysicalCard> stackedCards);
 }

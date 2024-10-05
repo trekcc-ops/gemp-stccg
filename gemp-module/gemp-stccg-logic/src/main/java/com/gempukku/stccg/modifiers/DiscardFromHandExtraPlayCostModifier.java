@@ -25,7 +25,7 @@ public class DiscardFromHandExtraPlayCostModifier extends AbstractExtraPlayCostM
     }
 
     @Override
-    public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
+    public boolean canPayExtraCostsToPlay(PhysicalCard card) {
         return card.getOwner().canDiscardFromHand(count, Filters.and(Filters.not(card), Filters.and(cardFilter)));
     }
 }

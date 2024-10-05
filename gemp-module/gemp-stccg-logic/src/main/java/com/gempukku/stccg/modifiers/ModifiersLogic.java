@@ -167,7 +167,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
-                // TODO - Not accurate if the card has LOST an icon
+                // TODO - Not accurate if the card has lost or gained an icon
         if (physicalCard.getBlueprint().hasIcon(icon))
             return true;
 
@@ -205,8 +205,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         Map<String, LimitCounter> counterMap = _endOfPhaseLimitCounters.get(phase);
         if (counterMap != null)
             counterMap.clear();
-
-        int _drawnThisPhaseCount = 0;
     }
 
 
@@ -461,7 +459,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
-                if ((condition == null || condition.isFulfilled()) && !playCost.canPayExtraCostsToPlay(game, target))
+                if ((condition == null || condition.isFulfilled()) && !playCost.canPayExtraCostsToPlay(target))
                     return false;
             }
 
@@ -563,15 +561,20 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         // card of same title is already in the list
         if (!modifier.isCumulative() && modifier.getSource() != null) {
 
+            /* TODO - Not sure this is an accurate representation of cumulative rules.
+                Cases to consider:
+                - Multiple copies
+                - Copies owned by different players
+                - Modifier affects both players
+             */
             ModifierEffect modifierEffect = modifier.getModifierEffect();
             String cardTitle = modifier.getSource().getTitle();
-            String forPlayer = modifier.getForPlayer();
 
             for (Modifier liveModifier : modifierList) {
                 if (liveModifier.getModifierEffect() == modifierEffect
                         && liveModifier.getSource() != null
                         && liveModifier.getSource().getTitle().equals(cardTitle)
-                        && liveModifier.isForPlayer(forPlayer)) {
+                        && liveModifier.getSource().getOwner() == modifier.getSource().getOwner()) {
                     return false;
                 }
             }

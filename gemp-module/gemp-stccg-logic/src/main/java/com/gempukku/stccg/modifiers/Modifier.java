@@ -20,8 +20,6 @@ public interface Modifier {
 
     Condition getCondition();
     boolean isCumulative();
-    String getForPlayer();
-    boolean isForPlayer(String playerId);
 
     boolean affectsCard(PhysicalCard physicalCard);
 

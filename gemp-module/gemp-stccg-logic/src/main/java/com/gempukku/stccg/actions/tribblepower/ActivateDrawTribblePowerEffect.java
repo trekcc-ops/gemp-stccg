@@ -9,7 +9,6 @@ import com.gempukku.stccg.game.TribblesGame;
 
 public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
 
-    String _drawingPlayer;
     public ActivateDrawTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
@@ -32,7 +31,6 @@ public class ActivateDrawTribblePowerEffect extends ActivateTribblePowerEffect {
     }
 
     private void playerChosen(String playerId, TribblesGame game) {
-        _drawingPlayer = playerId;
         new DrawCardsEffect(game, _action, playerId, 1).playEffect();
     }
 }

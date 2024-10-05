@@ -125,7 +125,6 @@ public class SortAndFilterCards {
                 String cardRarity = setRarity.getCardRarity(library.stripBlueprintModifiers(blueprintId));
                 if(cardRarity == null) {
                     //TODO: log that the rarity was not set
-                    //real TODO: put the rarity in the friggin json
                     return false;
                 }
                 for (String r : rarity) {

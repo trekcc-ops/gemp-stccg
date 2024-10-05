@@ -11,7 +11,6 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
     protected final PhysicalCard _actionSource;
     private boolean _actionWasInitiated = false, _cardWasRemoved = false, _cardHasEnteredPlay = false;
-    protected boolean _reshuffle;
     protected String _text;
     private boolean _virtualCardAction;
     protected final PhysicalCard _cardEnteringPlay;
@@ -67,14 +66,6 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
      */
     public void setText(String text) {
         _text = text;
-    }
-
-    /**
-     * Sets if the card pile the card is played from is reshuffled.
-     * @param reshuffle true if pile the card is played from is reshuffled, otherwise false
-     */
-    public void setReshuffle(boolean reshuffle) {
-        _reshuffle = reshuffle;
     }
 
     protected Effect getFinalEffect() { return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone); }

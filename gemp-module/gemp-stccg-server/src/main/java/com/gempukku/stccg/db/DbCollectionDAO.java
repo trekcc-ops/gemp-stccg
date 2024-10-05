@@ -64,31 +64,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    @Override
-    public List<DBDefs.Collection> getAllCollectionsForPlayer(int playerId) {
-
-        try {
-            Sql2o db = new Sql2o(_dbAccess.getDataSource());
-
-            try (org.sql2o.Connection conn = db.open()) {
-                String sql = """
-                        SELECT
-                            id, player_id, type, extra_info
-                        FROM collection
-                        WHERE player_id = :playerID
-                        """;
-
-                return conn.createQuery(sql)
-                        .addParameter("playerID", playerId)
-                        .executeAndFetch(DBDefs.Collection.class);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to retrieve collection types", ex);
-        }
-    }
-
-    @Override
-    public DBDefs.Collection getCollectionInfo(int playerId, String type) {
+    private DBDefs.Collection getCollectionInfo(int playerId, String type) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -114,33 +90,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    @Override
-    public DBDefs.Collection getCollectionInfo(int collectionID) {
-
-        try {
-            Sql2o db = new Sql2o(_dbAccess.getDataSource());
-
-            try (org.sql2o.Connection conn = db.open()) {
-                String sql = """
-                        SELECT
-                            id, player_id, type, extra_info
-                        FROM collection
-                        WHERE collection_id = :collectionID
-                        LIMIT 1;
-                        """;
-                List<DBDefs.Collection> result = conn.createQuery(sql)
-                        .addParameter("collectionID", collectionID)
-                        .executeAndFetch(DBDefs.Collection.class);
-
-                return result.stream().findFirst().orElse(null);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to retrieve collection info", ex);
-        }
-    }
-
-    @Override
-    public List<DBDefs.Collection> getCollectionInfosByType(String type) {
+    private List<DBDefs.Collection> getCollectionInfosByType(String type) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());

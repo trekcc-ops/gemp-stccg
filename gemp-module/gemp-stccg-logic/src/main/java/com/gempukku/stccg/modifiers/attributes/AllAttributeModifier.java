@@ -15,6 +15,6 @@ public class AllAttributeModifier extends AttributeModifier {
 
     public AllAttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, Evaluator evaluator,
                                 boolean cumulative) {
-        super(modifierSource, affectFilter, condition, evaluator, cumulative, ModifierEffect.ALL_ATTRIBUTE_MODIFIER);
+        super(modifierSource, affectFilter, condition, evaluator, ModifierEffect.ALL_ATTRIBUTE_MODIFIER);
     }
 }

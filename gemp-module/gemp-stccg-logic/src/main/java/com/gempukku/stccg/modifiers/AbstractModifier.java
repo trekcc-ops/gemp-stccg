@@ -12,7 +12,6 @@ import com.gempukku.stccg.actions.Action;
 import java.util.List;
 
 public abstract class AbstractModifier implements Modifier {
-    protected String _playerId;
     protected final PhysicalCard _cardSource;
     private final String _text;
     protected final Filter _affectFilter;
@@ -26,15 +25,6 @@ public abstract class AbstractModifier implements Modifier {
 
     protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition, ModifierEffect effect) {
         this(source, null, affectFilter, condition, effect);
-    }
-
-    protected AbstractModifier(DefaultGame game, Filterable affectFilter, ModifierEffect effect) {
-        _cardSource = null;
-        _text = null;
-        _affectFilter = (affectFilter != null) ? Filters.and(affectFilter) : null;
-        _condition = null;
-        _effect = effect;
-        _game = game;
     }
 
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
@@ -190,14 +180,6 @@ public abstract class AbstractModifier implements Modifier {
     @Override
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return false;
-    }
-
-    public String getForPlayer() {
-        return _playerId;
-    }
-
-    public boolean isForPlayer(String playerId) {
-        return _playerId == null || _playerId.equals(playerId);
     }
 
     public boolean isCumulative() { return true; }

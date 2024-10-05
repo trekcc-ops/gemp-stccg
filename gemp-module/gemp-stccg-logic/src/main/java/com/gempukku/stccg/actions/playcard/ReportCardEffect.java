@@ -20,10 +20,6 @@ public class ReportCardEffect extends DefaultEffect {
         _reportingDestination = reportingDestination;
     }
 
-    public PhysicalCard getPlayedCard() {
-        return _cardPlayed;
-    }
-
     @Override
     public String getText() {
         return "Play " + _cardPlayed.getFullName();

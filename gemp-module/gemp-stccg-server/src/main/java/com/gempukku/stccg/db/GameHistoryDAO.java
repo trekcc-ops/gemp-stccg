@@ -25,5 +25,4 @@ public interface GameHistoryDAO {
 
     List<PlayerStatistic> getCompetitivePlayerStatistics(User player);
 
-    List<DBDefs.GameHistory> getLastGames(String formatName, int count);
 }

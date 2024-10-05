@@ -29,7 +29,9 @@ public class DbDeckDAO implements DeckDAO {
 
     public synchronized void deleteDeckForPlayer(User player, String name) {
         try {
-            deleteDeckFromDB(player.getId(), name);
+            String sqlStatement = "delete from deck where player_id=? and name=?";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                    player.getId(), name);
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to delete player deck from DB", exp);
         }
@@ -93,45 +95,21 @@ public class DbDeckDAO implements DeckDAO {
                                boolean newDeck) {
         String contents = deck.buildContentsFromDeck();
         try {
-            if (newDeck)
-                storeDeckInDB(playerId, name, target_format, notes, contents);
-            else
-                updateDeckInDB(playerId, name, target_format, notes, contents);
+            if (newDeck) {
+                String sqlStatement =
+                        "insert into deck (player_id, name, target_format, notes, contents) values (?, ?, ?, ?, ?)";
+                SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                        playerId, name, target_format, notes, contents);
+            }
+            else {
+                String sqlStatement =
+                        "update deck set contents=?, target_format=?, notes=? where player_id=? and name=?";
+                SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                        contents, target_format, notes, playerId, name);
+            }
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to store player deck to DB", exp);
         }
     }
 
-    private void deleteDeckFromDB(int playerId, String name) throws SQLException {
-        try {
-            String sqlStatement = "delete from deck where player_id=? and name=?";
-            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                    playerId, name);
-        } catch(SQLException exp) {
-            throw new RuntimeException("Unable to delete deck from DB", exp);
-        }
-    }
-
-    private void storeDeckInDB(int playerId, String name, String target_format, String notes, String contents)
-            throws SQLException {
-        try {
-            String sqlStatement =
-                    "insert into deck (player_id, name, target_format, notes, contents) values (?, ?, ?, ?, ?)";
-            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                    playerId, name, target_format, notes, contents);
-        } catch(SQLException exp) {
-            throw new RuntimeException("Unable to store deck in DB", exp);
-        }
-    }
-
-    private void updateDeckInDB(int playerId, String name, String target_format, String notes, String contents)
-            throws SQLException {
-        try {
-            String sqlStatement = "update deck set contents=?, target_format=?, notes=? where player_id=? and name=?";
-            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                    contents, target_format, notes, playerId, name);
-        } catch(SQLException exp) {
-            throw new RuntimeException("Unable to update deck in DB", exp);
-        }
-    }
 }

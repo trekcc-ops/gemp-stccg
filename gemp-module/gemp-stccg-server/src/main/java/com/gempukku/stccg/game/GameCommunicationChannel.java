@@ -2,7 +2,6 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
@@ -41,7 +40,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     public String getPlayerId() { return _playerId; }
 
     @Override
-    public synchronized void deregisterRequest(WaitingRequest waitingRequest) {
+    public synchronized void deregisterRequest() {
         _waitingRequest = null;
     }
 
@@ -80,7 +79,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void setPlayerScore(String participant, int points) {
+    public void setPlayerScore(String participant) {
         appendEvent(new GameEvent(PLAYER_SCORE, _game.getGameState().getPlayer(participant)));
     }
 
@@ -123,19 +122,6 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     public long getLastAccessed() {
         return _lastConsumed;
-    }
-
-    @Override
-    public void endGame() {
-        appendEvent(new GameEvent(GAME_ENDED));
-    }
-
-    public String produceCardInfo(int cardId) {
-        PhysicalCard card = _game.getGameState().findCardById(cardId);
-        if (card == null || card.getZone() == null)
-            return null;
-        else
-            return card.getCardInfoHTML();
     }
 
     public void serializeConsumedEvents(Document doc, Element element) {

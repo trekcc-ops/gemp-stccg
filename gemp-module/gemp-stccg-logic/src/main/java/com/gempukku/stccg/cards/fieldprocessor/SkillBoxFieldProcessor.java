@@ -66,7 +66,7 @@ public class SkillBoxFieldProcessor implements FieldProcessor {
                 throw new InvalidCardDefinitionException("Skill " + skillName + " doesn't match known skills");
 
         } else if (skillSplit[0].trim().equals("[DL]")) {
-            return new SpecialDownloadSkill();
+            return new SpecialDownloadSkill(skillSplit[1].trim());
         } else {
             throw new InvalidCardDefinitionException("Invalid skill syntax in JSON file");
         }

@@ -35,7 +35,6 @@ public abstract class PhysicalCard implements Filterable {
     protected final Map<Zone, List<ModifierHook>> _modifierHooksInZone = new HashMap<>(); // modifier hooks specific to stacked and discard
     private final Map<Zone, List<ModifierSource>> _modifiers = new HashMap<>(); // modifiers specific to stacked and discard
     protected Object _whileInZoneData;
-    protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
 
     public PhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
@@ -152,8 +151,6 @@ public abstract class PhysicalCard implements Filterable {
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
-    public void setLocationZoneIndex(int index) { _locationZoneIndex = index; }
-
     public int getLocationZoneIndex() {
         if (_currentLocation == null)
             return -1;
@@ -229,10 +226,6 @@ public abstract class PhysicalCard implements Filterable {
             if (modifier.hasRemovedText(getGame(), this))
                 return true;
         }
-        return false;
-    }
-
-    public boolean hasTransporters() {
         return false;
     }
 
@@ -459,17 +452,6 @@ public abstract class PhysicalCard implements Filterable {
     public ActionContext createActionContext(String playerId, Effect effect) { return createActionContext(playerId, effect, null); }
     public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
         return new DefaultActionContext(playerId, getGame(), this, effect, effectResult);
-    }
-
-    public int getPotentialDiscount() {
-        if (_blueprint.getDiscountSources() == null)
-            return 0;
-
-        int result = 0;
-        for (DiscountSource discountSource : _blueprint.getDiscountSources())
-            result += discountSource.getPotentialDiscount(createActionContext());
-
-        return result;
     }
 
     public boolean isUnique() {

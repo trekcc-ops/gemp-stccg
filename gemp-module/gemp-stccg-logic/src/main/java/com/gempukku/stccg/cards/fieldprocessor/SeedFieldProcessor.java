@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SeedFieldProcessor implements FieldProcessor {
-    private final Map<String, EffectProcessor> _seedProcessors = new HashMap<>();
     public SeedFieldProcessor() { }
     @Override
     public void processField(String key, JsonNode value, CardBlueprint blueprint,

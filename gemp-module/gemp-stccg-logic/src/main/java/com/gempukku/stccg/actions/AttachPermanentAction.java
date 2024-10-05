@@ -43,9 +43,6 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
                     }
                 };
     }
-    public PhysicalCard getTarget() {
-        return _target;
-    }
 
     @Override
     public PhysicalCard getActionSource() {

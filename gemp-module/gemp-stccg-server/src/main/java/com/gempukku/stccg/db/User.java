@@ -40,15 +40,6 @@ public class User {
             return types;
         }
 
-        public static String getTypeString(List<Type> types) {
-            StringBuilder sb = new StringBuilder();
-            for (Type type : values()) {
-                if (types.contains(type)) {
-                    sb.append(type.getValue());
-                }
-            }
-            return sb.toString();
-        }
     }
 
     private final int _id;

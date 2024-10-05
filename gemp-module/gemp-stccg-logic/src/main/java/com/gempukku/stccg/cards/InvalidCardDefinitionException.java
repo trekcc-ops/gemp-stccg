@@ -5,7 +5,4 @@ public class InvalidCardDefinitionException extends Exception {
         super(message);
     }
 
-    public InvalidCardDefinitionException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

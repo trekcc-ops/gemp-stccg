@@ -22,6 +22,6 @@ public class ChooseAndPreventCardEffect extends ChooseActiveCardEffect {
 
     @Override
     protected void cardSelected(PhysicalCard card) {
-        _effect.preventEffect(_game, card);
+        _effect.preventEffect(card);
     }
 }

@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MerchantService {
-    private final Merchant _merchant;
+    private final RarityBasedMerchant _merchant;
     private final Map<String, PriceGuarantee> _priceGuarantees = Collections.synchronizedMap(new LRUMap<>(100));
 
     private final ReadWriteLock _lock = new ReentrantReadWriteLock(true);
@@ -120,12 +120,12 @@ public class MerchantService {
                 if (fixedPrice != null) {
                     sellPrices.put(blueprintId, fixedPrice);
                 } else {
-                    Integer buyPrice = _merchant.getCardBuyPrice(blueprintId, currentTime);
+                    Integer buyPrice = _merchant.getCardBuyPrice(blueprintId);
 
                     if (buyPrice != null)
                         buyPrices.put(blueprintId, buyPrice);
                     if (_merchantableStrings.contains(blueprintId)) {
-                        Integer sellPrice = _merchant.getCardSellPrice(blueprintId, currentTime);
+                        Integer sellPrice = _merchant.getCardSellPrice(blueprintId);
                         if (sellPrice != null)
                             sellPrices.put(blueprintId, sellPrice);
                     }
@@ -142,7 +142,6 @@ public class MerchantService {
     public void merchantBuysCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
         priceCards(player, Collections.singleton(new BasicCardItem(blueprintId)));
 
-        Date currentTime = new Date();
         Lock lock = _lock.writeLock();
         lock.lock();
         try {
@@ -154,7 +153,6 @@ public class MerchantService {
                 throw new MerchantException("Unable to remove the sold card from your collection");
 
             _priceGuarantees.remove(player.getName());
-            _merchant.cardBought(blueprintId, currentTime, price);
         } finally {
             lock.unlock();
         }
@@ -163,7 +161,6 @@ public class MerchantService {
     public void merchantSellsCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
         priceCards(player, Collections.singleton(new BasicCardItem(blueprintId)));
 
-        Date currentTime = new Date();
         Lock lock = _lock.writeLock();
         lock.lock();
         try {
@@ -175,7 +172,6 @@ public class MerchantService {
                 throw new MerchantException("Unable to remove required currency from your collection");
 
             _priceGuarantees.remove(player.getName());
-            _merchant.cardSold(blueprintId, currentTime, price);
         } finally {
             lock.unlock();
         }

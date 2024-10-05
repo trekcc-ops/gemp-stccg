@@ -37,19 +37,19 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            getCurrentTournaments(request, responseWriter);
+            getCurrentTournaments(responseWriter);
         } else if (uri.equals("/history") && request.method() == HttpMethod.GET) {
             getTournamentHistory(responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/html") && uri.contains("/deck/") && request.method() == HttpMethod.GET) {
             getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")), uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
-            getTournamentInfo(request, uri.substring(1), responseWriter);
+            getTournamentInfo(uri.substring(1), responseWriter);
         } else {
             throw new HttpProcessingException(404);
         }
     }
 
-    private void getTournamentInfo(HttpRequest request, String tournamentId, ResponseWriter responseWriter) throws Exception {
+    private void getTournamentInfo(String tournamentId, ResponseWriter responseWriter) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -135,7 +135,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeXmlResponse(doc);
     }
 
-    private void getCurrentTournaments(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+    private void getCurrentTournaments(ResponseWriter responseWriter) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

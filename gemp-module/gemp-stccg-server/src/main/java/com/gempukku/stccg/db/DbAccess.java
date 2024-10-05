@@ -9,7 +9,6 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -82,14 +81,14 @@ public class DbAccess {
         // passing in the object pool we created.
         //
 
+        PoolingDataSource dataSource = new PoolingDataSource(connectionPool);
         try {
-            Connection connection = new PoolingDataSource(connectionPool).getConnection();
+            dataSource.getConnection();
             LOGGER.debug("setupDataSource - connection successfully created");
         } catch(SQLException exp) {
             LOGGER.debug("setupDataSource - unable to connect");
-//            throw new RuntimeException(exp);
         }
 
-        return new PoolingDataSource(connectionPool);
+        return dataSource;
     }
 }

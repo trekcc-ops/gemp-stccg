@@ -20,9 +20,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
     }
 
     @Override
-    public synchronized void deregisterRequest(WaitingRequest waitingRequest) {
-        _waitingRequest = null;
-    }
+    public synchronized void deregisterRequest() { _waitingRequest = null; }
 
     @Override
     public synchronized boolean registerRequest(WaitingRequest waitingRequest) {

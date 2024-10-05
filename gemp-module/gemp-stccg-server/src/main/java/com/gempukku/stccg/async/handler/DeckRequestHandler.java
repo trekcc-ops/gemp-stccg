@@ -12,7 +12,7 @@ import com.gempukku.stccg.db.DeckDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.SealedLeagueDefinition;
+import com.gempukku.stccg.formats.SealedEventDefinition;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import io.netty.handler.codec.http.HttpMethod;
@@ -97,7 +97,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                         .map(GameFormat::Serialize)
                         .collect(Collectors.toMap(x-> x.code, x-> x));
                 data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
-                        .map(SealedLeagueDefinition::Serialize)
+                        .map(SealedEventDefinition::Serialize)
                         .collect(Collectors.toMap(x-> x.name, x-> x));
                 data.DraftTemplates = _draftLibrary.getAllSoloDrafts().values().stream()
                         .map(soloDraft -> new JSONDefs.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))

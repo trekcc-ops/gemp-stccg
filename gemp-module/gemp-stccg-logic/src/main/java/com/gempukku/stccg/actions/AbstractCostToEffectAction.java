@@ -60,7 +60,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         _costs.add(cost);
     }
 
-    @Override
     public final void appendTargeting(Effect targeting) {
         _targeting.add(targeting);
     }

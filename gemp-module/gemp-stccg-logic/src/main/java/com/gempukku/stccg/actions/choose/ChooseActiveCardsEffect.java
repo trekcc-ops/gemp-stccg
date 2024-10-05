@@ -44,14 +44,6 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
         _filters = filters;
     }
 
-    public void setUseShortcut(boolean shortcut) {
-        _shortcut = shortcut;
-    }
-
-    public void setChoiceText(String choiceText) {
-        _choiceText = choiceText;
-    }
-
     protected Filter getExtraFilterForPlaying() {
         return Filters.any;
     }

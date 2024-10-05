@@ -9,5 +9,5 @@ public interface LongPollableResource {
      */
     boolean registerRequest(WaitingRequest waitingRequest);
 
-    void deregisterRequest(WaitingRequest waitingRequest);
+    void deregisterRequest();
 }

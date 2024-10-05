@@ -48,7 +48,6 @@ public class TribblesGameState extends GameState {
             return _inPlay;
     }
 
-    @Override
     public void createPhysicalCards() {
         for (Player player : _players.values()) {
             String playerId = player.getPlayerId();
@@ -129,7 +128,7 @@ public class TribblesGameState extends GameState {
         return _chainBroken;
     }
 
-    public void playerWentOut(String player) {
+    public void playerWentOut() {
         // TODO
     }
 

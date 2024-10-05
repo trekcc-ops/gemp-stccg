@@ -29,7 +29,7 @@ public class Blueprint101_062 extends CardBlueprint {
         Filterable usageFilter = Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.NON_ALIGNED, Filters.Romulan));
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL);
         modifiers.add(new StrengthModifier(thisCard, affectFilter,
-                new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));
+                new PresentWithYourCardCondition(thisCard, usageFilter), 2));
         return modifiers;
     }
 }

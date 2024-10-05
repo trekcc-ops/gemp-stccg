@@ -11,7 +11,6 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     private String _message;
 
     private boolean _sentMessage;
-    private String _triggerIdentifier;
     private final DefaultGame _game;
     private ActionSource _actionSource;
 
@@ -23,20 +22,11 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
 
         setText("Optional trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " optional triggered effect is used";
-        _triggerIdentifier = String.valueOf(physicalCard.getCardId());
     }
 
     public OptionalTriggerAction(PhysicalCard physicalCard, ActionSource actionSource) {
         this(physicalCard);
         _actionSource = actionSource;
-    }
-
-    public void setTriggerIdentifier(String triggerIdentifier) {
-        _triggerIdentifier = triggerIdentifier;
-    }
-
-    public String getTriggerIdentifier() {
-        return _triggerIdentifier;
     }
 
     public void setMessage(String message) {

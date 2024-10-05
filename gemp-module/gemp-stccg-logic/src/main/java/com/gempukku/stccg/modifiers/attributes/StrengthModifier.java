@@ -17,24 +17,22 @@ public class StrengthModifier extends AttributeModifier {
     }
 
     public StrengthModifier(PhysicalCard modifierSource, Condition condition, int modifier) {
-        this(modifierSource, modifierSource, condition, new ConstantEvaluator(modifierSource.getGame(), modifier), false);
+        this(modifierSource, modifierSource, condition, new ConstantEvaluator(modifierSource.getGame(), modifier));
     }
 
     public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, int modifier) {
-        this(modifierSource, affectFilter, new TrueCondition(), new ConstantEvaluator(modifierSource.getGame(), modifier), false);
+        this(modifierSource, affectFilter, new TrueCondition(), new ConstantEvaluator(modifierSource.getGame(), modifier));
     }
 
-    public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, int modifier,
-                            boolean cumulative) {
-        this(modifierSource, affectFilter, condition, new ConstantEvaluator(modifierSource.getGame(), modifier), cumulative);
+    public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, int modifier) {
+        this(modifierSource, affectFilter, condition, new ConstantEvaluator(modifierSource.getGame(), modifier));
     }
 
     public StrengthModifier(ActionContext context, Filterable affectFilter, Condition condition, Evaluator evaluator) {
-        this(context.getSource(), affectFilter, condition, evaluator, false);
+        this(context.getSource(), affectFilter, condition, evaluator);
     }
 
-    public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, Evaluator evaluator,
-                            boolean cumulative) {
-        super(modifierSource, affectFilter, condition, evaluator, cumulative, CardAttribute.STRENGTH, ModifierEffect.STRENGTH_MODIFIER);
+    public StrengthModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition, Evaluator evaluator) {
+        super(modifierSource, affectFilter, condition, evaluator, CardAttribute.STRENGTH, ModifierEffect.STRENGTH_MODIFIER);
     }
 }

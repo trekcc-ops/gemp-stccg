@@ -1,14 +1,13 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.DefaultDraft;
-import com.gempukku.stccg.draft.Draft;
 import com.gempukku.stccg.draft.DraftPack;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.packs.ProductLibrary;
 import org.apache.commons.lang.StringUtils;
 
@@ -42,7 +41,7 @@ public class DefaultTournament implements Tournament {
     private TournamentTask _nextTask;
 
     private long _deckBuildStartTime;
-    private Draft _draft;
+    private DefaultDraft _draft;
 
     private List<PlayerStanding> _currentStandings;
 
@@ -187,10 +186,6 @@ public class DefaultTournament implements Tournament {
         } finally {
             _lock.readLock().unlock();
         }
-    }
-
-    public Draft getDraft() {
-        return _draft;
     }
 
     @Override

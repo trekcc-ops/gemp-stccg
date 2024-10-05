@@ -53,9 +53,7 @@ public class HallServer extends AbstractServer {
     private final AdminService _adminService;
     private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
 
-    private final CollectionType _defaultCollectionType = CollectionType.ALL_CARDS;
-
-    private String _motd;
+    private String _messageOfTheDay;
 
     private boolean _shutdown;
 
@@ -240,7 +238,7 @@ public class HallServer extends AbstractServer {
     public String getDailyMessage() {
         _hallDataAccessLock.readLock().lock();
         try {
-            return _motd;
+            return _messageOfTheDay;
         } finally {
             _hallDataAccessLock.readLock().unlock();
         }
@@ -249,7 +247,7 @@ public class HallServer extends AbstractServer {
     public void setDailyMessage(String motd) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            _motd = motd;
+            _messageOfTheDay = motd;
             hallChanged();
         } finally {
             _hallDataAccessLock.writeLock().unlock();
@@ -306,7 +304,6 @@ public class HallServer extends AbstractServer {
             throws HallException {
         League league = null;
         LeagueSeriesData leagueSerie = null;
-        CollectionType collectionType = _defaultCollectionType;
         GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
         GameTimer gameTimer = GameTimer.ResolveTimer(timer);
 
@@ -507,8 +504,8 @@ public class HallServer extends AbstractServer {
         _hallDataAccessLock.readLock().lock();
         try {
             visitor.serverTime(DateUtils.getCurrentDateAsString());
-            if (_motd != null)
-                visitor.motd(_motd);
+            if (_messageOfTheDay != null)
+                visitor.motd(_messageOfTheDay);
 
             tableHolder.processTables(isAdmin, player, visitor);
 

@@ -74,12 +74,10 @@ public class CardBlueprint {
     private List<ModifierSource> inPlayModifiers;
 
     private List<ExtraPlayCostSource> extraPlayCosts;
-    private List<DiscountSource> _discountSources;
 
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
 
-    private ActionSource _playEventAction;
     private ActionSource _seedCardActionSource;
 
     public CardBlueprint(String blueprintId) {
@@ -174,9 +172,7 @@ public class CardBlueprint {
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
     public void addSkill(Skill skill) { _skills.add(skill); }
-    public void addSkill(RegularSkill regularSkill) {
-        _skills.add(regularSkill);
-    }
+
     public void addSkill(SkillName skillName) { _skills.add(new RegularSkill(skillName, 1)); }
     public void addSkill(SkillName skillName, int level) { _skills.add(new RegularSkill(skillName, level)); }
         // TODO - Not an exact match for how skills are processed
@@ -331,7 +327,7 @@ public class CardBlueprint {
     }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
     public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
-    public List<DiscountSource> getDiscountSources() { return _discountSources; }
+
     public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
@@ -397,11 +393,6 @@ public class CardBlueprint {
         boolean showUniversalSymbol = typesWithUniversalSymbol.contains(getCardType()) && isUniversal();
         return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + getImageUrl() + "'>" +
                 (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
-    }
-
-    public boolean hasNoTransporters() {
-        // TODO - No actual code built here for cards that don't have transporters
-        return false;
     }
 
     public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }

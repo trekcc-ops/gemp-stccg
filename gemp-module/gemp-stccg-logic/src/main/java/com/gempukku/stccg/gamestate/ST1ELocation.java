@@ -59,13 +59,6 @@ public class ST1ELocation {
             _outpostCards.add((FacilityCard) card);
     }
 
-    public void refreshSpacelineIndex(int newIndex) {
-        for (MissionCard mission : _missionCards)
-            mission.setLocationZoneIndex(newIndex);
-        for (PhysicalCard nonMission : _nonMissionCards)
-            nonMission.setLocationZoneIndex(newIndex);
-    }
-
     public boolean hasFacilityOwnedByPlayer(String playerId) {
         for (PhysicalCard nonMission : _nonMissionCards)
             if (nonMission.getCardType() == CardType.FACILITY && nonMission.getOwnerName().equals(playerId))

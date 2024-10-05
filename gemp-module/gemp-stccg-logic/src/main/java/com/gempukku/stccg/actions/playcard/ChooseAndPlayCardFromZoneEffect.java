@@ -137,10 +137,6 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
         return true;
     }
 
-    public void addDestinationFilter(Filterable filter) {
-        _destinationFilter = Filters.and(_destinationFilter, filter);
-    }
-
     public String getPerformingPlayerId() { return _playerId; }
 
     protected CostToEffectAction getPlayCardAction() { return _playCardAction; }

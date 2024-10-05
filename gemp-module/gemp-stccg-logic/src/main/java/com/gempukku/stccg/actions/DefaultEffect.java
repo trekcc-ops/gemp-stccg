@@ -55,10 +55,7 @@ public abstract class DefaultEffect implements Effect {
         return _carriedOut && !_prevented;
     }
 
-    @Override
-    public String getText() {
-        return null;
-    }
+    public String getText() { return null; }
 
     @Override
     public EffectType getType() {

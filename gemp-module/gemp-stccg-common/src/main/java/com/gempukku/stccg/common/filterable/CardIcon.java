@@ -25,9 +25,6 @@ public enum CardIcon implements Filterable {
         _humanReadable = humanReadable;
         _iconURL = iconURL;
     }
-
     public String getIconURL() { return _iconURL; }
-
-    public String getHumanReadable() { return _humanReadable; }
     public String toHTML() { return "<img src='" + _iconURL + "' class='inline-icon' title='" + _humanReadable + "'>"; }
 }

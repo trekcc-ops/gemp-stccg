@@ -14,7 +14,7 @@ public interface GameStateListener {
     void setCurrentPhase(Phase phase);
 
     void setPlayerDecked(Player player);
-    void setPlayerScore(String playerId, int points);
+    void setPlayerScore(String playerId);
 
     void setTribbleSequence(String tribbleSequence);
 
@@ -25,7 +25,5 @@ public interface GameStateListener {
     void decisionRequired(String playerId, AwaitingDecision awaitingDecision);
 
     void sendWarning(String playerId, String warning);
-
-    void endGame();
 
 }
