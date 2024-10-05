@@ -1,7 +1,6 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.collection.PackBox;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -62,8 +61,4 @@ public class WeightedRandomPack implements PackBox {
         return Collections.singletonList(result);
     }
 
-    @Override
-    public List<String> GetAllOptions() {
-        return _contents.keySet().stream().toList();
-    }
 }

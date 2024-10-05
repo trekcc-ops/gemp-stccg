@@ -1,12 +1,10 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.collection.PackBox;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.SetDefinition;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -64,11 +62,4 @@ public class ReflectionsPackBox implements PackBox {
     @Override
     public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
-    @Override
-    public List<String> GetAllOptions() {
-        var list = new ArrayList<String>();
-        list.addAll(_previousSetCards);
-        list.addAll(_reflectionSlotCards);
-        return Collections.unmodifiableList(list);
-    }
 }

@@ -2,8 +2,25 @@
 	{
 		name: Premiere - Booster
 		type: booster
+		items: [
+		    1xR
+		    3xU
+		    11xC
+		]
 		data: {
 			set: "101"
+		}
+	}
+	{
+		name: First Contact - Booster
+		type: booster
+		items: [
+		    1xR
+		    3xU
+		    5xC
+		]
+		data: {
+			set: "109"
 		}
 	}
 ]

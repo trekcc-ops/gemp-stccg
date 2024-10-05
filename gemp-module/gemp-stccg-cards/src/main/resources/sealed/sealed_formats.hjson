@@ -1,31 +1,22 @@
 [
 	{
-		name: 01 Fellowship Block Sealed
-		id: fotr_block_sealed
+		name: 01 Test Sealed Deck
+		id: testsealed
 		format: st1emoderncomplete
 		seriesProduct: [
 			[
-				1x(S)FotR - Starter
-				6xFotR - Booster
-				#Shotgun Enquea
-				2x1_231
+			    6xPremiere - Booster
+			    1x155_056
 			],
 			[
-				1x(S)MoM - Starter
-				3xMoM - Booster
-				#The Balrog, Durin's Bane
-				1x2_51
+			    6xFirst Contact - Booster
+			    1x155_079
 			]
 			[
-				1x(S)RotEL - Starter
-				3xRotEL - Booster
-			]
-			[
-				2xFotR - Booster
-				2xMoM - Booster
-				2xRotEL - Booster
+			    3xPremiere - Starter
+			    3xPremiere - Starter
+			    1x155_095
 			]
 		]
 	}
-
 ]
