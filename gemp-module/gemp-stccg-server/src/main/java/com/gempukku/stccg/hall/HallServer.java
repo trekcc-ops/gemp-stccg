@@ -340,7 +340,7 @@ public class HallServer extends AbstractServer {
         if (format == null)
             throw new HallException("This format is not supported: " + formatSelection);
 
-        return new GameSettings(collectionType, format, league, leagueSerie,
+        return new GameSettings(format, league, leagueSerie,
                 league != null, isPrivate, isInviteOnly, isHidden, gameTimer, description);
     }
 
@@ -697,8 +697,9 @@ public class HallServer extends AbstractServer {
 
         private HallTournamentCallback(Tournament tournament) {
             _tournament = tournament;
-            tournamentGameSettings = new GameSettings(null, _formatLibrary.getFormat(_tournament.getFormat()),
-                    null, null, true, false, false, false, GameTimer.TOURNAMENT_TIMER, null);
+            tournamentGameSettings = new GameSettings(_formatLibrary.getFormat(_tournament.getFormat()),
+                    null, null, true, false, false, false,
+                    GameTimer.TOURNAMENT_TIMER, null);
         }
 
         @Override

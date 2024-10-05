@@ -151,7 +151,7 @@ public class DefaultTournament implements Tournament {
         try {
             if (_tournamentStage == Stage.PLAYING_GAMES && _currentlyPlayingPlayers.contains(winner)
                     && _currentlyPlayingPlayers.contains(loser)) {
-                _tournamentService.setMatchResult(_tournamentId, _tournamentRound, winner);
+                _tournamentService.setMatchResult(_tournamentId, winner);
                 _currentlyPlayingPlayers.remove(winner);
                 _currentlyPlayingPlayers.remove(loser);
                 _finishedTournamentMatches.add(

@@ -13,11 +13,11 @@ public interface TournamentPlayerDAO {
 
     void dropPlayer(String tournamentId, String playerName);
 
-    Map<String, CardDeck> getPlayerDecks(String tournamentId, String format, CardBlueprintLibrary library);
+    Map<String, CardDeck> getPlayerDecks(String tournamentId, String format);
 
     Set<String> getDroppedPlayers(String tournamentId);
 
-    CardDeck getPlayerDeck(String tournamentId, String playerName, String format, CardBlueprintLibrary library);
+    CardDeck getPlayerDeck(String tournamentId, String playerName, String format);
 
     Set<String> getPlayers(String tournamentId);
 }

@@ -62,11 +62,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                 System.out.println("Pairing round " + i);
                 List<PlayerStanding> standings =
                         BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
-                for (PlayerStanding standing : standings) {
-                    String player = standing.getPlayerName();
-                    log(player + " points - " + standing.getPoints() + " played against: " +
-                            StringUtils.join(previouslyPaired.get(player), ","));
-                }
 
                 Map<String, String> newPairings = new LinkedHashMap<>();
                 Set<String> newByes = new HashSet<>();
@@ -82,7 +77,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                 else {
                     assertEquals(1, newByes.size(), "Invalid number of byes");
                     String newBye = newByes.iterator().next();
-                    log("Bye - " + newBye);
                     assertNull(byes.get(newBye), "Player already received bye");
                     byes.put(newBye, 1);
                 }
@@ -97,7 +91,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                     System.out.println("Paired " + playerOne + " against " + playerTwo + " points - " +
                             getPlayerPoints(standings, playerOne) + " vs " + getPlayerPoints(standings, playerTwo));
                     String winner = ThreadLocalRandom.current().nextBoolean() ? playerOne : playerTwo;
-                    log("Winner - " + winner);
 
                     previouslyPaired.get(playerOne).add(playerTwo);
                     previouslyPaired.get(playerTwo).add(playerOne);
@@ -114,10 +107,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
             System.out.println(standing.getStanding() + ". " + player + " points - " + standing.getPoints() +
                     " played against: " + StringUtils.join(previouslyPaired.get(player), ","));
         }
-    }
-
-    private void log(String s) {
-        // System.out.println(s);
     }
 
     private int getPlayerPoints(List<PlayerStanding> standings, String player) {

@@ -6,7 +6,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public abstract class DefaultEffect implements Effect {
-    protected Action _action;
     private Boolean _carriedOut;
     protected boolean _prevented;
     protected final String _performingPlayerId;
@@ -37,7 +36,6 @@ public abstract class DefaultEffect implements Effect {
         _game = card.getGame();
     }
     protected DefaultEffect(Action action) {
-        _action = action;
         _performingPlayerId = action.getPerformingPlayerId();
         _game = action.getGame();
     }

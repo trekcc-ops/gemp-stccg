@@ -6,7 +6,7 @@ import com.gempukku.stccg.collection.CardCollection;
 public interface LeaguePrizes {
     CardCollection getPrizeForLeagueMatchWinner(int winCount, int gamesPlayed);
 
-    CardCollection getPrizeForLeagueMatchLoser(int winCountThisSerie, int totalGamesPlayedThisSerie);
+    CardCollection getPrizeForLeagueMatchLoser(int winCountThisSeries, int totalGamesPlayedThisSeries);
 
     CardCollection getPrizeForLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed, CollectionType collectionType);
 

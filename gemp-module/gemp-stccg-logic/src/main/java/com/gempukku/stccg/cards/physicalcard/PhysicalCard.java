@@ -204,28 +204,17 @@ public abstract class PhysicalCard implements Filterable {
     public CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter,
                                                 boolean ignoreRoamingPenalty) {
 
-            final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
-            if (validTargetFilter == null) {
-                Zone playToZone = Zone.SUPPORT;
-                CostToEffectAction action = new STCCGPlayCardAction((ST1EPhysicalCard) this, playToZone, this.getOwner());
-                getModifiers().appendExtraCosts(action, this);
-                getModifiers().appendPotentialDiscounts(action, this);
-
-                return action;
-            } else {
-                Filter fullAttachValidTargetFilter = Filters.and(_blueprint.getValidTargetFilter(),
-                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(
-                                this, targetCard),
-                        (Filter) (game12, physicalCard) -> true);
-
-                final AttachPermanentAction action = new AttachPermanentAction(this,
-                        Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter));
-
-                getModifiers().appendPotentialDiscounts(action, this);
-                getModifiers().appendExtraCosts(action, this);
-
-                return action;
-            }
+        final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
+        CostToEffectAction action = (validTargetFilter == null) ?
+                new STCCGPlayCardAction((ST1EPhysicalCard) this, Zone.SUPPORT, this.getOwner()) :
+                new AttachPermanentAction(this, Filters.and(
+                        validTargetFilter,
+                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(this, targetCard),
+                        (Filter) (game12, physicalCard) -> true,
+                        additionalAttachmentFilter)
+                );
+        getModifiers().appendExtraCosts(action, this);
+        return action;
     }
 
     public List<Modifier> getModifiers(List<ModifierSource> sources) {

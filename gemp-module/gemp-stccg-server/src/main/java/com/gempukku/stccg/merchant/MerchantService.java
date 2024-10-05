@@ -17,7 +17,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MerchantService {
     private final Merchant _merchant;
-    private final long _priceGuaranteeExpire = 1000 * 60 * 5;
     private final Map<String, PriceGuarantee> _priceGuarantees = Collections.synchronizedMap(new LRUMap<>(100));
 
     private final ReadWriteLock _lock = new ReentrantReadWriteLock(true);
@@ -132,7 +131,7 @@ public class MerchantService {
                     }
                 }
             }
-            PriceGuarantee priceGuarantee = new PriceGuarantee(sellPrices, buyPrices, currentTime);
+            PriceGuarantee priceGuarantee = new PriceGuarantee(sellPrices, buyPrices);
             _priceGuarantees.put(player.getName(), priceGuarantee);
             return priceGuarantee;
         } finally {
@@ -199,16 +198,10 @@ public class MerchantService {
     public static class PriceGuarantee {
         private final Map<String, Integer> _sellPrices;
         private final Map<String, Integer> _buyPrices;
-        private final Date _date;
 
-        private PriceGuarantee(Map<String, Integer> sellPrices, Map<String, Integer> buyPrices, Date date) {
+        private PriceGuarantee(Map<String, Integer> sellPrices, Map<String, Integer> buyPrices) {
             _sellPrices = sellPrices;
             _buyPrices = buyPrices;
-            _date = date;
-        }
-
-        public Date getDate() {
-            return _date;
         }
 
         public Map<String, Integer> getBuyPrices() {

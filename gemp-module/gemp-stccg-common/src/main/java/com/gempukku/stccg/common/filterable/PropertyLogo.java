@@ -31,7 +31,4 @@ public enum PropertyLogo implements Filterable {
         _humanReadable = humanReadable;
     }
 
-    public String getHumanReadable() {
-        return _humanReadable;
-    }
 }

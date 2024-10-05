@@ -68,10 +68,6 @@ public class DockAction extends AbstractCostToEffectAction {
         return getNextEffect();
     }
 
-    public boolean wasActionCarriedOut() {
-        return _cardDocked;
-    }
-
     @Override
     public boolean canBeInitiated() { return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty(); }
 

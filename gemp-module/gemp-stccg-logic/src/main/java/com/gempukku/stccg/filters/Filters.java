@@ -114,19 +114,8 @@ public class Filters {
         return matchingFilterVisitor.getCounter();
     }
 
+
     // Filters available
-
-    public static Filter conditionFilter(final Filterable defaultFilters, final Condition condition, final Filterable conditionMetFilter) {
-        final Filter filter1 = changeToFilter(defaultFilters);
-        final Filter filter2 = changeToFilter(conditionMetFilter);
-        return (game, physicalCard) -> {
-            if (condition.isFulfilled())
-                return filter2.accepts(game, physicalCard);
-            else
-                return filter1.accepts(game, physicalCard);
-        };
-    }
-
     public static Filter strengthEqual(final Evaluator evaluator) {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game, null);
     }

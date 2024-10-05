@@ -591,16 +591,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard) {
-        playedCard.appendPotentialDiscountEffectsToAction(action);
-
-        for (Modifier modifier : getModifiersAffectingCard(
-                ModifierEffect.POTENTIAL_DISCOUNT_MODIFIER, playedCard)) {
-            modifier.appendPotentialDiscounts(action, playedCard);
-        }
-    }
-
-    @Override
     public void generateSnapshot(ModifiersLogic selfSnapshot, SnapshotData snapshotData) {
         // TODO SNAPSHOT - Basically need to copy everything here
     }

@@ -20,7 +20,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
         super(card, card, card.getOwnerName(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
         _cardToPlay = card;
         setText("Play " + _cardToPlay.getFullName());
-        Zone _fromZone = card.getZone();
         _game = card.getGame();
     }
 
@@ -41,7 +40,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
     @Override
     protected Effect getFinalEffect() {
-        return new TribblesPlayCardEffect(_cardToPlay, _toZone);
+        return new TribblesPlayCardEffect(_cardToPlay);
     }
 
     @Override

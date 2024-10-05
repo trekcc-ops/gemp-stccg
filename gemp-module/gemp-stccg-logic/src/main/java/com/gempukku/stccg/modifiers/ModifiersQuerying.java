@@ -74,8 +74,6 @@ public interface ModifiersQuerying {
 
     boolean hasFlagActive(ModifierFlag modifierFlag);
 
-    void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard);
-
     LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource);
 
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);

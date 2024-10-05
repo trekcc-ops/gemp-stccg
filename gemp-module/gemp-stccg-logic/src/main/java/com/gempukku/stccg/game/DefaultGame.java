@@ -59,10 +59,6 @@ public abstract class DefaultGame {
         return false;
     }
 
-    public boolean isSolo() {
-        return _allPlayerIds.size() == 1;
-    }
-
     public GameFormat getFormat() {
         return _format;
     }

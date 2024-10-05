@@ -39,10 +39,6 @@ public class UndockAction extends AbstractCostToEffectAction {
         return getNextEffect();
     }
 
-    public boolean wasActionCarriedOut() {
-        return _cardUndocked;
-    }
-
     @Override
     public boolean canBeInitiated() { return _cardToUndock.isDocked(); }
 

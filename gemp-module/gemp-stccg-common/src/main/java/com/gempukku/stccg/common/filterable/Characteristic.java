@@ -10,5 +10,4 @@ public enum Characteristic implements Filterable {
         _humanReadable = humanReadable;
     }
 
-    public String getHumanReadable() { return _humanReadable; }
 }

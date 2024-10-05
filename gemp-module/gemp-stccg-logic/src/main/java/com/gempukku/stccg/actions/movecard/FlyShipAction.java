@@ -90,10 +90,6 @@ public class FlyShipAction extends AbstractCostToEffectAction {
         return getNextEffect();
     }
 
-    public boolean wasActionCarriedOut() {
-        return _cardMoved;
-    }
-
     @Override
     public boolean canBeInitiated() { return !_flyingCard.isDocked() && !_destinationOptions.isEmpty(); }
 

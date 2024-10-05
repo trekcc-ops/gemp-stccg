@@ -51,11 +51,6 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
         return messages;
     }
 
-    public synchronized boolean hasMessages() {
-        updateLastAccess();
-        return !_messages.isEmpty();
-    }
-
     private synchronized void updateLastAccess() {
         _lastConsumed = System.currentTimeMillis();
     }

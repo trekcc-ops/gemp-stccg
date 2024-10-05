@@ -13,7 +13,7 @@ public class TribblesPlayCardEffect extends DefaultEffect {
     // TODO - _tribblesGame member is redundant with the DefaultEffect already having _game
     private final TribblesGame _tribblesGame;
 
-    public TribblesPlayCardEffect(TribblesPhysicalCard cardPlayed, Zone playedTo) {
+    public TribblesPlayCardEffect(TribblesPhysicalCard cardPlayed) {
         super(cardPlayed);
         _playedFrom = cardPlayed.getZone();
         _cardPlayed = cardPlayed;

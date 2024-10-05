@@ -116,10 +116,6 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
         return getNextEffect();
     }
 
-    public boolean wasActionCarriedOut() {
-        return _missionAttemptInitiated;
-    }
-
     @Override
     public ST1EGame getGame() { return _game; }
 

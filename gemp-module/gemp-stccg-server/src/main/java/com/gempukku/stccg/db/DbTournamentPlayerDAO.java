@@ -1,6 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 
@@ -91,10 +90,11 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format, CardBlueprintLibrary library) {
+    public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select player, deck_name, deck from tournament_player where tournament_id=? and deck_name is not null")) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "select player, deck_name, deck from tournament_player where tournament_id=? and deck_name is not null")) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Map<String, CardDeck> result = new HashMap<>();
@@ -135,17 +135,17 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public CardDeck getPlayerDeck(String tournamentId, String playerName, String format, CardBlueprintLibrary library) {
+    public CardDeck getPlayerDeck(String tournamentId, String playerName, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select deck_name, deck from tournament_player where tournament_id=? and player=?")) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "select deck_name, deck from tournament_player where tournament_id=? and player=?")) {
                     statement.setString(1, tournamentId);
                     statement.setString(2, playerName);
                     try (ResultSet rs = statement.executeQuery()) {
-                        if (rs.next())
-                            return new CardDeck(rs.getString(1), rs.getString(2), format, "");
-                        else
-                            return null;
+                        return (rs.next()) ?
+                                new CardDeck(rs.getString(1), rs.getString(2), format, "") :
+                                null;
                     }
                 }
             }

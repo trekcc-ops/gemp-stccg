@@ -15,6 +15,4 @@ public enum Species implements Filterable {
         _humanReadable = humanReadable;
     }
 
-    public String getHumanReadable() { return _humanReadable; }
-
 }

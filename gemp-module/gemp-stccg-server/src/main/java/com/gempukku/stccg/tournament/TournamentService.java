@@ -64,7 +64,7 @@ public class TournamentService {
 
     
     public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
-        return _tournamentPlayerDao.getPlayerDecks(tournamentId, format, _library);
+        return _tournamentPlayerDao.getPlayerDecks(tournamentId, format);
     }
 
     
@@ -74,7 +74,7 @@ public class TournamentService {
 
     
     public CardDeck getPlayerDeck(String tournamentId, String player, String format) {
-        return _tournamentPlayerDao.getPlayerDeck(tournamentId, player, format, _library);
+        return _tournamentPlayerDao.getPlayerDeck(tournamentId, player, format);
     }
 
     
@@ -83,8 +83,8 @@ public class TournamentService {
     }
 
     
-    public void setMatchResult(String tournamentId, int round, String winner) {
-        _tournamentMatchDao.setMatchResult(tournamentId, round, winner);
+    public void setMatchResult(String tournamentId, String winner) {
+        _tournamentMatchDao.setMatchResult(tournamentId, winner);
     }
 
     

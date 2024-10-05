@@ -47,7 +47,6 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
         _cardSource = cardSource;
 
         final GameState gameState = _game.getGameState();
-        final ModifiersQuerying modifiersQuerying = _game.getModifiersQuerying();
 
         // Get potential targets to beam to/from
         _destinationOptions = getDestinationOptions();
@@ -155,10 +154,6 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     }
 
     protected abstract Effect finalEffect();
-
-    public boolean wasActionCarriedOut() {
-        return _cardsBeamed;
-    }
 
     @Override
     public ST1EGame getGame() { return _game; }

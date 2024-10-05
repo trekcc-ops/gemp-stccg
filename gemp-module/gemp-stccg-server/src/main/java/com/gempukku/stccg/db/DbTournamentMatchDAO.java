@@ -37,7 +37,7 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     }
 
     @Override
-    public void setMatchResult(String tournamentId, int round, String winner) {
+    public void setMatchResult(String tournamentId, String winner) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = conn.prepareStatement("update tournament_match set winner=? where tournament_id=? and (player_one=? or player_two=?)")) {
