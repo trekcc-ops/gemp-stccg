@@ -4,17 +4,17 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.league.SoloDraftLeagueData;
@@ -25,8 +25,6 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -99,11 +97,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         } else {
             availableChoices = Collections.emptyList();
         }
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-        Document doc = documentBuilder.newDocument();
-
+        Document doc = createNewDoc();
         Element availablePicksElem = doc.createElement("availablePicks");
         doc.appendChild(availablePicksElem);
 
@@ -185,10 +180,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         _collectionsManager.addItemsToPlayerCollection(false, "Draft pick", resourceOwner,
                 collectionType, selectedCards.getAll(), extraInformationChanges);
 
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
 
         Element pickResultElem = doc.createElement("pickResult");
         doc.appendChild(pickResultElem);

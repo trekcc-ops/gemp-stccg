@@ -2,18 +2,18 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.common.filterable.SubDeck;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +69,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
                 getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"), _library
         );
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
         collectionElem.setAttribute("count", String.valueOf(importResult.size()));
         doc.appendChild(collectionElem);
@@ -103,7 +102,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         SortAndFilterCards sortAndFilter = new SortAndFilterCards();
         List<GenericCardItem> filteredResult = sortAndFilter.process(filter, items, _library, _formatLibrary);
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
         collectionElem.setAttribute("count", String.valueOf(filteredResult.size()));
         doc.appendChild(collectionElem);
@@ -177,7 +176,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         if (packContents == null)
             throw new HttpProcessingException(404);
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Document doc = createNewDoc();
         Element collectionElem = doc.createElement("pack");
         doc.appendChild(collectionElem);
 
@@ -196,11 +195,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     }
 
     private void getCollectionTypes(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        String participantId = getQueryParameterSafely(new QueryStringDecoder(request.uri()),
-                "participantId");
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        User resourceOwner = getResourceOwner(request);
+        Document doc = createNewDoc();
         Element collectionsElem = doc.createElement("collections");
 
         for (League league : _leagueService.getActiveLeagues()) {

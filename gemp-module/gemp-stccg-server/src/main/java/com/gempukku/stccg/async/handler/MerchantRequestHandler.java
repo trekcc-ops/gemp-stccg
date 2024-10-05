@@ -2,13 +2,15 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardItem;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.merchant.BasicCardItem;
 import com.gempukku.stccg.merchant.MerchantService;
 import io.netty.handler.codec.http.HttpMethod;
@@ -20,8 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -158,10 +158,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
         Map<String, Integer> buyPrices = priceGuarantee.getBuyPrices();
         Map<String, Integer> sellPrices = priceGuarantee.getSellPrices();
 
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
 
         Element merchantElem = doc.createElement("merchant");
         merchantElem.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
@@ -195,10 +192,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private Document marshalException(Exception e) throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
 
         Element error = doc.createElement("error");
         error.setAttribute("message", e.getMessage());
