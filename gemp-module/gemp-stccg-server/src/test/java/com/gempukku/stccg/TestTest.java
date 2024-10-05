@@ -1,7 +1,5 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.formats.FormatLibrary;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;

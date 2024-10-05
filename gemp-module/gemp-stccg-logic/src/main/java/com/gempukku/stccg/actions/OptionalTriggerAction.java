@@ -3,10 +3,9 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.actions.sources.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class OptionalTriggerAction extends AbstractCostToEffectAction {
-    private PhysicalCard _physicalCard;
+    private final PhysicalCard _physicalCard;
     private final PhysicalCard _actionAttachedToCard;
 
     private String _message;
@@ -15,12 +14,6 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     private String _triggerIdentifier;
     private final DefaultGame _game;
     private ActionSource _actionSource;
-
-    public OptionalTriggerAction(String triggerIdentifier, PhysicalCard attachedToCard) {
-        _game = attachedToCard.getGame();
-        _actionAttachedToCard = attachedToCard;
-        _triggerIdentifier = triggerIdentifier;
-    }
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
         super(physicalCard.getOwner(), ActionType.TRIGGER);

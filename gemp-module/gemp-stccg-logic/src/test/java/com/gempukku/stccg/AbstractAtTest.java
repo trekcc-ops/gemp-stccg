@@ -16,7 +16,6 @@ import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;

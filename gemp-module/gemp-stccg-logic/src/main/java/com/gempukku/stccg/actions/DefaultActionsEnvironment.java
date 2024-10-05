@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.SnapshotData;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;

@@ -12,7 +12,6 @@ import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 

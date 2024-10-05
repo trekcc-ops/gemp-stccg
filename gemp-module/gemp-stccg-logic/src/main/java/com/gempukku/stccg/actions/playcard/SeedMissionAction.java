@@ -9,7 +9,6 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;

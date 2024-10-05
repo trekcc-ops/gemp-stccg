@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.List;

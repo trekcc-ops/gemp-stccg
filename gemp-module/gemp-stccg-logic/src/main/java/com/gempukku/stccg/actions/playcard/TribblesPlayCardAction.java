@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.Collections;
