@@ -472,15 +472,6 @@ public abstract class PhysicalCard implements Filterable {
         return result;
     }
 
-    public void appendPotentialDiscountEffectsToAction(CostToEffectAction action) {
-        if (_blueprint.getDiscountSources() != null) {
-            ActionContext actionContext = createActionContext();
-            for (DiscountSource discountSource : _blueprint.getDiscountSources()) {
-                action.appendPotentialDiscount(discountSource.getDiscountEffect(action, actionContext));
-            }
-        }
-    }
-
     public boolean isUnique() {
         return _blueprint.isUnique();
     }

@@ -41,15 +41,10 @@ public class DbLeagueMatchDAO implements LeagueMatchDAO {
     @Override
     public void addPlayedMatch(String leagueId, String seriesId, String winner, String loser) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("insert into league_match (league_type, season_type, winner, loser) values (?, ?, ?, ?)")) {
-                    statement.setString(1, leagueId);
-                    statement.setString(2, seriesId);
-                    statement.setString(3, winner);
-                    statement.setString(4, loser);
-                    statement.execute();
-                }
-            }
+            String sqlStatement =
+                    "insert into league_match (league_type, season_type, winner, loser) values (?, ?, ?, ?)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                    leagueId, seriesId, winner, loser);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }

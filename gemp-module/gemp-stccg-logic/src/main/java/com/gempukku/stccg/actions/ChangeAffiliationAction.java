@@ -61,7 +61,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionAttachedToCard() { return (PhysicalCard) _card; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         if (!_affiliationWasChosen) {
             if (_affiliationOptions.size() > 1) {

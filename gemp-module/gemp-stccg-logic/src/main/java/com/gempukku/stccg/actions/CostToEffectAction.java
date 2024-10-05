@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 public interface CostToEffectAction extends Action {
-    void appendPotentialDiscount(DiscountEffect cost);
 
     /**
      * Inserts the specified costs as the next costs to be executed.

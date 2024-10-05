@@ -39,9 +39,7 @@ public class LeagueServiceTest extends AbstractServerTest {
 
         LeagueMatchDAO leagueMatchDAO = Mockito.mock(LeagueMatchDAO.class);
 
-        Set<LeagueMatchResult> matches = new HashSet<>();
-
-        Mockito.when(leagueMatchDAO.getLeagueMatches(league.getType())).thenReturn(new HashSet<>(matches));
+        Mockito.when(leagueMatchDAO.getLeagueMatches(league.getType())).thenReturn(new HashSet<>());
 
         LeagueParticipationDAO leagueParticipationDAO = Mockito.mock(LeagueParticipationDAO.class);
         CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
@@ -134,9 +132,7 @@ public class LeagueServiceTest extends AbstractServerTest {
 
         LeagueMatchDAO leagueMatchDAO = Mockito.mock(LeagueMatchDAO.class);
 
-        Set<LeagueMatchResult> matches = new HashSet<>();
-
-        Mockito.when(leagueMatchDAO.getLeagueMatches(league.getType())).thenReturn(new HashSet<>(matches));
+        Mockito.when(leagueMatchDAO.getLeagueMatches(league.getType())).thenReturn(new HashSet<>());
 
         LeagueParticipationDAO leagueParticipationDAO = Mockito.mock(LeagueParticipationDAO.class);
         Set<String> players = new HashSet<>();

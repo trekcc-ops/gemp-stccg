@@ -31,7 +31,6 @@ public interface ActionContext {
     PhysicalCard getSource();
     EffectResult getEffectResult();
     Effect getEffect();
-    boolean acceptsAllRequirements(Stream<Requirement> requirements);
     boolean acceptsAllRequirements(Requirement[] requirementArray);
     boolean acceptsAllRequirements(List<Requirement> requirementList);
     boolean acceptsAnyRequirements(Requirement[] requirementArray);

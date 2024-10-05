@@ -71,8 +71,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         return Filters.countActive(_game, _filters) >= _minimum;
     }
 
-    private boolean isAllowAbort() { return false; }
-
     @Override
     protected FullEffectResult playEffectReturningResult() {
         // If player is not set, set to current player to make choices
@@ -104,7 +102,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         }
         else {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1,_choiceText + ((minimum > 0 && isAllowAbort()) ? ", or click 'Done' to cancel" : ""), selectableCards, isAllowAbort() ? 0 : minimum, maximum) {
+                    new CardsSelectionDecision(1, _choiceText, selectableCards, minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

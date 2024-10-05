@@ -1,9 +1,11 @@
 package com.gempukku.stccg.db;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionSerializer;
+import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.collection.MutableCardCollection;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
 
@@ -14,30 +16,22 @@ import java.util.Map;
 
 public class DbCollectionDAO implements CollectionDAO {
     private final DbAccess _dbAccess;
-    private final CollectionSerializer _collectionSerializer;
+    private final ObjectMapper _mapper = new ObjectMapper();
 
-    public DbCollectionDAO(DbAccess dbAccess, CollectionSerializer collectionSerializer) {
+    public DbCollectionDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
-        _collectionSerializer = collectionSerializer;
     }
 
     public Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws IOException {
         Map<Integer, CardCollection> result = new HashMap<>();
         for(var coll : getCollectionInfosByType(type))
-            result.put(coll.player_id,
-                    _collectionSerializer.deserializeCollection(coll, extractCollectionEntries(coll.id)));
+            result.put(coll.player_id, deserializeCollection(coll, extractCollectionEntries(coll.id)));
         return result;
     }
 
     public CardCollection getPlayerCollection(int playerId, String type) throws IOException {
-
-        var collection = getCollectionInfo(playerId, type);
-        if(collection == null)
-            return null;
-
-        var entries = extractCollectionEntries(collection.id);
-
-        return _collectionSerializer.deserializeCollection(collection, entries);
+        DBDefs.Collection collection = getCollectionInfo(playerId, type);
+        return (collection == null) ? null : deserializeCollection(collection, extractCollectionEntries(collection.id));
     }
 
     private List<DBDefs.CollectionEntry> extractCollectionEntries(int collectionID) {
@@ -267,5 +261,20 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
+    private MutableCardCollection deserializeCollection(DBDefs.Collection coll, List<DBDefs.CollectionEntry> entries)
+            throws IOException {
+        DefaultCardCollection newColl = new DefaultCardCollection();
+
+        if(coll.extra_info != null) {
+            newColl.setExtraInformation(_mapper.convertValue(
+                    _mapper.readTree(coll.extra_info), new TypeReference<>() {}));
+        }
+
+        for(var entry : entries) {
+            newColl.addItem(entry.product, entry.quantity);
+        }
+
+        return newColl;
+    }
 
 }

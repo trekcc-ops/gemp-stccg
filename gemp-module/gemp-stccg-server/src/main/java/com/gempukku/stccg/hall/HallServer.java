@@ -331,7 +331,6 @@ public class HallServer extends AbstractServer {
                     description = "";
 
                 format = leagueSerie.getFormat();
-                collectionType = leagueSerie.getCollectionType();
 
                 gameTimer = GameTimer.COMPETITIVE_TIMER;
             }

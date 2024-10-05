@@ -25,7 +25,7 @@ public class SystemQueueAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (isCostFailed()) {
             return null;
         } else {

@@ -141,7 +141,7 @@ public class DefaultActionContext implements ActionContext {
         return effect;
     }
 
-    public boolean acceptsAllRequirements(Stream<Requirement> requirements) {
+    private boolean acceptsAllRequirements(Stream<Requirement> requirements) {
         return requirements.allMatch(requirement -> requirement.accepts(this));
     }
 

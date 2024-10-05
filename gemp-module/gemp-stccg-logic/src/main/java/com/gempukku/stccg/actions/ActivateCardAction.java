@@ -35,7 +35,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {

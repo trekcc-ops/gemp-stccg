@@ -162,14 +162,12 @@ public class LeagueService {
                 count++;
         }
 
-        CardCollection prize;
-        if (winner)
-            prize = serie.getPrizeForLeagueMatchWinner(count, playerMatchesPlayedOn.size());
-        else
-            prize = serie.getPrizeForLeagueMatchLoser(count, playerMatchesPlayedOn.size());
-        if (prize != null)
-             _collectionsManager.addItemsToPlayerCollection(true, "Prize for winning league game", player, CollectionType.MY_CARDS, prize.getAll());
-
+        if (winner) {
+            _collectionsManager.addItemsToPlayerCollection(
+                    true, "Prize for winning league game", player, CollectionType.MY_CARDS,
+                    serie.getPrizeForLeagueMatchWinner(count, playerMatchesPlayedOn.size()).getAll()
+            );
+        }
     }
 
     public synchronized Collection<LeagueMatchResult> getPlayerMatchesInSerie(League league, LeagueSeriesData serie, String player) {

@@ -10,7 +10,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
-import com.gempukku.stccg.gamestate.LoggingThreadLocal;
 
 import java.util.*;
 
@@ -168,21 +167,17 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
-        try {
-                    // TODO - Not accurate if the card has LOST an icon
-            if (physicalCard.getBlueprint().hasIcon(icon))
-                return true;
+                // TODO - Not accurate if the card has LOST an icon
+        if (physicalCard.getBlueprint().hasIcon(icon))
+            return true;
 
-            for (Modifier modifier : getIconModifiersAffectingCard(
-                    ModifierEffect.GAIN_ICON_MODIFIER, icon, physicalCard)) {
-                if (appliesIconModifier(physicalCard, modifier.getSource(), icon))
-                    if (modifier.hasIcon(physicalCard, icon))
-                        return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
+        for (Modifier modifier : getIconModifiersAffectingCard(
+                ModifierEffect.GAIN_ICON_MODIFIER, icon, physicalCard)) {
+            if (appliesIconModifier(physicalCard, modifier.getSource(), icon))
+                if (modifier.hasIcon(physicalCard, icon))
+                    return true;
         }
+        return false;
     }
 
     private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, CardIcon icon) {
@@ -316,17 +311,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private boolean hasAllKeywordsRemoved(PhysicalCard card) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.LOSE_ALL_KEYWORDS_MODIFIER, card)) {
-            if (modifier.lostAllKeywords(card))
-                return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
-        if ((physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
+        if ((physicalCard.hasTextRemoved()))
             return false;
 
         for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
@@ -347,7 +334,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public int getKeywordCount(PhysicalCard physicalCard, Keyword keyword) {
-        if (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard))
+        if (physicalCard.hasTextRemoved())
             return 0;
 
         for (Modifier modifier :
@@ -513,18 +500,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source) {
         return getModifiersAffectingCard(ModifierEffect.RETURN_TO_HAND_MODIFIER, card).stream()
                 .allMatch(modifier -> modifier.canBeReturnedToHand(_game, card, source));
-    }
-
-    /**
-     * Rule of 4. "You cannot draw (or take into hand) more than 4 cards during your fellowship phase."
-     *
-     * @param playerId
-     * @return
-     */
-    @Override
-    public boolean canDrawCardNoIncrement(String playerId) {
-        _game.getGameState().getCurrentPlayerId();
-        return true;
     }
 
     @Override

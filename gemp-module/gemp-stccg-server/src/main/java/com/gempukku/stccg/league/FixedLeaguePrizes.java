@@ -37,16 +37,11 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchLoser(int winCountThisSeries, int totalGamesPlayedThisSeries) {
-        return null;
-    }
-
-    @Override
     public CardCollection getPrizeForLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed, CollectionType collectionType) {
         if (collectionType.equals(CollectionType.ALL_CARDS)) {
             return getPrizeForConstructedLeague(position, playersCount, gamesPlayed, maxGamesPlayed);
         } else if (collectionType.equals(CollectionType.MY_CARDS) || collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
-            return getPrizeForCollectorsLeague(position, playersCount, gamesPlayed, maxGamesPlayed);
+            return getPrizeForCollectorsLeague(position);
         } else {
             return getPrizeForSealedLeague(position);
         }
@@ -86,7 +81,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return 0;
     }
 
-    private CardCollection getPrizeForCollectorsLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
+    private CardCollection getPrizeForCollectorsLeague(int position) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getCollectorsBoosterCount(position));
         addPrizes(prize, getRandomFoil(_rares, getRandomRareFoilCount(position)));

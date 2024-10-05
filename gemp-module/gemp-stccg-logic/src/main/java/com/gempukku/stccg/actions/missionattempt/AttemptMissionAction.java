@@ -1,21 +1,17 @@
 package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
 import com.gempukku.stccg.actions.choose.ChooseAwayTeamEffect;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,10 +35,6 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
         _player = player;
         _game = missionCard.getGame();
         _missionCard = missionCard;
-        Action _thisAction = this;
-
-        final GameState gameState = _game.getGameState();
-        final ModifiersQuerying modifiersQuerying = _game.getModifiersQuerying();
 
         // Get Away Teams that can attempt mission
         Stream<AwayTeam> awayTeamOptions = missionCard.getYourAwayTeamsOnSurface(_player).filter(
@@ -83,7 +75,7 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         Effect cost = getNextCost();
         if (cost != null)

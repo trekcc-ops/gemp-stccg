@@ -20,7 +20,8 @@ public class ChatServer extends AbstractServer {
     }
 
     public ChatRoomMediator createChatRoom(String name, boolean muteJoinPartMessages, int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage) {
-        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, name, muteJoinPartMessages, secondsTimeoutPeriod, allowIncognito, welcomeMessage);
+        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, muteJoinPartMessages,
+                secondsTimeoutPeriod, allowIncognito, welcomeMessage);
         try {
             chatRoom.sendMessage("System", "Welcome to room: " + name, true);
         } catch (PrivateInformationException exp) {
@@ -33,7 +34,7 @@ public class ChatServer extends AbstractServer {
     }
 
     public void createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers, int secondsTimeoutPeriod) {
-        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, name, muteJoinPartMessages, secondsTimeoutPeriod, allowedUsers, false);
+        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, muteJoinPartMessages, secondsTimeoutPeriod, allowedUsers, false);
         try {
             chatRoom.sendMessage("System", "Welcome to private room: " + name, true);
         } catch (PrivateInformationException exp) {

@@ -48,7 +48,7 @@ public class DockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToDock; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

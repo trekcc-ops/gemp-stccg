@@ -2,7 +2,6 @@ package com.gempukku.stccg.builder;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.*;
@@ -37,9 +36,6 @@ public class ServerBuilder {
         LoggedUserHolder loggedUserHolder = new LoggedUserHolder();
         loggedUserHolder.start();
         objectMap.put(LoggedUserHolder.class, loggedUserHolder);
-
-        CollectionSerializer collectionSerializer = new CollectionSerializer();
-        objectMap.put(CollectionSerializer.class, collectionSerializer);
         LOGGER.debug("Ending CreatePrerequisites function");
     }
 

@@ -22,15 +22,10 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     @Override
     public void addPlayer(String tournamentId, String playerName, CardDeck deck) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("insert into tournament_player (tournament_id, player, deck_name, deck) values (?, ?, ?, ?)")) {
-                    statement.setString(1, tournamentId);
-                    statement.setString(2, playerName);
-                    statement.setString(3, deck.getDeckName());
-                    statement.setString(4, deck.buildContentsFromDeck());
-                    statement.execute();
-                }
-            }
+            String sqlMessage =
+                    "insert into tournament_player (tournament_id, player, deck_name, deck) values (?, ?, ?, ?)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlMessage,
+                    tournamentId, playerName, deck.getDeckName(), deck.buildContentsFromDeck());
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
@@ -39,15 +34,10 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     @Override
     public void updatePlayerDeck(String tournamentId, String playerName, CardDeck deck) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("update tournament_player set deck_name = ?, deck = ? where tournament_id=? and player=?")) {
-                    statement.setString(1, deck.getDeckName());
-                    statement.setString(2, deck.buildContentsFromDeck());
-                    statement.setString(3, tournamentId);
-                    statement.setString(4, playerName);
-                    statement.execute();
-                }
-            }
+            String sqlMessage =
+                    "update tournament_player set deck_name = ?, deck = ? where tournament_id=? and player=?";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlMessage,
+                    deck.getDeckName(), deck.buildContentsFromDeck(), tournamentId, playerName);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
@@ -56,13 +46,9 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     @Override
     public void dropPlayer(String tournamentId, String playerName) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("update tournament_player set dropped=true where tournament_id=? and player=?")) {
-                    statement.setString(1, tournamentId);
-                    statement.setString(2, playerName);
-                    statement.executeUpdate();
-                }
-            }
+            String sqlMessage = "update tournament_player set dropped=true where tournament_id=? and player=?";
+            SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlMessage,
+                    tournamentId, playerName);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
@@ -72,7 +58,8 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     public Set<String> getPlayers(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select player from tournament_player where tournament_id=?")) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "select player from tournament_player where tournament_id=?")) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Set<String> result = new HashSet<>();

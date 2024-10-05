@@ -16,19 +16,13 @@ public class DbLeagueDAO implements LeagueDAO {
         _dbAccess = dbAccess;
     }
 
-    public void addLeague(int cost, String name, String type, String clazz, String parameters, int start, int endTime) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("insert into league (name, type, class, parameters, start, end, status, cost) values (?, ?, ?, ?, ?, ?, ?, ?)")) {
-                statement.setString(1, name);
-                statement.setString(2, type);
-                statement.setString(3, clazz);
-                statement.setString(4, parameters);
-                statement.setInt(5, start);
-                statement.setInt(6, endTime);
-                statement.setInt(7, 0);
-                statement.setInt(8, cost);
-                statement.execute();
-            }
+    public void addLeague(int cost, String name, String type, String clazz, String parameters, int start, int endTime) {
+        try {
+            String sqlStatement = "insert into league (name, type, class, parameters, start, end, status, cost) values (?, ?, ?, ?, ?, ?, ?, ?)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                    name, type, clazz, parameters, start, endTime, 0, cost);
+        } catch(SQLException exp) {
+            throw new RuntimeException("Unable to add league into DB", exp);
         }
     }
 
@@ -55,15 +49,9 @@ public class DbLeagueDAO implements LeagueDAO {
 
     public void setStatus(League league, int newStatus) {
         try {
-            try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                String sql = "update league set status=? where type=?";
-
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setInt(1, newStatus);
-                    statement.setString(2, league.getType());
-                    statement.execute();
-                }
-            }
+            String sqlStatement = "update league set status=? where type=?";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                    newStatus, league.getType());
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to update league status", exp);
         }

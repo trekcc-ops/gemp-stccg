@@ -17,13 +17,8 @@ public class DbIpBanDAO implements IpBanDAO {
     @Override
     public void addIpBan(String ip) {
         try {
-            try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("insert into ip_ban (ip, prefix) values (?, 0)")) {
-                    statement.setString(1, ip);
-
-                    statement.execute();
-                }
-            }
+            String sqlStatement = "insert into ip_ban (ip, prefix) values (?, 0)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement, ip);
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to add an IP ban", exp);
         }
@@ -32,12 +27,8 @@ public class DbIpBanDAO implements IpBanDAO {
     @Override
     public void addIpPrefixBan(String ipPrefix) {
         try {
-            try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("insert into ip_ban (ip, prefix) values (?, 1)")) {
-                    statement.setString(1, ipPrefix);
-                    statement.execute();
-                }
-            }
+            String sqlStatement = "insert into ip_ban (ip, prefix) values (?, 1)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement, ipPrefix);
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to add an IP prefix ban", exp);
         }

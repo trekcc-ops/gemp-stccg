@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.turn.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
@@ -10,8 +9,6 @@ import java.util.LinkedList;
 
 public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private String _cardActionPrefix;
-    private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
-    private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
     private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
@@ -59,11 +56,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     @Override
-    public final void appendPotentialDiscount(DiscountEffect discount) {
-        _potentialDiscounts.add(discount);
-    }
-
-    @Override
     public final void appendCost(Effect cost) {
         _costs.add(cost);
     }
@@ -106,22 +98,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
                 return true;
         }
         return false;
-    }
-
-    protected int getProcessedDiscount() {
-        int discount = 0;
-        for (DiscountEffect processedDiscount : _processedDiscounts) {
-            discount += processedDiscount.getDiscountPaidFor();
-        }
-        return discount;
-    }
-
-    protected int getPotentialDiscount() {
-        int sum = 0;
-        for (DiscountEffect potentialDiscount : _potentialDiscounts) {
-            sum += potentialDiscount.getMaximumPossibleDiscount();
-        }
-        return sum;
     }
 
     protected final Effect getNextCost() {

@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
-    SealedLeagueData data = new SealedLeagueData(
+    final SealedLeagueData data = new SealedLeagueData(
             _cardLibrary, _formatLibrary, "testsealed,20120101,test,Test Collection");
-    CollectionType collectionType = new CollectionType("test", "Test Collection");
-    User player = new User(1, "Test", "pass", "u", null, null,
+    final CollectionType collectionType = new CollectionType("test", "Test Collection");
+    final User player = new User(1, "Test", "pass", "u", null, null,
             null, null);
 
     @Test

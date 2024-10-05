@@ -126,7 +126,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         else return OpenFireResult.MISS;
     }
 
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;

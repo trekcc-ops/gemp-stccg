@@ -33,7 +33,7 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         Effect cost = getNextCost();
         if (cost != null)

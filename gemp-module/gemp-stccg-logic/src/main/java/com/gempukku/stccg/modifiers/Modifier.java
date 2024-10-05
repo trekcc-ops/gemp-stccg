@@ -72,6 +72,4 @@ public interface Modifier {
 
     boolean hasIcon(PhysicalCard card, CardIcon icon);
 
-    boolean lostAllKeywords(PhysicalCard card);
-
 }

@@ -44,7 +44,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToPlay.getZone();

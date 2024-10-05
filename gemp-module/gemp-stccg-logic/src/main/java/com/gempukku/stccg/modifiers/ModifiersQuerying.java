@@ -64,8 +64,6 @@ public interface ModifiersQuerying {
 
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
-    boolean canDrawCardNoIncrement(String playerId);
-
     boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
 
     boolean canDiscardCardsFromHand(String playerId, PhysicalCard source);

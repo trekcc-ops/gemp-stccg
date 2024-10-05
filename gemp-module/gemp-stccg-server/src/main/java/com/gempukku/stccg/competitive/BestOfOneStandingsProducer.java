@@ -55,7 +55,7 @@ public class BestOfOneStandingsProducer {
                 gamesPlayed += byesCount;
             }
 
-            PlayerStanding standing = new PlayerStanding(playerName, points, gamesPlayed, playerWins, playerLosses, byesCount);
+            PlayerStanding standing = new PlayerStanding(playerName, points, gamesPlayed, playerWins, byesCount);
             List<String> opponents = playerOpponents.get(playerName);
             int opponentWins = 0;
             int opponentGames = 0;

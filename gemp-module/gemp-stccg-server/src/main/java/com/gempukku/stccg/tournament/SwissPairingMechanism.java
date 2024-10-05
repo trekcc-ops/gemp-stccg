@@ -164,7 +164,8 @@ public class SwissPairingMechanism implements PairingMechanism {
         }
     }
 
-    private List<List<String>> groupPlayersByPointBracket(Set<String> droppedPlayers, List<PlayerStanding> currentStandings, int maxNumberOfPoints) {
+    private List<List<String>> groupPlayersByPointBracket(Set<String> droppedPlayers,
+                                                          List<PlayerStanding> currentStandings, int maxNumberOfPoints) {
         List<String>[] playersByPoints = new List[maxNumberOfPoints + 1];
         for (PlayerStanding currentStanding : currentStandings) {
             String playerName = currentStanding.getPlayerName();

@@ -64,7 +64,7 @@ public class FlyShipAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _flyingCard; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

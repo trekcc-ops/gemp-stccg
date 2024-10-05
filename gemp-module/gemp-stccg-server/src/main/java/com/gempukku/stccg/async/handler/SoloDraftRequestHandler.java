@@ -47,7 +47,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+                              ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             makePick(request, uri.substring(1), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
@@ -57,7 +58,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private void getAvailablePicks(HttpRequest request, String leagueType, ResponseWriter responseWriter) throws Exception {
+    private void getAvailablePicks(HttpRequest request, String leagueType, ResponseWriter responseWriter)
+            throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
 
@@ -180,7 +182,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
                 extraInformationChanges.put("draftPool",draftPoolListUpdate);
         }
 
-        _collectionsManager.addItemsToPlayerCollection(false, "Draft pick", resourceOwner, collectionType, selectedCards.getAll(), extraInformationChanges);
+        _collectionsManager.addItemsToPlayerCollection(false, "Draft pick", resourceOwner,
+                collectionType, selectedCards.getAll(), extraInformationChanges);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -199,8 +202,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
 
         if (hasNextStage) {
-            Iterable<SoloDraft.DraftChoice> availableChoices = soloDraft.getAvailableChoices(playerSeed, stage + 1, draftPool);
-            appendAvailablePics(doc, pickResultElem, availableChoices);
+            appendAvailablePics(doc, pickResultElem,
+                    soloDraft.getAvailableChoices(playerSeed, stage + 1, draftPool));
         }
 
         responseWriter.writeXmlResponse(doc);

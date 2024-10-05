@@ -30,8 +30,7 @@ public class DrawOneCardEffect extends DefaultEffect implements Preventable {
     }
 
     public boolean canDrawCard() {
-        return (!_prevented && !_game.getGameState().getDrawDeck(_playerId).isEmpty()) &&
-                _game.getModifiersQuerying().canDrawCardNoIncrement(_playerId);
+        return !_prevented && !_game.getGameState().getDrawDeck(_playerId).isEmpty();
     }
 
     @Override

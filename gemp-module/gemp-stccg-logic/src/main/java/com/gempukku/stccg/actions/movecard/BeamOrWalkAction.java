@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
@@ -122,7 +121,7 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     protected abstract List<PhysicalCard> getValidFromCards();
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

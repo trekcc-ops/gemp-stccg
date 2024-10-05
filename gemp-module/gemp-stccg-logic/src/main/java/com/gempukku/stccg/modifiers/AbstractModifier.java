@@ -192,11 +192,6 @@ public abstract class AbstractModifier implements Modifier {
         return false;
     }
 
-    @Override
-    public boolean lostAllKeywords(PhysicalCard card) {
-        return false;
-    }
-
     public String getForPlayer() {
         return _playerId;
     }

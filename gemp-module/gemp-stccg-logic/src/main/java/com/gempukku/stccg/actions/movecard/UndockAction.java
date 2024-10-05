@@ -24,7 +24,7 @@ public class UndockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToUndock; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();

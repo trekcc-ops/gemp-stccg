@@ -3,7 +3,6 @@ package com.gempukku.stccg.builder;
 import com.gempukku.stccg.cache.CacheManager;
 import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
-import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.*;
 import com.gempukku.stccg.log.LoggingProxy;
@@ -41,8 +40,8 @@ public class DaoBuilder {
         CachedDeckDAO deckDao = new CachedDeckDAO(dbDeckDao);
         objectMap.put(DeckDAO.class, deckDao);
 
-        CollectionDAO dbCollectionDao = LoggingProxy.createLoggingProxy(
-                CollectionDAO.class, new DbCollectionDAO(dbAccess, getCollectionSerializer(objectMap)));
+        CollectionDAO dbCollectionDao =
+                LoggingProxy.createLoggingProxy(CollectionDAO.class, new DbCollectionDAO(dbAccess));
         CachedCollectionDAO collectionDao = new CachedCollectionDAO(dbCollectionDao);
         objectMap.put(CollectionDAO.class, collectionDao);
 
@@ -69,13 +68,6 @@ public class DaoBuilder {
         cacheManager.addCache(transferDao);
         cacheManager.addCache(ipBanDao);
         objectMap.put(CacheManager.class, cacheManager);
-    }
-
-    private static CollectionSerializer getCollectionSerializer(Map<Type, Object> objectMap) {
-        CollectionSerializer serializer = (CollectionSerializer) objectMap.get(CollectionSerializer.class);
-        if (serializer == null)
-            throw new RuntimeException("Unable to find class " + CollectionSerializer.class.getName());
-        return serializer;
     }
 
 }
