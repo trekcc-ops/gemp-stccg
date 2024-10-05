@@ -23,8 +23,4 @@ public class CostModifier extends AbstractModifier {
                 " from " + _cardSource.getCardLink();
     }
 
-    @Override
-    public int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
-        return _valueSource.evaluateExpression(_actionContext, physicalCard);
-    }
 }

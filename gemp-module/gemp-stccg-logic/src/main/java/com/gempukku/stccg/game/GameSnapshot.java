@@ -38,12 +38,6 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
         return snapshotMetadata.getDataForSnapshot(gameSnapshot);
     }
 
-    /**
-     * Needed to generate snapshot.
-     */
-    public GameSnapshot() {
-    }
-
     @Override
     public void generateSnapshot(GameSnapshot selfSnapshot, SnapshotData snapshotData) {
 

@@ -23,20 +23,11 @@ public enum Phase {
     private final String humanReadable;
     private final boolean realPhase;
     private final boolean cardsAffectGame;
-    private final String actionVerb;
-
-    Phase(String humanReadable, boolean realPhase, boolean cardsAffectGame, String actionVerb) {
-        this.humanReadable = humanReadable;
-        this.realPhase = realPhase;
-        this.cardsAffectGame = cardsAffectGame;
-        this.actionVerb = actionVerb;
-    }
 
     Phase(String humanReadable, boolean realPhase, boolean cardsAffectGame) {
         this.humanReadable = humanReadable;
         this.realPhase = realPhase;
         this.cardsAffectGame = cardsAffectGame;
-        this.actionVerb = null;
     }
 
     public String getHumanReadable() {
@@ -62,5 +53,4 @@ public enum Phase {
         return null;
     }
 
-    public String getActionVerb() { return actionVerb; }
 }

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 
-public class TournamentService implements ITournamentService {
+public class TournamentService {
     private static final Logger LOGGER = LogManager.getLogger(TournamentService.class);
     private final ProductLibrary _productLibrary;
     private final DraftPackStorage _draftPackStorage;
@@ -42,78 +42,78 @@ public class TournamentService implements ITournamentService {
         _library = library;
     }
 
-    @Override
+    
     public void clearCache() {
         _tournamentById.clear();
     }
 
-    @Override
+    
     public void addPlayer(String tournamentId, String playerName, CardDeck deck) {
         _tournamentPlayerDao.addPlayer(tournamentId, playerName, deck);
     }
 
-    @Override
+    
     public void dropPlayer(String tournamentId, String playerName) {
         _tournamentPlayerDao.dropPlayer(tournamentId, playerName);
     }
 
-    @Override
+    
     public Set<String> getPlayers(String tournamentId) {
         return _tournamentPlayerDao.getPlayers(tournamentId);
     }
 
-    @Override
+    
     public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
         return _tournamentPlayerDao.getPlayerDecks(tournamentId, format, _library);
     }
 
-    @Override
+    
     public Set<String> getDroppedPlayers(String tournamentId) {
         return _tournamentPlayerDao.getDroppedPlayers(tournamentId);
     }
 
-    @Override
+    
     public CardDeck getPlayerDeck(String tournamentId, String player, String format) {
         return _tournamentPlayerDao.getPlayerDeck(tournamentId, player, format, _library);
     }
 
-    @Override
+    
     public void addMatch(String tournamentId, int round, String playerOne, String playerTwo) {
         _tournamentMatchDao.addMatch(tournamentId, round, playerOne, playerTwo);
     }
 
-    @Override
+    
     public void setMatchResult(String tournamentId, int round, String winner) {
         _tournamentMatchDao.setMatchResult(tournamentId, round, winner);
     }
 
-    @Override
+    
     public void setPlayerDeck(String tournamentId, String player, CardDeck deck) {
         _tournamentPlayerDao.updatePlayerDeck(tournamentId, player, deck);
     }
 
-    @Override
+    
     public List<TournamentMatch> getMatches(String tournamentId) {
         return _tournamentMatchDao.getMatches(tournamentId);
     }
 
-    @Override
+    
     public Tournament addTournament(String tournamentId, String draftType, String tournamentName, String format, CollectionType collectionType, Tournament.Stage stage, String pairingMechanism, String prizeScheme, Date start) {
         _tournamentDao.addTournament(tournamentId, draftType, tournamentName, format, collectionType, stage, pairingMechanism, prizeScheme, start);
         return createTournamentAndStoreInCache(tournamentId, new TournamentInfo(tournamentId, draftType, tournamentName, format, collectionType, stage, pairingMechanism, prizeScheme, 0));
     }
 
-    @Override
+    
     public void updateTournamentStage(String tournamentId, Tournament.Stage stage) {
         _tournamentDao.updateTournamentStage(tournamentId, stage);
     }
 
-    @Override
+    
     public void updateTournamentRound(String tournamentId, int round) {
         _tournamentDao.updateTournamentRound(tournamentId, round);
     }
 
-    @Override
+    
     public List<Tournament> getOldTournaments(long since) {
         List<Tournament> result = new ArrayList<>();
         for (TournamentInfo tournamentInfo : _tournamentDao.getFinishedTournamentsSince(since)) {
@@ -125,7 +125,7 @@ public class TournamentService implements ITournamentService {
         return result;
     }
 
-    @Override
+    
     public List<Tournament> getLiveTournaments() {
         LOGGER.debug("Calling getLiveTournaments function");
         List<Tournament> result = new ArrayList<>();
@@ -141,7 +141,7 @@ public class TournamentService implements ITournamentService {
         return result;
     }
 
-    @Override
+    
     public Tournament getTournamentById(String tournamentId) {
         Tournament tournament = _tournamentById.get(tournamentId);
         if (tournament == null) {
@@ -174,22 +174,22 @@ public class TournamentService implements ITournamentService {
         return tournament;
     }
 
-    @Override
+    
     public void addRoundBye(String tournamentId, String player, int round) {
         _tournamentMatchDao.addBye(tournamentId, player, round);
     }
 
-    @Override
+    
     public Map<String, Integer> getPlayerByes(String tournamentId) {
         return _tournamentMatchDao.getPlayerByes(tournamentId);
     }
 
-    @Override
+    
     public List<TournamentQueueInfo> getUnstartedScheduledTournamentQueues(long tillDate) {
         return _tournamentDao.getUnstartedScheduledTournamentQueues(tillDate);
     }
 
-    @Override
+    
     public void updateScheduledTournamentStarted(String scheduledTournamentId) {
         _tournamentDao.updateScheduledTournamentStarted(scheduledTournamentId);
     }

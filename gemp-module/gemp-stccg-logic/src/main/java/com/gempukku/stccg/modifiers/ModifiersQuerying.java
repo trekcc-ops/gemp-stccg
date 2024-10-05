@@ -35,14 +35,6 @@ public interface ModifiersQuerying {
 
     int getKeywordCount(PhysicalCard physicalCard, Keyword keyword);
 
-    // Movement
-    int getMoveLimit(int baseMoveLimit);
-
-    // Twilight cost
-    int getTwilightCost(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, int twilightCostModifier, boolean ignoreRoamingPenalty);
-
-    int getRoamingPenalty(DefaultGame game, PhysicalCard physicalCard);
-
     int getAttribute(PhysicalCard card, CardAttribute attribute);
 
     // Stats
@@ -50,18 +42,12 @@ public interface ModifiersQuerying {
 
     boolean isAdditionalCardType(DefaultGame game, PhysicalCard card, CardType cardType);
 
-    boolean canCancelSkirmish(DefaultGame game, PhysicalCard card);
-
     // Playing actions
     boolean canPlayAction(String performingPlayer, Action action);
 
     boolean canNotPlayCard(String performingPlayer, PhysicalCard card);
 
     boolean canHavePlayedOn(PhysicalCard playedCard, PhysicalCard target);
-
-    boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
-
-    boolean canBeTransferred(PhysicalCard attachment);
 
     boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId);
 
@@ -79,7 +65,6 @@ public interface ModifiersQuerying {
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
     boolean canDrawCardNoIncrement(String playerId);
-    boolean canDrawCardAndIncrementForRuleOfFour(DefaultGame game, String playerId);
 
     boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
 
@@ -87,15 +72,7 @@ public interface ModifiersQuerying {
 
     boolean canDiscardCardsFromTopOfDeck(String playerId, PhysicalCard source);
 
-    boolean canBeLiberated(DefaultGame game, String playerId, PhysicalCard card, PhysicalCard source);
-
-    int getSpotBonus(Filterable filter);
-
     boolean hasFlagActive(ModifierFlag modifierFlag);
-
-    boolean canPlaySite(String playerId);
-
-    int getPotentialDiscount(PhysicalCard playedCard);
 
     void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard);
 

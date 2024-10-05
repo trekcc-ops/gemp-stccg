@@ -35,20 +35,18 @@ public class DefaultActionSource implements ActionSource {
         this.requirements.add(requirement);
     }
 
-    public void addCost(EffectAppender effectAppender) {
+    private void addCost(EffectAppender effectAppender) {
         costs.add(effectAppender);
     }
 
-    public void addEffect(EffectAppender effectAppender) {
+    private void addEffect(EffectAppender effectAppender) {
         effects.add(effectAppender);
     }
 
-    @Override
     public boolean isValid(ActionContext actionContext) {
         return actionContext.acceptsAllRequirements(requirements);
     }
 
-    @Override
     public void appendActionToContext(CostToEffectAction action, ActionContext actionContext) {
         if (_text != null)
             action.setText(actionContext.substituteText(_text));
@@ -56,11 +54,6 @@ public class DefaultActionSource implements ActionSource {
         costs.forEach(cost -> cost.appendEffect(true, action, actionContext));
 
         effects.forEach(actionEffect -> actionEffect.appendEffect(false, action, actionContext));
-    }
-
-    public Action createAction(PhysicalCard card) {
-        return null;
-        // TODO - This class should eventually be made abstract so that this method can be defined differently for different types of ActionSources
     }
 
     @Override

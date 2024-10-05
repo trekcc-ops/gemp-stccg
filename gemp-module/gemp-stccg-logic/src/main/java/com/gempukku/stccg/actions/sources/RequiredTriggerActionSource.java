@@ -13,8 +13,7 @@ public class RequiredTriggerActionSource extends TriggerActionSource {
 
     public RequiredTriggerActionSource() { _triggerTiming = null; }
     public RequiredTriggerActionSource(TriggerTiming triggerTiming) { _triggerTiming = triggerTiming; }
-    @Override
-    public RequiredTriggerAction createAction(PhysicalCard card) {
+    private RequiredTriggerAction createAction(PhysicalCard card) {
         return new RequiredTriggerAction(card);
     }
 

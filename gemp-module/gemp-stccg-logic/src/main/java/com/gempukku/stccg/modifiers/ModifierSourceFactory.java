@@ -26,7 +26,6 @@ public class ModifierSourceFactory {
         modifierProducers.put("gainicon", new AddIcon());
         modifierProducers.put("hastomoveifable", new HasToMoveIfAble());
         modifierProducers.put("modifycost", new ModifyCost());
-        modifierProducers.put("modifymovelimit", new ModifyMoveLimit());
         modifierProducers.put("modifyplayoncost", new ModifyPlayOnCost());
         modifierProducers.put("modifystrength", new ModifyStrength());
         modifierProducers.put("opponentmaynotdiscard", new OpponentMayNotDiscard());

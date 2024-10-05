@@ -28,7 +28,7 @@ public abstract class AbstractModifier implements Modifier {
         this(source, null, affectFilter, condition, effect);
     }
 
-    protected AbstractModifier(DefaultGame game, Filterable affectFilter, Condition condition, ModifierEffect effect) {
+    protected AbstractModifier(DefaultGame game, Filterable affectFilter, ModifierEffect effect) {
         _cardSource = null;
         _text = null;
         _affectFilter = (affectFilter != null) ? Filters.and(affectFilter) : null;
@@ -122,19 +122,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
-        return 0;
-    }
-
-    @Override
-    public boolean canCancelSkirmish(DefaultGame game, PhysicalCard physicalCard) { return true; }
-
-    @Override
-    public int getMoveLimitModifier() {
-        return 0;
-    }
-
-    @Override
     public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
         return true;
     }
@@ -170,16 +157,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target) {
-        return true;
-    }
-
-    @Override
-    public boolean canBeTransferred(PhysicalCard attachment) {
-        return true;
-    }
-
-    @Override
     public boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId) {
         return false;
     }
@@ -190,38 +167,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canBeLiberated(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source) {
-        return true;
-    }
-
-    @Override
     public boolean canBeReturnedToHand(DefaultGame game, PhysicalCard card, PhysicalCard source) {
         return true;
-    }
-
-    @Override
-    public boolean canBeHealed(DefaultGame game, PhysicalCard card) {
-        return true;
-    }
-
-    @Override
-    public boolean canAddBurden(DefaultGame game, String performingPlayer, PhysicalCard source) {
-        return true;
-    }
-
-    @Override
-    public boolean canRemoveBurden(DefaultGame game, PhysicalCard source) {
-        return true;
-    }
-
-    @Override
-    public boolean canRemoveThreat(DefaultGame game, PhysicalCard source) {
-        return true;
-    }
-
-    @Override
-    public int getRoamingPenaltyModifier(DefaultGame game, PhysicalCard physicalCard) {
-        return 0;
     }
 
     @Override
@@ -241,33 +188,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public int getSpotCountModifier(DefaultGame game, Filterable filter) {
-        return 0;
-    }
-
-    @Override
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return false;
-    }
-
-    @Override
-    public boolean isSiteReplaceable(DefaultGame game, String playerId) {
-        return true;
-    }
-
-    @Override
-    public boolean canPlaySite(DefaultGame game, String playerId) {
-        return true;
-    }
-
-    @Override
-    public boolean shadowCanHaveInitiative(DefaultGame game) {
-        return true;
-    }
-
-    @Override
-    public int getInitiativeHandSizeModifier(DefaultGame game) {
-        return 0;
     }
 
     @Override

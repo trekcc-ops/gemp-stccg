@@ -75,7 +75,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     @Override
-    public void setPlayerDecked(Player player, boolean bool) {
+    public void setPlayerDecked(Player player) {
         appendEvent(new GameEvent(PLAYER_DECKED, player));
     }
 

@@ -13,7 +13,7 @@ public interface GameStateListener {
 
     void setCurrentPhase(Phase phase);
 
-    void setPlayerDecked(Player player, boolean bool);
+    void setPlayerDecked(Player player);
     void setPlayerScore(String playerId, int points);
 
     void setTribbleSequence(String tribbleSequence);
