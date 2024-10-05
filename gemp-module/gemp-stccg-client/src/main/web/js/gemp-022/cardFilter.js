@@ -223,11 +223,13 @@ export default class CardFilter {
         for (var i = 0; i < normalFilterArray.length; i++) {
             if (normalFilterArray[i] == "affiliation") {
                 var affiliations = new Array();
-                $("label", $("#affiliation-buttons")).each(
-                    function () {
-                        if ($(this).hasClass("ui-state-active"))
-                            affiliations.push($(this).prop("id").substring(5));
-                    });
+                $('.affiliationFilter').each(
+                    function (_index, element) {
+                        if (element.checked) {
+                            affiliations.push(element.id);
+                        }
+                    }
+                );
                 if (affiliations.length > 0)
                     filterString = filterString + "|affiliation:" + affiliations;
             } else {
