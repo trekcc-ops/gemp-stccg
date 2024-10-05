@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
@@ -259,10 +260,10 @@ public abstract class PhysicalCard implements Filterable {
         if (getZone().isInPlay() || getZone() == Zone.HAND) {
             StringBuilder sb = new StringBuilder();
 
-/*            if (getZone() == Zone.HAND)
+            if (getZone() == Zone.HAND)
                 sb.append("<b>Card is in hand - stats are only provisional</b><br><br>");
             else if (Filters.filterActive(getGame(), this).isEmpty())
-                sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");*/
+                sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");
 
             Collection<Modifier> modifiers = getModifiers().getModifiersAffecting(this);
             if (!modifiers.isEmpty()) {
@@ -271,13 +272,11 @@ public abstract class PhysicalCard implements Filterable {
                     sb.append(modifier.getCardInfoText(this));
                 }
             }
-/*
             List<PhysicalCard> stackedCards = getStackedCards();
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));
             }
-*/
             StringBuilder keywords = new StringBuilder();
             for (Keyword keyword : Keyword.values()) {
                 if (keyword.isInfoDisplayable()) {

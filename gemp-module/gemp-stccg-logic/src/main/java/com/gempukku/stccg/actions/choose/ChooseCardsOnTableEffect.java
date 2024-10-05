@@ -87,18 +87,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         else
             selectableCards = Filters.filterActive(_game, _action.getActionSource(), _filters);
 
-        // Filter cards by accounting for cards with multiple classes
-/*        int acceptsCountSoFar = 0;
-        List<PhysicalCard> validCards = new LinkedList<>();
-        for (PhysicalCard selectableCard : selectableCards) {
-            int acceptsCount = Filters.and(_filters).acceptsCount(_game, selectableCard);
-            if (acceptsCount > 0 && acceptsCount <= _maximumAcceptsCount) {
-                validCards.add(selectableCard);
-                acceptsCountSoFar += acceptsCount;
-            }
-        }
-        selectableCards = validCards;*/
-
         // Make sure at least the minimum number of cards can be found
         if (selectableCards.size() < _minimum) {
             return new FullEffectResult(false);

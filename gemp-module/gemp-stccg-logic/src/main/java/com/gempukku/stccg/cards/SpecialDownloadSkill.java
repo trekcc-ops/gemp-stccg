@@ -10,7 +10,4 @@ public class SpecialDownloadSkill extends Skill {
 
         // TODO - Nothing implemented for special download skill yet
 
-/*    protected Action getDownloadAction(PhysicalCard thisCard) {
-        return (Action) new SpecialDownloadAction(thisCard, Filters.name(_cardName));
-    } */
 }

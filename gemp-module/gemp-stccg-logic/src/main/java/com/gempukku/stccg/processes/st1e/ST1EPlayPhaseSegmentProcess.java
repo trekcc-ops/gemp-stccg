@@ -40,6 +40,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             } else {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
+                                    // TODO SNAPSHOT
                                     // Take game snapshot before top-level action performed
 //                                    String snapshotSourceCardInfo = action.getActionSource() != null ?
 //                                            (": " + action.getActionSource().getCardLink()) : "";

@@ -24,8 +24,6 @@ public class FilterFactory {
             appendFilter(value);
         for (Keyword value : Keyword.values())
             appendFilter(value);
-/*        for (Species value : Species.values())
-            appendFilter(value); */
         for (Affiliation value : Affiliation.values())
             appendFilter(value);
         for (Uniqueness value : Uniqueness.values())

@@ -204,40 +204,7 @@ public class HallServer extends AbstractServer {
                 (from, parameters, admin) -> _hallChat.sendToUser(
                         "System", from, "\"" + parameters + "\" is not a recognized command."
                 ));
-
-/*        _tournamentQueues.put("fotr_queue", new ImmediateRecurringQueue(
-                1500, "Tribbles", CollectionType.ALL_CARDS, "tribblesQueue-",
-                "Tribbles Block", 4, true, tournamentService,
-                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"),
-                _pairingMechanismRegistry.getPairingMechanism("singleElimination")
-        ));
-        _tournamentQueues.put("ts_queue", new ImmediateRecurringQueue(1500, "towers_standard",
-                CollectionType.ALL_CARDS, "tsQueue-", "Towers Standard", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
-        _tournamentQueues.put("movie_queue", new ImmediateRecurringQueue(1500, "movie",
-                CollectionType.ALL_CARDS, "movieQueue-", "Movie Block", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
-        _tournamentQueues.put("expanded_queue", new ImmediateRecurringQueue(1500, "expanded",
-                CollectionType.ALL_CARDS, "expandedQueue-", "Expanded", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
-*/
-
-/*        try {
-            _tournamentQueues.put("fotr_daily_eu", new RecurringScheduledQueue(7, "fotrDailyEu-", "Daily Gondor Fellowship Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "fotr_block", 4));
-            _tournamentQueues.put("fotr_daily_us", new RecurringScheduledQueue(7, "fotrDailyUs-", "Daily Rohan Fellowship Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "fotr_block", 4));
-            _tournamentQueues.put("movie_daily_eu", new RecurringScheduledQueue(7, "movieDailyEu-", "Daily Gondor Movie Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "movie", 4));
-            _tournamentQueues.put("movie_daily_us", new RecurringScheduledQueue(7, "movieDailyUs-", "Daily Rohan Movie Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "movie", 4));
-        } catch (ParseException exp) {
-            // Ignore, can't happen
-        }*/
+        // TODO - Take reloadTournaments method from LotR
     }
 
     private void hallChanged() {

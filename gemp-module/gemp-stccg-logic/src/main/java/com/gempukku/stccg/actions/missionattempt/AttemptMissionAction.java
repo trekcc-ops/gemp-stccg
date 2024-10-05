@@ -101,9 +101,6 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
             _game.sendMessage("...");
             _game.sendMessage("But we don't have any.");
             _seedCards = new LinkedList<>();        // TODO - Replace this with real stuff at some point
-/*            _seedCards.add("Armus - Skin of Evil");
-            _seedCards.add("Berserk Changeling");
-            _seedCards.add("Nanites"); */
 
         }
 

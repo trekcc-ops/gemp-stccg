@@ -46,16 +46,4 @@ public class Blueprint116_054 extends CardBlueprint {
                 modifiers.add(modifierSkill.getModifier(player, thisCard));
         return modifiers;
     }
-            // TODO - Need to create infrastructure for affiliation icon modifiers
-/*
-    private ModifierSkill specialSkill(String text) {
-        return new ModifierSkill(text) {
-            @Override
-            public Modifier getModifier(Player player, final PhysicalCard thisCard) {
-                return new AddAffiliationIconToMissionModifier(thisCard,
-                        new AtMissionWithAffiliationIconCondition(thisCard),
-                        Affiliation.BAJORAN);
-            }
-        };
-    } */
 }

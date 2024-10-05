@@ -55,10 +55,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
             _game.getGameState().removeCardsFromZone(_cardToPlay.getOwnerName(),
                     Collections.singleton(_cardToPlay));
             _game.getGameState().addCardToZone(_cardToPlay, Zone.PLAY_PILE);
-/*            if (playedFromZone == Zone.HAND)
-                _game.getGameState().addCardToZone(_game, _permanentPlayed, Zone.VOID_FROM_HAND);
-            else
-                _game.getGameState().addCardToZone(_game, _permanentPlayed, Zone.VOID); */
             if (playedFromZone == Zone.DRAW_DECK) {
                 _game.sendMessage(_cardToPlay.getOwnerName() + " shuffles their deck");
                 _game.getGameState().shuffleDeck(_cardToPlay.getOwnerName());
