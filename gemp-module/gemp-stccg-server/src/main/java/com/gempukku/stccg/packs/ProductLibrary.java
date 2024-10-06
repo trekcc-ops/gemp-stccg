@@ -1,8 +1,6 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.collection.PackBox;
-import com.gempukku.stccg.collection.RarityPackBox;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.JsonUtils;
@@ -62,7 +60,7 @@ public class ProductLibrary {
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
             List<JSONDefs.Pack> defs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
 
-            for (var def : defs) {
+            for (JSONDefs.Pack def : defs) {
                 LOGGER.debug("Loading pack definitions for " + def.name);
 
                 PackBox result = null;
@@ -79,29 +77,25 @@ public class ProductLibrary {
                         }
                     }
                     case random_foil -> {
-                        if (def.data == null || !def.data.containsKey("rarities") || !def.data.containsKey("sets")) {
+                        if (def.data == null || !def.data.has("rarities") || !def.data.has("sets")) {
                             System.out.println(def.name + " RANDOM_FOIL pack type must contain a definition for 'rarities' and 'sets' within data.");
                             continue;
                         }
-                        rarities = def.data.get("rarities").toUpperCase().split("\\s*,\\s*");
-                        sets = def.data.get("sets").split("\\s*,\\s*");
+                        rarities = def.data.get("rarities").textValue().toUpperCase().split("\\s*,\\s*");
+                        sets = def.data.get("sets").textValue().split("\\s*,\\s*");
                         result = new RandomFoilPack(rarities, sets, _cardLibrary);
                     }
                     case booster -> {
-                        if (def.data == null || !def.data.containsKey("set")) {
+                        if (def.data == null || !def.data.has("set")) {
                             System.out.println(def.name + " BOOSTER pack type must contain a definition for 'set' within data.");
                             continue;
                         }
-                        if (def.data.get("set").contains(",")) {
+                        if (def.data.get("set").textValue().contains(",")) {
                             System.out.println(def.name + " BOOSTER pack type must define exactly one set.");
                             continue;
                         }
-                        String set = def.data.get("set").trim();
-                        if (set.equals("9")) {
-                            result = new ReflectionsPackBox(_cardLibrary);
-                        } else {
-                            result = new RarityPackBox(_cardLibrary.getSetDefinitions().get(set));
-                        }
+                        String set = def.data.get("set").textValue().trim();
+                        result = new BoosterPack(_cardLibrary.getSetDefinitions().get(set), def.items);
                     }
                     case pack, selection -> {
                         if (def.items == null || def.items.isEmpty())
@@ -127,7 +121,7 @@ public class ProductLibrary {
         }
     }
 
-    public Map<String, PackBox> GetAllProducts() {
+    public Map<String, PackBox> getAllProducts() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_products);

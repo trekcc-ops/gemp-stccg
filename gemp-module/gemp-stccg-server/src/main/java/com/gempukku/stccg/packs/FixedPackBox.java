@@ -1,7 +1,6 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.collection.PackBox;
 import com.gempukku.stccg.common.AppConfig;
 
 import java.io.BufferedReader;
@@ -48,8 +47,4 @@ public class FixedPackBox implements PackBox {
     @Override
     public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
-    @Override
-    public List<String> GetAllOptions() {
-        return _contents.keySet().stream().toList();
-    }
 }

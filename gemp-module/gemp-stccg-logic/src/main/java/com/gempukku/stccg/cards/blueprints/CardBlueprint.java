@@ -21,6 +21,7 @@ import java.util.*;
 
 public class CardBlueprint {
     private final String _blueprintId;
+    private String _baseBlueprintId;
     private String title;
     private String subtitle;
     protected CardType _cardType;
@@ -327,12 +328,6 @@ public class CardBlueprint {
         inDiscardPhaseActions.add(actionSource);
     }
 
-    public void appendTwilightCostModifier(TwilightCostModifierSource twilightCostModifierSource) {
-        if (_twilightCostModifierSources == null)
-            _twilightCostModifierSources = new LinkedList<>();
-        _twilightCostModifierSources.add(twilightCostModifierSource);
-    }
-
     public ActionSource getPlayEventAction() { return _playEventAction; }
 
     public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) {
@@ -504,4 +499,7 @@ public class CardBlueprint {
     public boolean doesNotWorkWithPerRestrictionBox(PhysicalNounCard1E thisCard, PhysicalNounCard1E otherCard) {
         return false;
     }
+
+    public String getBaseBlueprintId() { return _baseBlueprintId; }
+    public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
 }

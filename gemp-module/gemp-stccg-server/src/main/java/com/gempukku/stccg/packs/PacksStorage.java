@@ -1,7 +1,6 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.collection.PackBox;
 
 import java.io.IOException;
 import java.util.Collections;

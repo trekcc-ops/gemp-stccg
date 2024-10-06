@@ -76,7 +76,6 @@ public class AppConfig {
     public static String getWebPath() { return getProperty("web.path"); }
     public static File getReplayPath() { return new File(getProperty("replay.path")); }
     public static File getCardsPath() { return getResourceFile("cards"); }
-    public static File getMappingsPath() { return getResourceFile("blueprintMapping.txt"); }
     public static File getSetDefinitionsPath() { return getResourceFile("setConfig.hjson"); }
     public static File getFormatDefinitionsPath() { return getResourceFile("stccgFormats.hjson"); }
     public static File getProductPath() { return getResourceFile("product"); }

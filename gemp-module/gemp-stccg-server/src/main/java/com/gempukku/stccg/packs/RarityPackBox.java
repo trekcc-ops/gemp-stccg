@@ -1,4 +1,4 @@
-package com.gempukku.stccg.collection;
+package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.SetDefinition;
@@ -30,6 +30,7 @@ public class RarityPackBox implements PackBox {
 
         _possibleFoilCommonSlot.addAll(_setRarity.getCardsOfRarity("C"));
     }
+
 
     @Override
     public List<GenericCardItem> openPack() {
@@ -84,13 +85,4 @@ public class RarityPackBox implements PackBox {
     @Override
     public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
-    @Override
-    public List<String> GetAllOptions() {
-        var list = new ArrayList<String>();
-        list.addAll(_possibleRareCards);
-        list.addAll(_possibleFoilRareSlot);
-        list.addAll(_possibleFoilCommonSlot);
-        list.addAll(_possibleFoilUncommonSlot);
-        return Collections.unmodifiableList(list);
-    }
 }

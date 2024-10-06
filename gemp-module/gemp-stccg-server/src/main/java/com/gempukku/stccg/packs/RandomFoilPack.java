@@ -1,7 +1,6 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.collection.PackBox;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 
 import java.util.ArrayList;
@@ -35,8 +34,4 @@ public class RandomFoilPack implements PackBox {
         return Collections.singletonList(GenericCardItem.createItem(bpID, 1, true));
     }
 
-    @Override
-    public List<String> GetAllOptions() {
-        return Collections.unmodifiableList(_availableCards);
-    }
 }
