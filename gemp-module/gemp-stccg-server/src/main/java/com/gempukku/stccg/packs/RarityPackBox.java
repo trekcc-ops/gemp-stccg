@@ -35,7 +35,7 @@ public class RarityPackBox implements PackBox {
     @Override
     public List<GenericCardItem> openPack() {
         List<GenericCardItem> result = new LinkedList<>();
-            // TODO - Implement foils?
+        // TODO - Implement foils?
 //        boolean hasFoil = (ThreadLocalRandom.current().nextInt(6) == 0);
         boolean hasFoil = false;
         if (hasFoil) {
@@ -82,6 +82,7 @@ public class RarityPackBox implements PackBox {
         return addedIndices;
     }
 
+    @Override
     public List<GenericCardItem> openPack(int selection) { return openPack(); }
 
 }

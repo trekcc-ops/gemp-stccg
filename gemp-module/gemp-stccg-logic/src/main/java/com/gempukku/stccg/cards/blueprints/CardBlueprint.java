@@ -73,11 +73,15 @@ public class CardBlueprint {
 
     private List<ModifierSource> inPlayModifiers;
 
+    private List<TwilightCostModifierSource> _twilightCostModifierSources;
+
     private List<ExtraPlayCostSource> extraPlayCosts;
+    private List<DiscountSource> _discountSources;
 
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
 
+    private ActionSource _playEventAction;
     private ActionSource _seedCardActionSource;
 
     public CardBlueprint(String blueprintId) {
@@ -172,10 +176,12 @@ public class CardBlueprint {
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
     public void addSkill(Skill skill) { _skills.add(skill); }
-
+    public void addSkill(RegularSkill regularSkill) {
+        _skills.add(regularSkill);
+    }
     public void addSkill(SkillName skillName) { _skills.add(new RegularSkill(skillName, 1)); }
     public void addSkill(SkillName skillName, int level) { _skills.add(new RegularSkill(skillName, level)); }
-        // TODO - Not an exact match for how skills are processed
+    // TODO - Not an exact match for how skills are processed
     public List<RegularSkill> getRegularSkills() {
         List<RegularSkill> result = new LinkedList<>();
         for (Skill skill : _skills) {
@@ -202,6 +208,7 @@ public class CardBlueprint {
     // LotR
     public void setCost(int cost) { this.cost = cost; }
     public int getCost() { return this.cost; }
+    public int getTwilightCost() { return cost; }
 
     public void setKeywords(Map<Keyword, Integer> keywords) {
         this.keywords = keywords;
@@ -246,6 +253,12 @@ public class CardBlueprint {
         if (playOutOfSequenceConditions == null)
             playOutOfSequenceConditions = new LinkedList<>();
         playOutOfSequenceConditions.add(requirement);
+    }
+
+    public void appendDiscountSource(DiscountSource discountSource) {
+        if (_discountSources == null)
+            _discountSources = new LinkedList<>();
+        _discountSources.add(discountSource);
     }
 
     public void appendOptionalInHandTrigger(ActionSource actionSource, TriggerTiming timing) {
@@ -314,6 +327,8 @@ public class CardBlueprint {
         inDiscardPhaseActions.add(actionSource);
     }
 
+    public ActionSource getPlayEventAction() { return _playEventAction; }
+
     public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) {
         _discardedFromPlayTriggers.put(requiredType, actionSource);
     }
@@ -327,10 +342,20 @@ public class CardBlueprint {
     }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
     public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
-
+    public List<DiscountSource> getDiscountSources() { return _discountSources; }
     public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
+
+
+    public int getTwilightCostModifier(PhysicalCard self, PhysicalCard target) {
+        if (_twilightCostModifierSources == null)
+            return 0;
+        int result = 0;
+        for (TwilightCostModifierSource twilightCostModifier : _twilightCostModifierSources)
+            result += twilightCostModifier.getTwilightCostModifier(self.createActionContext(), target);
+        return result;
+    }
 
 
     public List<ActionSource> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
@@ -357,25 +382,34 @@ public class CardBlueprint {
 
 
     // Helper methods
+
+
+
+    public void throwException(String message) throws InvalidCardDefinitionException {
+        throw new InvalidCardDefinitionException(message);
+    }
+
     public void validateConsistency() throws InvalidCardDefinitionException {
-        if (title == null) throw new InvalidCardDefinitionException("Card has to have a title");
+        if (title == null) throwException("Card has to have a title");
         if (_cardType == null)
-            throw new InvalidCardDefinitionException("Card has to have a type");
+            throwException("Card has to have a type");
         if (_cardType == CardType.MISSION) {
-            if (_propertyLogo != null)
-                throw new InvalidCardDefinitionException("Mission card should not have a property logo");
-                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
+            if (_propertyLogo != null) throwException("Mission card should not have a property logo");
+            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
             if (location == null && !title.equals("Space") && !_blueprintId.startsWith("1_"))
-                throw new InvalidCardDefinitionException("Mission card should have a location");
+                throwException("Mission card should have a location");
         } else if (_cardType == CardType.TRIBBLE) {
-            if (tribblePower == null)
-                throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
+            if (tribblePower == null) throwException("Tribble card has to have a Tribble power");
             if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
-                throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
+                throwException("Tribble card does not have a valid Tribble value");
         } else if (_propertyLogo == null && !_blueprintId.startsWith("1_"))
             // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
             // TODO - Technically tribbles should have property logos too, they're just never relevant
-            throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
+            throwException("Non-mission card has to have a property logo");
+
+        // Checks below are LotR-specific
+        if (_cardType != CardType.EVENT && _playEventAction != null)
+            throwException("Only events should have an event type effect");
     }
 
 
@@ -393,6 +427,11 @@ public class CardBlueprint {
         boolean showUniversalSymbol = typesWithUniversalSymbol.contains(getCardType()) && isUniversal();
         return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + getImageUrl() + "'>" +
                 (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
+    }
+
+    public boolean hasNoTransporters() {
+        // TODO - No actual code built here for cards that don't have transporters
+        return false;
     }
 
     public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }

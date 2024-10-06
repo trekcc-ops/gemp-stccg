@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
-    final SealedLeagueData data = new SealedLeagueData(
+    SealedLeagueData data = new SealedLeagueData(
             _cardLibrary, _formatLibrary, "testsealed,20120101,test,Test Collection");
-    final CollectionType collectionType = new CollectionType("test", "Test Collection");
-    final User player = new User(1, "Test", "pass", "u", null, null,
+    CollectionType collectionType = new CollectionType("test", "Test Collection");
+    User player = new User(1, "Test", "pass", "u", null, null,
             null, null);
 
     @Test
@@ -35,13 +35,13 @@ public class SealedLeagueDataTest extends AbstractServerTest {
             Mockito.verify(collectionsManager, new Times(1)).addPlayerCollection(
                     Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType),
                     Mockito.argThat(cards -> {
-                            if (Iterables.size(cards.getAll()) != 2)
-                                return false;
-                            if (cards.getItemCount("Premiere - Booster") != 6)
-                                return false;
-                            return cards.getItemCount("155_056") == 1;
-                        }
-                ));
+                                if (Iterables.size(cards.getAll()) != 2)
+                                    return false;
+                                if (cards.getItemCount("Premiere - Booster") != 6)
+                                    return false;
+                                return cards.getItemCount("155_056") == 1;
+                            }
+                    ));
             Mockito.verifyNoMoreInteractions(collectionsManager);
         }
     }
@@ -54,17 +54,17 @@ public class SealedLeagueDataTest extends AbstractServerTest {
             Mockito.verify(collectionsManager, new Times(1)).addPlayerCollection(
                     Mockito.anyBoolean(), Mockito.anyString(), Mockito.eq(player), Mockito.eq(collectionType),
                     Mockito.argThat(cards -> {
-                        if (Iterables.size(cards.getAll()) != 4)
-                            return false;
-                        if (cards.getItemCount("Premiere - Booster") != 6)
-                            return false;
-                        if (cards.getItemCount("First Contact - Booster") != 6)
-                            return false;
-                        if (cards.getItemCount("155_056") != 1)
-                            return false;
-                        return cards.getItemCount("155_079") == 1;
-                    }
-            ));
+                                if (Iterables.size(cards.getAll()) != 4)
+                                    return false;
+                                if (cards.getItemCount("Premiere - Booster") != 6)
+                                    return false;
+                                if (cards.getItemCount("First Contact - Booster") != 6)
+                                    return false;
+                                if (cards.getItemCount("155_056") != 1)
+                                    return false;
+                                return cards.getItemCount("155_079") == 1;
+                            }
+                    ));
             Mockito.verifyNoMoreInteractions(collectionsManager);
         }
     }
