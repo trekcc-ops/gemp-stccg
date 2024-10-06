@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class StartOfPhaseResult extends EffectResult {

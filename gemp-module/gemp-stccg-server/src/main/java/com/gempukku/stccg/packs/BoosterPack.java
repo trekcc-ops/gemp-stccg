@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoosterPack implements PackBox {
     private final SetDefinition _setDefinition;
-    Map<String, Integer> _rarityCounts = new HashMap<>();
+    final Map<String, Integer> _rarityCounts = new HashMap<>();
 
     public BoosterPack(SetDefinition setDefinition, List<String> rarityCounts) {
 
