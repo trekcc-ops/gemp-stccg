@@ -33,7 +33,7 @@ public class UnweightedRandomPack implements PackBox {
         return openPack(selection);
     }
 
-    public List<GenericCardItem> openPack(int selection) {
+    private List<GenericCardItem> openPack(int selection) {
         String key = _contents.keySet().stream().skip(selection).findFirst().orElse(null);
         assert key != null;
         var result = GenericCardItem.createItem(key, _contents.get(key), true);

@@ -45,7 +45,4 @@ public class BoosterPack implements PackBox {
         return addedIndices;
     }
 
-    @Override
-    public List<GenericCardItem> openPack(int selection) { return openPack(); }
-
 }
