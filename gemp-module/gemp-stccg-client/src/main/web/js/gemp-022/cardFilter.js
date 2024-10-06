@@ -37,14 +37,6 @@ export default class CardFilter {
         this.updateSetOptions();
     }
 
-    enableDetailFilters(enable) {
-        $("#affiliation-buttons").controlgroup("option", "disabled", !enable);
-        $("#cardType").prop("disabled", !enable);
-        $("#keyword").prop("disabled", !enable);
-        $("#tribblePower").prop("disabled", !enable);
-        $("#phase").prop("disabled", !enable);
-    }
-
     setFilter(filter) {
         this.filter = filter;
 
