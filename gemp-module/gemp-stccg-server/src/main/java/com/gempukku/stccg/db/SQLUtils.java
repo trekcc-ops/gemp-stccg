@@ -1,9 +1,6 @@
 package com.gempukku.stccg.db;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public final class SQLUtils {
 
@@ -43,4 +40,15 @@ public final class SQLUtils {
             }
         }
     }
+
+    public static ResultSet executeQueryStatementWithParameters(DbAccess dbAccess, String sqlString, Object... params)
+            throws SQLException {
+        try (Connection conn = dbAccess.getDataSource().getConnection()) {
+            try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
+                addParametersToStatement(statement, params);
+                return statement.executeQuery();
+            }
+        }
+    }
+
 }

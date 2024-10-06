@@ -30,9 +30,9 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
             String sql = """
-                        INSERT INTO game_history (winner, winnerId, loser, loserId, win_reason, lose_reason, win_recording_id, lose_recording_id,
+                        INSERT INTO game_history (winner, winnerId, loser, loserId, win_reason, lose_reason, win_recording_id, lose_recording_id, 
                             format_name, tournament, winner_deck_name, loser_deck_name, start_date, end_date, replay_version)
-                        VALUES (:winner, :winnerId, :loser, :loserId, :win_reason, :lose_reason, :win_recording_id, :lose_recording_id,
+                        VALUES (:winner, :winnerId, :loser, :loserId, :win_reason, :lose_reason, :win_recording_id, :lose_recording_id, 
                             :format_name, :tournament, :winner_deck_name, :loser_deck_name, :start_date, :end_date, :version)
                         """;
 

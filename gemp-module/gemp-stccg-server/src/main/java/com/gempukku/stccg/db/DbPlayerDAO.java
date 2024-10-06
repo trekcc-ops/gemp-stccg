@@ -13,8 +13,15 @@ import java.util.*;
 
 public class DbPlayerDAO implements PlayerDAO {
     private final String _selectPlayer = """
-        SELECT
-            id, name password, type, last_login_reward, banned_until, create_ip, last_ip
+        SELECT 
+            id, 
+            name, 
+            password, 
+            type, 
+            last_login_reward, 
+            banned_until, 
+            create_ip, 
+            last_ip 
         FROM player
         """;
 
@@ -50,7 +57,18 @@ public class DbPlayerDAO implements PlayerDAO {
             return null;
 
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            String sql = _selectPlayer + " where password=?";
+            String sql = """
+        SELECT 
+            id, 
+            name, 
+            password, 
+            type, 
+            last_login_reward, 
+            banned_until, 
+            create_ip, 
+            last_ip 
+        FROM player
+        """ + " where password=?";
             if (player.getCreateIp() != null)
                 sql += " or create_ip=? or last_ip=?";
             if (player.getLastIp() != null)
