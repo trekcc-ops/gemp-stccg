@@ -124,6 +124,7 @@ export default class CardFilter {
         });
 
         $("#affiliation-buttons").controlgroup();
+        $(".affiliationFilter").checkboxradio("option", "icon", false);
 /*        this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
             + "<option value=''>All Rarities</option>"
             + "<option value='R'>Rare</option>"
