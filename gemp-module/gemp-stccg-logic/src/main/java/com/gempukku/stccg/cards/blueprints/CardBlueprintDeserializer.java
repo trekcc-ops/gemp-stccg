@@ -198,8 +198,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     private List<CardIcon> getCardIconListFromCommaDelimited(JsonNode parentNode, String fieldName)
             throws InvalidCardDefinitionException {
         List<CardIcon> result = new LinkedList<>();
-        if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull() ||
-                parentNode.get(fieldName).isEmpty())
+        if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull())
             return result;
         for (String item : parentNode.get(fieldName).textValue().split(",")) {
             result.add(getEnum(CardIcon.class, item, fieldName));

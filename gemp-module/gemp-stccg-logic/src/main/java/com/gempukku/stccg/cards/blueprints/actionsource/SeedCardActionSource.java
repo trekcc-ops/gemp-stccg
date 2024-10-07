@@ -17,7 +17,7 @@ public class SeedCardActionSource extends DefaultActionSource {
     }
 
     @Override
-    public SeedCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
+    protected SeedCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
         if (isValid(actionContext)) {
             SeedCardAction action = createAction(card);
             appendActionToContext(action, actionContext);

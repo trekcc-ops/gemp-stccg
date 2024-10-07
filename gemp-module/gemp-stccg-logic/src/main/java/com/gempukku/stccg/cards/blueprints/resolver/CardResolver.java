@@ -50,9 +50,7 @@ public class CardResolver {
 
     public static EffectAppender resolveCardsInPlay(String type, ValueSource countSource, String memory,
                                                     PlayerSource choicePlayer, String choiceText,
-                                                    FilterableSource typeFilter)
-            throws InvalidCardDefinitionException {
-
+                                                    FilterableSource typeFilter) {
         final String sourceMemory =
                 type.startsWith("memory(") ? type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
         Function<ActionContext, List<PhysicalCard>> cardSource =
@@ -66,8 +64,7 @@ public class CardResolver {
     public static EffectAppender resolveCardsInPlay(String type, FilterableSource typeFilter, FilterableSource choiceFilter,
                                                     FilterableSource playabilityFilter, ValueSource countSource,
                                                     String memory, PlayerSource choicePlayer, String choiceText,
-                                                    Function<ActionContext, List<PhysicalCard>> cardSource)
-            throws InvalidCardDefinitionException {
+                                                    Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
 
@@ -243,10 +240,9 @@ public class CardResolver {
 
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
-                int min = countSource.getMinimum(context);
-                int max = countSource.getMaximum(context);
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
-                return effectSource.createEffect(cards, action, context, min, max);
+                return effectSource.createEffect(cards, action, context,
+                        countSource.getMinimum(context), countSource.getMaximum(context));
             }
 
             private Collection<PhysicalCard> filterCards(ActionContext actionContext, FilterableSource filter) {

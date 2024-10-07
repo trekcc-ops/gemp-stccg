@@ -14,10 +14,6 @@ public abstract class DelayedAppender implements EffectAppender {
     public DelayedAppender() {
     }
 
-    public DelayedAppender(String text) {
-        this._text = text;
-    }
-
     @Override
     public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         final UnrespondableEffect effect = new UnrespondableEffect(actionContext) {

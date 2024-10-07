@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromZoneEffect;
+import com.gempukku.stccg.actions.revealcards.RevealCardEffect;
 import com.gempukku.stccg.actions.revealcards.RevealCardsFromYourHandEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -16,8 +17,8 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
 
@@ -31,36 +32,35 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
 
     // Don't rename these without renaming the corresponding JSON "type" property
     private enum EffectType { 
-        DISCARD(null, false),
-        DISCARDCARDSFROMDRAWDECK(Zone.DRAW_DECK, false),
-        DISCARDFROMHAND(Zone.HAND, true),
-        PUTCARDSFROMDECKINTOHAND(Zone.DRAW_DECK, false), // only premiere cards that will be reworded
-        PUTCARDSFROMDECKONBOTTOMOFDECK(Zone.DRAW_DECK, false),
-        PUTCARDSFROMDECKONTOPOFDECK(Zone.DRAW_DECK, false), // Celebratory Toast; Data, Keep Dealing
-        PUTCARDSFROMDISCARDINTOHAND(Zone.DISCARD, false),
-        PUTCARDSFROMDISCARDONBOTTOMOFDECK(Zone.DISCARD, false),
-        PUTCARDSFROMDISCARDONTOPOFDECK(Zone.DISCARD, false), // Diplomatic Contact, For the Sisko
-        PUTCARDSFROMHANDONBOTTOMOFDECK(Zone.HAND, false), // Recreation Room
-        PUTCARDSFROMHANDONBOTTOMOFPLAYPILE(Zone.HAND, false),
-        PUTCARDSFROMHANDONTOPOFDECK(Zone.HAND, true), // Bleed Resources
-        REMOVEFROMTHEGAME(null, false),
-        REMOVECARDSINDISCARDFROMGAME(Zone.DISCARD, false),
-        REVEALCARDSFROMHAND(Zone.HAND, false),
-        SHUFFLECARDSFROMDISCARDINTODRAWDECK(Zone.DISCARD, false), // Get It Done, Raktajino, Regenerate, Tinkerer
-        SHUFFLECARDSFROMHANDINTODRAWDECK(Zone.HAND, false), // Isomagnetic Disintegrator
-        SHUFFLECARDSFROMPLAYINTODRAWDECK(null, false); // Cloaked Maneuvers
-
-        // From in play to bottom of deck - Ferengi Locator Bomb
+        DISCARD(null, false, true),
+        DISCARDCARDSFROMDRAWDECK(Zone.DRAW_DECK, false, true),
+        DISCARDFROMHAND(Zone.HAND, true, true),
+        PUTCARDSFROMDECKINTOHAND(Zone.DRAW_DECK, false, true), // only premiere cards that will be reworded
+        PUTCARDSFROMDECKONBOTTOMOFDECK(Zone.DRAW_DECK, false, true),
+        PUTCARDSFROMDECKONTOPOFDECK(Zone.DRAW_DECK, false, true), // Celebratory Toast; Data, Keep Dealing
+        PUTCARDSFROMDISCARDINTOHAND(Zone.DISCARD, false, true),
+        PUTCARDSFROMDISCARDONBOTTOMOFDECK(Zone.DISCARD, false, true),
+        PUTCARDSFROMDISCARDONTOPOFDECK(Zone.DISCARD, false, true), // Diplomatic Contact, For the Sisko
+        PUTCARDSFROMHANDONBOTTOMOFDECK(Zone.HAND, false, true), // Recreation Room
+        PUTCARDSFROMHANDONBOTTOMOFPLAYPILE(Zone.HAND, false, true),
+        PUTCARDSFROMHANDONTOPOFDECK(Zone.HAND, true, true), // Bleed Resources
+        PUTCARDSFROMPLAYONBOTTOMOFDECK(null, false, true), // Ferengi Locator Bomb
+        REMOVEFROMTHEGAME(null, false, true),
+        REMOVECARDSINDISCARDFROMGAME(Zone.DISCARD, false, true),
+        RETURNTOHAND(null, false, false),
+        REVEALCARDS(null, false, false),
+        REVEALCARDSFROMHAND(Zone.HAND, false, false),
+        SHUFFLECARDSFROMDISCARDINTODRAWDECK(Zone.DISCARD, false, false), // Get It Done, Raktajino, Regenerate, Tinkerer
+        SHUFFLECARDSFROMHANDINTODRAWDECK(Zone.HAND, false, false), // Isomagnetic Disintegrator
+        SHUFFLECARDSFROMPLAYINTODRAWDECK(null, false, false); // Cloaked Maneuvers
 
         private final Zone fromZone;
-        private final boolean shufflesCardsIntoDeck;
-        private final boolean revealsCards;
         private final boolean showMatchingOnly;
-        EffectType(Zone fromZone, boolean showMatchingOnly) {
+        private final boolean separateEffects;
+        EffectType(Zone fromZone, boolean showMatchingOnly, boolean separateEffects) {
             this.fromZone = fromZone;
-            this.shufflesCardsIntoDeck = name().startsWith("SHUFFLECARDS") && name().endsWith("INTODRAWDECK");
-            this.revealsCards = name().startsWith("REVEAL");
             this.showMatchingOnly = showMatchingOnly;
+            this.separateEffects = separateEffects;
         }
         private String getZoneName() { return this.fromZone.getHumanReadable(); }
     }
@@ -95,10 +95,17 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         MultiEffectAppender result = new MultiEffectAppender();
         final EffectAppender targetCardAppender;
 
-        // TODO - choiceFilter only used for discard/remove
-        FilterableSource choiceFilter = (actionContext) -> effectType == EffectType.DISCARD ?
-                Filters.canBeDiscarded(actionContext.getPerformingPlayerId(), actionContext.getSource()) :
-                Filters.canBeRemovedFromTheGame;
+        // TODO - choiceFilter only used for discard/remove/return to hand
+        FilterableSource choiceFilter = (actionContext) -> {
+            if (effectType == EffectType.DISCARD)
+                return Filters.canBeDiscarded(actionContext.getPerformingPlayerId(), actionContext.getSource());
+            else if (effectType == EffectType.REMOVEFROMTHEGAME)
+                return Filters.canBeRemovedFromTheGame;
+            else if (effectType == EffectType.RETURNTOHAND)
+                return (Filter) (game, physicalCard) ->
+                        game.getModifiersQuerying().canBeReturnedToHand(physicalCard, actionContext.getSource());
+            return null;
+        };
 
         final String sourceMemory = filter.startsWith("memory(") ?
                 filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")) : null;
@@ -111,8 +118,11 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
             case DISCARD, REMOVEFROMTHEGAME ->
                     CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
                             selectingPlayer, defaultText, cardSource);
-            case SHUFFLECARDSFROMPLAYINTODRAWDECK ->
+            case PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK, REVEALCARDS ->
                     CardResolver.resolveCardsInPlay(filter, count, memory, selectingPlayer, defaultText, cardFilter);
+            case RETURNTOHAND ->
+                    CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
+                            targetPlayer, defaultText, cardSource);
             case DISCARDFROMHAND, PUTCARDSFROMHANDONTOPOFDECK, DISCARDCARDSFROMDRAWDECK, PUTCARDSFROMDECKINTOHAND,
                     PUTCARDSFROMDECKONBOTTOMOFDECK, PUTCARDSFROMDECKONTOPOFDECK, PUTCARDSFROMDISCARDINTOHAND,
                     PUTCARDSFROMDISCARDONBOTTOMOFDECK, PUTCARDSFROMDISCARDONTOPOFDECK, PUTCARDSFROMHANDONBOTTOMOFDECK,
@@ -133,8 +143,8 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 
-                        if (effectType.shufflesCardsIntoDeck || effectType.revealsCards) {
-                            // Don't break the shuffle or reveal effects into separate effects for each card
+                        if (!effectType.separateEffects) {
+                            // For some effect types, all cards should be moved in a single action
                             effectCardLists.add(cardsFromMemory);
                         } else {
                             for (PhysicalCard card : cardsFromMemory) {
@@ -174,12 +184,18 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
                                         new PutCardsFromZoneOnEndOfPileEffect(context.getGame(), reveal,
                                                 effectType.fromZone, Zone.DRAW_DECK, EndOfPile.TOP,
                                                 Iterables.getOnlyElement(cards));
+                                case PUTCARDSFROMPLAYONBOTTOMOFDECK ->
+                                        new PutCardFromPlayOnBottomOfDeckEffect(Iterables.getOnlyElement(cards));
                                 case REMOVEFROMTHEGAME ->
                                         new RemoveCardsFromTheGameEffect(context.getGame(),
                                                 targetPlayer.getPlayerId(context), context.getSource(), cards);
                                 case REMOVECARDSINDISCARDFROMGAME ->
                                         new RemoveCardsFromZoneEffect(context, cards, Zone.DISCARD);
-                                case REVEALCARDSFROMHAND -> 
+                                case RETURNTOHAND ->
+                                        new ReturnCardsToHandEffect(
+                                                context.getGame(), context.getSource(), Filters.in(cards));
+                                case REVEALCARDS -> new RevealCardEffect(context, cards);
+                                case REVEALCARDSFROMHAND ->
                                         new RevealCardsFromYourHandEffect(context, cards);
                                 case SHUFFLECARDSFROMDISCARDINTODRAWDECK ->
                                         new ShuffleCardsIntoDrawDeckEffect(context.getGame(), context.getSource(),
@@ -217,7 +233,10 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         if (effectType == EffectType.DISCARDFROMHAND) {
             environment.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize");
             environment.validateRequiredFields(effectObject, "forced");
-        } else {
+        } else if (effectType == EffectType.RETURNTOHAND) {
+            environment.validateAllowedFields(effectObject, "filter", "count");
+            environment.validateRequiredFields(effectObject, "filter");
+        }else {
             environment.validateAllowedFields(effectObject, "count", "filter", "reveal", "memorize");
         }
     }
@@ -233,10 +252,12 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
             case PUTCARDSFROMHANDONBOTTOMOFDECK -> "Choose cards from hand to put beneath draw deck";
             case PUTCARDSFROMHANDONBOTTOMOFPLAYPILE -> "Choose cards from hand to put beneath play pile";
             case REMOVEFROMTHEGAME -> "Choose cards to remove from the game";
-            case REVEALCARDSFROMHAND -> "Choose cards to reveal";
+            case REVEALCARDS, REVEALCARDSFROMHAND -> "Choose cards to reveal";
             case SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK,
                     SHUFFLECARDSFROMPLAYINTODRAWDECK ->
                     "Choose cards to shuffle into the draw deck";
+            case RETURNTOHAND -> "Choose cards to return to hand";
+            case PUTCARDSFROMPLAYONBOTTOMOFDECK ->  "Choose cards in play";
         };
     }
 }

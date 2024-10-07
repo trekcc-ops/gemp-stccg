@@ -11,7 +11,6 @@ public class RequiredTriggerActionSource extends TriggerActionSource {
     private final TriggerTiming _triggerTiming;
     private final RequiredType _requiredType = RequiredType.REQUIRED;
 
-    public RequiredTriggerActionSource() { _triggerTiming = null; }
     public RequiredTriggerActionSource(TriggerTiming triggerTiming) { _triggerTiming = triggerTiming; }
     @Override
     public RequiredTriggerAction createAction(PhysicalCard card) {
@@ -19,7 +18,7 @@ public class RequiredTriggerActionSource extends TriggerActionSource {
     }
 
     @Override
-    public RequiredTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
+    protected RequiredTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
         if (isValid(actionContext)) {
             RequiredTriggerAction action = createAction(card);
             appendActionToContext(action, actionContext);

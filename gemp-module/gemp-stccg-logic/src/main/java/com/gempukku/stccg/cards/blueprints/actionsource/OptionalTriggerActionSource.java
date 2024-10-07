@@ -10,10 +10,6 @@ public class OptionalTriggerActionSource extends TriggerActionSource {
     private final TriggerTiming _triggerTiming;
     private final RequiredType _requiredType = RequiredType.OPTIONAL;
 
-    public OptionalTriggerActionSource() {
-        _triggerTiming = null;
-    }
-
     public OptionalTriggerActionSource(TriggerTiming triggerTiming) {
         super();
         _triggerTiming = triggerTiming;
@@ -25,7 +21,7 @@ public class OptionalTriggerActionSource extends TriggerActionSource {
     }
 
     @Override
-    public OptionalTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
+    protected OptionalTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
         if (isValid(actionContext)) {
                 OptionalTriggerAction action = createAction(card);
                 appendActionToContext(action, actionContext);

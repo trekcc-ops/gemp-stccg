@@ -360,8 +360,7 @@ public class Filters {
     }
 
     private static Filter cardType(final CardType cardType) {
-        return (game, physicalCard) -> (physicalCard.getCardType() == cardType)
-                || game.getModifiersQuerying().isAdditionalCardType(game, physicalCard, cardType);
+        return (game, physicalCard) -> (physicalCard.getCardType() == cardType);
     }
 
     private static Filter skillName(final SkillName skillName) {

@@ -74,8 +74,6 @@ public class CardBlueprint {
 
     private List<ModifierSource> inPlayModifiers;
 
-    private List<TwilightCostModifierSource> _twilightCostModifierSources;
-
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<DiscountSource> _discountSources;
 
@@ -348,16 +346,6 @@ public class CardBlueprint {
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
-    
-    public int getTwilightCostModifier(PhysicalCard self, PhysicalCard target) {
-        if (_twilightCostModifierSources == null)
-            return 0;
-        int result = 0;
-        for (TwilightCostModifierSource twilightCostModifier : _twilightCostModifierSources)
-            result += twilightCostModifier.getTwilightCostModifier(self.createActionContext(), target);
-        return result;
-    }
-
 
     public List<ActionSource> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
         if (timing == TriggerTiming.BEFORE)
@@ -477,10 +465,8 @@ public class CardBlueprint {
         List<Action> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
             if (actionSource != null) {
-                Action action =
-                        card.getActionFromActionSource(actionSource, card.getOwnerName(), null, effectResult);
-                if (action != null)
-                    result.add(action);
+                Action action = actionSource.createActionWithNewContext(card, effectResult);
+                if (action != null) result.add(action);
             }
         });
         return result;

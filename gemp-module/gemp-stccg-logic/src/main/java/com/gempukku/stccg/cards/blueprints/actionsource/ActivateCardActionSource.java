@@ -10,7 +10,7 @@ public class ActivateCardActionSource extends DefaultActionSource {
     public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card); }
 
     @Override
-    public ActivateCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
+    protected ActivateCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
         if (isValid(actionContext)) {
             ActivateCardAction action = createAction(card);
             appendActionToContext(action, actionContext);

@@ -4,13 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 import java.util.Collection;
 
@@ -50,5 +52,3 @@ public class DiscardTopCardFromPlayPile implements EffectAppenderProducer {
     }
 
 }
-
-

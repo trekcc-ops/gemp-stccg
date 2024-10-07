@@ -238,12 +238,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         return _game.getModifiersQuerying().getStrength(card);
     }
 
-    public boolean IsType(PhysicalCardGeneric card, CardType type)
-    {
-        return card.getCardType() == type
-            || _game.getModifiersQuerying().isAdditionalCardType(_game, card, type);
-    }
-
 
     public void ApplyAdHocModifier(Modifier mod)
     {

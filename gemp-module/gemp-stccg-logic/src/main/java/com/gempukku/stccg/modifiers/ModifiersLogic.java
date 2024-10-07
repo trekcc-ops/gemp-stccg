@@ -2,6 +2,8 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DiscountSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
@@ -424,43 +426,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public int getTwilightCost(DefaultGame game, PhysicalCard physicalCard, PhysicalCard target, int twilightCostModifier, boolean ignoreRoamingPenalty) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            int result = physicalCard.getBlueprint().getTwilightCost() + twilightCostModifier;
-            result += physicalCard.getBlueprint().getTwilightCostModifier(physicalCard, target);
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TWILIGHT_COST_MODIFIER, physicalCard)) {
-                result += modifier.getTwilightCostModifier(physicalCard, target, ignoreRoamingPenalty);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public int getRoamingPenalty(DefaultGame game, PhysicalCard physicalCard) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            int result = 2;
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TWILIGHT_COST_MODIFIER, physicalCard)) {
-                result += modifier.getRoamingPenaltyModifier(game, physicalCard);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    @Override
-    public boolean isAdditionalCardType(DefaultGame game, PhysicalCard card, CardType cardType) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.ADDITIONAL_CARD_TYPE, card))
-            if (modifier.isAdditionalCardTypeModifier(game, card, cardType))
-                return true;
-        return false;
-    }
-
-    @Override
     public boolean canPlayAction(String performingPlayer, Action action) {
         for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
             if (!modifier.canPlayAction(_game, performingPlayer, action))
@@ -477,33 +442,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean canCancelSkirmish(DefaultGame game, PhysicalCard card) {
-        for (Modifier modifier : getModifiers(ModifierEffect.CANCEL_SKIRMISH_MODIFIER))
-            if (!modifier.canCancelSkirmish(game, card))
-                return false;
-        return true;
-    }
-
-    @Override
     public boolean canHavePlayedOn(PhysicalCard playedCard, PhysicalCard target) {
         for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TARGET_MODIFIER, target))
             if (!modifier.canHavePlayedOn(_game, playedCard, target))
-                return false;
-        return true;
-    }
-
-    @Override
-    public boolean canHaveTransferredOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TARGET_MODIFIER, target))
-            if (!modifier.canHaveTransferredOn(game, playedCard, target))
-                return false;
-        return true;
-    }
-
-    @Override
-    public boolean canBeTransferred(PhysicalCard attachment) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.TRANSFER_MODIFIER, attachment))
-            if (!modifier.canBeTransferred(attachment))
                 return false;
         return true;
     }
@@ -616,36 +557,19 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public int getSpotBonus(Filterable filter) {
-        int result = 0;
-        for (Modifier modifier : getModifiers(ModifierEffect.SPOT_MODIFIER))
-            result += modifier.getSpotCountModifier(_game, filter);
-        return Math.max(0, result);
-    }
-
-    @Override
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
     }
 
     @Override
-    public boolean canPlaySite(String playerId) {
-        for (Modifier modifier : getModifiers(ModifierEffect.PLAY_SITE_MODIFIER))
-            if (!modifier.canPlaySite(_game, playerId))
-                return false;
-
-        return true;
-    }
-
-    @Override
-    public int getPotentialDiscount(PhysicalCard playedCard) {
-        return playedCard.getPotentialDiscount();
-    }
-
-    @Override
     public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard) {
-        playedCard.appendPotentialDiscountEffectsToAction(action);
+        if (playedCard.getBlueprint().getDiscountSources() != null) {
+            ActionContext actionContext = playedCard.createActionContext();
+            for (DiscountSource discountSource : playedCard.getBlueprint().getDiscountSources()) {
+                action.appendPotentialDiscount(discountSource.getDiscountEffect(action, actionContext));
+            }
+        }
 
         for (Modifier modifier : getModifiersAffectingCard(
                 ModifierEffect.POTENTIAL_DISCOUNT_MODIFIER, playedCard)) {

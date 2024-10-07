@@ -9,8 +9,7 @@
         icons: warp-core
         property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
-/*      TODO - This JSON implementation seems correct, but is not working as of 3/5/24. Replaced with Java class Blueprint155_021
-        seed-or-play: {
+/*        seed: {
             where: on table
         }
         effects: [

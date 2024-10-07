@@ -206,24 +206,19 @@ public abstract class PhysicalCard implements Filterable {
 
             final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
             if (validTargetFilter == null) {
-                Zone playToZone = Zone.SUPPORT;
-                CostToEffectAction action = new STCCGPlayCardAction((ST1EPhysicalCard) this, playToZone, this.getOwner());
+                CostToEffectAction action =
+                        new STCCGPlayCardAction((ST1EPhysicalCard) this, Zone.SUPPORT, this.getOwner());
                 getModifiers().appendExtraCosts(action, this);
-                getModifiers().appendPotentialDiscounts(action, this);
-
                 return action;
             } else {
-                Filter fullAttachValidTargetFilter = Filters.and(_blueprint.getValidTargetFilter(),
-                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(
-                                this, targetCard),
-                        (Filter) (game12, physicalCard) -> true);
-
+                Filter fullAttachValidTargetFilter = Filters.and(
+                        validTargetFilter,
+                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(this, targetCard),
+                        (Filter) (game12, physicalCard) -> true
+                );
                 final AttachPermanentAction action = new AttachPermanentAction(this,
                         Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter));
-
-                getModifiers().appendPotentialDiscounts(action, this);
                 getModifiers().appendExtraCosts(action, this);
-
                 return action;
             }
     }
@@ -249,7 +244,9 @@ public abstract class PhysicalCard implements Filterable {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<? extends Action> getPhaseActionsInPlay(Player player) { return getPhaseActionsInPlay(player.getPlayerId()); }
+    public List<? extends Action> getPhaseActionsInPlay(Player player) {
+        return getPhaseActionsInPlay(player.getPlayerId());
+    }
 
     public void attachToCardAtLocation(PhysicalCard destinationCard) {
         getGame().getGameState().transferCard(this, destinationCard);
@@ -332,12 +329,11 @@ public abstract class PhysicalCard implements Filterable {
         else if (zone == Zone.HAND) {
             if (_blueprint.getPlayInOtherPhaseConditions() == null)
                 return null;
-            ActionContext actionContext = createActionContext(playerId);
             List<Action> playCardActions = new LinkedList<>();
 
             if (canBePlayed()) {
                 for (Requirement playInOtherPhaseCondition : _blueprint.getPlayInOtherPhaseConditions()) {
-                    if (playInOtherPhaseCondition.accepts(actionContext))
+                    if (playInOtherPhaseCondition.accepts(createActionContext(playerId, null, null)))
                         playCardActions.add(getPlayCardAction(Filters.any, false));
                 }
             }
@@ -355,10 +351,8 @@ public abstract class PhysicalCard implements Filterable {
             return null;
 
         List<ExtraPlayCost> result = new LinkedList<>();
-        for (ExtraPlayCostSource extraPlayCost : _blueprint.getExtraPlayCosts()) {
-            result.add(extraPlayCost.getExtraPlayCost(createActionContext()));
-        }
-
+        _blueprint.getExtraPlayCosts().forEach(
+                extraPlayCost -> result.add(extraPlayCost.getExtraPlayCost(createActionContext())));
         return result;
     }
 
@@ -368,9 +362,8 @@ public abstract class PhysicalCard implements Filterable {
 
         if (triggers != null) {
             for (ActionSource trigger : triggers) {
-                Action action = getActionFromActionSource(trigger, getOwnerName(), effect);
-                if (action != null)
-                    result.add(action);
+                Action action = trigger.createActionWithNewContext(this, effect, null);
+                if (action != null) result.add(action);
             }
         }
         return result;
@@ -382,7 +375,7 @@ public abstract class PhysicalCard implements Filterable {
 
         if (triggers != null) {
             for (ActionSource trigger : triggers) {
-                Action action = getActionFromActionSource(trigger, getOwnerName(), effectResult);
+                Action action = trigger.createActionWithNewContext(this, null, effectResult);
                 if (action != null)
                     result.add(action);
             }
@@ -394,104 +387,52 @@ public abstract class PhysicalCard implements Filterable {
 
     public Action getDiscardedFromPlayTriggerAction(RequiredType requiredType) {
         ActionSource actionSource = _blueprint.getDiscardedFromPlayTrigger(requiredType);
-        if (actionSource == null)
-            return null;
-        else
-            return getActionFromActionSource(actionSource);
+        return (actionSource == null) ?
+                null : actionSource.createActionWithNewContext(this, null, null);
     }
 
-    private Action getActionFromActionSource(ActionSource actionSource) {
-        return actionSource.createActionAndAppendToContext(this, createActionContext());
-    }
-
-    private Action getActionFromActionSource(ActionSource actionSource, String playerId, EffectResult effectResult) {
-        return actionSource.createActionAndAppendToContext(this, createActionContext(playerId, effectResult));
-    }
-
-    private Action getActionFromActionSource(ActionSource actionSource, String playerId, Effect effect) {
-        return actionSource.createActionAndAppendToContext(this, createActionContext(playerId, effect));
-    }
-
-    public Action getActionFromActionSource(ActionSource actionSource, String playerId, Effect effect, EffectResult effectResult) {
-        return actionSource.createActionAndAppendToContext(this, createActionContext(playerId, effect, effectResult));
-    }
-
-
-    private List<Action> getActionsFromActionSources(String playerId, List<ActionSource> actionSources) {
-        return getActionsFromActionSources(playerId, null, null, actionSources);
-    }
-
-    private List<Action> getActionsFromActionSources(String playerId, Effect effect, List<ActionSource> actionSources) {
-        return getActionsFromActionSources(playerId, effect, null, actionSources);
-    }
-
-    private List<Action> getActionsFromActionSources(String playerId, EffectResult effectResult, List<ActionSource> actionSources) {
-        return getActionsFromActionSources(playerId, null, effectResult, actionSources);
-    }
 
     private List<Action> getActionsFromActionSources(String playerId, Effect effect, EffectResult effectResult,
                                                     List<ActionSource> actionSources) {
         List<Action> result = new LinkedList<>();
         actionSources.forEach(actionSource -> {
             if (actionSource != null) {
-                Action action = getActionFromActionSource(actionSource, playerId, effect, effectResult);
-                if (action != null)
-                    result.add(action);
+                Action action = actionSource.createActionWithNewContext(this, playerId, effect, effectResult);
+                if (action != null) result.add(action);
             }
         });
         return result;
     }
 
     private List<Action> getActivatedActions(String playerId, List<ActionSource> sources) {
-        return getActionsFromActionSources(playerId, sources);
+        return getActionsFromActionSources(playerId, null, null, sources);
     }
 
     public List<Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
-        return getActionsFromActionSources(
-                playerId, effectResult, getBlueprint().getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
+        return getActionsFromActionSources(playerId, null, effectResult,
+                _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
     }
 
     public List<Action> getBeforeTriggerActions(Effect effect, RequiredType requiredType) {
-        return getActionsFromActionSources(getOwnerName(), effect, _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
+        return getActionsFromActionSources(getOwnerName(), effect, null,
+                _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
     }
 
     public List<Action> getBeforeTriggerActions(String playerId, Effect effect, RequiredType requiredType) {
-        return getActionsFromActionSources(
-                playerId, effect, _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
+        return getActionsFromActionSources(playerId, effect, null,
+                _blueprint.getBeforeOrAfterTriggers(requiredType, TriggerTiming.BEFORE));
     }
 
-    public List<Action> getRequiredAfterTriggerActions(EffectResult effectResult) {
+    public List<Action> getRequiredResponseActions(EffectResult effectResult) {
         return _blueprint.getRequiredAfterTriggerActions(effectResult, this);
     }
 
+    public ActionContext createActionContext() {
+        return new DefaultActionContext(getOwnerName(), getGame(), this, null, null);
+    }
 
-    public ActionContext createActionContext() { return createActionContext(getOwnerName(), null, null); }
-    public ActionContext createActionContext(String playerId) { return createActionContext(playerId, null, null); }
-
-    public ActionContext createActionContext(String playerId, EffectResult effectResult) { return createActionContext(playerId, null, effectResult); }
-    public ActionContext createActionContext(String playerId, Effect effect) { return createActionContext(playerId, effect, null); }
     public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
         return new DefaultActionContext(playerId, getGame(), this, effect, effectResult);
-    }
-
-    public int getPotentialDiscount() {
-        if (_blueprint.getDiscountSources() == null)
-            return 0;
-
-        int result = 0;
-        for (DiscountSource discountSource : _blueprint.getDiscountSources())
-            result += discountSource.getPotentialDiscount(createActionContext());
-
-        return result;
-    }
-
-    public void appendPotentialDiscountEffectsToAction(CostToEffectAction action) {
-        if (_blueprint.getDiscountSources() != null) {
-            ActionContext actionContext = createActionContext();
-            for (DiscountSource discountSource : _blueprint.getDiscountSources()) {
-                action.appendPotentialDiscount(discountSource.getDiscountEffect(action, actionContext));
-            }
-        }
     }
 
     public boolean isUnique() {
@@ -512,8 +453,7 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public Action createSeedCardAction() {
-        ActionSource actionSource = _blueprint.getSeedCardActionSource();
-        return actionSource.createActionAndAppendToContext(this, createActionContext());
+        return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
     }
 
     public boolean hasIcon(CardIcon icon) {
@@ -541,7 +481,8 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public boolean checkPhaseLimit(String prefix, int max) {
-        return getModifiers().getUntilEndOfPhaseLimitCounter(this, prefix, getGame().getGameState().getCurrentPhase()).getUsedLimit() < max;
+        return getModifiers().getUntilEndOfPhaseLimitCounter(
+                this, prefix, getGame().getGameState().getCurrentPhase()).getUsedLimit() < max;
     }
 
     private ModifiersQuerying getModifiers() {

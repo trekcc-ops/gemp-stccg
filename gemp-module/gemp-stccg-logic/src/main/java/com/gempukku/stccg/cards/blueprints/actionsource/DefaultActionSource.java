@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
 import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -20,7 +22,7 @@ import com.gempukku.stccg.requirement.Requirement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DefaultActionSource implements ActionSource {
+public abstract class DefaultActionSource implements ActionSource {
     private final List<Requirement> requirements = new LinkedList<>();
 
     protected final List<EffectAppender> costs = new LinkedList<>();
@@ -59,17 +61,6 @@ public class DefaultActionSource implements ActionSource {
         effects.forEach(actionEffect -> actionEffect.appendEffect(false, action, actionContext));
     }
 
-    public Action createAction(PhysicalCard card) {
-        return null;
-        // TODO - This class should eventually be made abstract so that this method can be defined differently for different types of ActionSources
-    }
-
-    @Override
-    public Action createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        return null;
-        // TODO - This class should eventually be made abstract so that this method can be defined differently for different types of ActionSources
-    }
-
     public void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
@@ -101,6 +92,8 @@ public class DefaultActionSource implements ActionSource {
         }
     }
 
+    protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
+
     public void setPhaseLimit(Phase phase, int limitPerPhase) {
         addRequirement((actionContext) -> actionContext.getSource().checkPhaseLimit(phase, limitPerPhase));
         addCost(
@@ -121,5 +114,26 @@ public class DefaultActionSource implements ActionSource {
                     return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
                 }
             });
+    }
+
+    public Action createActionWithNewContext(PhysicalCard card) {
+        return createActionAndAppendToContext(card,
+                new DefaultActionContext(card.getOwnerName(), card, null, null));
+    }
+
+    public Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult) {
+        return createActionAndAppendToContext(card,
+                new DefaultActionContext(card.getOwnerName(), card, null, effectResult));
+    }
+
+
+    public Action createActionWithNewContext(PhysicalCard card, Effect effect, EffectResult effectResult) {
+        return createActionAndAppendToContext(card,
+                new DefaultActionContext(card.getOwnerName(), card, effect, effectResult));
+    }
+
+    public Action createActionWithNewContext(PhysicalCard card, String playerId, Effect effect,
+                                             EffectResult effectResult) {
+        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, effect, effectResult));
     }
 }

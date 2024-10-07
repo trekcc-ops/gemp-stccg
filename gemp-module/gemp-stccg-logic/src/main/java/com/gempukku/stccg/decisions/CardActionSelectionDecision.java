@@ -55,6 +55,8 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         return result;
     }
 
+    public List<Action> getActions() { return _actions; }
+
     private String[] getBlueprintIdsForVirtualActions(List<? extends Action> actions) {
         String[] result = new String[actions.size()];
         for (int i = 0; i < result.length; i++) {

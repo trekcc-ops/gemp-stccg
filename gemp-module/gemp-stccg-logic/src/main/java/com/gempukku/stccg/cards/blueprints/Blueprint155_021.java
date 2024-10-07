@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.playcard.ChooseAndPlayCardFromZoneEffect;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.turn.OnceEachTurnEffect;
+import com.gempukku.stccg.cards.blueprints.actionsource.SeedCardActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.*;
@@ -17,6 +18,15 @@ import java.util.List;
 public class Blueprint155_021 extends CardBlueprint {
     Blueprint155_021() {
         super("155_021"); // Attention All Hands
+    }
+
+    @Override
+    public SeedCardActionSource getSeedCardActionSource() {
+        SeedCardActionSource actionSource = new SeedCardActionSource();
+        actionSource.addRequirement((actionContext) -> actionContext.getSource()
+                .getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayer()) < 1);
+        actionSource.setSeedZone(Zone.TABLE);
+        return actionSource;
     }
 
     private Collection<PhysicalCard> getDestinationOptionsForCard(PhysicalCard card) {

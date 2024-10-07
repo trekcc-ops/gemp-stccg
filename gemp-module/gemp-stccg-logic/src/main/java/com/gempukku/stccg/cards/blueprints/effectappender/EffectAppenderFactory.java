@@ -35,8 +35,11 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("putcardsfromhandonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromhandontopofdeck", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("removecardsindiscardfromgame", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("removefromthegame", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("returntohand", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("revealcards", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("revealcardsfromhand", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromdiscardintodrawdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new CardResolverMultiEffectAppenderProducer());
@@ -57,19 +60,19 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("reordertopcardsofdrawdeck", new MiscEffectAppenderProducer());
         effectAppenderProducers.put("revealbottomcardsofdrawdeck", new MiscEffectAppenderProducer());
 
-            // Other card business
-        effectAppenderProducers.put("discardbottomcardsfromdeck", new DiscardBottomCardFromDeck());
-        effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
-        effectAppenderProducers.put("discardtopcardsfromdeck", new DiscardTopCardFromDeck());
-        effectAppenderProducers.put("download", new DownloadCard());
-        effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck()); // unrespondable
-        effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck()); // multi
+            // Play card effect appender producers
         effectAppenderProducers.put("play", new PlayCardFromHand()); // multi
         effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard()); // multi
         effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck()); // multi
-        effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new PutCardsFromPlayOnBottomOfDeck()); // multi
-        effectAppenderProducers.put("returntohand", new ReturnToHand()); // multi
-        effectAppenderProducers.put("revealcards", new RevealCards()); // multi
+
+            // Other card business
+        effectAppenderProducers.put("download", new DownloadCard()); // multi
+
+        effectAppenderProducers.put("discardbottomcardsfromdeck", new DiscardBottomCardFromDeck()); // default
+        effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
+        effectAppenderProducers.put("discardtopcardsfromdeck", new DiscardTopCardFromDeck()); // default
+        effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck()); // unrespondable
+        effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck()); // multi, but the first one isn't a card resolver
         effectAppenderProducers.put("revealhand", new RevealHand()); // default
         effectAppenderProducers.put("revealrandomcardsfromhand", new RevealRandomCardsFromHand()); // default
         effectAppenderProducers.put("revealtopcardsofdrawdeck", new RevealTopCardsOfDrawDeck()); // default
