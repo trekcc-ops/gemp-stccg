@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -214,10 +213,6 @@ public class CardBlueprintFactory {
     }
 
 
-    public boolean getBoolean(JsonNode parentNode, String key) throws InvalidCardDefinitionException {
-        return getBoolean(parentNode, key, null);
-    }
-
     public boolean getBoolean(JsonNode parentNode, String key, boolean defaultValue)
             throws InvalidCardDefinitionException {
         return getBoolean(parentNode, key, Boolean.valueOf(defaultValue));
@@ -280,30 +275,6 @@ public class CardBlueprintFactory {
 
     public Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
         return requirementFactory.getRequirement(object);
-    }
-
-
-    public JsonNode[] getNodeArray(JsonNode node) {
-        List<JsonNode> nodes = new LinkedList<>();
-        if (node == null)
-            return new JsonNode[0];
-        else if (node.isArray()) {
-            for (JsonNode elem : node) {
-                nodes.add(elem);
-            }
-        } else {
-            nodes.add(node);
-        }
-        return nodes.toArray(new JsonNode[0]);
-    }
-
-    public String[] getStringArray(JsonNode node) {
-        JsonNode[] nodeArray = getNodeArray(node);
-        String[] stringArray = new String[nodeArray.length];
-        for (int i = 0; i < nodeArray.length; i++) {
-            stringArray[i] = nodeArray[i].textValue();
-        }
-        return stringArray;
     }
 
 
@@ -464,26 +435,6 @@ public class CardBlueprintFactory {
 
     }
 
-
-    public EffectAppender buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
-                                                  String choiceText, Zone fromZone, String saveMemory,
-                                                  boolean showMatchingOnly) throws InvalidCardDefinitionException {
-
-        // TODO - Does this work properly? Specifically allowing player to see what's in the deck even if no valid cards exist?
-
-
-        String filter = getString(node, "filter", "choose(any)");
-        FilterableSource cardFilter = getCardFilterableIfChooseOrAll(filter);
-        boolean optional = getBoolean(node, "optional", false);
-
-        Function<ActionContext, List<PhysicalCard>> cardSource = getCardSourceFromZone(targetPlayer, fromZone, filter);
-
-        ValueSource count = ValueResolver.resolveEvaluator(node.get("count"), 1, this);
-        if (optional) count = ValueResolver.resolveEvaluator("0-" + count);
-
-        return CardResolver.resolveCardsInZone(filter, null, count, saveMemory,
-                selectingPlayer, targetPlayer, choiceText, cardFilter, fromZone, showMatchingOnly, cardSource);
-    }
 
     public Function<ActionContext, List<PhysicalCard>> getCardSourceFromZone(PlayerSource player, Zone zone,
                                                                                     String filter)

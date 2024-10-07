@@ -19,6 +19,7 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
 
@@ -31,10 +32,13 @@ import java.util.function.Function;
 public class CardResolverMultiEffectAppenderProducer implements EffectAppenderProducer {
 
     // Don't rename these without renaming the corresponding JSON "type" property
-    private enum EffectType { 
+    private enum EffectType {
         DISCARD(null, false, true),
         DISCARDCARDSFROMDRAWDECK(Zone.DRAW_DECK, false, true),
         DISCARDFROMHAND(Zone.HAND, true, true),
+        DOWNLOAD(Zone.DRAW_DECK, false, false), // TODO - Should allow downloading from more than one zone
+        PLAY(Zone.HAND, false, false),
+        PLAYCARDFROMDISCARD(Zone.DISCARD, false, false),
         PUTCARDSFROMDECKINTOHAND(Zone.DRAW_DECK, false, true), // only premiere cards that will be reworded
         PUTCARDSFROMDECKONBOTTOMOFDECK(Zone.DRAW_DECK, false, true),
         PUTCARDSFROMDECKONTOPOFDECK(Zone.DRAW_DECK, false, true), // Celebratory Toast; Data, Keep Dealing
@@ -90,9 +94,18 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         String filter = environment.getString(effectObject, "filter", "choose(any)");
         FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
+        String onFilter = effectObject.get("on").textValue();
+        final FilterableSource onFilterableSource = (onFilter != null) ? environment.getFilterFactory().generateFilter(onFilter) : null;
+
         ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 
         MultiEffectAppender result = new MultiEffectAppender();
+
+        if (effectType == EffectType.PLAY || effectType == EffectType.PLAYCARDFROMDISCARD ||
+                effectType == EffectType.DOWNLOAD) {
+            result.setPlayabilityCheckedForEffect(true);
+        }
+
         final EffectAppender targetCardAppender;
 
         // TODO - choiceFilter only used for discard/remove/return to hand
@@ -107,19 +120,20 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
             return null;
         };
 
-        final String sourceMemory = filter.startsWith("memory(") ?
-                filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")) : null;
         Function<ActionContext, List<PhysicalCard>> cardSource =
-                actionContext -> Filters.filterActive(actionContext.getGame(), sourceMemory == null ? Filters.any :
-                        actionContext.getCardFromMemory(sourceMemory)).stream().toList();
-
+                getCardSource(filter, effectType.fromZone, targetPlayer);
 
         targetCardAppender = switch (effectType) {
             case DISCARD, REMOVEFROMTHEGAME ->
                     CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
                             selectingPlayer, defaultText, cardSource);
+            case DOWNLOAD, PLAY, PLAYCARDFROMDISCARD ->
+                    CardResolver.resolveCardsInZone(filter, actionContext -> Filters.playable, count, memory,
+                            selectingPlayer, targetPlayer, defaultText, cardFilter, effectType.fromZone,
+                            effectType.showMatchingOnly, cardSource);
             case PUTCARDSFROMPLAYONBOTTOMOFDECK, SHUFFLECARDSFROMPLAYINTODRAWDECK, REVEALCARDS ->
-                    CardResolver.resolveCardsInPlay(filter, count, memory, selectingPlayer, defaultText, cardFilter);
+                    CardResolver.resolveCardsInPlay(filter, cardFilter, null, null, count,
+                            memory, selectingPlayer, defaultText, cardSource);
             case RETURNTOHAND ->
                     CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter, choiceFilter, count, memory,
                             targetPlayer, defaultText, cardSource);
@@ -130,7 +144,7 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
                     SHUFFLECARDSFROMDISCARDINTODRAWDECK, SHUFFLECARDSFROMHANDINTODRAWDECK ->
                     CardResolver.resolveCardsInZone(filter, null, count, memory, selectingPlayer,
                             targetPlayer, defaultText, cardFilter, effectType.fromZone, effectType.showMatchingOnly,
-                            environment.getCardSourceFromZone(targetPlayer, effectType.fromZone, filter));
+                            cardSource);
         };
 
         result.addEffectAppender(targetCardAppender);
@@ -160,10 +174,20 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
                                                 Iterables.getOnlyElement(cards));
                                 case DISCARDCARDSFROMDRAWDECK ->
                                         new DiscardCardsFromZoneEffect(context.getGame(), action.getActionSource(),
-                                                Zone.DRAW_DECK, cards);
+                                                effectType.fromZone, cards);
                                 case DISCARDFROMHAND ->
-                                        new DiscardCardsFromZoneEffect(context, Zone.HAND, 
+                                        new DiscardCardsFromZoneEffect(context, effectType.fromZone,
                                                 targetPlayer.getPlayerId(context), cards, forced);
+                                case DOWNLOAD ->
+                                        new StackActionEffect(context.getGame(),
+                                                Iterables.getOnlyElement(cards).getPlayCardAction(true));
+                                case PLAY, PLAYCARDFROMDISCARD ->
+                                        new StackActionEffect(context.getGame(),
+                                                Iterables.getOnlyElement(cards).getPlayCardAction(
+                                                        (onFilterableSource != null) ?
+                                                                onFilterableSource.getFilterable(context) : Filters.any
+                                                )
+                                        );
                                 case PUTCARDSFROMDECKINTOHAND ->
                                         new PutCardFromZoneIntoHandEffect(context.getGame(),
                                                 Iterables.getOnlyElement(cards), effectType.fromZone, reveal);
@@ -222,7 +246,16 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
                                     modifiers.canLookOrRevealCardsInHand(handPlayer, choosingPlayer))
                                 return false;
                             return (!forced || modifiers.canDiscardCardsFromHand(handPlayer, actionContext.getSource()));
+                        } else if (effectType == EffectType.PLAYCARDFROMDISCARD || effectType == EffectType.DOWNLOAD) {
+                            return actionContext.getGame().getModifiersQuerying().hasFlagActive(ModifierFlag.CANT_PLAY_FROM_DISCARD_OR_DECK);
                         } else return super.isPlayableInFull(actionContext);
+                    }
+
+                    @Override
+                    public boolean isPlayabilityCheckedForEffect() {
+                        if (effectType == EffectType.PLAYCARDFROMDISCARD || effectType == EffectType.DOWNLOAD)
+                            return true;
+                        else return super.isPlayabilityCheckedForEffect();
                     }
                 });
         return result;
@@ -236,7 +269,13 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         } else if (effectType == EffectType.RETURNTOHAND) {
             environment.validateAllowedFields(effectObject, "filter", "count");
             environment.validateRequiredFields(effectObject, "filter");
-        }else {
+        } else if (effectType == EffectType.PLAY || effectType == EffectType.PLAYCARDFROMDISCARD) {
+            environment.validateAllowedFields(effectObject, "filter", "on", "memorize");
+            environment.validateRequiredFields(effectObject, "filter");
+        } else if (effectType == EffectType.DOWNLOAD) {
+            environment.validateAllowedFields(effectObject, "filter", "memorize");
+            environment.validateRequiredFields(effectObject, "filter");
+        } else {
             environment.validateAllowedFields(effectObject, "count", "filter", "reveal", "memorize");
         }
     }
@@ -245,6 +284,7 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         return switch (effectType) {
             case DISCARD, DISCARDCARDSFROMDRAWDECK -> "Choose cards to discard";
             case DISCARDFROMHAND -> "Choose cards from hand to discard";
+            case DOWNLOAD, PLAY, PLAYCARDFROMDISCARD -> "Choose card to play";
             case PUTCARDSFROMDISCARDONBOTTOMOFDECK, PUTCARDSFROMDISCARDONTOPOFDECK, PUTCARDSFROMHANDONTOPOFDECK,
                     REMOVECARDSINDISCARDFROMGAME, PUTCARDSFROMDECKONBOTTOMOFDECK, PUTCARDSFROMDECKONTOPOFDECK,
                     PUTCARDSFROMDECKINTOHAND, PUTCARDSFROMDISCARDINTOHAND ->
@@ -259,5 +299,25 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
             case RETURNTOHAND -> "Choose cards to return to hand";
             case PUTCARDSFROMPLAYONBOTTOMOFDECK ->  "Choose cards in play";
         };
+    }
+
+    private Function<ActionContext, List<PhysicalCard>> getCardSource(String type, Zone fromZone,
+                                                                      PlayerSource targetPlayer)
+            throws InvalidCardDefinitionException {
+        final String sourceMemory = type.startsWith("memory(") ?
+                type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
+        if (fromZone == null) {
+            return actionContext -> Filters.filterActive(actionContext.getGame(), sourceMemory == null ? Filters.any :
+                    actionContext.getCardFromMemory(sourceMemory)).stream().toList();
+        } else {
+            return switch (fromZone) {
+                case HAND, DISCARD, DRAW_DECK -> actionContext -> Filters.filter(
+                        actionContext.getGameState().getZoneCards(targetPlayer.getPlayerId(actionContext), fromZone),
+                        sourceMemory == null ?
+                                Filters.any : Filters.in(actionContext.getCardsFromMemory(sourceMemory))).stream().toList();
+                default -> throw new InvalidCardDefinitionException(
+                        "getCardSource function not defined for zone " + fromZone.getHumanReadable());
+            };
+        }
     }
 }

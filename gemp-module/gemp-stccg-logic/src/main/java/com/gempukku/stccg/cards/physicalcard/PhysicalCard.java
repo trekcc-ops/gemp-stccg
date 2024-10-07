@@ -201,8 +201,7 @@ public abstract class PhysicalCard implements Filterable {
     }
     public abstract CostToEffectAction getPlayCardAction(boolean forFree);
 
-    public CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter,
-                                                boolean ignoreRoamingPenalty) {
+    public CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter) {
 
             final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
             if (validTargetFilter == null) {
@@ -334,7 +333,7 @@ public abstract class PhysicalCard implements Filterable {
             if (canBePlayed()) {
                 for (Requirement playInOtherPhaseCondition : _blueprint.getPlayInOtherPhaseConditions()) {
                     if (playInOtherPhaseCondition.accepts(createActionContext(playerId, null, null)))
-                        playCardActions.add(getPlayCardAction(Filters.any, false));
+                        playCardActions.add(getPlayCardAction(Filters.any));
                 }
             }
             return playCardActions;

@@ -1,14 +1,13 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.actions.EffectType;
+import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.game.TribblesGame;
-import com.gempukku.stccg.actions.tribblepower.ActivateTribblePowerResult;
 
 public abstract class ActivateTribblePowerEffect extends DefaultEffect {
     protected final PhysicalCard _source;
@@ -16,9 +15,11 @@ public abstract class ActivateTribblePowerEffect extends DefaultEffect {
     protected final TribblePower _tribblePower;
     protected final ActivateTribblePowerResult _result;
     protected final CostToEffectAction _action;
+    protected final TribblesActionContext _context;
     protected final TribblesGame _tribblesGame; // TODO - Redundant with "_game" in DefaultEffect
     public ActivateTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
         super(actionContext.getGame(), actionContext.getSource().getOwnerName());
+        _context = actionContext;
         _source = actionContext.getSource();
         _activatingPlayer = actionContext.getSource().getOwnerName();
         _tribblePower = actionContext.getSource().getBlueprint().getTribblePower();

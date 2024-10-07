@@ -3,14 +3,6 @@ package com.gempukku.stccg.cards.blueprints.effectappender;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.blueprints.PlayCardFromDiscard;
-import com.gempukku.stccg.cards.blueprints.PlayCardFromDrawDeck;
-import com.gempukku.stccg.cards.blueprints.PlayCardFromHand;
-import com.gempukku.stccg.cards.blueprints.effectappender.memorize.*;
-import com.gempukku.stccg.cards.blueprints.effectappender.modifier.AddKeyword;
-import com.gempukku.stccg.cards.blueprints.effectappender.modifier.AddModifier;
-import com.gempukku.stccg.cards.blueprints.effectappender.modifier.ModifyStrength;
-import com.gempukku.stccg.cards.blueprints.effectappender.modifier.RemoveText;
 import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.HashMap;
@@ -26,6 +18,9 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("discard", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("discardcardsfromdrawdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("discardfromhand", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("download", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("play", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("playcardfromdiscard", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdeckintohand", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdeckontopofdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
@@ -44,73 +39,47 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("shufflecardsfromdiscardintodrawdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new CardResolverMultiEffectAppenderProducer());
         effectAppenderProducers.put("shufflecardsfromplayintodrawdeck", new CardResolverMultiEffectAppenderProducer());
+
+            // Decisions
+        effectAppenderProducers.put("chooseanumber", new ChooseEffectAppenderProducer());
+        effectAppenderProducers.put("chooseopponent", new ChooseEffectAppenderProducer());
+        effectAppenderProducers.put("chooseplayer", new ChooseEffectAppenderProducer());
+        effectAppenderProducers.put("chooseplayerexcept", new ChooseEffectAppenderProducer());
+        effectAppenderProducers.put("chooseplayerwithcardsindeck", new ChooseEffectAppenderProducer());
+        effectAppenderProducers.put("choosetribblepower", new ChooseEffectAppenderProducer());
             // Choose card appenders (choose a card and store it for later)
         effectAppenderProducers.put("chooseactivecards", new ChooseCardAppenderProducer());
         effectAppenderProducers.put("choosecardsfromdiscard", new ChooseCardAppenderProducer());
         effectAppenderProducers.put("choosecardsfromdrawdeck", new ChooseCardAppenderProducer());
 
-            // Misc effect appender producers
-        effectAppenderProducers.put("discardcardatrandomfromhand", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("drawcards", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("lookattopcardsofdrawdeck", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("lookathand", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("lookatrandomcardsfromhand", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("placeplayedcardbeneathdrawdeck", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("reordertopcardsofdrawdeck", new MiscEffectAppenderProducer());
-        effectAppenderProducers.put("revealbottomcardsofdrawdeck", new MiscEffectAppenderProducer());
+            // Misc card moving appender producers
+        effectAppenderProducers.put("discardbottomcardsfromdeck", new CardStuffAppenderProducer()); // default
+        effectAppenderProducers.put("discardcardatrandomfromhand", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("discardtopcardfromplaypile", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("discardtopcardsfromdeck", new CardStuffAppenderProducer()); // default
+        effectAppenderProducers.put("drawcards", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("lookattopcardsofdrawdeck", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("lookathand", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("lookatrandomcardsfromhand", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("placeplayedcardbeneathdrawdeck", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("placetopcardofdrawdeckontopofplaypile", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("reordertopcardsofdrawdeck", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("revealbottomcardsofdrawdeck", new CardStuffAppenderProducer());
+        effectAppenderProducers.put("revealhand", new CardStuffAppenderProducer()); // default
 
-            // Play card effect appender producers
-        effectAppenderProducers.put("play", new PlayCardFromHand()); // multi
-        effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard()); // multi
-        effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck()); // multi
-
-            // Other card business
-        effectAppenderProducers.put("download", new DownloadCard()); // multi
-
-        effectAppenderProducers.put("discardbottomcardsfromdeck", new DiscardBottomCardFromDeck()); // default
-        effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
-        effectAppenderProducers.put("discardtopcardsfromdeck", new DiscardTopCardFromDeck()); // default
-        effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck()); // unrespondable
-        effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck()); // multi, but the first one isn't a card resolver
-        effectAppenderProducers.put("revealhand", new RevealHand()); // default
-        effectAppenderProducers.put("revealrandomcardsfromhand", new RevealRandomCardsFromHand()); // default
-        effectAppenderProducers.put("revealtopcardsofdrawdeck", new RevealTopCardsOfDrawDeck()); // default
+            // Other
+        effectAppenderProducers.put("activatetribblepower", new ActivateTribblePowerAppender());
         effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.HAND)); // unrespondable
         effectAppenderProducers.put("shuffleplaypileintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.PLAY_PILE)); // unrespondable
 
             // Modifiers
         effectAppenderProducers.put("addkeyword", new AddKeyword());
         effectAppenderProducers.put("addmodifier", new AddModifier());
-        effectAppenderProducers.put("appendcardidstowhileinzone", new AppendCardIdsToWhileInZone());
         effectAppenderProducers.put("costtoeffect", new CostToEffect());
         effectAppenderProducers.put("modifystrength", new ModifyStrength());
         effectAppenderProducers.put("preventable", new PreventableAppenderProducer());
         effectAppenderProducers.put("preventdiscard", new PreventCardEffectAppender());
         effectAppenderProducers.put("removetext", new RemoveText());
-            // Other
-        effectAppenderProducers.put("activatetribblepower", new ActivateTribblePowerAppender());
-        effectAppenderProducers.put("addtrigger", new AddTrigger());
-        effectAppenderProducers.put("choice", new Choice());
-        effectAppenderProducers.put("chooseanumber", new ChooseANumber());
-        effectAppenderProducers.put("chooseopponent", new ChooseOpponent());
-        effectAppenderProducers.put("chooseplayer", new ChoosePlayer());
-        effectAppenderProducers.put("chooseplayerexcept", new ChoosePlayerExcept());
-        effectAppenderProducers.put("chooseplayerwithcardsindeck", new ChoosePlayerWithCardsInDeck());
-        effectAppenderProducers.put("choosetribblepower", new ChooseTribblePower());
-        effectAppenderProducers.put("chooseyesorno", new ChooseYesOrNo());
-        effectAppenderProducers.put("foreachplayer", new ForEachPlayer());
-        effectAppenderProducers.put("incrementperphaselimit", new IncrementPerPhaseLimit());
-        effectAppenderProducers.put("incrementperturnlimit", new IncrementPerTurnLimit());
-        effectAppenderProducers.put("memorize", new MemorizeActive());
-        effectAppenderProducers.put("memorizenumber", new MemorizeNumber());
-        effectAppenderProducers.put("optional", new Optional());
-        effectAppenderProducers.put("repeat", new Repeat());
-        effectAppenderProducers.put("resetwhileinzonedata", new ResetWhileInZoneData());
-        effectAppenderProducers.put("reverseplayerorder", new ReversePlayerOrder());
-        effectAppenderProducers.put("scorepoints", new ScorePoints());
-        effectAppenderProducers.put("setnexttribble", new SetNextTribble());
-        effectAppenderProducers.put("storewhileinzone", new StoreWhileInZone());
     }
 
     public EffectAppender getEffectAppender(JsonNode effectObject) throws InvalidCardDefinitionException {

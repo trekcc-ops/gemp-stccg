@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.resolver;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.Effect;
@@ -7,17 +8,17 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.choose.ChooseActiveCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
+import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.blueprints.effectappender.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -139,9 +140,9 @@ public class CardResolver {
 
 
     private static DefaultDelayedAppender finalTargetAppender(FilterableSource choiceFilter, FilterableSource playabilityFilter,
-                                                      ValueSource countSource, String memory,
+                                                              ValueSource countSource, String memory,
                                                               Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                      PlayerSource choicePlayer, String selectionType, FilterableSource typeFilter) {
+                                                              PlayerSource choicePlayer, String selectionType, FilterableSource typeFilter) {
 
         return new DefaultDelayedAppender() {
             @Override

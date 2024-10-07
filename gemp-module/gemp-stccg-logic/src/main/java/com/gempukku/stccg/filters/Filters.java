@@ -214,31 +214,6 @@ public class Filters {
 
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed();
 
-    public static Filter playable(final DefaultGame game) {
-        return playable(0);
-    }
-    public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(); }
-
-    public static Filter playable(final int twilightModifier) {
-        return playable(twilightModifier, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty) {
-        return playable(twilightModifier, ignoreRoamingPenalty, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile) {
-        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, false);
-    }
-
-    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return playable(0, twilightModifier, ignoreRoamingPenalty, ignoreCheckingDeadPile, ignoreResponseEvents);
-    }
-
-    public static Filter playable(final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return (game1, physicalCard) -> physicalCard.canBePlayed();
-    }
-
     public static final Filter any = (game, physicalCard) -> true;
 
     public static final Filter none = (game, physicalCard) -> false;
@@ -494,12 +469,8 @@ public class Filters {
     }
 
 
-    public static Filter attachableTo(final DefaultGame game, final Filterable... filters) {
-        return attachableTo(game, 0, filters);
-    }
-
-    public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
-        return Filters.and(Filters.playable(twilightModifier),
+    public static Filter attachableTo(final Filterable... filters) {
+        return Filters.and(
                 (Filter) (game1, physicalCard) -> {
                     if (physicalCard.getBlueprint().getValidTargetFilter() == null)
                         return false;

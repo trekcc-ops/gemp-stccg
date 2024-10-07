@@ -18,7 +18,6 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
         return new TribblesDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
-//                final Map<TribblePower, ActivateTribblePowerEffect> activateEffects = new HashMap<>();
 
                 TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
                 if (context instanceof TribblesActionContext)
@@ -29,6 +28,8 @@ public class ActivateTribblePowerAppender implements EffectAppenderProducer {
             private Effect createTribblePowerEffect(TribblePower tribblePower, TribblesActionContext actionContext,
                                                     CostToEffectAction action) {
 
+                if (tribblePower == TribblePower.ACQUIRE)
+                    return new ActivateAcquireTribblePowerEffect(action, actionContext);
                 if (tribblePower == TribblePower.AVALANCHE)
                     return new ActivateAvalancheTribblePowerEffect(action, actionContext);
                 if (tribblePower == TribblePower.CONVERT)

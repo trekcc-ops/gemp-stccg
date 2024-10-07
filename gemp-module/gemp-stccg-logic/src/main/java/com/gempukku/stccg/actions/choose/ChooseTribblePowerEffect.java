@@ -6,10 +6,14 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 
-public abstract class ChooseTribblePowerEffect extends UnrespondableEffect {
+public class ChooseTribblePowerEffect extends UnrespondableEffect {
     private final String _playerId;
-    public ChooseTribblePowerEffect(ActionContext actionContext) {
+    private final ActionContext _context;
+    private final String _memoryId;
+    public ChooseTribblePowerEffect(ActionContext actionContext, String memoryId) {
         super(actionContext);
+        _context = actionContext;
+        _memoryId = memoryId;
         _playerId = actionContext.getPerformingPlayerId();
     }
 
@@ -20,10 +24,11 @@ public abstract class ChooseTribblePowerEffect extends UnrespondableEffect {
                 new MultipleChoiceAwaitingDecision("Choose a Tribble power", powers) {
                     @Override
                     protected void validDecisionMade(int index, String result) {
-                        powerChosen(result);
+                        _context.setValueToMemory(_memoryId, result);
+                        powerChosen();
                     }
                 });
     }
 
-    protected abstract void powerChosen(String playerId);
+    protected void powerChosen() { }
 }

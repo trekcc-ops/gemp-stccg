@@ -85,19 +85,19 @@ public class DefaultActionContext implements ActionContext {
     public void setCardMemory(String memory, PhysicalCard card) {
         if(memory != null) {
             memory = memory.toLowerCase();
+            getRelevantCardMemory().removeAll(memory);
+            if (card != null)
+                getRelevantCardMemory().put(memory, card);
         }
-        getRelevantCardMemory().removeAll(memory);
-        if (card != null)
-            getRelevantCardMemory().put(memory, card);
     }
 
 
     public void setCardMemory(String memory, Collection<? extends PhysicalCard> cards) {
         if(memory != null) {
             memory = memory.toLowerCase();
+            getRelevantCardMemory().removeAll(memory);
+            getRelevantCardMemory().putAll(memory, cards);
         }
-        getRelevantCardMemory().removeAll(memory);
-        getRelevantCardMemory().putAll(memory, cards);
     }
 
     public Collection<PhysicalCard> getCardsFromMemory(String memory) {
