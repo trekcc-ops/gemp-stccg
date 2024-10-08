@@ -33,8 +33,6 @@ public interface ModifiersQuerying {
     // Keywords
     boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword);
 
-    int getKeywordCount(PhysicalCard physicalCard, Keyword keyword);
-
     // Movement
     int getMoveLimit(int baseMoveLimit);
 

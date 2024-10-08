@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.modifiersourceproducer;
+package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.modifiers.Modifier;

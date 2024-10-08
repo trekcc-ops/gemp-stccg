@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class DelayedEffectBlueprint implements EffectBlueprint {
-    protected String _text;
 
     @Override
     public final void addEffectToAction(boolean cost, CostToEffectAction action, ActionContext actionContext) {
@@ -28,10 +27,6 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
                 }
             }
 
-            @Override
-            public String getText() {
-                return _text;
-            }
         };
 
         if (cost) {
@@ -41,12 +36,12 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
         }
     }
 
-    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
         throw new UnsupportedOperationException("One of createEffect or createEffects has to be overwritten");
     }
 
     protected List<? extends Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext actionContext) {
-        final Effect effect = createEffect(cost, action, actionContext);
+        final Effect effect = createEffect(action, actionContext);
         if (effect == null)
             return null;
         return Collections.singletonList(effect);

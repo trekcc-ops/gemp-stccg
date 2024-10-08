@@ -164,7 +164,7 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
 
                 return switch (selectionType) {
                     case "self", "memory" -> {
@@ -240,7 +240,7 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 return effectSource.createEffect(cards, action, context,
                         countSource.getMinimum(context), countSource.getMaximum(context));
@@ -270,7 +270,7 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
                 return choiceEffect.apply(context);
             }
 

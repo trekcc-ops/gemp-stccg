@@ -62,6 +62,8 @@ public class ValueResolver {
             return resolveEvaluator(value.textValue());
         if (value instanceof JsonNode object) {
             final String type = BlueprintUtils.getString(object, "type");
+            if (type == null)
+                throw new InvalidCardDefinitionException("ValueResolver type not defined");
             if (type.equalsIgnoreCase("range")) {
                 BlueprintUtils.validateAllowedFields(object, "from", "to");
                 ValueSource fromValue = resolveEvaluator(object.get("from"));

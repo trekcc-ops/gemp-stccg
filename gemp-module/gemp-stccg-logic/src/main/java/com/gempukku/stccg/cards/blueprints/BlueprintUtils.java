@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
@@ -41,14 +41,13 @@ public final class BlueprintUtils {
     }
 
 
-    public static String getString(JsonNode parentNode, String key) throws InvalidCardDefinitionException {
+    public static String getString(JsonNode parentNode, String key) {
         if (!parentNode.has(key))
             return null;
         else return parentNode.get(key).textValue();
     }
 
-    public static String getString(JsonNode parentNode, String key, String defaultValue)
-            throws InvalidCardDefinitionException {
+    public static String getString(JsonNode parentNode, String key, String defaultValue) {
         if (parentNode == null || !parentNode.has(key))
             return defaultValue;
         else

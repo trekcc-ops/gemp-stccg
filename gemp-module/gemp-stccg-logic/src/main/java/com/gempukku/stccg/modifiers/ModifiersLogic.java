@@ -352,29 +352,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    @Override
-    public int getKeywordCount(PhysicalCard physicalCard, Keyword keyword) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            if (physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard))
-                return 0;
-
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (modifier.isKeywordRemoved(_game, physicalCard, keyword))
-                    return 0;
-            }
-
-            int result = physicalCard.getBlueprint().getKeywordCount(keyword);
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.GIVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (appliesKeywordModifier(physicalCard, modifier.getSource(), keyword))
-                    result += modifier.getKeywordCountModifier(physicalCard, keyword);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
     private boolean appliesKeywordModifier(PhysicalCard affecting, PhysicalCard modifierSource, Keyword keyword) {
         if (modifierSource == null)
             return true;

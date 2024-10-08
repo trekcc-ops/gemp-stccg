@@ -98,7 +98,7 @@ public abstract class DefaultActionSource implements ActionSource {
         addCost(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                    protected Effect createEffect(CostToEffectAction action, ActionContext actionContext) {
                         return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
                     }
                 });
@@ -109,7 +109,7 @@ public abstract class DefaultActionSource implements ActionSource {
         addCost(
             new DelayedEffectBlueprint() {
                 @Override
-                protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+                protected Effect createEffect(CostToEffectAction action, ActionContext actionContext) {
                     return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
                 }
             });

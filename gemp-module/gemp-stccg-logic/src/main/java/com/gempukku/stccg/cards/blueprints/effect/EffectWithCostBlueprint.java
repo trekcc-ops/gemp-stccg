@@ -25,7 +25,7 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
-    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
 
         if(requirementsNotMet(context))
             return null;

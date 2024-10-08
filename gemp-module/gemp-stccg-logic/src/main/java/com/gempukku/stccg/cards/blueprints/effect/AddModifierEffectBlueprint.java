@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.modifiers.Modifier;
 
@@ -23,7 +22,7 @@ public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
         final Modifier modifier = _modifierSource.getModifier(context);
         return new AddUntilModifierEffect(context.getGame(), modifier, _until);
     }

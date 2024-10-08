@@ -68,9 +68,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
 
     @Override
     public boolean hasTransporters() {
-        if (_blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY) {
-            return !_blueprint.hasNoTransporters();
-        } else return false;
+        return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
     }
 
     public boolean isAffiliation(Affiliation affiliation) {

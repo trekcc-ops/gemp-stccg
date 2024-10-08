@@ -17,7 +17,7 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
     }
 
     @Override
-    protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
 
         TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
         if (context instanceof TribblesActionContext)

@@ -49,7 +49,7 @@ public class ChooseEffectBlueprintProducer {
 
         return new DelayedEffectBlueprint() {
             @Override
-            protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
                 return switch (effectType) {
                     case CHOOSEANUMBER -> new PlayOutDecisionEffect(
                             new IntegerAwaitingDecision(context,1, context.substituteText(choiceText),

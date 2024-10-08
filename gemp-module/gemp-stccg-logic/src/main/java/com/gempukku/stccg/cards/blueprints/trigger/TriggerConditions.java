@@ -129,14 +129,6 @@ public class TriggerConditions {
         return false;
     }
 
-    public static boolean activated(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.ACTIVATE) {
-            PhysicalCard source = ((ActivateCardResult) effectResult).getSource();
-            return Filters.and(filters).accepts(game, source);
-        }
-        return false;
-    }
-
     public static boolean played(DefaultGame game, EffectResult effectResult, Filterable... filters) {
         if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
             PhysicalCard playedCard = ((PlayCardResult) effectResult).getPlayedCard();
@@ -160,17 +152,6 @@ public class TriggerConditions {
             final PlayCardResult playResult = (PlayCardResult) effectResult;
             PhysicalCard playedCard = playResult.getPlayedCard();
             return (playResult.getPlayedFrom() == zone && Filters.and(filters).accepts(game, playedCard));
-        }
-        return false;
-    }
-
-    public static boolean playedFromStacked(DefaultGame game, EffectResult effectResult, Filterable stackedOnFilter, Filterable... filters) {
-        if (effectResult.getType() == EffectResult.Type.PLAY_CARD) {
-            final PlayCardResult playResult = (PlayCardResult) effectResult;
-            PhysicalCard playedCard = playResult.getPlayedCard();
-            return (playResult.getPlayedFrom() == Zone.STACKED
-                    && Filters.and(stackedOnFilter).accepts(game, playResult.getAttachedOrStackedPlayedFrom())
-                    && Filters.and(filters).accepts(game, playedCard));
         }
         return false;
     }

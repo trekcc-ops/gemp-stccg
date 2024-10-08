@@ -40,7 +40,9 @@ public class MiscRequirement implements Requirement {
 
 
     public MiscRequirement(JsonNode node) throws InvalidCardDefinitionException {
-        this._requirementType = BlueprintUtils.getEnum(RequirementType.class, node, "type", false);
+        _requirementType = BlueprintUtils.getEnum(RequirementType.class, node, "type", false);
+        if (_requirementType == null)
+            throw new InvalidCardDefinitionException("Invalid requirement type");
 
         switch (_requirementType) {
             case CARDSINDECKCOUNT, CARDSINHANDMORETHAN, LASTTRIBBLEPLAYED, NEXTTRIBBLEINSEQUENCE:

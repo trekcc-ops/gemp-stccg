@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
@@ -273,22 +273,6 @@ public abstract class PhysicalCard implements Filterable {
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));
             }
 */
-            StringBuilder keywords = new StringBuilder();
-            for (Keyword keyword : Keyword.values()) {
-                if (keyword.isInfoDisplayable()) {
-                    if (keyword.isMultiples()) {
-                        int count = getModifiers().getKeywordCount(this, keyword);
-                        if (count > 0)
-                            keywords.append(keyword.getHumanReadable()).append(" +").append(count).append(", ");
-                    } else {
-                        if (getModifiers().hasKeyword(this, keyword))
-                            keywords.append(keyword.getHumanReadable()).append(", ");
-                    }
-                }
-            }
-            if (!keywords.isEmpty())
-                sb.append("<br><b>Keywords:</b> ").append(keywords.substring(0, keywords.length() - 2));
-
             return sb.toString();
         } else {
             return "";

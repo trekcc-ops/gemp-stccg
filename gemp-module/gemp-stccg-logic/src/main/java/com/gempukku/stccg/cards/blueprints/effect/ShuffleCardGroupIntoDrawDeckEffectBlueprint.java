@@ -25,7 +25,7 @@ public class ShuffleCardGroupIntoDrawDeckEffectBlueprint extends DelayedEffectBl
     }
 
     @Override
-    protected Effect createEffect(boolean cost, CostToEffectAction action,
+    protected Effect createEffect(CostToEffectAction action,
                                   ActionContext context) {
         final String cardGroupOwner = _player.getPlayerId(context);
         return new UnrespondableEffect(context) {
