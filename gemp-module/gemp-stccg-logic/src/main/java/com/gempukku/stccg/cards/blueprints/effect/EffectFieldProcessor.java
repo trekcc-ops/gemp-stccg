@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cards.blueprints.fieldprocessor;
+package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -18,10 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class EffectFieldProcessor implements FieldProcessor {
+public class EffectFieldProcessor {
 
-    @Override
-    public void processField(String key, JsonNode value, CardBlueprint blueprint)
+    public static void processField(JsonNode value, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         List<JsonNode> effectList = JsonUtils.toArray(value);
         for (JsonNode effect : effectList) {
@@ -48,7 +47,7 @@ public class EffectFieldProcessor implements FieldProcessor {
         }
     }
 
-    private void appendActionSource(JsonNode node, CardBlueprint blueprint)
+    private static void appendActionSource(JsonNode node, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node,
                 "text", "optional", "limitPerPhase", "limitPerTurn", "phase", "trigger",
@@ -102,7 +101,7 @@ public class EffectFieldProcessor implements FieldProcessor {
         }
     }
 
-    private void appendSeedActionSource(JsonNode value, CardBlueprint blueprint)
+    private static void appendSeedActionSource(JsonNode value, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "limit", "where");
         SeedCardActionSource actionSource = new SeedCardActionSource();

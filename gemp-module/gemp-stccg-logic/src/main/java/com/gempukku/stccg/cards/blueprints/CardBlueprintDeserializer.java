@@ -10,7 +10,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
-import com.gempukku.stccg.cards.blueprints.fieldprocessor.EffectFieldProcessor;
+import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSourceAppender;
 import com.gempukku.stccg.condition.missionrequirements.*;
@@ -152,7 +152,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             }
 
             if (node.get("effects") != null)
-                _effectProcessor.processField("effects", node.get("effects"), blueprint);
+                EffectFieldProcessor.processField(node.get("effects"), blueprint);
 
             for (Characteristic characteristic :
                     getEnumSetFromCommaDelimited(node, "characteristic", Characteristic.class))
