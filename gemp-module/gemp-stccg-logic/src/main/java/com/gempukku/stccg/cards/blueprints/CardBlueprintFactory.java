@@ -24,127 +24,14 @@ import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 
 public class CardBlueprintFactory {
-    private final Map<String, FieldProcessor> fieldProcessors = new HashMap<>();
     private final EffectAppenderFactory effectAppenderFactory = new EffectAppenderFactory(this);
     private final FilterFactory filterFactory = new FilterFactory(this);
     private final RequirementFactory requirementFactory = new RequirementFactory(this);
     private final TriggerCheckerFactory triggerCheckerFactory = new TriggerCheckerFactory();
-
-    public CardBlueprintFactory() {
-        // String input
-        for (String fieldName : new String[]{"title", "lore", "subtitle", "rarity", "image-url", "persona"}) {
-            fieldProcessors.put(fieldName, new StringFieldProcessor());
-        }
-
-        fieldProcessors.put("property-logo", new PropertyLogoFieldProcessor());
-        fieldProcessors.put("uniqueness", new UniquenessFieldProcessor());
-        fieldProcessors.put("type", new CardTypeFieldProcessor());
-        fieldProcessors.put("icons", new IconsFieldProcessor());
-        fieldProcessors.put("tribble-value", new TribbleValueFieldProcessor());
-        fieldProcessors.put("tribble-power", new TribblePowerFieldProcessor());
-        fieldProcessors.put("characteristic", new CharacteristicFieldProcessor());
-
-        fieldProcessors.put("quadrant", new QuadrantFieldProcessor());
-        fieldProcessors.put("region", new RegionFieldProcessor());
-        fieldProcessors.put("location", new LocationFieldProcessor());
-        fieldProcessors.put("caninsertintospaceline", new CanInsertIntoSpacelineProcessor());
-        fieldProcessors.put("affiliation-icons", new AffiliationIconsFieldProcessor());
-        fieldProcessors.put("mission-type", new MissionTypeFieldProcessor());
-        fieldProcessors.put("mission-requirements", new MissionRequirementsFieldProcessor());
-        fieldProcessors.put("point-box", new PointBoxFieldProcessor());
-        fieldProcessors.put("span", new SpanFieldProcessor());
-
-        fieldProcessors.put("integrity", new AttributeFieldProcessor(CardAttribute.INTEGRITY));
-        fieldProcessors.put("cunning", new AttributeFieldProcessor(CardAttribute.CUNNING));
-        fieldProcessors.put("strength", new AttributeFieldProcessor(CardAttribute.STRENGTH));
-        fieldProcessors.put("range", new AttributeFieldProcessor(CardAttribute.RANGE));
-        fieldProcessors.put("weapons", new AttributeFieldProcessor(CardAttribute.WEAPONS));
-        fieldProcessors.put("shields", new AttributeFieldProcessor(CardAttribute.SHIELDS));
-        fieldProcessors.put("classification", new ClassificationFieldProcessor());
-        fieldProcessors.put("skill-box", new SkillBoxFieldProcessor());
-        fieldProcessors.put("skills2e", new SkillBoxFieldProcessor());
-        fieldProcessors.put("species", new SpeciesFieldProcessor());
-        fieldProcessors.put("image-options", new ImageOptionsFieldProcessor());
-
-        fieldProcessors.put("affiliation", new AffiliationFieldProcessor());
-        fieldProcessors.put("staffing", new StaffingFieldProcessor());
-        fieldProcessors.put("facility-type", new FacilityTypeFieldProcessor());
-        fieldProcessors.put("cost", new CostFieldProcessor());
-        fieldProcessors.put("keyword", new KeywordFieldProcessor());
-        fieldProcessors.put("keywords", new KeywordFieldProcessor());
-        fieldProcessors.put("target", new TargetFieldProcessor());
-        fieldProcessors.put("requires", new RequirementFieldProcessor());
-        fieldProcessors.put("effects", new EffectFieldProcessor());
-
-        // Fields in the JSON, but not yet implemented
-        fieldProcessors.put("gametext", new NullProcessor());
-        fieldProcessors.put("ship-class", new NullProcessor());
-        fieldProcessors.put("headquarters", new NullProcessor());   // Flavor text for 2E headquarters?
-        fieldProcessors.put("playable", new NullProcessor()); // Cards that can be played to a 2E headquarters
-    }
-
-    public CardBlueprint buildFromJava(String blueprintId) throws InvalidCardDefinitionException {
-        try {
-            return (CardBlueprint) Class.forName("com.gempukku.stccg.cards.blueprints.Blueprint" + blueprintId)
-                    .getDeclaredConstructor().newInstance();
-        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException |
-                 IllegalAccessException e) {
-            throw new InvalidCardDefinitionException("No valid Java class found for blueprint " + blueprintId);
-        }
-    }
-
-    public CardBlueprint buildFromJsonNew(String blueprintId, JsonNode json) throws InvalidCardDefinitionException {
-        CardBlueprint result;
-        result = new CardBlueprint(blueprintId);
-
-        if (json.has("java-blueprint"))
-            result = buildFromJava(blueprintId);
-
-        Iterator<String> iterator = json.fieldNames();
-        List<String> keys = new ArrayList<>();
-        iterator.forEachRemaining(keys::add);
-        keys.remove("java-blueprint");
-        keys.remove("blueprintId");
-
-        for (String key : keys) {
-            final String field = key.toLowerCase();
-            final JsonNode fieldValue = json.get(field);
-            final FieldProcessor fieldProcessor = fieldProcessors.get(field);
-            if (fieldProcessor == null)
-                throw new InvalidCardDefinitionException("Unrecognized field: " + field);
-            fieldProcessor.processField(field, fieldValue, result, this);
-        }
-
-        // Apply uniqueness based on ST1E glossary
-        List<CardType> implicitlyUniqueTypes = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
-                CardType.SITE, CardType.MISSION, CardType.TIME_LOCATION);
-        if (result.getUniqueness() == null) {
-            if (implicitlyUniqueTypes.contains(result.getCardType())) {
-                result.setUniqueness(Uniqueness.UNIQUE);
-            } else {
-                result.setUniqueness(Uniqueness.UNIVERSAL);
-            }
-        }
-
-        // Set quadrant to alpha if none was specified
-        List<CardType> implicitlyAlphaQuadrant = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
-                CardType.MISSION);
-        if (result.getQuadrant() == null && implicitlyAlphaQuadrant.contains(result.getCardType()))
-            result.setQuadrant(Quadrant.ALPHA);
-
-        // Set rarity to P if none was specified
-        if (result.getRarity() == null)
-            result.setRarity("P");
-
-        result.validateConsistency();
-
-        return result;
-    }
 
     public EffectAppenderFactory getEffectAppenderFactory() {
         return effectAppenderFactory;

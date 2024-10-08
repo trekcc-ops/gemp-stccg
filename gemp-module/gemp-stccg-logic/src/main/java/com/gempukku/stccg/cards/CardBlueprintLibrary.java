@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
@@ -29,8 +28,6 @@ public class CardBlueprintLibrary {
     private final Map<String, String> _blueprintMapping = new HashMap<>();
     private final Map<String, Set<String>> _alternateBlueprintMapping = new HashMap<>();
     private final Map<String, SetDefinition> _allSets = new LinkedHashMap<>();
-
-    private final CardBlueprintFactory cardBlueprintBuilder = new CardBlueprintFactory();
 
     private final Semaphore collectionReady = new Semaphore(1);
     private final File _cardPath = AppConfig.getCardsPath();
@@ -210,10 +207,6 @@ public class CardBlueprintLibrary {
         LOGGER.debug("Loaded JSON card file " + file.getName());
     }
 
-    private CardBlueprint loadCardFromFactory(String blueprintId, JsonNode node)
-            throws InvalidCardDefinitionException {
-        return cardBlueprintBuilder.buildFromJsonNew(blueprintId, node.get(blueprintId));
-    }
     private CardBlueprint loadCardFromDeserializer(String blueprintId, JsonNode node)
             throws JsonProcessingException, InvalidCardDefinitionException {
         JsonNode cardNode = node.get(blueprintId);
