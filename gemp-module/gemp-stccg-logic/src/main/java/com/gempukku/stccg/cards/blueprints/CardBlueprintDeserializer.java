@@ -12,7 +12,7 @@ import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.EffectFieldProcessor;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.blueprints.fieldprocessor.ActionSourceAppender;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSourceAppender;
 import com.gempukku.stccg.condition.missionrequirements.*;
 
 import java.io.IOException;
@@ -405,7 +405,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
 
             try {
                 new ActionSourceAppender().processEffect(
-                        new ObjectMapper().readTree(jsonString), blueprint, _blueprintFactory);
+                        new ObjectMapper().readTree(jsonString), blueprint);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
