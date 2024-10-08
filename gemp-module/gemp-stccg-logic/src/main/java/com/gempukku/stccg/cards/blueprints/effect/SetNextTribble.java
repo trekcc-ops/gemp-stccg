@@ -11,7 +11,7 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 public class SetNextTribble implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         final ValueSource amount = ValueResolver.resolveEvaluator(effectObject.get("amount"), 1, environment);
         return new TribblesDelayedAppender() {

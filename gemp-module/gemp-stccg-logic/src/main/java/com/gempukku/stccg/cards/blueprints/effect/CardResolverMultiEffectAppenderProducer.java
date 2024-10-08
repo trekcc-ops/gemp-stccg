@@ -66,7 +66,7 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
     }
     
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) 
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
         // Get effectType from the JSON. Will throw an exception if the type isn't a valid EffectType.
@@ -92,8 +92,8 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
 
         ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
 
-        MultiEffectAppender result = new MultiEffectAppender();
-        final EffectAppender targetCardAppender;
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
+        final EffectBlueprint targetCardAppender;
 
         // TODO - choiceFilter only used for discard/remove/return to hand
         FilterableSource choiceFilter = (actionContext) -> {

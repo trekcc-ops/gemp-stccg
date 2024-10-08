@@ -12,12 +12,12 @@ import com.gempukku.stccg.actions.StackActionEffect;
 
 public class Repeat implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "amount", "effect");
 
         final ValueSource amountSource = ValueResolver.resolveEvaluator(node.get("amount"));
-        final EffectAppender effectAppender =
+        final EffectBlueprint effectBlueprint =
                 environment.getEffectAppenderFactory().getEffectAppender(node.get("effect"));
 
         return new DefaultDelayedAppender() {
@@ -27,7 +27,7 @@ public class Repeat implements EffectAppenderProducer {
                 if (count > 0) {
                     SubAction subAction = action.createSubAction();
                     for (int i = 0; i < count; i++)
-                        effectAppender.appendEffect(cost, subAction, context);
+                        effectBlueprint.appendEffect(cost, subAction, context);
                     return new StackActionEffect(context.getGame(), subAction);
                 } else {
                     return null;
@@ -36,12 +36,12 @@ public class Repeat implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                return effectAppender.isPlayableInFull(actionContext);
+                return effectBlueprint.isPlayableInFull(actionContext);
             }
 
             @Override
             public boolean isPlayabilityCheckedForEffect() {
-                return effectAppender.isPlayabilityCheckedForEffect();
+                return effectBlueprint.isPlayabilityCheckedForEffect();
             }
         };
     }

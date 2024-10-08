@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RevealRandomCardsFromHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "forced", "count", "memorize");
 

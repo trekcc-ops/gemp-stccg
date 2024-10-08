@@ -11,7 +11,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 public class AppendCardIdsToWhileInZone implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "memory");
 

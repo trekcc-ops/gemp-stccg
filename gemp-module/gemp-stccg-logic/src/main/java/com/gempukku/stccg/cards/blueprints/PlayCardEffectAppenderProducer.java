@@ -6,9 +6,9 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
-import com.gempukku.stccg.cards.blueprints.effect.MultiEffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.MultiEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
@@ -20,7 +20,7 @@ import java.util.Collection;
 public abstract class PlayCardEffectAppenderProducer implements EffectAppenderProducer {
 
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "on", "cost", "memorize", "nocheck");
 
@@ -43,7 +43,7 @@ public abstract class PlayCardEffectAppenderProducer implements EffectAppenderPr
         final FilterableSource onFilterableSource = (onFilter != null) ?
                 environment.getFilterFactory().generateFilter(onFilter) : null;
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
         result.setPlayabilityCheckedForEffect(true);
 
         result.addEffectAppender(resolveCardsAppender(
@@ -80,9 +80,9 @@ public abstract class PlayCardEffectAppenderProducer implements EffectAppenderPr
         return result;
     }
 
-    protected abstract EffectAppender resolveCardsAppender(String filter, ValueSource costModifierSource,
-                                                           FilterableSource onFilterableSource, ValueSource countSource,
-                                                           String memorize, CardBlueprintFactory environment)
+    protected abstract EffectBlueprint resolveCardsAppender(String filter, ValueSource costModifierSource,
+                                                            FilterableSource onFilterableSource, ValueSource countSource,
+                                                            String memorize, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException;
 
     protected abstract boolean isAppendedEffectPlayableInFull(ActionContext actionContext);

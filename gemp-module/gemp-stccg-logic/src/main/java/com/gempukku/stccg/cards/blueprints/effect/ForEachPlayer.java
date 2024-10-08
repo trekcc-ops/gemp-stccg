@@ -13,18 +13,18 @@ import java.util.List;
 
 public class ForEachPlayer implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "effect");
 
-        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final List<EffectBlueprint> effectBlueprints = environment.getEffectAppendersFromJSON(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 SubAction subAction = action.createSubAction();
                 for (String playerId : context.getGame().getAllPlayerIds()) {
-                    effectAppenders.forEach(effectAppender ->
+                    effectBlueprints.forEach(effectAppender ->
                             effectAppender.appendEffect(cost, action, context.createDelegateContext(playerId)));
                 }
                 return new StackActionEffect(context.getGame(), subAction);
@@ -33,8 +33,8 @@ public class ForEachPlayer implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 for (String playerId : actionContext.getGame().getAllPlayerIds()) {
-                    for (EffectAppender effectAppender : effectAppenders) {
-                        if (!effectAppender.isPlayableInFull(actionContext.createDelegateContext(playerId)))
+                    for (EffectBlueprint effectBlueprint : effectBlueprints) {
+                        if (!effectBlueprint.isPlayableInFull(actionContext.createDelegateContext(playerId)))
                             return false;
                     }
                 }

@@ -9,13 +9,13 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 public class MemorizeNumber implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "amount", "memory");
 

@@ -8,10 +8,10 @@ import com.gempukku.stccg.cards.ActionContext;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class DelayedAppender implements EffectAppender {
+public abstract class DelayedEffectBlueprint implements EffectBlueprint {
     protected String _text;
 
-    public DelayedAppender() {
+    public DelayedEffectBlueprint() {
     }
 
     @Override

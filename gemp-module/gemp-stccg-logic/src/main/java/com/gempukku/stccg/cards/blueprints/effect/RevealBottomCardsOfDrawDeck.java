@@ -11,7 +11,7 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 public class RevealBottomCardsOfDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "count", "memorize");
 
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);

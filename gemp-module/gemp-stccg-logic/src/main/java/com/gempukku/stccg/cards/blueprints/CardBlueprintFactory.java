@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderFactory;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
@@ -206,9 +206,9 @@ public class CardBlueprintFactory {
     }
 
 
-    public List<EffectAppender> getEffectAppendersFromJSON(JsonNode node)
+    public List<EffectBlueprint> getEffectAppendersFromJSON(JsonNode node)
             throws InvalidCardDefinitionException {
-        List<EffectAppender> appenders = new LinkedList<>();
+        List<EffectBlueprint> appenders = new LinkedList<>();
         if (node.isArray()) {
             for (JsonNode effect : node)
                 appenders.add(effectAppenderFactory.getEffectAppender(effect));
@@ -352,9 +352,9 @@ public class CardBlueprintFactory {
     }
 
 
-    public EffectAppender buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
-                                                  String choiceText, Zone fromZone, String saveMemory,
-                                                  boolean showMatchingOnly) throws InvalidCardDefinitionException {
+    public EffectBlueprint buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
+                                                   String choiceText, Zone fromZone, String saveMemory,
+                                                   boolean showMatchingOnly) throws InvalidCardDefinitionException {
 
         // TODO - Does this work properly? Specifically allowing player to see what's in the deck even if no valid cards exist?
 

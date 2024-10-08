@@ -19,21 +19,21 @@ import java.util.function.Function;
 
 public class PreventCardEffectAppender implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "memorize");
 
         String filter = effectObject.get("filter").textValue();
         final String memory = environment.getString(effectObject, "memorize", "_temp");
         FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
 
         Function<ActionContext, List<PhysicalCard>> cardSource =
                 actionContext -> Filters.filterActive(actionContext.getGame(), Filters.any).stream().toList();
         FilterableSource choiceFilter = (actionContext) ->
                 Filters.in(((PreventableCardEffect) actionContext.getEffect()).getAffectedCardsMinusPrevented());
 
-        EffectAppender targetCardAppender = CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter,
+        EffectBlueprint targetCardAppender = CardResolver.resolveCardsInPlay(filter, cardFilter, choiceFilter,
                 choiceFilter, new ConstantValueSource(1), memory, ActionContext::getPerformingPlayerId,
                 "Choose card to prevent effect on", cardSource);
 

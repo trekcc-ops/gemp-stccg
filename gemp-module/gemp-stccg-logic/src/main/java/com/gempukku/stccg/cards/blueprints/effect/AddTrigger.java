@@ -17,7 +17,7 @@ import java.util.List;
 
 public class AddTrigger implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node,
                 "trigger", "until", "optional", "requires", "cost", "effect");
@@ -28,8 +28,8 @@ public class AddTrigger implements EffectAppenderProducer {
         final boolean optional = environment.getBoolean(node, "optional", false);
 
         final Requirement[] requirements = environment.getRequirementsFromJSON(node);
-        final List<EffectAppender> costs = environment.getEffectAppendersFromJSON(node.get("cost"));
-        final List<EffectAppender> effects = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final List<EffectBlueprint> costs = environment.getEffectAppendersFromJSON(node.get("cost"));
+        final List<EffectBlueprint> effects = environment.getEffectAppendersFromJSON(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override
@@ -51,14 +51,14 @@ public class AddTrigger implements EffectAppenderProducer {
     }
 
     private ActionProxy createActionProxy(ActionContext actionContext, boolean optional, TriggerChecker trigger,
-                                          Requirement[] requirements, List<EffectAppender> costs,
-                                          List<EffectAppender> effects) {
+                                          Requirement[] requirements, List<EffectBlueprint> costs,
+                                          List<EffectBlueprint> effects) {
         return new AbstractActionProxy() {
             private boolean checkRequirements(ActionContext actionContext) {
                 if (actionContext.acceptsAllRequirements(requirements))
                     return true;
 
-                for (EffectAppender cost : costs) {
+                for (EffectBlueprint cost : costs) {
                     if (!cost.isPlayableInFull(actionContext))
                         return true;
                 }
@@ -67,10 +67,10 @@ public class AddTrigger implements EffectAppenderProducer {
 
             private void customizeTriggerAction(AbstractCostToEffectAction action, ActionContext actionContext) {
                 action.setVirtualCardAction(true);
-                for (EffectAppender cost : costs)
+                for (EffectBlueprint cost : costs)
                     cost.appendEffect(true, action, actionContext);
-                for (EffectAppender effectAppender : effects)
-                    effectAppender.appendEffect(false, action, actionContext);
+                for (EffectBlueprint effectBlueprint : effects)
+                    effectBlueprint.appendEffect(false, action, actionContext);
             }
 
             @Override

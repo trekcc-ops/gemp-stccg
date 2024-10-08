@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PreventableAppenderProducer implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "text", "player", "effect", "cost");
 
         final String text = node.get("text").textValue();
@@ -25,8 +25,8 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
             throw new InvalidCardDefinitionException("Player is required for preventable effect");
 
         final PlayerSource preventingPlayerSource = PlayerResolver.resolvePlayer(player);
-        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
-        final List<EffectAppender> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
+        final List<EffectBlueprint> effectBlueprints = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final List<EffectBlueprint> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
 
         return new DefaultDelayedAppender() {
             @Override
@@ -41,7 +41,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                         @Override
                                         protected void yes() {
                                             ActionContext delegate = context.createDelegateContext(preventingPlayer);
-                                            for (EffectAppender costAppender : costAppenders)
+                                            for (EffectBlueprint costAppender : costAppenders)
                                                 costAppender.appendEffect(false, subAction, delegate);
 
                                             subAction.appendEffect(
@@ -50,8 +50,8 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                                         protected void doPlayEffect() {
                                                             // If the prevention was not carried out, need to do the original action anyway
                                                             if (!subAction.wasCarriedOut()) {
-                                                                for (EffectAppender effectAppender : effectAppenders)
-                                                                    effectAppender.appendEffect(false, subAction, context);
+                                                                for (EffectBlueprint effectBlueprint : effectBlueprints)
+                                                                    effectBlueprint.appendEffect(false, subAction, context);
                                                             }
                                                         }
 
@@ -68,15 +68,15 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
 
                                         @Override
                                         protected void no() {
-                                            for (EffectAppender effectAppender : effectAppenders)
-                                                effectAppender.appendEffect(false, subAction, context);
+                                            for (EffectBlueprint effectBlueprint : effectBlueprints)
+                                                effectBlueprint.appendEffect(false, subAction, context);
                                         }
                                     }));
                     return new StackActionEffect(context.getGame(), subAction);
                 } else {
                     SubAction subAction = action.createSubAction();
-                    for (EffectAppender effectAppender : effectAppenders)
-                        effectAppender.appendEffect(false, subAction, context);
+                    for (EffectBlueprint effectBlueprint : effectBlueprints)
+                        effectBlueprint.appendEffect(false, subAction, context);
                     return new StackActionEffect(context.getGame(), subAction);
                 }
             }
@@ -87,7 +87,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
-                return effectAppenders.stream().allMatch(effectAppender -> effectAppender.isPlayableInFull(actionContext));
+                return effectBlueprints.stream().allMatch(effectAppender -> effectAppender.isPlayableInFull(actionContext));
             }
         };
     }

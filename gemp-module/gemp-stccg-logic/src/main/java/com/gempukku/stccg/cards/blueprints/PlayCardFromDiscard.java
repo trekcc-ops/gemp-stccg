@@ -9,9 +9,9 @@ import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
-import com.gempukku.stccg.cards.blueprints.effect.MultiEffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.MultiEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
@@ -27,7 +27,7 @@ import java.util.Collection;
 public class PlayCardFromDiscard implements EffectAppenderProducer {
 
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "on", "cost", "memorize", "nocheck");
 
@@ -51,7 +51,7 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
         final FilterableSource onFilterableSource = (onFilter != null) ?
                 environment.getFilterFactory().generateFilter(onFilter) : null;
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
         result.setPlayabilityCheckedForEffect(true);
 
         PlayerSource you = PlayerResolver.resolvePlayer("you");
@@ -67,7 +67,7 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
             return Filters.playable(costModifier);
         };
 
-        EffectAppender targetCardAppender = CardResolver.resolveCardsInZone(filter, playableCardsFilter, countSource,
+        EffectBlueprint targetCardAppender = CardResolver.resolveCardsInZone(filter, playableCardsFilter, countSource,
                 memorize, you, you, "Choose card to play", cardFilter, Zone.DISCARD, false,
                 environment.getCardSourceFromZone(you, Zone.DISCARD, filter));
 

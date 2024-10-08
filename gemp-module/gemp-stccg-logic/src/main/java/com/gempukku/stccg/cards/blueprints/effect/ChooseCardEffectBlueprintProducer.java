@@ -20,7 +20,7 @@ public class ChooseCardEffectBlueprintProducer {
         private String getZoneName() { return this.fromZone.getHumanReadable(); }
     }
 
-    public static EffectAppender createEffectBlueprint(JsonNode effectObject)
+    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
 
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");

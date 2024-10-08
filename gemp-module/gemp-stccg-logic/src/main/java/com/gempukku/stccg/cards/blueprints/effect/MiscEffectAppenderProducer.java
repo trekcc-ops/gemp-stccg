@@ -36,7 +36,7 @@ public class MiscEffectAppenderProducer implements EffectAppenderProducer {
     }
     
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         
         EffectType effectType = environment.getEnum(EffectType.class, effectObject, "type");

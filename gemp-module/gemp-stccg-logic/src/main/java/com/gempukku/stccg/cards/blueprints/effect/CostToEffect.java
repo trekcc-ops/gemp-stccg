@@ -14,12 +14,12 @@ import java.util.List;
 
 public class CostToEffect implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "cost", "effect", "requires");
 
-        final List<EffectAppender> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
-        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final List<EffectBlueprint> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
+        final List<EffectBlueprint> effectBlueprints = environment.getEffectAppendersFromJSON(node.get("effect"));
         final Requirement[] requirements = environment.getRequirementsFromJSON(node);
 
         return new DefaultDelayedAppender() {
@@ -31,10 +31,10 @@ public class CostToEffect implements EffectAppenderProducer {
 
                 SubAction subAction = action.createSubAction();
 
-                for (EffectAppender costAppender : costAppenders)
+                for (EffectBlueprint costAppender : costAppenders)
                     costAppender.appendEffect(true, subAction, context);
-                for (EffectAppender effectAppender : effectAppenders)
-                    effectAppender.appendEffect(false, subAction, context);
+                for (EffectBlueprint effectBlueprint : effectBlueprints)
+                    effectBlueprint.appendEffect(false, subAction, context);
 
                 return new StackActionEffect(context.getGame(), subAction);
             }
@@ -49,14 +49,14 @@ public class CostToEffect implements EffectAppenderProducer {
                 if(requirementsNotMet(actionContext))
                     return false;
 
-                for (EffectAppender costAppender : costAppenders) {
+                for (EffectBlueprint costAppender : costAppenders) {
                     if (!costAppender.isPlayableInFull(actionContext))
                         return false;
                 }
 
-                for (EffectAppender effectAppender : effectAppenders) {
-                    if (effectAppender.isPlayabilityCheckedForEffect()
-                            && !effectAppender.isPlayableInFull(actionContext))
+                for (EffectBlueprint effectBlueprint : effectBlueprints) {
+                    if (effectBlueprint.isPlayabilityCheckedForEffect()
+                            && !effectBlueprint.isPlayableInFull(actionContext))
                         return false;
                 }
 

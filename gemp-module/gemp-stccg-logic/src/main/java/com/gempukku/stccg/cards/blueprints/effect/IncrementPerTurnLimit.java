@@ -10,7 +10,7 @@ import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 
 public class IncrementPerTurnLimit implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "limit");
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Choice implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "player", "effects", "texts", "memorize");
 
@@ -29,9 +29,9 @@ public class Choice implements EffectAppenderProducer {
         if (effectArray.length != textArray.length)
             throw new InvalidCardDefinitionException("Number of texts and effects does not match in choice effect");
 
-        List<EffectAppender> possibleEffectAppenders = new ArrayList<>();
+        List<EffectBlueprint> possibleEffectBlueprints = new ArrayList<>();
         for (JsonNode effect : effectArray) {
-            possibleEffectAppenders.add(environment.getEffectAppenderFactory().getEffectAppender(effect));
+            possibleEffectBlueprints.add(environment.getEffectAppenderFactory().getEffectAppender(effect));
         }
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
@@ -43,24 +43,24 @@ public class Choice implements EffectAppenderProducer {
                 ActionContext delegateActionContext = context.createDelegateContext(choosingPlayer);
 
                 int textIndex = 0;
-                List<EffectAppender> playableEffectAppenders = new LinkedList<>();
+                List<EffectBlueprint> playableEffectBlueprints = new LinkedList<>();
                 List<String> effectTexts = new LinkedList<>();
-                for (EffectAppender possibleEffectAppender : possibleEffectAppenders) {
-                    if (possibleEffectAppender.isPlayableInFull(delegateActionContext)) {
-                        playableEffectAppenders.add(possibleEffectAppender);
+                for (EffectBlueprint possibleEffectBlueprint : possibleEffectBlueprints) {
+                    if (possibleEffectBlueprint.isPlayableInFull(delegateActionContext)) {
+                        playableEffectBlueprints.add(possibleEffectBlueprint);
                         effectTexts.add(textArray[textIndex]);
                     }
                     textIndex++;
                 }
 
-                if (playableEffectAppenders.isEmpty()) {
+                if (playableEffectBlueprints.isEmpty()) {
                     context.setValueToMemory(memorize, "");
                     return null;
                 }
 
-                if (playableEffectAppenders.size() == 1) {
+                if (playableEffectBlueprints.size() == 1) {
                     SubAction subAction = action.createSubAction();
-                    playableEffectAppenders.getFirst().appendEffect(cost, subAction, delegateActionContext);
+                    playableEffectBlueprints.getFirst().appendEffect(cost, subAction, delegateActionContext);
                     context.setValueToMemory(memorize, textArray[0]);
                     return new StackActionEffect(context.getGame(), subAction);
                 }
@@ -72,7 +72,7 @@ public class Choice implements EffectAppenderProducer {
                                         effectTexts.toArray(new String[0])) {
                                     @Override
                                     protected void validDecisionMade(int index, String result) {
-                                        playableEffectAppenders.get(index)
+                                        playableEffectBlueprints.get(index)
                                                 .appendEffect(cost, subAction, delegateActionContext);
                                         context.setValueToMemory(memorize, result);
                                     }
@@ -83,8 +83,8 @@ public class Choice implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayerId(actionContext);
-                for (EffectAppender possibleEffectAppender : possibleEffectAppenders) {
-                    if (possibleEffectAppender.isPlayableInFull(actionContext.createDelegateContext(choosingPlayer)))
+                for (EffectBlueprint possibleEffectBlueprint : possibleEffectBlueprints) {
+                    if (possibleEffectBlueprint.isPlayableInFull(actionContext.createDelegateContext(choosingPlayer)))
                         return true;
                 }
                 return false;

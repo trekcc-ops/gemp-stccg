@@ -9,7 +9,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 public class ReversePlayerOrder implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) {
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) {
         return new DefaultDelayedAppender() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {

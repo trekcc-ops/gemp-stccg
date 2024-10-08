@@ -11,7 +11,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 public class LookAtHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
         environment.validateAllowedFields(effectObject, "targetPlayer");

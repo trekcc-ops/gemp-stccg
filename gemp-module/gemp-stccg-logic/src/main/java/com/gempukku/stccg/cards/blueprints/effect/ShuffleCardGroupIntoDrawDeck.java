@@ -20,7 +20,7 @@ public class ShuffleCardGroupIntoDrawDeck implements EffectAppenderProducer {
         _cardGroup = cardGroup;
     }
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
         environment.validateAllowedFields(effectObject, "player");

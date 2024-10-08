@@ -7,9 +7,9 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
-import com.gempukku.stccg.cards.blueprints.effect.MultiEffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.MultiEffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 
 public class AddKeyword implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node,
                 "count", "filter", "memorize", "keyword", "amount", "until");
@@ -57,7 +57,7 @@ public class AddKeyword implements EffectAppenderProducer {
             amount = ValueResolver.resolveEvaluator(node.get("amount"), value, environment);
         }
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
         PlayerSource you = ActionContext::getPerformingPlayerId;
         FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 

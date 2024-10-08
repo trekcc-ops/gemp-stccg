@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Optional implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "player", "text", "effect");
 
@@ -26,7 +26,7 @@ public class Optional implements EffectAppenderProducer {
 
         final PlayerSource playerSource =
                 PlayerResolver.resolvePlayer(environment.getString(node, "player", "you"));
-        final List<EffectAppender> effectAppenders = environment.getEffectAppendersFromJSON(node.get("effect"));
+        final List<EffectBlueprint> effectBlueprints = environment.getEffectAppendersFromJSON(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override
@@ -38,7 +38,7 @@ public class Optional implements EffectAppenderProducer {
                         new YesNoDecision(context.substituteText(_text)) {
                             @Override
                             protected void yes() {
-                                effectAppenders.forEach(effectAppender -> effectAppender.appendEffect(
+                                effectBlueprints.forEach(effectAppender -> effectAppender.appendEffect(
                                                 cost, subAction, context.createDelegateContext(choosingPlayer)));
                             }
                         }));
@@ -48,8 +48,8 @@ public class Optional implements EffectAppenderProducer {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 final String choosingPlayer = playerSource.getPlayerId(actionContext);
-                for (EffectAppender effectAppender : effectAppenders) {
-                    if (!effectAppender.isPlayableInFull(actionContext.createDelegateContext(choosingPlayer)))
+                for (EffectBlueprint effectBlueprint : effectBlueprints) {
+                    if (!effectBlueprint.isPlayableInFull(actionContext.createDelegateContext(choosingPlayer)))
                         return false;
                 }
 
@@ -58,7 +58,7 @@ public class Optional implements EffectAppenderProducer {
 
             @Override
             public boolean isPlayabilityCheckedForEffect() {
-                return effectAppenders.stream().anyMatch(EffectAppender::isPlayabilityCheckedForEffect);
+                return effectBlueprints.stream().anyMatch(EffectBlueprint::isPlayabilityCheckedForEffect);
             }
         };
     }

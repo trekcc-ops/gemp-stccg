@@ -19,7 +19,7 @@ public class ChooseEffectBlueprintProducer {
         CHOOSEANUMBER, CHOOSEOPPONENT, CHOOSEPLAYER, CHOOSEPLAYEREXCEPT,
         CHOOSEPLAYERWITHCARDSINDECK, CHOOSETRIBBLEPOWER
     }
-    public static EffectAppender createEffectBlueprint(JsonNode effectObject)
+    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
 
@@ -47,7 +47,7 @@ public class ChooseEffectBlueprintProducer {
                 BlueprintUtils.getPlayerSource(effectObject, "exclude", true);
 
 
-        return new DelayedAppender() {
+        return new DelayedEffectBlueprint() {
             @Override
             protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {
                 return switch (effectType) {

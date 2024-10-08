@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.actions.Effect;
@@ -13,7 +13,7 @@ import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 
 public class ChooseYesOrNo implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "text", "player", "memorize");
 

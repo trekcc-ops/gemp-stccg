@@ -32,7 +32,7 @@ public class CardEffectBlueprintProducer {
         REVEALBOTTOMCARDSOFDRAWDECK, REVEALHAND
     }
     
-    public static EffectAppender createEffectBlueprint(JsonNode effectObject)
+    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
 
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
@@ -60,7 +60,7 @@ public class CardEffectBlueprintProducer {
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, new CardBlueprintFactory());
         final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
         
-        return new DelayedAppender() {
+        return new DelayedEffectBlueprint() {
             @Override
             protected List<Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext context) {
                 final String selectingPlayerId = selectingPlayer.getPlayerId(context);

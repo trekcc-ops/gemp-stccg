@@ -102,7 +102,7 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("storewhileinzone", new StoreWhileInZone());
     }
 
-    public EffectAppender getEffectAppender(JsonNode effectObject) throws InvalidCardDefinitionException {
+    public EffectBlueprint getEffectAppender(JsonNode effectObject) throws InvalidCardDefinitionException {
         final String type = effectObject.get("type").textValue();
         final EffectAppenderProducer effectAppenderProducer = effectAppenderProducers.get(type.toLowerCase());
         if (effectAppenderProducer == null)

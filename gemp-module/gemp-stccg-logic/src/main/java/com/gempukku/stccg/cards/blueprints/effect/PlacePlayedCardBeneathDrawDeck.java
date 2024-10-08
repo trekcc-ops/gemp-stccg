@@ -10,7 +10,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 
 public class PlacePlayedCardBeneathDrawDeck implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject);
 

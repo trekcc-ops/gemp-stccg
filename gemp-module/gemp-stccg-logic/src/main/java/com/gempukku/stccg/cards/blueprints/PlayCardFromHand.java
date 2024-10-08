@@ -21,7 +21,7 @@ import java.util.Collection;
 
 public class PlayCardFromHand implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "filter", "on", "cost", "memorize", "nocheck");
 
         final String filter = environment.getString(effectObject, "filter");
@@ -54,11 +54,11 @@ public class PlayCardFromHand implements EffectAppenderProducer {
         };
         FilterableSource typeFilter = environment.getCardFilterableIfChooseOrAll(filter);
         PlayerSource you = ActionContext::getPerformingPlayerId;
-        EffectAppender targetCardAppender = CardResolver.resolveCardsInZone(filter, choiceFilter, countSource,
+        EffectBlueprint targetCardAppender = CardResolver.resolveCardsInZone(filter, choiceFilter, countSource,
                 memorize, you, you, "Choose card to play", typeFilter, Zone.HAND, false,
                 environment.getCardSourceFromZone(you, Zone.HAND, filter));
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
         result.setPlayabilityCheckedForEffect(true);
 
 

@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
@@ -15,7 +15,7 @@ import com.gempukku.stccg.modifiers.Modifier;
 
 public class AddModifier implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode node, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "modifier", "until");
 

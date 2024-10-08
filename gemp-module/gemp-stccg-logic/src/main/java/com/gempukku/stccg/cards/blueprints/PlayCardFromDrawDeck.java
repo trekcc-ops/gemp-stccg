@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -13,9 +13,9 @@ import com.gempukku.stccg.modifiers.ModifierFlag;
 
 public class PlayCardFromDrawDeck extends PlayCardEffectAppenderProducer {
 
-    protected EffectAppender resolveCardsAppender(String filter, ValueSource costModifierSource,
-                                                  FilterableSource onFilterableSource, ValueSource countSource,
-                                                  String memorize, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
+    protected EffectBlueprint resolveCardsAppender(String filter, ValueSource costModifierSource,
+                                                   FilterableSource onFilterableSource, ValueSource countSource,
+                                                   String memorize, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
 
         FilterableSource filterable = (actionContext) -> {
             final DefaultGame game = actionContext.getGame();

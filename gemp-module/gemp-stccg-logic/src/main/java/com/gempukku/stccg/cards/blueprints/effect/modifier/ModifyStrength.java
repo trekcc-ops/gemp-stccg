@@ -7,9 +7,9 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
-import com.gempukku.stccg.cards.blueprints.effect.MultiEffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.MultiEffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
@@ -23,7 +23,7 @@ import java.util.Collection;
 
 public class ModifyStrength implements EffectAppenderProducer {
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "amount", "count", "filter", "until", "memorize");
 
@@ -34,7 +34,7 @@ public class ModifyStrength implements EffectAppenderProducer {
         final TimeResolver.Time time = TimeResolver.resolveTime(effectObject.get("until"), "end(current)");
         final PlayerSource you = ActionContext::getPerformingPlayerId;
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
         FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         result.addEffectAppender(

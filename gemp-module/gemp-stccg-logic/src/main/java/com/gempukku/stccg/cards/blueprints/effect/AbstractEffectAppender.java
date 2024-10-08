@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.actions.Effect;
 
-public abstract class AbstractEffectAppender implements EffectAppender {
+public abstract class AbstractEffectAppender implements EffectBlueprint {
     @Override
     public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         if (cost)

@@ -23,7 +23,7 @@ import java.util.Collection;
 public class DownloadCard implements EffectAppenderProducer {
         // TODO - Adapted from PlayCardFromDrawDeck EffectAppenderProducer. Eventually would like to append this as a DownloadAction.
     @Override
-    public EffectAppender createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         // TODO - Assumes the base definition of "download" for 1E, i.e. can search through eligible decks,
         // find card, and immediately play. Assumes no target for downloading is given (e.g., "download to your outpost")
@@ -42,13 +42,13 @@ public class DownloadCard implements EffectAppenderProducer {
             countSource = ValueResolver.resolveEvaluator("0-1");
         }
 
-        MultiEffectAppender result = new MultiEffectAppender();
+        MultiEffectBlueprint result = new MultiEffectBlueprint();
         result.setPlayabilityCheckedForEffect(true);
 
         FilterableSource playableCardsFilter = (actionContext) -> Filters.playable;
         PlayerSource you = ActionContext::getPerformingPlayerId;
 
-        EffectAppender targetCardAppender = CardResolver.resolveCardsInZone(filter, playableCardsFilter, countSource,
+        EffectBlueprint targetCardAppender = CardResolver.resolveCardsInZone(filter, playableCardsFilter, countSource,
                 memorize, you, you, "Choose card to play",
                 environment.getCardFilterableIfChooseOrAll(filter), Zone.DRAW_DECK, false,
                 environment.getCardSourceFromZone(you, Zone.DRAW_DECK, filter));

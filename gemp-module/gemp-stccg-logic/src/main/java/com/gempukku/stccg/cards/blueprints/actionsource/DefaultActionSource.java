@@ -15,7 +15,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.cards.blueprints.effect.AbstractEffectAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderFactory;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
@@ -25,8 +25,8 @@ import java.util.List;
 public abstract class DefaultActionSource implements ActionSource {
     private final List<Requirement> requirements = new LinkedList<>();
 
-    protected final List<EffectAppender> costs = new LinkedList<>();
-    protected final List<EffectAppender> effects = new LinkedList<>();
+    protected final List<EffectBlueprint> costs = new LinkedList<>();
+    protected final List<EffectBlueprint> effects = new LinkedList<>();
 
     protected String _text;
 
@@ -38,12 +38,12 @@ public abstract class DefaultActionSource implements ActionSource {
         this.requirements.add(requirement);
     }
 
-    public void addCost(EffectAppender effectAppender) {
-        costs.add(effectAppender);
+    public void addCost(EffectBlueprint effectBlueprint) {
+        costs.add(effectBlueprint);
     }
 
-    public void addEffect(EffectAppender effectAppender) {
-        effects.add(effectAppender);
+    public void addEffect(EffectBlueprint effectBlueprint) {
+        effects.add(effectBlueprint);
     }
 
     @Override
@@ -76,18 +76,18 @@ public abstract class DefaultActionSource implements ActionSource {
 
         if (node.has("cost")) {
             for (JsonNode cost : JsonUtils.toArray(node.get("cost"))) {
-                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(cost);
-                addRequirement(effectAppender::isPlayableInFull);
-                addCost(effectAppender);
+                final EffectBlueprint effectBlueprint = effectAppenderFactory.getEffectAppender(cost);
+                addRequirement(effectBlueprint::isPlayableInFull);
+                addCost(effectBlueprint);
             }
         }
         
         if (node.has("effect")) {
             for (JsonNode effect : JsonUtils.toArray(node.get("effect"))) {
-                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(effect);
-                if (effectAppender.isPlayabilityCheckedForEffect())
-                    addRequirement(effectAppender::isPlayableInFull);
-                addEffect(effectAppender);
+                final EffectBlueprint effectBlueprint = effectAppenderFactory.getEffectAppender(effect);
+                if (effectBlueprint.isPlayabilityCheckedForEffect())
+                    addRequirement(effectBlueprint::isPlayableInFull);
+                addEffect(effectBlueprint);
             }
         }
     }
