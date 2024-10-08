@@ -6,11 +6,17 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class ChooseCardAppenderProducer implements EffectAppenderProducer {
 
@@ -51,16 +57,24 @@ public class ChooseCardAppenderProducer implements EffectAppenderProducer {
         if (text == null)
             throw new InvalidCardDefinitionException("You need to define text to show");
 
+        String filter = BlueprintUtils.getString(effectObject, "filter", "choose(any)");
+        FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
+        boolean optional = BlueprintUtils.getBoolean(effectObject, "optional", false);
+
+        Function<ActionContext, List<PhysicalCard>> cardSource =
+                BlueprintUtils.getCardSourceFromZone(targetPlayer, effectType.fromZone, filter);
+
+        ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1);
+        if (optional) count = ValueResolver.resolveEvaluator("0-" + count);
+
         return switch (effectType) {
             case CHOOSEACTIVECARDS ->
-                    CardResolver.resolveCardsInPlay(BlueprintUtils.getString(effectObject, "filter", "choose(any)"),
-                            ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment),
+                    CardResolver.resolveCardsInPlay(filter, count,
                             memorize, ActionContext::getPerformingPlayerId, text,
-                            environment.getCardFilterableIfChooseOrAll(
-                                    BlueprintUtils.getString(effectObject, "filter", "choose(any)")));
+                            environment.getCardFilterableIfChooseOrAll(filter));
             case CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK ->
-                    environment.buildTargetCardAppender(effectObject, selectingPlayer, targetPlayer, text,
-                            effectType.fromZone, memorize, false);
+                    CardResolver.resolveCardsInZone(filter, null, count, memorize, selectingPlayer,
+                            targetPlayer, text, cardFilter, effectType.fromZone, false, cardSource);
         };
     }
 }

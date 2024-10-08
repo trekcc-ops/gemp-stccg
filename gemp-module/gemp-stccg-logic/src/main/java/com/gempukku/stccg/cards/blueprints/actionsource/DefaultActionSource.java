@@ -11,13 +11,14 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.cards.blueprints.effect.AbstractEffectAppender;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.JsonUtils;
+import com.gempukku.stccg.common.filterable.Phase;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +71,7 @@ public abstract class DefaultActionSource implements ActionSource {
 
         if (node.has("requires")) {
             for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
-                addRequirement(environment.getRequirement(requirement));
+                addRequirement(new RequirementFactory().getRequirement(requirement));
         }
 
         final EffectBlueprintDeserializer effectAppenderFactory = environment.getEffectAppenderFactory();

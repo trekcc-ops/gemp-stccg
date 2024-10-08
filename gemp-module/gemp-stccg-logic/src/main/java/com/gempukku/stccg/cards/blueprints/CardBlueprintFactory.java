@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
-import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -30,7 +29,6 @@ import java.util.function.Function;
 public class CardBlueprintFactory {
     private final EffectBlueprintDeserializer effectAppenderFactory = new EffectBlueprintDeserializer(this);
     private final FilterFactory filterFactory = new FilterFactory(this);
-    private final RequirementFactory requirementFactory = new RequirementFactory(this);
     private final TriggerCheckerFactory triggerCheckerFactory = new TriggerCheckerFactory();
 
     public EffectBlueprintDeserializer getEffectAppenderFactory() {
@@ -49,11 +47,6 @@ public class CardBlueprintFactory {
         return (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 getFilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
-    }
-
-
-    public Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
-        return requirementFactory.getRequirement(object);
     }
 
 
@@ -82,12 +75,13 @@ public class CardBlueprintFactory {
 
 
     public Requirement[] getRequirementsFromJSON(JsonNode parentNode) throws InvalidCardDefinitionException {
+        RequirementFactory factory = new RequirementFactory();
         List<Requirement> result = new LinkedList<>();
         if (parentNode.has("requires")) {
             if (parentNode.get("requires").isArray()) {
                 for (JsonNode requirement : parentNode.get("requires"))
-                    result.add(getRequirement(requirement));
-            } else result.add(getRequirement(parentNode.get("requires")));
+                    result.add(factory.getRequirement(requirement));
+            } else result.add(factory.getRequirement(parentNode.get("requires")));
         }
         return result.toArray(new Requirement[0]);
     }
@@ -166,26 +160,6 @@ public class CardBlueprintFactory {
         }
     }
 
-
-    public EffectBlueprint buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
-                                                   String choiceText, Zone fromZone, String saveMemory,
-                                                   boolean showMatchingOnly) throws InvalidCardDefinitionException {
-
-        // TODO - Does this work properly? Specifically allowing player to see what's in the deck even if no valid cards exist?
-
-
-        String filter = BlueprintUtils.getString(node, "filter", "choose(any)");
-        FilterableSource cardFilter = getCardFilterableIfChooseOrAll(filter);
-        boolean optional = BlueprintUtils.getBoolean(node, "optional", false);
-
-        Function<ActionContext, List<PhysicalCard>> cardSource = getCardSourceFromZone(targetPlayer, fromZone, filter);
-
-        ValueSource count = ValueResolver.resolveEvaluator(node.get("count"), 1, this);
-        if (optional) count = ValueResolver.resolveEvaluator("0-" + count);
-
-        return CardResolver.resolveCardsInZone(filter, null, count, saveMemory,
-                selectingPlayer, targetPlayer, choiceText, cardFilter, fromZone, showMatchingOnly, cardSource);
-    }
 
     public Function<ActionContext, List<PhysicalCard>> getCardSourceFromZone(PlayerSource player, Zone zone,
                                                                                     String filter)

@@ -2,18 +2,15 @@ package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequirementFactory {
     private final Map<String, RequirementProducer> requirementProducers = new HashMap<>();
-    private final CardBlueprintFactory _environment;
 
     @SuppressWarnings("SpellCheckingInspection")
-    public RequirementFactory(CardBlueprintFactory environment) {
-        _environment = environment;
+    public RequirementFactory() {
 
         requirementProducers.put("not", new NotRequirementProducer());
         requirementProducers.put("or", new OrRequirementProducer());
