@@ -79,8 +79,8 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
 
         // Get blueprint parameters
         final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
-        final PlayerSource selectingPlayer = environment.getSelectingPlayerSource(effectObject);
-        final PlayerSource targetPlayer = environment.getTargetPlayerSource(effectObject);
+        final PlayerSource selectingPlayer = BlueprintUtils.getSelectingPlayerSource(effectObject);
+        final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
         final String defaultText = getDefaultText(effectType);
 
         /* TODO - "reveal" indicates whether the card title will be visible in the chat. The default for this should

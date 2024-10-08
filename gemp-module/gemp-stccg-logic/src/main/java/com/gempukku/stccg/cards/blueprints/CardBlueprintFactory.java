@@ -179,44 +179,6 @@ public class CardBlueprintFactory {
         }
     }
 
-    public PlayerSource getSelectingPlayerSource(JsonNode parentNode)
-            throws InvalidCardDefinitionException {
-
-        if (parentNode == null)
-            throw new InvalidCardDefinitionException("Unable to find JsonNode node");
-        if (parentNode.has("player") && (parentNode.has("selectingPlayer") || parentNode.has("targetPlayer")))
-            throw new InvalidCardDefinitionException("Unable to identify selecting player from JSON blueprint");
-
-        if (parentNode.has("player") && parentNode.get("player").isTextual())
-            return PlayerResolver.resolvePlayer(parentNode.get("player").textValue());
-        if (parentNode.has("selectingPlayer") && parentNode.get("selectingPlayer").isTextual())
-            return PlayerResolver.resolvePlayer(parentNode.get("selectingPlayer").textValue());
-        if (parentNode.has("targetPlayer") && parentNode.get("targetPlayer").isTextual())
-            return PlayerResolver.resolvePlayer(parentNode.get("targetPlayer").textValue());
-
-        return ActionContext::getPerformingPlayerId;
-
-    }
-
-    public PlayerSource getTargetPlayerSource(JsonNode parentNode)
-            throws InvalidCardDefinitionException {
-
-        if (parentNode == null)
-            throw new InvalidCardDefinitionException("Unable to find JsonNode node");
-        if (parentNode.has("player") && (parentNode.has("selectingPlayer") || parentNode.has("targetPlayer")))
-            throw new InvalidCardDefinitionException("Unable to identify selecting player from JSON blueprint");
-
-        if (parentNode.has("player") && parentNode.get("player").isTextual())
-            return PlayerResolver.resolvePlayer(parentNode.get("player").textValue());
-        if (parentNode.has("targetPlayer") && parentNode.get("targetPlayer").isTextual())
-            return PlayerResolver.resolvePlayer(parentNode.get("targetPlayer").textValue());
-        if (parentNode.has("selectingPlayer") && parentNode.get("selectingPlayer").isTextual())
-            return PlayerResolver.resolvePlayer(parentNode.get("selectingPlayer").textValue());
-
-        return ActionContext::getPerformingPlayerId;
-
-    }
-
 
     public EffectBlueprint buildTargetCardAppender(JsonNode node, PlayerSource selectingPlayer, PlayerSource targetPlayer,
                                                    String choiceText, Zone fromZone, String saveMemory,

@@ -60,8 +60,8 @@ public class MiscEffectAppenderProducer implements EffectAppenderProducer {
         }
 
         final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
-        final PlayerSource selectingPlayer = environment.getSelectingPlayerSource(effectObject);
-        final PlayerSource targetPlayer = environment.getTargetPlayerSource(effectObject);
+        final PlayerSource selectingPlayer = BlueprintUtils.getSelectingPlayerSource(effectObject);
+        final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
         
