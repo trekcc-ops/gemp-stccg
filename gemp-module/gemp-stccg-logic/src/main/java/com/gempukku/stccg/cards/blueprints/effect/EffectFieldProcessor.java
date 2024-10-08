@@ -47,7 +47,7 @@ public class EffectFieldProcessor {
         }
     }
 
-    private static void appendActionSource(JsonNode node, CardBlueprint blueprint)
+    public static void appendActionSource(JsonNode node, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node,
                 "text", "optional", "limitPerPhase", "limitPerTurn", "phase", "trigger",
@@ -67,8 +67,7 @@ public class EffectFieldProcessor {
         } else {
             List<JsonNode> triggers = JsonUtils.toArray(node.get("trigger"));
             for (JsonNode trigger : triggers) {
-                TriggerChecker triggerChecker =
-                        new TriggerCheckerFactory().getTriggerChecker(trigger);
+                TriggerChecker triggerChecker = TriggerCheckerFactory.getTriggerChecker(trigger);
                 TriggerTiming triggerTiming = triggerChecker.isBefore() ? TriggerTiming.BEFORE : TriggerTiming.AFTER;
                 TriggerActionSource triggerActionSource;
                 if (optional) {

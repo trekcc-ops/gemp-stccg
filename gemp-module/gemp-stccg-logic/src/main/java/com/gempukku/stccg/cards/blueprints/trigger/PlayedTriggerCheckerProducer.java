@@ -15,19 +15,15 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value)
             throws InvalidCardDefinitionException {
-        FilterFactory filterFactory = new FilterFactory();
-        BlueprintUtils.validateAllowedFields(value, "filter", "player", "on", "memorize");
+        FilterFactory factory = new FilterFactory();
+        BlueprintUtils.validateAllowedFields(value, "filter", "on", "memorize");
+        BlueprintUtils.validateRequiredFields(value, "filter");
 
         final PlayerSource playingPlayer = BlueprintUtils.getPlayerSource(value, "player",true);
-        final FilterableSource filter = filterFactory.parseSTCCGFilter(value.get("filter").textValue());
-        final FilterableSource onFilter;
-
-        if (value.has("on")) {
-            onFilter = filterFactory.parseSTCCGFilter(value.get("on").textValue());
-        } else {
-            onFilter = null;
-        }
-        final String memorize = BlueprintUtils.getString(value, "memorize");
+        final FilterableSource filter = factory.parseSTCCGFilter(value.get("filter").textValue());
+        final FilterableSource onFilter = (value.has("on")) ?
+                factory.parseSTCCGFilter(value.get("on").textValue()) : null;
+        final String memorize = BlueprintUtils.getString(value, "memorize", "_temp");
 
         return new TriggerChecker() {
             @Override

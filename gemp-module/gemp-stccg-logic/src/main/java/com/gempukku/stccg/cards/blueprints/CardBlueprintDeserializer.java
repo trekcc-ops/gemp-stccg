@@ -12,7 +12,6 @@ import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
 import com.gempukku.stccg.cards.blueprints.effect.EffectFieldProcessor;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSourceAppender;
 import com.gempukku.stccg.condition.missionrequirements.*;
 
 import java.io.IOException;
@@ -21,7 +20,6 @@ import java.util.*;
 
 public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
 
-    final private EffectFieldProcessor _effectProcessor = new EffectFieldProcessor();
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
     final String multiplierSplit1e = "(?=x\\d+)";
@@ -301,18 +299,9 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     }
 
     int getPointsShown(JsonNode value) {
-        String str;
-        if (value == null)
-            return 0;
-        if (value.isTextual())
-            str = value.textValue();
-        else str = value.toString();
-
-        str = str.replaceAll("[^\\d]", "");
-        if (str.isEmpty())
-            return 0;
-        else
-            return Integer.parseInt(str);
+        if (value == null) return 0;
+        String str = (value.isTextual()) ? value.textValue() : value.toString();
+        return (str.isEmpty()) ? 0 : Integer.parseInt(str.replaceAll("[^\\d]", ""));
     }
 
     private class SkillBox {
@@ -403,7 +392,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
 
             try {
-                new ActionSourceAppender().processEffect(
+                EffectFieldProcessor.appendActionSource(
                         new ObjectMapper().readTree(jsonString), blueprint);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
