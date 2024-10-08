@@ -2,12 +2,13 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
+import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class CostToEffect implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "cost", "effect", "requires");
+        BlueprintUtils.validateAllowedFields(node, "cost", "effect", "requires");
 
         final List<EffectBlueprint> costAppenders = environment.getEffectAppendersFromJSON(node.get("cost"));
         final List<EffectBlueprint> effectBlueprints = environment.getEffectAppendersFromJSON(node.get("effect"));

@@ -28,7 +28,7 @@ public class DownloadCard implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         // TODO - Assumes the base definition of "download" for 1E, i.e. can search through eligible decks,
         // find card, and immediately play. Assumes no target for downloading is given (e.g., "download to your outpost")
-        environment.validateAllowedFields(effectObject, "filter", "nocheck");
+        BlueprintUtils.validateAllowedFields(effectObject, "filter", "nocheck");
 
         final String filter = effectObject.get("filter").textValue();
         final boolean noCheck = BlueprintUtils.getBoolean(effectObject, "nocheck", false);

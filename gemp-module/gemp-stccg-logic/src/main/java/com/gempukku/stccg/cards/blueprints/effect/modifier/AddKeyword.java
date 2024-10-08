@@ -33,7 +33,7 @@ public class AddKeyword implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node,
+        BlueprintUtils.validateAllowedFields(node,
                 "count", "filter", "memorize", "keyword", "amount", "until");
 
         final ValueSource valueSource =

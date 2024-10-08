@@ -22,7 +22,7 @@ public class MemorizeActive implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "filter", "memory");
+        BlueprintUtils.validateAllowedFields(node, "filter", "memory");
 
         final FilterableSource filterSource = BlueprintUtils.getFilterable(node);
         final String memory = node.get("memory").textValue();

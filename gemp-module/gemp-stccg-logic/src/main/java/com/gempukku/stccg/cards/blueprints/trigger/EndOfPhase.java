@@ -10,7 +10,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 public class EndOfPhase implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "phase");
+        BlueprintUtils.validateAllowedFields(value, "phase");
         final Phase phase = BlueprintUtils.getEnum(Phase.class, value.get("phase").textValue(), "phase");
 
         return new TriggerChecker() {

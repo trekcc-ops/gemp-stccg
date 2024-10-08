@@ -10,7 +10,7 @@ import com.gempukku.stccg.cards.blueprints.FilterableSource;
 public class MovesFrom implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "filter");
+        BlueprintUtils.validateAllowedFields(value, "filter");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(value, "any");
 

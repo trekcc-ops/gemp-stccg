@@ -13,7 +13,7 @@ public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "filter");
+        BlueprintUtils.validateAllowedFields(node, "filter");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(node, "any");
 

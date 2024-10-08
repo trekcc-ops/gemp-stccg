@@ -25,7 +25,6 @@ import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -121,25 +120,6 @@ public class CardBlueprintFactory {
     }
 
 
-    public void validateAllowedFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
-        // Always allowed - type, player, selectingPlayer, targetPlayer
-        List<String> allowedFields = Arrays.asList(fields);
-        List<String> unrecognizedFields = new LinkedList<>();
-        node.fieldNames().forEachRemaining(fieldName -> {
-            switch(fieldName) {
-                case "player", "selectingPlayer", "targetPlayer", "type":
-                    break;
-                default:
-                    if (!allowedFields.contains(fieldName)) unrecognizedFields.add(fieldName);
-                    break;
-            }
-        });
-        if (!unrecognizedFields.isEmpty())
-            throw new InvalidCardDefinitionException("Unrecognized field: " + unrecognizedFields.getFirst());
-        if (node.has("player") && (node.has("selectingPlayer") || (node.has("targetPlayer"))))
-            throw new InvalidCardDefinitionException("Blueprint has both 'player' and either 'selectingPlayer' or 'targetPlayer'");
-    }
-
     public void validateRequiredFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
         List<String> keys = new ArrayList<>();
         node.fieldNames().forEachRemaining(keys::add);
@@ -199,16 +179,16 @@ public class CardBlueprintFactory {
                                        CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         switch(modifierType) {
             case CANTPLAYCARDS:
-                environment.validateAllowedFields(node, "filter", "requires");
+                BlueprintUtils.validateAllowedFields(node, "filter", "requires");
                 break;
             case GAINICON:
-                environment.validateAllowedFields(node, "filter", "requires", "icon");
+                BlueprintUtils.validateAllowedFields(node, "filter", "requires", "icon");
                 break;
             case MODIFYSTRENGTH:
-                environment.validateAllowedFields(node, "filter", "requires", "amount");
+                BlueprintUtils.validateAllowedFields(node, "filter", "requires", "amount");
                 break;
             case OPPONENTMAYNOTDISCARD:
-                environment.validateAllowedFields(node, "filter");
+                BlueprintUtils.validateAllowedFields(node, "filter");
                 break;
             default:
                 throw new InvalidCardDefinitionException("Unable to resolve modifier of type : " + modifierType);

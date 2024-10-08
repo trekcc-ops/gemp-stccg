@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class PreventCardEffectAppender implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "filter", "memorize");
+        BlueprintUtils.validateAllowedFields(effectObject, "filter", "memorize");
 
         String filter = effectObject.get("filter").textValue();
         final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");

@@ -12,7 +12,7 @@ import com.gempukku.stccg.cards.blueprints.FilterableSource;
 public class DiscardFromHandBy implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "filter", "memorize", "player", "by");
+        BlueprintUtils.validateAllowedFields(value, "filter", "memorize", "player", "by");
 
         final String memorize = value.get("memorize").textValue();
         final String byFilter = value.get("by").textValue();

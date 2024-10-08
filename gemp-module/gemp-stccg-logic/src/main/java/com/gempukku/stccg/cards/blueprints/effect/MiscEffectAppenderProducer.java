@@ -45,17 +45,17 @@ public class MiscEffectAppenderProducer implements EffectAppenderProducer {
         EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
         switch (effectType) {
             case DISCARDCARDATRANDOMFROMHAND:
-                environment.validateAllowedFields(effectObject, "forced", "count", "memorize");
+                BlueprintUtils.validateAllowedFields(effectObject, "forced", "count", "memorize");
                 environment.validateRequiredFields(effectObject, "forced");
                 break;
             case DRAWCARDS, PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REORDERTOPCARDSOFDRAWDECK:
-                environment.validateAllowedFields(effectObject, "count");
+                BlueprintUtils.validateAllowedFields(effectObject, "count");
                 break;
             case LOOKATHAND, PLACEPLAYEDCARDBENEATHDRAWDECK:
-                environment.validateAllowedFields(effectObject);
+                BlueprintUtils.validateAllowedFields(effectObject);
                 break;
             case LOOKATRANDOMCARDSFROMHAND, LOOKATTOPCARDSOFDRAWDECK, REVEALBOTTOMCARDSOFDRAWDECK:
-                environment.validateAllowedFields(effectObject, "count", "memorize");
+                BlueprintUtils.validateAllowedFields(effectObject, "count", "memorize");
                 break;
         }
 

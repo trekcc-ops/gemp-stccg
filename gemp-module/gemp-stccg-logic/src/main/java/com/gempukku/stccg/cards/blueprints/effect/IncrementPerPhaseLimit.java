@@ -15,7 +15,7 @@ public class IncrementPerPhaseLimit implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "limit", "perPlayer");
+        BlueprintUtils.validateAllowedFields(effectObject, "limit", "perPlayer");
 
         final ValueSource limitSource = ValueResolver.resolveEvaluator(effectObject.get("limit"), 1, environment);
         final boolean perPlayer = BlueprintUtils.getBoolean(effectObject, "perPlayer", false);

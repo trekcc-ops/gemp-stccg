@@ -2,18 +2,21 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.tribblepower.*;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.actions.Effect;
 
 public class ActivateTribblePowerAppender implements EffectAppenderProducer {
 
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject);
+        BlueprintUtils.validateAllowedFields(effectObject);
 
         return new TribblesDelayedAppender() {
             @Override

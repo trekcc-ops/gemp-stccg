@@ -25,7 +25,7 @@ public class GetCardsFromTopOfDeck implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "filter", "memorize");
+        BlueprintUtils.validateAllowedFields(node, "filter", "memorize");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(node);
         final String memorize = node.get("memorize").textValue();

@@ -28,7 +28,7 @@ public class ModifyStrength implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "amount", "count", "filter", "until", "memorize");
+        BlueprintUtils.validateAllowedFields(effectObject, "amount", "count", "filter", "until", "memorize");
 
         final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"));
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);

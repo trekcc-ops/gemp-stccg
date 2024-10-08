@@ -13,7 +13,7 @@ public class CantBeDiscarded implements ModifierSourceProducer {
     @Override
     public ModifierSource getModifierSource(JsonNode object, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "filter", "requires", "by");
+        BlueprintUtils.validateAllowedFields(object, "filter", "requires", "by");
 
         final FilterableSource filterableSource =
                 environment.getFilterFactory().generateFilter(object.get("filter").textValue());

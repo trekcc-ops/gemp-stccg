@@ -16,7 +16,7 @@ public class Optional implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "player", "text", "effect");
+        BlueprintUtils.validateAllowedFields(node, "player", "text", "effect");
 
         final String text = node.get("text").textValue();
 

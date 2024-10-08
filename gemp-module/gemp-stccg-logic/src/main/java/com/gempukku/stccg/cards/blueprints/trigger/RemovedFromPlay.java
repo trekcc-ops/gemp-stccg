@@ -16,7 +16,7 @@ public class RemovedFromPlay implements TriggerCheckerProducer {
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
-        environment.validateAllowedFields(value, "filter", "memorize");
+        BlueprintUtils.validateAllowedFields(value, "filter", "memorize");
         final String memorize = value.get("memorize").textValue();
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(value, "any");
 

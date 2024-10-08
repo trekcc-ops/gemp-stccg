@@ -12,7 +12,7 @@ import com.gempukku.stccg.modifiers.RequirementCondition;
 public class CantDiscardCardsFromHandOrTopOfDrawDeck implements ModifierSourceProducer {
     @Override
     public ModifierSource getModifierSource(JsonNode object, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "requires", "filter");
+        BlueprintUtils.validateAllowedFields(object, "requires", "filter");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(object);
         final Requirement[] requirements = environment.getRequirementsFromJSON(object);

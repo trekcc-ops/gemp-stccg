@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.revealcards.LookAtOpponentsHandEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 public class LookAtHand implements EffectAppenderProducer {
@@ -14,7 +15,7 @@ public class LookAtHand implements EffectAppenderProducer {
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
-        environment.validateAllowedFields(effectObject, "targetPlayer");
+        BlueprintUtils.validateAllowedFields(effectObject, "targetPlayer");
         final PlayerSource targetPlayer =
                 environment.getPlayerSource(effectObject, "targetPlayer", true);
 

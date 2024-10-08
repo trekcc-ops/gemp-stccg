@@ -11,7 +11,7 @@ public class AboutToDiscardFromPlay implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "source", "filter");
+        BlueprintUtils.validateAllowedFields(value, "source", "filter");
 
         String source = BlueprintUtils.getString(value, "source", "any");
 

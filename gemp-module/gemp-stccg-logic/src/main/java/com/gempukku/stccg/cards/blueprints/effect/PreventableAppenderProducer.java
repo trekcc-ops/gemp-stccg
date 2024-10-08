@@ -3,18 +3,19 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.decisions.YesNoDecision;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
+import com.gempukku.stccg.decisions.YesNoDecision;
 
 import java.util.List;
 
 public class PreventableAppenderProducer implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "text", "player", "effect", "cost");
+        BlueprintUtils.validateAllowedFields(node, "text", "player", "effect", "cost");
 
         final String text = node.get("text").textValue();
         final String player = node.get("player").textValue();

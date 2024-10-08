@@ -20,7 +20,7 @@ public class AddTrigger implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node,
+        BlueprintUtils.validateAllowedFields(node,
                 "trigger", "until", "optional", "requires", "cost", "effect");
 
         final TimeResolver.Time until = TimeResolver.resolveTime(node.get("until"), "end(current)");

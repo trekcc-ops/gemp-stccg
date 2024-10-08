@@ -20,7 +20,7 @@ public class Choice implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "player", "effects", "texts", "memorize");
+        BlueprintUtils.validateAllowedFields(node, "player", "effects", "texts", "memorize");
 
         final String player = BlueprintUtils.getString(node, "player", "you");
         final JsonNode[] effectArray = environment.getNodeArray(node.get("effects"));

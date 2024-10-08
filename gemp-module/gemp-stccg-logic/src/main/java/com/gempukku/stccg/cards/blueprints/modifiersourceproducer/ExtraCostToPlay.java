@@ -20,7 +20,7 @@ public class ExtraCostToPlay implements ModifierSourceProducer {
     @Override
     public ModifierSource getModifierSource(JsonNode node, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "requires", "cost", "filter");
+        BlueprintUtils.validateAllowedFields(node, "requires", "cost", "filter");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(node);
         final Requirement[] requirements = environment.getRequirementsFromJSON(node);

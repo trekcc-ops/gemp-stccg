@@ -28,7 +28,7 @@ public class    RemoveText implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "count", "filter", "until", "memorize");
+        BlueprintUtils.validateAllowedFields(effectObject, "count", "filter", "until", "memorize");
 
         final ValueSource valueSource =
                 ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);

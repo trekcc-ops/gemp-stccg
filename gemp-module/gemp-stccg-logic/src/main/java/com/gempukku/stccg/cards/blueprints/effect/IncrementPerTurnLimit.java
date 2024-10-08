@@ -13,7 +13,7 @@ public class IncrementPerTurnLimit implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "limit");
+        BlueprintUtils.validateAllowedFields(effectObject, "limit");
 
         final int limit = BlueprintUtils.getInteger(effectObject, "limit", 1);
 

@@ -30,11 +30,11 @@ public class EffectFieldProcessor implements FieldProcessor {
                     appendActionSource(effect, blueprint, environment);
                     break;
                 case "modifier":
-                    environment.validateAllowedFields(effect, "modifier");
+                    BlueprintUtils.validateAllowedFields(effect, "modifier");
                     blueprint.appendInPlayModifier(environment.getModifier(effect.get("modifier")));
                     break;
                 case "playoutofsequence":
-                    environment.validateAllowedFields(effect, "requires");
+                    BlueprintUtils.validateAllowedFields(effect, "requires");
                     final Requirement[] conditions = environment.getRequirementsFromJSON(effect);
                     blueprint.appendPlayOutOfSequenceCondition(actionContext -> actionContext.acceptsAllRequirements(conditions));
                     break;
@@ -49,7 +49,7 @@ public class EffectFieldProcessor implements FieldProcessor {
 
     private void appendActionSource(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node,
+        BlueprintUtils.validateAllowedFields(node,
                 "text", "optional", "limitPerPhase", "limitPerTurn", "phase", "trigger",
                 "requires", "cost", "effect");
 
@@ -103,7 +103,7 @@ public class EffectFieldProcessor implements FieldProcessor {
 
     private void appendSeedActionSource(JsonNode value, CardBlueprint blueprint, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(value, "limit", "where");
+        BlueprintUtils.validateAllowedFields(value, "limit", "where");
         SeedCardActionSource actionSource = new SeedCardActionSource();
         if (value.has("limit"))
             actionSource.addRequirement((actionContext) -> actionContext.getSource()

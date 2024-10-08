@@ -18,7 +18,7 @@ import java.util.List;
 public class LookAtDrawDeck implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "player", "memorize");
+        BlueprintUtils.validateAllowedFields(effectObject, "player", "memorize");
 
         final String deck = BlueprintUtils.getString(effectObject, "player", "you");
         final String memorize = effectObject.get("memorize").textValue();

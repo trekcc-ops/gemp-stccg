@@ -16,7 +16,7 @@ import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 public class LookAtRandomCardsFromHand implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "player", "count", "memorize");
+        BlueprintUtils.validateAllowedFields(effectObject, "player", "count", "memorize");
 
         final PlayerSource targetPlayer = PlayerResolver.resolvePlayer(effectObject.get("player").textValue());
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);

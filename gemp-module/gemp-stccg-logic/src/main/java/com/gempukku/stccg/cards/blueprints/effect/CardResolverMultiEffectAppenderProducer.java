@@ -232,13 +232,13 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
     private void validateAllowedFields(JsonNode effectObject, CardBlueprintFactory environment, EffectType effectType)
             throws InvalidCardDefinitionException {
         if (effectType == EffectType.DISCARDFROMHAND) {
-            environment.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize");
+            BlueprintUtils.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize");
             environment.validateRequiredFields(effectObject, "forced");
         } else if (effectType == EffectType.RETURNTOHAND) {
-            environment.validateAllowedFields(effectObject, "filter", "count");
+            BlueprintUtils.validateAllowedFields(effectObject, "filter", "count");
             environment.validateRequiredFields(effectObject, "filter");
         }else {
-            environment.validateAllowedFields(effectObject, "count", "filter", "reveal", "memorize");
+            BlueprintUtils.validateAllowedFields(effectObject, "count", "filter", "reveal", "memorize");
         }
     }
 

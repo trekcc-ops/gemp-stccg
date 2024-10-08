@@ -29,7 +29,7 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
     @Override
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(effectObject, "filter", "on", "cost", "memorize", "nocheck");
+        BlueprintUtils.validateAllowedFields(effectObject, "filter", "on", "cost", "memorize", "nocheck");
 
         final String filter = effectObject.get("filter").textValue();
         final String onFilter = effectObject.get("on").textValue();
