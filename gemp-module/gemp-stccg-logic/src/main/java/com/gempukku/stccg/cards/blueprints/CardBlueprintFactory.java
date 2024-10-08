@@ -21,7 +21,7 @@ import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementFactory;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
 
 import java.lang.reflect.InvocationTargetException;

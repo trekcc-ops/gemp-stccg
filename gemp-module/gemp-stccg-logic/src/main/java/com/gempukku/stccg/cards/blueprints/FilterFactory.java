@@ -1,13 +1,10 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.blueprints.FilterableSourceProducer;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
 import com.gempukku.stccg.filters.Filter;
@@ -20,6 +17,10 @@ public class FilterFactory {
     private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
     private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
     private final CardBlueprintFactory _environment;
+
+    public FilterFactory() {
+        this(new CardBlueprintFactory());
+    }
 
     public FilterFactory(CardBlueprintFactory blueprintFactory) {
         _environment = blueprintFactory;
