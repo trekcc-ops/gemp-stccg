@@ -1,18 +1,19 @@
 package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
 public class LastTribblePlayedProducer extends RequirementProducer{
     @Override
-    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+    public Requirement getPlayRequirement(JsonNode node)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "value");
+        BlueprintUtils.validateAllowedFields(node, "value");
 
-        final ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("value"), environment);
+        final ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("value"));
 
         return actionContext -> {
             if (actionContext instanceof TribblesActionContext context)

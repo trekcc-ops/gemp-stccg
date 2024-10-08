@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.resolver;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.actions.Effect;
@@ -7,17 +8,17 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.choose.ChooseActiveCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.blueprints.effect.DelayedAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -49,8 +50,8 @@ public class CardResolver {
 
 
     public static EffectAppender resolveCardsInPlay(String type, ValueSource countSource, String memory,
-                                                    PlayerSource choicePlayer, String choiceText,
-                                                    FilterableSource typeFilter) {
+                                                     PlayerSource choicePlayer, String choiceText,
+                                                     FilterableSource typeFilter) {
         final String sourceMemory =
                 type.startsWith("memory(") ? type.substring(type.indexOf("(") + 1, type.lastIndexOf(")")) : null;
         Function<ActionContext, List<PhysicalCard>> cardSource =
@@ -62,9 +63,9 @@ public class CardResolver {
 
 
     public static EffectAppender resolveCardsInPlay(String type, FilterableSource typeFilter, FilterableSource choiceFilter,
-                                                    FilterableSource playabilityFilter, ValueSource countSource,
-                                                    String memory, PlayerSource choicePlayer, String choiceText,
-                                                    Function<ActionContext, List<PhysicalCard>> cardSource) {
+                                                     FilterableSource playabilityFilter, ValueSource countSource,
+                                                     String memory, PlayerSource choicePlayer, String choiceText,
+                                                     Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;
 
@@ -138,12 +139,12 @@ public class CardResolver {
     }
 
 
-    private static DefaultDelayedAppender finalTargetAppender(FilterableSource choiceFilter, FilterableSource playabilityFilter,
-                                                      ValueSource countSource, String memory,
-                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                      PlayerSource choicePlayer, String selectionType, FilterableSource typeFilter) {
+    private static DelayedAppender finalTargetAppender(FilterableSource choiceFilter, FilterableSource playabilityFilter,
+                                                       ValueSource countSource, String memory,
+                                                       Function<ActionContext, List<PhysicalCard>> cardSource,
+                                                       PlayerSource choicePlayer, String selectionType, FilterableSource typeFilter) {
 
-        return new DefaultDelayedAppender() {
+        return new DelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 switch(selectionType) {
@@ -225,13 +226,13 @@ public class CardResolver {
     }
 
 
-    private static DefaultDelayedAppender resolveChoiceCards(FilterableSource typeFilter, FilterableSource choiceFilter,
-                                                             FilterableSource playabilityFilter,
-                                                             ValueSource countSource,
-                                                             Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                             ChoiceEffectSource effectSource) {
+    private static DelayedAppender resolveChoiceCards(FilterableSource typeFilter, FilterableSource choiceFilter,
+                                                                    FilterableSource playabilityFilter,
+                                                                    ValueSource countSource,
+                                                                    Function<ActionContext, List<PhysicalCard>> cardSource,
+                                                                    ChoiceEffectSource effectSource) {
 
-        return new DefaultDelayedAppender() {
+        return new DelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 int min = countSource.getMinimum(actionContext);
@@ -256,12 +257,12 @@ public class CardResolver {
         };
     }
 
-    private static DefaultDelayedAppender resolveChoiceCardsWithEffect(FilterableSource typeFilter,
-                                                                       FilterableSource playabilityFilter,
-                                                             ValueSource countSource,
-                                                             Function<ActionContext, List<PhysicalCard>> cardSource,
-                                                             Function<ActionContext, Effect> choiceEffect) {
-        return new DefaultDelayedAppender() {
+    private static DelayedAppender resolveChoiceCardsWithEffect(FilterableSource typeFilter,
+                                                                              FilterableSource playabilityFilter,
+                                                                              ValueSource countSource,
+                                                                              Function<ActionContext, List<PhysicalCard>> cardSource,
+                                                                              Function<ActionContext, Effect> choiceEffect) {
+        return new DelayedAppender() {
             @Override
             public boolean isPlayableInFull(ActionContext actionContext) {
                 int min = countSource.getMinimum(actionContext);

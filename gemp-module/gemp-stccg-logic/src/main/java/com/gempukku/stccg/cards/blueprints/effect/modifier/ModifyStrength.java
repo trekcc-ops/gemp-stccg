@@ -27,7 +27,7 @@ public class ModifyStrength implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "amount", "count", "filter", "until", "memorize");
 
-        final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"), environment);
+        final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"));
         final ValueSource valueSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
         final String filter = effectObject.get("filter").textValue();
         final String memory = environment.getString(effectObject, "memorize", "_temp");

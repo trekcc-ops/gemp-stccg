@@ -1,12 +1,11 @@
 package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.TribblesActionContext;
 
 public class TribbleSequenceBroken extends RequirementProducer{
     @Override
-    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment) {
+    public Requirement getPlayRequirement(JsonNode node) {
 
         return actionContext -> {
             if (actionContext instanceof TribblesActionContext)

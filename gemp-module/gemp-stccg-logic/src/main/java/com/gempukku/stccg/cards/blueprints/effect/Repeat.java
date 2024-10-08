@@ -16,7 +16,7 @@ public class Repeat implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "amount", "effect");
 
-        final ValueSource amountSource = ValueResolver.resolveEvaluator(node.get("amount"), environment);
+        final ValueSource amountSource = ValueResolver.resolveEvaluator(node.get("amount"));
         final EffectAppender effectAppender =
                 environment.getEffectAppenderFactory().getEffectAppender(node.get("effect"));
 

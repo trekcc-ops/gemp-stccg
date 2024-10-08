@@ -27,7 +27,7 @@ public class PlayCardFromHand implements EffectAppenderProducer {
         final String filter = environment.getString(effectObject, "filter");
         final String onFilter = effectObject.get("on").textValue();
         final ValueSource costModifierSource =
-                ValueResolver.resolveEvaluator(effectObject.get("cost"), 0, environment);
+                ValueResolver.resolveEvaluator(effectObject.get("cost"), 0);
         final String memorize = environment.getString(effectObject, "memorize", "_temp");
         final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
 

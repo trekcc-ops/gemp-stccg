@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
@@ -43,7 +42,7 @@ public class ChooseEffectBlueprintProducer {
 
         final String choiceText = BlueprintUtils.getString(effectObject, "text", getDefaultText(effectType));
         final ValueSource valueSource =
-                ValueResolver.resolveEvaluator(effectObject.get("amount"), 0, new CardBlueprintFactory());
+                ValueResolver.resolveEvaluator(effectObject.get("amount"), 0);
         final PlayerSource excludePlayerSource =
                 BlueprintUtils.getPlayerSource(effectObject, "exclude", true);
 

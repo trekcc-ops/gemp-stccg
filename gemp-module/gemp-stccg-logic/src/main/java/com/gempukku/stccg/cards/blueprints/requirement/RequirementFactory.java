@@ -49,7 +49,7 @@ public class RequirementFactory {
         final RequirementProducer requirementProducer = requirementProducers.get(type);
         if (requirementProducer == null)
             throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
-        return requirementProducer.getPlayRequirement(object, _environment);
+        return requirementProducer.getPlayRequirement(object);
     }
 
 }

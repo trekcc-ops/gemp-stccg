@@ -89,14 +89,14 @@ public class CardBlueprintFactory {
     }
 
     public FilterableSource getFilterable(JsonNode node) throws InvalidCardDefinitionException {
-        return filterFactory.generateFilter(node.get("filter").textValue());
+        return new FilterFactory().generateFilter(node.get("filter").textValue());
     }
 
 
     public FilterableSource getFilterable(JsonNode node, String defaultValue)
             throws InvalidCardDefinitionException {
         if (!node.has("filter"))
-            return filterFactory.generateFilter(defaultValue);
+            return new FilterFactory().generateFilter(defaultValue);
         else return getFilterable(node);
     }
 
@@ -273,7 +273,7 @@ public class CardBlueprintFactory {
                         filterableSource.getFilterable(actionContext),
                         new RequirementCondition(requirements, actionContext), icon);
             case MODIFYSTRENGTH:
-                ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("amount"), this);
+                ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("amount"));
                 filterableSource = getFilterable(node);
                 return (actionContext) -> {
                     final Evaluator evaluator = valueSource.getEvaluator(actionContext);

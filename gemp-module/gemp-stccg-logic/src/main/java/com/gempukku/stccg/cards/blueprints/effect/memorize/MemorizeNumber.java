@@ -19,7 +19,7 @@ public class MemorizeNumber implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "amount", "memory");
 
-        final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"), environment);
+        final ValueSource amountSource = ValueResolver.resolveEvaluator(effectObject.get("amount"));
         final String memory = effectObject.get("memory").textValue();
 
         return new DefaultDelayedAppender() {

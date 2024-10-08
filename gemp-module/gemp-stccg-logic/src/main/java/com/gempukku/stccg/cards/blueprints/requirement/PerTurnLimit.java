@@ -1,16 +1,16 @@
 package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 
 public class PerTurnLimit extends RequirementProducer {
     @Override
-    public Requirement getPlayRequirement(JsonNode node, CardBlueprintFactory environment)
+    public Requirement getPlayRequirement(JsonNode node)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "limit");
+        BlueprintUtils.validateAllowedFields(node, "limit");
 
-        final int limit = environment.getInteger(node, "limit", 1);
+        final int limit = BlueprintUtils.getInteger(node, "limit", 1);
 
         return (actionContext) -> actionContext.getSource().checkTurnLimit(limit);
     }
