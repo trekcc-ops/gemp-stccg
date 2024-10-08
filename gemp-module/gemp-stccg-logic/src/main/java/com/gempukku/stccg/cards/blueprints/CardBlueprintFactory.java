@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderFactory;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -28,12 +28,12 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CardBlueprintFactory {
-    private final EffectAppenderFactory effectAppenderFactory = new EffectAppenderFactory(this);
+    private final EffectBlueprintDeserializer effectAppenderFactory = new EffectBlueprintDeserializer(this);
     private final FilterFactory filterFactory = new FilterFactory(this);
     private final RequirementFactory requirementFactory = new RequirementFactory(this);
     private final TriggerCheckerFactory triggerCheckerFactory = new TriggerCheckerFactory();
 
-    public EffectAppenderFactory getEffectAppenderFactory() {
+    public EffectBlueprintDeserializer getEffectAppenderFactory() {
         return effectAppenderFactory;
     }
 

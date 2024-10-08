@@ -16,7 +16,7 @@ import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.cards.blueprints.effect.AbstractEffectAppender;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderFactory;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.LinkedList;
@@ -72,7 +72,7 @@ public abstract class DefaultActionSource implements ActionSource {
                     addRequirement(environment.getRequirement(requirement));
         }
 
-        final EffectAppenderFactory effectAppenderFactory = environment.getEffectAppenderFactory();
+        final EffectBlueprintDeserializer effectAppenderFactory = environment.getEffectAppenderFactory();
 
         if (node.has("cost")) {
             for (JsonNode cost : JsonUtils.toArray(node.get("cost"))) {

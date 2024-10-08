@@ -16,11 +16,11 @@ import com.gempukku.stccg.common.filterable.Zone;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EffectAppenderFactory {
+public class EffectBlueprintDeserializer {
     private final Map<String, EffectAppenderProducer> effectAppenderProducers = new HashMap<>();
     private final CardBlueprintFactory _environment;
 
-    public EffectAppenderFactory(CardBlueprintFactory environment) {
+    public EffectBlueprintDeserializer(CardBlueprintFactory environment) {
         _environment = environment;
             // Card resolver multi-effect appenders (choose a card and perform an action with it)
         effectAppenderProducers.put("discard", new CardResolverMultiEffectAppenderProducer());
