@@ -1,4 +1,4 @@
-package com.gempukku.stccg.requirement.missionrequirements;
+package com.gempukku.stccg.condition.missionrequirements;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;

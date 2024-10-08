@@ -15,7 +15,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 
 import java.util.*;
 

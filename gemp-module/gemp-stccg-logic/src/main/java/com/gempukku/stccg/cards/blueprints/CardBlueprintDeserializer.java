@@ -13,7 +13,7 @@ import com.gempukku.stccg.cards.SpecialDownloadSkill;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.EffectFieldProcessor;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.blueprints.fieldprocessor.ActionSourceAppender;
-import com.gempukku.stccg.requirement.missionrequirements.*;
+import com.gempukku.stccg.condition.missionrequirements.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
