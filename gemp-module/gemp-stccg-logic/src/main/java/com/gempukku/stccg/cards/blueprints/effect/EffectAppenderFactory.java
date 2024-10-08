@@ -68,12 +68,8 @@ public class EffectAppenderFactory {
             // Other card business
         effectAppenderProducers.put("download", new DownloadCard()); // multi
 
-        effectAppenderProducers.put("discardbottomcardsfromdeck", new DiscardBottomCardFromDeck()); // default
-        effectAppenderProducers.put("discardtopcardfromplaypile", new DiscardTopCardFromPlayPile());
-        effectAppenderProducers.put("discardtopcardsfromdeck", new DiscardTopCardFromDeck()); // default
         effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck()); // unrespondable
         effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck()); // multi, but the first one isn't a card resolver
-        effectAppenderProducers.put("revealhand", new RevealHand()); // default
         effectAppenderProducers.put("revealrandomcardsfromhand", new RevealRandomCardsFromHand()); // default
         effectAppenderProducers.put("revealtopcardsofdrawdeck", new RevealTopCardsOfDrawDeck()); // default
         effectAppenderProducers.put("shufflehandintodrawdeck", new ShuffleCardGroupIntoDrawDeck(Zone.HAND)); // unrespondable
@@ -92,13 +88,6 @@ public class EffectAppenderFactory {
         effectAppenderProducers.put("activatetribblepower", new ActivateTribblePowerAppender());
         effectAppenderProducers.put("addtrigger", new AddTrigger());
         effectAppenderProducers.put("choice", new Choice());
-        effectAppenderProducers.put("chooseanumber", new ChooseANumber());
-        effectAppenderProducers.put("chooseopponent", new ChooseOpponent());
-        effectAppenderProducers.put("chooseplayer", new ChoosePlayer());
-        effectAppenderProducers.put("chooseplayerexcept", new ChoosePlayerExcept());
-        effectAppenderProducers.put("chooseplayerwithcardsindeck", new ChoosePlayerWithCardsInDeck());
-        effectAppenderProducers.put("choosetribblepower", new ChooseTribblePower());
-        effectAppenderProducers.put("chooseyesorno", new ChooseYesOrNo());
         effectAppenderProducers.put("foreachplayer", new ForEachPlayer());
         effectAppenderProducers.put("incrementperphaselimit", new IncrementPerPhaseLimit());
         effectAppenderProducers.put("incrementperturnlimit", new IncrementPerTurnLimit());
