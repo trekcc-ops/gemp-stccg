@@ -67,7 +67,7 @@ public class FilterFactory {
                     final String[] filters = splitIntoFilters(parameter);
                     FilterableSource[] filterables = new FilterableSource[filters.length];
                     for (int i = 0; i < filters.length; i++)
-                        filterables[i] = environment.getFilterFactory().generateFilter(filters[i]);
+                        filterables[i] = generateFilter(filters[i]);
                     return (actionContext) -> {
                         Filterable[] filters1 = new Filterable[filterables.length];
                         for (int i = 0; i < filterables.length; i++)
@@ -78,7 +78,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("attachedto",
                 (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                    final FilterableSource filterableSource = generateFilter(parameter);
                     return (actionContext) -> Filters.attachedTo(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("affiliation", (parameter, environment) -> {
@@ -89,19 +89,19 @@ public class FilterFactory {
         });
         parameterFilters.put("hasstacked",
                 (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                    final FilterableSource filterableSource = generateFilter(parameter);
                     return (actionContext) -> Filters.hasStacked(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("hasstackedcount",
                 (parameter, environment) -> {
                     String[] parameterSplit = parameter.split(",", 2);
                     int count = Integer.parseInt(parameterSplit[0]);
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameterSplit[1]);
+                    final FilterableSource filterableSource = generateFilter(parameterSplit[1]);
                     return (actionContext) -> Filters.hasStacked(count, filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("loweststrength",
                 (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                    final FilterableSource filterableSource = generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return Filters.and(
@@ -139,7 +139,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("nameinstackedon",
                 (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                    final FilterableSource filterableSource = generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return (Filter) (game, physicalCard) -> {
@@ -155,7 +155,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("not",
                 (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                    final FilterableSource filterableSource = generateFilter(parameter);
                     return (actionContext) -> Filters.not(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("or",
@@ -163,7 +163,7 @@ public class FilterFactory {
                     final String[] filters = splitIntoFilters(parameter);
                     FilterableSource[] filterables = new FilterableSource[filters.length];
                     for (int i = 0; i < filters.length; i++)
-                        filterables[i] = environment.getFilterFactory().generateFilter(filters[i]);
+                        filterables[i] = generateFilter(filters[i]);
                     return (actionContext) -> {
                         Filterable[] filters1 = new Filterable[filterables.length];
                         for (int i = 0; i < filterables.length; i++)
