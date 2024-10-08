@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
@@ -223,6 +224,13 @@ public class FilterFactory {
 
             return Filters.and(filter);
         };
+    }
+
+    public FilterableSource generateFilter(JsonNode node) throws InvalidCardDefinitionException {
+        if (node == null || !node.isTextual()) {
+            throw new InvalidCardDefinitionException("Filter not specified");
+        }
+        return generateFilter(node.textValue());
     }
 
     public FilterableSource parseSTCCGFilter(String value) throws InvalidCardDefinitionException {

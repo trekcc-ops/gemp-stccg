@@ -11,24 +11,16 @@ public class RequirementFactory {
     public static Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
         final String type = object.get("type").textValue().toLowerCase();
         final RequirementProducer requirementProducer = switch(type) {
-            case "cardsindeckcount" -> new CardsInDeckCount();
-            case "cardsinhandmorethan" -> new CardsInHandMoreThan();
-            case "hascardindiscard" -> new HasCardInDiscard();
-            case "hascardinhand" -> new HasCardInHand();
-            case "hascardinplaypile" -> new HasCardInPlayPile();
-            case "hasinzonedata" -> new HasInZoneData();
-            case "isequal" -> new IsEqual();
-            case "isgreaterthan" -> new IsGreaterThan();
-            case "isgreaterthanorequal" -> new IsGreaterThanOrEqual();
-            case "islessthan" -> new IsLessThan();
-            case "islessthanorequal" -> new IsLessThanOrEqual();
-            case "isnotequal" -> new IsNotEqual();
+            case "cardsindeckcount", "cardsinhandmorethan", "hascardindiscard", "hascardinhand", "hascardinplaypile",
+                    "hasinzonedata", "nexttribbleinsequence" ->
+                    new MiscRequirementProducer();
+            case "isequal", "isgreaterthan", "isgreaterthanorequal", "islessthan", "islessthanorequal", "isnotequal" ->
+                    new ComparatorRequirementProducer();
             case "isowner" -> new IsOwnerRequirementProducer();
             case "lasttribbleplayed" -> new LastTribblePlayedProducer();
             case "memoryis" -> new MemoryIs();
             case "memorylike" -> new MemoryLike();
             case "memorymatches" -> new MemoryMatches();
-            case "nexttribbleinsequence" -> new NextTribbleInSequenceRequirement();
             case "not" -> new NotRequirementProducer();
             case "or" -> new OrRequirementProducer();
             case "perphaselimit" -> new PerPhaseLimit();
