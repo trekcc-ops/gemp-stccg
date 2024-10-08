@@ -1,21 +1,23 @@
 package com.gempukku.stccg.cards.blueprints.modifiersourceproducer;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.modifiers.CancelStrengthBonusSourceModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
-import com.gempukku.stccg.requirement.Requirement;
 
 public class CancelStrengthBonusFrom implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JsonNode node, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(node, "from", "requires");
+    public ModifierSource getModifierSource(JsonNode node) throws InvalidCardDefinitionException {
+        BlueprintUtils.validateAllowedFields(node, "from", "requires");
 
         final FilterableSource filterableSource =
-                environment.getFilterFactory().generateFilter(node.get("from").textValue());
-        final Requirement[] requirements = environment.getRequirementsFromJSON(node);
+                FilterFactory.generateFilter(node.get("from").textValue());
+        final Requirement[] requirements = RequirementFactory.getRequirementsFromJSON(node);
 
         return actionContext -> new CancelStrengthBonusSourceModifier(actionContext.getSource(),
                 new RequirementCondition(requirements, actionContext),

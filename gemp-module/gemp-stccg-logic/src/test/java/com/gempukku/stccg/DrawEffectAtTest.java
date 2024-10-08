@@ -7,7 +7,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Preventable;
-import com.gempukku.stccg.requirement.trigger.TriggerConditions;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerConditions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

@@ -10,14 +10,14 @@ import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.cards.blueprints.effectappender.AbstractEffectAppender;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
-import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,8 +25,8 @@ import java.util.List;
 public abstract class DefaultActionSource implements ActionSource {
     private final List<Requirement> requirements = new LinkedList<>();
 
-    protected final List<EffectAppender> costs = new LinkedList<>();
-    protected final List<EffectAppender> effects = new LinkedList<>();
+    protected final List<EffectBlueprint> costs = new LinkedList<>();
+    protected final List<EffectBlueprint> effects = new LinkedList<>();
 
     protected String _text;
 
@@ -38,12 +38,12 @@ public abstract class DefaultActionSource implements ActionSource {
         this.requirements.add(requirement);
     }
 
-    public void addCost(EffectAppender effectAppender) {
-        costs.add(effectAppender);
+    public void addCost(EffectBlueprint effectBlueprint) {
+        costs.add(effectBlueprint);
     }
 
-    public void addEffect(EffectAppender effectAppender) {
-        effects.add(effectAppender);
+    public void addEffect(EffectBlueprint effectBlueprint) {
+        effects.add(effectBlueprint);
     }
 
     @Override
@@ -56,12 +56,12 @@ public abstract class DefaultActionSource implements ActionSource {
         if (_text != null)
             action.setText(actionContext.substituteText(_text));
 
-        costs.forEach(cost -> cost.appendEffect(true, action, actionContext));
+        costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
 
-        effects.forEach(actionEffect -> actionEffect.appendEffect(false, action, actionContext));
+        effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
+    public void processRequirementsCostsAndEffects(JsonNode node)
             throws InvalidCardDefinitionException {
 
         if (!node.has("cost") && !node.has("effect"))
@@ -69,25 +69,23 @@ public abstract class DefaultActionSource implements ActionSource {
         
         if (node.has("requires")) {
             for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
-                    addRequirement(environment.getRequirement(requirement));
+                    addRequirement(RequirementFactory.getRequirement(requirement));
         }
-
-        final EffectAppenderFactory effectAppenderFactory = environment.getEffectAppenderFactory();
 
         if (node.has("cost")) {
             for (JsonNode cost : JsonUtils.toArray(node.get("cost"))) {
-                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(cost);
-                addRequirement(effectAppender::isPlayableInFull);
-                addCost(effectAppender);
+                final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(cost);
+                addRequirement(effectBlueprint::isPlayableInFull);
+                addCost(effectBlueprint);
             }
         }
         
         if (node.has("effect")) {
             for (JsonNode effect : JsonUtils.toArray(node.get("effect"))) {
-                final EffectAppender effectAppender = effectAppenderFactory.getEffectAppender(effect);
-                if (effectAppender.isPlayabilityCheckedForEffect())
-                    addRequirement(effectAppender::isPlayableInFull);
-                addEffect(effectAppender);
+                final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(effect);
+                if (effectBlueprint.isPlayabilityCheckedForEffect())
+                    addRequirement(effectBlueprint::isPlayableInFull);
+                addEffect(effectBlueprint);
             }
         }
     }
@@ -97,7 +95,7 @@ public abstract class DefaultActionSource implements ActionSource {
     public void setPhaseLimit(Phase phase, int limitPerPhase) {
         addRequirement((actionContext) -> actionContext.getSource().checkPhaseLimit(phase, limitPerPhase));
         addCost(
-                new AbstractEffectAppender() {
+                new DelayedEffectBlueprint() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
@@ -108,7 +106,7 @@ public abstract class DefaultActionSource implements ActionSource {
     public void setTurnLimit(int limitPerTurn) {
         addRequirement((actionContext) -> actionContext.getSource().checkTurnLimit(limitPerTurn));
         addCost(
-            new AbstractEffectAppender() {
+            new DelayedEffectBlueprint() {
                 @Override
                 protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                     return new IncrementTurnLimitEffect(actionContext, limitPerTurn);

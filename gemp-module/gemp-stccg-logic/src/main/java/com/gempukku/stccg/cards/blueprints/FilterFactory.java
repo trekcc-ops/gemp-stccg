@@ -1,13 +1,10 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.blueprints.FilterableSourceProducer;
-import com.gempukku.stccg.cards.blueprints.ValueSource;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
 import com.gempukku.stccg.filters.Filter;
@@ -17,56 +14,15 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.*;
 
 public class FilterFactory {
-    private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
-    private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
-    private final CardBlueprintFactory _environment;
+    private static final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
 
-    public FilterFactory(CardBlueprintFactory blueprintFactory) {
-        _environment = blueprintFactory;
-        for (CardIcon value : CardIcon.values())
-            appendFilter(value);
-        for (CardType value : CardType.values())
-            appendFilter(value);
-        for (Keyword value : Keyword.values())
-            appendFilter(value);
-        for (Affiliation value : Affiliation.values())
-            appendFilter(value);
-        for (Uniqueness value : Uniqueness.values())
-            appendFilter(value);
-        for (FacilityType value : FacilityType.values())
-            appendFilter(value);
-        for (PropertyLogo value : PropertyLogo.values())
-            appendFilter(value);
-
-        simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
-        simpleFilters.put("any", (actionContext) -> Filters.any);
-        simpleFilters.put("idinstored",
-                (actionContext -> (Filter) (game, physicalCard) -> {
-                    final String whileInZoneData = (String) actionContext.getSource().getWhileInZoneData();
-                    if (whileInZoneData == null)
-                        return false;
-                    for (String cardId : whileInZoneData.split(",")) {
-                        if (cardId.equals(String.valueOf(physicalCard.getCardId())))
-                            return true;
-                    }
-
-                    return false;
-                }));
-        simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
-        simpleFilters.put("nor", (actionContext) -> Filters.Nor);
-        simpleFilters.put("self", ActionContext::getSource);
-        simpleFilters.put("unique", (actionContext) -> Filters.unique);
-            // TODO - "your" isn't quite right
-        simpleFilters.put("your", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yours", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yoursevenifnotinplay", (actionContext) -> Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
-
+    public FilterFactory() {
         parameterFilters.put("and",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
                     FilterableSource[] filterables = new FilterableSource[filters.length];
                     for (int i = 0; i < filters.length; i++)
-                        filterables[i] = environment.getFilterFactory().generateFilter(filters[i]);
+                        filterables[i] = FilterFactory.generateFilter(filters[i]);
                     return (actionContext) -> {
                         Filterable[] filters1 = new Filterable[filterables.length];
                         for (int i = 0; i < filterables.length; i++)
@@ -76,31 +32,31 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("attachedto",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                (parameter) -> {
+                    final FilterableSource filterableSource = FilterFactory.generateFilter(parameter);
                     return (actionContext) -> Filters.attachedTo(filterableSource.getFilterable(actionContext));
                 });
-        parameterFilters.put("affiliation", (parameter, environment) -> {
+        parameterFilters.put("affiliation", (parameter) -> {
             final Affiliation affiliation = Affiliation.findAffiliation(parameter);
             if (affiliation == null)
                 throw new InvalidCardDefinitionException("Unable to find affiliation for: " + parameter);
             return (actionContext) -> affiliation;
         });
         parameterFilters.put("hasstacked",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                (parameter) -> {
+                    final FilterableSource filterableSource = FilterFactory.generateFilter(parameter);
                     return (actionContext) -> Filters.hasStacked(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("hasstackedcount",
-                (parameter, environment) -> {
+                (parameter) -> {
                     String[] parameterSplit = parameter.split(",", 2);
                     int count = Integer.parseInt(parameterSplit[0]);
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameterSplit[1]);
+                    final FilterableSource filterableSource = FilterFactory.generateFilter(parameterSplit[1]);
                     return (actionContext) -> Filters.hasStacked(count, filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("loweststrength",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                (parameter) -> {
+                    final FilterableSource filterableSource = FilterFactory.generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return Filters.and(
@@ -121,24 +77,24 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("memory",
-                (parameter, environment) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
+                (parameter) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
 
         parameterFilters.put("name",
-                (parameter, environment) -> {
+                (parameter) -> {
                     String name = Sanitize(parameter);
                     return (actionContext) -> (Filter)
                             (game, physicalCard) -> physicalCard.getBlueprint().getTitle() != null && name.equals(Sanitize(physicalCard.getBlueprint().getTitle()));
                 });
         parameterFilters.put("namefrommemory",
-                (parameter, environment) -> actionContext -> {
+                (parameter) -> actionContext -> {
                     Set<String> titles = new HashSet<>();
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter))
                         titles.add(physicalCard.getBlueprint().getTitle());
                     return (Filter) (game, physicalCard) -> titles.contains(physicalCard.getBlueprint().getTitle());
                 });
         parameterFilters.put("nameinstackedon",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                (parameter) -> {
+                    final FilterableSource filterableSource = FilterFactory.generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
                         return (Filter) (game, physicalCard) -> {
@@ -153,16 +109,16 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("not",
-                (parameter, environment) -> {
-                    final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(parameter);
+                (parameter) -> {
+                    final FilterableSource filterableSource = FilterFactory.generateFilter(parameter);
                     return (actionContext) -> Filters.not(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("or",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
                     FilterableSource[] filterables = new FilterableSource[filters.length];
                     for (int i = 0; i < filters.length; i++)
-                        filterables[i] = environment.getFilterFactory().generateFilter(filters[i]);
+                        filterables[i] = FilterFactory.generateFilter(filters[i]);
                     return (actionContext) -> {
                         Filterable[] filters1 = new Filterable[filterables.length];
                         for (int i = 0; i < filterables.length; i++)
@@ -172,7 +128,7 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("strengthlessthan",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
 
                     return (actionContext) -> {
@@ -181,7 +137,7 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("strengthmorethan",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
 
                     return (actionContext) -> {
@@ -191,23 +147,13 @@ public class FilterFactory {
                 });
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
-                (parameter, environment) -> {
-                    final Zone zone = environment.getEnum(Zone.class, parameter, "parameter");
+                (parameter) -> {
+                    final Zone zone = BlueprintUtils.getEnum(Zone.class, parameter, "parameter");
                     return actionContext -> zone;
                 });
     }
 
-    private void appendFilter(Filterable value) {
-        final String filterName = Sanitize(value.toString());
-        final String optionalFilterName = value.toString().toLowerCase().replace("_", "-");
-        if (simpleFilters.containsKey(filterName))
-            throw new RuntimeException("Duplicate filter name: " + filterName);
-        simpleFilters.put(filterName, (actionContext) -> value);
-        if (!optionalFilterName.equals(filterName))
-            simpleFilters.put(optionalFilterName, (actionContext -> value));
-    }
-
-    public FilterableSource generateFilter(String value) throws
+    public static FilterableSource generateFilter(String value) throws
             InvalidCardDefinitionException {
         if (value == null)
             throw new InvalidCardDefinitionException("Filter not specified");
@@ -230,7 +176,7 @@ public class FilterFactory {
         };
     }
 
-    public FilterableSource parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
+    public static FilterableSource parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
         String orNoParens = "\\s+OR\\s+(?![^\\(]*\\))";
         String andNoParens = "\\s+\\+\\s+(?![^\\(]*\\))";
         if (value == null)
@@ -280,13 +226,13 @@ public class FilterFactory {
         if (value.equals("you have no copies in play")) {
             return (actionContext) -> Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer());
         }
-        FilterableSource result = simpleFilters.get(Sanitize(value));
+        FilterableSource result = getSimpleFilter(Sanitize(value));
         if (result == null)
             throw new InvalidCardDefinitionException("Unknown filter: " + value);
         else return result;
     }
 
-    private String[] splitIntoFilters(String value) throws InvalidCardDefinitionException {
+    private static String[] splitIntoFilters(String value) throws InvalidCardDefinitionException {
         List<String> parts = new LinkedList<>();
         final char[] chars = value.toCharArray();
 
@@ -321,7 +267,7 @@ public class FilterFactory {
         return parts.toArray(new String[0]);
     }
 
-    private FilterableSource createFilter(String filterString) throws InvalidCardDefinitionException {
+    private static FilterableSource createFilter(String filterString) throws InvalidCardDefinitionException {
         if (filterString.contains("(") && filterString.endsWith(")")) {
             String filterName = filterString.substring(0, filterString.indexOf("("));
             String filterParameter =
@@ -331,20 +277,53 @@ public class FilterFactory {
         return lookupFilter(Sanitize(filterString), null);
     }
 
+    private static FilterableSource getSimpleFilter(String value) {
+        return switch(value) {
+            case "another" -> (actionContext) -> Filters.not(actionContext.getSource());
+            case "any" -> (actionContext) -> Filters.any;
+            case "ds9-icon" -> (actionContext) -> Filters.and(CardIcon.DS9_ICON);
+            case "ds9-logo" -> (actionContext) -> Filters.and(PropertyLogo.DS9_LOGO);
+            case "generations-logo" -> (actionContext) -> Filters.and(PropertyLogo.GENERATIONS_LOGO);
+            case "idinstored" -> (actionContext -> (Filter) (game, physicalCard) -> {
+                final String whileInZoneData = (String) actionContext.getSource().getWhileInZoneData();
+                if (whileInZoneData == null)
+                    return false;
+                for (String cardId : whileInZoneData.split(",")) {
+                    if (cardId.equals(String.valueOf(physicalCard.getCardId())))
+                        return true;
+                }
+                return false;
+            });
+            case "inplay" -> (actionContext) -> Filters.inPlay;
+            case "nor" -> (actionContext) -> Filters.Nor;
+            case "personnel" -> (actionContext) -> Filters.personnel;
+            case "reactor-core" -> (actionContext) -> Filters.and(CardIcon.REACTOR_CORE);
+            case "self" -> ActionContext::getSource;
+            case "ship" -> (actionContext) -> Filters.ship;
+            case "tng-icon" -> (actionContext) -> Filters.and(CardIcon.TNG_ICON);
+            case "tng-logo" -> (actionContext) -> Filters.and(PropertyLogo.TNG_LOGO);
+            case "unique" -> (actionContext) -> Filters.unique;
+            case "universal" -> (actionContext) -> Filters.universal;
+            case "warp-core" -> (actionContext) -> Filters.and(CardIcon.WARP_CORE);
+            case "yours" -> (actionContext) -> Filters.your(actionContext.getPerformingPlayerId());
+            case "yoursevenifnotinplay" ->
+                    (actionContext) -> Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId());
+            default -> null;
+        };
+    }
 
-
-    private FilterableSource lookupFilter(String name, String parameter) throws InvalidCardDefinitionException {
+    private static FilterableSource lookupFilter(String name, String parameter) throws InvalidCardDefinitionException {
+        FilterableSource filterableSource;
         if (parameter == null) {
-            FilterableSource result = simpleFilters.get(Sanitize(name));
-            if (result != null)
-                return result;
+            filterableSource = getSimpleFilter(Sanitize(name));
+            if (filterableSource != null)
+                return filterableSource;
+        } else {
+            final FilterableSourceProducer filterableSourceProducer = parameterFilters.get(Sanitize(name));
+            if (filterableSourceProducer != null)
+                return filterableSourceProducer.createFilterableSource(parameter);
         }
-
-        final FilterableSourceProducer filterableSourceProducer = parameterFilters.get(Sanitize(name));
-        if (filterableSourceProducer == null)
-            throw new InvalidCardDefinitionException("Unable to find filter: " + name);
-
-        return filterableSourceProducer.createFilterableSource(parameter, _environment);
+        throw new InvalidCardDefinitionException("Unable to find filter: " + name);
     }
 
     public static String Sanitize(String input)

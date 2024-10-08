@@ -1,25 +1,27 @@
 package com.gempukku.stccg.cards.blueprints.modifiersourceproducer;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.modifiers.CantDiscardFromPlayModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
-import com.gempukku.stccg.requirement.Requirement;
 
 public class CantBeDiscarded implements ModifierSourceProducer {
     @Override
-    public ModifierSource getModifierSource(JsonNode object, CardBlueprintFactory environment)
+    public ModifierSource getModifierSource(JsonNode object)
             throws InvalidCardDefinitionException {
-        environment.validateAllowedFields(object, "filter", "requires", "by");
+        BlueprintUtils.validateAllowedFields(object, "filter", "requires", "by");
 
         final FilterableSource filterableSource =
-                environment.getFilterFactory().generateFilter(object.get("filter").textValue());
+                FilterFactory.generateFilter(object.get("filter").textValue());
         final FilterableSource byFilterableSource =
-                environment.getFilterFactory().generateFilter(environment.getString(object, "by", "any"));
+                FilterFactory.generateFilter(BlueprintUtils.getString(object, "by", "any"));
         final Requirement[] requirements =
-                environment.getRequirementsFromJSON(object);
+                RequirementFactory.getRequirementsFromJSON(object);
 
         return (actionContext) -> new CantDiscardFromPlayModifier(actionContext.getSource(),
                 "Can't be discarded",

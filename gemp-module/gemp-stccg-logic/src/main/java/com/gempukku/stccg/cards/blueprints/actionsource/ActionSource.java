@@ -6,11 +6,10 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 public interface ActionSource {
 
@@ -25,8 +24,8 @@ public interface ActionSource {
     Action createActionWithNewContext(PhysicalCard card, EffectResult effectResult);
     Action createActionWithNewContext(PhysicalCard card, String playerId, Effect effect, EffectResult effectResult);
     Action createActionWithNewContext(PhysicalCard card, Effect effect, EffectResult effectResult);
-    void addCost(EffectAppender effectAppender);
-    void addEffect(EffectAppender effectAppender);
-    void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
+    void addCost(EffectBlueprint effectBlueprint);
+    void addEffect(EffectBlueprint effectBlueprint);
+    void processRequirementsCostsAndEffects(JsonNode node)
             throws InvalidCardDefinitionException;
 }

@@ -10,10 +10,9 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
-import com.gempukku.stccg.cards.blueprints.fieldprocessor.EffectFieldProcessor;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSourceAppender;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.cards.blueprints.fieldprocessor.ActionSourceAppender;
-import com.gempukku.stccg.requirement.missionrequirements.*;
+import com.gempukku.stccg.condition.missionrequirements.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -21,8 +20,6 @@ import java.util.*;
 
 public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
 
-    final private CardBlueprintFactory _blueprintFactory = new CardBlueprintFactory();
-    final private EffectFieldProcessor _effectProcessor = new EffectFieldProcessor();
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
     final String multiplierSplit1e = "(?=x\\d+)";
@@ -79,22 +76,22 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             // All cards have these fields
             blueprint.setTitle(getString(node, "title"));
             blueprint.setImageUrl(getString(node, "image-url"));
-            blueprint.setCardType(getEnum(CardType.class, node, "type"));
+            blueprint.setCardType(BlueprintUtils.getEnum(CardType.class, node, "type"));
 
             // Most cards have these fields
             blueprint.setLore(getString(node, "lore"));
-            blueprint.setPropertyLogo(getEnum(PropertyLogo.class, node, "property-logo"));
+            blueprint.setPropertyLogo(BlueprintUtils.getEnum(PropertyLogo.class, node, "property-logo"));
             blueprint.setRarity(getString(node, "rarity"));
-            blueprint.setUniqueness(getEnum(Uniqueness.class, node, "uniqueness"));
+            blueprint.setUniqueness(BlueprintUtils.getEnum(Uniqueness.class, node, "uniqueness"));
 
             // Missions & time locations
             blueprint.setLocation(getString(node, "location"));
-            blueprint.setMissionType(getEnum(MissionType.class, node, "mission-type"));
+            blueprint.setMissionType(BlueprintUtils.getEnum(MissionType.class, node, "mission-type"));
             blueprint.setSpan(getInteger(node, "span"));
             String missionRequirementsText = getString(node, "mission-requirements");
             blueprint.setMissionRequirementsText(missionRequirementsText);
             blueprint.setMissionRequirements(createRequirement(missionRequirementsText));
-            blueprint.setRegion(getEnum(Region.class, node, "region"));
+            blueprint.setRegion(BlueprintUtils.getEnum(Region.class, node, "region"));
 
             if (node.has("affiliation-icons")) {
                 for (String icon : node.get("affiliation-icons").textValue().split(",")) {
@@ -119,7 +116,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     getEnumSetFromCommaDelimited(node, "affiliation", Affiliation.class))
                 blueprint.addAffiliation(affiliation);
 
-            blueprint.setClassification(getEnum(SkillName.class, node, "classification"));
+            blueprint.setClassification(BlueprintUtils.getEnum(SkillName.class, node, "classification"));
             blueprint.setIcons(getCardIconListFromCommaDelimited(node, "icons"));
 
             if (node.get("skill-box") != null) {
@@ -132,7 +129,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             }
 
             // Facilities
-            blueprint.setFacilityType(getEnum(FacilityType.class, node, "facility-type"));
+            blueprint.setFacilityType(BlueprintUtils.getEnum(FacilityType.class, node, "facility-type"));
 
             // Ships
             blueprint.setAttribute(CardAttribute.RANGE, getInteger(node, "range"));
@@ -142,18 +139,18 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
 
             // Misc
             blueprint.setSubtitle(getString(node, "subtitle"));
-            blueprint.setQuadrant(getEnum(Quadrant.class, node, "quadrant"));
-            blueprint.setSpecies(getEnum(Species.class, node, "species"));
+            blueprint.setQuadrant(BlueprintUtils.getEnum(Quadrant.class, node, "quadrant"));
+            blueprint.setSpecies(BlueprintUtils.getEnum(Species.class, node, "species"));
             blueprint.setPersona(getString(node, "persona"));
             blueprint.setTribbleValue(getInteger(node, "tribble-value"));
             blueprint.setCost(getInteger(node, "cost"));
             setImageOptions(blueprint, node);
             if (node.get("tribble-power") != null) {
-                processTribblePower(blueprint, getEnum(TribblePower.class, node, "tribble-power"));
+                processTribblePower(blueprint, BlueprintUtils.getEnum(TribblePower.class, node, "tribble-power"));
             }
 
             if (node.get("effects") != null)
-                _effectProcessor.processField("effects", node.get("effects"), blueprint, _blueprintFactory);
+                EffectFieldProcessor.processField(node.get("effects"), blueprint);
 
             for (Characteristic characteristic :
                     getEnumSetFromCommaDelimited(node, "characteristic", Characteristic.class))
@@ -190,7 +187,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull())
             return result;
         for (String item : parentNode.get(fieldName).textValue().split(",")) {
-            result.add(getEnum(enumClass, item, fieldName));
+            result.add(BlueprintUtils.getEnum(enumClass, item, fieldName));
         }
         return result;
     }
@@ -201,7 +198,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         if (parentNode.get(fieldName) == null || parentNode.get(fieldName).isNull())
             return result;
         for (String item : parentNode.get(fieldName).textValue().split(",")) {
-            result.add(getEnum(CardIcon.class, item, fieldName));
+            result.add(BlueprintUtils.getEnum(CardIcon.class, item.trim(), fieldName));
         }
         return result;
     }
@@ -220,15 +217,6 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         else return parentNode.get(fieldName).asInt();
     }
 
-
-    private <T extends Enum<T>> T getEnum(Class<T> enumClass, JsonNode parentNode, String fieldName)
-            throws InvalidCardDefinitionException {
-        JsonNode value = parentNode.get(fieldName);
-        if (value == null) return null;
-        if (!value.isTextual())
-            throw new InvalidCardDefinitionException("Unable to process enum value for " + fieldName);
-        return getEnum(enumClass, value.textValue(), fieldName);
-    }
 
     private <T extends Enum<T>> T getEnum(Class<T> enumClass, String value, String fieldName)
             throws InvalidCardDefinitionException {
@@ -302,18 +290,10 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     }
 
     int getPointsShown(JsonNode value) {
-        String str;
-        if (value == null)
-            return 0;
-        if (value.isTextual())
-            str = value.textValue();
-        else str = value.toString();
-
-        str = str.replaceAll("[^\\d]", "");
-        if (str.isEmpty())
-            return 0;
-        else
-            return Integer.parseInt(str);
+        if (value == null) return 0;
+        String str =
+                ((value.isTextual()) ? value.textValue() : value.toString()).replaceAll("[^\\d]", "");
+        return (str.isEmpty()) ? 0 : Integer.parseInt(str);
     }
 
     private class SkillBox {
@@ -385,7 +365,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         JsonNode value = parentNode.get("image-options");
         if (value != null && value.isArray()) {
             for (JsonNode image : value) {
-                blueprint.addImageOption(getEnum(Affiliation.class, image, "affiliation"),
+                blueprint.addImageOption(BlueprintUtils.getEnum(Affiliation.class, image, "affiliation"),
                         image.get("image-url").textValue());
             }
         } else if (value != null)
@@ -404,8 +384,8 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
 
             try {
-                new ActionSourceAppender().processEffect(
-                        new ObjectMapper().readTree(jsonString), blueprint, _blueprintFactory);
+                ActionSourceAppender.processEffect(
+                        new ObjectMapper().readTree(jsonString), blueprint);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

@@ -3,8 +3,11 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.RequiredType;
+import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
@@ -37,10 +40,12 @@ public class ContinuingMissionTest extends AbstractAtTest {
         Player currPlayer = _game.getCurrentPlayer();
 
         PhysicalCard continuingMission = getCardInGame("Continuing Mission", currPlayer, Zone.HAND);
+        List<ActionSource> triggers = continuingMission.getBlueprint().getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER);
 
         assertFalse(continuingMission.isInPlay());
         seedCardIfAllowed(continuingMission);
         assertTrue(continuingMission.isInPlay());
+
     }
 
     private PhysicalCard getCardInGame(String cardTitle, Player cardOwner, Zone zone) {
