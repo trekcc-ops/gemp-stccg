@@ -10,7 +10,7 @@ import com.gempukku.stccg.actions.turn.AddUntilEndOfPhaseActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilEndOfTurnActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilStartOfPhaseActionProxyEffect;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.requirement.trigger.TriggerChecker;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
 
 import java.util.Collections;
 import java.util.List;

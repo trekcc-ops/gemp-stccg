@@ -1,4 +1,4 @@
-package com.gempukku.stccg.requirement.trigger;
+package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;

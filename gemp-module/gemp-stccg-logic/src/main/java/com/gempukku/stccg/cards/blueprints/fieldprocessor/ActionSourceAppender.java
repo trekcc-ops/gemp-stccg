@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.blueprints.actionsource.*;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
-import com.gempukku.stccg.requirement.trigger.TriggerChecker;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
 
 import java.util.LinkedList;
 import java.util.List;

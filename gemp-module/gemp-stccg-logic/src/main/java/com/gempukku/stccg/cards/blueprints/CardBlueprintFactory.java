@@ -22,7 +22,7 @@ import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
-import com.gempukku.stccg.requirement.trigger.TriggerCheckerFactory;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 
 import java.util.*;
 import java.util.function.Function;
