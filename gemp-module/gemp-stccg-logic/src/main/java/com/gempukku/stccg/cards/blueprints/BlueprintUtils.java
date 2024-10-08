@@ -82,8 +82,16 @@ public final class BlueprintUtils {
 
     public static <T extends Enum<T>> T getEnum(Class<T> enumClass, JsonNode parentNode, String key)
             throws InvalidCardDefinitionException {
-        if (parentNode.get(key) == null || !parentNode.get(key).isTextual())
-            return null;
+        return getEnum(enumClass, parentNode, key, true);
+    }
+
+    public static <T extends Enum<T>> T getEnum(Class<T> enumClass, JsonNode parentNode, String key,
+                                                boolean nullsAllowed)
+            throws InvalidCardDefinitionException {
+        if (parentNode.get(key) == null || !parentNode.get(key).isTextual()) {
+            if (nullsAllowed) return null;
+            else throw new InvalidCardDefinitionException("Unable to process enum value in " + key + " field");
+        }
         try {
             return Enum.valueOf(enumClass,
                     parentNode.get(key).textValue().toUpperCase().replaceAll("[ '\\-.]", "_"));

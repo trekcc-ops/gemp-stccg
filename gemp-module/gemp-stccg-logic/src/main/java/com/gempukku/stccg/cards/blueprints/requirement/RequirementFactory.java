@@ -10,28 +10,24 @@ import java.util.List;
 public class RequirementFactory {
     public static Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
         final String type = object.get("type").textValue().toLowerCase();
-        final RequirementProducer requirementProducer = switch(type) {
+        return switch(type) {
             case "cardsindeckcount", "cardsinhandmorethan", "hascardindiscard", "hascardinhand", "hascardinplaypile",
                     "hasinzonedata", "nexttribbleinsequence" ->
-                    new MiscRequirementProducer();
+                    new MiscRequirement(object);
             case "isequal", "isgreaterthan", "isgreaterthanorequal", "islessthan", "islessthanorequal", "isnotequal" ->
-                    new ComparatorRequirementProducer();
-            case "isowner" -> new IsOwnerRequirementProducer();
-            case "lasttribbleplayed" -> new LastTribblePlayedProducer();
-            case "memoryis" -> new MemoryIs();
-            case "memorylike" -> new MemoryLike();
-            case "memorymatches" -> new MemoryMatches();
-            case "not" -> new NotRequirementProducer();
-            case "or" -> new OrRequirementProducer();
-            case "perphaselimit" -> new PerPhaseLimit();
-            case "perturnlimit" -> new PerTurnLimit();
-            case "phase" -> new PhaseRequirement();
-            case "playedcardthisphase" -> new PlayedCardThisPhase();
-            case "playerisnotself" -> new PlayerIsNotSelf();
-            case "tribblesequencebroken" -> new TribbleSequenceBroken();
+                    new ComparatorRequirementProducer().getPlayRequirement(object);
+            case "isowner" -> new IsOwnerRequirementProducer().getPlayRequirement(object);
+            case "lasttribbleplayed" -> new LastTribblePlayedProducer().getPlayRequirement(object);
+            case "memoryis" -> new MemoryIs().getPlayRequirement(object);
+            case "memorylike" -> new MemoryLike().getPlayRequirement(object);
+            case "memorymatches" -> new MemoryMatches().getPlayRequirement(object);
+            case "not" -> new NotRequirementProducer().getPlayRequirement(object);
+            case "or" -> new OrRequirementProducer().getPlayRequirement(object);
+            case "perturnlimit" -> new PerTurnLimit().getPlayRequirement(object);
+            case "playedcardthisphase" -> new PlayedCardThisPhase().getPlayRequirement(object);
+            case "tribblesequencebroken" -> new TribbleSequenceBroken().getPlayRequirement(object);
             default -> throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
         };
-        return requirementProducer.getPlayRequirement(object);
     }
 
     public static Requirement[] getRequirements(JsonNode parentNode) throws InvalidCardDefinitionException {
