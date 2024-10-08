@@ -10,7 +10,7 @@ import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.effect.AbstractEffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.DelayedEffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -69,7 +69,7 @@ public abstract class DefaultActionSource implements ActionSource {
 
         if (node.has("requires")) {
             for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
-                addRequirement(RequirementFactory.getRequirement(requirement));
+                    addRequirement(RequirementFactory.getRequirement(requirement));
         }
 
         if (node.has("cost")) {
@@ -96,7 +96,7 @@ public abstract class DefaultActionSource implements ActionSource {
     public void setPhaseLimit(Phase phase, int limitPerPhase) {
         addRequirement((actionContext) -> actionContext.getSource().checkPhaseLimit(phase, limitPerPhase));
         addCost(
-                new AbstractEffectAppender() {
+                new DelayedEffectBlueprint() {
                     @Override
                     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                         return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
@@ -107,7 +107,7 @@ public abstract class DefaultActionSource implements ActionSource {
     public void setTurnLimit(int limitPerTurn) {
         addRequirement((actionContext) -> actionContext.getSource().checkTurnLimit(limitPerTurn));
         addCost(
-            new AbstractEffectAppender() {
+            new DelayedEffectBlueprint() {
                 @Override
                 protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
                     return new IncrementTurnLimitEffect(actionContext, limitPerTurn);
