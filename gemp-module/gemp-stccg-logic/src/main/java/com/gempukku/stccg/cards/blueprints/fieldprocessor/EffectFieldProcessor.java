@@ -91,7 +91,7 @@ public class EffectFieldProcessor implements FieldProcessor {
             if (phase != null)
                 actionSource.addRequirement(
                         (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
-            actionSource.processRequirementsCostsAndEffects(node, environment);
+            actionSource.processRequirementsCostsAndEffects(node);
 
             if (!isResponse)
                 blueprint.appendInPlayPhaseAction(actionSource);

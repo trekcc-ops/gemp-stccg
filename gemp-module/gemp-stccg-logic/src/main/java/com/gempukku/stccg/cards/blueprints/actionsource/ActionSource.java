@@ -27,6 +27,4 @@ public interface ActionSource {
     Action createActionWithNewContext(PhysicalCard card, Effect effect, EffectResult effectResult);
     void addCost(EffectBlueprint effectBlueprint);
     void addEffect(EffectBlueprint effectBlueprint);
-    void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
-            throws InvalidCardDefinitionException;
 }

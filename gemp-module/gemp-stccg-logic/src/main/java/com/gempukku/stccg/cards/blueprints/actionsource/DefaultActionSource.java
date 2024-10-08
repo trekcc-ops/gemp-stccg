@@ -61,15 +61,16 @@ public abstract class DefaultActionSource implements ActionSource {
         effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
-    public void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)
+    public void processRequirementsCostsAndEffects(JsonNode node)
             throws InvalidCardDefinitionException {
+        CardBlueprintFactory environment = new CardBlueprintFactory();
 
         if (!node.has("cost") && !node.has("effect"))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
-        
+
         if (node.has("requires")) {
             for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
-                    addRequirement(environment.getRequirement(requirement));
+                addRequirement(environment.getRequirement(requirement));
         }
 
         final EffectBlueprintDeserializer effectAppenderFactory = environment.getEffectAppenderFactory();
@@ -81,7 +82,7 @@ public abstract class DefaultActionSource implements ActionSource {
                 addCost(effectBlueprint);
             }
         }
-        
+
         if (node.has("effect")) {
             for (JsonNode effect : JsonUtils.toArray(node.get("effect"))) {
                 final EffectBlueprint effectBlueprint = effectAppenderFactory.getEffectAppender(effect);
@@ -91,6 +92,7 @@ public abstract class DefaultActionSource implements ActionSource {
             }
         }
     }
+
 
     protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 

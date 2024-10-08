@@ -58,7 +58,7 @@ public class ActionSourceAppender {
             if (phase != null)
                 actionSource.addRequirement(
                         (actionContext) -> actionContext.getGameState().getCurrentPhase() == phase);
-            actionSource.processRequirementsCostsAndEffects(node, new CardBlueprintFactory());
+            actionSource.processRequirementsCostsAndEffects(node);
 
             if (!isResponse)
                 blueprint.appendInPlayPhaseAction(actionSource);
