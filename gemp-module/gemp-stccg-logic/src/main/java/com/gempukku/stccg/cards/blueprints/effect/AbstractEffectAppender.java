@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Effect;
 
 public abstract class AbstractEffectAppender implements EffectBlueprint {
     @Override
-    public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+    public final void addEffectToAction(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         if (cost)
             action.appendCost(createEffect(true, action, actionContext));
         else

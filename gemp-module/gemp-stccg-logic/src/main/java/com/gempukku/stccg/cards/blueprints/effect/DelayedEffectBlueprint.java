@@ -15,7 +15,7 @@ public abstract class DelayedEffectBlueprint implements EffectBlueprint {
     }
 
     @Override
-    public final void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+    public final void addEffectToAction(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         final UnrespondableEffect effect = new UnrespondableEffect(actionContext) {
             @Override
             protected void doPlayEffect() {

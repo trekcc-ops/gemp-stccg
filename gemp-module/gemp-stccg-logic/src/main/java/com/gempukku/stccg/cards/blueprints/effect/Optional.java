@@ -38,7 +38,7 @@ public class Optional implements EffectAppenderProducer {
                         new YesNoDecision(context.substituteText(_text)) {
                             @Override
                             protected void yes() {
-                                effectBlueprints.forEach(effectAppender -> effectAppender.appendEffect(
+                                effectBlueprints.forEach(effectAppender -> effectAppender.addEffectToAction(
                                                 cost, subAction, context.createDelegateContext(choosingPlayer)));
                             }
                         }));

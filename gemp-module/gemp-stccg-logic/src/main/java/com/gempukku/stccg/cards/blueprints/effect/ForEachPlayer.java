@@ -25,7 +25,7 @@ public class ForEachPlayer implements EffectAppenderProducer {
                 SubAction subAction = action.createSubAction();
                 for (String playerId : context.getGame().getAllPlayerIds()) {
                     effectBlueprints.forEach(effectAppender ->
-                            effectAppender.appendEffect(cost, action, context.createDelegateContext(playerId)));
+                            effectAppender.addEffectToAction(cost, action, context.createDelegateContext(playerId)));
                 }
                 return new StackActionEffect(context.getGame(), subAction);
             }

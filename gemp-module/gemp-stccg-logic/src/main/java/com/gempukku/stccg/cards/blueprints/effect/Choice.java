@@ -60,7 +60,7 @@ public class Choice implements EffectAppenderProducer {
 
                 if (playableEffectBlueprints.size() == 1) {
                     SubAction subAction = action.createSubAction();
-                    playableEffectBlueprints.getFirst().appendEffect(cost, subAction, delegateActionContext);
+                    playableEffectBlueprints.getFirst().addEffectToAction(cost, subAction, delegateActionContext);
                     context.setValueToMemory(memorize, textArray[0]);
                     return new StackActionEffect(context.getGame(), subAction);
                 }
@@ -73,7 +73,7 @@ public class Choice implements EffectAppenderProducer {
                                     @Override
                                     protected void validDecisionMade(int index, String result) {
                                         playableEffectBlueprints.get(index)
-                                                .appendEffect(cost, subAction, delegateActionContext);
+                                                .addEffectToAction(cost, subAction, delegateActionContext);
                                         context.setValueToMemory(memorize, result);
                                     }
                                 }));

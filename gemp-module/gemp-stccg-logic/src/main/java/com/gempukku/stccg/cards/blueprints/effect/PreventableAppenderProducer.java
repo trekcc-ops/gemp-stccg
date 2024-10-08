@@ -42,7 +42,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                         protected void yes() {
                                             ActionContext delegate = context.createDelegateContext(preventingPlayer);
                                             for (EffectBlueprint costAppender : costAppenders)
-                                                costAppender.appendEffect(false, subAction, delegate);
+                                                costAppender.addEffectToAction(false, subAction, delegate);
 
                                             subAction.appendEffect(
                                                     new UnrespondableEffect(context) {
@@ -51,7 +51,7 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                                             // If the prevention was not carried out, need to do the original action anyway
                                                             if (!subAction.wasCarriedOut()) {
                                                                 for (EffectBlueprint effectBlueprint : effectBlueprints)
-                                                                    effectBlueprint.appendEffect(false, subAction, context);
+                                                                    effectBlueprint.addEffectToAction(false, subAction, context);
                                                             }
                                                         }
 
@@ -69,14 +69,14 @@ public class PreventableAppenderProducer implements EffectAppenderProducer {
                                         @Override
                                         protected void no() {
                                             for (EffectBlueprint effectBlueprint : effectBlueprints)
-                                                effectBlueprint.appendEffect(false, subAction, context);
+                                                effectBlueprint.addEffectToAction(false, subAction, context);
                                         }
                                     }));
                     return new StackActionEffect(context.getGame(), subAction);
                 } else {
                     SubAction subAction = action.createSubAction();
                     for (EffectBlueprint effectBlueprint : effectBlueprints)
-                        effectBlueprint.appendEffect(false, subAction, context);
+                        effectBlueprint.addEffectToAction(false, subAction, context);
                     return new StackActionEffect(context.getGame(), subAction);
                 }
             }

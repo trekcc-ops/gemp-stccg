@@ -56,9 +56,9 @@ public abstract class DefaultActionSource implements ActionSource {
         if (_text != null)
             action.setText(actionContext.substituteText(_text));
 
-        costs.forEach(cost -> cost.appendEffect(true, action, actionContext));
+        costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
 
-        effects.forEach(actionEffect -> actionEffect.appendEffect(false, action, actionContext));
+        effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
     }
 
     public void processRequirementsCostsAndEffects(JsonNode node, CardBlueprintFactory environment)

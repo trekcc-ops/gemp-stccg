@@ -34,7 +34,7 @@ public class ExtraCostToPlay implements ModifierSourceProducer {
                 @Override
                 public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
                     for (EffectBlueprint effectBlueprint : effectBlueprints)
-                        effectBlueprint.appendEffect(true, action, actionContext);
+                        effectBlueprint.addEffectToAction(true, action, actionContext);
                 }
 
                 @Override

@@ -32,9 +32,9 @@ public class CostToEffect implements EffectAppenderProducer {
                 SubAction subAction = action.createSubAction();
 
                 for (EffectBlueprint costAppender : costAppenders)
-                    costAppender.appendEffect(true, subAction, context);
+                    costAppender.addEffectToAction(true, subAction, context);
                 for (EffectBlueprint effectBlueprint : effectBlueprints)
-                    effectBlueprint.appendEffect(false, subAction, context);
+                    effectBlueprint.addEffectToAction(false, subAction, context);
 
                 return new StackActionEffect(context.getGame(), subAction);
             }

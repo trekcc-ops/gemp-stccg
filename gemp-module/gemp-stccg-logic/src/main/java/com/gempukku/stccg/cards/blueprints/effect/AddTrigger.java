@@ -68,9 +68,9 @@ public class AddTrigger implements EffectAppenderProducer {
             private void customizeTriggerAction(AbstractCostToEffectAction action, ActionContext actionContext) {
                 action.setVirtualCardAction(true);
                 for (EffectBlueprint cost : costs)
-                    cost.appendEffect(true, action, actionContext);
+                    cost.addEffectToAction(true, action, actionContext);
                 for (EffectBlueprint effectBlueprint : effects)
-                    effectBlueprint.appendEffect(false, action, actionContext);
+                    effectBlueprint.addEffectToAction(false, action, actionContext);
             }
 
             @Override

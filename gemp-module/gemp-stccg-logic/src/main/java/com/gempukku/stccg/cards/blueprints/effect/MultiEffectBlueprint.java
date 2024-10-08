@@ -20,9 +20,9 @@ public class MultiEffectBlueprint implements EffectBlueprint {
     }
 
     @Override
-    public void appendEffect(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+    public void addEffectToAction(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         for (EffectBlueprint effectBlueprint : effectBlueprints)
-            effectBlueprint.appendEffect(cost, action, actionContext);
+            effectBlueprint.addEffectToAction(cost, action, actionContext);
     }
 
     @Override

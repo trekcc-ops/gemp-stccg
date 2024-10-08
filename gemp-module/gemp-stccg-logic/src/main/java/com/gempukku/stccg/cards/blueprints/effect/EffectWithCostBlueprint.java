@@ -31,9 +31,9 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
             return null;
         SubAction subAction = action.createSubAction();
         for (EffectBlueprint costAppender : _costAppenders)
-            costAppender.appendEffect(true, subAction, context);
+            costAppender.addEffectToAction(true, subAction, context);
         for (EffectBlueprint effectBlueprint : _effectBlueprints)
-            effectBlueprint.appendEffect(false, subAction, context);
+            effectBlueprint.addEffectToAction(false, subAction, context);
 
         return new StackActionEffect(context.getGame(), subAction);
     }
