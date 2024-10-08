@@ -14,9 +14,9 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.cards.blueprints.effectappender.AbstractEffectAppender;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppenderFactory;
+import com.gempukku.stccg.cards.blueprints.effect.AbstractEffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderFactory;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.LinkedList;

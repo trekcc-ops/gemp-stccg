@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;

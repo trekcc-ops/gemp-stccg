@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
+import com.gempukku.stccg.cards.blueprints.effect.EffectAppender;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
