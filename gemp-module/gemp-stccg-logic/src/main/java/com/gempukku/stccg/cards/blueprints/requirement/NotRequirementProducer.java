@@ -9,7 +9,7 @@ public class NotRequirementProducer extends RequirementProducer {
     public Requirement getPlayRequirement(JsonNode node) throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node, "requires");
 
-        final Requirement condition = new RequirementFactory().getRequirement(node.get("requires"));
+        final Requirement condition = RequirementFactory.getRequirement(node.get("requires"));
 
         return (actionContext) -> !condition.accepts(actionContext);
     }

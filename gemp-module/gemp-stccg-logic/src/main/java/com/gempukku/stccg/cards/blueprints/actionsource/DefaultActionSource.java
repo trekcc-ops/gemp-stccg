@@ -69,7 +69,7 @@ public abstract class DefaultActionSource implements ActionSource {
 
         if (node.has("requires")) {
             for (JsonNode requirement : JsonUtils.toArray(node.get("requires")))
-                addRequirement(new RequirementFactory().getRequirement(requirement));
+                addRequirement(RequirementFactory.getRequirement(requirement));
         }
 
         if (node.has("cost")) {
