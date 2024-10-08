@@ -1,4 +1,4 @@
-package com.gempukku.stccg.requirement;
+package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.gempukku.stccg.cards.ActionContext;
 

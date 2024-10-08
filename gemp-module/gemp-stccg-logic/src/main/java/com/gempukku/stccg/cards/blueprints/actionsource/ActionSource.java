@@ -10,7 +10,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.effectappender.EffectAppender;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 public interface ActionSource {
 

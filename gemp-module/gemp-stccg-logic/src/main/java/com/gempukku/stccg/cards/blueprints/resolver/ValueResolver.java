@@ -12,7 +12,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 public class ValueResolver {
     public static ValueSource resolveEvaluator(JsonNode value, CardBlueprintFactory environment)

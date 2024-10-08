@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.modifiers.CantDiscardCardsFromHandOrTopOfDeckModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 public class CantDiscardCardsFromHandOrTopOfDrawDeck implements ModifierSourceProducer {
     @Override

@@ -2,9 +2,9 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 public class ConditionTrigger implements TriggerCheckerProducer {
     @Override

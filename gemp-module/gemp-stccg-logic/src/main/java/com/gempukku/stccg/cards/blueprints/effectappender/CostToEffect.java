@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.StackActionEffect;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.List;
 

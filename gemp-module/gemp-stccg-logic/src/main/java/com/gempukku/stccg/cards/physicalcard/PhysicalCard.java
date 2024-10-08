@@ -1,16 +1,14 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.AttachPermanentAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
-import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
@@ -18,7 +16,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.*;
-import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.*;
 

@@ -9,7 +9,7 @@ import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 
 import java.util.*;

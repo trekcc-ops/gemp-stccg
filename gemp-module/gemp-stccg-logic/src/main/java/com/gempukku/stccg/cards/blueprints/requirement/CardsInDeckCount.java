@@ -1,4 +1,4 @@
-package com.gempukku.stccg.requirement.producers;
+package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
@@ -6,8 +6,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
-import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementProducer;
 
 public class CardsInDeckCount extends RequirementProducer {
     @Override

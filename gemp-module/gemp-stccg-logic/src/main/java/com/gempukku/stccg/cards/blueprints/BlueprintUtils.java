@@ -17,7 +17,7 @@ import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.Arrays;

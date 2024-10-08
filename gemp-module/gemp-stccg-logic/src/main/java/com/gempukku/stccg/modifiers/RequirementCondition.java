@@ -1,8 +1,8 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.requirement.Requirement;
 
 public class RequirementCondition implements Condition {
     private final Requirement[] requirements;

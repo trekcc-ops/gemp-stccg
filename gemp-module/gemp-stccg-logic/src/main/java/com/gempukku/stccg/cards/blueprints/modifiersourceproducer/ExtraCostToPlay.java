@@ -11,7 +11,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.modifiers.AbstractExtraPlayCostModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
-import com.gempukku.stccg.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.gempukku.stccg.requirement.producers;
+package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.*;
@@ -7,8 +7,6 @@ import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.RequirementProducer;
 
 public class HasCardInDiscard extends RequirementProducer {
     @Override
