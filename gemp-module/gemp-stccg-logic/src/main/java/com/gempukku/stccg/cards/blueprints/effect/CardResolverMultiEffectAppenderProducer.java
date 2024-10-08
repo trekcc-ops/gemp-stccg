@@ -75,7 +75,7 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
 
         /* Validate allowed fields in the JSON. An InvalidCardDefinitionException will be thrown if the JSON
             definition has any fields that the code does not expect. */
-        validateAllowedFields(effectObject, environment, effectType);
+        validateAllowedFields(effectObject, effectType);
 
         // Get blueprint parameters
         final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
@@ -229,14 +229,14 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         return result;
     }
 
-    private void validateAllowedFields(JsonNode effectObject, CardBlueprintFactory environment, EffectType effectType)
+    private void validateAllowedFields(JsonNode effectObject, EffectType effectType)
             throws InvalidCardDefinitionException {
         if (effectType == EffectType.DISCARDFROMHAND) {
             BlueprintUtils.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize");
-            environment.validateRequiredFields(effectObject, "forced");
+            BlueprintUtils.validateRequiredFields(effectObject, "forced");
         } else if (effectType == EffectType.RETURNTOHAND) {
             BlueprintUtils.validateAllowedFields(effectObject, "filter", "count");
-            environment.validateRequiredFields(effectObject, "filter");
+            BlueprintUtils.validateRequiredFields(effectObject, "filter");
         }else {
             BlueprintUtils.validateAllowedFields(effectObject, "count", "filter", "reveal", "memorize");
         }

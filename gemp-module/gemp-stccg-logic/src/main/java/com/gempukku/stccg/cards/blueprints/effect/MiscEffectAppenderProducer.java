@@ -46,7 +46,7 @@ public class MiscEffectAppenderProducer implements EffectAppenderProducer {
         switch (effectType) {
             case DISCARDCARDATRANDOMFROMHAND:
                 BlueprintUtils.validateAllowedFields(effectObject, "forced", "count", "memorize");
-                environment.validateRequiredFields(effectObject, "forced");
+                BlueprintUtils.validateRequiredFields(effectObject, "forced");
                 break;
             case DRAWCARDS, PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REORDERTOPCARDSOFDRAWDECK:
                 BlueprintUtils.validateAllowedFields(effectObject, "count");

@@ -24,7 +24,6 @@ import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -120,22 +119,7 @@ public class CardBlueprintFactory {
     }
 
 
-    public void validateRequiredFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
-        List<String> keys = new ArrayList<>();
-        node.fieldNames().forEachRemaining(keys::add);
-        for (String field : fields) {
-            if (!keys.contains(field))
-                throw new InvalidCardDefinitionException("Missing field: " + field);
-        }
-    }
-
-
     public ModifierSource getModifier(JsonNode node) throws InvalidCardDefinitionException {
-        return getModifierSource(node);
-    }
-
-    private ModifierSource getModifierSource(JsonNode node)
-            throws InvalidCardDefinitionException {
         ModifierSourceProcessorType modifierType = BlueprintUtils.getEnum(ModifierSourceProcessorType.class, node, "type");
         validateAllowedFields(node, modifierType, this);
 
@@ -172,7 +156,7 @@ public class CardBlueprintFactory {
                 throw new InvalidCardDefinitionException("Unable to resolve modifier of type: " + modifierType);
         }
     }
-    
+
     private enum ModifierSourceProcessorType { CANTPLAYCARDS, GAINICON, MODIFYSTRENGTH, OPPONENTMAYNOTDISCARD }
     
     private void validateAllowedFields(JsonNode node, ModifierSourceProcessorType modifierType,
