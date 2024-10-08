@@ -25,7 +25,7 @@ public class ShuffleCardGroupIntoDrawDeck implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
 
         BlueprintUtils.validateAllowedFields(effectObject, "player");
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
+        final PlayerSource playerSource = BlueprintUtils.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

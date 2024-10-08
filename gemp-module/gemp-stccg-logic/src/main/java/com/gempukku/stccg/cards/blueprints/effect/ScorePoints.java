@@ -19,7 +19,7 @@ public class ScorePoints implements EffectAppenderProducer {
         BlueprintUtils.validateAllowedFields(effectObject, "amount", "player");
 
         final ValueSource amount = ValueResolver.resolveEvaluator(effectObject.get("amount"), 1, environment);
-        final PlayerSource playerSource = environment.getPlayerSource(effectObject, "player", true);
+        final PlayerSource playerSource = BlueprintUtils.getPlayerSource(effectObject, "player", true);
 
         return new DefaultDelayedAppender() {
             @Override

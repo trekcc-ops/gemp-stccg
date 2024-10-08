@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.common.filterable.Filterable;
 
@@ -15,15 +16,15 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
     @Override
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
+        FilterFactory filterFactory = new FilterFactory();
         BlueprintUtils.validateAllowedFields(value, "filter", "player", "on", "memorize");
 
-        final PlayerSource playingPlayer = environment.getPlayerSource(value, "player",true);
-        final FilterableSource filter =
-                environment.getFilterFactory().parseSTCCGFilter(value.get("filter").textValue());
+        final PlayerSource playingPlayer = BlueprintUtils.getPlayerSource(value, "player",true);
+        final FilterableSource filter = filterFactory.parseSTCCGFilter(value.get("filter").textValue());
         final FilterableSource onFilter;
 
         if (value.has("on")) {
-            onFilter = environment.getFilterFactory().parseSTCCGFilter(value.get("on").textValue());
+            onFilter = filterFactory.parseSTCCGFilter(value.get("on").textValue());
         } else {
             onFilter = null;
         }

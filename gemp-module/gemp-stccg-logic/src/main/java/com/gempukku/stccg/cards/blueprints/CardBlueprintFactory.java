@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
-import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -47,23 +46,11 @@ public class CardBlueprintFactory {
     }
 
     public FilterableSource getCardFilterableIfChooseOrAll(String filter) throws InvalidCardDefinitionException {
-        FilterableSource typeFilter = null;
-        if (filter.startsWith("all(") || filter.startsWith("choose("))
-            typeFilter = getFilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")")));
-        // TODO - Code below may be needed for 1E cards that rely on this method
-//        typeFilter = getFilterFactory().parseSTCCGFilter(filter);
-        return typeFilter;
+        return (filter.startsWith("all(") || filter.startsWith("choose(")) ?
+                getFilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
+                null;
     }
 
-
-    public PlayerSource getPlayerSource(JsonNode parentNode, String key, boolean useYouAsDefault)
-            throws InvalidCardDefinitionException {
-        String playerString;
-        if (parentNode.get(key) == null && useYouAsDefault)
-            playerString = "you";
-        else playerString = parentNode.get(key).textValue();
-        return PlayerResolver.resolvePlayer(playerString);
-    }
 
     public Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
         return requirementFactory.getRequirement(object);

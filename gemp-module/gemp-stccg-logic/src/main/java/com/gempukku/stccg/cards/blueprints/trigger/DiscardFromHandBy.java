@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 
 public class DiscardFromHandBy implements TriggerCheckerProducer {
@@ -17,9 +18,9 @@ public class DiscardFromHandBy implements TriggerCheckerProducer {
         final String memorize = value.get("memorize").textValue();
         final String byFilter = value.get("by").textValue();
 
-        PlayerSource playerSource = environment.getPlayerSource(value, "player", true);
+        PlayerSource playerSource = BlueprintUtils.getPlayerSource(value, "player", true);
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(value, "any");
-        final FilterableSource byFilterableSource = environment.getFilterFactory().generateFilter(byFilter);
+        final FilterableSource byFilterableSource = new FilterFactory().generateFilter(byFilter);
 
         return new TriggerChecker() {
             @Override

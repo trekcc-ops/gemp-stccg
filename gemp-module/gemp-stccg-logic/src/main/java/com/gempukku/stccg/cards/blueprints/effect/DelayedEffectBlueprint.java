@@ -11,9 +11,6 @@ import java.util.List;
 public abstract class DelayedEffectBlueprint implements EffectBlueprint {
     protected String _text;
 
-    public DelayedEffectBlueprint() {
-    }
-
     @Override
     public final void addEffectToAction(boolean cost, CostToEffectAction action, ActionContext actionContext) {
         final UnrespondableEffect effect = new UnrespondableEffect(actionContext) {
