@@ -276,7 +276,7 @@ export default class GameAnimations {
                     var card = cardDiv.data("card");
                     var pos = cardDiv.position();
 
-                    oldValues["zIndex"] = cardDiv.css("zIndex");
+                    oldValues["z-index"] = cardDiv.css("z-index");
                     oldValues["left"] = pos.left;
                     oldValues["top"] = pos.top;
                     oldValues["width"] = cardDiv.width();
@@ -292,10 +292,10 @@ export default class GameAnimations {
                     $(cardDiv).css(
                         {
                             position:"absolute",
-                            left:(gameWidth / 2 - cardWidth / 4),
-                            top:gameHeight * (3 / 8),
-                            width:cardWidth / 2,
-                            height:cardHeight / 2,
+                            left: "" + (gameWidth / 2 - cardWidth / 4) + "px",
+                            top: "" + (gameHeight * (3 / 8)) + "px",
+                            width: "" + (cardWidth / 2) + "px",
+                            height: "" + (cardHeight / 2) + "px",
                             "z-index":100,
                             opacity:0});
 
@@ -333,7 +333,7 @@ export default class GameAnimations {
                             duration:that.getAnimationLength(that.putCardIntoPlayDuration / 4),
                             easing:"linear",
                             step:function (now, fx) {
-                                var state = fx.state;
+                                var state = 1;
                                 layoutCardElem(cardDiv,
                                     startLeft + (oldValues["left"] - startLeft) * state,
                                     startTop + (oldValues["top"] - startTop) * state,
@@ -344,8 +344,7 @@ export default class GameAnimations {
                 }).queue(
                 function (next) {
                     var cardDiv = getCardDivFromId(cardId);
-                    $(cardDiv).css({zIndex:oldValues["zIndex"]});
-                    next();
+                    $(cardDiv).css({"z-index": oldValues["z-index"]});
                 });
         }
     }
