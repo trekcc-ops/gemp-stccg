@@ -147,7 +147,7 @@ public final class BlueprintUtils {
         ModifierSourceProcessorType modifierType = getEnum(ModifierSourceProcessorType.class, node, "type");
         validateAllowedFields(node, modifierType);
 
-        final Requirement[] requirements = new RequirementFactory().getRequirements(node);
+        final Requirement[] requirements = RequirementFactory.getRequirements(node);
         final FilterableSource filterableSource;
 
         switch(modifierType) {

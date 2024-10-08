@@ -22,7 +22,7 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
         BlueprintUtils.validateAllowedFields(node, "cost", "effect", "requires");
         _costAppenders = EffectBlueprintDeserializer.getEffectBlueprints(node.get("cost"));
         _effectBlueprints = EffectBlueprintDeserializer.getEffectBlueprints(node.get("effect"));
-        _requirements = new RequirementFactory().getRequirements(node);
+        _requirements = RequirementFactory.getRequirements(node);
     }
     @Override
     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {

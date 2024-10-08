@@ -94,7 +94,7 @@ public class ValueResolver {
                 };
             } else if (type.equalsIgnoreCase("requires")) {
                 BlueprintUtils.validateAllowedFields(object, "requires", "true", "false");
-                final Requirement[] conditions = new RequirementFactory().getRequirements(object);
+                final Requirement[] conditions = RequirementFactory.getRequirements(object);
                 ValueSource trueValue = resolveEvaluator(object.get("true"));
                 ValueSource falseValue = resolveEvaluator(object.get("false"));
                 return actionContext -> (Evaluator) new Evaluator(actionContext) {

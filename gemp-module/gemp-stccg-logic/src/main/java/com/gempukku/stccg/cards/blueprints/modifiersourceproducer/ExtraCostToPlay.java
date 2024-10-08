@@ -24,7 +24,7 @@ public class ExtraCostToPlay implements ModifierSourceProducer {
         BlueprintUtils.validateAllowedFields(node, "requires", "cost", "filter");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(node);
-        final Requirement[] requirements = new RequirementFactory().getRequirements(node);
+        final Requirement[] requirements = RequirementFactory.getRequirements(node);
         final List<EffectBlueprint> effectBlueprints = 
                 EffectBlueprintDeserializer.getEffectBlueprints(node.get("cost"));
 

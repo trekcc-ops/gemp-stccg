@@ -21,7 +21,7 @@ public class CantBeDiscarded implements ModifierSourceProducer {
         final FilterableSource byFilterableSource =
                 new FilterFactory().generateFilter(BlueprintUtils.getString(object, "by", "any"));
         final Requirement[] requirements =
-                new RequirementFactory().getRequirements(object);
+                RequirementFactory.getRequirements(object);
 
         return (actionContext) -> new CantDiscardFromPlayModifier(actionContext.getSource(),
                 "Can't be discarded",

@@ -13,7 +13,7 @@ public class ConditionTrigger implements TriggerCheckerProducer {
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "requires");
 
-        final Requirement[] requirements = new RequirementFactory().getRequirements(value);
+        final Requirement[] requirements = RequirementFactory.getRequirements(value);
 
         return new TriggerChecker() {
             @Override

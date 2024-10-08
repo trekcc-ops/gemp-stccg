@@ -15,7 +15,7 @@ public class CantDiscardCardsFromHandOrTopOfDrawDeck implements ModifierSourcePr
         BlueprintUtils.validateAllowedFields(object, "requires", "filter");
 
         final FilterableSource filterableSource = BlueprintUtils.getFilterable(object);
-        final Requirement[] requirements = new RequirementFactory().getRequirements(object);
+        final Requirement[] requirements = RequirementFactory.getRequirements(object);
 
         return actionContext ->
                 new CantDiscardCardsFromHandOrTopOfDeckModifier(actionContext.getSource(),

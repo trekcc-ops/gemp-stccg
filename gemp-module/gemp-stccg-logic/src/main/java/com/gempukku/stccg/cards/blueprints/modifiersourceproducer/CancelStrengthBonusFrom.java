@@ -17,7 +17,7 @@ public class CancelStrengthBonusFrom implements ModifierSourceProducer {
 
         final FilterableSource filterableSource =
                 new FilterFactory().generateFilter(node.get("from").textValue());
-        final Requirement[] requirements = new RequirementFactory().getRequirements(node);
+        final Requirement[] requirements = RequirementFactory.getRequirements(node);
 
         return actionContext -> new CancelStrengthBonusSourceModifier(actionContext.getSource(),
                 new RequirementCondition(requirements, actionContext),

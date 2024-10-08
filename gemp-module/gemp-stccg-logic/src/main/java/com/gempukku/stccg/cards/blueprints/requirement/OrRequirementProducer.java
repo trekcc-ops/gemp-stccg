@@ -10,7 +10,7 @@ public class OrRequirementProducer extends RequirementProducer {
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node, "requires");
 
-        final Requirement[] requirements = new RequirementFactory().getRequirements(node);
+        final Requirement[] requirements = RequirementFactory.getRequirements(node);
 
         return (actionContext) -> actionContext.acceptsAnyRequirements(requirements);
     }

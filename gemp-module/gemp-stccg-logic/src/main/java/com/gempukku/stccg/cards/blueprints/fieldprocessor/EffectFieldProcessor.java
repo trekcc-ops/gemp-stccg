@@ -36,7 +36,7 @@ public class EffectFieldProcessor implements FieldProcessor {
                     break;
                 case "playoutofsequence":
                     BlueprintUtils.validateAllowedFields(effect, "requires");
-                    final Requirement[] conditions = new RequirementFactory().getRequirements(effect);
+                    final Requirement[] conditions = RequirementFactory.getRequirements(effect);
                     blueprint.appendPlayOutOfSequenceCondition(actionContext -> actionContext.acceptsAllRequirements(conditions));
                     break;
                 case "seed":
