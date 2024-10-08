@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.revealcards.RevealCardsFromYourHandEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
@@ -77,17 +78,17 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
         validateAllowedFields(effectObject, environment, effectType);
 
         // Get blueprint parameters
-        final String memory = environment.getString(effectObject, "memorize", "_temp");
+        final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
         final PlayerSource selectingPlayer = environment.getSelectingPlayerSource(effectObject);
         final PlayerSource targetPlayer = environment.getTargetPlayerSource(effectObject);
         final String defaultText = getDefaultText(effectType);
 
         /* TODO - "reveal" indicates whether the card title will be visible in the chat. The default for this should
             be determined by the effect type, zone, player(s), and/or other parameters, not always true. */
-        final boolean reveal = environment.getBoolean(effectObject, "reveal", true);
-        final boolean forced = environment.getBoolean(effectObject, "forced", false);
+        final boolean reveal = BlueprintUtils.getBoolean(effectObject, "reveal", true);
+        final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
 
-        String filter = environment.getString(effectObject, "filter", "choose(any)");
+        String filter = BlueprintUtils.getString(effectObject, "filter", "choose(any)");
         FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);

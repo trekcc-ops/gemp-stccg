@@ -35,8 +35,8 @@ public class PlayCardFromDiscard implements EffectAppenderProducer {
         final String onFilter = effectObject.get("on").textValue();
         final ValueSource costModifierSource =
                 ValueResolver.resolveEvaluator(effectObject.get("cost"), 0, environment);
-        final String memorize = environment.getString(effectObject, "memorize", "_temp");
-        final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
+        final String memorize = BlueprintUtils.getString(effectObject, "memorize", "_temp");
+        final boolean noCheck = BlueprintUtils.getBoolean(effectObject, "nocheck", false);
 
         // TODO - LotR "nocheck" property should be in the overall function, not the individual Json definitions
         ValueSource countSource = new ConstantValueSource(1);

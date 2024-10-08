@@ -28,8 +28,8 @@ public abstract class PlayCardEffectAppenderProducer implements EffectAppenderPr
         final String onFilter = effectObject.get("on").textValue();
         final ValueSource costModifierSource =
                 ValueResolver.resolveEvaluator(effectObject.get("cost"), 0, environment);
-        final String memorize = environment.getString(effectObject, "memorize", "_temp");
-        final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
+        final String memorize = BlueprintUtils.getString(effectObject, "memorize", "_temp");
+        final boolean noCheck = BlueprintUtils.getBoolean(effectObject, "nocheck", false);
 
         ValueSource countSource = new ConstantValueSource(1);
         if(noCheck)

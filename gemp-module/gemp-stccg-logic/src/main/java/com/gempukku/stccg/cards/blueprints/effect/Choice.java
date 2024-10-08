@@ -10,6 +10,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
 import com.gempukku.stccg.actions.StackActionEffect;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -21,10 +22,10 @@ public class Choice implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "player", "effects", "texts", "memorize");
 
-        final String player = environment.getString(node, "player", "you");
+        final String player = BlueprintUtils.getString(node, "player", "you");
         final JsonNode[] effectArray = environment.getNodeArray(node.get("effects"));
         final String[] textArray = environment.getStringArray(node.get("texts"));
-        final String memorize = environment.getString(node, "memorize", "_temp");
+        final String memorize = BlueprintUtils.getString(node, "memorize", "_temp");
 
         if (effectArray.length != textArray.length)
             throw new InvalidCardDefinitionException("Number of texts and effects does not match in choice effect");

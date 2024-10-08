@@ -1,17 +1,18 @@
 package com.gempukku.stccg.cards.blueprints.modifiersourceproducer;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.modifiers.AbstractExtraPlayCostModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class ExtraCostToPlay implements ModifierSourceProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "requires", "cost", "filter");
 
-        final FilterableSource filterableSource = environment.getFilterable(node);
+        final FilterableSource filterableSource = BlueprintUtils.getFilterable(node);
         final Requirement[] requirements = environment.getRequirementsFromJSON(node);
         final List<EffectBlueprint> effectBlueprints = environment.getEffectAppendersFromJSON(node.get("cost"));
 

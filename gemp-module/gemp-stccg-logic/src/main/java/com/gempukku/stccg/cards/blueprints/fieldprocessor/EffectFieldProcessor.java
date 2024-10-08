@@ -2,17 +2,20 @@ package com.gempukku.stccg.cards.blueprints.fieldprocessor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.actionsource.*;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class EffectFieldProcessor implements FieldProcessor {
 
@@ -53,11 +56,11 @@ public class EffectFieldProcessor implements FieldProcessor {
         List<DefaultActionSource> actionSourceList = new LinkedList<>();
         boolean isResponse = node.has("trigger");
 
-        String text = environment.getString(node, "text");
-        final boolean optional = environment.getBoolean(node, "optional", false);
-        final int limitPerPhase = environment.getInteger(node, "limitPerPhase", 0);
-        final int limitPerTurn = environment.getInteger(node, "limitPerTurn", 0);
-        final Phase phase = environment.getEnum(Phase.class, environment.getString(node, "phase"), "phase");
+        String text = BlueprintUtils.getString(node, "text");
+        final boolean optional = BlueprintUtils.getBoolean(node, "optional", false);
+        final int limitPerPhase = BlueprintUtils.getInteger(node, "limitPerPhase", 0);
+        final int limitPerTurn = BlueprintUtils.getInteger(node, "limitPerTurn", 0);
+        final Phase phase = environment.getEnum(Phase.class, BlueprintUtils.getString(node, "phase"), "phase");
 
         if (!isResponse) {
             actionSourceList.add(new ActivateCardActionSource());

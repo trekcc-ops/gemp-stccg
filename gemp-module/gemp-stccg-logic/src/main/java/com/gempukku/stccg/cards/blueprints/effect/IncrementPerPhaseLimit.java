@@ -2,12 +2,14 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
 
 public class IncrementPerPhaseLimit implements EffectAppenderProducer {
     @Override
@@ -16,7 +18,7 @@ public class IncrementPerPhaseLimit implements EffectAppenderProducer {
         environment.validateAllowedFields(effectObject, "limit", "perPlayer");
 
         final ValueSource limitSource = ValueResolver.resolveEvaluator(effectObject.get("limit"), 1, environment);
-        final boolean perPlayer = environment.getBoolean(effectObject, "perPlayer", false);
+        final boolean perPlayer = BlueprintUtils.getBoolean(effectObject, "perPlayer", false);
 
         return new DefaultDelayedAppender() {
             @Override

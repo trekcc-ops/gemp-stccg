@@ -6,11 +6,12 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.ShuffleDeckEffect;
 import com.gempukku.stccg.actions.revealcards.LookAtTopCardOfADeckEffect;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class LookAtDrawDeck implements EffectAppenderProducer {
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "player", "memorize");
 
-        final String deck = environment.getString(effectObject, "player", "you");
+        final String deck = BlueprintUtils.getString(effectObject, "player", "you");
         final String memorize = effectObject.get("memorize").textValue();
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(deck);

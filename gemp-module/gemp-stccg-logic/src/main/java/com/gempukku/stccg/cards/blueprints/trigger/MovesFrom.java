@@ -1,7 +1,9 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 
@@ -10,7 +12,7 @@ public class MovesFrom implements TriggerCheckerProducer {
     public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment) throws InvalidCardDefinitionException {
         environment.validateAllowedFields(value, "filter");
 
-        final FilterableSource filterableSource = environment.getFilterable(value, "any");
+        final FilterableSource filterableSource = BlueprintUtils.getFilterable(value, "any");
 
         return new TriggerChecker() {
             @Override

@@ -2,14 +2,15 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.actions.turn.AddUntilEndOfPhaseActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilEndOfTurnActionProxyEffect;
 import com.gempukku.stccg.actions.turn.AddUntilStartOfPhaseActionProxyEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
 
 import java.util.Collections;
@@ -25,7 +26,7 @@ public class AddTrigger implements EffectAppenderProducer {
         final TimeResolver.Time until = TimeResolver.resolveTime(node.get("until"), "end(current)");
         final TriggerChecker trigger =
                 environment.getTriggerCheckerFactory().getTriggerChecker(node.get("trigger"), environment);
-        final boolean optional = environment.getBoolean(node, "optional", false);
+        final boolean optional = BlueprintUtils.getBoolean(node, "optional", false);
 
         final Requirement[] requirements = environment.getRequirementsFromJSON(node);
         final List<EffectBlueprint> costs = environment.getEffectAppendersFromJSON(node.get("cost"));

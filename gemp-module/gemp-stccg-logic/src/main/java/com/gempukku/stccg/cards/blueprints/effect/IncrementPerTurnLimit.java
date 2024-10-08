@@ -2,11 +2,12 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 public class IncrementPerTurnLimit implements EffectAppenderProducer {
     @Override
@@ -14,7 +15,7 @@ public class IncrementPerTurnLimit implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(effectObject, "limit");
 
-        final int limit = environment.getInteger(effectObject, "limit", 1);
+        final int limit = BlueprintUtils.getInteger(effectObject, "limit", 1);
 
         return new DefaultDelayedAppender() {
             @Override

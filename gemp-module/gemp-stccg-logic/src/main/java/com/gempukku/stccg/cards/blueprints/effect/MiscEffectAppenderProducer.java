@@ -12,7 +12,10 @@ import com.gempukku.stccg.actions.revealcards.LookAtOpponentsHandEffect;
 import com.gempukku.stccg.actions.revealcards.LookAtRandomCardsFromHandEffect;
 import com.gempukku.stccg.actions.revealcards.LookAtTopCardOfADeckEffect;
 import com.gempukku.stccg.actions.revealcards.RevealBottomCardsOfDrawDeckEffect;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
@@ -56,11 +59,11 @@ public class MiscEffectAppenderProducer implements EffectAppenderProducer {
                 break;
         }
 
-        final String memory = environment.getString(effectObject, "memorize", "_temp");
+        final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
         final PlayerSource selectingPlayer = environment.getSelectingPlayerSource(effectObject);
         final PlayerSource targetPlayer = environment.getTargetPlayerSource(effectObject);
         final ValueSource countSource = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment);
-        final boolean forced = environment.getBoolean(effectObject, "forced", false);
+        final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
         
         return new DefaultDelayedAppender() {
             @Override

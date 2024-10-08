@@ -1,12 +1,15 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.playcard.PlayCardResult;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.playcard.PlayCardResult;
 
 public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
     @Override
@@ -24,7 +27,7 @@ public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
         } else {
             onFilter = null;
         }
-        final String memorize = environment.getString(value, "memorize");
+        final String memorize = BlueprintUtils.getString(value, "memorize");
 
         return new TriggerChecker() {
             @Override

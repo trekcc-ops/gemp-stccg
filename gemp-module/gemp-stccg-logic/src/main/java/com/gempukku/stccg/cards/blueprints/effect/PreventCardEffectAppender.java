@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.PreventableCardEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
@@ -23,7 +24,7 @@ public class PreventCardEffectAppender implements EffectAppenderProducer {
         environment.validateAllowedFields(effectObject, "filter", "memorize");
 
         String filter = effectObject.get("filter").textValue();
-        final String memory = environment.getString(effectObject, "memorize", "_temp");
+        final String memory = BlueprintUtils.getString(effectObject, "memorize", "_temp");
         FilterableSource cardFilter = environment.getCardFilterableIfChooseOrAll(filter);
 
         MultiEffectBlueprint result = new MultiEffectBlueprint();

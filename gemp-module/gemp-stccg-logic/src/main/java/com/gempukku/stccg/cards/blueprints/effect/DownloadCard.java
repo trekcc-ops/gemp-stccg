@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.ConstantValueSource;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
@@ -30,7 +31,7 @@ public class DownloadCard implements EffectAppenderProducer {
         environment.validateAllowedFields(effectObject, "filter", "nocheck");
 
         final String filter = effectObject.get("filter").textValue();
-        final boolean noCheck = environment.getBoolean(effectObject, "nocheck", false);
+        final boolean noCheck = BlueprintUtils.getBoolean(effectObject, "nocheck", false);
         final String memorize = "_temp";
 
         ValueSource countSource = new ConstantValueSource(1);

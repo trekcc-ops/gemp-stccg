@@ -1,24 +1,28 @@
 package com.gempukku.stccg.cards.blueprints.effect.modifier;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.ConstantValueSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.MultiEffectBlueprint;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Keyword;
 import com.gempukku.stccg.modifiers.KeywordModifier;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -35,7 +39,7 @@ public class AddKeyword implements EffectAppenderProducer {
         final ValueSource valueSource =
                 ValueResolver.resolveEvaluator(node.get("count"), 1, environment);
         final String filter = node.get("filter").textValue();
-        final String memory = environment.getString(node, "memorize", "_temp");
+        final String memory = BlueprintUtils.getString(node, "memorize", "_temp");
         final String keywordString = node.get("keyword").textValue();
         final TimeResolver.Time until = TimeResolver.resolveTime(node.get("until"), "end(current)");
 

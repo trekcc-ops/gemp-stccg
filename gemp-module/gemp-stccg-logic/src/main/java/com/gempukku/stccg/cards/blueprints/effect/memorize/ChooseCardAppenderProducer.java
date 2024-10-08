@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -42,8 +43,8 @@ public class ChooseCardAppenderProducer implements EffectAppenderProducer {
 
 
         final String text = switch (effectType) {
-            case CHOOSEACTIVECARDS -> environment.getString(effectObject, "text");
-            case CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK -> environment.getString(
+            case CHOOSEACTIVECARDS -> BlueprintUtils.getString(effectObject, "text");
+            case CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK -> BlueprintUtils.getString(
                     effectObject, "text", "Choose cards from " + effectType.getZoneName());
         };
 
@@ -52,11 +53,11 @@ public class ChooseCardAppenderProducer implements EffectAppenderProducer {
 
         return switch (effectType) {
             case CHOOSEACTIVECARDS ->
-                    CardResolver.resolveCardsInPlay(environment.getString(effectObject, "filter", "choose(any)"),
+                    CardResolver.resolveCardsInPlay(BlueprintUtils.getString(effectObject, "filter", "choose(any)"),
                             ValueResolver.resolveEvaluator(effectObject.get("count"), 1, environment),
                             memorize, ActionContext::getPerformingPlayerId, text,
                             environment.getCardFilterableIfChooseOrAll(
-                                    environment.getString(effectObject, "filter", "choose(any)")));
+                                    BlueprintUtils.getString(effectObject, "filter", "choose(any)")));
             case CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK ->
                     environment.buildTargetCardAppender(effectObject, selectingPlayer, targetPlayer, text,
                             effectType.fromZone, memorize, false);

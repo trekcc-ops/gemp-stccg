@@ -5,12 +5,13 @@ import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.effect.DefaultDelayedAppender;
-import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectAppenderProducer;
+import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filter;
@@ -26,7 +27,7 @@ public class GetCardsFromTopOfDeck implements EffectAppenderProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(node, "filter", "memorize");
 
-        final FilterableSource filterableSource = environment.getFilterable(node);
+        final FilterableSource filterableSource = BlueprintUtils.getFilterable(node);
         final String memorize = node.get("memorize").textValue();
 
         return new DefaultDelayedAppender() {

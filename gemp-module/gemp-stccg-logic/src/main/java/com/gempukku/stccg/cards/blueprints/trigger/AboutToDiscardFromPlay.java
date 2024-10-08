@@ -1,7 +1,9 @@
 package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 
@@ -11,10 +13,10 @@ public class AboutToDiscardFromPlay implements TriggerCheckerProducer {
             throws InvalidCardDefinitionException {
         environment.validateAllowedFields(value, "source", "filter");
 
-        String source = environment.getString(value, "source", "any");
+        String source = BlueprintUtils.getString(value, "source", "any");
 
         final FilterableSource sourceFilter = environment.getFilterFactory().generateFilter(source);
-        final FilterableSource affectedFilter = environment.getFilterable(value);
+        final FilterableSource affectedFilter = BlueprintUtils.getFilterable(value);
 
         return new TriggerChecker() {
             @Override

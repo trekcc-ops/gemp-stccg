@@ -6,15 +6,16 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
-import com.gempukku.stccg.cards.blueprints.fieldprocessor.*;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.CardResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.modifiers.CantDiscardFromPlayByPlayerModifier;
@@ -22,9 +23,11 @@ import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Function;
 
 public class CardBlueprintFactory {
@@ -54,75 +57,6 @@ public class CardBlueprintFactory {
         return typeFilter;
     }
 
-    private static class NullProcessor implements FieldProcessor {
-        @Override
-        public void processField(String key, JsonNode value, CardBlueprint blueprint,
-                                 CardBlueprintFactory environment) {
-            // Ignore
-        }
-    }
-
-    public int getInteger(JsonNode parentNode, String key, int defaultValue) throws InvalidCardDefinitionException {
-        if (!parentNode.has(key))
-            return defaultValue;
-        else {
-            JsonNode node = parentNode.get(key);
-            if (!node.isInt())
-                throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
-            else return node.asInt(defaultValue);
-        }
-    }
-
-
-    public String getString(JsonNode parentNode, String key) throws InvalidCardDefinitionException {
-        if (!parentNode.has(key))
-            return null;
-        else return parentNode.get(key).textValue();
-    }
-
-    public String getString(JsonNode parentNode, String key, String defaultValue)
-            throws InvalidCardDefinitionException {
-        if (parentNode == null || !parentNode.has(key))
-            return defaultValue;
-        else
-            return parentNode.get(key).textValue();
-    }
-
-    public FilterableSource getFilterable(JsonNode node) throws InvalidCardDefinitionException {
-        return new FilterFactory().generateFilter(node.get("filter").textValue());
-    }
-
-
-    public FilterableSource getFilterable(JsonNode node, String defaultValue)
-            throws InvalidCardDefinitionException {
-        if (!node.has("filter"))
-            return new FilterFactory().generateFilter(defaultValue);
-        else return getFilterable(node);
-    }
-
-
-    public boolean getBoolean(JsonNode parentNode, String key) throws InvalidCardDefinitionException {
-        return getBoolean(parentNode, key, null);
-    }
-
-    public boolean getBoolean(JsonNode parentNode, String key, boolean defaultValue)
-            throws InvalidCardDefinitionException {
-        return getBoolean(parentNode, key, Boolean.valueOf(defaultValue));
-    }
-
-    public boolean getBoolean(JsonNode parentNode, String key, Boolean defaultValue)
-            throws InvalidCardDefinitionException {
-        if (parentNode.has(key)) {
-            JsonNode node = parentNode.get(key);
-            if (!node.isBoolean())
-                throw new InvalidCardDefinitionException("Unknown type in " + key + " field");
-            else return node.asBoolean();
-        } else {
-            if (defaultValue != null)
-                return defaultValue;
-            else throw new InvalidCardDefinitionException("Value of " + key + " is required");
-        }
-    }
 
     public <T extends Enum<T>> T getEnum(Class<T> enumClass, JsonNode parentNode, String key)
             throws InvalidCardDefinitionException {
@@ -262,7 +196,7 @@ public class CardBlueprintFactory {
 
         switch(modifierType) {
             case CANTPLAYCARDS:
-                filterableSource = getFilterable(node);
+                filterableSource = BlueprintUtils.getFilterable(node);
                 return (actionContext) -> new CantPlayCardsModifier(actionContext.getSource(),
                         new RequirementCondition(requirements, actionContext),
                         filterableSource.getFilterable(actionContext));
@@ -274,7 +208,7 @@ public class CardBlueprintFactory {
                         new RequirementCondition(requirements, actionContext), icon);
             case MODIFYSTRENGTH:
                 ValueSource valueSource = ValueResolver.resolveEvaluator(node.get("amount"));
-                filterableSource = getFilterable(node);
+                filterableSource = BlueprintUtils.getFilterable(node);
                 return (actionContext) -> {
                     final Evaluator evaluator = valueSource.getEvaluator(actionContext);
                     return new StrengthModifier(actionContext,
@@ -282,7 +216,7 @@ public class CardBlueprintFactory {
                             new RequirementCondition(requirements, actionContext), evaluator);
                 };
             case OPPONENTMAYNOTDISCARD:
-                filterableSource = getFilterable(node);
+                filterableSource = BlueprintUtils.getFilterable(node);
                 return (actionContext) -> new CantDiscardFromPlayByPlayerModifier(
                         actionContext.getSource(), "Can't be discarded by opponent",
                         filterableSource.getFilterable(actionContext), actionContext.getPerformingPlayerId());
@@ -359,9 +293,9 @@ public class CardBlueprintFactory {
         // TODO - Does this work properly? Specifically allowing player to see what's in the deck even if no valid cards exist?
 
 
-        String filter = getString(node, "filter", "choose(any)");
+        String filter = BlueprintUtils.getString(node, "filter", "choose(any)");
         FilterableSource cardFilter = getCardFilterableIfChooseOrAll(filter);
-        boolean optional = getBoolean(node, "optional", false);
+        boolean optional = BlueprintUtils.getBoolean(node, "optional", false);
 
         Function<ActionContext, List<PhysicalCard>> cardSource = getCardSourceFromZone(targetPlayer, fromZone, filter);
 
