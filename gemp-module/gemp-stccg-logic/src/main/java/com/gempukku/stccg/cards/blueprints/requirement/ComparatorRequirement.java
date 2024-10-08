@@ -1,33 +1,38 @@
 package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 
-public class ComparatorRequirementProducer extends RequirementProducer {
+public class ComparatorRequirement implements Requirement {
 
     private enum ComparatorType {
         ISEQUAL, ISGREATERTHAN, ISGREATERTHANOREQUAL,
         ISLESSTHAN, ISLESSTHANOREQUAL, ISNOTEQUAL
     }
-    @Override
-    public Requirement getPlayRequirement(JsonNode node)
-            throws InvalidCardDefinitionException {
-        ComparatorType comparatorType = BlueprintUtils.getEnum(ComparatorType.class, node, "type");
-        if (comparatorType == null)
+
+    private final ComparatorType _comparatorType;
+    private final ValueSource _firstNumber;
+    private final ValueSource _secondNumber;
+
+    public ComparatorRequirement(JsonNode node) throws InvalidCardDefinitionException {
+        _comparatorType = BlueprintUtils.getEnum(ComparatorType.class, node, "type");
+        if (_comparatorType == null)
             throw new InvalidCardDefinitionException("Comparator requirement type not found");
 
         BlueprintUtils.validateAllowedFields(node, "firstNumber", "secondNumber");
 
-        final ValueSource firstNumber = ValueResolver.resolveEvaluator(node.get("firstNumber"));
-        final ValueSource secondNumber = ValueResolver.resolveEvaluator(node.get("secondNumber"));
+        _firstNumber = ValueResolver.resolveEvaluator(node.get("firstNumber"));
+        _secondNumber = ValueResolver.resolveEvaluator(node.get("secondNumber"));
+    }
 
-        return actionContext -> {
-            final int firstQuantity = firstNumber.evaluateExpression(actionContext, null);
-            final int secondQuantity = secondNumber.evaluateExpression(actionContext, null);
-            return switch(comparatorType) {
+    public boolean accepts(ActionContext actionContext) {
+        final int firstQuantity = _firstNumber.evaluateExpression(actionContext, null);
+        final int secondQuantity = _secondNumber.evaluateExpression(actionContext, null);
+        return switch(_comparatorType) {
                 case ISEQUAL -> firstQuantity == secondQuantity;
                 case ISGREATERTHAN -> firstQuantity > secondQuantity;
                 case ISGREATERTHANOREQUAL -> firstQuantity >= secondQuantity;
@@ -35,6 +40,5 @@ public class ComparatorRequirementProducer extends RequirementProducer {
                 case ISLESSTHANOREQUAL -> firstQuantity <= secondQuantity;
                 case ISNOTEQUAL -> firstQuantity != secondQuantity;
             };
-        };
     }
 }

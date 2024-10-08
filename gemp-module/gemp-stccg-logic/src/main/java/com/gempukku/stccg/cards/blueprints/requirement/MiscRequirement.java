@@ -25,7 +25,9 @@ public class MiscRequirement implements Requirement {
         HASCARDINHAND(Zone.HAND),
         HASCARDINPLAYPILE(Zone.PLAY_PILE),
         HASINZONEDATA(null),
-        NEXTTRIBBLEINSEQUENCE(null);
+        LASTTRIBBLEPLAYED(null),
+        NEXTTRIBBLEINSEQUENCE(null),
+        TRIBBLESEQUENCEBROKEN(null);
 
         private final Zone zone;
         RequirementType(Zone zone) { this.zone = zone; }
@@ -41,7 +43,7 @@ public class MiscRequirement implements Requirement {
         this._requirementType = BlueprintUtils.getEnum(RequirementType.class, node, "type", false);
 
         switch (_requirementType) {
-            case CARDSINDECKCOUNT, CARDSINHANDMORETHAN, NEXTTRIBBLEINSEQUENCE:
+            case CARDSINDECKCOUNT, CARDSINHANDMORETHAN, LASTTRIBBLEPLAYED, NEXTTRIBBLEINSEQUENCE:
                 BlueprintUtils.validateAllowedFields(node, "count");
                 BlueprintUtils.validateRequiredFields(node, "count");
                 break;
@@ -52,6 +54,9 @@ public class MiscRequirement implements Requirement {
             case HASINZONEDATA:
                 BlueprintUtils.validateAllowedFields(node, "filter");
                 BlueprintUtils.validateRequiredFields(node, "filter");
+                break;
+            case TRIBBLESEQUENCEBROKEN:
+                BlueprintUtils.validateAllowedFields(node);
                 break;
         }
 
@@ -79,9 +84,12 @@ public class MiscRequirement implements Requirement {
                     }
                     yield false;
                 }
-                case NEXTTRIBBLEINSEQUENCE ->
-                        actionContext instanceof TribblesActionContext context &&
-                                context.getGameState().getNextTribbleInSequence() == count;
+                case LASTTRIBBLEPLAYED -> actionContext instanceof TribblesActionContext context &&
+                        context.getGameState().getLastTribblePlayed() == count;
+                case NEXTTRIBBLEINSEQUENCE -> actionContext instanceof TribblesActionContext context &&
+                        context.getGameState().getNextTribbleInSequence() == count;
+                case TRIBBLESEQUENCEBROKEN -> actionContext instanceof TribblesActionContext context &&
+                        context.getGameState().isChainBroken();
             };
     }
 }

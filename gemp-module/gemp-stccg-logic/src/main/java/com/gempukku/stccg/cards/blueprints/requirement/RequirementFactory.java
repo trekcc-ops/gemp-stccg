@@ -2,30 +2,28 @@ package com.gempukku.stccg.cards.blueprints.requirement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.common.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RequirementFactory {
     public static Requirement getRequirement(JsonNode object) throws InvalidCardDefinitionException {
         final String type = object.get("type").textValue().toLowerCase();
         return switch(type) {
             case "cardsindeckcount", "cardsinhandmorethan", "hascardindiscard", "hascardinhand", "hascardinplaypile",
-                    "hasinzonedata", "nexttribbleinsequence" ->
+                    "hasinzonedata", "lasttribbleplayed", "nexttribbleinsequence", "tribblesequencebroken" ->
                     new MiscRequirement(object);
             case "isequal", "isgreaterthan", "isgreaterthanorequal", "islessthan", "islessthanorequal", "isnotequal" ->
-                    new ComparatorRequirementProducer().getPlayRequirement(object);
-            case "isowner" -> new IsOwnerRequirementProducer().getPlayRequirement(object);
-            case "lasttribbleplayed" -> new LastTribblePlayedProducer().getPlayRequirement(object);
-            case "memoryis" -> new MemoryIs().getPlayRequirement(object);
-            case "memorylike" -> new MemoryLike().getPlayRequirement(object);
-            case "memorymatches" -> new MemoryMatches().getPlayRequirement(object);
-            case "not" -> new NotRequirementProducer().getPlayRequirement(object);
-            case "or" -> new OrRequirementProducer().getPlayRequirement(object);
-            case "perturnlimit" -> new PerTurnLimit().getPlayRequirement(object);
-            case "playedcardthisphase" -> new PlayedCardThisPhase().getPlayRequirement(object);
-            case "tribblesequencebroken" -> new TribbleSequenceBroken().getPlayRequirement(object);
+                    new ComparatorRequirement(object);
+            case "isowner" -> actionContext ->
+                    Objects.equals(actionContext.getPerformingPlayerId(), actionContext.getSource().getOwnerName());
+            case "not" -> actionContext -> !getRequirement(object.get("requires")).accepts(actionContext);
+            case "or" -> actionContext -> actionContext.acceptsAnyRequirements(getRequirements(object));
+            case "perturnlimit" -> actionContext -> actionContext.getSource().checkTurnLimit(
+                    BlueprintUtils.getInteger(object, "limit", 1));
             default -> throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
         };
     }

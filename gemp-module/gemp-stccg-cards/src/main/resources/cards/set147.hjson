@@ -11,7 +11,7 @@
 		    type: playOutOfSequence
             requires: {
                 type: lastTribblePlayed
-                value: 10000
+                count: 10000
             }
 		}
 	}
@@ -32,7 +32,7 @@
 		    type: playOutOfSequence
             requires: {
                 type: lastTribblePlayed
-                value: 100000
+                count: 100000
             }
 		}
 	}
