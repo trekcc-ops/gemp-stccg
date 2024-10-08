@@ -3,10 +3,11 @@ package com.gempukku.stccg.cards.blueprints.effect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
-import com.gempukku.stccg.cards.blueprints.PlayCardFromDiscard;
 import com.gempukku.stccg.cards.blueprints.PlayCardFromDrawDeck;
-import com.gempukku.stccg.cards.blueprints.PlayCardFromHand;
-import com.gempukku.stccg.cards.blueprints.effect.memorize.*;
+import com.gempukku.stccg.cards.blueprints.effect.memorize.ChooseCardAppenderProducer;
+import com.gempukku.stccg.cards.blueprints.effect.memorize.GetCardsFromTopOfDeck;
+import com.gempukku.stccg.cards.blueprints.effect.memorize.MemorizeActive;
+import com.gempukku.stccg.cards.blueprints.effect.memorize.MemorizeNumber;
 import com.gempukku.stccg.cards.blueprints.effect.modifier.AddKeyword;
 import com.gempukku.stccg.cards.blueprints.effect.modifier.AddModifier;
 import com.gempukku.stccg.cards.blueprints.effect.modifier.ModifyStrength;
@@ -26,6 +27,9 @@ public class EffectBlueprintDeserializer {
         effectAppenderProducers.put("discard", new CardResolverMultiEffectBlueprintProducer());
         effectAppenderProducers.put("discardcardsfromdrawdeck", new CardResolverMultiEffectBlueprintProducer());
         effectAppenderProducers.put("discardfromhand", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("download", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("play", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("playcardfromdiscard", new CardResolverMultiEffectBlueprintProducer());
         effectAppenderProducers.put("putcardsfromdeckintohand", new CardResolverMultiEffectBlueprintProducer());
         effectAppenderProducers.put("putcardsfromdeckontopofdeck", new CardResolverMultiEffectBlueprintProducer());
         effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new CardResolverMultiEffectBlueprintProducer());
@@ -61,12 +65,7 @@ public class EffectBlueprintDeserializer {
         effectAppenderProducers.put("revealbottomcardsofdrawdeck", new MiscEffectAppenderProducer());
 
             // Play card effect appender producers
-        effectAppenderProducers.put("play", new PlayCardFromHand()); // multi
-        effectAppenderProducers.put("playcardfromdiscard", new PlayCardFromDiscard()); // multi
         effectAppenderProducers.put("playcardfromdrawdeck", new PlayCardFromDrawDeck()); // multi
-
-            // Other card business
-        effectAppenderProducers.put("download", new DownloadCard()); // multi
 
         effectAppenderProducers.put("getcardsfromtopofdeck", new GetCardsFromTopOfDeck()); // unrespondable
         effectAppenderProducers.put("lookatdrawdeck", new LookAtDrawDeck()); // multi, but the first one isn't a card resolver
