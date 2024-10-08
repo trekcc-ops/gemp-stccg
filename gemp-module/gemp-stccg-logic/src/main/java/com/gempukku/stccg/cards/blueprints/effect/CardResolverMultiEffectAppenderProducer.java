@@ -71,7 +71,7 @@ public class CardResolverMultiEffectAppenderProducer implements EffectAppenderPr
             throws InvalidCardDefinitionException {
 
         // Get effectType from the JSON. Will throw an exception if the type isn't a valid EffectType.
-        EffectType effectType = environment.getEnum(EffectType.class, effectObject, "type");
+        EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
 
         /* Validate allowed fields in the JSON. An InvalidCardDefinitionException will be thrown if the JSON
             definition has any fields that the code does not expect. */

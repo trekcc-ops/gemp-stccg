@@ -193,7 +193,7 @@ public class FilterFactory {
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
                 (parameter, environment) -> {
-                    final Zone zone = environment.getEnum(Zone.class, parameter, "parameter");
+                    final Zone zone = BlueprintUtils.getEnum(Zone.class, parameter, "parameter");
                     return actionContext -> zone;
                 });
     }

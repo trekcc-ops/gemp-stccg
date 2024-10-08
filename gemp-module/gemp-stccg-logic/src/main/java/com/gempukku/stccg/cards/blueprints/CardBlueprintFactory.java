@@ -58,38 +58,6 @@ public class CardBlueprintFactory {
     }
 
 
-    public <T extends Enum<T>> T getEnum(Class<T> enumClass, JsonNode parentNode, String key)
-            throws InvalidCardDefinitionException {
-        if (parentNode.get(key) == null || !parentNode.get(key).isTextual())
-            return null;
-        try {
-            return Enum.valueOf(enumClass,
-                    parentNode.get(key).textValue().toUpperCase().replaceAll("[ '\\-.]", "_"));
-        } catch(Exception exp) {
-            throw new InvalidCardDefinitionException(
-                    "Unable to process enum value " + parentNode.get(key) + " in " + key + " field");
-        }
-    }
-
-    public <T extends Enum<T>> T getEnum(Class<T> enumClass, String value, String key)
-            throws InvalidCardDefinitionException {
-        if (value == null)
-            return null;
-        try {
-            return Enum.valueOf(enumClass, value.toUpperCase().replaceAll("[ '\\-.]", "_"));
-        } catch(Exception exp) {
-            throw new InvalidCardDefinitionException("Unable to process enum value " + value + " in " + key + " field");
-        }
-    }
-
-    public <T extends Enum<T>> T getEnum(Class<T> enumClass, String string) throws InvalidCardDefinitionException {
-        try {
-            return Enum.valueOf(enumClass, string.trim().toUpperCase().replaceAll("[ '\\-.]", "_"));
-        } catch(Exception exp) {
-            throw new InvalidCardDefinitionException("Unable to process enum value " + string);
-        }
-    }
-    
     public PlayerSource getPlayerSource(JsonNode parentNode, String key, boolean useYouAsDefault)
             throws InvalidCardDefinitionException {
         String playerString;
@@ -188,7 +156,7 @@ public class CardBlueprintFactory {
 
     private ModifierSource getModifierSource(JsonNode node)
             throws InvalidCardDefinitionException {
-        ModifierSourceProcessorType modifierType = getEnum(ModifierSourceProcessorType.class, node, "type");
+        ModifierSourceProcessorType modifierType = BlueprintUtils.getEnum(ModifierSourceProcessorType.class, node, "type");
         validateAllowedFields(node, modifierType, this);
 
         final Requirement[] requirements = getRequirementsFromJSON(node);
@@ -201,7 +169,7 @@ public class CardBlueprintFactory {
                         new RequirementCondition(requirements, actionContext),
                         filterableSource.getFilterable(actionContext));
             case GAINICON:
-                CardIcon icon = getEnum(CardIcon.class, node, "icon");
+                CardIcon icon = BlueprintUtils.getEnum(CardIcon.class, node, "icon");
                 filterableSource = getFilterFactory().parseSTCCGFilter(node.get("filter").textValue());
                 return actionContext -> new GainIconModifier(actionContext,
                         filterableSource.getFilterable(actionContext),

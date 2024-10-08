@@ -28,15 +28,15 @@ public class ChooseCardAppenderProducer implements EffectAppenderProducer {
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
 
-        EffectType effectType = environment.getEnum(EffectType.class, effectObject, "type");
+        EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
         switch(effectType) {
             case CHOOSEACTIVECARDS, CHOOSECARDSFROMDISCARD, CHOOSECARDSFROMDRAWDECK:
-                environment.validateAllowedFields(effectObject, "count", "filter", "memorize", "text", "player");
+                BlueprintUtils.validateAllowedFields(effectObject, "count", "filter", "memorize", "text", "player");
                 break;
         }
 
-        final PlayerSource selectingPlayer = environment.getSelectingPlayerSource(effectObject);
-        final PlayerSource targetPlayer = environment.getTargetPlayerSource(effectObject);
+        final PlayerSource selectingPlayer = BlueprintUtils.getSelectingPlayerSource(effectObject);
+        final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
         final String memorize = effectObject.get("memorize").textValue();
         if (memorize == null)
             throw new InvalidCardDefinitionException("You need to define what memory to use to store chosen cards");

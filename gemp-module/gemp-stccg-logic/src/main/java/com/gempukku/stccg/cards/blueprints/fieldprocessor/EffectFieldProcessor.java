@@ -60,7 +60,7 @@ public class EffectFieldProcessor implements FieldProcessor {
         final boolean optional = BlueprintUtils.getBoolean(node, "optional", false);
         final int limitPerPhase = BlueprintUtils.getInteger(node, "limitPerPhase", 0);
         final int limitPerTurn = BlueprintUtils.getInteger(node, "limitPerTurn", 0);
-        final Phase phase = environment.getEnum(Phase.class, BlueprintUtils.getString(node, "phase"), "phase");
+        final Phase phase = BlueprintUtils.getEnum(Phase.class, BlueprintUtils.getString(node, "phase"), "phase");
 
         if (!isResponse) {
             actionSourceList.add(new ActivateCardActionSource());

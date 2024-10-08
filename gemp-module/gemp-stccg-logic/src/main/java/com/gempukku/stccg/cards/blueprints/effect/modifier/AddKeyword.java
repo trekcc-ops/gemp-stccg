@@ -52,7 +52,7 @@ public class AddKeyword implements EffectAppenderProducer {
             amount = new ConstantValueSource(1);
         } else {
             final String[] keywordSplit = keywordString.split("\\+");
-            Keyword keyword = environment.getEnum(Keyword.class, keywordSplit[0], "keyword");
+            Keyword keyword = BlueprintUtils.getEnum(Keyword.class, keywordSplit[0], "keyword");
             keywordFunction = (actionContext) -> keyword;
             int value = 1;
             if (keywordSplit.length == 2)

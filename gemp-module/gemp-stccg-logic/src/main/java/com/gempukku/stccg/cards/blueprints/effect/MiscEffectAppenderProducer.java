@@ -42,7 +42,7 @@ public class MiscEffectAppenderProducer implements EffectAppenderProducer {
     public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
             throws InvalidCardDefinitionException {
         
-        EffectType effectType = environment.getEnum(EffectType.class, effectObject, "type");
+        EffectType effectType = BlueprintUtils.getEnum(EffectType.class, effectObject, "type");
         switch (effectType) {
             case DISCARDCARDATRANDOMFROMHAND:
                 environment.validateAllowedFields(effectObject, "forced", "count", "memorize");
