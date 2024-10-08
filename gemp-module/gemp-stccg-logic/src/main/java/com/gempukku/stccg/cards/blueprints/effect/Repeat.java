@@ -20,7 +20,7 @@ public class Repeat implements EffectAppenderProducer {
 
         final ValueSource amountSource = ValueResolver.resolveEvaluator(node.get("amount"));
         final EffectBlueprint effectBlueprint =
-                environment.getEffectAppenderFactory().getEffectAppender(node.get("effect"));
+                EffectBlueprintDeserializer.getEffectBlueprint(node.get("effect"));
 
         return new DefaultDelayedAppender() {
             @Override

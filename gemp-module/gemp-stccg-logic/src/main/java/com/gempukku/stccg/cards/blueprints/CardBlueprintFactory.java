@@ -27,13 +27,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public class CardBlueprintFactory {
-    private final EffectBlueprintDeserializer effectAppenderFactory = new EffectBlueprintDeserializer(this);
     private final FilterFactory filterFactory = new FilterFactory(this);
     private final TriggerCheckerFactory triggerCheckerFactory = new TriggerCheckerFactory();
-
-    public EffectBlueprintDeserializer getEffectAppenderFactory() {
-        return effectAppenderFactory;
-    }
 
     public FilterFactory getFilterFactory() {
         return filterFactory;
@@ -92,9 +87,9 @@ public class CardBlueprintFactory {
         List<EffectBlueprint> appenders = new LinkedList<>();
         if (node.isArray()) {
             for (JsonNode effect : node)
-                appenders.add(effectAppenderFactory.getEffectAppender(effect));
+                appenders.add(EffectBlueprintDeserializer.getEffectBlueprint(effect));
         } else {
-            appenders.add(effectAppenderFactory.getEffectAppender(node));
+            appenders.add(EffectBlueprintDeserializer.getEffectBlueprint(node));
         }
         return appenders;
     }

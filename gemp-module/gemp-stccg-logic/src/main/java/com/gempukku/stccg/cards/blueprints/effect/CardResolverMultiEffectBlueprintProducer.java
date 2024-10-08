@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-public class CardResolverMultiEffectBlueprintProducer implements EffectAppenderProducer {
+public class CardResolverMultiEffectBlueprintProducer {
 
     // Don't rename these without renaming the corresponding JSON "type" property
     private enum EffectType {
@@ -67,8 +67,7 @@ public class CardResolverMultiEffectBlueprintProducer implements EffectAppenderP
         private String getZoneName() { return this.fromZone.getHumanReadable(); }
     }
 
-    @Override
-    public EffectBlueprint createEffectAppender(JsonNode effectObject, CardBlueprintFactory environment)
+    public static EffectBlueprint createEffectBlueprint(JsonNode effectObject)
             throws InvalidCardDefinitionException {
 
         // Get effectType from the JSON. Will throw an exception if the type isn't a valid EffectType.
@@ -254,7 +253,7 @@ public class CardResolverMultiEffectBlueprintProducer implements EffectAppenderP
         return result;
     }
 
-    private void validateAllowedFields(JsonNode effectObject, EffectType effectType)
+    private static void validateAllowedFields(JsonNode effectObject, EffectType effectType)
             throws InvalidCardDefinitionException {
         if (effectType == EffectType.DISCARDFROMHAND) {
             BlueprintUtils.validateAllowedFields(effectObject, "forced", "count", "filter", "memorize");
@@ -273,7 +272,7 @@ public class CardResolverMultiEffectBlueprintProducer implements EffectAppenderP
         }
     }
 
-    private String getDefaultText(EffectType effectType) {
+    private static String getDefaultText(EffectType effectType) {
         return switch (effectType) {
             case DISCARD, DISCARDCARDSFROMDRAWDECK -> "Choose cards to discard";
             case DISCARDFROMHAND -> "Choose cards from hand to discard";
@@ -294,7 +293,7 @@ public class CardResolverMultiEffectBlueprintProducer implements EffectAppenderP
         };
     }
 
-    private Function<ActionContext, List<PhysicalCard>> getCardSource(String type, Zone fromZone,
+    private static Function<ActionContext, List<PhysicalCard>> getCardSource(String type, Zone fromZone,
                                                                              PlayerSource targetPlayer)
             throws InvalidCardDefinitionException {
         final String sourceMemory = type.startsWith("memory(") ?

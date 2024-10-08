@@ -74,11 +74,9 @@ public abstract class DefaultActionSource implements ActionSource {
                 addRequirement(new RequirementFactory().getRequirement(requirement));
         }
 
-        final EffectBlueprintDeserializer effectAppenderFactory = environment.getEffectAppenderFactory();
-
         if (node.has("cost")) {
             for (JsonNode cost : JsonUtils.toArray(node.get("cost"))) {
-                final EffectBlueprint effectBlueprint = effectAppenderFactory.getEffectAppender(cost);
+                final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(cost);
                 addRequirement(effectBlueprint::isPlayableInFull);
                 addCost(effectBlueprint);
             }
@@ -86,7 +84,7 @@ public abstract class DefaultActionSource implements ActionSource {
 
         if (node.has("effect")) {
             for (JsonNode effect : JsonUtils.toArray(node.get("effect"))) {
-                final EffectBlueprint effectBlueprint = effectAppenderFactory.getEffectAppender(effect);
+                final EffectBlueprint effectBlueprint = EffectBlueprintDeserializer.getEffectBlueprint(effect);
                 if (effectBlueprint.isPlayabilityCheckedForEffect())
                     addRequirement(effectBlueprint::isPlayableInFull);
                 addEffect(effectBlueprint);

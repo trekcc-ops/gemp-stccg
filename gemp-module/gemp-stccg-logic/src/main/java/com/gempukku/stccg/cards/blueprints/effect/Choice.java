@@ -32,7 +32,7 @@ public class Choice implements EffectAppenderProducer {
 
         List<EffectBlueprint> possibleEffectBlueprints = new ArrayList<>();
         for (JsonNode effect : effectArray) {
-            possibleEffectBlueprints.add(environment.getEffectAppenderFactory().getEffectAppender(effect));
+            possibleEffectBlueprints.add(EffectBlueprintDeserializer.getEffectBlueprint(effect));
         }
 
         final PlayerSource playerSource = PlayerResolver.resolvePlayer(player);
