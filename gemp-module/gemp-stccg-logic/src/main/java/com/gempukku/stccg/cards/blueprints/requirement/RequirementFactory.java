@@ -20,10 +20,18 @@ public class RequirementFactory {
                     new ComparatorRequirement(object);
             case "isowner" -> actionContext ->
                     Objects.equals(actionContext.getPerformingPlayerId(), actionContext.getSource().getOwnerName());
-            case "not" -> actionContext -> !getRequirement(object.get("requires")).accepts(actionContext);
-            case "or" -> actionContext -> actionContext.acceptsAnyRequirements(getRequirements(object));
-            case "perturnlimit" -> actionContext -> actionContext.getSource().checkTurnLimit(
-                    BlueprintUtils.getInteger(object, "limit", 1));
+            case "not" -> {
+                Requirement requirement = getRequirement(object.get("requires"));
+                yield actionContext -> !requirement.accepts(actionContext);
+            }
+            case "or" -> {
+                Requirement[] requirements = getRequirements(object);
+                yield actionContext -> actionContext.acceptsAnyRequirements(requirements);
+            }
+            case "perturnlimit" -> {
+                int limit = BlueprintUtils.getInteger(object, "limit", 1);
+                yield actionContext -> actionContext.getSource().checkTurnLimit(limit);
+            }
             default -> throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
         };
     }
