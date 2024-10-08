@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.*;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -19,14 +20,8 @@ public class ValueResolver {
 
     public static ValueSource resolveEvaluator(JsonNode value)
             throws InvalidCardDefinitionException {
-        return resolveEvaluator(value, null, new CardBlueprintFactory());
+        return resolveEvaluator(value, null);
     }
-
-    public static ValueSource resolveEvaluator(JsonNode value, int defaultValue)
-            throws InvalidCardDefinitionException {
-        return resolveEvaluator(value, defaultValue, new CardBlueprintFactory());
-    }
-
 
     public static ValueSource resolveEvaluator(String stringValue) throws InvalidCardDefinitionException {
         if (stringValue.contains("-")) {
@@ -55,7 +50,7 @@ public class ValueResolver {
             return new ConstantValueSource(Integer.parseInt(stringValue));
     }
 
-    public static ValueSource resolveEvaluator(JsonNode value, Integer defaultValue, CardBlueprintFactory environment)
+    public static ValueSource resolveEvaluator(JsonNode value, Integer defaultValue)
             throws InvalidCardDefinitionException {
         if (value == null && defaultValue == null)
             throw new InvalidCardDefinitionException("Value not defined");
@@ -99,7 +94,7 @@ public class ValueResolver {
                 };
             } else if (type.equalsIgnoreCase("requires")) {
                 BlueprintUtils.validateAllowedFields(object, "requires", "true", "false");
-                final Requirement[] conditions = new CardBlueprintFactory().getRequirementsFromJSON(object);
+                final Requirement[] conditions = new RequirementFactory().getRequirements(object);
                 ValueSource trueValue = resolveEvaluator(object.get("true"));
                 ValueSource falseValue = resolveEvaluator(object.get("false"));
                 return actionContext -> (Evaluator) new Evaluator(actionContext) {

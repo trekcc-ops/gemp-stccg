@@ -14,7 +14,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.common.filterable.EndOfPile;
@@ -57,7 +56,7 @@ public class CardEffectBlueprintProducer {
         final PlayerSource selectingPlayer = BlueprintUtils.getSelectingPlayerSource(effectObject);
         final PlayerSource targetPlayer = BlueprintUtils.getTargetPlayerSource(effectObject);
         final ValueSource countSource =
-                ValueResolver.resolveEvaluator(effectObject.get("count"), 1, new CardBlueprintFactory());
+                ValueResolver.resolveEvaluator(effectObject.get("count"), 1);
         final boolean forced = BlueprintUtils.getBoolean(effectObject, "forced", false);
         
         return new DelayedEffectBlueprint() {

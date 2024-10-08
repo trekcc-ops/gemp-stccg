@@ -10,7 +10,6 @@ import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.effect.AbstractEffectAppender;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprint;
 import com.gempukku.stccg.cards.blueprints.effect.EffectBlueprintDeserializer;
@@ -64,7 +63,6 @@ public abstract class DefaultActionSource implements ActionSource {
 
     public void processRequirementsCostsAndEffects(JsonNode node)
             throws InvalidCardDefinitionException {
-        CardBlueprintFactory environment = new CardBlueprintFactory();
 
         if (!node.has("cost") && !node.has("effect"))
             throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");

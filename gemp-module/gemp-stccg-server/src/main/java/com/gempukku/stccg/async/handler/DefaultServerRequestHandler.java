@@ -242,7 +242,8 @@ public class DefaultServerRequestHandler {
     protected String getHTMLDeck(CardDeck deck, boolean showToolTip, SortAndFilterCards sortAndFilter,
                                  FormatLibrary formatLibrary)
             throws CardNotFoundException {
-        
+
+        // TODO - LotR stuff here
         StringBuilder result = new StringBuilder();
 
         DefaultCardCollection deckCards = new DefaultCardCollection();

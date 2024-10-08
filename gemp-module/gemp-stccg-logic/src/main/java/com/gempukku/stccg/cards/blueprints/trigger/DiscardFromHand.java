@@ -6,13 +6,13 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 
 public class DiscardFromHand implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "filter", "memorize", "player");
 
@@ -21,7 +21,7 @@ public class DiscardFromHand implements TriggerCheckerProducer {
         final String player = value.get("player").textValue();
 
         PlayerSource playerSource = (player != null) ? PlayerResolver.resolvePlayer(player) : null;
-        final FilterableSource filterableSource = environment.getFilterFactory().generateFilter(filter);
+        final FilterableSource filterableSource = new FilterFactory().generateFilter(filter);
 
         return new TriggerChecker() {
             @Override

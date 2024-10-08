@@ -37,7 +37,7 @@ public class ChooseCardEffectBlueprintProducer {
         final FilterableSource cardFilter = (filter.startsWith("all(") || filter.startsWith("choose(")) ?
                 new FilterFactory().generateFilter(filter.substring(filter.indexOf("(") + 1, filter.lastIndexOf(")"))) :
                 null;
-        final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1, new CardBlueprintFactory());
+        final ValueSource count = ValueResolver.resolveEvaluator(effectObject.get("count"), 1);
 
         final String text = switch (effectType) {
             case CHOOSEACTIVECARDS -> BlueprintUtils.getString(effectObject, "text");

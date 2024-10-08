@@ -4,16 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 
 public class ConditionTrigger implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "requires");
 
-        final Requirement[] requirements = environment.getRequirementsFromJSON(value);
+        final Requirement[] requirements = new RequirementFactory().getRequirements(value);
 
         return new TriggerChecker() {
             @Override

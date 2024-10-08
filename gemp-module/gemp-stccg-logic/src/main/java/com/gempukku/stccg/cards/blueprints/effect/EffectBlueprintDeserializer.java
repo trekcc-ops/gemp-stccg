@@ -2,7 +2,11 @@ package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Zone;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class EffectBlueprintDeserializer {
 
@@ -41,6 +45,14 @@ public class EffectBlueprintDeserializer {
             default ->
                     throw new InvalidCardDefinitionException("Unable to find effect of type: " + type);
         };
+    }
+
+    public static List<EffectBlueprint> getEffectBlueprints(JsonNode node) throws InvalidCardDefinitionException {
+        List<EffectBlueprint> effectBlueprints = new LinkedList<>();
+        List<JsonNode> effects = JsonUtils.toArray(node);
+        for (JsonNode effect : effects)
+                effectBlueprints.add(getEffectBlueprint(effect));
+        return effectBlueprints;
     }
 
 }

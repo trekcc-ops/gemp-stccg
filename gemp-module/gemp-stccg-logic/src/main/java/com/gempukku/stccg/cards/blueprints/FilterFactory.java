@@ -16,14 +16,8 @@ import java.util.*;
 public class FilterFactory {
     private final Map<String, FilterableSource> simpleFilters = new HashMap<>();
     private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
-    private final CardBlueprintFactory _environment;
 
     public FilterFactory() {
-        this(new CardBlueprintFactory());
-    }
-
-    public FilterFactory(CardBlueprintFactory blueprintFactory) {
-        _environment = blueprintFactory;
         for (CardIcon value : CardIcon.values())
             appendFilter(value);
         for (CardType value : CardType.values())
@@ -63,7 +57,7 @@ public class FilterFactory {
         simpleFilters.put("yoursevenifnotinplay", (actionContext) -> Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
 
         parameterFilters.put("and",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
                     FilterableSource[] filterables = new FilterableSource[filters.length];
                     for (int i = 0; i < filters.length; i++)
@@ -77,30 +71,30 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("attachedto",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final FilterableSource filterableSource = generateFilter(parameter);
                     return (actionContext) -> Filters.attachedTo(filterableSource.getFilterable(actionContext));
                 });
-        parameterFilters.put("affiliation", (parameter, environment) -> {
+        parameterFilters.put("affiliation", (parameter) -> {
             final Affiliation affiliation = Affiliation.findAffiliation(parameter);
             if (affiliation == null)
                 throw new InvalidCardDefinitionException("Unable to find affiliation for: " + parameter);
             return (actionContext) -> affiliation;
         });
         parameterFilters.put("hasstacked",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final FilterableSource filterableSource = generateFilter(parameter);
                     return (actionContext) -> Filters.hasStacked(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("hasstackedcount",
-                (parameter, environment) -> {
+                (parameter) -> {
                     String[] parameterSplit = parameter.split(",", 2);
                     int count = Integer.parseInt(parameterSplit[0]);
                     final FilterableSource filterableSource = generateFilter(parameterSplit[1]);
                     return (actionContext) -> Filters.hasStacked(count, filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("loweststrength",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final FilterableSource filterableSource = generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
@@ -122,23 +116,23 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("memory",
-                (parameter, environment) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
+                (parameter) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
 
         parameterFilters.put("name",
-                (parameter, environment) -> {
+                (parameter) -> {
                     String name = Sanitize(parameter);
                     return (actionContext) -> (Filter)
                             (game, physicalCard) -> physicalCard.getBlueprint().getTitle() != null && name.equals(Sanitize(physicalCard.getBlueprint().getTitle()));
                 });
         parameterFilters.put("namefrommemory",
-                (parameter, environment) -> actionContext -> {
+                (parameter) -> actionContext -> {
                     Set<String> titles = new HashSet<>();
                     for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter))
                         titles.add(physicalCard.getBlueprint().getTitle());
                     return (Filter) (game, physicalCard) -> titles.contains(physicalCard.getBlueprint().getTitle());
                 });
         parameterFilters.put("nameinstackedon",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final FilterableSource filterableSource = generateFilter(parameter);
                     return actionContext -> {
                         final Filterable sourceFilterable = filterableSource.getFilterable(actionContext);
@@ -154,12 +148,12 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("not",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final FilterableSource filterableSource = generateFilter(parameter);
                     return (actionContext) -> Filters.not(filterableSource.getFilterable(actionContext));
                 });
         parameterFilters.put("or",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
                     FilterableSource[] filterables = new FilterableSource[filters.length];
                     for (int i = 0; i < filters.length; i++)
@@ -173,7 +167,7 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("strengthlessthan",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
 
                     return (actionContext) -> {
@@ -182,7 +176,7 @@ public class FilterFactory {
                     };
                 });
         parameterFilters.put("strengthmorethan",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final ValueSource valueSource = ValueResolver.resolveEvaluator(parameter);
 
                     return (actionContext) -> {
@@ -192,7 +186,7 @@ public class FilterFactory {
                 });
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
-                (parameter, environment) -> {
+                (parameter) -> {
                     final Zone zone = BlueprintUtils.getEnum(Zone.class, parameter, "parameter");
                     return actionContext -> zone;
                 });
@@ -345,7 +339,7 @@ public class FilterFactory {
         if (filterableSourceProducer == null)
             throw new InvalidCardDefinitionException("Unable to find filter: " + name);
 
-        return filterableSourceProducer.createFilterableSource(parameter, _environment);
+        return filterableSourceProducer.createFilterableSource(parameter);
     }
 
     public static String Sanitize(String input)

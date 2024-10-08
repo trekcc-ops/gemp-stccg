@@ -5,6 +5,8 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.modifiersourceproducer.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -17,7 +19,6 @@ import com.gempukku.stccg.modifiers.CantPlayCardsModifier;
 import com.gempukku.stccg.modifiers.GainIconModifier;
 import com.gempukku.stccg.modifiers.RequirementCondition;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,7 +147,7 @@ public final class BlueprintUtils {
         ModifierSourceProcessorType modifierType = getEnum(ModifierSourceProcessorType.class, node, "type");
         validateAllowedFields(node, modifierType);
 
-        final Requirement[] requirements = new CardBlueprintFactory().getRequirementsFromJSON(node);
+        final Requirement[] requirements = new RequirementFactory().getRequirements(node);
         final FilterableSource filterableSource;
 
         switch(modifierType) {

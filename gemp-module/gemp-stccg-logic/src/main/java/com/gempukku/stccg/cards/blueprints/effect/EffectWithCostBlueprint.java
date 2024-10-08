@@ -8,8 +8,8 @@ import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
 
     public EffectWithCostBlueprint(JsonNode node) throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node, "cost", "effect", "requires");
-        _costAppenders = new CardBlueprintFactory().getEffectAppendersFromJSON(node.get("cost"));
-        _effectBlueprints = new CardBlueprintFactory().getEffectAppendersFromJSON(node.get("effect"));
-        _requirements = new CardBlueprintFactory().getRequirementsFromJSON(node);
+        _costAppenders = EffectBlueprintDeserializer.getEffectBlueprints(node.get("cost"));
+        _effectBlueprints = EffectBlueprintDeserializer.getEffectBlueprints(node.get("effect"));
+        _requirements = new RequirementFactory().getRequirements(node);
     }
     @Override
     protected Effect createEffect(boolean cost, CostToEffectAction action, ActionContext context) {

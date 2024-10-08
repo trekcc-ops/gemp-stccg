@@ -7,14 +7,13 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.common.filterable.Filterable;
 
 public class PlayedTriggerCheckerProducer implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value)
             throws InvalidCardDefinitionException {
         FilterFactory filterFactory = new FilterFactory();
         BlueprintUtils.validateAllowedFields(value, "filter", "player", "on", "memorize");

@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class TriggerCheckerFactory {
         triggerCheckers.put("startofturn", new StartOfTurn());
     }
 
-    public TriggerChecker getTriggerChecker(JsonNode object, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode object)
             throws InvalidCardDefinitionException {
         if (!object.has("type"))
             throw new InvalidCardDefinitionException("Trigger type not defined");
@@ -36,7 +35,7 @@ public class TriggerCheckerFactory {
         final TriggerCheckerProducer triggerCheckerProducer = triggerCheckers.get(triggerType.toLowerCase());
         if (triggerCheckerProducer == null)
             throw new InvalidCardDefinitionException("Unable to find trigger of type: " + triggerType);
-        return triggerCheckerProducer.getTriggerChecker(object, environment);
+        return triggerCheckerProducer.getTriggerChecker(object);
     }
 
 

@@ -21,7 +21,6 @@ import java.util.*;
 
 public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
 
-    final private CardBlueprintFactory _blueprintFactory = new CardBlueprintFactory();
     final private EffectFieldProcessor _effectProcessor = new EffectFieldProcessor();
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
@@ -153,7 +152,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             }
 
             if (node.get("effects") != null)
-                _effectProcessor.processField("effects", node.get("effects"), blueprint, _blueprintFactory);
+                _effectProcessor.processField("effects", node.get("effects"), blueprint);
 
             for (Characteristic characteristic :
                     getEnumSetFromCommaDelimited(node, "characteristic", Characteristic.class))

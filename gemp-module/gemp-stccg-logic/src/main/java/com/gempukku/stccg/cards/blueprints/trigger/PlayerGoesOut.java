@@ -5,12 +5,11 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 
 public class PlayerGoesOut implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value);
         PlayerSource playerSource = PlayerResolver.resolvePlayer("you");

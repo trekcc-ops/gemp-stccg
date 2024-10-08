@@ -5,13 +5,12 @@ import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.filters.Filters;
 
 public class RevealsCardFromTopOfDrawDeck implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JsonNode node, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode node)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node, "filter");
 

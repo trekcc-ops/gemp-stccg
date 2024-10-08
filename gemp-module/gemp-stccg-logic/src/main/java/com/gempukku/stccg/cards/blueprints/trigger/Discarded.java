@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.resolver.PlayerResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -14,7 +13,7 @@ import com.gempukku.stccg.common.filterable.Filterable;
 
 public class Discarded implements TriggerCheckerProducer {
     @Override
-    public TriggerChecker getTriggerChecker(JsonNode value, CardBlueprintFactory environment)
+    public TriggerChecker getTriggerChecker(JsonNode value)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "filter", "memorize", "player");
 

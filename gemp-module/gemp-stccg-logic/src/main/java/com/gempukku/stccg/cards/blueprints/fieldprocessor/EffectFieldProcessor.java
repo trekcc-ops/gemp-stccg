@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.blueprints.actionsource.*;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerChecker;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerCheckerFactory;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.TriggerTiming;
@@ -20,26 +21,26 @@ import java.util.Objects;
 public class EffectFieldProcessor implements FieldProcessor {
 
     @Override
-    public void processField(String key, JsonNode value, CardBlueprint blueprint, CardBlueprintFactory environment)
+    public void processField(String key, JsonNode value, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         List<JsonNode> effectList = JsonUtils.toArray(value);
         for (JsonNode effect : effectList) {
             final String effectType = effect.get("type").textValue().toLowerCase();
             switch (effectType) {
                 case "action":
-                    appendActionSource(effect, blueprint, environment);
+                    appendActionSource(effect, blueprint);
                     break;
                 case "modifier":
                     BlueprintUtils.validateAllowedFields(effect, "modifier");
-                    blueprint.appendInPlayModifier(environment.getModifier(effect.get("modifier")));
+                    blueprint.appendInPlayModifier(BlueprintUtils.getModifier(effect.get("modifier")));
                     break;
                 case "playoutofsequence":
                     BlueprintUtils.validateAllowedFields(effect, "requires");
-                    final Requirement[] conditions = environment.getRequirementsFromJSON(effect);
+                    final Requirement[] conditions = new RequirementFactory().getRequirements(effect);
                     blueprint.appendPlayOutOfSequenceCondition(actionContext -> actionContext.acceptsAllRequirements(conditions));
                     break;
                 case "seed":
-                    appendSeedActionSource(effect, blueprint, environment);
+                    appendSeedActionSource(effect, blueprint);
                     break;
                 default:
                     throw new InvalidCardDefinitionException("Unable to find effect of type: " + effectType);
@@ -47,7 +48,7 @@ public class EffectFieldProcessor implements FieldProcessor {
         }
     }
 
-    private void appendActionSource(JsonNode node, CardBlueprint blueprint, CardBlueprintFactory environment)
+    private void appendActionSource(JsonNode node, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(node,
                 "text", "optional", "limitPerPhase", "limitPerTurn", "phase", "trigger",
@@ -68,7 +69,7 @@ public class EffectFieldProcessor implements FieldProcessor {
             List<JsonNode> triggers = JsonUtils.toArray(node.get("trigger"));
             for (JsonNode trigger : triggers) {
                 TriggerChecker triggerChecker =
-                        environment.getTriggerCheckerFactory().getTriggerChecker(trigger, environment);
+                        new TriggerCheckerFactory().getTriggerChecker(trigger);
                 TriggerTiming triggerTiming = triggerChecker.isBefore() ? TriggerTiming.BEFORE : TriggerTiming.AFTER;
                 TriggerActionSource triggerActionSource;
                 if (optional) {
@@ -101,7 +102,7 @@ public class EffectFieldProcessor implements FieldProcessor {
         }
     }
 
-    private void appendSeedActionSource(JsonNode value, CardBlueprint blueprint, CardBlueprintFactory environment)
+    private void appendSeedActionSource(JsonNode value, CardBlueprint blueprint)
             throws InvalidCardDefinitionException {
         BlueprintUtils.validateAllowedFields(value, "limit", "where");
         SeedCardActionSource actionSource = new SeedCardActionSource();
