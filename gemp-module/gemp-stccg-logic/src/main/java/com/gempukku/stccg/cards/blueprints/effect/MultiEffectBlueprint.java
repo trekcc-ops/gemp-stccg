@@ -15,7 +15,7 @@ public class MultiEffectBlueprint implements EffectBlueprint {
         this.playabilityCheckedForEffect = playabilityCheckedForEffect;
     }
 
-    public void addEffectAppender(EffectBlueprint effectBlueprint) {
+    public void addEffectBlueprint(EffectBlueprint effectBlueprint) {
         effectBlueprints.add(effectBlueprint);
     }
 

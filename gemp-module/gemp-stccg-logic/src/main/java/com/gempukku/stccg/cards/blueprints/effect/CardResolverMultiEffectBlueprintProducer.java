@@ -139,9 +139,9 @@ public class CardResolverMultiEffectBlueprintProducer {
                             targetPlayer, defaultText, cardSource);
         };
 
-        result.addEffectAppender(targetCardAppender);
+        result.addEffectBlueprint(targetCardAppender);
 
-        result.addEffectAppender(
+        result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
                     protected List<Effect> createEffects(boolean cost, CostToEffectAction action,
