@@ -31,6 +31,7 @@ public class EffectBlueprintDeserializer {
                     "placetopcardofdrawdeckontopofplaypile", "reordertopcardsofdrawdeck",
                     "revealbottomcardsofdrawdeck", "revealhand" ->
                     CardEffectBlueprintProducer.createEffectBlueprint(effectObject);
+                            // TODO - Activate tribble power should come through as a rule, not a card def
             case "activatetribblepower" -> new ActivateTribblePowerEffectBlueprint(effectObject);
             case "addmodifier" -> new AddModifierEffectBlueprint(effectObject);
             case "costtoeffect" -> new EffectWithCostBlueprint(effectObject);
