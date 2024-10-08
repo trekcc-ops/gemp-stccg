@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-public class CardResolverMultiEffectAppenderProducer implements EffectAppenderProducer {
+public class CardResolverMultiEffectBlueprintProducer implements EffectAppenderProducer {
 
     // Don't rename these without renaming the corresponding JSON "type" property
     private enum EffectType { 

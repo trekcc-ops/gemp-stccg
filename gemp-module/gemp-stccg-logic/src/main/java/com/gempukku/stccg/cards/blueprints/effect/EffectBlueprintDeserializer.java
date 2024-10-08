@@ -23,27 +23,27 @@ public class EffectBlueprintDeserializer {
     public EffectBlueprintDeserializer(CardBlueprintFactory environment) {
         _environment = environment;
             // Card resolver multi-effect appenders (choose a card and perform an action with it)
-        effectAppenderProducers.put("discard", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("discardcardsfromdrawdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("discardfromhand", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromdeckintohand", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromdeckontopofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromdiscardintohand", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromdiscardonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromdiscardontopofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromhandonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromhandontopofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("removecardsindiscardfromgame", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("removefromthegame", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("returntohand", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("revealcards", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("revealcardsfromhand", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("shufflecardsfromdiscardintodrawdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new CardResolverMultiEffectAppenderProducer());
-        effectAppenderProducers.put("shufflecardsfromplayintodrawdeck", new CardResolverMultiEffectAppenderProducer());
+        effectAppenderProducers.put("discard", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("discardcardsfromdrawdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("discardfromhand", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromdeckintohand", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromdeckontopofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromdeckonbottomofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromdiscardintohand", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromdiscardonbottomofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromdiscardontopofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromhandonbottomofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromhandonbottomofplaypile", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromhandontopofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("putcardsfromplayonbottomofdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("removecardsindiscardfromgame", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("removefromthegame", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("returntohand", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("revealcards", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("revealcardsfromhand", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("shufflecardsfromdiscardintodrawdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("shufflecardsfromhandintodrawdeck", new CardResolverMultiEffectBlueprintProducer());
+        effectAppenderProducers.put("shufflecardsfromplayintodrawdeck", new CardResolverMultiEffectBlueprintProducer());
             // Choose card appenders (choose a card and store it for later)
         effectAppenderProducers.put("chooseactivecards", new ChooseCardAppenderProducer());
         effectAppenderProducers.put("choosecardsfromdiscard", new ChooseCardAppenderProducer());
