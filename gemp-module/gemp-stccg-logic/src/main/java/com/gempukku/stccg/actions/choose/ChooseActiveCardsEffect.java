@@ -16,11 +16,11 @@ import java.util.Set;
 public abstract class ChooseActiveCardsEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final String _playerId;
-    private String _choiceText;
+    private final String _choiceText;
     private final int _minimum;
     private final int _maximum;
     private final Filterable[] _filters;
-    private boolean _shortcut = true;
+    private final boolean _shortcut = true;
 
     public ChooseActiveCardsEffect(PhysicalCard source, String playerId, String choiceText, int minimum, int maximum,
                                    Filterable... filters) {
@@ -42,14 +42,6 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
         _minimum = minimum;
         _maximum = maximum;
         _filters = filters;
-    }
-
-    public void setUseShortcut(boolean shortcut) {
-        _shortcut = shortcut;
-    }
-
-    public void setChoiceText(String choiceText) {
-        _choiceText = choiceText;
     }
 
     protected Filter getExtraFilterForPlaying() {

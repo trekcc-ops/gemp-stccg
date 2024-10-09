@@ -55,12 +55,8 @@ public abstract class DefaultGame {
     }
 
     public abstract GameState getGameState();
-    public boolean shouldAutoPass(String playerId, Phase phase) {
+    public boolean shouldAutoPass(Phase phase) {
         return false;
-    }
-
-    public boolean isSolo() {
-        return _allPlayerIds.size() == 1;
     }
 
     public GameFormat getFormat() {
@@ -76,9 +72,6 @@ public abstract class DefaultGame {
     }
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
         getGameState().addGameStateListener(playerId, gameStateListener);
-    }
-    public void removeGameResultListener(GameResultListener listener) {
-        _gameResultListeners.remove(listener);
     }
 
     public void requestCancel(String playerId) {

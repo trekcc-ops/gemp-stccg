@@ -163,7 +163,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         _rangeAvailable = _blueprint.getRange();
     }
 
-    @Override
     public boolean canAttemptMission(MissionCard mission) {
         if (_currentLocation != mission.getLocation())
             return false;

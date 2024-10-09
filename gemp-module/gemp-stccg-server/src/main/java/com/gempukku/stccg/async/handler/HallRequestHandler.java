@@ -22,15 +22,12 @@ import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -274,11 +271,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private Document marshalException(HallException e) throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
-
+        Document doc = createNewDoc();
         Element error = doc.createElement("error");
         error.setAttribute("message", e.getMessage());
         doc.appendChild(error);
@@ -353,18 +346,9 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void getHall(HttpRequest request, ResponseWriter responseWriter) {
-        QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-
         try {
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-            Document doc = documentBuilder.newDocument();
-
+            User resourceOwner = getResourceOwner(request);
+            Document doc = createNewDoc();
             User player = getResourceOwnerSafely(request, null);
 
             Element hall = doc.createElement("hall");
@@ -390,9 +374,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     hall.appendChild(formatElem);
                 }
             }
-
             doc.appendChild(hall);
-
             responseWriter.writeXmlResponse(doc);
         } catch (HttpProcessingException exp) {
             logHttpError(LOGGER, exp.getStatus(), request.uri(), exp);
@@ -453,10 +435,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         public synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
-                    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-                    Document doc = documentBuilder.newDocument();
+                    Document doc = createNewDoc();
 
                     Element hall = doc.createElement("hall");
                     _hallCommunicationChannel.processCommunicationChannel(_hallServer, _resourceOwner, new SerializeHallInfoVisitor(doc, hall));

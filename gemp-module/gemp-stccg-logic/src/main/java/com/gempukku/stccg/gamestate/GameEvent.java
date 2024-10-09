@@ -20,17 +20,14 @@ import java.util.Map;
 
 public class GameEvent {
     public enum Type {
-        PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"), PLAYER_POSITION("PP"),
+        PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"),
         PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
-        TWILIGHT_POOL_UPDATE("TP"),
         TRIBBLE_SEQUENCE_UPDATE("TSEQ"),
         PLAYER_DECKED("PLAYER_DECKED"), // TODO: Not implemented in JavaScript
         PLAYER_SCORE("PLAYER_SCORE"), // TODO: Not implemented in JavaScript
         PUT_CARD_INTO_PLAY("PCIP"),
         PUT_CARD_INTO_PLAY_WITHOUT_ANIMATING("PCIPAR"),
         MOVE_CARD_IN_PLAY("MCIP"), REMOVE_CARD_FROM_PLAY("RCFP"),
-        ADD_ASSIGNMENT("AA"), REMOVE_ASSIGNMENT("RA"),
-        START_SKIRMISH("SS"), REMOVE_FROM_SKIRMISH("RFS"), ADD_TO_SKIRMISH("ATS"), END_SKIRMISH("ES"),
         SEND_MESSAGE("M"), SEND_WARNING("W"),
         GAME_STATS("GS"),
         CHAT_MESSAGE("CM"),
@@ -150,7 +147,6 @@ public class GameEvent {
     public Zone getZone() { return _zone; }
 
     public String getAttribute(Attribute attribute) { return _eventAttributes.get(attribute); }
-    public Map<Attribute, String> getAttributes() { return _eventAttributes; }
 
     public Node serialize(Document doc) {
         Element eventElem = doc.createElement("ge");

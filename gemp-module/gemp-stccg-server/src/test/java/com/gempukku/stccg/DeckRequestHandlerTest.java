@@ -1,31 +1,18 @@
 package com.gempukku.stccg;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.formats.SealedLeagueDefinition;
+import com.gempukku.stccg.formats.SealedEventDefinition;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DeckRequestHandlerTest extends AbstractServerTest {
-
-    @Test
-    public void formatTest() throws JsonProcessingException {
-        GameFormat currentFormat = _formatLibrary.getFormat("st1emoderncomplete");
-
-        Map<String, String> sets = currentFormat.getValidSets();
-        Object[] output = sets.entrySet().stream()
-                .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue()))
-                .toArray();
-
-        String newJson = new ObjectMapper().writeValueAsString(output);
-    }
 
     @Test
     public void formatTest2() throws JsonProcessingException {
@@ -38,17 +25,13 @@ public class DeckRequestHandlerTest extends AbstractServerTest {
                     .map(GameFormat::Serialize)
                     .collect(Collectors.toMap(x-> x.code, x-> x));
             data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
-                    .map(SealedLeagueDefinition::Serialize)
+                    .map(SealedEventDefinition::Serialize)
                     .collect(Collectors.toMap(x-> x.name, x-> x));
             data.DraftTemplates = soloDraftDefinitions.getAllSoloDrafts().values().stream()
                     .map(soloDraft -> new JSONDefs.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))
                     .collect(Collectors.toMap(x-> x.code, x-> x));
 
-            String json1new = new ObjectMapper().writeValueAsString(data);
-            JsonNode json1newnode = new ObjectMapper().readTree(json1new);
-
-
-            Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
+        Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
 
             Object[] output = formats.entrySet().stream()
                     .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue().getName()))

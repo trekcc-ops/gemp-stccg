@@ -1,14 +1,13 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.DefaultDraft;
-import com.gempukku.stccg.draft.Draft;
 import com.gempukku.stccg.draft.DraftPack;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.packs.ProductLibrary;
 import org.apache.commons.lang.StringUtils;
 
@@ -42,7 +41,7 @@ public class DefaultTournament implements Tournament {
     private TournamentTask _nextTask;
 
     private long _deckBuildStartTime;
-    private Draft _draft;
+    private DefaultDraft _draft;
 
     private List<PlayerStanding> _currentStandings;
 
@@ -151,11 +150,11 @@ public class DefaultTournament implements Tournament {
         try {
             if (_tournamentStage == Stage.PLAYING_GAMES && _currentlyPlayingPlayers.contains(winner)
                     && _currentlyPlayingPlayers.contains(loser)) {
-                _tournamentService.setMatchResult(_tournamentId, _tournamentRound, winner);
+                _tournamentService.setMatchResult(_tournamentId, winner);
                 _currentlyPlayingPlayers.remove(winner);
                 _currentlyPlayingPlayers.remove(loser);
                 _finishedTournamentMatches.add(
-                        new TournamentMatch(winner, loser, winner, _tournamentRound));
+                        new TournamentMatch(winner, loser, winner));
                 if (_pairingMechanism.shouldDropLoser()) {
                     _tournamentService.dropPlayer(_tournamentId, loser);
                     _droppedPlayers.add(loser);
@@ -186,22 +185,6 @@ public class DefaultTournament implements Tournament {
             return _playerDecks.get(player);
         } finally {
             _lock.readLock().unlock();
-        }
-    }
-
-    public Draft getDraft() {
-        return _draft;
-    }
-
-    @Override
-    public void playerChosenCard(String playerName, String cardId) {
-        _lock.writeLock().lock();
-        try {
-            if (_tournamentStage == Stage.DRAFT) {
-                _draft.playerChosenCard(playerName, cardId);
-            }
-        } finally {
-            _lock.writeLock().unlock();
         }
     }
 
@@ -303,10 +286,10 @@ public class DefaultTournament implements Tournament {
         for (PlayerStanding playerStanding : list) {
             CardCollection prizes = _tournamentPrizes.getPrizeForTournament(playerStanding, list.size());
             if (prizes != null)
-                collectionsManager.addItemsToPlayerCollection(true, "Tournament " + getTournamentName() + " prize", playerStanding.getPlayerName(), CollectionType.MY_CARDS, prizes.getAll());
-            CardCollection trophies = _tournamentPrizes.getTrophyForTournament(playerStanding, list.size());
-            if (trophies != null)
-                collectionsManager.addItemsToPlayerCollection(true, "Tournament " + getTournamentName() + " trophy", playerStanding.getPlayerName(), CollectionType.TROPHY, trophies.getAll());
+                collectionsManager.addItemsToPlayerCollection(
+                        true, "Tournament " + getTournamentName() + " prize",
+                        playerStanding.getPlayerName(), CollectionType.MY_CARDS, prizes.getAll()
+                );
         }
     }
 

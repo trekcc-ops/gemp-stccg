@@ -42,8 +42,7 @@ public class WeightedRandomPack implements PackBox {
         return openPack(ThreadLocalRandom.current().nextInt(totalWeight) + 1);
     }
 
-    @Override
-    public List<GenericCardItem> openPack(int roll) {
+    private List<GenericCardItem> openPack(int roll) {
         int currentPercent = 0;
 
         for (Reward reward : _contents.values()) {

@@ -66,13 +66,13 @@ public class ShuffleCardsFromPlayIntoDeckEffect extends DefaultEffect {
 
             _game.sendMessage(TextUtils.getConcatenatedCardLinks(toShuffleIn) + " " + TextUtils.be(toShuffleIn) + " shuffled into " + _playerDeck + " deck");
 
-            cardsShuffledCallback(toShuffleIn);
+            cardsShuffledCallback();
         }
 
         return new FullEffectResult(toShuffleIn.size() == _cards.size());
     }
 
-    protected void cardsShuffledCallback(Set<PhysicalCard> cardsShuffled) {
+    protected void cardsShuffledCallback() {
 
     }
 }

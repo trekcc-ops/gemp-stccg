@@ -13,7 +13,7 @@ public class StartOfPhaseAction extends SystemQueueAction {
         String message = "Start of " + phase + " phase";
         setText(message);
         appendEffect(new TriggeringResultEffect(
-                new StartOfPhaseResult(phase, game.getCurrentPlayerId(), _game), message));
+                new StartOfPhaseResult(_game), message));
         appendEffect(
                 new Effect() {
                     @Override

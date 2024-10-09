@@ -48,7 +48,6 @@ public class TribblesGameState extends GameState {
             return _inPlay;
     }
 
-    @Override
     public void createPhysicalCards() {
         for (Player player : _players.values()) {
             String playerId = player.getPlayerId();
@@ -72,7 +71,7 @@ public class TribblesGameState extends GameState {
         }
     }
 
-    public void shufflePlayPileIntoDeck(TribblesGame game, String playerId) {
+    public void shufflePlayPileIntoDeck(String playerId) {
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
         removeCardsFromZone(playerId, playPile);
         for (PhysicalCard card : playPile) {
@@ -88,7 +87,7 @@ public class TribblesGameState extends GameState {
     public void setPlayerDecked(String playerId, boolean bool) {
         _players.get(playerId).setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerDecked(_players.get(playerId), bool);
+            listener.setPlayerDecked(_players.get(playerId));
     }
 
     public boolean getPlayerDecked(String playerId) {
@@ -129,7 +128,7 @@ public class TribblesGameState extends GameState {
         return _chainBroken;
     }
 
-    public void playerWentOut(String player) {
+    public void playerWentOut() {
         // TODO
     }
 

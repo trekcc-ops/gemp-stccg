@@ -33,7 +33,7 @@ public class Blueprint101_064 extends CardBlueprint {
         modifiers.add(new StrengthModifier(thisCard, affectFilter,
                 new PresentWithYourCardCondition(thisCard,
                         Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.NON_ALIGNED, Affiliation.FEDERATION))),
-                2, true));
+                2));
                                 // TODO RULES - Does "Federation" have a different meaning here?
         return modifiers;
     }

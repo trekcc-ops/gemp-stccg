@@ -233,11 +233,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     }
 
 
-    public int GetStrength(PhysicalCardGeneric card)
-    {
-        return _game.getModifiersQuerying().getStrength(card);
-    }
-
     public boolean IsType(PhysicalCardGeneric card, CardType type)
     {
         return card.getCardType() == type
@@ -266,12 +261,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
         }
         //couldn't find an exact match, so maybe it's a direct index:
         playerDecided(playerID, option);
-    }
-
-    public void AcknowledgeReveal() throws DecisionResultInvalidException
-    {
-        playerDecided(P1, "");
-        playerDecided(P2, "");
     }
 
 }

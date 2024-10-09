@@ -23,7 +23,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected UserFeedback _userFeedback;
     public static final String P1 = "player1";
     public static final String P2 = "player2";
-    FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+    final FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();

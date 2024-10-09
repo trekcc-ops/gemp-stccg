@@ -7,11 +7,9 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 
@@ -47,7 +45,6 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
         _cardSource = cardSource;
 
         final GameState gameState = _game.getGameState();
-        final ModifiersQuerying modifiersQuerying = _game.getModifiersQuerying();
 
         // Get potential targets to beam to/from
         _destinationOptions = getDestinationOptions();
@@ -124,7 +121,7 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     protected abstract List<PhysicalCard> getValidFromCards();
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();
@@ -155,10 +152,6 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     }
 
     protected abstract Effect finalEffect();
-
-    public boolean wasActionCarriedOut() {
-        return _cardsBeamed;
-    }
 
     @Override
     public ST1EGame getGame() { return _game; }

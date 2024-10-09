@@ -16,5 +16,5 @@ public abstract class AbstractExtraPlayCostModifier extends AbstractModifier imp
     public abstract void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card);
 
     @Override
-    public abstract boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card);
+    public abstract boolean canPayExtraCostsToPlay(PhysicalCard card);
 }

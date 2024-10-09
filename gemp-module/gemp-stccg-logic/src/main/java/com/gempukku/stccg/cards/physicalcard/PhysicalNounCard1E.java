@@ -47,13 +47,13 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     }
 
     public Set<Affiliation> getAffiliationOptions() { return _affiliationOptions; }
-    public boolean isCompatibleWith(Affiliation affiliation) {
+    public boolean isNotCompatibleWith(Affiliation affiliation) {
             // TODO - Compatibility should check against a specific card, not an affiliation
         if (getAffiliation() == affiliation)
-            return true;
-        if (getAffiliation() == Affiliation.BORG || affiliation == Affiliation.BORG)
             return false;
-        return getAffiliation() == Affiliation.NON_ALIGNED || affiliation == Affiliation.NON_ALIGNED;
+        if (getAffiliation() == Affiliation.BORG || affiliation == Affiliation.BORG)
+            return true;
+        return getAffiliation() != Affiliation.NON_ALIGNED && affiliation != Affiliation.NON_ALIGNED;
     }
 
     public boolean isCompatibleWith(PhysicalNounCard1E card) {
@@ -66,11 +66,9 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         return _currentLocation.getQuadrant();
     }
 
-    @Override
     public boolean hasTransporters() {
-        if (_blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY) {
-            return !_blueprint.hasNoTransporters();
-        } else return false;
+        // TODO some facilities don't have transporters, and they can be added later
+        return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY;
     }
 
     public boolean isAffiliation(Affiliation affiliation) {

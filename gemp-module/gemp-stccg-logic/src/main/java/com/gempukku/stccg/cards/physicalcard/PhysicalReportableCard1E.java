@@ -36,18 +36,14 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
 
     public boolean isCompatibleWithCardAndItsCrewAsAffiliation(CardWithCrew cardWithCrew,
                                                                Affiliation affiliation) {
-        if (!cardWithCrew.isCompatibleWith(affiliation))
+        if (cardWithCrew.isNotCompatibleWith(affiliation))
             return false;
         for (PhysicalCard card : cardWithCrew.getCrew()) {
             if (card instanceof PersonnelCard personnel)
-                if (!personnel.isCompatibleWith(affiliation))
+                if (personnel.isNotCompatibleWith(affiliation))
                     return false;
         }
         return true;
-    }
-
-    public boolean isCompatibleWithCardAndItsCrew(CardWithCrew cardWithCrew) {
-        return isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, _currentAffiliation);
     }
 
     public void reportToFacility(FacilityCard facility) {

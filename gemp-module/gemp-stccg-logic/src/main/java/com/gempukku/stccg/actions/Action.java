@@ -8,7 +8,7 @@ public interface Action {
     String getCardActionPrefix();
 
     enum ActionType {
-        PLAY_CARD, SPECIAL_ABILITY, TRIGGER, TRANSFER, OTHER,
+        PLAY_CARD, SPECIAL_ABILITY, TRIGGER, OTHER,
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,
         BATTLE, SEED_CARD
     }

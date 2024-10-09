@@ -69,7 +69,7 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
                     );
                 else if (_fromZone == Zone.PLAY_PILE)
                     _game.getActionsEnvironment().emitEffectResult(
-                            new DiscardCardFromPlayPileResult(this, _source, discardedCard)
+                            new DiscardCardFromPlayPileResult(this, _source)
                     );
             }
             return new FullEffectResult(_count == cardsDiscarded.size());

@@ -6,13 +6,9 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.modifiers.Modifier;
 
 public abstract class ModifierSkill extends Skill {
-    private final String _text;
-
     public ModifierSkill(String text) {
-        super(SkillType.SPECIAL);
-        _text = text;
+        super(SkillType.SPECIAL, text);
     }
 
     public abstract Modifier getModifier(Player player, PhysicalCard card);
-    public String getSkillText() { return _text; }
 }

@@ -23,8 +23,7 @@ public class OptionalTriggerActionSource extends TriggerActionSource {
         _triggerTiming = triggerTiming;
     }
 
-    @Override
-    public OptionalTriggerAction createAction(PhysicalCard card) {
+    private OptionalTriggerAction createAction(PhysicalCard card) {
         return new OptionalTriggerAction(card, this);
     }
 

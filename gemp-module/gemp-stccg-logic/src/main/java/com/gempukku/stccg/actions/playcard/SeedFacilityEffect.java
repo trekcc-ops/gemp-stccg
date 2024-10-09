@@ -8,7 +8,7 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 public class SeedFacilityEffect extends SeedCardEffect {
     private final int _spacelineIndex;
 
-    public SeedFacilityEffect(String performingPlayerId, Zone playedFrom, FacilityCard cardSeeded, int spacelineIndex) {
+    public SeedFacilityEffect(String performingPlayerId, FacilityCard cardSeeded, int spacelineIndex) {
         super(performingPlayerId, cardSeeded, Zone.AT_LOCATION);
         _spacelineIndex = spacelineIndex;
     }

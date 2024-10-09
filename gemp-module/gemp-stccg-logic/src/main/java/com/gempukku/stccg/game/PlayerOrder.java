@@ -73,7 +73,6 @@ public class PlayerOrder {
         _currentPlayer = _turnOrder.get(currentPlayerIndex);
     }
 
-    public boolean getReversed() { return _isReversed; }
     public void setReversed(boolean isReversed) { _isReversed = isReversed; }
 
     public void reversePlayerOrder() {

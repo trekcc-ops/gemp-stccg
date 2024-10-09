@@ -46,7 +46,7 @@ public class SeedOutpostAction extends PlayCardAction {
 
     @Override
     protected Effect getFinalEffect() {
-        return new SeedFacilityEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _locationZoneIndex);
+        return new SeedFacilityEffect(_performingPlayerId, _cardEnteringPlay, _locationZoneIndex);
     }
 
     @Override

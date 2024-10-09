@@ -6,14 +6,10 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.effectprocessor.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class SeedFieldProcessor implements FieldProcessor {
-    private final Map<String, EffectProcessor> _seedProcessors = new HashMap<>();
     public SeedFieldProcessor() { }
     @Override
     public void processField(String key, JsonNode value, CardBlueprint blueprint,

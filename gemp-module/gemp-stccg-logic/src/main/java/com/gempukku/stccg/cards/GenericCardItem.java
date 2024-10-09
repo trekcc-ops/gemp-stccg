@@ -66,7 +66,6 @@ public class GenericCardItem implements CardItem {
         else return _subDeck.name();
     }
 
-    @Override
     public boolean isRecursive() {
         return _recursive;
     }

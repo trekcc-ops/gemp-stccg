@@ -4,7 +4,6 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -36,11 +35,8 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                               ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-            String participantId = getQueryParameterSafely(queryDecoder, "participantId");
             String startDay = getQueryParameterSafely(queryDecoder, "startDay");
             String length = getQueryParameterSafely(queryDecoder, "length");
-
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
 
             try {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

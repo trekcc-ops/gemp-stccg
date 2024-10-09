@@ -36,7 +36,8 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         Map<String, String> pairingResults = new HashMap<>();
         Set<String> byeResults = new HashSet<>();
 
-        assertFalse(_pairing.pairPlayers(1, allPlayers, Collections.emptySet(), Collections.emptyMap(), null, null, pairingResults, byeResults));
+        assertFalse(_pairing.pairPlayers(1, allPlayers, Collections.emptySet(), Collections.emptyMap(),
+                null, null, pairingResults, byeResults));
 
         assertEquals(0, byeResults.size());
         assertEquals(2, pairingResults.size());
@@ -83,7 +84,8 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         playerByes.put("p2", 2);
         playerByes.put("p3", 3);
 
-        assertFalse(_pairing.pairPlayers(1, allPlayers, Collections.emptySet(), playerByes, null, null, pairingResults, byeResults));
+        assertFalse(_pairing.pairPlayers(1, allPlayers, Collections.emptySet(), playerByes, null,
+                null, pairingResults, byeResults));
 
         assertEquals(1, byeResults.size());
         assertTrue(byeResults.contains("p1"));
@@ -107,7 +109,8 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         Map<String, String> pairingResults = new HashMap<>();
         Set<String> byeResults = new HashSet<>();
 
-        assertFalse(_pairing.pairPlayers(1, allPlayers, droppedPlayers, Collections.emptyMap(), null, null, pairingResults, byeResults));
+        assertFalse(_pairing.pairPlayers(1, allPlayers, droppedPlayers, Collections.emptyMap(),
+                null, null, pairingResults, byeResults));
 
         assertEquals(1, byeResults.size());
         assertEquals(1, pairingResults.size());

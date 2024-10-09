@@ -334,7 +334,11 @@ public class DefaultGameFormat implements GameFormat {
         Map<String, Integer> cardCountByBaseBlueprintId = new HashMap<>();
 
         for (String blueprintId : deck.getDrawDeckCards())
-            processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
+            try {
+                processCardCounts(blueprintId, cardCountByName, cardCountByBaseBlueprintId);
+            } catch(CardNotFoundException exp) {
+                result.add("Draw deck contains card of invalid blueprintId '" + blueprintId + "'");
+            }
 
         for (Map.Entry<String, Integer> count : cardCountByName.entrySet()) {
             if (count.getValue() > _maximumSameName) {
@@ -466,16 +470,9 @@ public class DefaultGameFormat implements GameFormat {
 
 
     private void processCardCounts(String blueprintId, Map<String, Integer> cardCountByName,
-                                   Map<String, Integer> cardCountByBaseBlueprintId)  {
-        try {
-            CardBlueprint cardBlueprint = _library.getCardBlueprint(blueprintId);
-            increaseCount(cardCountByName, cardBlueprint.getTitle());
-            increaseCount(cardCountByBaseBlueprintId, _library.getBaseBlueprintId(blueprintId));
-        }
-        catch(CardNotFoundException exception)
-        {
-
-        }
+                                   Map<String, Integer> cardCountByBaseBlueprintId) throws CardNotFoundException {
+        increaseCount(cardCountByName, _library.getCardBlueprint(blueprintId).getTitle());
+        increaseCount(cardCountByBaseBlueprintId, _library.getBaseBlueprintId(blueprintId));
     }
 
     private void increaseCount(Map<String, Integer> counts, String name) {

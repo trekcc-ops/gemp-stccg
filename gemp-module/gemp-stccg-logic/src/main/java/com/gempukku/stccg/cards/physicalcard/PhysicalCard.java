@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
@@ -34,7 +35,6 @@ public abstract class PhysicalCard implements Filterable {
     protected final Map<Zone, List<ModifierHook>> _modifierHooksInZone = new HashMap<>(); // modifier hooks specific to stacked and discard
     private final Map<Zone, List<ModifierSource>> _modifiers = new HashMap<>(); // modifiers specific to stacked and discard
     protected Object _whileInZoneData;
-    protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
 
     public PhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
@@ -151,8 +151,6 @@ public abstract class PhysicalCard implements Filterable {
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
-    public void setLocationZoneIndex(int index) { _locationZoneIndex = index; }
-
     public int getLocationZoneIndex() {
         if (_currentLocation == null)
             return -1;
@@ -203,28 +201,17 @@ public abstract class PhysicalCard implements Filterable {
     public CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter,
                                                 boolean ignoreRoamingPenalty) {
 
-            final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
-            if (validTargetFilter == null) {
-                Zone playToZone = Zone.SUPPORT;
-                CostToEffectAction action = new STCCGPlayCardAction((ST1EPhysicalCard) this, playToZone, this.getOwner());
-                getModifiers().appendExtraCosts(action, this);
-                getModifiers().appendPotentialDiscounts(action, this);
-
-                return action;
-            } else {
-                Filter fullAttachValidTargetFilter = Filters.and(_blueprint.getValidTargetFilter(),
-                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(
-                                this, targetCard),
-                        (Filter) (game12, physicalCard) -> true);
-
-                final AttachPermanentAction action = new AttachPermanentAction(this,
-                        Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter));
-
-                getModifiers().appendPotentialDiscounts(action, this);
-                getModifiers().appendExtraCosts(action, this);
-
-                return action;
-            }
+        final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
+        CostToEffectAction action = (validTargetFilter == null) ?
+                new STCCGPlayCardAction((ST1EPhysicalCard) this, Zone.SUPPORT, this.getOwner()) :
+                new AttachPermanentAction(this, Filters.and(
+                        validTargetFilter,
+                        (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(this, targetCard),
+                        (Filter) (game12, physicalCard) -> true,
+                        additionalAttachmentFilter)
+                );
+        getModifiers().appendExtraCosts(action, this);
+        return action;
     }
 
     public List<Modifier> getModifiers(List<ModifierSource> sources) {
@@ -242,10 +229,6 @@ public abstract class PhysicalCard implements Filterable {
         return false;
     }
 
-    public boolean hasTransporters() {
-        return false;
-    }
-
     public CardType getCardType() { return _blueprint.getCardType(); }
 
     public List<? extends Action> getPhaseActionsInPlay(Player player) { return getPhaseActionsInPlay(player.getPlayerId()); }
@@ -259,10 +242,10 @@ public abstract class PhysicalCard implements Filterable {
         if (getZone().isInPlay() || getZone() == Zone.HAND) {
             StringBuilder sb = new StringBuilder();
 
-/*            if (getZone() == Zone.HAND)
+            if (getZone() == Zone.HAND)
                 sb.append("<b>Card is in hand - stats are only provisional</b><br><br>");
             else if (Filters.filterActive(getGame(), this).isEmpty())
-                sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");*/
+                sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");
 
             Collection<Modifier> modifiers = getModifiers().getModifiersAffecting(this);
             if (!modifiers.isEmpty()) {
@@ -271,13 +254,11 @@ public abstract class PhysicalCard implements Filterable {
                     sb.append(modifier.getCardInfoText(this));
                 }
             }
-/*
             List<PhysicalCard> stackedCards = getStackedCards();
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));
             }
-*/
             StringBuilder keywords = new StringBuilder();
             for (Keyword keyword : Keyword.values()) {
                 if (keyword.isInfoDisplayable()) {
@@ -471,26 +452,6 @@ public abstract class PhysicalCard implements Filterable {
     public ActionContext createActionContext(String playerId, Effect effect) { return createActionContext(playerId, effect, null); }
     public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
         return new DefaultActionContext(playerId, getGame(), this, effect, effectResult);
-    }
-
-    public int getPotentialDiscount() {
-        if (_blueprint.getDiscountSources() == null)
-            return 0;
-
-        int result = 0;
-        for (DiscountSource discountSource : _blueprint.getDiscountSources())
-            result += discountSource.getPotentialDiscount(createActionContext());
-
-        return result;
-    }
-
-    public void appendPotentialDiscountEffectsToAction(CostToEffectAction action) {
-        if (_blueprint.getDiscountSources() != null) {
-            ActionContext actionContext = createActionContext();
-            for (DiscountSource discountSource : _blueprint.getDiscountSources()) {
-                action.appendPotentialDiscount(discountSource.getDiscountEffect(action, actionContext));
-            }
-        }
     }
 
     public boolean isUnique() {

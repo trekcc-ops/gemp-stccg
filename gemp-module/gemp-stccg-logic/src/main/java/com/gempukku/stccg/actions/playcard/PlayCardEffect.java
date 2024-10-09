@@ -12,7 +12,6 @@ public class PlayCardEffect extends DefaultEffect {
     private PhysicalCard _attachedToCard;
     private final Zone _zone;
     private final PhysicalCard _attachedOrStackedPlayedFrom;
-    protected final String _performingPlayerId;
 
     public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo) {
         super(cardPlayed.getGame(), performingPlayerId);
@@ -20,7 +19,6 @@ public class PlayCardEffect extends DefaultEffect {
         _cardPlayed = cardPlayed;
         _zone = playedTo;
         _attachedOrStackedPlayedFrom = null;
-        _performingPlayerId = performingPlayerId;
     }
 
     public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed,
@@ -31,15 +29,6 @@ public class PlayCardEffect extends DefaultEffect {
         _attachedToCard = attachedToCard;
         _attachedOrStackedPlayedFrom = attachedOrStackedPlayedFrom;
         _zone = Zone.ATTACHED;
-        _performingPlayerId = performingPlayerId;
-    }
-
-    public PhysicalCard getPlayedCard() {
-        return _cardPlayed;
-    }
-
-    public PhysicalCard getAttachedTo() {
-        return _attachedToCard;
     }
 
     @Override

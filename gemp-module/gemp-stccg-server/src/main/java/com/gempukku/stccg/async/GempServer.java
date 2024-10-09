@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GempServer {
-
     private static final Logger LOGGER = LogManager.getLogger(GempServer.class);
 
     public static void main(String[] server) throws InterruptedException {

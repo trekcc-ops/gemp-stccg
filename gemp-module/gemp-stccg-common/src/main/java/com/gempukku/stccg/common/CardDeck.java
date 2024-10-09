@@ -66,7 +66,4 @@ public class CardDeck {
     public String getNotes() {
         return _notes;
     }
-    public void setNotes(String value) {
-        _notes = value;
-    }
 }

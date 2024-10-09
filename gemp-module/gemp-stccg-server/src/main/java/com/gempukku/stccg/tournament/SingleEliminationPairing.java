@@ -3,7 +3,6 @@ package com.gempukku.stccg.tournament;
 import com.gempukku.stccg.competitive.PlayerStanding;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleEliminationPairing implements PairingMechanism {
     private final String _registryRepresentation;
@@ -28,64 +27,58 @@ public class SingleEliminationPairing implements PairingMechanism {
     }
 
     @Override
-    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes, List<PlayerStanding> currentStandings,
-                               Map<String, Set<String>> previouslyPaired,
-                               Map<String, String> pairingResults, Set<String> byeResults) {
+    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers,
+                               Map<String, Integer> playerByes, List<PlayerStanding> currentStandings,
+                               Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults,
+                               Set<String> byeResults) {
+
         if (isFinished(round, players, droppedPlayers))
             return true;
 
         Set<String> playersInContention = new HashSet<>(players);
         playersInContention.removeAll(droppedPlayers);
+        int maxByes = (playerByes.isEmpty()) ? 0 : Collections.max(playerByes.values());
 
-        int maxByes = 0;
+        Map<Integer, List<String>> playersGroupedByByes = new HashMap<>();
         for (Map.Entry<String, Integer> playerByeCount : playerByes.entrySet()) {
-            String player = playerByeCount.getKey();
-            if (playersInContention.contains(player))
-                maxByes = Math.max(maxByes, playerByeCount.getValue());
-        }
-
-        List<String>[] playersGroupedByByes = new List[maxByes+1];
-        for (Map.Entry<String, Integer> playerByeCount : playerByes.entrySet()) {
-            String player = playerByeCount.getKey();
-            if (playersInContention.contains(player)) {
+            String playerId = playerByeCount.getKey();
+            if (playersInContention.contains(playerId)) {
                 int count = playerByeCount.getValue();
-                List<String> playersWithThisNumberOfByes = playersGroupedByByes[maxByes - count];
-                if (playersWithThisNumberOfByes == null) {
-                    playersWithThisNumberOfByes = new ArrayList<>();
-                    playersGroupedByByes[maxByes - count] = playersWithThisNumberOfByes;
-                }
-                playersWithThisNumberOfByes.add(player);
-                playersInContention.remove(player);
+                playersGroupedByByes.computeIfAbsent(count, k -> new ArrayList<>());
+                playersGroupedByByes.get(count).add(playerId);
+                playersInContention.remove(playerId);
             }
         }
+        playersGroupedByByes.put(0, new ArrayList<>());
+        for (String playerId : playersInContention)
+            playersGroupedByByes.get(0).add(playerId);
 
-        List<String> playersWithNoByes = playersGroupedByByes[maxByes];
-        if (playersWithNoByes == null) {
-            playersWithNoByes = new ArrayList<>();
-            playersGroupedByByes[maxByes] = playersWithNoByes;
-        }
-        playersWithNoByes.addAll(playersInContention);
-
-        List<String> playersRandomized = new ArrayList<>();
-
-        for (List<String> playersGroupedByBye : playersGroupedByByes) {
-            if (playersGroupedByBye != null) {
-                Collections.shuffle(playersGroupedByBye, ThreadLocalRandom.current());
-                playersRandomized.addAll(playersGroupedByBye);
-            }
+        for (int i = 0; i <= maxByes; i++) {
+            if (playersGroupedByByes.get(i) != null)
+                Collections.shuffle(playersGroupedByByes.get(i));
         }
 
-        Iterator<String> playerIterator = playersRandomized.iterator();
-        while (playerIterator.hasNext()) {
-            String playerOne = playerIterator.next();
-            if (playerIterator.hasNext()) {
-                String playerTwo = playerIterator.next();
-                pairingResults.put(playerOne, playerTwo);
+        int i = maxByes;
+        String player1 = null;
+        String player2 = null;
+
+        while (i >= 0) {
+            List<String> byePlayers = playersGroupedByByes.get(i);
+            if (byePlayers == null || byePlayers.isEmpty()) {
+                i--;
             } else {
-                byeResults.add(playerOne);
+                if (player1 == null) player1 = byePlayers.getFirst();
+                else player2 = byePlayers.getFirst();
+                playersGroupedByByes.get(i).removeFirst();
+            }
+            if (player1 != null && player2 != null) {
+                pairingResults.put(player1, player2);
+                player1 = null;
+                player2 = null;
             }
         }
 
+        if (player1 != null) byeResults.add(player1);
         return false;
     }
 

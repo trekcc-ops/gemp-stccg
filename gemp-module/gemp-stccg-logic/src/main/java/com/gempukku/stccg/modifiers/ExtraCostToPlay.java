@@ -35,7 +35,7 @@ public class ExtraCostToPlay implements ModifierSourceProducer {
                 }
 
                 @Override
-                public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
+                public boolean canPayExtraCostsToPlay(PhysicalCard card) {
                     for (EffectAppender effectAppender : effectAppenders) {
                         if (!effectAppender.isPlayableInFull(actionContext))
                             return false;

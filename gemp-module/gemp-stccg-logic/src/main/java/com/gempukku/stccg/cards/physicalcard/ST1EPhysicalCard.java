@@ -33,7 +33,6 @@ public class ST1EPhysicalCard extends PhysicalCard {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
         STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner(), forFree);
         getGame().getModifiersQuerying().appendExtraCosts(action, this);
-        getGame().getModifiersQuerying().appendPotentialDiscounts(action, this);
         return action;
     }
 }

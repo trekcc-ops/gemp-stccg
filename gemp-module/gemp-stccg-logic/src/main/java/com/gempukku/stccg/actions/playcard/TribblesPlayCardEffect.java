@@ -13,15 +13,11 @@ public class TribblesPlayCardEffect extends DefaultEffect {
     // TODO - _tribblesGame member is redundant with the DefaultEffect already having _game
     private final TribblesGame _tribblesGame;
 
-    public TribblesPlayCardEffect(TribblesPhysicalCard cardPlayed, Zone playedTo) {
+    public TribblesPlayCardEffect(TribblesPhysicalCard cardPlayed) {
         super(cardPlayed);
         _playedFrom = cardPlayed.getZone();
         _cardPlayed = cardPlayed;
         _tribblesGame = cardPlayed.getGame();
-    }
-
-    public PhysicalCard getPlayedCard() {
-        return _cardPlayed;
     }
 
     @Override
@@ -37,17 +33,12 @@ public class TribblesPlayCardEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         TribblesGameState gameState = _tribblesGame.getGameState();
-/*        gameState.removeCardsFromZone(_cardPlayed.getOwnerName(), Collections.singleton(_cardPlayed));
-        gameState.addCardToZone(_game, _cardPlayed, _zone); */
-
         int tribbleValue = _cardPlayed.getBlueprint().getTribbleValue();
-
         gameState.setLastTribblePlayed(tribbleValue);
-        if (tribbleValue == 100000) {
-            gameState.setNextTribbleInSequence(1);
-        } else {
-            gameState.setNextTribbleInSequence(tribbleValue * 10);
-        }
+
+        int nextTribble = (tribbleValue == 100000) ? 1 : (tribbleValue * 10);
+        gameState.setNextTribbleInSequence(nextTribble);
+
         gameState.setChainBroken(false);
         _tribblesGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _playedFrom, _cardPlayed));
 

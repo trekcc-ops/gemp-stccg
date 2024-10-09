@@ -25,8 +25,6 @@ public class ReplayMetadata {
     public final Map<String, Integer> Bids = new HashMap<>();
     public String WentFirst;
     public boolean GameStarted = false;
-    public boolean Conceded = false;
-    public boolean Canceled = false;
 
     public final Map<String, String> AllCards = new HashMap<>();
 
@@ -50,13 +48,6 @@ public class ReplayMetadata {
             Decks.put(player, metadata);
         }
 
-        if(GameReplayInfo.lose_reason.contains("cancelled") || GameReplayInfo.win_reason.contains("cancelled")) {
-            Canceled = true;
-        }
-
-        if(GameReplayInfo.lose_reason.contains("Concession") || GameReplayInfo.win_reason.contains("Concession")) {
-            Conceded = true;
-        }
     }
 
     public ReplayMetadata(DBDefs.GameHistory game, Map<String, CardDeck> decks, String player, List<GameEvent> events) {

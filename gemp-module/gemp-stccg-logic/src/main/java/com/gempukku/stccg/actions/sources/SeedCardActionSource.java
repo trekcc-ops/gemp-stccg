@@ -9,8 +9,7 @@ public class SeedCardActionSource extends DefaultActionSource {
 
     private Zone _seedToZone;
 
-    @Override
-    public SeedCardAction createAction(PhysicalCard card) {
+    private SeedCardAction createAction(PhysicalCard card) {
         if (_seedToZone == null)
             return new SeedCardAction(card);
         else return new SeedCardAction(card, _seedToZone);

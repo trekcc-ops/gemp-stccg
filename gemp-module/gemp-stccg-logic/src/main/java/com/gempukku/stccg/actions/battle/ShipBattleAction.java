@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
@@ -126,7 +125,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         else return OpenFireResult.MISS;
     }
 
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;

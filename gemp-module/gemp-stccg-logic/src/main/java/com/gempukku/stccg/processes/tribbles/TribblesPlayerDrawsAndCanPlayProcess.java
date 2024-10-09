@@ -37,7 +37,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
                 playableActions.add(action);
             }
 
-            if (playableActions.isEmpty() && _game.shouldAutoPass(_playerId, _game.getGameState().getCurrentPhase())) {
+            if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
                 playerPassed(_game);
             } else {
                 String userMessage;

@@ -22,32 +22,22 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     @Override
     public void addMatch(String tournamentId, int round, String playerOne, String playerTwo) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("insert into tournament_match (tournament_id, round, player_one, player_two) values (?, ?, ?, ?)")) {
-                    statement.setString(1, tournamentId);
-                    statement.setInt(2, round);
-                    statement.setString(3, playerOne);
-                    statement.setString(4, playerTwo);
-                    statement.execute();
-                }
-            }
+            String sqlStatement =
+                    "insert into tournament_match (tournament_id, round, player_one, player_two) values (?, ?, ?, ?)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                    tournamentId, round, playerOne, playerTwo);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
     }
 
     @Override
-    public void setMatchResult(String tournamentId, int round, String winner) {
+    public void setMatchResult(String tournamentId, String winner) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("update tournament_match set winner=? where tournament_id=? and (player_one=? or player_two=?)")) {
-                    statement.setString(1, winner);
-                    statement.setString(2, tournamentId);
-                    statement.setString(3, winner);
-                    statement.setString(4, winner);
-                    statement.executeUpdate();
-                }
-            }
+            String sqlStatement =
+                    "update tournament_match set winner=? where tournament_id=? and (player_one=? or player_two=?)";
+            SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
+                    winner, tournamentId, winner, winner);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
@@ -65,9 +55,8 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
                             String playerOne = rs.getString(1);
                             String playerTwo = rs.getString(2);
                             String winner = rs.getString(3);
-                            int round = rs.getInt(4);
 
-                            result.add(new TournamentMatch(playerOne, playerTwo, winner, round));
+                            result.add(new TournamentMatch(playerOne, playerTwo, winner));
                         }
                         return result;
                     }

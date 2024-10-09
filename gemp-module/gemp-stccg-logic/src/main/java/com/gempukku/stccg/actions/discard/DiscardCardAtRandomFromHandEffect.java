@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +42,7 @@ public class DiscardCardAtRandomFromHandEffect extends DefaultEffect {
             gameState.sendMessage(_playerId + " randomly discards " + randomCard.getCardLink());
             gameState.removeCardsFromZone(_source.getOwnerName(), Collections.singleton(randomCard));
             gameState.addCardToZone(randomCard, Zone.DISCARD);
-            _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_source, randomCard, _forced));
+            _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromHandResult(_source, randomCard));
             return new FullEffectResult(true);
         }
         return new FullEffectResult(false);

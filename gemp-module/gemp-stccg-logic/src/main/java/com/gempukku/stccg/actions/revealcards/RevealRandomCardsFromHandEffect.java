@@ -57,7 +57,7 @@ public abstract class RevealRandomCardsFromHandEffect extends DefaultEffect {
             }
             cardsRevealed(randomCards);
             for (PhysicalCard randomCard : randomCards)
-                _game.getActionsEnvironment().emitEffectResult(new RevealCardFromHandResult(_source, _playerHand, randomCard));
+                _game.getActionsEnvironment().emitEffectResult(new RevealCardFromHandResult(_source));
 
             return new FullEffectResult(randomCards.size() == _count);
         }

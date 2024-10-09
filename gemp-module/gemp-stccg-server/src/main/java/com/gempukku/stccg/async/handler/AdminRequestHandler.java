@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -126,10 +124,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             if (similarPlayers == null)
                 throw new HttpProcessingException(400);
 
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-            Document doc = documentBuilder.newDocument();
+            Document doc = createNewDoc();
             Element players = doc.createElement("players");
 
             for (User similarPlayer : similarPlayers) {
@@ -206,7 +201,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            List<String> logins = getFormParametersSafely(postDecoder);
+            List<String> logins = getLoginParametersSafely(postDecoder);
             if (logins == null)
                 throw new HttpProcessingException(400);
 
@@ -359,9 +354,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private void writeLeagueDocument(ResponseWriter responseWriter, LeagueData leagueData,
                                      Map<String, String> leagueParameters)
             throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
 
         int cost = Integer.parseInt(leagueParameters.get("cost"));
         Element leagueElem = doc.createElement("league");

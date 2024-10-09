@@ -57,7 +57,18 @@ public class DbPlayerDAO implements PlayerDAO {
             return null;
 
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            String sql = _selectPlayer + " where password=?";
+            String sql = """
+        SELECT 
+            id, 
+            name, 
+            password, 
+            type, 
+            last_login_reward, 
+            banned_until, 
+            create_ip, 
+            last_ip 
+        FROM player
+        """ + " where password=?";
             if (player.getCreateIp() != null)
                 sql += " or create_ip=? or last_ip=?";
             if (player.getLastIp() != null)
@@ -131,33 +142,21 @@ public class DbPlayerDAO implements PlayerDAO {
 
     @Override
     public boolean banPlayerPermanently(String login) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("update player set type='', banned_until=null where name=?")) {
-                statement.setString(1, login);
-                return statement.executeUpdate() == 1;
-            }
-        }
+        String sqlStatement = "update player set type='', banned_until=null where name=?";
+        return SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement, login);
     }
 
     @Override
     public boolean banPlayerTemporarily(String login, long dateTo) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("update player set banned_until=?, type='un' where name=?")) {
-                statement.setLong(1, dateTo);
-                statement.setString(2, login);
-                return statement.executeUpdate() == 1;
-            }
-        }
+        String sqlStatement = "update player set banned_until=?, type='un' where name=?";
+        return SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
+                dateTo, login);
     }
 
     @Override
     public boolean unBanPlayer(String login) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("update player set type='un', banned_until=null where name=?")) {
-                statement.setString(1, login);
-                return statement.executeUpdate() == 1;
-            }
-        }
+        String sqlStatement = "update player set type='un', banned_until=null where name=?";
+        return SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement, login);
     }
 
     @Override
@@ -261,30 +260,22 @@ public class DbPlayerDAO implements PlayerDAO {
 
     @Override
     public void setLastReward(User player, int currentReward) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("update player set last_login_reward =? where id=?")) {
-                statement.setInt(1, currentReward);
-                statement.setInt(2, player.getId());
-                statement.execute();
-                player.setLastLoginReward(currentReward);
-            }
-        }
+        String sqlStatement = "update player set last_login_reward =? where id=?";
+        SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                currentReward, player.getId());
+        player.setLastLoginReward(currentReward);
     }
 
     @Override
-    public synchronized boolean updateLastReward(User player, int previousReward, int currentReward) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("update player set last_login_reward =? where id=? and last_login_reward=?")) {
-                statement.setInt(1, currentReward);
-                statement.setInt(2, player.getId());
-                statement.setInt(3, previousReward);
-                if (statement.executeUpdate() == 1) {
-                    player.setLastLoginReward(currentReward);
-                    return true;
-                }
-                return false;
-            }
+    public synchronized boolean updateLastReward(User player, int previousReward, int currentReward)
+            throws SQLException {
+        String sqlStatement = "update player set last_login_reward =? where id=? and last_login_reward=?";
+        if (SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
+                currentReward, player.getId(), previousReward)) {
+            player.setLastLoginReward(currentReward);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -454,13 +445,9 @@ public class DbPlayerDAO implements PlayerDAO {
 
     @Override
     public void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
-        try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("update player set last_ip=? where name=?")) {
-                statement.setString(1, remoteAddress);
-                statement.setString(2, login);
-                statement.execute();
-            }
-        }
+        String sqlStatement = "update player set last_ip=? where name=?";
+        SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                remoteAddress, login);
     }
 
     @Override

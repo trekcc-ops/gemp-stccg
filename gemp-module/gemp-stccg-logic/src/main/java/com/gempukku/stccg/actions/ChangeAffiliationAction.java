@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -38,7 +37,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         } else if (card instanceof CardWithCrew cardWithCrew) {
                 // TODO - Ignores carried ship interactions
             _affiliationOptions.removeIf(affiliation -> cardWithCrew.getPersonnelInCrew().stream().anyMatch(
-                    personnel -> !personnel.isCompatibleWith(affiliation)));
+                    personnel -> personnel.isNotCompatibleWith(affiliation)));
         } else {
             // There should be no other types of cards that would get the ChangeAffiliationAction
             _affiliationOptions.clear();
@@ -61,7 +60,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionAttachedToCard() { return (PhysicalCard) _card; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         if (!_affiliationWasChosen) {
             if (_affiliationOptions.size() > 1) {

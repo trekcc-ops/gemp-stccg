@@ -47,7 +47,7 @@ public class CardResolver {
                 String choicePlayerId = playerSource.getPlayerId(actionContext);
                 return new ChooseStackedCardsEffect(actionContext.getGame(), choicePlayerId, min, max, stackedOn.getFilterable(actionContext), Filters.in(possibleCards)) {
                     @Override
-                    protected void cardsChosen(DefaultGame game, Collection<PhysicalCard> stackedCards) {
+                    protected void cardsChosen(Collection<PhysicalCard> stackedCards) {
                         actionContext.setCardMemory(memory, stackedCards);
                     }
 
@@ -116,7 +116,7 @@ public class CardResolver {
                         actionContext.getGameState().getHand(targetPlayerId), Filters.in(possibleCards),
                         min, max, showMatchingOnly) {
                     @Override
-                    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
+                    protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                         actionContext.setCardMemory(memory, selectedCards);
                     }
                 };

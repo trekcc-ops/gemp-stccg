@@ -13,14 +13,6 @@ public class DiscardCardFromDeckResult extends EffectResult {
         _forced = forced;
     }
 
-    public PhysicalCard getSource() {
-        return _source;
-    }
-
-    public boolean isForced() {
-        return _forced;
-    }
-
 
     public PhysicalCard getDiscardedCard() {
         return _card;

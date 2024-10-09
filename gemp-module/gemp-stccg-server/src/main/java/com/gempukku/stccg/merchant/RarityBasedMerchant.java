@@ -3,11 +3,10 @@ package com.gempukku.stccg.merchant;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.SetDefinition;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RarityBasedMerchant implements Merchant {
+public class RarityBasedMerchant {
     private final Map<String, SetDefinition> _rarity = new HashMap<>();
 
     public RarityBasedMerchant(CardBlueprintLibrary library) {
@@ -17,8 +16,7 @@ public class RarityBasedMerchant implements Merchant {
         }
     }
 
-    @Override
-    public Integer getCardSellPrice(String blueprintId, Date currentTime) {
+    public Integer getCardSellPrice(String blueprintId) {
         boolean foil = false;
         if (blueprintId.endsWith("*")) {
             foil = true;
@@ -31,8 +29,7 @@ public class RarityBasedMerchant implements Merchant {
         return getCardBasePrice(blueprintId);
     }
 
-    @Override
-    public Integer getCardBuyPrice(String blueprintId, Date currentTime) {
+    public Integer getCardBuyPrice(String blueprintId) {
         boolean foil = false;
         if (blueprintId.endsWith("*")) {
             foil = true;
@@ -65,13 +62,4 @@ public class RarityBasedMerchant implements Merchant {
         };
     }
 
-    @Override
-    public void cardBought(String blueprintId, Date currentTime, int price) {
-        // NO-OP
-    }
-
-    @Override
-    public void cardSold(String blueprintId, Date currentTime, int price) {
-        // NO-OP
-    }
 }

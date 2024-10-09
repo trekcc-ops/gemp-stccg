@@ -64,7 +64,7 @@ public class LongPollingSystem {
                     else {
                         long _pollingLength = 5000;
                         if (waitingRequest.getStart() + _pollingLength < now) {
-                            waitingRequest.getLongPollableResource().deregisterRequest(waitingRequest);
+                            waitingRequest.getLongPollableResource().deregisterRequest();
                             _waitingActions.remove(waitingRequest);
                             execute(waitingRequest.getLongPollingResource());
                         }

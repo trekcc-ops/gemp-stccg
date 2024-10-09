@@ -28,7 +28,7 @@ public class ExtraCost implements EffectProcessor {
                     }
 
                     @Override
-                    public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
+                    public boolean canPayExtraCostsToPlay(PhysicalCard card) {
                         return costAppender.isPlayableInFull(actionContext);
                     }
 

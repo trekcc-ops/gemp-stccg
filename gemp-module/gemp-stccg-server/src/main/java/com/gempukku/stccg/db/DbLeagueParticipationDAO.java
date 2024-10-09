@@ -17,14 +17,9 @@ public class DbLeagueParticipationDAO implements LeagueParticipationDAO {
 
     public void userJoinsLeague(String leagueId, User player, String remoteAddr) {
         try {
-            try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("insert into league_participation (league_type, player_name, join_ip) values (?,?,?)")) {
-                    statement.setString(1, leagueId);
-                    statement.setString(2, player.getName());
-                    statement.setString(3, remoteAddr);
-                    statement.execute();
-                }
-            }
+            String sqlStatement = "insert into league_participation (league_type, player_name, join_ip) values (?,?,?)";
+            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                    leagueId, player.getName(), remoteAddr);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
