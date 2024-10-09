@@ -34,9 +34,8 @@ public class DefaultDraft {
 
     private boolean _finishedDraft;
 
-    private final Map<String, DraftCommunicationChannel> _playerDraftCommunications = new HashMap<>();
-
-    public DefaultDraft(CollectionsManager collectionsManager, CollectionType collectionType, ProductLibrary productLibrary, DraftPack draftPack, Set<String> players) {
+    public DefaultDraft(CollectionsManager collectionsManager, CollectionType collectionType,
+                        ProductLibrary productLibrary, DraftPack draftPack, Set<String> players) {
         _collectionsManager = collectionsManager;
         _collectionType = collectionType;
         _productLibrary = productLibrary;
@@ -62,13 +61,9 @@ public class DefaultDraft {
             } else {
                 presentNewCardChoices();
             }
-            for (DraftCommunicationChannel draftCommunicationChannel : _playerDraftCommunications.values())
-                draftCommunicationChannel.draftChanged();
         } else {
             if (choiceTimePassed()) {
                 forceRandomCardChoice();
-                for (DraftCommunicationChannel draftCommunicationChannel : _playerDraftCommunications.values())
-                    draftCommunicationChannel.draftChanged();
             }
         }
     }

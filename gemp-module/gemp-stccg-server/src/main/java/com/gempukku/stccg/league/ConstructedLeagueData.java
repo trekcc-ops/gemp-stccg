@@ -58,14 +58,10 @@ public class ConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus,
+                       int currentTime) {
         int status = oldStatus;
         if (status == 0) {
-            int maxGamesCount = 0;
-            for (LeagueSeriesData seriesData : _allSeries) {
-                maxGamesCount += seriesData.getMaxMatches();
-            }
-
             LeagueSeriesData lastSeries = _allSeries.getLast();
             if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {

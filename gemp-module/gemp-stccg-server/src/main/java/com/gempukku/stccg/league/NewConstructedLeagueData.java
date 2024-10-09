@@ -15,7 +15,7 @@ import java.util.List;
 
 public class NewConstructedLeagueData implements LeagueData {
     private final LeaguePrizes _leaguePrizes;
-    private final List<LeagueSeriesData> _series = new ArrayList<>();
+    private final List<LeagueSeriesData> _allSeries = new ArrayList<>();
 
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final CollectionType _collectionType;
@@ -40,7 +40,7 @@ public class NewConstructedLeagueData implements LeagueData {
             String format = params[5 + i * 3];
             int duration = Integer.parseInt(params[6 + i * 3]);
             int maxMatches = Integer.parseInt(params[7 + i * 3]);
-            _series.add(new DefaultLeagueSeriesData(_leaguePrizes, false, "Serie " + (i + 1),
+            _allSeries.add(new DefaultLeagueSeriesData(_leaguePrizes, false, "Serie " + (i + 1),
                     serieStart, DateUtils.offsetDate(serieStart, duration - 1),
                     maxMatches, formatLibrary.getFormat(format), _collectionType));
 
@@ -55,7 +55,7 @@ public class NewConstructedLeagueData implements LeagueData {
 
     @Override
     public List<LeagueSeriesData> getSeries() {
-        return Collections.unmodifiableList(_series);
+        return Collections.unmodifiableList(_allSeries);
     }
 
     @Override
@@ -63,15 +63,11 @@ public class NewConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus,
+                       int currentTime) {
         int status = oldStatus;
         if (status == 0) {
-            int maxGamesPlayed = 0;
-            for (LeagueSeriesData series : _series) {
-                maxGamesPlayed+=series.getMaxMatches();
-            }
-
-            LeagueSeriesData lastSeries = _series.getLast();
+            LeagueSeriesData lastSeries = _allSeries.getLast();
             if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
