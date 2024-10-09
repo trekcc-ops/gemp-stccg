@@ -7,14 +7,14 @@ on:
   pull_request:
     branches: [ "main" ]
 
+defaults:
+      run:
+        working-directory: ./gemp-module/gemp-stccg-client
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./gemp-module/gemp-stccg-client
 
     strategy:
       matrix:
