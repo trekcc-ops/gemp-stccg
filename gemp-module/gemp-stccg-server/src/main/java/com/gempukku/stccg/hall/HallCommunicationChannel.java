@@ -11,7 +11,7 @@ import java.util.*;
 public class HallCommunicationChannel implements LongPollableResource {
     private final int _channelNumber;
     private long _lastConsumed;
-    private String _lastMotd;
+    private String _lastDailyMessage;
     private Map<String, Map<String, String>> _tournamentQueuePropsOnClient = new LinkedHashMap<>();
     private Map<String, Map<String, String>> _tournamentPropsOnClient = new LinkedHashMap<>();
     private Map<String, Map<String, String>> _tablePropsOnClient = new LinkedHashMap<>();
@@ -61,7 +61,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         updateLastAccess();
 
         hallChannelVisitor.channelNumber(_channelNumber);
-        final MutableObject newMotd = new MutableObject();
+        final MutableObject newDailyMessage = new MutableObject();
 
         final Map<String, Map<String, String>> tournamentQueuesOnServer = new LinkedHashMap<>();
         final Map<String, Map<String, String>> tablesOnServer = new LinkedHashMap<>();
@@ -76,8 +76,8 @@ public class HallCommunicationChannel implements LongPollableResource {
                     }
 
                     @Override
-                    public void motd(String motd) {
-                        newMotd.setValue(motd);
+                    public void setDailyMessage(String message) {
+                        newDailyMessage.setValue(message);
                     }
 
                     @Override
@@ -153,10 +153,10 @@ public class HallCommunicationChannel implements LongPollableResource {
         notifyAboutTables(hallChannelVisitor, tablesOnServer);
         _tablePropsOnClient = tablesOnServer;
 
-        if (newMotd.getValue() != null && !newMotd.getValue().equals(_lastMotd)) {
-            String newMotdStr = (String) newMotd.getValue();
-            hallChannelVisitor.motdChanged(newMotdStr);
-            _lastMotd = newMotdStr;
+        if (newDailyMessage.getValue() != null && !newDailyMessage.getValue().equals(_lastDailyMessage)) {
+            String newMotdStr = (String) newDailyMessage.getValue();
+            hallChannelVisitor.changedDailyMessage(newMotdStr);
+            _lastDailyMessage = newMotdStr;
         }
 
         for (String gameId : playedGamesOnServer) {

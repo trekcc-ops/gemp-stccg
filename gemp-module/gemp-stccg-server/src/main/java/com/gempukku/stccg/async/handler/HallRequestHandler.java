@@ -483,8 +483,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         }
 
         @Override
-        public void motdChanged(String motd) {
-            _hall.setAttribute("motd", motd);
+        public void changedDailyMessage(String message) {
+            _hall.setAttribute("motd", message);
         }
 
         @Override

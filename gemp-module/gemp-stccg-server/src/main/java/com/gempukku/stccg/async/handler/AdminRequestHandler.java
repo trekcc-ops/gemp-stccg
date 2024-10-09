@@ -511,10 +511,10 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String motd = _hallServer.getDailyMessage();
+            String dailyMessage = _hallServer.getDailyMessage();
 
-            if(motd != null) {
-                responseWriter.writeJsonResponse(motd.replace("\n", "<br>"));
+            if(dailyMessage != null) {
+                responseWriter.writeJsonResponse(dailyMessage.replace("\n", "<br>"));
             }
         } finally {
             postDecoder.destroy();
@@ -526,10 +526,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String motd = getFormParameterSafely(postDecoder, "motd");
-
-            _hallServer.setDailyMessage(motd);
-
+            _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, "motd");
             responseWriter.writeHtmlResponse("OK");
         } finally {
             postDecoder.destroy();

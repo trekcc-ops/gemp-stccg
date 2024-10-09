@@ -244,10 +244,10 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void setDailyMessage(String motd) {
+    public void setDailyMessage(String message) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            _messageOfTheDay = motd;
+            _messageOfTheDay = message;
             hallChanged();
         } finally {
             _hallDataAccessLock.writeLock().unlock();
@@ -505,7 +505,7 @@ public class HallServer extends AbstractServer {
         try {
             visitor.serverTime(DateUtils.getCurrentDateAsString());
             if (_messageOfTheDay != null)
-                visitor.motd(_messageOfTheDay);
+                visitor.setDailyMessage(_messageOfTheDay);
 
             tableHolder.processTables(isAdmin, player, visitor);
 
