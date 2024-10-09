@@ -16,6 +16,7 @@ public class SortAndFilterCards {
         if (filter == null)
             filter = "";
         String[] filterParams = filter.split("\\|");
+        String[] rarity = getRarityFilter(filterParams);
         String[] sets = getSetFilter(filterParams);
         List<String> words = getWords(filterParams);
         Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", filterParams);
@@ -31,14 +32,14 @@ public class SortAndFilterCards {
             if (isPack(blueprintId)) {
                 CardBlueprint blueprint = cardBlueprintMap.get(blueprintId);
                 if (acceptsFilters(blueprint, cardLibrary, formatLibrary, blueprintId, sets, cardTypes,
-                        affiliations, tribblePowers, words, phases))
+                        rarity, affiliations, tribblePowers, words, phases))
                     result.add(item);
             } else {
                 try {
                     cardBlueprintMap.put(blueprintId, cardLibrary.getCardBlueprint(blueprintId));
                     CardBlueprint blueprint = cardBlueprintMap.get(blueprintId);
                     if (acceptsFilters(blueprint, cardLibrary, formatLibrary, blueprintId, sets, cardTypes,
-                            affiliations, tribblePowers, words, phases))
+                            rarity, affiliations, tribblePowers, words, phases))
                         result.add(item);
                 } catch (CardNotFoundException e) {
                     // Ignore the card
@@ -75,10 +76,12 @@ public class SortAndFilterCards {
     }
 
     private boolean acceptsFilters(CardBlueprint blueprint, CardBlueprintLibrary library, FormatLibrary formatLibrary,
-                                   String blueprintId, String[] sets, Set<CardType> cardTypes,
+                                   String blueprintId, String[] sets, Set<CardType> cardTypes, String[] rarity,
                                    Set<Affiliation> affiliations, Set<TribblePower> tribblePowers, List<String> words,
                                    Set<Keyword> phases) {
         if (sets != null && !isInSets(blueprintId, sets, library, formatLibrary))
+            return false;
+        if (rarity != null && !isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
             return false;
         if (cardTypes != null && !cardTypes.contains(blueprint.getCardType()))
             return false;
@@ -91,14 +94,6 @@ public class SortAndFilterCards {
         if (!containsAllWords(blueprint, words))
             return false;
         return containsAllKeywords(blueprint, phases);
-    }
-
-    private String getTypeFilter(String[] filterParams) {
-        for (String filterParam : filterParams) {
-            if (filterParam.startsWith("type:"))
-                return filterParam.substring("type:".length());
-        }
-        return null;
     }
 
     private String[] getRarityFilter(String[] filterParams) {

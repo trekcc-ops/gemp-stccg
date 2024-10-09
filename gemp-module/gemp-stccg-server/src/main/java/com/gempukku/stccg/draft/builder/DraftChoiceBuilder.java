@@ -1,16 +1,17 @@
 package com.gempukku.stccg.draft.builder;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.draft.DraftChoiceDefinition;
 import com.gempukku.stccg.draft.SoloDraft;
-import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.SortAndFilterCards;
 
 import java.util.*;
 
@@ -90,12 +91,7 @@ public class DraftChoiceBuilder {
             }
 
             private List<GenericCardItem> getCards(long seed, int stage) {
-                Random rnd = getRandom(seed, stage);
-                // Fixing some weird issue with Random
-                float thisFixesRandomnessForSomeReason = rnd.nextInt();
-                final List<GenericCardItem> cards = new ArrayList<>(possibleCards);
-                Collections.shuffle(cards, rnd);
-                return cards;
+                return TextUtils.getRandomizedList(possibleCards, getRandom(seed, stage));
             }
         };
     }
@@ -200,12 +196,7 @@ public class DraftChoiceBuilder {
             }
 
             private List<String> getShuffledCards(long seed, int stage) {
-                Random rnd = getRandom(seed, stage);
-                // Fixing some weird issue with Random
-                float thisFixesRandomnessForSomeReason = rnd.nextFloat();
-                final List<String> shuffledCards = new ArrayList<>(cards);
-                Collections.shuffle(shuffledCards, rnd);
-                return shuffledCards;
+                return TextUtils.getRandomizedList(cards, getRandom(seed, stage));
             }
         };
     }
@@ -335,18 +326,14 @@ public class DraftChoiceBuilder {
         return new DraftChoiceDefinition() {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
-                Random rnd = getRandom(seed, stage);
-                // Fixing some weird issue with Random
-                float thisFixesRandomnessForSomeReason = rnd.nextFloat();
-                return draftChoiceDefinitionList.get(rnd.nextInt(draftChoiceDefinitionList.size())).getDraftChoice(seed, stage, draftPool);
+                return TextUtils.getRandomFromList(draftChoiceDefinitionList, getRandom(seed, stage))
+                        .getDraftChoice(seed, stage, draftPool);
             }
 
             @Override
             public CardCollection getCardsForChoiceId(String choiceId, long seed, int stage) {
-                Random rnd = getRandom(seed, stage);
-                // Fixing some weird issue with Random
-                float thisFixesRandomnessForSomeReason = rnd.nextFloat();
-                return draftChoiceDefinitionList.get(rnd.nextInt(draftChoiceDefinitionList.size())).getCardsForChoiceId(choiceId, seed, stage);
+                return TextUtils.getRandomFromList(draftChoiceDefinitionList, getRandom(seed, stage))
+                        .getCardsForChoiceId(choiceId, seed, stage);
             }
         };
     }

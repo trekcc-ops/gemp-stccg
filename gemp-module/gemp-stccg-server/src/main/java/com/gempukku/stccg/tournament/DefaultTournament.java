@@ -284,7 +284,7 @@ public class DefaultTournament implements Tournament {
     private void awardPrizes(CollectionsManager collectionsManager) {
         List<PlayerStanding> list = getCurrentStandings();
         for (PlayerStanding playerStanding : list) {
-            CardCollection prizes = _tournamentPrizes.getPrizeForTournament(playerStanding, list.size());
+            CardCollection prizes = _tournamentPrizes.getPrizeForTournament(playerStanding);
             if (prizes != null)
                 collectionsManager.addItemsToPlayerCollection(
                         true, "Tournament " + getTournamentName() + " prize",

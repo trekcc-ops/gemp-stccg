@@ -23,7 +23,7 @@ public class DailyTournamentPrizes implements TournamentPrizes {
     }
 
     @Override
-    public CardCollection getPrizeForTournament(PlayerStanding playerStanding, int playersCount) {
+    public CardCollection getPrizeForTournament(PlayerStanding playerStanding) {
         DefaultCardCollection tournamentPrize = new DefaultCardCollection();
         tournamentPrize.addItem("(S)All Decipher Choice - Booster", playerStanding.getPoints());
         if (playerStanding.getPlayerWins() + playerStanding.getPlayerByes() >= 2)
