@@ -52,7 +52,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     // Attributes and ignored fields are at the top of this list, otherwise it is in alphabetical order
 
                     case "blueprintId", "java-blueprint": break; // Already processed by createBlueprint
-                    case "gametext", "headquarters", "playable", "ship-class": break; // TODO - No implementation yet
+                    case "gametext", "headquarters", "playable", "ship-class": break; // No implementation built yet
 
                     case "cunning", "integrity", "range", "shields", "strength", "weapons":
                         blueprint.setAttribute(
@@ -367,6 +367,10 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         }
     }
 
+    private boolean is2e(CardBlueprint blueprint) {
+        return blueprint.getBlueprintId().startsWith("1_");
+    }
+
     private void validateConsistency(CardBlueprint blueprint) throws InvalidCardDefinitionException {
         if (blueprint.getTitle() == null)
             throw new InvalidCardDefinitionException("Card has to have a title");
@@ -380,9 +384,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         if (blueprint.getCardType() == CardType.MISSION) {
             if (blueprint.getPropertyLogo() != null)
                 throw new InvalidCardDefinitionException("Mission card should not have a property logo");
-            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") &&
-                    !blueprint.getBlueprintId().startsWith("1_"))
-                    // TODO - The substring "1_" condition is filtering out 2E Premiere cards. This won't work forever.
+            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") && !is2e(blueprint))
                 throw new InvalidCardDefinitionException("Mission card should have a location");
             if (blueprint.getQuadrant() == null)
                 throw new InvalidCardDefinitionException("Mission card should have a quadrant");
@@ -391,9 +393,8 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                 throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
             if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
                 throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
-        } else if (blueprint.getPropertyLogo() == null && !blueprint.getBlueprintId().startsWith("1_"))
-                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. This won't work forever.
-                // TODO - Technically tribbles should have property logos too, they're just never relevant
+        } else if (blueprint.getPropertyLogo() == null && !is2e(blueprint))
+                // Technically tribbles have property logos too, they're just never relevant
             throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
     }
     
