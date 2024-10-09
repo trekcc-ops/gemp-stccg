@@ -96,7 +96,6 @@ public class SoloDraftLeagueData implements LeagueData {
 
         if (status == 0) {
             if (currentTime > DateUtils.offsetDate(_serie.getEnd(), 1)) {
-                int maxGamesTotal = _serie.getMaxMatches();
 
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);

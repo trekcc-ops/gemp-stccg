@@ -92,10 +92,6 @@ public class NewSealedLeagueData implements LeagueData {
             }
         }
 
-        int maxGamesTotal = 0;
-        for (LeagueSeriesData sery : _series)
-            maxGamesTotal+=sery.getMaxMatches();
-
         if (status == _series.size()) {
             LeagueSeriesData lastSerie = _series.getLast();
             if (currentTime > DateUtils.offsetDate(lastSerie.getEnd(), 1)) {
