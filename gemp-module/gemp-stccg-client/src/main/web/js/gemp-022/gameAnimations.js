@@ -345,6 +345,7 @@ export default class GameAnimations {
                 function (next) {
                     var cardDiv = getCardDivFromId(cardId);
                     $(cardDiv).css({"z-index": oldValues["z-index"]});
+                    next();
                 });
         }
     }
