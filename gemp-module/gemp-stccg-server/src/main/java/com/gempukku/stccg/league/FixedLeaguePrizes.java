@@ -26,7 +26,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCount, int gamesPlayed) {
+    public CardCollection getPrizeForLeagueMatchWinner(int winCount) {
         DefaultCardCollection winnerPrize = new DefaultCardCollection();
         if (winCount % 2 == 1) {
             winnerPrize.addItem("(S)All Decipher Choice - Booster", 1);
@@ -37,7 +37,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed, CollectionType collectionType) {
+    public CardCollection getPrizeForLeague(int position, CollectionType collectionType) {
         if (collectionType.equals(CollectionType.ALL_CARDS)) {
             return getPrizeForConstructedLeague(position);
         } else if (collectionType.equals(CollectionType.MY_CARDS) || collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {

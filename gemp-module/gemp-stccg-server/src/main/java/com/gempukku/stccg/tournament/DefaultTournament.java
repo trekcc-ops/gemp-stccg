@@ -215,7 +215,7 @@ public class DefaultTournament implements Tournament {
             boolean result = false;
             if (_nextTask == null) {
                 if (_tournamentStage == Stage.DRAFT) {
-                    _draft.advanceDraft(tournamentCallback);
+                    _draft.advanceDraft();
                     if (_draft.isFinished()) {
                         tournamentCallback.broadcastMessage("Drafting in tournament " + _tournamentName + " is finished, starting deck building");
                         _tournamentStage = Stage.DECK_BUILDING;

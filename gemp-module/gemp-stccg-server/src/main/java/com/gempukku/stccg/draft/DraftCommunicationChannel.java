@@ -4,18 +4,8 @@ import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 
 public class DraftCommunicationChannel implements LongPollableResource {
-    private final int _channelNumber;
-
     private volatile boolean _changed;
     private volatile WaitingRequest _waitingRequest;
-
-    public DraftCommunicationChannel(int channelNumber) {
-        _channelNumber = channelNumber;
-    }
-
-    public int getChannelNumber() {
-        return _channelNumber;
-    }
 
     @Override
     public synchronized void deregisterRequest() {

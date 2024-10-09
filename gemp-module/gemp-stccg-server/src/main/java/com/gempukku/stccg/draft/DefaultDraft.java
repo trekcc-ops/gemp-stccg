@@ -1,13 +1,12 @@
 package com.gempukku.stccg.draft;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
+import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.packs.ProductLibrary;
-import com.gempukku.stccg.tournament.TournamentCallback;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -52,7 +51,7 @@ public class DefaultDraft {
             _collectionsManager.addPlayerCollection(false, "New draft fixed collection", player, _collectionType, fixedCollection);
     }
 
-    public void advanceDraft(TournamentCallback draftCallback) {
+    public void advanceDraft() {
         if (haveAllPlayersPicked()) {
             if (haveAllCardsBeenChosen()) {
                 if (haveMorePacks()) {

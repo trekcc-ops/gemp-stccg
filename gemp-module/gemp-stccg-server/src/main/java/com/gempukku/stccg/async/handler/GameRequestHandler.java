@@ -187,14 +187,11 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getCardInfo(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         String cardIdStr = getQueryParameterSafely(queryDecoder, "cardId");
         if (cardIdStr.startsWith("extra")) {
             responseWriter.writeHtmlResponse("");
         } else {
             int cardId = Integer.parseInt(cardIdStr);
-
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
 
             CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             if (gameMediator == null)
