@@ -1,5 +1,6 @@
 package com.gempukku.stccg.service;
 
+import com.gempukku.stccg.TextUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -60,7 +61,7 @@ public class LoggedUserHolder {
         }
     }
 
-    private final char[] _chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+    private final char[] _chars = TextUtils.getAllCharacters(true, false).toCharArray();
 
     private String insertValueForUser(String userName) {
         Random rnd = ThreadLocalRandom.current();

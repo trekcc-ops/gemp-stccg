@@ -1,6 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.TextUtils;
 import org.sql2o.Sql2o;
 
 import java.nio.charset.StandardCharsets;
@@ -339,7 +340,7 @@ public class DbPlayerDAO implements PlayerDAO {
         if (login.length() < 2 || login.length() > 30)
             throw new LoginInvalidException();
         for (int i = 0; i < login.length(); i++) {
-            String validLoginChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+            String validLoginChars = TextUtils.getAllCharacters(true,true);
             if (!validLoginChars.contains(String.valueOf(login.charAt(i))))
                 throw new LoginInvalidException();
         }

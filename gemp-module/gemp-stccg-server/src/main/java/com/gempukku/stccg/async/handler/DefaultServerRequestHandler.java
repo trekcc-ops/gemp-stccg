@@ -202,35 +202,8 @@ public class DefaultServerRequestHandler {
     protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
         String blueprintId = item.getBlueprintId();
         CardBlueprint bp = _library.getCardBlueprint(blueprintId);
-
-        String[] parts = blueprintId.split("_");
-        int setNum = Integer.parseInt(parts[0]);
-        String set = String.format("%02d", setNum);
-        String subset = "S";
-        int version = 0;
-        if(setNum >= 50 && setNum <= 69) {
-            setNum -= 50;
-            set = String.format("%02d", setNum);
-            subset = "E";
-            version = 1;
-        }
-        else if(setNum >= 70 && setNum <= 89) {
-            setNum -= 70;
-            set = String.format("%02d", setNum);
-            subset = "E";
-            version = 1;
-        }
-        else if(setNum >= 100 && setNum <= 149) {
-            setNum -= 100;
-            set = "V" + setNum;
-        }
-        int cardNum = Integer.parseInt(parts[1].replace("*", "").replace("T", ""));
-
-        String id = "LOTR-EN" + set + subset + String.format("%03d", cardNum) + "." + String.format("%01d", version);
-
         return "<span class=\"tooltip\">" + bp.getFullName()
-                + "<span><img class=\"ttimage\" src=\"https://wiki.lotrtcgpc.net/images/" + id +
-                "_card.jpg\" ></span></span>";
+                + "<span><img class=\"ttimage\" src=\"" + bp.getImageUrl() + "\"></span></span>";
     }
 
     protected String listCards(String deckName, String filter, DefaultCardCollection deckCards, boolean countCards,

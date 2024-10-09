@@ -20,16 +20,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LeagueServiceTest extends AbstractServerTest {
 
+    String leagueData = "20120502,default,1,1,1" + (",test_block,7,2").repeat(1);
+
     @Test
     public void testJoiningLeagueAfterMaxGamesPlayed() throws Exception {
 
         LeagueDAO leagueDao = Mockito.mock(LeagueDAO.class);
 
-        String sb = "20120502,default,1,1,1" + (",lotr_block,7,2").repeat(1);
 
         List<League> leagues = new ArrayList<>();
         League league = new League(5000, "League name", "leagueType",
-                NewConstructedLeagueData.class.getName(), sb, 0);
+                NewConstructedLeagueData.class.getName(), leagueData, 0);
         leagues.add(league);
 
         LeagueSeriesData seriesData =
@@ -76,11 +77,9 @@ public class LeagueServiceTest extends AbstractServerTest {
     public void testJoiningLeagueAfterMaxGamesPlayedWithPreloadedDb() throws Exception {
         LeagueDAO leagueDao = Mockito.mock(LeagueDAO.class);
 
-        String sb = "20120502,default,1,1,1" + (",lotr_block,7,2").repeat(1);
-
         List<League> leagues = new ArrayList<>();
         League league = new League(
-                5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), sb, 0
+                5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), leagueData, 0
         );
         leagues.add(league);
 
@@ -120,10 +119,8 @@ public class LeagueServiceTest extends AbstractServerTest {
     public void testStandings() throws Exception {
         LeagueDAO leagueDao = Mockito.mock(LeagueDAO.class);
 
-        String sb = "20120502,default,1,1,1" + (",lotr_block,7,2").repeat(1);
-
         List<League> leagues = new ArrayList<>();
-        League league = new League(5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), sb, 0);
+        League league = new League(5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), leagueData, 0);
         leagues.add(league);
 
         LeagueSeriesData seriesData = league.getLeagueData(_cardLibrary, _formatLibrary,null).getSeries().getFirst();

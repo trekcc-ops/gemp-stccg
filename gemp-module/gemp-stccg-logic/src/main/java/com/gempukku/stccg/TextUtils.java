@@ -14,6 +14,14 @@ public class TextUtils {
         return new LinkedList<>(randomizedList.subList(0, Math.min(count, randomizedList.size())));
     }
 
+    public static String getAllCharacters(boolean includeUpper, boolean includeDashAndUnderscore){
+        StringBuilder sb = new StringBuilder();
+        sb.append("abcdefghijklmnopqrstuvwxyz0123456789");
+        if (includeUpper) sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        if (includeDashAndUnderscore) sb.append("-_");
+        return sb.toString();
+    }
+
     public static String signed(int value) {
         return (value >= 0 ? "+" : "") + value;
     }

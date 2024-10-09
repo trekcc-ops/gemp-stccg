@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConstructedLeagueDataTest extends AbstractServerTest {
     @Test
+    @SuppressWarnings("SpellCheckingInspection")
     public void testParameters() {
         final List<LeagueSeriesData> series = getLeagueSeriesData();
         assertEquals(3, series.size());
@@ -23,6 +24,7 @@ public class ConstructedLeagueDataTest extends AbstractServerTest {
         assertEquals("st2e", series.get(2).getFormat().getCode());
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static List<LeagueSeriesData> getLeagueSeriesData() {
         String params = "20120312"; // start date
         params = params + ",st1emoderncomplete"; // league prize pool

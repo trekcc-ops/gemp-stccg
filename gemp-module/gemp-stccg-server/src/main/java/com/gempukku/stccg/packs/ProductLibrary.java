@@ -58,9 +58,9 @@ public class ProductLibrary {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            List<JSONDefs.Pack> defs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
+            List<JSONDefs.Pack> packs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
 
-            for (JSONDefs.Pack def : defs) {
+            for (JSONDefs.Pack def : packs) {
                 LOGGER.debug("Loading pack definitions for " + def.name);
 
                 PackBox result = null;
@@ -145,4 +145,3 @@ public class ProductLibrary {
         }
     }
 }
-

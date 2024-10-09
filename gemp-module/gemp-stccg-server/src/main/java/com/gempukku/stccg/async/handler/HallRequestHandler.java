@@ -366,8 +366,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 hall.appendChild(formatElem);
             }
             for (League league : _leagueService.getActiveLeagues()) {
-                final LeagueSeriesData currentLeagueSerie = _leagueService.getCurrentLeagueSeries(league);
-                if (currentLeagueSerie != null && _leagueService.isPlayerInLeague(league, resourceOwner)) {
+                final LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSeries(league);
+                if (seriesData != null && _leagueService.isPlayerInLeague(league, resourceOwner)) {
                     Element formatElem = doc.createElement("format");
                     formatElem.setAttribute("type", league.getType());
                     formatElem.appendChild(doc.createTextNode(league.getName()));
@@ -395,9 +395,10 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             processLoginReward(resourceOwner.getName());
 
             try {
-                HallCommunicationChannel pollableResource = _hallServer.getCommunicationChannel(resourceOwner, channelNumber);
-                HallUpdateLongPollingResource polledResource = new HallUpdateLongPollingResource(pollableResource, request, resourceOwner, responseWriter);
-                longPollingSystem.processLongPollingResource(polledResource, pollableResource);
+                HallCommunicationChannel commChannel = _hallServer.getCommunicationChannel(resourceOwner, channelNumber);
+                HallUpdateLongPollingResource polledResource =
+                        new HallUpdateLongPollingResource(commChannel, request, resourceOwner, responseWriter);
+                longPollingSystem.processLongPollingResource(polledResource, commChannel);
             }
             catch (SubscriptionExpiredException exp) {
                 logHttpError(LOGGER, 410, request.uri(), exp);
@@ -484,7 +485,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
         @Override
         public void changedDailyMessage(String message) {
-            _hall.setAttribute("motd", message);
+            _hall.setAttribute("messageOfTheDay", message);
         }
 
         @Override

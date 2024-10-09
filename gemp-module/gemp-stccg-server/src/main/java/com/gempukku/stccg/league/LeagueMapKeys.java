@@ -7,7 +7,7 @@ public class LeagueMapKeys {
         return league.getType();
     }
 
-    public static String getLeagueSeriesMapKey(League league, LeagueSeriesData leagueSerie) {
-        return league.getType() + ":" + leagueSerie.getName();
+    public static String getLeagueSeriesMapKey(League league, LeagueSeriesData seriesData) {
+        return league.getType() + ":" + seriesData.getName();
     }
 }

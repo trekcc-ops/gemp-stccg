@@ -154,9 +154,9 @@ public class HallCommunicationChannel implements LongPollableResource {
         _tablePropsOnClient = tablesOnServer;
 
         if (newDailyMessage.getValue() != null && !newDailyMessage.getValue().equals(_lastDailyMessage)) {
-            String newMotdStr = (String) newDailyMessage.getValue();
-            hallChannelVisitor.changedDailyMessage(newMotdStr);
-            _lastDailyMessage = newMotdStr;
+            String newDailyMessageString = (String) newDailyMessage.getValue();
+            hallChannelVisitor.changedDailyMessage(newDailyMessageString);
+            _lastDailyMessage = newDailyMessageString;
         }
 
         for (String gameId : playedGamesOnServer) {

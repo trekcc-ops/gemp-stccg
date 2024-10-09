@@ -19,7 +19,7 @@ public class ConstructedLeagueData implements LeagueData {
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final CollectionType _collectionType;
 
-    // Example params - 20120312,fotr_block,0.7,default,All cards,7,10,3,fotr1_block,fotr_block,fotr2_block,fotr_block,fotr_block,fotr_block
+    // Example params - 20120312,test_block,0.7,default,All cards,7,10,3,test2_block,test_block,test3_block,test_block,test_block,test_block
     // Which means - start date,league prize pool,prizes multiplier,collection type,collection name,series length,series match count,series count,
     // series1 format, series1 prize pool,
     // series2 format, series2 prize pool,

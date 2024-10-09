@@ -160,10 +160,10 @@ public class DraftChoiceBuilder {
                                                                   DefaultCardCollection draftPool) {
                 final List<String> shuffledCards = getShuffledCards(seed, stage);
 
-                List<SoloDraft.DraftChoice> draftableCards = new ArrayList<>(count);
+                List<SoloDraft.DraftChoice> eligibleCards = new ArrayList<>(count);
                 for (int i = 0; i < count; i++) {
                     final int finalI = i;
-                    draftableCards.add(
+                    eligibleCards.add(
                             new SoloDraft.DraftChoice() {
                                 @Override
                                 public String getChoiceId() {
@@ -181,7 +181,7 @@ public class DraftChoiceBuilder {
                                 }
                             });
                 }
-                return draftableCards;
+                return eligibleCards;
             }
 
             @Override

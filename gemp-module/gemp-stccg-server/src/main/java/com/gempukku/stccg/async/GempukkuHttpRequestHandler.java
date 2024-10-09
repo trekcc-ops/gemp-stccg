@@ -319,9 +319,9 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
 
                     FileInputStream fis = new FileInputStream(file);
                     try {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        IOUtils.copyLarge(fis, baos);
-                        fileBytes = baos.toByteArray();
+                        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                        IOUtils.copyLarge(fis, byteStream);
+                        fileBytes = byteStream.toByteArray();
                         _fileCache.put(canonicalPath, fileBytes);
                     } finally {
                         IOUtils.closeQuietly(fis);

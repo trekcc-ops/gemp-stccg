@@ -285,7 +285,7 @@ public class HallServer extends AbstractServer {
                                             boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         League league = null;
-        LeagueSeriesData leagueSerie = null;
+        LeagueSeriesData seriesData = null;
         GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
         GameTimer gameTimer = GameTimer.ResolveTimer(timer);
 
@@ -293,8 +293,8 @@ public class HallServer extends AbstractServer {
             // Maybe it's a league format?
             league = _leagueService.getLeagueByType(formatSelection);
             if (league != null) {
-                leagueSerie = _leagueService.getCurrentLeagueSeries(league);
-                if (leagueSerie == null)
+                seriesData = _leagueService.getCurrentLeagueSeries(league);
+                if (seriesData == null)
                     throw new HallException("There is no ongoing series for that league");
 
                 if(isInviteOnly) {
@@ -309,7 +309,7 @@ public class HallServer extends AbstractServer {
                 if(description != null)
                     description = "";
 
-                format = leagueSerie.getFormat();
+                format = seriesData.getFormat();
 
                 gameTimer = GameTimer.COMPETITIVE_TIMER;
             }
@@ -318,7 +318,7 @@ public class HallServer extends AbstractServer {
         if (format == null)
             throw new HallException("This format is not supported: " + formatSelection);
 
-        return new GameSettings(format, league, leagueSerie,
+        return new GameSettings(format, league, seriesData,
                 league != null, isPrivate, isInviteOnly, isHidden, gameTimer, description);
     }
 

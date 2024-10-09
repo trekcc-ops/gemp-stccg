@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameFormat;
@@ -209,8 +210,8 @@ public class GameRecorder {
                     // Prepare the output file
                     Result streamResult = new StreamResult(replayStream);
                     // Write the DOM document to the file
-                    Transformer xformer = TransformerFactory.newInstance().newTransformer();
-                    xformer.transform(source, streamResult);
+                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                    transformer.transform(source, streamResult);
                 }
                 result.put(playerId, recordingId);
 
@@ -226,7 +227,7 @@ public class GameRecorder {
         String id;
         do {
             StringBuilder sb = new StringBuilder();
-            final String POSSIBLE_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+            final String POSSIBLE_CHARS = TextUtils.getAllCharacters(false, false);
             int idLength = 16;
             Random rnd = ThreadLocalRandom.current();
             for (int i = 0; i < idLength; i++)
