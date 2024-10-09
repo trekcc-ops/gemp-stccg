@@ -16,14 +16,10 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MerchantService {
-    private final RarityBasedMerchant _merchant;
     private final Map<String, PriceGuarantee> _priceGuarantees = Collections.synchronizedMap(new LRUMap<>(100));
 
     private final ReadWriteLock _lock = new ReentrantReadWriteLock(true);
     private final Set<BasicCardItem> _merchantableItems = new HashSet<>();
-    private final Set<String> _merchantableStrings = new HashSet<>();
-
-    private final Map<String, Integer> _fixedPriceItems = new HashMap<>();
 
     private final CollectionType _permanentCollection = CollectionType.MY_CARDS;
     private final CollectionsManager _collectionsManager;
@@ -31,14 +27,11 @@ public class MerchantService {
     public MerchantService(CardBlueprintLibrary library, CollectionsManager collectionsManager) {
         _collectionsManager = collectionsManager;
 
-        _merchant = new RarityBasedMerchant(library);
-
         for (SetDefinition setDefinition : library.getSetDefinitions().values()) {
             if (setDefinition.hasFlag("merchantable")) {
                 for (String blueprintId : setDefinition.getAllCards()) {
                     String baseBlueprintId = library.getBaseBlueprintId(blueprintId);
                     _merchantableItems.add(new BasicCardItem(baseBlueprintId));
-                    _merchantableStrings.add(baseBlueprintId);
                 }
             }
         }
@@ -54,24 +47,6 @@ public class MerchantService {
         try {
             Map<String, Integer> buyPrices = new HashMap<>();
             Map<String, Integer> sellPrices = new HashMap<>();
-            for (CardItem cardItem : cardBlueprintIds) {
-                String blueprintId = cardItem.getBlueprintId();
-
-                Integer fixedPrice = _fixedPriceItems.get(blueprintId);
-                if (fixedPrice != null) {
-                    sellPrices.put(blueprintId, fixedPrice);
-                } else {
-                    Integer buyPrice = _merchant.getCardBuyPrice(blueprintId);
-
-                    if (buyPrice != null)
-                        buyPrices.put(blueprintId, buyPrice);
-                    if (_merchantableStrings.contains(blueprintId)) {
-                        Integer sellPrice = _merchant.getCardSellPrice(blueprintId);
-                        if (sellPrice != null)
-                            sellPrices.put(blueprintId, sellPrice);
-                    }
-                }
-            }
             PriceGuarantee priceGuarantee = new PriceGuarantee(sellPrices, buyPrices);
             _priceGuarantees.put(player.getName(), priceGuarantee);
             return priceGuarantee;
