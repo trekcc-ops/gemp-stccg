@@ -20,9 +20,9 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
     private final Filter _filter;
     private final Set<PhysicalCard> _preventedTargets = new HashSet<>();
     private final String _performingPlayer;
-    private int _requiredTargets;
 
-    public DiscardCardsFromPlayEffect(DefaultGame game, String performingPlayer, PhysicalCard source, Filterable... filters) {
+    public DiscardCardsFromPlayEffect(DefaultGame game, String performingPlayer, PhysicalCard source,
+                                      Filterable... filters) {
         super(game, performingPlayer);
         _filter = Filters.and(filters);
         _performingPlayer = performingPlayer;
@@ -40,7 +40,7 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
         return _source;
     }
 
-    public void preventEffect(DefaultGame game, PhysicalCard card) {
+    public void preventEffect(PhysicalCard card) {
         _preventedTargets.add(card);
         _prevented = true;
     }
@@ -74,12 +74,12 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
     public FullEffectResult playEffectReturningResult() {
         Collection<PhysicalCard> affectedMinusPreventedCards = getAffectedCardsMinusPrevented();
         playOutEffectOn(_game, affectedMinusPreventedCards);
-        return new FullEffectResult(affectedMinusPreventedCards.size() >= _requiredTargets);
+        return new FullEffectResult(true);
     }
 
     @Override
     public boolean isPlayableInFull() {
-        return getAffectedCardsMinusPrevented().size() >= _requiredTargets;
+        return true;
     }
 
     protected final Collection<PhysicalCard> getAffectedCards() {

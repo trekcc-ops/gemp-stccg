@@ -1,18 +1,16 @@
 package com.gempukku.stccg.async.handler;
 
+import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.DBDefs;
-import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,7 +35,6 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
     }
 
     private void getGameHistory(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        //HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, "start"));
@@ -51,9 +48,7 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
         final List<DBDefs.GameHistory> playerGameHistory = _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
         int recordCount = _gameHistoryService.getGameHistoryForPlayerCount(resourceOwner);
 
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
         Element gameHistory = doc.createElement("gameHistory");
         gameHistory.setAttribute("count", String.valueOf(recordCount));
         gameHistory.setAttribute("playerId", resourceOwner.getName());

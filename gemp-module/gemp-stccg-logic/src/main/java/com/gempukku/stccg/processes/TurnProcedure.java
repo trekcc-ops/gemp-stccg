@@ -141,7 +141,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
 
         @Override
-        public Effect nextEffect() throws InvalidGameLogicException {
+        public Effect nextEffect() {
             if (!_initialized) {
                 _initialized = true;
                 appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
@@ -179,7 +179,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
 
         @Override
-        public Effect nextEffect() throws InvalidGameLogicException {
+        public Effect nextEffect() {
             if (!_initialized) {
                 _initialized = true;
                 List<Action> requiredResponses = _actionsEnvironment.getRequiredAfterTriggers(_effectResults);

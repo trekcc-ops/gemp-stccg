@@ -24,16 +24,6 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
                                       PhysicalCard cardToDiscard) {
         this(game, source, fromZone, source.getOwnerName(), Collections.singleton(cardToDiscard), false);
     }
-    public DiscardCardsFromZoneEffect(ActionContext actionContext, Zone fromZone,
-                                      Collection<PhysicalCard> cardsToDiscard) {
-        this(actionContext.getGame(), actionContext.getSource(), fromZone, actionContext.getSource().getOwnerName(),
-                cardsToDiscard, false);
-    }
-
-    public DiscardCardsFromZoneEffect(DefaultGame game, PhysicalCard source, Zone fromZone,
-                                      Collection<PhysicalCard> cardsToDiscard) {
-        this(game, source, fromZone, source.getOwnerName(), cardsToDiscard, false);
-    }
 
     public DiscardCardsFromZoneEffect(ActionContext actionContext, Zone fromZone, String playerId,
                                       Collection<PhysicalCard> cards, boolean forced) {
@@ -83,7 +73,7 @@ public class DiscardCardsFromZoneEffect extends DefaultEffect {
                 gameState.addCardToZone(card, Zone.DISCARD);
                 if (_fromZone == Zone.HAND) {
                     _game.getActionsEnvironment().emitEffectResult(
-                            new DiscardCardFromHandResult(_source, card, _forced)
+                            new DiscardCardFromHandResult(_source, card)
                     );
                 }
             }

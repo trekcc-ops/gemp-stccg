@@ -71,8 +71,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         return Filters.countActive(_game, _filters) >= _minimum;
     }
 
-    private boolean isAllowAbort() { return false; }
-
     @Override
     protected FullEffectResult playEffectReturningResult() {
         // If player is not set, set to current player to make choices
@@ -86,18 +84,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
             selectableCards = Filters.filter(_cards, _game, _filters);
         else
             selectableCards = Filters.filterActive(_game, _action.getActionSource(), _filters);
-
-        // Filter cards by accounting for cards with multiple classes
-/*        int acceptsCountSoFar = 0;
-        List<PhysicalCard> validCards = new LinkedList<>();
-        for (PhysicalCard selectableCard : selectableCards) {
-            int acceptsCount = Filters.and(_filters).acceptsCount(_game, selectableCard);
-            if (acceptsCount > 0 && acceptsCount <= _maximumAcceptsCount) {
-                validCards.add(selectableCard);
-                acceptsCountSoFar += acceptsCount;
-            }
-        }
-        selectableCards = validCards;*/
 
         // Make sure at least the minimum number of cards can be found
         if (selectableCards.size() < _minimum) {
@@ -116,7 +102,7 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         }
         else {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1,_choiceText + ((minimum > 0 && isAllowAbort()) ? ", or click 'Done' to cancel" : ""), selectableCards, isAllowAbort() ? 0 : minimum, maximum) {
+                    new CardsSelectionDecision(1, _choiceText, selectableCards, minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
@@ -126,11 +112,6 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
         }
 
         return new FullEffectResult(true);
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        return super.wasCarriedOut();
     }
 
     /**

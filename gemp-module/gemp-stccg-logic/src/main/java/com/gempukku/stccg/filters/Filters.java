@@ -3,7 +3,6 @@ package com.gempukku.stccg.filters;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -114,19 +113,8 @@ public class Filters {
         return matchingFilterVisitor.getCounter();
     }
 
+
     // Filters available
-
-    public static Filter conditionFilter(final Filterable defaultFilters, final Condition condition, final Filterable conditionMetFilter) {
-        final Filter filter1 = changeToFilter(defaultFilters);
-        final Filter filter2 = changeToFilter(conditionMetFilter);
-        return (game, physicalCard) -> {
-            if (condition.isFulfilled())
-                return filter2.accepts(game, physicalCard);
-            else
-                return filter1.accepts(game, physicalCard);
-        };
-    }
-
     public static Filter strengthEqual(final Evaluator evaluator) {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game, null);
     }

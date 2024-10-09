@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 public interface CostToEffectAction extends Action {
-    void appendPotentialDiscount(DiscountEffect cost);
 
     /**
      * Inserts the specified costs as the next costs to be executed.
@@ -17,8 +16,6 @@ public interface CostToEffectAction extends Action {
      * @param cost
      */
     void appendCost(Effect cost);
-
-    void appendTargeting(Effect targeting);
 
     /**
      * Inserts the specified effects as the next effects to be executedD.
@@ -39,6 +36,5 @@ public interface CostToEffectAction extends Action {
 
     boolean wasCarriedOut();
 
-    void setCardActionPrefix(String number);
     String getCardActionPrefix();
 }

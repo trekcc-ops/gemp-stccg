@@ -13,8 +13,6 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +76,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
         try {
             User player = getResourceOwnerSafely(request, null);
 
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document doc = documentBuilder.newDocument();
+            Document doc = createNewDoc();
             Element hasTester = doc.createElement("hasTester");
 
             hasTester.setAttribute("result", String.valueOf(player.hasType(User.Type.PLAY_TESTER)));

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.SnapshotData;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -26,7 +25,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     public DefaultGame getGame() { return _game; }
-    public GameState getGameState() { return _game.getGameState(); }
 
     public List<ActionProxy> getUntilStartOfPhaseActionProxies(Phase phase) {
         return _untilStartOfPhaseActionProxies.get(phase);

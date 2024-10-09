@@ -12,8 +12,7 @@ public class RequiredTriggerActionSource extends TriggerActionSource {
     private final RequiredType _requiredType = RequiredType.REQUIRED;
 
     public RequiredTriggerActionSource(TriggerTiming triggerTiming) { _triggerTiming = triggerTiming; }
-    @Override
-    public RequiredTriggerAction createAction(PhysicalCard card) {
+    private RequiredTriggerAction createAction(PhysicalCard card) {
         return new RequiredTriggerAction(card);
     }
 

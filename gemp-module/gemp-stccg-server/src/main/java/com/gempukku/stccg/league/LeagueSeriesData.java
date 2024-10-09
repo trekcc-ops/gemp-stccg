@@ -21,5 +21,4 @@ public interface LeagueSeriesData {
 
     CardCollection getPrizeForLeagueMatchWinner(int winCount, int totalGamesPlayed);
 
-    CardCollection getPrizeForLeagueMatchLoser(int winCount, int totalGamesPlayed);
 }

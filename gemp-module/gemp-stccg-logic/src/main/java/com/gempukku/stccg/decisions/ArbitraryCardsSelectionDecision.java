@@ -14,15 +14,13 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     private final int _minimum;
     private final int _maximum;
 
-    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCard) {
-        this(id, text, physicalCard, 0, physicalCard.size());
-    }
-
-    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards, int minimum, int maximum) {
+    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
+                                           int minimum, int maximum) {
         this(id, text, physicalCards, physicalCards, minimum, maximum);
     }
 
-    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards, Collection<? extends PhysicalCard> selectable, int minimum, int maximum) {
+    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
+                                           Collection<? extends PhysicalCard> selectable, int minimum, int maximum) {
         super(id, text, AwaitingDecisionType.ARBITRARY_CARDS);
         _physicalCards = physicalCards;
         _selectable = selectable;
@@ -36,7 +34,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         setParam("selectable", getSelectable(physicalCards, selectable));
     }
 
-    private String[] getSelectable(Collection<? extends PhysicalCard> physicalCards, Collection<? extends PhysicalCard> selectable) {
+    private String[] getSelectable(Collection<? extends PhysicalCard> physicalCards,
+                                   Collection<? extends PhysicalCard> selectable) {
         String[] result = new String[physicalCards.size()];
         int index = 0;
         for (PhysicalCard physicalCard : physicalCards) {

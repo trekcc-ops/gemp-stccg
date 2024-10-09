@@ -247,13 +247,20 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 headers1.set(CONTENT_TYPE, contentType);
 
                 // Build the response object.
-                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(response1.getBytes(CharsetUtil.UTF_8)), headers1, EmptyHttpHeaders.INSTANCE);
+                FullHttpResponse response =
+                        new DefaultFullHttpResponse(
+                                HTTP_1_1, HttpResponseStatus.OK,
+                                Unpooled.wrappedBuffer(response1.getBytes(CharsetUtil.UTF_8)),
+                                headers1, EmptyHttpHeaders.INSTANCE);
                 sendResponse(ctx, request, response);
             } catch (Exception exp) {
                 byte[] content = new byte[0];
                 // Build the response object.
                 LOGGER.error("Error response for " + request.uri(), exp);
-                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, Unpooled.wrappedBuffer(content), null, EmptyHttpHeaders.INSTANCE);
+                FullHttpResponse response =
+                        new DefaultFullHttpResponse(
+                                HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, Unpooled.wrappedBuffer(content),
+                                null, EmptyHttpHeaders.INSTANCE);
                 sendResponse(ctx, request, response);
             }
         }

@@ -26,8 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -132,10 +130,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         public synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
-                    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-                    Document doc = documentBuilder.newDocument();
+                    Document doc = createNewDoc();
                     Element update = doc.createElement("update");
 
                     _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, new SerializationVisitor(doc, update));
@@ -222,9 +217,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
 
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
         Element gameState = doc.createElement("gameState");
 
         try {

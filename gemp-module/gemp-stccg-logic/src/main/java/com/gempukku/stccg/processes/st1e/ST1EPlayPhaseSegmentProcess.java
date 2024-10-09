@@ -29,7 +29,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     @Override
     public void process() {
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_playerId);
-        if (!playableActions.isEmpty() || !_game.shouldAutoPass(_playerId, _game.getGameState().getCurrentPhase())) {
+        if (!playableActions.isEmpty() || !_game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new CardActionSelectionDecision(1, "Play " +
                             _game.getCurrentPhaseString() + " action or Pass", playableActions) {
@@ -40,6 +40,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
                             } else {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
+                                    // TODO SNAPSHOT
                                     // Take game snapshot before top-level action performed
 //                                    String snapshotSourceCardInfo = action.getActionSource() != null ?
 //                                            (": " + action.getActionSource().getCardLink()) : "";

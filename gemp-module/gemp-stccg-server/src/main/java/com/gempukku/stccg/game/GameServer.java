@@ -203,6 +203,5 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    public CardBlueprintLibrary getLibrary() { return _CardBlueprintLibrary; }
 }
 

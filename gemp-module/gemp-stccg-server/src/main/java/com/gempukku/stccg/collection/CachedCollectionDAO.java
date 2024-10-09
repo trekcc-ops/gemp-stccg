@@ -1,14 +1,12 @@
 package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.cache.Cached;
-import com.gempukku.stccg.DBDefs;
 import com.gempukku.stccg.db.CollectionDAO;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public class CachedCollectionDAO implements CollectionDAO, Cached {
@@ -53,26 +51,6 @@ public class CachedCollectionDAO implements CollectionDAO, Cached {
     public void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) throws SQLException, IOException {
         _delegate.overwriteCollectionContents(playerId, type, collection, reason);
         recacheCollection(playerId, type);
-    }
-
-    @Override
-    public List<DBDefs.Collection> getAllCollectionsForPlayer(int playerId) {
-        return _delegate.getAllCollectionsForPlayer(playerId);
-    }
-
-    @Override
-    public DBDefs.Collection getCollectionInfo(int playerId, String type) {
-        return _delegate.getCollectionInfo(playerId, type);
-    }
-
-    @Override
-    public DBDefs.Collection getCollectionInfo(int collectionID) {
-        return _delegate.getCollectionInfo(collectionID);
-    }
-
-    @Override
-    public List<DBDefs.Collection> getCollectionInfosByType(String type) {
-        return _delegate.getCollectionInfosByType(type);
     }
 
     @Override

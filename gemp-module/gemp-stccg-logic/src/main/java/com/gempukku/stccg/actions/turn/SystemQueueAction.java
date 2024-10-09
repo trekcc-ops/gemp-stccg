@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class SystemQueueAction extends AbstractCostToEffectAction {
     protected final DefaultGame _game;
@@ -25,7 +24,7 @@ public class SystemQueueAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (isCostFailed()) {
             return null;
         } else {

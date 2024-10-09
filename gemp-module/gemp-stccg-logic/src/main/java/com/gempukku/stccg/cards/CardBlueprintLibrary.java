@@ -47,7 +47,7 @@ public class CardBlueprintLibrary {
         _blueprintLoadErrorEncountered = false;
 
         loadSets();
-        loadCards(_cardPath, true);
+        loadCards(_cardPath);
         loadMappings();
 
         LOGGER.info("Unlocking blueprint library in constructor");
@@ -99,7 +99,7 @@ public class CardBlueprintLibrary {
         _blueprintLoadErrorEncountered = false;
         try {
             collectionReady.acquire();
-            loadCards(_cardPath, false);
+            loadCards(_cardPath);
             collectionReady.release();
         } catch (InterruptedException e) {
             _blueprintLoadErrorEncountered = true;
@@ -123,7 +123,7 @@ public class CardBlueprintLibrary {
                     SetDefinition setDefinition = new SetDefinition(setId, setName, flags);
                     _allSets.put(setId, setDefinition);
                 }
-        } finally {
+            } finally {
                 IOUtils.closeQuietly(reader);
             }
         } catch (IOException exp) {
@@ -159,18 +159,18 @@ public class CardBlueprintLibrary {
         _alternateBlueprintMapping.computeIfAbsent(blueprint2, k -> new HashSet<>()).add(blueprint1);
     }
 
-    private void loadCards(File path, boolean initial) {
+    private void loadCards(File path) {
         if (path.isFile()) {
-            loadCardsFromFile(path, initial);
+            loadCardsFromFile(path);
         }
         else if (path.isDirectory()) {
             for (File file : Objects.requireNonNull(path.listFiles())) {
-                loadCards(file, initial);
+                loadCards(file);
             }
         }
     }
 
-    private void loadCardsFromFile(File file, boolean validateNew) {
+    private void loadCardsFromFile(File file) {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
         try {
@@ -314,7 +314,7 @@ public class CardBlueprintLibrary {
     public CardBlueprint getCardBlueprint(String blueprintId) throws CardNotFoundException {
         blueprintId = stripBlueprintModifiers(blueprintId);
         CardBlueprint bp = null;
-        
+
         try {
             collectionReady.acquire();
             if (_blueprints.containsKey(blueprintId)) {

@@ -12,7 +12,7 @@ public class EndOfPhaseAction extends SystemQueueAction {
         String phaseString = game.getCurrentPhaseString();
         String message = "End of " + phaseString + " phase";
         setText(message);
-        appendEffect(new TriggeringResultEffect(new EndOfPhaseResult(phase, game), message));
+        appendEffect(new TriggeringResultEffect(new EndOfPhaseResult(game), message));
         appendEffect(
                 new Effect() {
                     @Override

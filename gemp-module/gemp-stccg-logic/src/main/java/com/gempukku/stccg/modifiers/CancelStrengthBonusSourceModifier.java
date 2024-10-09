@@ -6,9 +6,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.condition.Condition;
 
 public class CancelStrengthBonusSourceModifier extends AbstractModifier {
-    public CancelStrengthBonusSourceModifier(PhysicalCard source, Filterable affectFilter) {
-        super(source, "Cancel strength bonus", affectFilter, ModifierEffect.STRENGTH_BONUS_SOURCE_MODIFIER);
-    }
 
     public CancelStrengthBonusSourceModifier(PhysicalCard source, Condition condition, Filterable affectFilter) {
         super(source, "Cancel strength bonus", affectFilter, condition, ModifierEffect.STRENGTH_BONUS_SOURCE_MODIFIER);

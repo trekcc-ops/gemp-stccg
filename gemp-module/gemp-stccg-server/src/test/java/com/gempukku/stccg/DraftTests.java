@@ -40,7 +40,7 @@ public class DraftTests extends AbstractServerTest {
 
             int stage = 0;
 
-            while (soloDraft.hasNextStage(seed, stage)) {
+            while (soloDraft.hasNextStage(stage)) {
                 final Iterable<SoloDraft.DraftChoice> availableChoices = soloDraft.getAvailableChoices(seed, stage, null);
                 for (SoloDraft.DraftChoice availableChoice : availableChoices) {
                     final String blueprintId = availableChoice.getBlueprintId();

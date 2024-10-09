@@ -5,7 +5,6 @@ import com.gempukku.stccg.collection.CardCollection;
 
 public interface TournamentPrizes {
     CardCollection getPrizeForTournament(PlayerStanding playerStanding, int playersCount);
-    CardCollection getTrophyForTournament(PlayerStanding playerStanding, int playersCount);
     String getRegistryRepresentation();
     String getPrizeDescription();
 }

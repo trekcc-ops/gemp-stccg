@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -18,10 +17,6 @@ public class ReportCardEffect extends DefaultEffect {
         _playedFrom = playedFrom;
         _cardPlayed = cardPlayed;
         _reportingDestination = reportingDestination;
-    }
-
-    public PhysicalCard getPlayedCard() {
-        return _cardPlayed;
     }
 
     @Override

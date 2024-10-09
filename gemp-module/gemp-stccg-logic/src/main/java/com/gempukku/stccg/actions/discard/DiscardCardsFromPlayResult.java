@@ -21,7 +21,4 @@ public class DiscardCardsFromPlayResult extends EffectResult {
         return _card;
     }
 
-    public PhysicalCard getSource() {
-        return _source;
-    }
 }

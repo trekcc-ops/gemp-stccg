@@ -20,49 +20,29 @@ public class DbTransferDAO implements TransferDAO {
     }
 
     @Override
-    public void addTransferFrom(String player, String reason, String collectionName, int currency, CardCollection items) {
-        if (currency > 0 || items.getAll().iterator().hasNext()) {
-            try {
-                try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                    String sql = "insert into transfer (notify, player, reason, name, currency, collection, transfer_date, direction) values (?, ?, ?, ?, ?, ?, ?, 'from')";
-
-                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                        statement.setInt(1, 0);
-                        statement.setString(2, player);
-                        statement.setString(3, reason);
-                        statement.setString(4, collectionName);
-                        statement.setInt(5, currency);
-                        statement.setString(6, serializeCollection(items));
-                        statement.setLong(7, System.currentTimeMillis());
-                        statement.execute();
-                    }
-                }
-            } catch (SQLException exp) {
-                throw new RuntimeException("Unable to add transfer from", exp);
-            }
-        }
+    public void addTransferFrom(String player, String reason, String collectionName, int currency,
+                                CardCollection items) {
+        addTransfer(false, player, reason, collectionName, currency, items, "from");
     }
 
     @Override
-    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency, CardCollection items) {
+    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
+                              CardCollection items) {
+        addTransfer(notifyPlayer, player, reason, collectionName, currency, items, "to");
+    }
+
+    private void addTransfer(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
+                              CardCollection items, String direction) {
         if (currency > 0 || items.getAll().iterator().hasNext()) {
             try {
-                try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                    String sql = "insert into transfer (notify, player, reason, name, currency, collection, transfer_date, direction) values (?, ?, ?, ?, ?, ?, ?, 'to')";
-
-                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                        statement.setInt(1, notifyPlayer ? 1 : 0);
-                        statement.setString(2, player);
-                        statement.setString(3, reason);
-                        statement.setString(4, collectionName);
-                        statement.setInt(5, currency);
-                        statement.setString(6, serializeCollection(items));
-                        statement.setLong(7, System.currentTimeMillis());
-                        statement.execute();
-                    }
-                }
+                String sqlStatement = "insert into transfer " +
+                        "(notify, player, reason, name, currency, collection, transfer_date, direction) " +
+                        "values (?, ?, ?, ?, ?, ?, ?, ?)";
+                SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+                        notifyPlayer, player, reason, collectionName, currency, serializeCollection(items),
+                        System.currentTimeMillis(), direction);
             } catch (SQLException exp) {
-                throw new RuntimeException("Unable to add transfer to", exp);
+                throw new RuntimeException("Unable to add transfer " + direction, exp);
             }
         }
     }

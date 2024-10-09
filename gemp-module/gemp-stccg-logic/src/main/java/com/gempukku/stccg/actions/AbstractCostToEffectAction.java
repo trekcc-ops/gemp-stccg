@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.turn.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
@@ -10,8 +9,6 @@ import java.util.LinkedList;
 
 public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private String _cardActionPrefix;
-    private final LinkedList<DiscountEffect> _potentialDiscounts = new LinkedList<>();
-    private final LinkedList<DiscountEffect> _processedDiscounts = new LinkedList<>();
     private final LinkedList<Effect> _costs = new LinkedList<>();
     private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
@@ -59,16 +56,10 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     @Override
-    public final void appendPotentialDiscount(DiscountEffect discount) {
-        _potentialDiscounts.add(discount);
-    }
-
-    @Override
     public final void appendCost(Effect cost) {
         _costs.add(cost);
     }
 
-    @Override
     public final void appendTargeting(Effect targeting) {
         _targeting.add(targeting);
     }
@@ -108,22 +99,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return false;
     }
 
-    protected int getProcessedDiscount() {
-        int discount = 0;
-        for (DiscountEffect processedDiscount : _processedDiscounts) {
-            discount += processedDiscount.getDiscountPaidFor();
-        }
-        return discount;
-    }
-
-    protected int getPotentialDiscount() {
-        int sum = 0;
-        for (DiscountEffect potentialDiscount : _potentialDiscounts) {
-            sum += potentialDiscount.getMaximumPossibleDiscount();
-        }
-        return sum;
-    }
-
     protected final Effect getNextCost() {
         Effect targetingCost = _targeting.poll();
         if (targetingCost != null) {
@@ -143,18 +118,11 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return cost;
     }
 
-    protected final Effect getNextEffect() throws InvalidGameLogicException {
+    protected final Effect getNextEffect() {
         final Effect effect = _effects.poll();
         if (effect != null)
             _processedEffects.add(effect);
         return effect;
-    }
-
-    protected final DiscountEffect getNextPotentialDiscount() {
-        DiscountEffect discount = _potentialDiscounts.poll();
-        if (discount != null)
-            _processedDiscounts.add(discount);
-        return discount;
     }
 
     public boolean wasCarriedOut() {

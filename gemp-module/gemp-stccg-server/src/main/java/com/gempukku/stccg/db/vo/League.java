@@ -40,20 +40,19 @@ public class League {
     public synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
         if (_leagueData == null) {
             try {
-                Class<?> aClass = Class.forName(_clazz);
-                if(aClass.equals(ConstructedLeagueData.class)) {
+                if(_clazz.equals(ConstructedLeagueData.class.getName())) {
                     _leagueData = new ConstructedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
-                else if(aClass.equals(NewConstructedLeagueData.class)) {
+                else if(_clazz.equals(NewConstructedLeagueData.class.getName())) {
                     _leagueData = new NewConstructedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
-                else if(aClass.equals(SealedLeagueData.class)) {
+                else if(_clazz.equals(SealedLeagueData.class.getName())) {
                     _leagueData = new SealedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
-                else if(aClass.equals(NewSealedLeagueData.class)) {
+                else if(_clazz.equals(NewSealedLeagueData.class.getName())) {
                     _leagueData = new NewSealedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
-                else if(aClass.equals(SoloDraftLeagueData.class)) {
+                else if(_clazz.equals(SoloDraftLeagueData.class.getName())) {
                     _leagueData = new SoloDraftLeagueData(bpLibrary,  formatLibrary, soloDraftDefinitions, _parameters);
                 }
                 else {

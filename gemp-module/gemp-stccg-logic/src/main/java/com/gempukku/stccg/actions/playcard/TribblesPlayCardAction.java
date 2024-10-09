@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.Collections;
@@ -20,7 +19,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
         super(card, card, card.getOwnerName(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
         _cardToPlay = card;
         setText("Play " + _cardToPlay.getFullName());
-        Zone _fromZone = card.getZone();
         _game = card.getGame();
     }
 
@@ -41,11 +39,11 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
     @Override
     protected Effect getFinalEffect() {
-        return new TribblesPlayCardEffect(_cardToPlay, _toZone);
+        return new TribblesPlayCardEffect(_cardToPlay);
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToPlay.getZone();
@@ -55,10 +53,6 @@ public class TribblesPlayCardAction extends PlayCardAction {
             _game.getGameState().removeCardsFromZone(_cardToPlay.getOwnerName(),
                     Collections.singleton(_cardToPlay));
             _game.getGameState().addCardToZone(_cardToPlay, Zone.PLAY_PILE);
-/*            if (playedFromZone == Zone.HAND)
-                _game.getGameState().addCardToZone(_game, _permanentPlayed, Zone.VOID_FROM_HAND);
-            else
-                _game.getGameState().addCardToZone(_game, _permanentPlayed, Zone.VOID); */
             if (playedFromZone == Zone.DRAW_DECK) {
                 _game.sendMessage(_cardToPlay.getOwnerName() + " shuffles their deck");
                 _game.getGameState().shuffleDeck(_cardToPlay.getOwnerName());

@@ -8,7 +8,7 @@ public class RegularSkill extends Skill {
     private final int _level;
 
     public RegularSkill(SkillName skill, Integer level) {
-        super(SkillType.REGULAR);
+        super(SkillType.REGULAR, skill.get_humanReadable() + " x" + level);
         _SkillName = skill;
         _level = level;
     }

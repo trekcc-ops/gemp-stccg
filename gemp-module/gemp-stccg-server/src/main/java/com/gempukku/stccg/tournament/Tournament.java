@@ -1,10 +1,9 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.draft.Draft;
 
 import java.util.List;
 
@@ -37,12 +36,9 @@ public interface Tournament {
 
     void reportGameFinished(String winner, String loser);
 
-    void playerChosenCard(String playerName, String cardId);
     void playerSubmittedDeck(String player, CardDeck deck);
     CardDeck getPlayerDeck(String player);
     void dropPlayer(String player);
-
-    Draft getDraft();
 
     List<PlayerStanding> getCurrentStandings();
 

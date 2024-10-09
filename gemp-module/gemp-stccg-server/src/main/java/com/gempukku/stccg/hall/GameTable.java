@@ -18,7 +18,6 @@ public class GameTable {
 
     public GameTable(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
-        String formatName = gameSettings.getGameFormat().getName();
         this.capacity = 2; // manually change Tribbles player limit
         LOGGER.debug("Capacity of game: " + this.capacity);
     }

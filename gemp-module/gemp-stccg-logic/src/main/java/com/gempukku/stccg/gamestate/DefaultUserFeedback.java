@@ -11,13 +11,9 @@ import java.util.Set;
 public class DefaultUserFeedback implements UserFeedback {
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
 
-    private DefaultGame _game;
-    public DefaultUserFeedback() { }
-    public DefaultUserFeedback(DefaultGame game) {
-        _game = game;
-    }
+    private final DefaultGame _game;
 
-    public void setGame(DefaultGame game) {
+    public DefaultUserFeedback(DefaultGame game) {
         _game = game;
     }
 

@@ -9,10 +9,6 @@ public class ShouldSkipPhaseModifier extends AbstractModifier {
     private final Phase _phase;
     private final String _playerId;
 
-    public ShouldSkipPhaseModifier(PhysicalCard source, Phase phase) {
-        this(source, null, phase);
-    }
-
     public ShouldSkipPhaseModifier(PhysicalCard source, Condition condition, Phase phase) {
         this(source, null, condition, phase);
     }

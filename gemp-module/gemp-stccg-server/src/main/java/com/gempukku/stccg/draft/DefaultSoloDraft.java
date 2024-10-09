@@ -43,7 +43,7 @@ public class DefaultSoloDraft implements SoloDraft {
     }
 
     @Override
-    public boolean hasNextStage(long seed, int stage) {
+    public boolean hasNextStage(int stage) {
         return stage + 1 < _draftChoiceDefinitions.size();
     }
 

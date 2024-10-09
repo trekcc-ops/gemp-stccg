@@ -1,15 +1,19 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 
-public class CheckTurnLimitEffect extends AbstractUsageLimitEffect {
+public class CheckTurnLimitEffect extends DefaultEffect implements UsageEffect {
     private final PhysicalCard _card;
     private final int _limit;
     private final String _prefix;
+    private final DefaultGame _game;
 
     public CheckTurnLimitEffect(Action action, int limit) {
         super(action);
+        _game = action.getGame();
         _card = action.getActionSource();
         _limit = limit;
         _prefix = action.getCardActionPrefix();

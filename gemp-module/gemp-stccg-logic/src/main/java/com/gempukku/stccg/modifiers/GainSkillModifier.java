@@ -13,9 +13,6 @@ public class GainSkillModifier extends AbstractModifier {
                 // TODO - This method doesn't really do anything right now
         super(actionSource, null, affectFilter, condition, ModifierEffect.GAIN_ICON_MODIFIER);
         _skill = skillName;
-/*        _context = context;
-        _icon = icon;
-        _valueSource = valueSource;*/
     }
 
     @Override

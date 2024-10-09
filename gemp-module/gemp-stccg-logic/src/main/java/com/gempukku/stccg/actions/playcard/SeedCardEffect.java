@@ -21,10 +21,6 @@ public class SeedCardEffect extends DefaultEffect {
         _st1eGame = cardSeeded.getGame();
     }
 
-    public PhysicalCard getPlayedCard() {
-        return _cardSeeded;
-    }
-
     @Override
     public String getText() {
         return "Seed " + _cardSeeded.getFullName();

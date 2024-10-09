@@ -69,10 +69,8 @@ public class ST1EGame extends DefaultGame {
         _affiliationAttackRestrictions = restrictions;
     }
 
-    public AffiliationAttackRestrictions getAffiliationAttackRestrictions() { return _affiliationAttackRestrictions; }
-
     @Override
-    public boolean shouldAutoPass(String playerId, Phase phase) {
+    public boolean shouldAutoPass(Phase phase) {
             // If false for a given phase, the user will still be prompted to "Pass" even if they have no legal actions.
         return phase == Phase.SEED_FACILITY || phase == Phase.SEED_DOORWAY || phase == Phase.SEED_MISSION;
     }

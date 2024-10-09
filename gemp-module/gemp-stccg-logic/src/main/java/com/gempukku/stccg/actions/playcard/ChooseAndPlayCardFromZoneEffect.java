@@ -26,7 +26,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
     private CostToEffectAction _playCardAction;
     private final Zone _fromZone;
     private final DefaultGame _game;
-    private Filterable _destinationFilter;
+    private final Filterable _destinationFilter;
 
     public ChooseAndPlayCardFromZoneEffect(Zone fromZone, Player player, Filterable playableCardFilter) {
         this(fromZone, player.getPlayerId(), player.getGame(), playableCardFilter, Filters.any);
@@ -135,10 +135,6 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
         if (_playCardAction instanceof PlayCardAction)
             return _playCardAction.wasCarriedOut();
         return true;
-    }
-
-    public void addDestinationFilter(Filterable filter) {
-        _destinationFilter = Filters.and(_destinationFilter, filter);
     }
 
     public String getPerformingPlayerId() { return _playerId; }
