@@ -164,7 +164,7 @@ public class LeagueService {
         if (winner) {
             _collectionsManager.addItemsToPlayerCollection(
                     true, "Prize for winning league game", player, CollectionType.MY_CARDS,
-                    seriesData.getPrizeForLeagueMatchWinner(count, playerMatchesPlayedOn.size()).getAll()
+                    seriesData.getPrizeForLeagueMatchWinner(count).getAll()
             );
         }
     }

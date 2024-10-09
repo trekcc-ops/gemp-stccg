@@ -1,11 +1,7 @@
 package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.common.AppConfig;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,12 +9,6 @@ import java.util.Map;
 
 public class FixedPackBox implements PackBox {
     private final Map<String, Integer> _contents = new LinkedHashMap<>();
-
-    public static FixedPackBox LoadFromFile(String packName) throws IOException {
-        var lines = new BufferedReader(new InputStreamReader(AppConfig.getResourceStream("product/old/" + packName + ".pack")))
-                .lines().toList();
-        return LoadFromArray(lines);
-    }
 
     public static FixedPackBox LoadFromArray(Iterable<String> items) {
         FixedPackBox box = new FixedPackBox();

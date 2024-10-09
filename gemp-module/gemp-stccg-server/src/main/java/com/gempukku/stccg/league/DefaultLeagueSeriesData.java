@@ -61,7 +61,7 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries, int totalGamesPlayedThisSeries) {
+    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries) {
         return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries);
     }
 

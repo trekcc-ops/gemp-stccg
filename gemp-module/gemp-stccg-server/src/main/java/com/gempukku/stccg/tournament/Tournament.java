@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface Tournament {
     enum Stage {
-        DRAFT("Drafting"), DECK_BUILDING("Deck building"), PLAYING_GAMES("Playing games"), FINISHED("Finished");
+        DRAFT("Drafting"), DECK_BUILDING("Deck building"),
+        PLAYING_GAMES("Playing games"), FINISHED("Finished");
 
         private final String _humanReadable;
 

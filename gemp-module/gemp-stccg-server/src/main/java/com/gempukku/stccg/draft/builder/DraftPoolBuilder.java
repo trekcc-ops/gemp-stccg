@@ -1,6 +1,7 @@
 package com.gempukku.stccg.draft.builder;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.gempukku.stccg.TextUtils;
 
 import java.util.*;
 
@@ -31,8 +32,7 @@ public class DraftPoolBuilder {
                     randomSource = new Random(code);
                 mod++;
 
-                float thisFixesARandomnessBug = randomSource.nextFloat();
-                Collections.shuffle(draftPacks, randomSource);
+                draftPacks = TextUtils.getRandomizedList(draftPacks, randomSource);
                 for (int i = 0; i < element.getPacksToDraft(); i++) {
                     completedDraftPool.addAll(draftPacks.get(i));
                 }
