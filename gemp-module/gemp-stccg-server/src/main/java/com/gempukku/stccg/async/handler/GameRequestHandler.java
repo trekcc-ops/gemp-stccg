@@ -92,9 +92,10 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
             if (decisionId != null)
                 gameMediator.playerAnswered(resourceOwner, channelNumber, decisionId, decisionValue);
 
-            GameCommunicationChannel pollableResource = gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
-            GameUpdateLongPollingResource pollingResource = new GameUpdateLongPollingResource(pollableResource, channelNumber, gameMediator, responseWriter);
-            longPollingSystem.processLongPollingResource(pollingResource, pollableResource);
+            GameCommunicationChannel commChannel = gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
+            GameUpdateLongPollingResource pollingResource =
+                    new GameUpdateLongPollingResource(commChannel, channelNumber, gameMediator, responseWriter);
+            longPollingSystem.processLongPollingResource(pollingResource, commChannel);
         } catch (SubscriptionConflictException exp) {
             throw new HttpProcessingException(409);
         } catch (PrivateInformationException e) {

@@ -36,6 +36,7 @@ public class DbAccess {
         return _dataSource;
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private PoolingDataSource setupDataSource(String connectURI, String user, String pass, Boolean batch) {
         //
         // First, we'll create a ConnectionFactory that the
@@ -60,8 +61,7 @@ public class DbAccess {
         // We'll use a GenericObjectPool instance, although
         // any ObjectPool implementation will suffice.
         //
-        GenericObjectPool connectionPool =
-                new GenericObjectPool();
+        GenericObjectPool connectionPool = new GenericObjectPool();
         connectionPool.setTestOnBorrow(true);
 
         //

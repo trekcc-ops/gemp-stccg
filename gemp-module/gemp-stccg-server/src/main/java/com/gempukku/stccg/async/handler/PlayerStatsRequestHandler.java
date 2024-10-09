@@ -20,7 +20,6 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
 
     public PlayerStatsRequestHandler(Map<Type, Object> context) {
         super(context);
-
         _gameHistoryService = extractObject(context, GameHistoryService.class);
     }
 
@@ -32,17 +31,15 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
             List<PlayerStatistic> casualStatistics = _gameHistoryService.getCasualPlayerStatistics(resourceOwner);
             List<PlayerStatistic> competitiveStatistics = _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner);
 
-            DecimalFormat percFormat = new DecimalFormat("#0.0%");
-
             Document doc = createNewDoc();
             Element stats = doc.createElement("playerStats");
 
             Element casual = doc.createElement("casual");
-            appendStatistics(casualStatistics, percFormat, doc, casual);
+            appendStatistics(casualStatistics, doc, casual);
             stats.appendChild(casual);
 
             Element competitive = doc.createElement("competitive");
-            appendStatistics(competitiveStatistics, percFormat, doc, competitive);
+            appendStatistics(competitiveStatistics, doc, competitive);
             stats.appendChild(competitive);
 
             doc.appendChild(stats);
@@ -53,14 +50,15 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
         }
     }
 
-    private void appendStatistics(List<PlayerStatistic> statistics, DecimalFormat percFormat, Document doc, Element type) {
+    private void appendStatistics(List<PlayerStatistic> statistics, Document doc, Element type) {
         for (PlayerStatistic casualStatistic : statistics) {
             Element entry = doc.createElement("entry");
             entry.setAttribute("deckName", casualStatistic.getDeckName());
             entry.setAttribute("format", casualStatistic.getFormatName());
             entry.setAttribute("wins", String.valueOf(casualStatistic.getWins()));
             entry.setAttribute("losses", String.valueOf(casualStatistic.getLosses()));
-            entry.setAttribute("perc", percFormat.format(1f * casualStatistic.getWins() / (casualStatistic.getLosses() + casualStatistic.getWins())));
+            entry.setAttribute("percentage", new DecimalFormat("#0.0%").format(
+                    1f * casualStatistic.getWins() / (casualStatistic.getLosses() + casualStatistic.getWins())));
             type.appendChild(entry);
         }
     }

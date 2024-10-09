@@ -22,7 +22,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
     final SealedLeagueData data = new SealedLeagueData(
-            _cardLibrary, _formatLibrary, "testsealed,20120101,test,Test Collection");
+            _cardLibrary, _formatLibrary, "test_sealed,20120101,test,Test Collection");
     final CollectionType collectionType = new CollectionType("test", "Test Collection");
     final User player = new User(1, "Test", "pass", "u", null, null,
             null, null);

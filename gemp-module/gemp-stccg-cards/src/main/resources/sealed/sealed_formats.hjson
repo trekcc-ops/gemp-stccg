@@ -1,7 +1,7 @@
 [
 	{
 		name: 01 Test Sealed Deck
-		id: testsealed
+		id: test_sealed
 		format: st1emoderncomplete
 		seriesProduct: [
 			[

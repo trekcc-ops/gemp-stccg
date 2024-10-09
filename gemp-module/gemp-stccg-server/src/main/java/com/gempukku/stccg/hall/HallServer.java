@@ -58,22 +58,22 @@ public class HallServer extends AbstractServer {
     private boolean _shutdown;
 
     private final ReadWriteLock _hallDataAccessLock = new ReentrantReadWriteLock(false);
-
+    
     private final TableHolder tableHolder;
-
+    
     private final Map<User, HallCommunicationChannel> _playerChannelCommunication = new ConcurrentHashMap<>();
     private int _nextChannelNumber = 0;
-
+    
     private final Map<String, Tournament> _runningTournaments = new LinkedHashMap<>();
 
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final ChatRoomMediator _hallChat;
     private final GameResultListener _notifyHallListeners = new NotifyHallListenersGameResultListener();
 
-    public HallServer(IgnoreDAO ignoreDAO, GameServer gameServer, ChatServer chatServer, LeagueService leagueService, TournamentService tournamentService, CardBlueprintLibrary library,
-                      FormatLibrary formatLibrary, CollectionsManager collectionsManager,
-                      AdminService adminService,
-                      TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry,
+    public HallServer(IgnoreDAO ignoreDAO, GameServer gameServer, ChatServer chatServer, LeagueService leagueService, 
+                      TournamentService tournamentService, CardBlueprintLibrary library, FormatLibrary formatLibrary, 
+                      CollectionsManager collectionsManager, AdminService adminService, 
+                      TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry, 
                       PairingMechanismRegistry pairingMechanismRegistry) {
         _gameServer = gameServer;
         _chatServer = chatServer;
@@ -87,7 +87,7 @@ public class HallServer extends AbstractServer {
         _pairingMechanismRegistry = pairingMechanismRegistry;
 
         tableHolder = new TableHolder(leagueService, ignoreDAO);
-
+        
         _hallChat = _chatServer.createChatRoom("Game Hall", true, 300, true,
                 "You're now in the Game Hall, use /help to get a list of available commands.<br>Don't forget to check out the new Discord chat integration! Click the 'Switch to Discord' button in the lower right ---->");
         _hallChat.addChatCommandCallback("ban",
@@ -121,26 +121,8 @@ public class HallServer extends AbstractServer {
                         if (!from.equals(playerName) && ignoreDAO.addIgnoredUser(from, playerName)) {
                             _hallChat.sendToUser("System", from, "User " + playerName + " added to ignore list");
                         } else if (from.equals(playerName)) {
-                            _hallChat.sendToUser(from, from, "You don't have any friends. Nobody likes you.");
-                            _hallChat.sendToUser(from, from, "Not listening. Not listening!");
-                            _hallChat.sendToUser(from, from, "You're a liar and a thief.");
-                            _hallChat.sendToUser(from, from, "Nope.");
-                            _hallChat.sendToUser(from, from, "Murderer!");
-                            _hallChat.sendToUser(from, from, "Go away. Go away!");
-                            _hallChat.sendToUser(from, from, "Hahahaha!");
-                            _hallChat.sendToUser(from, from, "I hate you, I hate you.");
-                            _hallChat.sendToUser(from, from, "Where would you be without me? Gollum, Gollum. I saved us. It was me. We survived because of me!");
-                            _hallChat.sendToUser(from, from, "Not anymore.");
-                            _hallChat.sendToUser(from, from, "What did you say?");
-                            _hallChat.sendToUser(from, from, "Master looks after us now. We don't need you.");
-                            _hallChat.sendToUser(from, from, "What?");
-                            _hallChat.sendToUser(from, from, "Leave now and never come back.");
-                            _hallChat.sendToUser(from, from, "No!");
-                            _hallChat.sendToUser(from, from, "Leave now and never come back!");
-                            _hallChat.sendToUser(from, from, "Argh!");
-                            _hallChat.sendToUser(from, from, "Leave NOW and NEVER COME BACK!");
-                            _hallChat.sendToUser(from, from, "...");
-                            _hallChat.sendToUser(from, from, "We... We told him to go away! And away he goes, preciouss! Gone, gone, gone! Smeagol is free!");
+                            for (String message : getIgnoredUserMessages())
+                                _hallChat.sendToUser(from, from, message);
                         } else {
                             _hallChat.sendToUser("System", from, "User " + playerName + " is already on your ignore list");
                         }
@@ -481,7 +463,8 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public HallCommunicationChannel getCommunicationChannel(User player, int channelNumber) throws SubscriptionExpiredException, SubscriptionConflictException {
+    public HallCommunicationChannel getCommunicationChannel(User player, int channelNumber)
+            throws SubscriptionExpiredException, SubscriptionConflictException {
         _hallDataAccessLock.readLock().lock();
         try {
             HallCommunicationChannel communicationChannel = _playerChannelCommunication.get(player);
@@ -656,18 +639,18 @@ public class HallServer extends AbstractServer {
 
             if (_tickCounter == 60) {
                 _tickCounter = 0;
-                List<TournamentQueueInfo> unstartedTournamentQueues = _tournamentService.getUnstartedScheduledTournamentQueues(
+                List<TournamentQueueInfo> futureTournamentQueues = _tournamentService.getFutureScheduledTournamentQueues(
                         System.currentTimeMillis() + _scheduledTournamentLoadTime);
-                for (TournamentQueueInfo unstartedTournamentQueue : unstartedTournamentQueues) {
-                    String scheduledTournamentId = unstartedTournamentQueue.getScheduledTournamentId();
+                for (TournamentQueueInfo queueInfo : futureTournamentQueues) {
+                    String scheduledTournamentId = queueInfo.getScheduledTournamentId();
                     if (!_tournamentQueues.containsKey(scheduledTournamentId)) {
-                        ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId, unstartedTournamentQueue.getCost(),
-                                true, _tournamentService, unstartedTournamentQueue.getStartTime(), unstartedTournamentQueue.getTournamentName(),
-                                unstartedTournamentQueue.getFormat(), CollectionType.ALL_CARDS, Tournament.Stage.PLAYING_GAMES,
-                                _pairingMechanismRegistry.getPairingMechanism(unstartedTournamentQueue.getPlayOffSystem()),
+                        ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId, queueInfo.getCost(),
+                                true, _tournamentService, queueInfo.getStartTime(), queueInfo.getTournamentName(),
+                                queueInfo.getFormat(), CollectionType.ALL_CARDS, Tournament.Stage.PLAYING_GAMES,
+                                _pairingMechanismRegistry.getPairingMechanism(queueInfo.getPlayOffSystem()),
                                 _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library,
-                                        unstartedTournamentQueue.getPrizeScheme()),
-                                unstartedTournamentQueue.getMinimumPlayers());
+                                        queueInfo.getPrizeScheme()),
+                                queueInfo.getMinimumPlayers());
                         _tournamentQueues.put(scheduledTournamentId, scheduledQueue);
                         hallChanged();
                     }
@@ -740,5 +723,33 @@ public class HallServer extends AbstractServer {
                 // Ignore, no command
             }
         }
+    }
+
+    @SuppressWarnings("SpellCheckingInspection")
+    /* Despite a thorough culling of most Lord of the Rings content in this code base for the Star Trek implementation,
+        this is delightful and I never want to lose it. */
+    private List<String> getIgnoredUserMessages() {
+        List<String> result = new LinkedList<>();
+        result.add("You don't have any friends. Nobody likes you.");
+        result.add("Not listening. Not listening!");
+        result.add("You're a liar and a thief.");
+        result.add("Nope.");
+        result.add("Murderer!");
+        result.add("Go away. Go away!");
+        result.add("Hahahaha!");
+        result.add("I hate you, I hate you.");
+        result.add("Where would you be without me? Gollum, Gollum. I saved us. It was me. We survived because of me!");
+        result.add("Not anymore.");
+        result.add("What did you say?");
+        result.add("Master looks after us now. We don't need you.");
+        result.add("What?");
+        result.add("Leave now and never come back.");
+        result.add("No!");
+        result.add("Leave now and never come back!");
+        result.add("Argh!");
+        result.add("Leave NOW and NEVER COME BACK!");
+        result.add("...");
+        result.add("We... We told him to go away! And away he goes, preciouss! Gone, gone, gone! Smeagol is free!");
+        return result;
     }
 }

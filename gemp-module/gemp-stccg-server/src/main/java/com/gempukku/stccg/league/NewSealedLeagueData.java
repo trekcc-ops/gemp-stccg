@@ -43,7 +43,7 @@ public class NewSealedLeagueData implements LeagueData {
         _allSeries = new LinkedList<>();
         for (int i = 0; i < def.GetSeriesCount(); i++) {
             _allSeries.add(
-                    new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie " + (i + 1),
+                    new DefaultLeagueSeriesData(_leaguePrizes, true, "Series " + (i + 1),
                             DateUtils.offsetDate(start, i * seriesDuration), DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
                             def.GetFormat(), _collectionType));
         }

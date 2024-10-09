@@ -185,8 +185,8 @@ public class TournamentService {
     }
 
     
-    public List<TournamentQueueInfo> getUnstartedScheduledTournamentQueues(long tillDate) {
-        return _tournamentDao.getUnstartedScheduledTournamentQueues(tillDate);
+    public List<TournamentQueueInfo> getFutureScheduledTournamentQueues(long tillDate) {
+        return _tournamentDao.getFutureScheduledTournamentQueues(tillDate);
     }
 
     

@@ -24,7 +24,7 @@ public class DbCollectionDAO implements CollectionDAO {
 
     public Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws IOException {
         Map<Integer, CardCollection> result = new HashMap<>();
-        for(var coll : getCollectionInfosByType(type))
+        for(var coll : getCollectionInfoByType(type))
             result.put(coll.player_id, deserializeCollection(coll, extractCollectionEntries(coll.id)));
         return result;
     }
@@ -89,7 +89,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    private List<DBDefs.Collection> getCollectionInfosByType(String type) {
+    private List<DBDefs.Collection> getCollectionInfoByType(String type) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());

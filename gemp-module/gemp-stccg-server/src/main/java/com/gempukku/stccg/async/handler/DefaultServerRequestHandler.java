@@ -146,10 +146,10 @@ public class DefaultServerRequestHandler {
                                                            String parameterName)
             throws HttpPostRequestDecoder.NotEnoughDataDecoderException, IOException {
         List<String> result = new LinkedList<>();
-        List<InterfaceHttpData> datas = postRequestDecoder.getBodyHttpDatas(parameterName);
-        if (datas == null)
+        List<InterfaceHttpData> dataList = postRequestDecoder.getBodyHttpDatas(parameterName);
+        if (dataList == null)
             return Collections.emptyList();
-        for (InterfaceHttpData data : datas) {
+        for (InterfaceHttpData data : dataList) {
             if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
                 Attribute attribute = (Attribute) data;
                 result.add(attribute.getValue());
@@ -199,7 +199,10 @@ public class DefaultServerRequestHandler {
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
 
-    protected String generateCardTooltip(CardBlueprint bp, String blueprintId) {
+    protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
+        String blueprintId = item.getBlueprintId();
+        CardBlueprint bp = _library.getCardBlueprint(blueprintId);
+
         String[] parts = blueprintId.split("_");
         int setNum = Integer.parseInt(parts[0]);
         String set = String.format("%02d", setNum);
@@ -230,10 +233,6 @@ public class DefaultServerRequestHandler {
                 "_card.jpg\" ></span></span>";
     }
 
-    protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
-        return generateCardTooltip(_library.getCardBlueprint(item.getBlueprintId()), item.getBlueprintId());
-    }
-
     protected String listCards(String deckName, String filter, DefaultCardCollection deckCards, boolean countCards,
                                SortAndFilterCards sortAndFilter, FormatLibrary formatLibrary, boolean showToolTip)
             throws CardNotFoundException {
@@ -242,11 +241,8 @@ public class DefaultServerRequestHandler {
         for (GenericCardItem item : sortAndFilter.process(filter, deckCards.getAll(), _library, formatLibrary)) {
             if (countCards)
                 sb.append(item.getCount()).append("x ");
-            String cardText;
-            if (showToolTip)
-                cardText = generateCardTooltip(item);
-            else
-                cardText = _library.getCardBlueprint(item.getBlueprintId()).getFullName();
+            String cardText = showToolTip?
+                    generateCardTooltip(item) : _library.getCardBlueprint(item.getBlueprintId()).getFullName();
             sb.append(cardText).append("<br/>");
         }
         return sb.toString();

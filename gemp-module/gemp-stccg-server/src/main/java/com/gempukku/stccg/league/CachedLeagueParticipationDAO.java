@@ -24,11 +24,11 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     }
 
     @Override
-    public void userJoinsLeague(String leagueId, User player, String remoteAddr) {
+    public void userJoinsLeague(String leagueId, User player, String remoteAddress) {
         _readWriteLock.writeLock().lock();
         try {
             getLeagueParticipantsInWriteLock(leagueId).add(player.getName());
-            _leagueParticipationDAO.userJoinsLeague(leagueId, player, remoteAddr);
+            _leagueParticipationDAO.userJoinsLeague(leagueId, player, remoteAddress);
         } finally {
             _readWriteLock.writeLock().unlock();
         }

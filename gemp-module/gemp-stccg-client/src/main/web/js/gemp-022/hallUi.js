@@ -324,7 +324,7 @@ export default class GempHallUI {
 				this.pocketValue = currency;
 			}
 
-			var motd = root.getAttribute("motd");
+			var motd = root.getAttribute("messageOfTheDay");
 			if (motd != null)
 				$("#motd").html("<b>MOTD:</b> " + motd);
 

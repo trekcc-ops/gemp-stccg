@@ -136,7 +136,7 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public List<TournamentQueueInfo> getUnstartedScheduledTournamentQueues(long tillDate) {
+    public List<TournamentQueueInfo> getFutureScheduledTournamentQueues(long tillDate) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 String sqlMessage =

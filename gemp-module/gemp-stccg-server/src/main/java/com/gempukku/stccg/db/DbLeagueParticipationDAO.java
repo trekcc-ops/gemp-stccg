@@ -15,11 +15,11 @@ public class DbLeagueParticipationDAO implements LeagueParticipationDAO {
         _dbAccess = dbAccess;
     }
 
-    public void userJoinsLeague(String leagueId, User player, String remoteAddr) {
+    public void userJoinsLeague(String leagueId, User player, String remoteAddress) {
         try {
             String sqlStatement = "insert into league_participation (league_type, player_name, join_ip) values (?,?,?)";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                    leagueId, player.getName(), remoteAddr);
+                    leagueId, player.getName(), remoteAddress);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }

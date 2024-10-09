@@ -50,12 +50,12 @@ public class WebRequestHandler implements UriRequestHandler {
         responseWriter.writeFile(file, Collections.singletonMap(HttpHeaderNames.ETAG.toString(), eTag));
     }
 
-    private boolean clientHasCurrentVersion(HttpRequest request, String etag) {
+    private boolean clientHasCurrentVersion(HttpRequest request, String eTag) {
         String ifNoneMatch = request.headers().get(HttpHeaderNames.IF_NONE_MATCH);
         if (ifNoneMatch != null) {
             String[] clientKnownVersions = ifNoneMatch.split(",");
             for (String clientKnownVersion : clientKnownVersions) {
-                if (clientKnownVersion.trim().equals(etag))
+                if (clientKnownVersion.trim().equals(eTag))
                     return true;
             }
         }

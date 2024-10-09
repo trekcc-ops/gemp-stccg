@@ -31,7 +31,7 @@ public class GempServer {
 
         Thread.sleep(2_000); // sleep for 2 sec to allow time to create database
 
-        //Libraries and other important prereq managers that are used by lots of other managers
+        //Libraries and other important prerequisite managers that are used by lots of other managers
         LOGGER.info("GempukkuServer loading prerequisites...");
         ServerBuilder.CreatePrerequisites(objects);
         //Now bulk initialize various managers
