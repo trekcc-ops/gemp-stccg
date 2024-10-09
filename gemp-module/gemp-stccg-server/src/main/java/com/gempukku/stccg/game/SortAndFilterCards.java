@@ -81,7 +81,7 @@ public class SortAndFilterCards {
                                    Set<Keyword> phases) {
         if (sets != null && !isInSets(blueprintId, sets, library, formatLibrary))
             return false;
-        if (rarity != null && !isRarity(blueprintId, rarity, library, library.getSetDefinitions()))
+        if (rarity != null && !Arrays.stream(rarity).toList().contains(blueprint.getRarity()))
             return false;
         if (cardTypes != null && !cardTypes.contains(blueprint.getCardType()))
             return false;
@@ -110,26 +110,6 @@ public class SortAndFilterCards {
         if (setStr != null)
             sets = setStr.split(",");
         return sets;
-    }
-
-    private boolean isRarity(String blueprintId, String[] rarity, CardBlueprintLibrary library,
-                             Map<String, SetDefinition> rarities) {
-        if (blueprintId.contains("_")) {
-            SetDefinition setRarity = rarities.get(blueprintId.substring(0, blueprintId.indexOf("_")));
-            if (setRarity != null) {
-                String cardRarity = setRarity.getCardRarity(library.stripBlueprintModifiers(blueprintId));
-                if(cardRarity == null) {
-                    //TODO: log that the rarity was not set
-                    return false;
-                }
-                for (String r : rarity) {
-                    if (cardRarity.equals(r))
-                        return true;
-                }
-            }
-            return false;
-        }
-        return true;
     }
 
     private boolean isInSets(String blueprintId, String[] sets, CardBlueprintLibrary library,

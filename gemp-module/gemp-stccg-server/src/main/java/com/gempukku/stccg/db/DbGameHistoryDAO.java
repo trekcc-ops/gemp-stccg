@@ -24,12 +24,13 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         _dbAccess = dbAccess;
     }
 
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
     public int addGameHistory(String winner, int winnerId, String loser, int loserId, String winReason, String loseReason, String winRecordingId, String loseRecordingId,
                                String formatName, String tournament, String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate, int replayVersion) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
-            @SuppressWarnings("TrailingWhitespacesInTextBlock") String sql = """
+            String sql = """
                         INSERT INTO game_history (winner, winnerId, loser, loserId, win_reason, lose_reason, win_recording_id, lose_recording_id, 
                             format_name, tournament, winner_deck_name, loser_deck_name, start_date, end_date, replay_version)
                         VALUES (:winner, :winnerId, :loser, :loserId, :win_reason, :lose_reason, :win_recording_id, :lose_recording_id, 
