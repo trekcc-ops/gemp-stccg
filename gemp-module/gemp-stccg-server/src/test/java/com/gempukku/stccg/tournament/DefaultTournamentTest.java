@@ -42,7 +42,7 @@ public class DefaultTournamentTest extends AbstractServerTest {
 
         CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
 
-        DefaultTournament tournament = new DefaultTournament(null, tournamentService, null, null, tournamentId, "Name", "format",
+        DefaultTournament tournament = new DefaultTournament(tournamentService, tournamentId, "Name", "format",
                 CollectionType.ALL_CARDS, 0, Tournament.Stage.PLAYING_GAMES, pairingMechanism, new SingleEliminationOnDemandPrizes(_cardLibrary, "onDemand"));
         int _waitForPairingsTime = 100;
         tournament.setWaitForPairingsTime(_waitForPairingsTime);

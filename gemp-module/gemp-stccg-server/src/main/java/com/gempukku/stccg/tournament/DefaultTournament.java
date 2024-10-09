@@ -6,9 +6,6 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.draft.DefaultDraft;
-import com.gempukku.stccg.draft.DraftPack;
-import com.gempukku.stccg.packs.ProductLibrary;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
@@ -41,13 +38,12 @@ public class DefaultTournament implements Tournament {
     private TournamentTask _nextTask;
 
     private long _deckBuildStartTime;
-    private DefaultDraft _draft;
 
     private List<PlayerStanding> _currentStandings;
 
-    public DefaultTournament(CollectionsManager collectionsManager, TournamentService tournamentService,
-                             ProductLibrary productLibrary, DraftPack draftPack, String tournamentId, String tournamentName, String format, CollectionType collectionType,
-                             int tournamentRound, Stage tournamentStage, PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
+    public DefaultTournament(TournamentService tournamentService, String tournamentId, String tournamentName,
+                             String format, CollectionType collectionType, int tournamentRound, Stage tournamentStage,
+                             PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
         _tournamentService = tournamentService;
         _tournamentId = tournamentId;
         _tournamentName = tournamentName;
@@ -80,9 +76,6 @@ public class DefaultTournament implements Tournament {
 
             if (!matchesToCreate.isEmpty())
                 _nextTask = new CreateMissingGames(matchesToCreate);
-        } else if (_tournamentStage == Stage.DRAFT) {
-            _draft = new DefaultDraft(collectionsManager, _collectionType, productLibrary, draftPack,
-                    _players);
         } else if (_tournamentStage == Stage.DECK_BUILDING) {
             _deckBuildStartTime = System.currentTimeMillis();
         } else if (_tournamentStage == Stage.FINISHED) {
@@ -214,17 +207,6 @@ public class DefaultTournament implements Tournament {
         try {
             boolean result = false;
             if (_nextTask == null) {
-                if (_tournamentStage == Stage.DRAFT) {
-                    _draft.advanceDraft();
-                    if (_draft.isFinished()) {
-                        tournamentCallback.broadcastMessage("Drafting in tournament " + _tournamentName + " is finished, starting deck building");
-                        _tournamentStage = Stage.DECK_BUILDING;
-                        _tournamentService.updateTournamentStage(_tournamentId, _tournamentStage);
-                        _deckBuildStartTime = System.currentTimeMillis();
-                        _draft = null;
-                        result = true;
-                    }
-                }
                 if (_tournamentStage == Stage.DECK_BUILDING) {
                     // 10 minutes
                     int _deckBuildTime = 10 * 60 * 1000;

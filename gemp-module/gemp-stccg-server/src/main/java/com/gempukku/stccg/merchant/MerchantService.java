@@ -1,7 +1,6 @@
 package com.gempukku.stccg.merchant;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
@@ -41,7 +40,7 @@ public class MerchantService {
         return Collections.unmodifiableSet(_merchantableItems);
     }
 
-    public PriceGuarantee priceCards(User player, Collection<CardItem> cardBlueprintIds) {
+    public PriceGuarantee priceCards(User player) {
         Lock lock = _lock.readLock();
         lock.lock();
         try {
@@ -56,7 +55,7 @@ public class MerchantService {
     }
 
     public void merchantBuysCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
-        priceCards(player, Collections.singleton(new BasicCardItem(blueprintId)));
+        priceCards(player);
 
         Lock lock = _lock.writeLock();
         lock.lock();
@@ -75,7 +74,7 @@ public class MerchantService {
     }
 
     public void merchantSellsCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
-        priceCards(player, Collections.singleton(new BasicCardItem(blueprintId)));
+        priceCards(player);
 
         Lock lock = _lock.writeLock();
         lock.lock();

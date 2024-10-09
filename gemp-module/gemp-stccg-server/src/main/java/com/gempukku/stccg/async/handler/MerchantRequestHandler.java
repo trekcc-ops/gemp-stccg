@@ -154,7 +154,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 pageToDisplay.add(filteredResult.get(i));
         }
 
-        MerchantService.PriceGuarantee priceGuarantee = _merchantService.priceCards(resourceOwner, pageToDisplay);
+        MerchantService.PriceGuarantee priceGuarantee = _merchantService.priceCards(resourceOwner);
         Map<String, Integer> buyPrices = priceGuarantee.getBuyPrices();
         Map<String, Integer> sellPrices = priceGuarantee.getSellPrices();
 

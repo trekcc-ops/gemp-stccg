@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class DBDefs {
 
+    @SuppressWarnings("unused")
     public static class GameHistory {
 
         public int id;
@@ -44,6 +45,7 @@ public class DBDefs {
         public int replay_version = -1;
     }
 
+    @SuppressWarnings("unused")
     public static class Collection {
         public int id;
         public int player_id;
@@ -63,6 +65,7 @@ public class DBDefs {
         public String notes;
     }
 
+    @SuppressWarnings("unused")
     public static class DBPlayer {
         public int id;
         public String name;

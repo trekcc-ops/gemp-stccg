@@ -2,10 +2,7 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.packs.DraftPackStorage;
-import com.gempukku.stccg.packs.ProductLibrary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +11,6 @@ import java.util.*;
 
 public class TournamentService {
     private static final Logger LOGGER = LogManager.getLogger(TournamentService.class);
-    private final ProductLibrary _productLibrary;
-    private final DraftPackStorage _draftPackStorage;
     private final PairingMechanismRegistry _pairingMechanismRegistry;
     private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
     private final TournamentDAO _tournamentDao;
@@ -23,17 +18,12 @@ public class TournamentService {
     private final TournamentMatchDAO _tournamentMatchDao;
     private final CardBlueprintLibrary _library;
 
-    private final CollectionsManager _collectionsManager;
-
     private final Map<String, Tournament> _tournamentById = new HashMap<>();
 
-    public TournamentService(CollectionsManager collectionsManager, ProductLibrary productLibrary, DraftPackStorage draftPackStorage,
-                             PairingMechanismRegistry pairingMechanismRegistry, TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry,
-                             TournamentDAO tournamentDao, TournamentPlayerDAO tournamentPlayerDao, TournamentMatchDAO tournamentMatchDao,
+    public TournamentService(PairingMechanismRegistry pairingMechanismRegistry,
+                             TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry, TournamentDAO tournamentDao,
+                             TournamentPlayerDAO tournamentPlayerDao, TournamentMatchDAO tournamentMatchDao,
                              CardBlueprintLibrary library) {
-        _collectionsManager = collectionsManager;
-        _productLibrary = productLibrary;
-        _draftPackStorage = draftPackStorage;
         _pairingMechanismRegistry = pairingMechanismRegistry;
         _tournamentPrizeSchemeRegistry = tournamentPrizeSchemeRegistry;
         _tournamentDao = tournamentDao;
@@ -157,11 +147,7 @@ public class TournamentService {
     private Tournament createTournamentAndStoreInCache(String tournamentId, TournamentInfo tournamentInfo) {
         Tournament tournament;
         try {
-            String draftType = tournamentInfo.getDraftType();
-            if (draftType != null)
-                _draftPackStorage.getDraftPack(draftType);
-
-            tournament = new DefaultTournament(_collectionsManager, this, _productLibrary, null,
+            tournament = new DefaultTournament(this,
                     tournamentId,  tournamentInfo.getTournamentName(), tournamentInfo.getTournamentFormat(),
                     tournamentInfo.getCollectionType(), tournamentInfo.getTournamentRound(), tournamentInfo.getTournamentStage(), 
                     _pairingMechanismRegistry.getPairingMechanism(tournamentInfo.getPairingMechanism()),

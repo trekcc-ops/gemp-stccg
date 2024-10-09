@@ -127,24 +127,20 @@ public class SwissPairingMechanism implements PairingMechanism {
 
             // We only accept one bye
             int playersLeftWithoutPair = leftoverPlayers.size();
-            switch (playersLeftWithoutPair) {
-                case 0 -> {
-                    return true;
-                }
+            return switch (playersLeftWithoutPair) {
+                case 0 -> true;
                 case 1 -> {
                     String lastPlayer = leftoverPlayers.iterator().next();
                     if (playersWithByes.contains(lastPlayer)) {
                         // The last remaining player already has a bye
-                        return false;
+                        yield false;
                     } else {
                         byes.add(lastPlayer);
-                        return true;
+                        yield true;
                     }
                 }
-                default -> {
-                    return false;
-                }
-            }
+                default -> false;
+            };
         }
     }
 

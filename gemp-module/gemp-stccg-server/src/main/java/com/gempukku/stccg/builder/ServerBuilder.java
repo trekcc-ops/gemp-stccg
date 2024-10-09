@@ -13,7 +13,6 @@ import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.merchant.MerchantService;
-import com.gempukku.stccg.packs.DraftPackStorage;
 import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.service.LoggedUserHolder;
@@ -88,9 +87,6 @@ public class ServerBuilder {
 
         objects.put(TournamentService.class,
                 new TournamentService(
-                        extract(objects, CollectionsManager.class),
-                        extract(objects, ProductLibrary.class),
-                        new DraftPackStorage(),
                         pairingMechanismRegistry,
                         tournamentPrizeSchemeRegistry,
                         extract(objects, TournamentDAO.class),
