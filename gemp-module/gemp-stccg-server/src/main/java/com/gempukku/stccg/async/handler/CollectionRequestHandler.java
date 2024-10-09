@@ -65,6 +65,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     }
     
     private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+        //noinspection SpellCheckingInspection
         List<GenericCardItem> importResult = processImport(
                 getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"), _library
         );

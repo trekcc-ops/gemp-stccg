@@ -1,6 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.db.User;
@@ -45,7 +45,7 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        final List<DBDefs.GameHistory> playerGameHistory = _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
+        final List<DBData.GameHistory> playerGameHistory = _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
         int recordCount = _gameHistoryService.getGameHistoryForPlayerCount(resourceOwner);
 
         Document doc = createNewDoc();
@@ -55,7 +55,7 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
 
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        for (DBDefs.GameHistory game : playerGameHistory) {
+        for (DBData.GameHistory game : playerGameHistory) {
             Element historyEntry = doc.createElement("historyEntry");
             historyEntry.setAttribute("winner", game.winner);
             historyEntry.setAttribute("loser", game.loser);

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-public class DBDefs {
+public class DBData {
 
     @SuppressWarnings("unused")
     public static class GameHistory {
@@ -53,6 +53,7 @@ public class DBDefs {
         public String extra_info;
     }
 
+    @SuppressWarnings("unused")
     public static class CollectionEntry {
         public int collection_id;
         public int quantity;

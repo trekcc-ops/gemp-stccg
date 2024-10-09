@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -35,5 +35,5 @@ public interface PlayerDAO {
 
     void updateLastLoginIp(String login, String remoteAddress) throws SQLException;
 
-    List<DBDefs.DBPlayer> getAllPlayers();
+    List<DBData.DBPlayer> getAllPlayers();
 }

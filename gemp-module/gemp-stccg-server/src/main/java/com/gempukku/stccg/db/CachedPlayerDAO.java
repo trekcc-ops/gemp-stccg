@@ -1,7 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cache.Cached;
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.sql.SQLException;
@@ -140,7 +140,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
         _delegate.updateLastLoginIp(login, remoteAddress);
     }
 
-    public List<DBDefs.DBPlayer> getAllPlayers() {
+    public List<DBData.DBPlayer> getAllPlayers() {
         return _delegate.getAllPlayers();
     }
 

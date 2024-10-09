@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.common.JSONDefs;
 import com.gempukku.stccg.db.GameHistoryDAO;
 import com.gempukku.stccg.db.PlayerStatistic;
@@ -19,7 +19,7 @@ public class GameHistoryService {
         _gameHistoryDAO = gameHistoryDAO;
     }
 
-    public int addGameHistory(DBDefs.GameHistory gh) {
+    public int addGameHistory(DBData.GameHistory gh) {
         return addGameHistory(gh.winner, gh.winnerId, gh.loser, gh.loserId, gh.win_reason, gh.lose_reason, gh.win_recording_id, gh.lose_recording_id,
                 gh.format_name, gh.tournament, gh.winner_deck_name, gh.loser_deck_name, gh.start_date, gh.end_date, gh.replay_version);
     }
@@ -40,7 +40,7 @@ public class GameHistoryService {
         return _gameHistoryDAO.doesReplayIDExist(id);
     }
 
-    public DBDefs.GameHistory getGameHistory(String recordID) {
+    public DBData.GameHistory getGameHistory(String recordID) {
         return _gameHistoryDAO.getGameHistory(recordID);
     }
 
@@ -53,11 +53,11 @@ public class GameHistoryService {
         return count;
     }
 
-    public List<DBDefs.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
+    public List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
         return _gameHistoryDAO.getGameHistoryForPlayer(player, start, count);
     }
 
-    public List<DBDefs.GameHistory> getGameHistoryForFormat(String format, int count) {
+    public List<DBData.GameHistory> getGameHistoryForFormat(String format, int count) {
         return _gameHistoryDAO.getGameHistoryForFormat(format, count);
     }
 

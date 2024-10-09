@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +51,7 @@ public class User {
     private final String _createIp;
     private final String _lastIp;
 
-    public User(DBDefs.DBPlayer def) {
+    public User(DBData.DBPlayer def) {
         this(def.id, def.name, def.password, def.type, def.last_login_reward, def.GetBannedUntilDate(), def.create_ip, def.last_ip);
     }
 

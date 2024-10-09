@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.TextUtils;
 import org.sql2o.Sql2o;
 
@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+@SuppressWarnings("TrailingWhitespacesInTextBlock")
 public class DbPlayerDAO implements PlayerDAO {
     private final String _selectPlayer = """
         SELECT 
@@ -222,10 +223,10 @@ public class DbPlayerDAO implements PlayerDAO {
                             WHERE name = :login
                                 AND (password = :password OR password = '')
                         """;
-                List<DBDefs.DBPlayer> result = conn.createQuery(sql)
+                List<DBData.DBPlayer> result = conn.createQuery(sql)
                         .addParameter("login", login)
                         .addParameter("password", encodePassword(password))
-                        .executeAndFetch(DBDefs.DBPlayer.class);
+                        .executeAndFetch(DBData.DBPlayer.class);
 
                 var def = result.stream().findFirst().orElse(null);
                 if(def == null)
@@ -359,9 +360,9 @@ public class DbPlayerDAO implements PlayerDAO {
                         """
                             WHERE LOWER(name) = :login
                         """;
-                List<DBDefs.DBPlayer> result = conn.createQuery(sql)
+                List<DBData.DBPlayer> result = conn.createQuery(sql)
                         .addParameter("login", login.toLowerCase())
-                        .executeAndFetch(DBDefs.DBPlayer.class);
+                        .executeAndFetch(DBData.DBPlayer.class);
 
                 var def = result.stream().findFirst().orElse(null);
                 return def != null;
@@ -381,9 +382,9 @@ public class DbPlayerDAO implements PlayerDAO {
                             WHERE LOWER(name) = :login
                                 AND (password = '' OR password IS NULL)
                         """;
-                List<DBDefs.DBPlayer> result = conn.createQuery(sql)
+                List<DBData.DBPlayer> result = conn.createQuery(sql)
                         .addParameter("login", login.toLowerCase())
-                        .executeAndFetch(DBDefs.DBPlayer.class);
+                        .executeAndFetch(DBData.DBPlayer.class);
 
                 var def = result.stream().findFirst().orElse(null);
                 return def != null;
@@ -452,7 +453,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public List<DBDefs.DBPlayer> getAllPlayers() {
+    public List<DBData.DBPlayer> getAllPlayers() {
 
         try {
 
@@ -462,7 +463,7 @@ public class DbPlayerDAO implements PlayerDAO {
                 String sql = "SELECT id, name FROM player";
 
                 return conn.createQuery(sql)
-                        .executeAndFetch(DBDefs.DBPlayer.class);
+                        .executeAndFetch(DBData.DBPlayer.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve players", ex);

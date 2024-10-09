@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.common.JSONDefs;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
@@ -29,7 +29,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
-            String sql = """
+            @SuppressWarnings("TrailingWhitespacesInTextBlock") String sql = """
                         INSERT INTO game_history (winner, winnerId, loser, loserId, win_reason, lose_reason, win_recording_id, lose_recording_id, 
                             format_name, tournament, winner_deck_name, loser_deck_name, start_date, end_date, replay_version)
                         VALUES (:winner, :winnerId, :loser, :loserId, :win_reason, :lose_reason, :win_recording_id, :lose_recording_id, 
@@ -65,7 +65,8 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
-    public List<DBDefs.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
+    public List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
 
         try {
 
@@ -86,7 +87,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                         .addParameter("playerName", player.getName())
                         .addParameter("start", start)
                         .addParameter("count", count)
-                        .executeAndFetch(DBDefs.GameHistory.class);
+                        .executeAndFetch(DBData.GameHistory.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve game history for player", ex);
@@ -94,7 +95,8 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
 
     }
 
-    public DBDefs.GameHistory getGameHistory(String recordID) {
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
+    public DBData.GameHistory getGameHistory(String recordID) {
         try {
 
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -107,9 +109,9 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                     WHERE win_recording_id = :recordID 
                         OR lose_recording_id = :recordID;
                 """;
-                List<DBDefs.GameHistory> result = conn.createQuery(sql)
+                List<DBData.GameHistory> result = conn.createQuery(sql)
                         .addParameter("recordID", recordID)
-                        .executeAndFetch(DBDefs.GameHistory.class);
+                        .executeAndFetch(DBData.GameHistory.class);
 
                 return result.stream().findFirst().orElse(null);
             }
@@ -142,8 +144,9 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
     @Override
-    public List<DBDefs.GameHistory> getGameHistoryForFormat(String format, int count)  {
+    public List<DBData.GameHistory> getGameHistoryForFormat(String format, int count)  {
         try {
 
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -162,7 +165,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                 return conn.createQuery(sql)
                         .addParameter("format", "%" + format + "%")
                         .addParameter("count", count)
-                        .executeAndFetch(DBDefs.GameHistory.class);
+                        .executeAndFetch(DBData.GameHistory.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve game history by format", ex);
@@ -192,6 +195,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
     public int getActivePlayersCount(ZonedDateTime from, ZonedDateTime to) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -224,6 +228,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
     public int getGamesPlayedCount(ZonedDateTime from, ZonedDateTime to) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());

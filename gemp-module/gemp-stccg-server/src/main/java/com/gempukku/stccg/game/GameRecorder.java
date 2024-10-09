@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
@@ -56,7 +56,7 @@ public class GameRecorder {
 
             var time = game.getTimeSettings();
             var clocks = game.getPlayerClocks();
-            var gameInfo = new DBDefs.GameHistory() {{
+            var gameInfo = new DBData.GameHistory() {{
                 gameId = game.getGameId();
 
                 winner = winnerName;
@@ -132,7 +132,7 @@ public class GameRecorder {
         return new File(playerReplayFolder, gameId + ".xml.gz");
     }
 
-    private File getSummaryFile(DBDefs.GameHistory history) {
+    private File getSummaryFile(DBData.GameHistory history) {
         var summaryFolder = new File(AppConfig.getReplayPath(), "summaries");
         var yearFolder = new File(summaryFolder, String.format("%04d", history.start_date.getYear()));
         var monthFolder = new File(yearFolder, String.format("%02d", history.start_date.getMonthValue()));
@@ -149,7 +149,7 @@ public class GameRecorder {
         return new DeflaterOutputStream(new FileOutputStream(recordingFile), deflater);
     }
 
-    private Map<String, String> saveRecordedChannels(Map<String, GameCommunicationChannel> gameProgress, DBDefs.GameHistory gameInfo, Map<String, CardDeck> decks) {
+    private Map<String, String> saveRecordedChannels(Map<String, GameCommunicationChannel> gameProgress, DBData.GameHistory gameInfo, Map<String, CardDeck> decks) {
         Map<String, String> result = new HashMap<>();
 
         for (Map.Entry<String, GameCommunicationChannel> playerRecordings : gameProgress.entrySet()) {

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.common.CardDeck;
@@ -18,7 +18,7 @@ public class ReplayMetadata {
         public List<String> DrawDeck;
     }
 
-    public final DBDefs.GameHistory GameReplayInfo;
+    public final DBData.GameHistory GameReplayInfo;
 
     public final Map<String, DeckMetadata> Decks = new HashMap<>();
     public final Map<String, Integer> PlayerIDs = new HashMap<>();
@@ -32,7 +32,7 @@ public class ReplayMetadata {
 
     public final HashSet<String> PlayedCards = new HashSet<>();
 
-    public ReplayMetadata(DBDefs.GameHistory game, Map<String, CardDeck> decks) {
+    public ReplayMetadata(DBData.GameHistory game, Map<String, CardDeck> decks) {
         GameReplayInfo = game;
 
         for(var pair : decks.entrySet()) {
@@ -50,7 +50,7 @@ public class ReplayMetadata {
 
     }
 
-    public ReplayMetadata(DBDefs.GameHistory game, Map<String, CardDeck> decks, String player, List<GameEvent> events) {
+    public ReplayMetadata(DBData.GameHistory game, Map<String, CardDeck> decks, String player, List<GameEvent> events) {
         this(game, decks);
         ParseReplay(player, events);
     }

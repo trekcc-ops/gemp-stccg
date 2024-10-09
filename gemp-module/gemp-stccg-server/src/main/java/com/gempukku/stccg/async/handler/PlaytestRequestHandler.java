@@ -1,6 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.JsonUtils;
@@ -95,7 +95,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
             String format = getFormParameterSafely(postDecoder, "format");
             int count = Integer.parseInt(getFormParameterSafely(postDecoder, "count"));
 
-            final List<DBDefs.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
+            final List<DBData.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
 
             responseWriter.writeJsonResponse(JsonUtils.toJsonString(gameHistory));
 

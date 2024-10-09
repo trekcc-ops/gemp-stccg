@@ -2,7 +2,7 @@ package com.gempukku.stccg.db;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
@@ -30,11 +30,12 @@ public class DbCollectionDAO implements CollectionDAO {
     }
 
     public CardCollection getPlayerCollection(int playerId, String type) throws IOException {
-        DBDefs.Collection collection = getCollectionInfo(playerId, type);
+        DBData.Collection collection = getCollectionInfo(playerId, type);
         return (collection == null) ? null : deserializeCollection(collection, extractCollectionEntries(collection.id));
     }
 
-    private List<DBDefs.CollectionEntry> extractCollectionEntries(int collectionID) {
+    @SuppressWarnings("TrailingWhitespacesInTextBlock")
+    private List<DBData.CollectionEntry> extractCollectionEntries(int collectionID) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -56,14 +57,14 @@ public class DbCollectionDAO implements CollectionDAO {
 
                 return conn.createQuery(sql)
                         .addParameter("collID", collectionID)
-                        .executeAndFetch(DBDefs.CollectionEntry.class);
+                        .executeAndFetch(DBData.CollectionEntry.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve collection entries", ex);
         }
     }
 
-    private DBDefs.Collection getCollectionInfo(int playerId, String type) {
+    private DBData.Collection getCollectionInfo(int playerId, String type) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -77,10 +78,10 @@ public class DbCollectionDAO implements CollectionDAO {
                             AND player_id = :playerID
                         LIMIT 1;
                         """;
-                List<DBDefs.Collection> result = conn.createQuery(sql)
+                List<DBData.Collection> result = conn.createQuery(sql)
                         .addParameter("type", type)
                         .addParameter("playerID", playerId)
-                        .executeAndFetch(DBDefs.Collection.class);
+                        .executeAndFetch(DBData.Collection.class);
 
                 return result.stream().findFirst().orElse(null);
             }
@@ -89,7 +90,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    private List<DBDefs.Collection> getCollectionInfoByType(String type) {
+    private List<DBData.Collection> getCollectionInfoByType(String type) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -104,7 +105,7 @@ public class DbCollectionDAO implements CollectionDAO {
 
                 return conn.createQuery(sql)
                         .addParameter("type", type)
-                        .executeAndFetch(DBDefs.Collection.class);
+                        .executeAndFetch(DBData.Collection.class);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to retrieve collection database definitions", ex);
@@ -120,6 +121,7 @@ public class DbCollectionDAO implements CollectionDAO {
     }
 
 
+    @SuppressWarnings("SpellCheckingInspection")
     public void overwriteCollectionContents(int playerId, String type, CardCollection collection, String source) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
@@ -130,6 +132,7 @@ public class DbCollectionDAO implements CollectionDAO {
         updateCollectionContents(playerId, type, collection, source, sql, error);
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     public void addToCollectionContents(int playerId, String type, CardCollection collection, String source) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
@@ -140,6 +143,7 @@ public class DbCollectionDAO implements CollectionDAO {
         updateCollectionContents(playerId, type, collection, source, sql, error);
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     public void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
@@ -156,6 +160,7 @@ public class DbCollectionDAO implements CollectionDAO {
     }
 
 
+    @SuppressWarnings("SpellCheckingInspection")
     private void updateCollectionContents(int playerId, String type, CardCollection collection, String source,
                                           String sql, String error) {
         if(getCollectionID(playerId, type) <= 0) {
@@ -210,7 +215,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    private MutableCardCollection deserializeCollection(DBDefs.Collection coll, List<DBDefs.CollectionEntry> entries)
+    private MutableCardCollection deserializeCollection(DBData.Collection coll, List<DBData.CollectionEntry> entries)
             throws IOException {
         DefaultCardCollection newColl = new DefaultCardCollection();
 
