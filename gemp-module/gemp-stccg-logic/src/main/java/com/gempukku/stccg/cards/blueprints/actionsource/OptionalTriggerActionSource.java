@@ -15,7 +15,7 @@ public class OptionalTriggerActionSource extends TriggerActionSource {
         _triggerTiming = triggerTiming;
     }
 
-    private OptionalTriggerAction createAction(PhysicalCard card) {
+    public OptionalTriggerAction createAction(PhysicalCard card) {
         return new OptionalTriggerAction(card, this);
     }
 

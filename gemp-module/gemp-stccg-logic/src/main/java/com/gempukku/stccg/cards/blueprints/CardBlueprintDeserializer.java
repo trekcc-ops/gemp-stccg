@@ -326,7 +326,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                 throw new InvalidCardDefinitionException("Skill " + skillName + " doesn't match known skills");
 
         } else if (skillSplit[0].trim().equals("[DL]")) {
-            return new SpecialDownloadSkill(); // TODO - Identify what is being allowed to download
+            return new SpecialDownloadSkill(skillSplit[1].trim()); // TODO - Identify what is being allowed to download
         } else {
             throw new InvalidCardDefinitionException("Invalid skill syntax in JSON file");
         }

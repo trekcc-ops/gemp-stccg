@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 public class ActivateCardActionSource extends DefaultActionSource {
 
-    private ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card); }
+    public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card); }
 
     @Override
     protected ActivateCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {

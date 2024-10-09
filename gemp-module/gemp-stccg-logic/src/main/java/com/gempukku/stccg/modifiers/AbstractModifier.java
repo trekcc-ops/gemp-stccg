@@ -14,6 +14,7 @@ import java.util.List;
 public abstract class AbstractModifier implements Modifier {
     protected final PhysicalCard _cardSource;
     private final String _text;
+    protected String _playerId;
     protected final Filter _affectFilter;
     protected final Condition _condition;
     private final ModifierEffect _effect;
@@ -183,5 +184,11 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     public boolean isCumulative() { return true; }
+
+    public boolean isForPlayer(String playerId) {
+        return _playerId == null || _playerId.equals(playerId);
+    }
+
+    public String getForPlayer() { return _playerId; }
 
 }

@@ -2,8 +2,6 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DiscountSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
@@ -12,7 +10,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
-import com.gempukku.stccg.gamestate.LoggingThreadLocal;
 
 import java.util.*;
 
@@ -170,21 +167,17 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
-        try {
-                    // TODO - Not accurate if the card has LOST an icon
-            if (physicalCard.getBlueprint().hasIcon(icon))
-                return true;
+        // TODO - Not accurate if the card has LOST an icon
+        if (physicalCard.getBlueprint().hasIcon(icon))
+            return true;
 
-            for (Modifier modifier : getIconModifiersAffectingCard(
-                    ModifierEffect.GAIN_ICON_MODIFIER, icon, physicalCard)) {
-                if (appliesIconModifier(physicalCard, modifier.getSource(), icon))
-                    if (modifier.hasIcon(physicalCard, icon))
-                        return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
+        for (Modifier modifier : getIconModifiersAffectingCard(
+                ModifierEffect.GAIN_ICON_MODIFIER, icon, physicalCard)) {
+            if (appliesIconModifier(physicalCard, modifier.getSource(), icon))
+                if (modifier.hasIcon(physicalCard, icon))
+                    return true;
         }
+        return false;
     }
 
     private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, CardIcon icon) {
@@ -318,83 +311,25 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private boolean hasAllKeywordsRemoved(PhysicalCard card) {
-        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.LOSE_ALL_KEYWORDS_MODIFIER, card)) {
-            if (modifier.lostAllKeywords(card))
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            if ((physicalCard.hasTextRemoved() || hasAllKeywordsRemoved(physicalCard)))
-                return false;
-
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.REMOVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (modifier.isKeywordRemoved(_game, physicalCard, keyword))
-                    return false;
-            }
-
-            if (physicalCard.getBlueprint().hasKeyword(keyword))
-                return true;
-
-            for (Modifier modifier : getKeywordModifiersAffectingCard(ModifierEffect.GIVE_KEYWORD_MODIFIER, keyword, physicalCard)) {
-                if (appliesKeywordModifier(physicalCard, modifier.getSource(), keyword))
-                    if (modifier.hasKeyword(physicalCard, keyword))
-                        return true;
-            }
-            return false;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
-    }
-
-    private boolean appliesKeywordModifier(PhysicalCard affecting, PhysicalCard modifierSource, Keyword keyword) {
-        if (modifierSource == null)
-            return true;
-        for (Modifier modifier : getKeywordModifiersAffectingCard(
-                        ModifierEffect.CANCEL_KEYWORD_BONUS_TARGET_MODIFIER, keyword, affecting)) {
-            if (!modifier.appliesKeywordModifier(_game, modifierSource, keyword))
-                return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int getMoveLimit(int baseMoveLimit) {
-        int result = baseMoveLimit;
-        for (Modifier modifier : getModifiers(ModifierEffect.MOVE_LIMIT_MODIFIER))
-            result += modifier.getMoveLimitModifier();
-        return Math.max(1, result);
-    }
-
     @Override
     public int getAttribute(PhysicalCard card, CardAttribute attribute) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            int result = card.getBlueprint().getAttribute(attribute);
-            ModifierEffect effectType = null;
-            if (attribute == CardAttribute.STRENGTH)
-                effectType = ModifierEffect.STRENGTH_MODIFIER;
-            else if (attribute == CardAttribute.CUNNING)
-                effectType = ModifierEffect.CUNNING_MODIFIER;
-            else if (attribute == CardAttribute.INTEGRITY)
-                effectType = ModifierEffect.INTEGRITY_MODIFIER;
-            List<Modifier> attributeModifiers = new LinkedList<>();
-            if (effectType != null)
-                attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
-                    // TODO - Need to separate ships vs. personnel here
-            attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
-            for (Modifier modifier : attributeModifiers) {
-                result += modifier.getAttributeModifier(card);
-            }
-            return Math.max(0, result);
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
+        int result = card.getBlueprint().getAttribute(attribute);
+        ModifierEffect effectType = null;
+        if (attribute == CardAttribute.STRENGTH)
+            effectType = ModifierEffect.STRENGTH_MODIFIER;
+        else if (attribute == CardAttribute.CUNNING)
+            effectType = ModifierEffect.CUNNING_MODIFIER;
+        else if (attribute == CardAttribute.INTEGRITY)
+            effectType = ModifierEffect.INTEGRITY_MODIFIER;
+        List<Modifier> attributeModifiers = new LinkedList<>();
+        if (effectType != null)
+            attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
+        // TODO - Need to separate ships vs. personnel here
+        attributeModifiers.addAll(getModifiersAffectingCard(ModifierEffect.ALL_ATTRIBUTE_MODIFIER, card));
+        for (Modifier modifier : attributeModifiers) {
+            result += modifier.getAttributeModifier(card);
         }
+        return Math.max(0, result);
     }
 
     @Override
@@ -464,28 +399,18 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.DISCARD_FROM_PLAY_MODIFIER, card))
-                if (!modifier.canBeDiscardedFromPlay(_game, performingPlayer, card, source))
-                    return false;
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
+        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.DISCARD_FROM_PLAY_MODIFIER, card))
+            if (!modifier.canBeDiscardedFromPlay(_game, performingPlayer, card, source))
+                return false;
+        return true;
     }
 
     @Override
     public boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source) {
-        LoggingThreadLocal.logMethodStart();
-        try {
-            for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.RETURN_TO_HAND_MODIFIER, card))
-                if (!modifier.canBeReturnedToHand(_game, card, source))
-                    return false;
-            return true;
-        } finally {
-            LoggingThreadLocal.logMethodEnd();
-        }
+        for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.RETURN_TO_HAND_MODIFIER, card))
+            if (!modifier.canBeReturnedToHand(_game, card, source))
+                return false;
+        return true;
     }
 
     /**
@@ -537,21 +462,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
         return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
-    }
-
-    @Override
-    public void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard) {
-        if (playedCard.getBlueprint().getDiscountSources() != null) {
-            ActionContext actionContext = playedCard.createActionContext();
-            for (DiscountSource discountSource : playedCard.getBlueprint().getDiscountSources()) {
-                action.appendPotentialDiscount(discountSource.getDiscountEffect(action, actionContext));
-            }
-        }
-
-        for (Modifier modifier : getModifiersAffectingCard(
-                ModifierEffect.POTENTIAL_DISCOUNT_MODIFIER, playedCard)) {
-            modifier.appendPotentialDiscounts(action, playedCard);
-        }
     }
 
     @Override

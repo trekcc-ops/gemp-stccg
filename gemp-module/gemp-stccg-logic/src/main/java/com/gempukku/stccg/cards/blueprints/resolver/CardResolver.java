@@ -130,7 +130,7 @@ public class CardResolver {
                         cardSource.apply(actionContext), Filters.in(possibleCards),
                         min, max, showMatchingOnly) {
                     @Override
-                    protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
+                    protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
                         actionContext.setCardMemory(memory, selectedCards);
                     }
                 };

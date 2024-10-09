@@ -21,7 +21,6 @@ public class Filters {
     private static final Map<Affiliation, Filter> _affiliationFilterMap = new HashMap<>();
     private static final Map<Uniqueness, Filter> _uniquenessFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
-    private static final Map<Keyword, Filter> _keywordFilterMap = new HashMap<>();
     private static final Map<Characteristic, Filter> _characteristicFilterMap = new HashMap<>();
 
     static {
@@ -41,8 +40,6 @@ public class Filters {
             _uniquenessFilterMap.put(uniqueness, uniqueness(uniqueness));
         for (Species species : Species.values())
             _speciesFilterMap.put(species, species(species));
-        for (Keyword keyword : Keyword.values())
-            _keywordFilterMap.put(keyword, keyword(keyword));
         for (Characteristic characteristic : Characteristic.values())
             _characteristicFilterMap.put(characteristic, characteristic(characteristic));
     }
@@ -379,10 +376,6 @@ public class Filters {
         return (game, physicalCard) -> physicalCard.getBlueprint().getSpecialDownloadIconCount() == count;
     }
 
-    private static Filter keyword(final Keyword keyword) {
-        return (game, physicalCard) -> game.getModifiersQuerying().hasKeyword(physicalCard, keyword);
-    }
-
     private static Filter characteristic(final Characteristic characteristic) {
         return (game, physicalCard) -> physicalCard.hasCharacteristic(characteristic);
     }
@@ -417,7 +410,6 @@ public class Filters {
             case Characteristic characteristic -> _characteristicFilterMap.get(characteristic);
             case SkillName enumFilter -> _skillNameFilterMap.get(enumFilter);
             case CardIcon icon -> (game, physicalCard) -> physicalCard.hasIcon(icon);
-            case Keyword keyword -> _keywordFilterMap.get(keyword);
             case MissionType missionType ->
                 // TODO - Does not properly account for dual missions
                     (game, physicalCard) -> physicalCard.getBlueprint().getMissionType() == missionType;

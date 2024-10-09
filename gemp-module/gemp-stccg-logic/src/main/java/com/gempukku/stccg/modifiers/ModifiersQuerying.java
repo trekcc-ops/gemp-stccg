@@ -30,12 +30,6 @@ public interface ModifiersQuerying {
 
     Collection<Modifier> getModifiersAffecting(PhysicalCard card);
 
-    // Keywords
-    boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword);
-
-    // Movement
-    int getMoveLimit(int baseMoveLimit);
-
     int getAttribute(PhysicalCard card, CardAttribute attribute);
 
     // Stats
@@ -68,8 +62,6 @@ public interface ModifiersQuerying {
     boolean canDiscardCardsFromTopOfDeck(String playerId, PhysicalCard source);
 
     boolean hasFlagActive(ModifierFlag modifierFlag);
-
-    void appendPotentialDiscounts(CostToEffectAction action, PhysicalCard playedCard);
 
     LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource);
 

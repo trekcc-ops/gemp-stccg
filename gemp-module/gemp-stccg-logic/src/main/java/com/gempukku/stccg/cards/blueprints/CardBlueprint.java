@@ -75,7 +75,6 @@ public class CardBlueprint {
     private List<ModifierSource> inPlayModifiers;
 
     private List<ExtraPlayCostSource> extraPlayCosts;
-    private List<DiscountSource> _discountSources;
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
     private ActionSource _seedCardActionSource;
@@ -319,7 +318,6 @@ public class CardBlueprint {
     }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
     public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
-    public List<DiscountSource> getDiscountSources() { return _discountSources; }
     public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
