@@ -4,6 +4,7 @@
     101_057: {
         title: Federation PADD
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/federationpadd95.jpg
         rarity: C
@@ -11,6 +12,7 @@
     101_058: {
         title: Klingon Disruptor
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/klingondisruptor95.jpg
         rarity: C
@@ -18,6 +20,7 @@
     101_059: {
         title: Klingon PADD
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/klingonpadd95.jpg
         rarity: C
@@ -25,6 +28,7 @@
     101_062: {
         title: Romulan Disruptor
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/romulandisruptor95.jpg
         rarity: C
@@ -32,6 +36,7 @@
     101_063: {
         title: Romulan PADD
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         rarity: C
         image-url: https://www.trekcc.org/1e/cardimages/premiere/romulanpadd95.jpg
@@ -39,6 +44,7 @@
     101_064: {
         title: Starfleet Type II Phaser
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/errata/Starfleet-Type-II-Phaser.jpg
         rarity: C
@@ -46,6 +52,7 @@
     101_065: {
         title: Tricorder
         type: equipment
+        property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/tricorder95.jpg
         rarity: C

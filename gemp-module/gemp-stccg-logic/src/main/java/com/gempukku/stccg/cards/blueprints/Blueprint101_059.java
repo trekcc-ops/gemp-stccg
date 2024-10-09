@@ -14,7 +14,6 @@ import java.util.List;
 public class Blueprint101_059 extends CardBlueprint {
     Blueprint101_059() {
         super("101_059");// Klingon PADD
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Standard Klingon Personal Access Display Device for computerized information.");
 //        setGameText("Klingon use only. Each of your personnel CUNNING +2 where present. (Cumulative.)");
     }

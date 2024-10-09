@@ -16,7 +16,6 @@ import java.util.List;
 public class Blueprint101_063 extends CardBlueprint {
     Blueprint101_063() {
         super("101_063"); // Romulan PADD
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Standard Romulan Personal Access Display Device for computerized information.");
 //        setGameText("Romulan use only. Each of your personnel CUNNING +2 where present. (Cumulative.)");
         setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/romulanpadd95.jpg");

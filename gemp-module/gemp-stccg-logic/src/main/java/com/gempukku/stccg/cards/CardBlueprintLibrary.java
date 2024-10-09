@@ -180,19 +180,13 @@ public class CardBlueprintLibrary {
 
             for (String blueprintId : blueprintIds) {
                 try {
-                    if (blueprintId.equals("155_080")) {
-                        int x = 5;
-                        int y = x + 3;
-                    }
-                        // TODO - Trying both methods below. Ultimate goal is to use loadCardFromDeserializer.
                     final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, jsonNode);
-//                    final CardBlueprint cardBlueprint = loadCardFromFactory(blueprintId, jsonNode);
                     _blueprints.put(blueprintId, cardBlueprint);
                     String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
                     _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (Exception exp) {
                     _blueprintLoadErrorEncountered = true;
-                    LOGGER.error("Unable to load card ", exp);
+                    LOGGER.error("Unable to load card " + blueprintId, exp);
                 }
             }
         } catch (Exception exp) {

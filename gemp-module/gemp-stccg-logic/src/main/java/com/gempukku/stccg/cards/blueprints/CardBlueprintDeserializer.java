@@ -42,135 +42,85 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     public CardBlueprint deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         try {
             JsonNode node = jp.getCodec().readTree(jp);
-            CardBlueprint blueprint;
-            BlueprintUtils.validateAllowedFields(node, "java-blueprint", "blueprintId", "title", "image-url", "type", "lore",
-                    "property-logo", "rarity", "location", "mission-type", "span", "mission-requirements",
-                    "affiliation-icons", "point-box", "integrity", "cunning", "strength", "affiliation",
-                    "classification", "icons", "skill-box", "facility-type", "uniqueness", "ship-class", "gametext",
-                    "range", "weapons", "shields", "region", "staffing", "persona", "characteristic",
-                    "image-options", "effects", "subtitle", "quadrant", "tribble-value", "headquarters", "cost",
-                    "playable", "species", "tribble-power");
-            validateRequiredFields(node, "title", "image-url", "type", "blueprintId");
+            BlueprintUtils.validateRequiredFields(node, "title", "image-url", "type", "blueprintId");
+            final CardBlueprint blueprint = createBlueprint(node);
 
-            // TODO - Implement gametext, ship class, headquarters, playable
+            List<String> fieldNames = new ArrayList<>();
+            node.fieldNames().forEachRemaining(fieldNames::add);
+            for (String fieldName : fieldNames) {
+                switch(fieldName) {
+                    // Attributes and ignored fields are at the top of this list, otherwise it is in alphabetical order
 
-            // All cards have these fields
-            String blueprintId = getString(node, "blueprintId");
-            
-            if (node.has("java-blueprint")) {
-                try {
-                    blueprint = (CardBlueprint) Class.forName("com.gempukku.stccg.cards.blueprints.Blueprint" + blueprintId)
-                            .getDeclaredConstructor().newInstance();
-                } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException |
-                         IllegalAccessException e) {
-                    throw new InvalidCardDefinitionException("No valid Java class found for blueprint " + blueprintId);
-                }
-            } else {
-                blueprint = new CardBlueprint(blueprintId);
-            }
+                    case "blueprintId", "java-blueprint": break; // Already processed by createBlueprint
+                    case "gametext", "headquarters", "playable", "ship-class": break; // TODO - No implementation yet
 
-            if (!Objects.equals(blueprint.getBlueprintId(),blueprintId))
-                throw new InvalidCardDefinitionException(
-                        "Non-matching blueprintIds: '" + blueprintId + "' vs. '" + blueprint.getBlueprintId());
+                    case "cunning", "integrity", "range", "shields", "strength", "weapons":
+                        blueprint.setAttribute(
+                                CardAttribute.valueOf(fieldName.toUpperCase()), getInteger(node, fieldName));
+                        break;
 
-            // All cards have these fields
-            blueprint.setTitle(getString(node, "title"));
-            blueprint.setImageUrl(getString(node, "image-url"));
-            blueprint.setCardType(getEnum(CardType.class, node, "type"));
-
-            // Most cards have these fields
-            blueprint.setLore(getString(node, "lore"));
-            blueprint.setPropertyLogo(getEnum(PropertyLogo.class, node, "property-logo"));
-            blueprint.setRarity(getString(node, "rarity"));
-            blueprint.setUniqueness(getEnum(Uniqueness.class, node, "uniqueness"));
-
-            // Missions & time locations
-            blueprint.setLocation(getString(node, "location"));
-            blueprint.setMissionType(getEnum(MissionType.class, node, "mission-type"));
-            blueprint.setSpan(getInteger(node, "span"));
-            String missionRequirementsText = getString(node, "mission-requirements");
-            blueprint.setMissionRequirementsText(missionRequirementsText);
-            blueprint.setMissionRequirements(createRequirement(missionRequirementsText));
-            blueprint.setRegion(getEnum(Region.class, node, "region"));
-
-            if (node.has("affiliation-icons")) {
-                for (String icon : node.get("affiliation-icons").textValue().split(",")) {
-                    if (icon.equals("any")) {
-                        blueprint.setAnyCrewOrAwayTeamCanAttempt();
-                    } else {
-                        blueprint.addOwnerAffiliationIcon(
-                                getEnum(Affiliation.class, icon, "affiliation-icons"));
-                    }
-                }
-            }
-
-            blueprint.setPointsShown(getPointsShown(node.get("point-box")));
-            blueprint.setHasPointBox(node.has("point-box"));
-
-            // Personnel
-            blueprint.setAttribute(CardAttribute.INTEGRITY, getInteger(node, "integrity"));
-            blueprint.setAttribute(CardAttribute.CUNNING, getInteger(node, "cunning"));
-            blueprint.setAttribute(CardAttribute.STRENGTH, getInteger(node, "strength"));
-
-            for (Affiliation affiliation :
-                    getEnumSetFromCommaDelimited(node, "affiliation", Affiliation.class))
-                blueprint.addAffiliation(affiliation);
-
-            blueprint.setClassification(getEnum(SkillName.class, node, "classification"));
-            blueprint.setIcons(getCardIconListFromCommaDelimited(node, "icons"));
-
-            if (node.get("skill-box") != null) {
-                SkillBox skillBox = new SkillBox(node.get("skill-box"));
-                blueprint.setSkillDotIcons(skillBox.getSkillDots());
-                blueprint.setSpecialDownloadIcons(skillBox.getSdIcons());
-                for (Skill skill : skillBox.getSkillList()) {
-                    blueprint.addSkill(skill);
+                        // Alphabetical order going forward
+                    case "affiliation":
+                        for (Affiliation affiliation :
+                                getEnumSetFromCommaDelimited(node, fieldName, Affiliation.class))
+                            blueprint.addAffiliation(affiliation);
+                        break;
+                    case "affiliation-icons":
+                        for (String icon : node.get(fieldName).textValue().split(",")) {
+                            if (icon.equals("any")) blueprint.setAnyCrewOrAwayTeamCanAttempt();
+                            else blueprint.addOwnerAffiliationIcon(
+                                    getEnum(Affiliation.class, icon, fieldName));
+                        }
+                        break;
+                    case "characteristic":
+                        for (Characteristic characteristic :
+                                getEnumSetFromCommaDelimited(node, fieldName, Characteristic.class))
+                            blueprint.addCharacteristic(characteristic);
+                        break;
+                    case "classification": blueprint.setClassification(getEnum(SkillName.class, node, fieldName)); break;
+                    case "cost": blueprint.setCost(getInteger(node, fieldName)); break;
+                    case "effects": EffectFieldProcessor.processField(node.get(fieldName), blueprint); break;
+                    case "facility-type": blueprint.setFacilityType(getEnum(FacilityType.class, node, fieldName)); break;
+                    case "icons": blueprint.setIcons(getCardIconListFromCommaDelimited(node, fieldName)); break;
+                    case "image-options": setImageOptions(blueprint, node); break;
+                    case "image-url": blueprint.setImageUrl(BlueprintUtils.getString(node, fieldName)); break;
+                    case "location": blueprint.setLocation(BlueprintUtils.getString(node, fieldName)); break;
+                    case "lore": blueprint.setLore(BlueprintUtils.getString(node, fieldName)); break;
+                    case "mission-requirements":
+                        String missionRequirementsText = BlueprintUtils.getString(node, fieldName);
+                        blueprint.setMissionRequirementsText(missionRequirementsText);
+                        blueprint.setMissionRequirements(createRequirement(missionRequirementsText));
+                        break;
+                    case "mission-type": blueprint.setMissionType(getEnum(MissionType.class, node, fieldName)); break;
+                    case "persona": blueprint.setPersona(BlueprintUtils.getString(node, fieldName)); break;
+                    case "point-box":
+                        blueprint.setPointsShown(getPointsShown(node.get(fieldName)));
+                        blueprint.setHasPointBox(true);
+                        break;
+                    case "property-logo": blueprint.setPropertyLogo(getEnum(PropertyLogo.class, node, fieldName)); break;
+                    case "quadrant": blueprint.setQuadrant(getEnum(Quadrant.class, node, fieldName)); break;
+                    case "rarity": blueprint.setRarity(BlueprintUtils.getString(node, fieldName)); break;
+                    case "region": blueprint.setRegion(getEnum(Region.class, node, fieldName)); break;
+                    case "skill-box": processSkillBox(blueprint, node, fieldName); break;
+                    case "span": blueprint.setSpan(getInteger(node, fieldName)); break;
+                    case "species": blueprint.setSpecies(getEnum(Species.class, node, fieldName)); break;
+                    case "staffing": blueprint.setStaffing(getCardIconListFromCommaDelimited(node, fieldName)); break;
+                    case "subtitle": blueprint.setSubtitle(BlueprintUtils.getString(node, fieldName)); break;
+                    case "title": blueprint.setTitle(BlueprintUtils.getString(node, fieldName)); break;
+                    case "tribble-power": processTribblePower(blueprint, node, fieldName); break;
+                    case "tribble-value": blueprint.setTribbleValue(getInteger(node, fieldName)); break;
+                    case "type": blueprint.setCardType(getEnum(CardType.class, node, fieldName)); break;
+                    case "uniqueness": blueprint.setUniqueness(getEnum(Uniqueness.class, node, fieldName)); break;
+                    default: throw new InvalidCardDefinitionException("Invalid field " + fieldName + " in blueprint");
                 }
             }
 
-            // Facilities
-            blueprint.setFacilityType(getEnum(FacilityType.class, node, "facility-type"));
-
-            // Ships
-            blueprint.setAttribute(CardAttribute.RANGE, getInteger(node, "range"));
-            blueprint.setAttribute(CardAttribute.WEAPONS, getInteger(node, "weapons"));
-            blueprint.setAttribute(CardAttribute.SHIELDS, getInteger(node, "shields"));
-            blueprint.setStaffing(getCardIconListFromCommaDelimited(node, "staffing"));
-
-            // Misc
-            blueprint.setSubtitle(getString(node, "subtitle"));
-            blueprint.setQuadrant(getEnum(Quadrant.class, node, "quadrant"));
-            blueprint.setSpecies(getEnum(Species.class, node, "species"));
-            blueprint.setPersona(getString(node, "persona"));
-            blueprint.setTribbleValue(getInteger(node, "tribble-value"));
-            blueprint.setCost(getInteger(node, "cost"));
-            setImageOptions(blueprint, node);
-            if (node.get("tribble-power") != null) {
-                processTribblePower(blueprint, getEnum(TribblePower.class, node, "tribble-power"));
-            }
-
-            if (node.get("effects") != null)
-                EffectFieldProcessor.processField(node.get("effects"), blueprint);
-
-            for (Characteristic characteristic :
-                    getEnumSetFromCommaDelimited(node, "characteristic", Characteristic.class))
-                blueprint.addCharacteristic(characteristic);
-
+            fillInBlueprintBlanks(blueprint);
             validateConsistency(blueprint);
-
             return blueprint;
+
         } catch(InvalidCardDefinitionException exp) {
             throw new IOException(exp.getMessage(), exp);
-        }
-    }
-
-    private void validateRequiredFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
-        List<String> keys = new ArrayList<>();
-        node.fieldNames().forEachRemaining(keys::add);
-        for (String field : fields) {
-            if (!keys.contains(field))
-                throw new InvalidCardDefinitionException("Could not find required field " + field +
-                        " for blueprint " + node.get("blueprintId"));
         }
     }
 
@@ -194,12 +144,6 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             result.add(getEnum(CardIcon.class, item, fieldName));
         }
         return result;
-    }
-
-    private String getString(JsonNode parentNode, String fieldName) {
-        if (parentNode.get(fieldName) == null)
-            return null;
-        else return parentNode.get(fieldName).textValue();
     }
 
     private Integer getInteger(JsonNode parentNode, String fieldName) throws InvalidCardDefinitionException {
@@ -233,8 +177,22 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
     private MissionRequirement createRequirement(String text) throws InvalidCardDefinitionException {
         if (text == null)
             return null;
+
+            /* orNoParens splits requirements joined by "or", if they're not inside parentheses.
+                Examples:
+                    match -> Diplomacy x2 OR OFFICER + ENGINEER
+                    match -> Honor or Treachery
+                    no match -> Diplomacy + Anthropology + (Jean-Luc Picard OR Tebok OR CUNNING >35) */
         String orNoParens = "\\s+(?i)OR\\s+(?![^(]*\\))";
+
+            /* andNoParens splits requirements joined by "and", if they're not inside parentheses.
+                Examples:
+                    match -> ENGINEER + Physics + Computer Skill
+                    match -> Exobiology, Medical, and Cunning>35
+                    no match -> (Leadership and Cunning>35) or (Transporters and Integrity>35)  */
         String andNoParens = "(\\s\\+\\s+|,\\sand\\s+|,\\s+|\\sand\\s)(?![^(]*\\))";
+
+            // attributeSplit splits attribute requirements by < or > operators
         String attributeSplit = "(?=>\\d+)|(?=<\\d+)";
 
         if (text.split(orNoParens).length > 1) {
@@ -262,8 +220,8 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                 stringSplit[i] = stringSplit[i].trim();
             }
             if (_skillMap.get(stringSplit[0].toUpperCase()) != null)
-                return new RegularSkillMissionRequirement(
-                        _skillMap.get(stringSplit[0].toUpperCase()), Integer.parseInt(stringSplit[1].substring(1)));
+                return new RegularSkillMissionRequirement(_skillMap.get(stringSplit[0].toUpperCase()),
+                        Integer.parseInt(stringSplit[1].substring(1)));
         }
         if (text.split(multiplierSplit2e).length > 1) {
             String[] stringSplit = text.split(multiplierSplit2e);
@@ -277,9 +235,11 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         if (text.split(attributeSplit).length > 1) {
             String[] stringSplit = text.split(attributeSplit);
             if (stringSplit[1].charAt(0) == '>')
-                return new AttributeMissionRequirement(getEnum(
-                        CardAttribute.class, stringSplit[0].trim(), "card attribute"),
-                        Integer.parseInt(stringSplit[1].substring(1)));
+                return new AttributeMissionRequirement(
+                        getEnum(CardAttribute.class, stringSplit[0].trim(), "card attribute"),
+                        Integer.parseInt(stringSplit[1].substring(1))
+                );
+            else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
         }
         if (_skillMap.get(text.toUpperCase()) != null) {
             return new RegularSkillMissionRequirement(_skillMap.get(text.toUpperCase()));
@@ -295,6 +255,16 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         if (value == null) return 0;
         String str = (value.isTextual()) ? value.textValue() : value.toString();
         return (str.isEmpty()) ? 0 : Integer.parseInt(str.replaceAll("[^\\d]", ""));
+    }
+
+    private void processSkillBox(CardBlueprint blueprint, JsonNode node, String fieldName)
+            throws InvalidCardDefinitionException {
+        SkillBox skillBox = new SkillBox(node.get(fieldName));
+        blueprint.setSkillDotIcons(skillBox.getSkillDots());
+        blueprint.setSpecialDownloadIcons(skillBox.getSdIcons());
+        for (Skill skill : skillBox.getSkillList()) {
+            blueprint.addSkill(skill);
+        }
     }
 
     private class SkillBox {
@@ -374,19 +344,23 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     "Image options blueprint field could not be processed as an array");
     }
 
-    private void processTribblePower(CardBlueprint blueprint, TribblePower tribblePower)
+    private void processTribblePower(CardBlueprint blueprint, JsonNode node, String fieldName)
             throws InvalidCardDefinitionException {
+        TribblePower tribblePower = getEnum(TribblePower.class, node, fieldName);
+        if (tribblePower == null)
+            throw new InvalidCardDefinitionException("Unable to identify tribble power");
         blueprint.setTribblePower(tribblePower);
         if (tribblePower.isActive()) {
-            String jsonString = "{\"effect\":{\"type\":\"activateTribblePower\"}";
+            StringBuilder jsonString = new StringBuilder();
+            jsonString.append("{\"effect\":{\"type\":\"activateTribblePower\"}");
             if (tribblePower == TribblePower.AVALANCHE) {
-                jsonString += ",\"requires\":{\"type\":\"cardsInHandMoreThan\",\"player\":\"you\",\"count\":3}";
+                jsonString.append(",\"requires\":{\"type\":\"cardsInHandMoreThan\",\"player\":\"you\",\"count\":3}");
             }
-            jsonString += ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}";
+            jsonString.append(
+                    ",\"optional\":true,\"trigger\":{\"filter\":\"self\",\"type\":\"played\"},\"type\":\"trigger\"}");
 
             try {
-                EffectFieldProcessor.appendActionSource(
-                        new ObjectMapper().readTree(jsonString), blueprint);
+                EffectFieldProcessor.appendActionSource(new ObjectMapper().readTree(jsonString.toString()), blueprint);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -398,11 +372,17 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             throw new InvalidCardDefinitionException("Card has to have a title");
         if (blueprint.getCardType() == null)
             throw new InvalidCardDefinitionException("Card has to have a type");
+        if (blueprint.getUniqueness() == null)
+            throw new InvalidCardDefinitionException("Card has to have a uniqueness");
+        if (blueprint.getRarity() == null)
+            throw new InvalidCardDefinitionException("Card has to have a rarity");
+
         if (blueprint.getCardType() == CardType.MISSION) {
             if (blueprint.getPropertyLogo() != null)
                 throw new InvalidCardDefinitionException("Mission card should not have a property logo");
-            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") && !blueprint.getBlueprintId().startsWith("1_"))
+            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") &&
+                    !blueprint.getBlueprintId().startsWith("1_"))
+                    // TODO - The substring "1_" condition is filtering out 2E Premiere cards. This won't work forever.
                 throw new InvalidCardDefinitionException("Mission card should have a location");
             if (blueprint.getQuadrant() == null)
                 throw new InvalidCardDefinitionException("Mission card should have a quadrant");
@@ -412,9 +392,57 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
                 throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
         } else if (blueprint.getPropertyLogo() == null && !blueprint.getBlueprintId().startsWith("1_"))
-            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            // TODO - Technically tribbles should have property logos too, they're just never relevant
+                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. This won't work forever.
+                // TODO - Technically tribbles should have property logos too, they're just never relevant
             throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
+    }
+    
+    private void fillInBlueprintBlanks(CardBlueprint blueprint) {
+        // Apply uniqueness if the card doesn't specify it
+        List<CardType> implicitlyUniqueTypes = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
+                CardType.SITE, CardType.MISSION, CardType.TIME_LOCATION);
+        if (blueprint.getUniqueness() == null) {
+            if (implicitlyUniqueTypes.contains(blueprint.getCardType())) {
+                blueprint.setUniqueness(Uniqueness.UNIQUE);
+            } else {
+                blueprint.setUniqueness(Uniqueness.UNIVERSAL);
+            }
+        }
+
+        // Set quadrant to alpha if the card doesn't specify it
+        List<CardType> implicitlyAlphaQuadrant = Arrays.asList(CardType.PERSONNEL, CardType.SHIP, CardType.FACILITY,
+                CardType.MISSION);
+        if (blueprint.getQuadrant() == null && implicitlyAlphaQuadrant.contains(blueprint.getCardType()))
+            blueprint.setQuadrant(Quadrant.ALPHA);
+
+        // Set rarity to V if none was specified
+        if (blueprint.getRarity() == null)
+            blueprint.setRarity("V");
+    }
+
+    private CardBlueprint createBlueprint(JsonNode node) throws InvalidCardDefinitionException {
+        final CardBlueprint blueprint;
+        String blueprintId = BlueprintUtils.getString(node, "blueprintId");
+        if (blueprintId == null)
+            throw new InvalidCardDefinitionException("Null value for blueprintId");
+
+        if (node.has("java-blueprint")) {
+            try {
+                blueprint = (CardBlueprint) Class.forName(
+                                "com.gempukku.stccg.cards.blueprints.Blueprint" + blueprintId)
+                        .getDeclaredConstructor().newInstance();
+            } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+                     InstantiationException | IllegalAccessException exception) {
+                throw new InvalidCardDefinitionException("No valid Java class found for blueprint " + blueprintId);
+            }
+        } else {
+            blueprint = new CardBlueprint(blueprintId);
+        }
+
+        if (!Objects.equals(blueprint.getBlueprintId(),blueprintId))
+            throw new InvalidCardDefinitionException(
+                    "Non-matching blueprintIds: '" + blueprintId + "' vs. '" + blueprint.getBlueprintId());
+        return blueprint;
     }
 
 }

@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.PropertyLogo;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.TrueCondition;
 import com.gempukku.stccg.filters.Filters;
@@ -18,7 +17,6 @@ import java.util.List;
 public class Blueprint101_065 extends CardBlueprint {
     Blueprint101_065() {
         super("101_065"); // Tricorder
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.");
 //        setGameText("Gives all of your ENGINEER-classification personnel the extra skill of SCIENCE where present.");
     }

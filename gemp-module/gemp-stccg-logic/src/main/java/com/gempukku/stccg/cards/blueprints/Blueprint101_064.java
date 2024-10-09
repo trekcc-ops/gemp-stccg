@@ -18,7 +18,6 @@ import java.util.List;
 public class Blueprint101_064 extends CardBlueprint {
     Blueprint101_064() {
         super("101_064"); // Starfleet Type II Phaser
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
         setLore("Handheld weapon can be set for stun, heat and disruption. PHASER is an acronym for PHASed Energy Rectification.");
 //        setGameText("Federation and Non-Aligned use only. Each of your personnel present is STRENGTH +2. (Cumulative.)");
     }
