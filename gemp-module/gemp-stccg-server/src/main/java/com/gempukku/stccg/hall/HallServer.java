@@ -311,9 +311,9 @@ public class HallServer extends AbstractServer {
             // Maybe it's a league format?
             league = _leagueService.getLeagueByType(formatSelection);
             if (league != null) {
-                leagueSerie = _leagueService.getCurrentLeagueSerie(league);
+                leagueSerie = _leagueService.getCurrentLeagueSeries(league);
                 if (leagueSerie == null)
-                    throw new HallException("There is no ongoing serie for that league");
+                    throw new HallException("There is no ongoing series for that league");
 
                 if(isInviteOnly) {
                     throw new HallException("League games cannot be invite-only");
@@ -556,15 +556,15 @@ public class HallServer extends AbstractServer {
         Set<GameParticipant> players = gameTable.getPlayers();
         GameParticipant[] participants = players.toArray(new GameParticipant[0]);
         final League league = gameTable.getGameSettings().getLeague();
-        final LeagueSeriesData leagueSerie = gameTable.getGameSettings().getSeriesData();
+        final LeagueSeriesData seriesData = gameTable.getGameSettings().getSeriesData();
 
-        GameResultListener listener = getGameResultListener(league, leagueSerie);
+        GameResultListener listener = getGameResultListener(league, seriesData);
 
         CardGameMediator mediator = createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
         gameTable.startGame(mediator);
     }
 
-    private GameResultListener getGameResultListener(League league, LeagueSeriesData leagueSerie) {
+    private GameResultListener getGameResultListener(League league, LeagueSeriesData seriesData) {
         GameResultListener listener = null;
         if (league != null) {
             listener = new GameResultListener() {
@@ -572,7 +572,7 @@ public class HallServer extends AbstractServer {
                 public void gameFinished(String winnerPlayerId, String winReason,
                                          Map<String, String> loserPlayerIdsWithReasons) {
                     _leagueService.reportLeagueGameResult(
-                            league, leagueSerie, winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
+                            league, seriesData, winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
                 }
 
                 @Override

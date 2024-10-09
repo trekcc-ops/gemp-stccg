@@ -191,7 +191,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     responseWriter.writeXmlResponse(null);
                     return;
                 }
-                catch (HallException ex) { }
+                catch (HallException ignored) { }
 
                 responseWriter.writeXmlResponse(marshalException(e));
             }
@@ -366,7 +366,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 hall.appendChild(formatElem);
             }
             for (League league : _leagueService.getActiveLeagues()) {
-                final LeagueSeriesData currentLeagueSerie = _leagueService.getCurrentLeagueSerie(league);
+                final LeagueSeriesData currentLeagueSerie = _leagueService.getCurrentLeagueSeries(league);
                 if (currentLeagueSerie != null && _leagueService.isPlayerInLeague(league, resourceOwner)) {
                     Element formatElem = doc.createElement("format");
                     formatElem.setAttribute("type", league.getType());

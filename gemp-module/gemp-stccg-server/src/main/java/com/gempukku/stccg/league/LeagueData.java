@@ -15,7 +15,7 @@ public interface LeagueData {
 
     int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime);
 
-    default int getMaxRepeatMatchesPerSerie() {
+    default int getMaxRepeatMatchesPerSeries() {
         return 1;
     }
 }

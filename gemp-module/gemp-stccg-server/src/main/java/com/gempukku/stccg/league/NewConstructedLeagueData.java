@@ -35,16 +35,15 @@ public class NewConstructedLeagueData implements LeagueData {
         _maxRepeatGames = Integer.parseInt(params[3]);
         int series = Integer.parseInt(params[4]);
 
-        int serieStart = start;
         for (int i = 0; i < series; i++) {
             String format = params[5 + i * 3];
             int duration = Integer.parseInt(params[6 + i * 3]);
             int maxMatches = Integer.parseInt(params[7 + i * 3]);
             _allSeries.add(new DefaultLeagueSeriesData(_leaguePrizes, false, "Serie " + (i + 1),
-                    serieStart, DateUtils.offsetDate(serieStart, duration - 1),
+                    start, DateUtils.offsetDate(start, duration - 1),
                     maxMatches, formatLibrary.getFormat(format), _collectionType));
 
-            serieStart = DateUtils.offsetDate(serieStart, duration);
+            start = DateUtils.offsetDate(start, duration);
         }
     }
 
@@ -82,7 +81,7 @@ public class NewConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public int getMaxRepeatMatchesPerSerie() {
+    public int getMaxRepeatMatchesPerSeries() {
         return _maxRepeatGames;
     }
 }

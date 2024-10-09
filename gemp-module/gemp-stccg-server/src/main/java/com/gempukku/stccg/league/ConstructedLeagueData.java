@@ -20,10 +20,10 @@ public class ConstructedLeagueData implements LeagueData {
     private final CollectionType _collectionType;
 
     // Example params - 20120312,fotr_block,0.7,default,All cards,7,10,3,fotr1_block,fotr_block,fotr2_block,fotr_block,fotr_block,fotr_block
-    // Which means - start date,league prize pool,prizes multiplier,collection type,collection name,serie length,serie match count,series count,
-    // serie1 format, serie1 prize pool,
-    // serie2 format, serie2 prize pool,
-    // serie3 format, serie3 prize pool,
+    // Which means - start date,league prize pool,prizes multiplier,collection type,collection name,series length,series match count,series count,
+    // series1 format, series1 prize pool,
+    // series2 format, series2 prize pool,
+    // series3 format, series3 prize pool,
     public ConstructedLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
         

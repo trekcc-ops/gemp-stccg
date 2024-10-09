@@ -26,7 +26,7 @@ public class SoloDraftLeagueData implements LeagueData {
     private final long _code;
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final LeaguePrizes _leaguePrizes;
-    private final LeagueSeriesData _serie;
+    private final LeagueSeriesData _seriesData;
 
     public SoloDraftLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
@@ -40,7 +40,7 @@ public class SoloDraftLeagueData implements LeagueData {
 
         _collectionType = new CollectionType(params[4], params[5]);
 
-        _serie = new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie 1",
+        _seriesData = new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie 1",
                 DateUtils.offsetDate(start, 0), DateUtils.offsetDate(start, seriesDuration - 1), maxMatches,
                 formatLibrary.getFormat(_draft.getFormat()), _collectionType);
     }
@@ -60,7 +60,7 @@ public class SoloDraftLeagueData implements LeagueData {
 
     @Override
     public List<LeagueSeriesData> getSeries() {
-        return Collections.singletonList(_serie);
+        return Collections.singletonList(_seriesData);
     }
 
     private long getSeed(User player) {
@@ -74,8 +74,8 @@ public class SoloDraftLeagueData implements LeagueData {
 
         CardCollection leagueProduct = _draft.initializeNewCollection(seed);
 
-        for (GenericCardItem serieCollectionItem : leagueProduct.getAll())
-            startingCollection.addItem(serieCollectionItem.getBlueprintId(), serieCollectionItem.getCount());
+        for (GenericCardItem collectionItem : leagueProduct.getAll())
+            startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
 
         startingCollection.setExtraInformation(createExtraInformation(seed));
         collectionsManager.addPlayerCollection(false, "Sealed league product", player, _collectionType, startingCollection);
@@ -95,7 +95,7 @@ public class SoloDraftLeagueData implements LeagueData {
         int status = oldStatus;
 
         if (status == 0) {
-            if (currentTime > DateUtils.offsetDate(_serie.getEnd(), 1)) {
+            if (currentTime > DateUtils.offsetDate(_seriesData.getEnd(), 1)) {
 
                 for (PlayerStanding leagueStanding : leagueStandings) {
                     CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);

@@ -20,9 +20,9 @@ public class SealedEventDefinition {
         _id = id;
         _format = format;
 
-        for(var serie : product) {
+        for(List<String> series : product) {
             List<GenericCardItem> items = new ArrayList<>();
-            for(String def : serie) {
+            for(String def : series) {
                 var item = GenericCardItem.createItem(def);
                 items.add(item);
             }

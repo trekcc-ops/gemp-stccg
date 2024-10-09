@@ -5,16 +5,16 @@ import com.gempukku.stccg.competitive.CompetitiveMatchResult;
 public class LeagueMatchResult implements CompetitiveMatchResult {
     private final String _winner;
     private final String _loser;
-    private final String _serieName;
+    private final String _seriesName;
 
-    public LeagueMatchResult(String serieName, String winner, String loser) {
-        _serieName = serieName;
+    public LeagueMatchResult(String seriesName, String winner, String loser) {
+        _seriesName = seriesName;
         _winner = winner;
         _loser = loser;
     }
 
-    public String getSerieName() {
-        return _serieName;
+    public String getSeriesName() {
+        return _seriesName;
     }
 
     public String getLoser() {

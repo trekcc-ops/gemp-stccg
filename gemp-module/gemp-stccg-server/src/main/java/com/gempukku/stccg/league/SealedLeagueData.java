@@ -65,8 +65,8 @@ public class SealedLeagueData implements LeagueData {
                 var sealedLeague = _formatLibrary.GetSealedTemplate(_format);
                 var leagueProduct = sealedLeague.GetProductForSeries(i);
 
-                for (GenericCardItem serieCollectionItem : leagueProduct)
-                    startingCollection.addItem(serieCollectionItem.getBlueprintId(), serieCollectionItem.getCount());
+                for (GenericCardItem collectionItem : leagueProduct)
+                    startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
             }
         }
         collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);

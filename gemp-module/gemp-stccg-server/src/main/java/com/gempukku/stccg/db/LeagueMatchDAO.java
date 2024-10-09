@@ -7,5 +7,5 @@ import java.util.Collection;
 public interface LeagueMatchDAO {
     Collection<LeagueMatchResult> getLeagueMatches(String leagueId);
 
-    void addPlayedMatch(String leagueId, String serieId, String winner, String loser);
+    void addPlayedMatch(String leagueId, String seriesId, String winner, String loser);
 }

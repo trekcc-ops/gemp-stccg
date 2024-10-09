@@ -526,7 +526,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, "motd");
+            _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, "motd"));
             responseWriter.writeHtmlResponse("OK");
         } finally {
             postDecoder.destroy();

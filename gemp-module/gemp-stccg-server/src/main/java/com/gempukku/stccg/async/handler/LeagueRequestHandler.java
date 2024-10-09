@@ -112,7 +112,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             seriesElem.setAttribute("limited", String.valueOf(series.isLimited()));
 
             Element matchesElem = doc.createElement("matches");
-            Collection<LeagueMatchResult> playerMatches = _leagueService.getPlayerMatchesInSerie(league, series, resourceOwner.getName());
+            Collection<LeagueMatchResult> playerMatches = _leagueService.getPlayerMatchesInSeries(league, series, resourceOwner.getName());
             for (LeagueMatchResult playerMatch : playerMatches) {
                 Element matchElem = doc.createElement("match");
                 matchElem.setAttribute("winner", playerMatch.getWinner());
@@ -121,7 +121,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             }
             seriesElem.appendChild(matchesElem);
 
-            final List<PlayerStanding> standings = _leagueService.getLeagueSerieStandings(league, series);
+            final List<PlayerStanding> standings = _leagueService.getLeagueSeriesStandings(league, series);
             for (PlayerStanding standing : standings) {
                 Element standingElem = doc.createElement("standing");
                 setStandingAttributes(standing, standingElem);
