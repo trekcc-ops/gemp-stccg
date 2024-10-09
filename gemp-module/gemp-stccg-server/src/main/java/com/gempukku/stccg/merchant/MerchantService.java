@@ -42,64 +42,6 @@ public class MerchantService {
                 }
             }
         }
-
-        addFixedItem("FotR - Booster", 1000);
-        addFixedItem("MoM - Booster", 1000);
-        addFixedItem("RotEL - Booster", 1000);
-        addFixedItem("TTT - Booster", 1000);
-        addFixedItem("BoHD - Booster", 1000);
-        addFixedItem("EoF - Booster", 1000);
-        addFixedItem("RotK - Booster", 1000);
-        addFixedItem("SoG - Booster", 1000);
-        addFixedItem("MD - Booster", 1000);
-        addFixedItem("SH - Booster", 1000);
-        addFixedItem("BR - Booster", 1000);
-        addFixedItem("BL - Booster", 1000);
-        addFixedItem("HU - Booster", 1000);
-        addFixedItem("RoS - Booster", 1000);
-        addFixedItem("TaD - Booster", 1000);
-
-        addFixedItem("REF - Booster", 3000);
-
-        addFixedItem("FotR - Gandalf Starter", 2500);
-        addFixedItem("FotR - Aragorn Starter", 2500);
-        addFixedItem("MoM - Gandalf Starter", 2500);
-        addFixedItem("MoM - Gimli Starter", 2500);
-        addFixedItem("RotEL - Boromir Starter", 2500);
-        addFixedItem("RotEL - Legolas Starter", 2500);
-
-        addFixedItem("TTT - Aragorn Starter", 2500);
-        addFixedItem("TTT - Theoden Starter", 2500);
-        addFixedItem("BoHD - Eowyn Starter", 5500);
-        addFixedItem("BoHD - Legolas Starter", 5500);
-        addFixedItem("EoF - Faramir Starter", 5500);
-        addFixedItem("EoF - Witch-king Starter", 5500);
-
-        addFixedItem("RotK - Aragorn Starter", 2500);
-        addFixedItem("RotK - Eomer Starter", 2500);
-        addFixedItem("SoG - Merry Starter", 2500);
-        addFixedItem("SoG - Pippin Starter", 2500);
-        addFixedItem("MD - Frodo Starter", 2500);
-        addFixedItem("MD - Sam Starter", 2500);
-
-        addFixedItem("SH - Aragorn Starter", 2500);
-        addFixedItem("SH - Eowyn Starter", 2500);
-        addFixedItem("SH - Gandalf Starter", 2500);
-        addFixedItem("SH - Legolas Starter", 2500);
-        addFixedItem("BR - Mouth Starter", 2500);
-        addFixedItem("BR - Saruman Starter", 2500);
-        addFixedItem("BL - Arwen Starter", 2500);
-        addFixedItem("BL - Boromir Starter", 2500);
-
-        addFixedItem("Expanded", 1000*15);
-        addFixedItem("Wraith", 1000*6);
-        addFixedItem("AgesEnd", 1000*40);
-    }
-
-    private void addFixedItem(String blueprintId, int price) {
-        _fixedPriceItems.put(blueprintId, price);
-        _merchantableItems.add(new BasicCardItem(blueprintId));
-        _merchantableStrings.add(blueprintId);
     }
 
     public Set<BasicCardItem> getSellableItems() {
@@ -110,7 +52,6 @@ public class MerchantService {
         Lock lock = _lock.readLock();
         lock.lock();
         try {
-            Date currentTime = new Date();
             Map<String, Integer> buyPrices = new HashMap<>();
             Map<String, Integer> sellPrices = new HashMap<>();
             for (CardItem cardItem : cardBlueprintIds) {
