@@ -367,8 +367,8 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         }
     }
 
-    private boolean is2e(CardBlueprint blueprint) {
-        return blueprint.getBlueprintId().startsWith("1_");
+    private boolean isNot2E(CardBlueprint blueprint) {
+        return !blueprint.getBlueprintId().startsWith("1_");
     }
 
     private void validateConsistency(CardBlueprint blueprint) throws InvalidCardDefinitionException {
@@ -384,7 +384,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         if (blueprint.getCardType() == CardType.MISSION) {
             if (blueprint.getPropertyLogo() != null)
                 throw new InvalidCardDefinitionException("Mission card should not have a property logo");
-            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") && !is2e(blueprint))
+            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") && isNot2E(blueprint))
                 throw new InvalidCardDefinitionException("Mission card should have a location");
             if (blueprint.getQuadrant() == null)
                 throw new InvalidCardDefinitionException("Mission card should have a quadrant");
@@ -393,7 +393,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                 throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
             if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
                 throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
-        } else if (blueprint.getPropertyLogo() == null && !is2e(blueprint))
+        } else if (blueprint.getPropertyLogo() == null && isNot2E(blueprint))
                 // Technically tribbles have property logos too, they're just never relevant
             throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
     }
