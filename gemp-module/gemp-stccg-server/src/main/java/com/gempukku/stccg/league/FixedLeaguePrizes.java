@@ -22,7 +22,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
             _rares.addAll(setDefinition.getCardsOfRarity("R"));
         }
         _allCards.addAll(library.getAllBlueprintIds());
-        _library = library; // TODO - Not sure it's helpful to save this as a class member once rarities work
+        _library = library;
     }
 
     @Override
@@ -40,7 +40,8 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     public CardCollection getPrizeForLeague(int position, CollectionType collectionType) {
         if (collectionType.equals(CollectionType.ALL_CARDS)) {
             return getPrizeForConstructedLeague(position);
-        } else if (collectionType.equals(CollectionType.MY_CARDS) || collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
+        } else if (collectionType.equals(CollectionType.MY_CARDS) ||
+                collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
             return getPrizeForCollectorsLeague(position);
         } else {
             return getPrizeForSealedLeague(position);

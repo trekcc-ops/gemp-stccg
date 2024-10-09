@@ -184,7 +184,6 @@ public class HallServer extends AbstractServer {
                 (from, parameters, admin) -> _hallChat.sendToUser(
                         "System", from, "\"" + parameters + "\" is not a recognized command."
                 ));
-        // TODO - Take reloadTournaments method from LotR
     }
 
     private void hallChanged() {
@@ -518,8 +517,6 @@ public class HallServer extends AbstractServer {
         CardDeck cardDeck = _gameServer.getParticipantDeck(player, deckName);
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
-        /* TODO - Removed code from LotR that checked against user's collection.
-            Revisit if collections are being implemented. */
         String validation = format.validateDeckForHall(format.applyErrata(cardDeck));
         if(!validation.isEmpty())
             throw new HallException("Your selected deck is not valid for this format: " + validation);

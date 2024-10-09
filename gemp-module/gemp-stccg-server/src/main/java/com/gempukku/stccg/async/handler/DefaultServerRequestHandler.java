@@ -225,7 +225,6 @@ public class DefaultServerRequestHandler {
                                  FormatLibrary formatLibrary)
             throws CardNotFoundException {
 
-        // TODO - LotR stuff here
         StringBuilder result = new StringBuilder();
 
         DefaultCardCollection deckCards = new DefaultCardCollection();

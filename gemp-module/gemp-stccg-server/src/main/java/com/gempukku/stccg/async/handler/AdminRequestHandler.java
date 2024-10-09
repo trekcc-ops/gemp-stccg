@@ -433,7 +433,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         }
     }
 
-    private Map<String,String> getConstructedLeagueParameters(HttpRequest request) throws HttpProcessingException, IOException {
+    private Map<String,String> getConstructedLeagueParameters(HttpRequest request)
+            throws HttpProcessingException, IOException {
         validateLeagueAdmin(request);
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
@@ -458,7 +459,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 throw new HttpProcessingException(400);
 
             //The 1 is a hard-coded maximum number of player matches per league.
-            //TODO: Get this put into the UI properly.
+            // Original LotR comments had a note that this should be added to the UI "properly".
+            // Since that time, the LotR code has dropped reliance on this method.
             StringJoiner sj = new StringJoiner(",");
             sj.add(start).add(collectionType).add(prizeMultiplier).add("1").add(Integer.toString(formats.size()));
             for (int i = 0; i < formats.size(); i++)

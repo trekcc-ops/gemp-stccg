@@ -179,7 +179,7 @@ public class GameServer extends AbstractServer {
         } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st2e")){
             cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
                     _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else { // TODO: This error catch should happen when the format library is created
+        } else {
             throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() + "' does not belong to 1E, 2E, or Tribbles");
         }
         return cardGameMediator;
@@ -190,7 +190,6 @@ public class GameServer extends AbstractServer {
     }
 
     public CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
-            // TODO: Deck checking
         return new CardDeck(deckName, contents, targetFormat, notes);
     }
 
@@ -204,4 +203,3 @@ public class GameServer extends AbstractServer {
     }
 
 }
-

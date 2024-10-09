@@ -48,7 +48,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+                              ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("/list") && request.method() == HttpMethod.GET) {
             listDecks(request, responseWriter);
         } else if (uri.equals("/libraryList") && request.method() == HttpMethod.GET) {

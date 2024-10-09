@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.text.ParseException;
 
-// TODO - Is this class adequately considering time zones and Daylight Savings Time?
 public class DateUtils {
     public static int getCurrentDateAsInt() {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));

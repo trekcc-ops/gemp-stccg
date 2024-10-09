@@ -263,15 +263,10 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
             SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.name);
             if (newSubDeck != null) currentSubDeck = newSubDeck;
             else {
-                /* TODO - Create a card name to blueprint ID map when the card blueprint library is created.
-                    Accessing that map should be faster than iterating through the entire blueprint library
-                    for every card.
-                 */
                 for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
                     String id = cardBlueprint.getKey();
                     try {
                         // If set is not a nonzero number, the card is not from a supported set
-                        // TODO - Add a catch here for whether or not the card is supported in format
                         int set = Integer.parseInt(id.split("_")[0]);
                         if (set >= 0) {
                             CardBlueprint blueprint = cardBlueprint.getValue();
