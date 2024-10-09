@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.PropertyLogo;
 import com.gempukku.stccg.condition.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
