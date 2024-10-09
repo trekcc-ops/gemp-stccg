@@ -43,7 +43,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
         try {
             JsonNode node = jp.getCodec().readTree(jp);
             CardBlueprint blueprint;
-            validateAllowedFields(node, "java-blueprint", "blueprintId", "title", "image-url", "type", "lore",
+            BlueprintUtils.validateAllowedFields(node, "java-blueprint", "blueprintId", "title", "image-url", "type", "lore",
                     "property-logo", "rarity", "location", "mission-type", "span", "mission-requirements",
                     "affiliation-icons", "point-box", "integrity", "cunning", "strength", "affiliation",
                     "classification", "icons", "skill-box", "facility-type", "uniqueness", "ship-class", "gametext",
@@ -156,18 +156,11 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     getEnumSetFromCommaDelimited(node, "characteristic", Characteristic.class))
                 blueprint.addCharacteristic(characteristic);
 
+            validateConsistency(blueprint);
+
             return blueprint;
         } catch(InvalidCardDefinitionException exp) {
             throw new IOException(exp.getMessage(), exp);
-        }
-    }
-
-    private void validateAllowedFields(JsonNode node, String... fields) throws InvalidCardDefinitionException {
-        List<String> keys = new ArrayList<>();
-        node.fieldNames().forEachRemaining(keys::add);
-        for (String key : keys) {
-            if (!Arrays.asList(fields).contains(key))
-                throw new InvalidCardDefinitionException("Unrecognized field: " + key);
         }
     }
 
@@ -399,4 +392,29 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
             }
         }
     }
+
+    private void validateConsistency(CardBlueprint blueprint) throws InvalidCardDefinitionException {
+        if (blueprint.getTitle() == null)
+            throw new InvalidCardDefinitionException("Card has to have a title");
+        if (blueprint.getCardType() == null)
+            throw new InvalidCardDefinitionException("Card has to have a type");
+        if (blueprint.getCardType() == CardType.MISSION) {
+            if (blueprint.getPropertyLogo() != null)
+                throw new InvalidCardDefinitionException("Mission card should not have a property logo");
+            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
+            if (blueprint.getLocation() == null && !blueprint.getTitle().equals("Space") && !blueprint.getBlueprintId().startsWith("1_"))
+                throw new InvalidCardDefinitionException("Mission card should have a location");
+            if (blueprint.getQuadrant() == null)
+                throw new InvalidCardDefinitionException("Mission card should have a quadrant");
+        } else if (blueprint.getCardType() == CardType.TRIBBLE) {
+            if (blueprint.getTribblePower() == null)
+                throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
+            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(blueprint.getTribbleValue()))
+                throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
+        } else if (blueprint.getPropertyLogo() == null && !blueprint.getBlueprintId().startsWith("1_"))
+            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
+            // TODO - Technically tribbles should have property logos too, they're just never relevant
+            throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
+    }
+
 }

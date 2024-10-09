@@ -356,26 +356,6 @@ public class CardBlueprint {
         throw new InvalidCardDefinitionException(message);
     }
 
-    public void validateConsistency() throws InvalidCardDefinitionException {
-        if (title == null) throwException("Card has to have a title");
-        if (_cardType == null)
-            throwException("Card has to have a type");
-        if (_cardType == CardType.MISSION) {
-            if (_propertyLogo != null) throwException("Mission card should not have a property logo");
-                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            if (location == null && !title.equals("Space") && !_blueprintId.startsWith("1_"))
-                throwException("Mission card should have a location");
-        } else if (_cardType == CardType.TRIBBLE) {
-            if (tribblePower == null) throwException("Tribble card has to have a Tribble power");
-            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
-                throwException("Tribble card does not have a valid Tribble value");
-        } else if (_propertyLogo == null && !_blueprintId.startsWith("1_"))
-            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            // TODO - Technically tribbles should have property logos too, they're just never relevant
-            throwException("Non-mission card has to have a property logo");
-    }
-
-
 
     public String getFullName() {
         if (getSubtitle() != null)
