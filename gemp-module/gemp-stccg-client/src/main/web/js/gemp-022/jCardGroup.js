@@ -754,9 +754,9 @@ export function layoutCardElem(cardElem, x, y, width, height, index) {
     height = Math.floor(height);
     if (cardElem.css("left") == (x + "px") && cardElem.css("top") == (y + "px")
         && cardElem.css("width") == (width + "px") && cardElem.css("height") == (height + "px")
-        && cardElem.css("zIndex") == index)
+        && cardElem.css("z-index") == index)
         return;
-    cardElem.css({position:"absolute", left:x + "px", top:y + "px", width:width, height:height, zIndex:index });
+    cardElem.css({position:"absolute", left:x + "px", top:y + "px", width:width, height:height, "z-index":index });
 
     var tokenOverlay = $(".tokenOverlay", cardElem);
     if (tokenOverlay.length > 0)

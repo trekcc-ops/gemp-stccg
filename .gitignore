@@ -22,3 +22,7 @@ replay
 !replay/.placeholder
 logs/nohup.out
 .vscode
+
+# GEMP-STCCG-Client
+node_modules/
+coverage/

@@ -4,7 +4,7 @@ body {
 
 ul {
     list-style-type: none;
-    margin-top: 0;
+    margin-top: 0px;
 }
 
 .deckSize {
@@ -159,9 +159,11 @@ ul {
     float: left;
     font-size: 15px;
     width: 100px;
-//    border-radius: 7px;
-//    border: 1px solid white;
-//    background-color: #000000;
+    /*
+    border-radius: 7px;
+    border: 1px solid white;
+    background-color: #000000;
+    */
     color: white;
     padding: 2px;
     text-align: left;
@@ -257,13 +259,13 @@ ul {
 .chatMessage h5,
 .chatMessage h6 {
     display:  inline;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .chatMessage p {
-    margin-top: 0;
-    margin-bottom: 0; 
+    margin-top: 0px;
+    margin-bottom: 0px; 
 }
 
 .chatMessage blockquote {
@@ -320,8 +322,8 @@ ul {
 
 #main {
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 0px;
+    top: 0px;
     width: 100%;
     height: 100%;
     background-color: #000000;
@@ -330,21 +332,21 @@ ul {
 
 #alertText {
     position: absolute;
-    left: 5;
-    top: 5;
+    left: 5px;
+    top: 5px;
     width: 100%;
     height: 50px;
-    scroll: auto;
+    scroll-behavior: auto;
     margin: 3px;
 }
 
 #alertButtons {
     position: absolute;
-    left: 0;
+    left: 0px;
     top: 50px;
     width: 100%;
     height: 30px;
-    scroll: auto;
+    scroll-behavior: auto;
 }
 
 .rounded {

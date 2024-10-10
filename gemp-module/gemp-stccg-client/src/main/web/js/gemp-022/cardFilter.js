@@ -37,14 +37,6 @@ export default class CardFilter {
         this.updateSetOptions();
     }
 
-    enableDetailFilters(enable) {
-        $("#affiliation-buttons").buttonset("option", "disabled", !enable);
-        $("#cardType").prop("disabled", !enable);
-        $("#keyword").prop("disabled", !enable);
-        $("#tribblePower").prop("disabled", !enable);
-        $("#phase").prop("disabled", !enable);
-    }
-
     setFilter(filter) {
         this.filter = filter;
 
@@ -131,7 +123,8 @@ export default class CardFilter {
             }
         });
 
-        $("#affiliation-buttons").buttonset();
+        $("#affiliation-buttons").controlgroup();
+        $(".affiliationFilter").checkboxradio("option", "icon", false);
 /*        this.raritySelect = $("<select style='width: 80px; font-size: 80%;'>"
             + "<option value=''>All Rarities</option>"
             + "<option value='R'>Rare</option>"
@@ -214,7 +207,6 @@ export default class CardFilter {
     disableNavigation() {
         this.previousPageBut.button("option", "disabled", true);
         this.nextPageBut.button("option", "disabled", true);
-        this.countSlider.button("option", "disabled", true);
     }
 
     calculateNormalFilter() {
@@ -224,11 +216,13 @@ export default class CardFilter {
         for (var i = 0; i < normalFilterArray.length; i++) {
             if (normalFilterArray[i] == "affiliation") {
                 var affiliations = new Array();
-                $("label", $("#affiliation-buttons")).each(
-                    function () {
-                        if ($(this).hasClass("ui-state-active"))
-                            affiliations.push($(this).prop("id").substring(5));
-                    });
+                $('.affiliationFilter').each(
+                    function (_index, element) {
+                        if (element.checked) {
+                            affiliations.push(element.id);
+                        }
+                    }
+                );
                 if (affiliations.length > 0)
                     filterString = filterString + "|affiliation:" + affiliations;
             } else {
