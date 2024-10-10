@@ -82,4 +82,6 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
             throw new DecisionResultInvalidException();
         }
     }
+
+    public List<? extends Action> getActions() { return _actions; }
 }

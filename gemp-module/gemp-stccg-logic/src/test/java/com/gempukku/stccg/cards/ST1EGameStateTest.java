@@ -21,6 +21,7 @@ public class ST1EGameStateTest extends AbstractAtTest {
         final FacilityCard outpost1 = new FacilityCard(_game, 102, player1, _cardLibrary.get("101_105"));
 
         assertFalse(outpost1.isInPlay());
+        assertFalse(_userFeedback.hasNoPendingDecisions());
 
         try {
             _game.getGameState().addToSpaceline(mission, 0, false);

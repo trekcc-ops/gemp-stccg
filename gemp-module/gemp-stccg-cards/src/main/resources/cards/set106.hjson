@@ -2,6 +2,7 @@
 
 {
     106_002: {
+        blueprintId: 106_002
         title: A Good Place to Die
         type: mission
         location: Halee System
@@ -15,6 +16,7 @@
         rarity: P
     }
     106_003: {
+        blueprintId: 106_003
         title: Avert Danger
         type: mission
         location: Moab IV
@@ -28,6 +30,7 @@
         rarity: P
     }
     106_004: {
+        blueprintId: 106_004
         title: Cargo Rendezvous
         type: mission
         location: Beltane IX
@@ -41,6 +44,7 @@
         rarity: P
     }
     106_005: {
+        blueprintId: 106_005
         title: Distress Mission
         type: mission
         location: Ligos VII
@@ -54,6 +58,7 @@
         rarity: P
     }
     106_006: {
+        blueprintId: 106_006
         title: Gault
         type: mission
         location: Gault
@@ -67,6 +72,7 @@
         rarity: P
     }
     106_007: {
+        blueprintId: 106_007
         title: Gravesworld
         type: mission
         location: Gravesworld
@@ -80,6 +86,7 @@
         rarity: P
     }
     106_008: {
+        blueprintId: 106_008
         title: Homeward
         type: mission
         location: Boral II
@@ -93,6 +100,7 @@
         rarity: P
     }
     106_009: {
+        blueprintId: 106_009
         title: Hostage Situation
         type: mission
         location: Mordan IV
@@ -106,6 +114,7 @@
         rarity: P
     }
     106_010: {
+        blueprintId: 106_010
         title: Reopen Dig
         type: mission
         location: Denius III
@@ -119,6 +128,7 @@
         rarity: P
     }
     106_011: {
+        blueprintId: 106_011
         title: Reported Activity
         type: mission
         location: Xendi Sabu
@@ -132,6 +142,7 @@
         rarity: P
     }
     106_012: {
+        blueprintId: 106_012
         title: Sensitive Search
         type: mission
         location: Nequencia System
@@ -144,6 +155,7 @@
         image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/sensitivesearch.gif
     }
     106_013: {
+        blueprintId: 106_013
         title: Survey Instability
         type: mission
         location: Selcundi Drema Sector
@@ -156,10 +168,22 @@
         image-url: https://www.trekcc.org/1e/cardimages/promos/2pg/surveyinstability.gif
     }
     106_014: {
+        blueprintId: 106_014
         title: Admiral McCoy
         java-blueprint: true
+        affiliation: federation
+        type: personnel
+        property-logo: tng-logo
+        classification: V.I.P.
+        icons: staff
+        lore: Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.
+        integrity: 8
+        cunning: 6
+        strength: 1
+        image-url: https://www.trekcc.org/1e/cardimages/vpromos/63VP.jpg
     }
     106_018: {
+        blueprintId: 106_018
         title: Spock
         type: personnel
         affiliation: federation

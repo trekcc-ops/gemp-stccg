@@ -32,7 +32,7 @@
             type: playOutOfSequence
             requires: {
                 type: nextTribbleInSequence
-                value: 10
+                count: 10
             }
         }
     }

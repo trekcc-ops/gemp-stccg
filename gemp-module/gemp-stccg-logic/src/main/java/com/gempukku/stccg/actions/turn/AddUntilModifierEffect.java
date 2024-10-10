@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.effectappender.resolver.TimeResolver;
+import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 

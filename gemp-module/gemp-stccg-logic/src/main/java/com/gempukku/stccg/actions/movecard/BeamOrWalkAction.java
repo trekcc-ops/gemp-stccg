@@ -21,7 +21,6 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     protected Collection<PhysicalReportableCard1E> _cardsToMove;
     protected final PhysicalNounCard1E _cardSource;
     protected PhysicalCard _fromCard, _toCard;
-    // TODO - The effects below were TargetingEffects in Star Wars GEMP. Do they need to be?
     private final Effect _chooseFromCardEffect;
     private Effect _chooseToCardEffect;
     private Effect _chooseCardsToMoveEffect;

@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.PropertyLogo;
 import com.gempukku.stccg.condition.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
@@ -15,10 +14,7 @@ import java.util.List;
 
 public class Blueprint101_063 extends CardBlueprint {
     Blueprint101_063() {
-        super("101_063");
-        setTitle("Romulan PADD");
-        setCardType(CardType.EQUIPMENT);
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
+        super("101_063"); // Romulan PADD
         setLore("Standard Romulan Personal Access Display Device for computerized information.");
 //        setGameText("Romulan use only. Each of your personnel CUNNING +2 where present. (Cumulative.)");
         setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/romulanpadd95.jpg");

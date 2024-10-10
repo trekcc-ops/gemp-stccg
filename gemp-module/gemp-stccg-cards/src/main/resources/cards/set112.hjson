@@ -2,8 +2,13 @@
 
 {
     112_046: {
+        blueprintId: 112_046
         title: Bajoran Phaser
         java-blueprint: true
+        type: equipment
+        property-logo: ds9-logo
+        lore: Standard-issue phased energy weapon of the Bajoran Militia. Provides firepower equivalent to that of the Starfleet type II phaser.
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/bajoranphaser.gif
     }
     112_105: {
         title: Access Relay Station
@@ -74,10 +79,6 @@
         cunning: 5
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/ds9/kallisven.gif
-    }
-    112_153: {
-        title: Kira Nerys
-        java-blueprint: true
     }
     112_157: {
         title: Mora Pol
@@ -179,8 +180,20 @@
         image-url: https://www.trekcc.org/1e/cardimages/ds9/razkakarn.gif
     }
     112_167: {
+        blueprintId: 112_167
         title: Shakaar Edon
         java-blueprint: true
+        type: personnel
+        affiliation: bajoran
+        property-logo: ds9-logo
+        classification: CIVILIAN
+        icons: staff
+        lore: Leader of Shakaar resistance cell. Farmer. Refused to return soil reclamators to provisional government in 2371. Old friend of Kira Nerys.
+        integrity: 8
+        cunning: 8
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/ds9/shakaaredon.gif
+        rarity: R
     }
     112_169: {
         title: Tahna Los

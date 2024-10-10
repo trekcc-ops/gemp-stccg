@@ -15,24 +15,13 @@ import java.util.List;
 
 public class Blueprint112_167 extends CardBlueprint {
     Blueprint112_167() {
-        super("112_167");
-        setTitle("Shakaar Edon");
-        addAffiliation(Affiliation.BAJORAN);
-        setCardType(CardType.PERSONNEL);
-        setPropertyLogo(PropertyLogo.DS9_LOGO);
-        setClassification(SkillName.CIVILIAN);
-        addIcons(CardIcon.STAFF);
-        setLore("Leader of Shakaar resistance cell. Farmer. Refused to return soil reclamators to provisional government in 2371. Old friend of Kira Nerys.");
+        super("112_167"); // Shakaar Edon
         addSkill(SkillName.SECURITY);
         addSkill(SkillName.RESISTANCE, 2);
         addSkill(SkillName.LEADERSHIP);
         addSkill(SkillName.GEOLOGY);
         addSkill(specialSkill());
         setSkillDotIcons(5);
-        setAttribute(CardAttribute.INTEGRITY, 8);
-        setAttribute(CardAttribute.CUNNING, 8);
-        setAttribute(CardAttribute.STRENGTH, 8);
-        setImageUrl("https://www.trekcc.org/1e/cardimages/ds9/shakaaredon.gif");
     }
 
     @Override

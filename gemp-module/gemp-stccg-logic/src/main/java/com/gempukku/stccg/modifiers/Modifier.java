@@ -17,6 +17,7 @@ public interface Modifier {
     ModifierEffect getModifierEffect();
 
     boolean isNonCardTextModifier();
+    boolean isForPlayer(String playerId);
 
     Condition getCondition();
     boolean isCumulative();
@@ -70,4 +71,5 @@ public interface Modifier {
 
     boolean hasIcon(PhysicalCard card, CardIcon icon);
 
+    String getForPlayer();
 }

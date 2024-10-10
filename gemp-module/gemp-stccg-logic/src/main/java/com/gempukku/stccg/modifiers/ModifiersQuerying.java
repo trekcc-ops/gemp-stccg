@@ -1,6 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.actions.sources.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -30,17 +30,10 @@ public interface ModifiersQuerying {
 
     Collection<Modifier> getModifiersAffecting(PhysicalCard card);
 
-    // Keywords
-    boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword);
-
-    int getKeywordCount(PhysicalCard physicalCard, Keyword keyword);
-
     int getAttribute(PhysicalCard card, CardAttribute attribute);
 
     // Stats
     int getStrength(PhysicalCard physicalCard);
-
-    boolean isAdditionalCardType(DefaultGame game, PhysicalCard card, CardType cardType);
 
     // Playing actions
     boolean canPlayAction(String performingPlayer, Action action);
@@ -53,10 +46,6 @@ public interface ModifiersQuerying {
 
     List<? extends Action> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
 
-    List<? extends Action> getExtraPhaseActionsFromStacked(DefaultGame game, PhysicalCard target);
-
-    boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard target);
-
     void appendExtraCosts(CostToEffectAction action, PhysicalCard target);
 
     // Others
@@ -64,7 +53,9 @@ public interface ModifiersQuerying {
 
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
 
-    boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String performingPlayerId);
+    boolean canDrawCardNoIncrement(String playerId);
+
+    boolean canLookOrRevealCardsInHand(String revealingPlayerId, String performingPlayerId);
 
     boolean canDiscardCardsFromHand(String playerId, PhysicalCard source);
 

@@ -37,7 +37,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         } else if (card instanceof CardWithCrew cardWithCrew) {
                 // TODO - Ignores carried ship interactions
             _affiliationOptions.removeIf(affiliation -> cardWithCrew.getPersonnelInCrew().stream().anyMatch(
-                    personnel -> personnel.isNotCompatibleWith(affiliation)));
+                    personnel -> !personnel.isCompatibleWith(affiliation)));
         } else {
             // There should be no other types of cards that would get the ChangeAffiliationAction
             _affiliationOptions.clear();

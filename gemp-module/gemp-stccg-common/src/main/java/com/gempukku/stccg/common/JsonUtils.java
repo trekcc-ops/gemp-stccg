@@ -36,7 +36,7 @@ public final class JsonUtils {
 
     public static <T> List<T> readListOfClassFromReader(Reader reader, Class<T> clazz) throws IOException {
         JsonNode node = readJsonFromReader(reader);
-        if (node.isEmpty() || node.isNull())
+        if (node.isNull())
             return new ArrayList<>();
         else {
             List<T> result = new ArrayList<>();

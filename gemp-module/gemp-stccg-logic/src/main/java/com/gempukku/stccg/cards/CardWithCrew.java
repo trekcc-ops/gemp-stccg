@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public interface CardWithCrew {
     Collection<PhysicalCard> getCrew();
-    boolean isNotCompatibleWith(Affiliation affiliation);
+    boolean isCompatibleWith(Affiliation affiliation);
 
     default Collection<PersonnelCard> getPersonnelInCrew() {
         Collection<PersonnelCard> personnelInCrew = new LinkedList<>();

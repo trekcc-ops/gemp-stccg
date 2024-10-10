@@ -7,14 +7,18 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 
 import java.util.Objects;
 
-public abstract class ChoosePlayerExceptEffect extends UnrespondableEffect {
+public class ChoosePlayerExceptEffect extends UnrespondableEffect {
     private final String _playerId;
     private final String _excludedPlayerId;
+    private final ActionContext _context;
+    private final String _memoryId;
 
-    public ChoosePlayerExceptEffect(ActionContext actionContext, String excludedPlayerId) {
+    public ChoosePlayerExceptEffect(ActionContext actionContext, String excludedPlayerId, String memoryId) {
         super(actionContext);
         _playerId = actionContext.getPerformingPlayerId();
         _excludedPlayerId = excludedPlayerId;
+        _context = actionContext;
+        _memoryId = memoryId;
     }
 
     @Override
@@ -29,16 +33,17 @@ public abstract class ChoosePlayerExceptEffect extends UnrespondableEffect {
             }
         }
         if (includedPlayers.length == 1)
-            playerChosen(includedPlayers[0]);
+            playerChosen();
         else
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new MultipleChoiceAwaitingDecision("Choose a player", includedPlayers) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result);
+                            _context.setValueToMemory(_memoryId, result);
+                            playerChosen();
                         }
                     });
     }
 
-    protected abstract void playerChosen(String playerId);
+    protected void playerChosen() { }
 }

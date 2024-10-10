@@ -2,9 +2,10 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.sources.ActionSource;
-import com.gempukku.stccg.actions.sources.TriggerActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
@@ -13,8 +14,8 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 
 import java.util.*;
 
@@ -74,10 +75,8 @@ public class CardBlueprint {
     private List<ModifierSource> inPlayModifiers;
 
     private List<ExtraPlayCostSource> extraPlayCosts;
-
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
-
     private ActionSource _seedCardActionSource;
 
     public CardBlueprint(String blueprintId) {
@@ -172,7 +171,9 @@ public class CardBlueprint {
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
     public void addSkill(Skill skill) { _skills.add(skill); }
-
+    public void addSkill(RegularSkill regularSkill) {
+        _skills.add(regularSkill);
+    }
     public void addSkill(SkillName skillName) { _skills.add(new RegularSkill(skillName, 1)); }
     public void addSkill(SkillName skillName, int level) { _skills.add(new RegularSkill(skillName, level)); }
         // TODO - Not an exact match for how skills are processed
@@ -203,19 +204,9 @@ public class CardBlueprint {
     public void setCost(int cost) { this.cost = cost; }
     public int getCost() { return this.cost; }
 
-    public void setKeywords(Map<Keyword, Integer> keywords) {
-        this.keywords = keywords;
-    }
     public boolean hasKeyword(Keyword keyword) { return keywords != null && keywords.containsKey(keyword); }
-    public int getKeywordCount(Keyword keyword) {
-        if (keywords == null)
-            return 0;
-        Integer count = keywords.get(keyword);
-        return Objects.requireNonNullElse(count, 0);
-    }
 
 
-    public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
     public void setAnyCrewOrAwayTeamCanAttempt() { }
     public Affiliation homeworldAffiliation() {
@@ -327,7 +318,6 @@ public class CardBlueprint {
     }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
     public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
-
     public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
@@ -357,27 +347,12 @@ public class CardBlueprint {
 
 
     // Helper methods
-    public void validateConsistency() throws InvalidCardDefinitionException {
-        if (title == null) throw new InvalidCardDefinitionException("Card has to have a title");
-        if (_cardType == null)
-            throw new InvalidCardDefinitionException("Card has to have a type");
-        if (_cardType == CardType.MISSION) {
-            if (_propertyLogo != null)
-                throw new InvalidCardDefinitionException("Mission card should not have a property logo");
-                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            if (location == null && !title.equals("Space") && !_blueprintId.startsWith("1_"))
-                throw new InvalidCardDefinitionException("Mission card should have a location");
-        } else if (_cardType == CardType.TRIBBLE) {
-            if (tribblePower == null)
-                throw new InvalidCardDefinitionException("Tribble card has to have a Tribble power");
-            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
-                throw new InvalidCardDefinitionException("Tribble card does not have a valid Tribble value");
-        } else if (_propertyLogo == null && !_blueprintId.startsWith("1_"))
-            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            // TODO - Technically tribbles should have property logos too, they're just never relevant
-            throw new InvalidCardDefinitionException("Non-mission card has to have a property logo");
-    }
 
+
+
+    public void throwException(String message) throws InvalidCardDefinitionException {
+        throw new InvalidCardDefinitionException(message);
+    }
 
 
     public String getFullName() {
@@ -437,10 +412,8 @@ public class CardBlueprint {
         List<Action> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
             if (actionSource != null) {
-                Action action =
-                        card.getActionFromActionSource(actionSource, card.getOwnerName(), null, effectResult);
-                if (action != null)
-                    result.add(action);
+                Action action = actionSource.createActionWithNewContext(card, effectResult);
+                if (action != null) result.add(action);
             }
         });
         return result;

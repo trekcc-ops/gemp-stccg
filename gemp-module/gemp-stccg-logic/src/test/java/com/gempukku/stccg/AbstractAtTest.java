@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
@@ -23,7 +24,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected UserFeedback _userFeedback;
     public static final String P1 = "player1";
     public static final String P2 = "player2";
-    final FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+    FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
@@ -61,7 +62,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     }
 
-    protected void initializeIntroductoryTwoPlayerGame() {
+    private Map<String, CardDeck> getIntroTwoPlayerDecks() {
         Map<String, CardDeck> decks = new HashMap<>();
 
         CardDeck fedDeck = new CardDeck("Federation");
@@ -146,13 +147,33 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(P1, fedDeck);
         decks.put(P2, klingonDeck);
 
+        return decks;
+    }
+
+    protected void initializeIntroductoryTwoPlayerGame() {
+        Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
+
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
         GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
+    }
 
+    protected void initializeGameWithAttentionAllHands() {
+        Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
+        decks.get(P1).addCard(SubDeck.DRAW_DECK, "155_021"); // Attention All Hands
+        decks.get(P2).addCard(SubDeck.DRAW_DECK, "155_021");
+        decks.get(P1).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
+        decks.get(P2).addCard(SubDeck.SEED_DECK, "178_044"); // Continuing Mission
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
     }
 
 
@@ -247,6 +268,39 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         awaitingDecision.addAction(action);
 
         playerDecided(playerId, "0");
+    }
+
+    protected void autoSeedMissions() throws DecisionResultInvalidException {
+        // Both players keep picking option #1 until all missions are seeded
+        while (_game.getGameState().getCurrentPhase() == Phase.SEED_MISSION) {
+            if (_userFeedback.getAwaitingDecision(P1) != null) {
+                playerDecided(P1, "0");
+            } else if (_userFeedback.getAwaitingDecision(P2) != null) {
+                playerDecided(P2, "0");
+            }
+        }
+    }
+    
+    protected void autoSeedFacility() throws DecisionResultInvalidException {
+        while (_game.getGameState().getCurrentPhase() == Phase.SEED_FACILITY) {
+            if (_userFeedback.getAwaitingDecision(P1) != null) {
+                if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
+                    Collections.shuffle(cardIdList);
+                    playerDecided(P1, cardIdList.getFirst());
+                }
+                else
+                    playerDecided(P1, "0");
+            } else if (_userFeedback.getAwaitingDecision(P2) != null) {
+                if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
+                    Collections.shuffle(cardIdList);
+                    playerDecided(P2, cardIdList.getFirst());
+                }
+                else
+                    playerDecided(P2, "0");
+            }
+        }
     }
 
 }

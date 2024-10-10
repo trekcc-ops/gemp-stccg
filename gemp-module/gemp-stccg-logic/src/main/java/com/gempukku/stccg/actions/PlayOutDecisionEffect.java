@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PlayOutDecisionEffect implements Effect {
@@ -13,6 +14,13 @@ public class PlayOutDecisionEffect implements Effect {
         _decision = decision;
         _game = game;
     }
+
+    public PlayOutDecisionEffect(IntegerAwaitingDecision decision) {
+        _decision = decision;
+        _playerId = decision.getActionContext().getPerformingPlayerId();
+        _game = decision.getActionContext().getGame();
+    }
+
 
     @Override
     public String getText() {

@@ -15,6 +15,7 @@ public class LookAtTopCardOfADeckEffect extends DefaultEffect {
     private final String _playerDeckId;
     private final ActionContext _actionContext;
     private final DefaultGame _game;
+    private String _memoryId = null;
 
     public LookAtTopCardOfADeckEffect(ActionContext actionContext, int count, String playerDeckId) {
         super(actionContext);
@@ -23,6 +24,11 @@ public class LookAtTopCardOfADeckEffect extends DefaultEffect {
         _playerDeckId = playerDeckId;
         _actionContext = actionContext;
         _game = actionContext.getGame();
+    }
+
+    public LookAtTopCardOfADeckEffect(ActionContext actionContext, int count, String playerDeckId, String memoryId) {
+        this(actionContext, count, playerDeckId);
+        _memoryId = memoryId;
     }
 
     @Override
@@ -53,11 +59,12 @@ public class LookAtTopCardOfADeckEffect extends DefaultEffect {
                     public void decisionMade(String result) {
                     }
                 });
+        if (_memoryId != null)
+            _actionContext.setCardMemory(_memoryId, cards);
         cardsLookedAt(cards);
         return new FullEffectResult(deck.size() >= _count);
     }
 
     protected void cardsLookedAt(List<? extends PhysicalCard> cards) {
-
     }
 }

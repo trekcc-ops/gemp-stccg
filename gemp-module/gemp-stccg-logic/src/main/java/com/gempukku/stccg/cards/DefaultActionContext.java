@@ -1,19 +1,18 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.TextUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class DefaultActionContext implements ActionContext {
     private final DefaultGame _game;
@@ -29,6 +28,11 @@ public class DefaultActionContext implements ActionContext {
                                 Effect effect, EffectResult effectResult) {
         this(null, performingPlayer, game, source, effect, effectResult);
     }
+
+    public DefaultActionContext(String performingPlayer, PhysicalCard source, Effect effect, EffectResult effectResult) {
+        this(null, performingPlayer, source.getGame(), source, effect, effectResult);
+    }
+
 
 
     public DefaultActionContext(ActionContext delegate, String performingPlayer, DefaultGame game,
@@ -141,16 +145,20 @@ public class DefaultActionContext implements ActionContext {
         return effect;
     }
 
-    private boolean acceptsAllRequirements(Stream<Requirement> requirements) {
-        return requirements.allMatch(requirement -> requirement.accepts(this));
-    }
-
     public boolean acceptsAllRequirements(Requirement[] requirementArray) {
-        return acceptsAllRequirements(Arrays.stream(requirementArray));
+        boolean result = true;
+        for (Requirement requirement : requirementArray) {
+            if (!requirement.accepts(this)) result = false;
+        }
+        return result;
     }
 
     public boolean acceptsAllRequirements(List<Requirement> requirementList) {
-        return acceptsAllRequirements(requirementList.stream());
+        boolean result = true;
+        for (Requirement requirement : requirementList) {
+            if (!requirement.accepts(this)) result = false;
+        }
+        return result;
     }
 
     public boolean acceptsAnyRequirements(Requirement[] requirementArray) {

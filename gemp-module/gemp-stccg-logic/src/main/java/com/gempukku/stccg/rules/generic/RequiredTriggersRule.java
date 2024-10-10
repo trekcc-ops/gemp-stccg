@@ -7,7 +7,6 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.rules.generic.GenericRule;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class RequiredTriggersRule extends GenericRule {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game)) {
             if (!card.hasTextRemoved()) {
-                result.addAll(card.getRequiredAfterTriggerActions(effectResult));
+                result.addAll(card.getRequiredResponseActions(effectResult));
             }
         }
         return result;

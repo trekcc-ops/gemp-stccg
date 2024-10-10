@@ -7,10 +7,10 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class ChooseOpponentEffect extends ChoosePlayerEffect {
+public class ChooseOpponentEffect extends ChoosePlayerEffect {
 
-    public ChooseOpponentEffect(ActionContext actionContext) {
-        super(actionContext);
+    public ChooseOpponentEffect(ActionContext actionContext, String memoryId) {
+        super(actionContext, memoryId);
     }
 
     public static String[] getOpponents(DefaultGame game, String playerId) {
@@ -23,13 +23,14 @@ public abstract class ChooseOpponentEffect extends ChoosePlayerEffect {
     public void doPlayEffect() {
         String[] opponents = getOpponents(_game, _playerId);
         if (opponents.length == 1)
-            playerChosen(opponents[0]);
+            playerChosen();
         else
             _game.getUserFeedback().sendAwaitingDecision(_playerId,
                     new MultipleChoiceAwaitingDecision("Choose an opponent", opponents) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result);
+                            playerChosen();
+                            _context.setValueToMemory(_memoryId, result);
                         }
                     });
     }
