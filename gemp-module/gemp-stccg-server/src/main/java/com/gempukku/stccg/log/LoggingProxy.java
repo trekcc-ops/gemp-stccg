@@ -13,6 +13,7 @@ public class LoggingProxy {
     private static final long INFO_LEVEL = 500;
     private static final long DEBUG_LEVEL = 100;
 
+    @SuppressWarnings("unchecked")
     public static <T> T createLoggingProxy(Class<T> clazz, T delegate) {
         final String simpleName = clazz.getSimpleName();
         return (T) Proxy.newProxyInstance(LoggingProxy.class.getClassLoader(), new Class[]{clazz},

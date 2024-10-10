@@ -85,6 +85,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         if (!finished) {
             int stage = ((Number) collection.getExtraInformation().get("stage")).intValue();
             long playerSeed = ((Number) collection.getExtraInformation().get("seed")).longValue();
+            //noinspection unchecked
             List<String> draftPoolList = (List<String>) collection.getExtraInformation().get("draftPool");
 
             DefaultCardCollection draftPool = new DefaultCardCollection();
@@ -144,6 +145,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
 
         int stage = ((Number) collection.getExtraInformation().get("stage")).intValue();
         long playerSeed = ((Number) collection.getExtraInformation().get("seed")).longValue();
+
+        //noinspection unchecked
         List<String> draftPoolList = (List<String>) collection.getExtraInformation().get("draftPool");
         DefaultCardCollection draftPool = new DefaultCardCollection();
         

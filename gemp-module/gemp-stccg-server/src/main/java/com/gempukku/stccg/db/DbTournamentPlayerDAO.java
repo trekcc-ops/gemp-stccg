@@ -32,18 +32,6 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public void updatePlayerDeck(String tournamentId, String playerName, CardDeck deck) {
-        try {
-            String sqlMessage =
-                    "update tournament_player set deck_name = ?, deck = ? where tournament_id=? and player=?";
-            SQLUtils.executeStatementWithParameters(_dbAccess, sqlMessage,
-                    deck.getDeckName(), deck.buildContentsFromDeck(), tournamentId, playerName);
-        } catch (SQLException exp) {
-            throw new RuntimeException(exp);
-        }
-    }
-
-    @Override
     public void dropPlayer(String tournamentId, String playerName) {
         try {
             String sqlMessage = "update tournament_player set dropped=true where tournament_id=? and player=?";

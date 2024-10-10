@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 public class ReplayMetadata {
 
+    @SuppressWarnings("unused") // Class accessed via JSON which may not be obvious to IDE
     public static class DeckMetadata {
         public String Owner;
         public String TargetFormat;
@@ -18,11 +19,12 @@ public class ReplayMetadata {
         public List<String> DrawDeck;
     }
 
-    public final DBData.GameHistory GameReplayInfo;
-
+    @SuppressWarnings("unused")
+    public final DBData.GameHistory GameReplayInfo; // Class accessed via JSON which may not be obvious to IDE
     public final Map<String, DeckMetadata> Decks = new HashMap<>();
     public final Map<String, Integer> PlayerIDs = new HashMap<>();
     public final Map<String, Integer> Bids = new HashMap<>();
+    @SuppressWarnings("unused") // Class accessed via JSON which may not be obvious to IDE
     public String WentFirst;
     public boolean GameStarted = false;
 

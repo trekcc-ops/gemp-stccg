@@ -32,6 +32,7 @@ public class ServerCleaner {
     private class CleaningThread extends Thread {
         private boolean _stopped;
 
+        @SuppressWarnings("BusyWait")
         public void run() {
             try {
                 while (!_stopped) {

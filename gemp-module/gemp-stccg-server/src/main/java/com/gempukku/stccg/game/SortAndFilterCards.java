@@ -22,7 +22,6 @@ public class SortAndFilterCards {
         Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", filterParams);
         Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class, "tribblePower", filterParams);
         Set<Affiliation> affiliations = getEnumFilter(Affiliation.values(), Affiliation.class, "affiliation", filterParams);
-        Set<Keyword> phases = getPhaseFilter(Keyword.values(), Collections.emptySet(), filterParams);
 
         List<T> result = new ArrayList<>();
         Map<String, CardBlueprint> cardBlueprintMap = new HashMap<>();
@@ -32,14 +31,14 @@ public class SortAndFilterCards {
             if (isPack(blueprintId)) {
                 CardBlueprint blueprint = cardBlueprintMap.get(blueprintId);
                 if (acceptsFilters(blueprint, cardLibrary, formatLibrary, blueprintId, sets, cardTypes,
-                        rarity, affiliations, tribblePowers, words, phases))
+                        rarity, affiliations, tribblePowers, words))
                     result.add(item);
             } else {
                 try {
                     cardBlueprintMap.put(blueprintId, cardLibrary.getCardBlueprint(blueprintId));
                     CardBlueprint blueprint = cardBlueprintMap.get(blueprintId);
                     if (acceptsFilters(blueprint, cardLibrary, formatLibrary, blueprintId, sets, cardTypes,
-                            rarity, affiliations, tribblePowers, words, phases))
+                            rarity, affiliations, tribblePowers, words))
                         result.add(item);
                 } catch (CardNotFoundException e) {
                     // Ignore the card
@@ -77,8 +76,7 @@ public class SortAndFilterCards {
 
     private boolean acceptsFilters(CardBlueprint blueprint, CardBlueprintLibrary library, FormatLibrary formatLibrary,
                                    String blueprintId, String[] sets, Set<CardType> cardTypes, String[] rarity,
-                                   Set<Affiliation> affiliations, Set<TribblePower> tribblePowers, List<String> words,
-                                   Set<Keyword> phases) {
+                                   Set<Affiliation> affiliations, Set<TribblePower> tribblePowers, List<String> words) {
         if (sets != null && !isInSets(blueprintId, sets, library, formatLibrary))
             return false;
         if (rarity != null && !Arrays.stream(rarity).toList().contains(blueprint.getRarity()))
@@ -91,9 +89,7 @@ public class SortAndFilterCards {
                 affiliation -> blueprint.getAffiliations().contains(affiliation) ||
                         blueprint.getOwnerAffiliationIcons().contains(affiliation)))
             return false;
-        if (!containsAllWords(blueprint, words))
-            return false;
-        return containsAllKeywords(blueprint, phases);
+        return containsAllWords(blueprint, words);
     }
 
     private String[] getRarityFilter(String[] filterParams) {
@@ -165,14 +161,6 @@ public class SortAndFilterCards {
         return null;
     }
 
-    private boolean containsAllKeywords(CardBlueprint blueprint, Set<Keyword> keywords) {
-        for (Keyword keyword : keywords) {
-            if (blueprint == null || !blueprint.hasKeyword(keyword))
-                return false;
-        }
-        return true;
-    }
-
     private boolean containsAllWords(CardBlueprint blueprint, List<String> words) {
         for (String word : words) {
             if (blueprint == null || !replaceSpecialCharacters(blueprint.getFullName().toLowerCase()).contains(word))
@@ -212,30 +200,6 @@ public class SortAndFilterCards {
             }
         }
         return null;
-    }
-
-    private <T extends Enum<T>> Set<T> getPhaseFilter(T[] enumValues,
-                                                      Set<T> defaultResult, String[] filterParams) {
-        for (String filterParam : filterParams) {
-            if (filterParam.startsWith("phase" + ":")) {
-                String values = filterParam.substring(("phase" + ":").length());
-                if (values.startsWith("-")) {
-                    values = values.substring(1);
-                    Set<T> cardTypes = new HashSet<>(Arrays.asList(enumValues));
-                    for (String v : values.split(",")) {
-                        T t = Enum.valueOf((Class<T>) Keyword.class, v);
-                        cardTypes.remove(t);
-                    }
-                    return cardTypes;
-                } else {
-                    Set<T> cardTypes = new HashSet<>();
-                    for (String v : values.split(","))
-                        cardTypes.add(Enum.valueOf((Class<T>) Keyword.class, v));
-                    return cardTypes;
-                }
-            }
-        }
-        return defaultResult;
     }
 
     private static boolean isPack(String blueprintId) {

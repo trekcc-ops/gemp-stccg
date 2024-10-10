@@ -199,6 +199,7 @@ public class DefaultServerRequestHandler {
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
         String blueprintId = item.getBlueprintId();
         CardBlueprint bp = _library.getCardBlueprint(blueprintId);

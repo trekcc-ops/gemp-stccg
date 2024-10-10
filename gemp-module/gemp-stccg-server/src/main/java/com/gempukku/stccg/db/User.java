@@ -125,6 +125,7 @@ public class User {
         return new PlayerInfo(_name, _type);
     }
 
+    @SuppressWarnings("unused") // Class members accessed through JSON, which may not be obvious to IDE
     public static class PlayerInfo {
         public final String name;
         public final String type;

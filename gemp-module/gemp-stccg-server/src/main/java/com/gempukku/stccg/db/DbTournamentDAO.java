@@ -85,7 +85,8 @@ public class DbTournamentDAO implements TournamentDAO {
         // Assumes rs is a ResultSet with _tournamentFields in that order
         String[] collectionTypeStr = rs.getString(5).split(":", 2);
         return new TournamentInfo(
-                rs.getString(1), rs.getString(2), rs.getString(3),
+                // rs.getString(2) is draftType, which is not currently being used
+                rs.getString(1), rs.getString(3),
                 rs.getString(4),
                 new CollectionType(collectionTypeStr[0], collectionTypeStr[1]),
                 Tournament.Stage.valueOf(rs.getString(6)),

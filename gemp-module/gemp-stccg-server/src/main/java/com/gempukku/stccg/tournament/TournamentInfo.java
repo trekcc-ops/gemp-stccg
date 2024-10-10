@@ -4,7 +4,6 @@ import com.gempukku.stccg.db.vo.CollectionType;
 
 public class TournamentInfo {
     private final String _tournamentId;
-    private final String _draftType;
     private final String _tournamentName;
     private final String _tournamentFormat;
     private final CollectionType _collectionType;
@@ -13,10 +12,10 @@ public class TournamentInfo {
     private final String _pairingMechanism;
     private final Tournament.Stage _tournamentStage;
 
-    public TournamentInfo(String tournamentId, String draftType, String tournamentName, String tournamentFormat, CollectionType collectionType,
-                          Tournament.Stage tournamentStage, String pairingMechanism, String prizesScheme, int tournamentRound) {
+    public TournamentInfo(String tournamentId, String tournamentName, String tournamentFormat,
+                          CollectionType collectionType, Tournament.Stage tournamentStage, String pairingMechanism,
+                          String prizesScheme, int tournamentRound) {
         _tournamentId = tournamentId;
-        _draftType = draftType;
         _tournamentName = tournamentName;
         _tournamentFormat = tournamentFormat;
         _collectionType = collectionType;
@@ -26,12 +25,9 @@ public class TournamentInfo {
         _tournamentStage = tournamentStage;
     }
 
+
     public String getTournamentId() {
         return _tournamentId;
-    }
-
-    public String getDraftType() {
-        return _draftType;
     }
 
     public String getTournamentName() {

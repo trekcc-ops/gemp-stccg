@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefaultTournamentTest extends AbstractServerTest {
 
+    @SuppressWarnings("unchecked") // Unchecked assignment but since it's only a test it doesn't hurt anything
     @Test
     public void testTournament() throws InterruptedException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
@@ -42,8 +43,9 @@ public class DefaultTournamentTest extends AbstractServerTest {
 
         CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
 
-        DefaultTournament tournament = new DefaultTournament(tournamentService, tournamentId, "Name", "format",
-                CollectionType.ALL_CARDS, 0, Tournament.Stage.PLAYING_GAMES, pairingMechanism, new SingleEliminationOnDemandPrizes(_cardLibrary, "onDemand"));
+        DefaultTournament tournament = new DefaultTournament(tournamentService, tournamentId, "Name",
+                "format", CollectionType.ALL_CARDS, 0, Tournament.Stage.PLAYING_GAMES,
+                pairingMechanism, new SingleEliminationOnDemandPrizes(_cardLibrary, "onDemand"));
         int _waitForPairingsTime = 100;
         tournament.setWaitForPairingsTime(_waitForPairingsTime);
 
@@ -180,8 +182,6 @@ public class DefaultTournamentTest extends AbstractServerTest {
         Mockito.verify(collectionsManager).addItemsToPlayerCollection(Mockito.eq(true), Mockito.anyString(), Mockito.eq("p3"), Mockito.eq(CollectionType.MY_CARDS), Mockito.anyCollection());
         Mockito.verify(collectionsManager).addItemsToPlayerCollection(Mockito.eq(true), Mockito.anyString(), Mockito.eq("p7"), Mockito.eq(CollectionType.MY_CARDS), Mockito.anyCollection());
 
-//        Mockito.verifyNoMoreInteractions(collectionsManager, tournamentCallback);
-        
         assertEquals(3, tournament.getCurrentRound());
         assertEquals(Tournament.Stage.FINISHED, tournament.getTournamentStage());
     }

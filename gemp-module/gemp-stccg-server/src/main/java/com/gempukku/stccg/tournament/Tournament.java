@@ -1,7 +1,6 @@
 package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 public interface Tournament {
     enum Stage {
-        DRAFT("Drafting"), DECK_BUILDING("Deck building"),
+        DECK_BUILDING("Deck building"),
         PLAYING_GAMES("Playing games"), FINISHED("Finished");
 
         private final String _humanReadable;
@@ -37,8 +36,6 @@ public interface Tournament {
 
     void reportGameFinished(String winner, String loser);
 
-    void playerSubmittedDeck(String player, CardDeck deck);
-    CardDeck getPlayerDeck(String player);
     void dropPlayer(String player);
 
     List<PlayerStanding> getCurrentStandings();

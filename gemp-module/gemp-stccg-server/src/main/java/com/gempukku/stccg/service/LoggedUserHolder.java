@@ -78,6 +78,7 @@ public class LoggedUserHolder {
     }
 
     private class ClearExpiredRunnable implements Runnable {
+        @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
         @Override
         public void run() {
             while (true) {
@@ -105,7 +106,7 @@ public class LoggedUserHolder {
                     // check every minute
                     long _expireCheckInterval = 1000 * 60;
                     Thread.sleep(_expireCheckInterval);
-                } catch (InterruptedException exp) {
+                } catch (InterruptedException ignored) {
 
                 }
             }

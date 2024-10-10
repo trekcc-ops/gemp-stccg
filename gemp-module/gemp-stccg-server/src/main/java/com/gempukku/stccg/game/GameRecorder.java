@@ -136,6 +136,7 @@ public class GameRecorder {
         var summaryFolder = new File(AppConfig.getReplayPath(), "summaries");
         var yearFolder = new File(summaryFolder, String.format("%04d", history.start_date.getYear()));
         var monthFolder = new File(yearFolder, String.format("%02d", history.start_date.getMonthValue()));
+        //noinspection ResultOfMethodCallIgnored
         monthFolder.mkdirs();
         return new File(monthFolder, history.winner + "_vs_" + history.loser + "_" +
                 history.win_recording_id + "_" + history.lose_recording_id+ ".json");
@@ -143,6 +144,7 @@ public class GameRecorder {
 
     private OutputStream getRecordingWriteStream(String playerId, String gameId, ZonedDateTime startDate) throws IOException {
         File recordingFile = getRecordingFileVersion1(playerId, gameId, startDate);
+        //noinspection ResultOfMethodCallIgnored
         recordingFile.getParentFile().mkdirs();
 
         Deflater deflater = new Deflater(9);
@@ -215,7 +217,7 @@ public class GameRecorder {
                 }
                 result.put(playerId, recordingId);
 
-            } catch (Exception exp) {
+            } catch (Exception ignored) {
 
             }
 

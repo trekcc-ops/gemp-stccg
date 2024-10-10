@@ -101,10 +101,6 @@ public class CollectionsManager {
         }
     }
 
-    public void addPlayerCollection(boolean notifyPlayer, String reason, String player, CollectionType collectionType, CardCollection cardCollection) {
-        addPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, cardCollection);
-    }
-
     public void addPlayerCollection(boolean notifyPlayer, String reason, User player, CollectionType collectionType, CardCollection cardCollection) {
         if (collectionType.getCode().contains("+"))
             throw new IllegalArgumentException("Invalid collection type: " + collectionType);

@@ -160,28 +160,6 @@ public class DefaultTournament implements Tournament {
     }
 
     @Override
-    public void playerSubmittedDeck(String player, CardDeck deck) {
-        _lock.writeLock().lock();
-        try {
-            if (_tournamentStage == Stage.DECK_BUILDING && _players.contains(player)) {
-                _tournamentService.setPlayerDeck(_tournamentId, player, deck);
-                _playerDecks.put(player, deck);
-            }
-        } finally {
-            _lock.writeLock().unlock();
-        }
-    }
-
-    public CardDeck getPlayerDeck(String player) {
-        _lock.readLock().lock();
-        try {
-            return _playerDecks.get(player);
-        } finally {
-            _lock.readLock().unlock();
-        }
-    }
-
-    @Override
     public void dropPlayer(String player) {
         _lock.writeLock().lock();
         try {

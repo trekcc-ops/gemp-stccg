@@ -143,6 +143,7 @@ public class ServerBuilder {
         extract(objectMap, ChatServer.class).startServer();
     }
 
+    @SuppressWarnings("unused")
     public static void StopServers(Map<Type, Object> objectMap) {
         extract(objectMap, HallServer.class).stopServer();
         extract(objectMap, GameServer.class).stopServer();

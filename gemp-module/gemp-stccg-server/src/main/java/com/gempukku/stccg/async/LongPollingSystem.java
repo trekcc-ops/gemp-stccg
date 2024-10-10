@@ -49,6 +49,7 @@ public class LongPollingSystem {
     }
 
     private class ProcessingRunnable implements Runnable {
+        @SuppressWarnings("InfiniteLoopStatement")
         @Override
         public void run() {
             while (true) {

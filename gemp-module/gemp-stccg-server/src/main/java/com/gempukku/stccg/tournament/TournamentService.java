@@ -77,20 +77,20 @@ public class TournamentService {
         _tournamentMatchDao.setMatchResult(tournamentId, winner);
     }
 
-    
-    public void setPlayerDeck(String tournamentId, String player, CardDeck deck) {
-        _tournamentPlayerDao.updatePlayerDeck(tournamentId, player, deck);
-    }
 
-    
     public List<TournamentMatch> getMatches(String tournamentId) {
         return _tournamentMatchDao.getMatches(tournamentId);
     }
 
     
-    public Tournament addTournament(String tournamentId, String draftType, String tournamentName, String format, CollectionType collectionType, Tournament.Stage stage, String pairingMechanism, String prizeScheme, Date start) {
-        _tournamentDao.addTournament(tournamentId, draftType, tournamentName, format, collectionType, stage, pairingMechanism, prizeScheme, start);
-        return createTournamentAndStoreInCache(tournamentId, new TournamentInfo(tournamentId, draftType, tournamentName, format, collectionType, stage, pairingMechanism, prizeScheme, 0));
+    public Tournament addTournament(String tournamentId, String draftType, String tournamentName, String format,
+                                    CollectionType collectionType, Tournament.Stage stage, String pairingMechanism,
+                                    String prizeScheme, Date start) {
+        _tournamentDao.addTournament(tournamentId, draftType, tournamentName, format, collectionType, stage,
+                pairingMechanism, prizeScheme, start);
+        return createTournamentAndStoreInCache(tournamentId,
+                new TournamentInfo(tournamentId, tournamentName, format, collectionType, stage,
+                        pairingMechanism, prizeScheme, 0));
     }
 
     

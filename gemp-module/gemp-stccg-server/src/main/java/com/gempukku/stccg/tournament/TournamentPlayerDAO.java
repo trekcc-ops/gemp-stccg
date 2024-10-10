@@ -8,8 +8,6 @@ import java.util.Set;
 public interface TournamentPlayerDAO {
     void addPlayer(String tournamentId, String playerName, CardDeck deck);
 
-    void updatePlayerDeck(String tournamentId, String playerName, CardDeck deck);
-
     void dropPlayer(String tournamentId, String playerName);
 
     Map<String, CardDeck> getPlayerDecks(String tournamentId, String format);

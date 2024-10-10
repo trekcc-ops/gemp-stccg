@@ -257,6 +257,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 byte[] content = new byte[0];
                 // Build the response object.
                 LOGGER.error("Error response for " + request.uri(), exp);
+                //noinspection DataFlowIssue
                 FullHttpResponse response =
                         new DefaultFullHttpResponse(
                                 HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, Unpooled.wrappedBuffer(content),

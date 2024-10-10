@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+@SuppressWarnings("unused") // This class is used but IDEA doesn't detect it
 public class DBData {
 
-    @SuppressWarnings("unused")
     public static class GameHistory {
 
         public int id;
@@ -45,7 +45,6 @@ public class DBData {
         public int replay_version = -1;
     }
 
-    @SuppressWarnings("unused")
     public static class Collection {
         public int id;
         public int player_id;
@@ -53,7 +52,6 @@ public class DBData {
         public String extra_info;
     }
 
-    @SuppressWarnings("unused")
     public static class CollectionEntry {
         public int collection_id;
         public int quantity;
@@ -66,7 +64,6 @@ public class DBData {
         public String notes;
     }
 
-    @SuppressWarnings("unused")
     public static class DBPlayer {
         public int id;
         public String name;

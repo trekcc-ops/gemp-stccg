@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class DeckRequestHandlerTest extends AbstractServerTest {
 
+    @SuppressWarnings("WriteOnlyObject")
     @Test
     public void formatTest2() throws JsonProcessingException {
         CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
