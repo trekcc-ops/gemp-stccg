@@ -2,7 +2,7 @@ package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,12 +55,12 @@ public class ProductLibrary {
     }
 
     private void loadPackFromFile(File file) {
-        if (JsonUtils.IsInvalidHjsonFile(file))
+        if (JsonUtils.isNotAValidHJSONFile(file))
             return;
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            List<JSONDefs.Pack> packs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
+            List<JSONData.Pack> packs = JsonUtils.readListOfClassFromReader(reader, JSONData.Pack.class);
 
-            for (JSONDefs.Pack def : packs) {
+            for (JSONData.Pack def : packs) {
                 LOGGER.debug("Loading pack definitions for " + def.name);
 
                 PackBox result = null;

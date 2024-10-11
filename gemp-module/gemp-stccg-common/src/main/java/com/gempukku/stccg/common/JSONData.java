@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.*;
 
-public class JSONDefs {
+public class JSONData {
     public static class Pack {
         public enum PackType {
             selection, pack, random, random_foil, booster
@@ -23,6 +23,7 @@ public class JSONDefs {
         public List<List<String>> seriesProduct;
     }
 
+    @SuppressWarnings("unused") // Class is used in JSON data parsing, and usages may not be obvious to the IDE
     public static class ItemStub {
         public final String code;
         public final String name;
@@ -85,6 +86,7 @@ public class JSONDefs {
         public String EndDate;
     }
 
+    @SuppressWarnings("unused") // Class is used in JSON data parsing, and usages may not be obvious to the IDE
     public static class FormatStats {
         public String Format;
         public int Count;

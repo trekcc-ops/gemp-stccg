@@ -1,6 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"SpellCheckingInspection", "unused"})
 public enum PersonnelName implements Filterable {
     GEORDI_LA_FORGE("Geordi La Forge"),
     GOWRON("Gowron"),

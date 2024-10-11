@@ -3,7 +3,7 @@ package com.gempukku.stccg.formats;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 
 import java.io.*;
@@ -53,11 +53,11 @@ public class FormatLibrary {
             }
         }
         else if (path.isFile()) {
-            if (JsonUtils.IsInvalidHjsonFile(path))
+            if (JsonUtils.isNotAValidHJSONFile(path))
                 return;
             try (Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8)) {
-                List<JSONDefs.SealedTemplate> defs =
-                        JsonUtils.readListOfClassFromReader(reader, JSONDefs.SealedTemplate.class);
+                List<JSONData.SealedTemplate> defs =
+                        JsonUtils.readListOfClassFromReader(reader, JSONData.SealedTemplate.class);
 
                 for (var def : defs) {
                     if(def == null)
@@ -81,7 +81,7 @@ public class FormatLibrary {
             _allFormats.clear();
             _hallFormats.clear();
 
-            for (JSONDefs.Format def : JsonUtils.readListOfClassFromReader(reader, JSONDefs.Format.class)) {
+            for (JSONData.Format def : JsonUtils.readListOfClassFromReader(reader, JSONData.Format.class)) {
                 if (def == null)
                     continue;
 

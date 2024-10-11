@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.DBData;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.db.GameHistoryDAO;
 import com.gempukku.stccg.db.PlayerStatistic;
 import com.gempukku.stccg.db.User;
@@ -69,7 +69,7 @@ public class GameHistoryService {
         return _gameHistoryDAO.getGamesPlayedCount(from, duration);
     }
 
-    public List<JSONDefs.FormatStats> getGameHistoryStatistics(ZonedDateTime from, ZonedDateTime to) {
+    public List<JSONData.FormatStats> getGameHistoryStatistics(ZonedDateTime from, ZonedDateTime to) {
         return _gameHistoryDAO.GetAllGameFormatData(from, to);
     }
 

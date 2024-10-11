@@ -3,7 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -49,7 +49,7 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                     default -> throw new HttpProcessingException(400);
                 }
 
-                var stats = new JSONDefs.PlayHistoryStats();
+                var stats = new JSONData.PlayHistoryStats();
                 stats.ActivePlayers = _gameHistoryService.getActivePlayersCount(from, to);
                 stats.GamesCount = _gameHistoryService.getGamesPlayedCount(from, to);
                 stats.StartDate = from.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));

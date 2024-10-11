@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
@@ -43,7 +43,7 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
 
-    public DefaultGameFormat(CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
+    public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def) throws InvalidPropertiesFormatException{
         this(library, def.name, def.game, def.code, def.order, def.surveyUrl,
                 def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall);
@@ -413,15 +413,6 @@ public class DefaultGameFormat implements GameFormat {
         return errata;
     }
 
-    @Override
-    public List<String> findBaseCards(String bpID) {
-        return _errataCardMap
-                .entrySet().stream()
-                .filter(x-> x.getValue().equals(bpID))
-                .map(Map.Entry::getKey)
-                .toList();
-    }
-
     private String validateDeckStructure(CardDeck deck) {
         StringBuilder result = new StringBuilder();
         int drawDeckSize = deck.getSubDeck(SubDeck.DRAW_DECK).size();
@@ -480,8 +471,8 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public JSONDefs.Format Serialize() {
-        return new JSONDefs.Format() {{
+    public JSONData.Format Serialize() {
+        return new JSONData.Format() {{
             code = _code;
             game = _game;
             name = _name;

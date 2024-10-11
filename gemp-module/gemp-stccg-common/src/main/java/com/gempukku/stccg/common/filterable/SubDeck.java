@@ -1,11 +1,12 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("unused")
 public enum SubDeck implements Filterable {
     MISSIONS("missions"),
     SEED_DECK("seed+dil"),
     DRAW_DECK("deck"),
     SITES("sites"),
-    QS_TENT("qstent"),
+    @SuppressWarnings("SpellCheckingInspection") QS_TENT("qstent"),
     QS_TENT_REFEREE("ref"),
     DILEMMA("dyson"),
     Q_FLASH("flash"),

@@ -35,9 +35,7 @@ public interface GameFormat {
 
     String applyErrata(String bpID);
 
-    List<String> findBaseCards(String bpID);
-
     int getHandSize();
 
-    JSONDefs.Format Serialize();
+    JSONData.Format Serialize();
 }

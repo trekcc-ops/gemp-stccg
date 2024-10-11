@@ -9,7 +9,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ICallback;
@@ -171,7 +171,7 @@ public class CardBlueprintLibrary {
     }
 
     private void loadCardsFromFile(File file) {
-        if (JsonUtils.IsInvalidHjsonFile(file))
+        if (JsonUtils.isNotAValidHJSONFile(file))
             return;
         try {
             JsonNode jsonNode = JsonUtils.readJsonFromFile(file);
@@ -242,8 +242,8 @@ public class CardBlueprintLibrary {
         }
     }
 
-    private Map<String, JSONDefs.ErrataInfo> errataMappings = null;
-    public Map<String, JSONDefs.ErrataInfo> getErrata() {
+    private Map<String, JSONData.ErrataInfo> errataMappings = null;
+    public Map<String, JSONData.ErrataInfo> getErrata() {
         try {
             if(errataMappings == null) {
                 collectionReady.acquire();
@@ -252,7 +252,7 @@ public class CardBlueprintLibrary {
                     var parts = id.split("_");
                     int setID = Integer.parseInt(parts[0]);
                     String cardID = parts[1];
-                    JSONDefs.ErrataInfo card;
+                    JSONData.ErrataInfo card;
                     String base;
                     if(setID >= 50 && setID <= 69) {
                         base = (setID - 50) + "_" + cardID;
@@ -271,7 +271,7 @@ public class CardBlueprintLibrary {
                     }
                     else {
                         CardBlueprint blueprint = _blueprints.get(base);
-                        card = new JSONDefs.ErrataInfo();
+                        card = new JSONData.ErrataInfo();
                         card.BaseID = base;
                         card.Name = blueprint.getFullName();
                         card.LinkText = blueprint.getCardLink();
@@ -279,7 +279,7 @@ public class CardBlueprintLibrary {
                         errataMappings.put(base, card);
                     }
 
-                    card.ErrataIDs.put(JSONDefs.ErrataInfo.PC_Errata, id);
+                    card.ErrataIDs.put(JSONData.ErrataInfo.PC_Errata, id);
                 }
 
                 collectionReady.release();

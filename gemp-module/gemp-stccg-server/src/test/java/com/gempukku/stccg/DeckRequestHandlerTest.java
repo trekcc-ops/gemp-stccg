@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.SealedEventDefinition;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ public class DeckRequestHandlerTest extends AbstractServerTest {
 
         SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, _formatLibrary);
 
-            JSONDefs.FullFormatReadout data = new JSONDefs.FullFormatReadout();
+            JSONData.FullFormatReadout data = new JSONData.FullFormatReadout();
             data.Formats = _formatLibrary.getAllFormats().values().stream()
                     .map(GameFormat::Serialize)
                     .collect(Collectors.toMap(x-> x.code, x-> x));
@@ -29,13 +29,13 @@ public class DeckRequestHandlerTest extends AbstractServerTest {
                     .map(SealedEventDefinition::Serialize)
                     .collect(Collectors.toMap(x-> x.name, x-> x));
             data.DraftTemplates = soloDraftDefinitions.getAllSoloDrafts().values().stream()
-                    .map(soloDraft -> new JSONDefs.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))
+                    .map(soloDraft -> new JSONData.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))
                     .collect(Collectors.toMap(x-> x.code, x-> x));
 
         Map<String, GameFormat> formats = _formatLibrary.getHallFormats();
 
             Object[] output = formats.entrySet().stream()
-                    .map(x -> new JSONDefs.ItemStub(x.getKey(), x.getValue().getName()))
+                    .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue().getName()))
                     .toArray();
 
             String json2new = new ObjectMapper().writeValueAsString(output);
