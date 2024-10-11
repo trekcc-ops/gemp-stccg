@@ -99,10 +99,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     private List<Modifier> getModifiers(ModifierEffect modifierEffect) {
-        return getKeywordModifiersAffectingCard(modifierEffect, null);
+        return getModifiersAffectingCard(modifierEffect, null);
     }
 
-    private List<Modifier> getKeywordModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card) {
+    public List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card) {
         List<Modifier> modifiers = _modifiers.get(modifierEffect);
         if (modifiers == null)
             return Collections.emptyList();
@@ -125,10 +125,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             }
             return liveModifiers;
         }
-    }
-
-    public List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card) {
-        return getKeywordModifiersAffectingCard(modifierEffect, card);
     }
 
     private List<Modifier> getIconModifiersAffectingCard(ModifierEffect modifierEffect,
