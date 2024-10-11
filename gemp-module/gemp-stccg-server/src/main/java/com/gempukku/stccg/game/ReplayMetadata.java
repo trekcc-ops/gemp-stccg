@@ -34,7 +34,7 @@ public class ReplayMetadata {
 
     public final HashSet<String> PlayedCards = new HashSet<>();
 
-    public ReplayMetadata(DBData.GameHistory game, Map<String, CardDeck> decks) {
+    public ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks) {
         GameReplayInfo = game;
 
         for(var pair : decks.entrySet()) {
@@ -64,7 +64,7 @@ public class ReplayMetadata {
     private final Pattern gameStartPattern = Pattern.compile("Players in the game are: ([\\w-]+), ([\\w-]+)");
     private final Pattern orderPattern = Pattern.compile("([\\w-]+) has chosen to go (.*)");
     private final Pattern bidPattern = Pattern.compile("([\\w-]+) bid (\\d+)");
-    public void ParseReplay(String player, List<GameEvent> events) {
+    public void ParseReplay(String player, List<? extends GameEvent> events) {
         GameStarted = false;
 
         for(var event : events) {

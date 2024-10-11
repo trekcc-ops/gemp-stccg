@@ -60,8 +60,8 @@ public class SwissPairingMechanism implements PairingMechanism {
         // We can't pair, just finish the tournament
     }
 
-    private boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers, Set<String> carryOverFromThisBracket, List<List<String>> playersGroupedByBracket, Set<String> playersWithByes,
-                                             Map<String, Set<String>> previouslyPaired, Map<String, String> pairingsResult, Set<String> byes) {
+    private boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers, Set<String> carryOverFromThisBracket, List<? extends List<String>> playersGroupedByBracket, Set<String> playersWithByes,
+                                             Map<String, ? extends Set<String>> previouslyPaired, Map<String, String> pairingsResult, Set<String> byes) {
         List<String> playersInBracket = playersGroupedByBracket.get(bracketIndex);
 
         // First try to pair carried over players
@@ -154,14 +154,14 @@ public class SwissPairingMechanism implements PairingMechanism {
         return playersWithByes;
     }
 
-    private void shufflePlayersWithinBrackets(List<List<String>> playersGroupedByPoints) {
+    private void shufflePlayersWithinBrackets(List<? extends List<String>> playersGroupedByPoints) {
         for (List<String> playersByPoint : playersGroupedByPoints) {
             Collections.shuffle(playersByPoint, ThreadLocalRandom.current());
         }
     }
 
     private List<List<String>> groupPlayersByPointBracket(Set<String> droppedPlayers,
-                                                          List<PlayerStanding> currentStandings, int maxNumberOfPoints) {
+                                                          List<? extends PlayerStanding> currentStandings, int maxNumberOfPoints) {
 
         Map<Integer, List<String>> playersByPoints = new HashMap<>();
         for (PlayerStanding currentStanding : currentStandings) {
@@ -182,7 +182,7 @@ public class SwissPairingMechanism implements PairingMechanism {
         return result;
     }
 
-    private int determineMaximumNumberOfPoints(Set<String> droppedPlayers, List<PlayerStanding> currentStandings) {
+    private int determineMaximumNumberOfPoints(Set<String> droppedPlayers, List<? extends PlayerStanding> currentStandings) {
         int maxNumberOfPoints = 0;
         for (PlayerStanding currentStanding : currentStandings) {
             if (!droppedPlayers.contains(currentStanding.getPlayerName())) {

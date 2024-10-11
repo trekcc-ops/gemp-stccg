@@ -424,7 +424,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                 .collect(Collectors.toList());
     }
 
-    private void SortDecks(List<Map.Entry<GameFormat, String>> decks)
+    private void SortDecks(List<? extends Map.Entry<GameFormat, String>> decks)
     {
         decks.sort(Comparator.comparing((deck) -> {
             GameFormat format = deck.getKey();

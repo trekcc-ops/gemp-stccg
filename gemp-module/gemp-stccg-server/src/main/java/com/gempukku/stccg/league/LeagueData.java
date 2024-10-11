@@ -13,7 +13,7 @@ public interface LeagueData {
 
     void joinLeague(CollectionsManager collectionsManager, User player, int currentTime);
 
-    int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime);
+    int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus, int currentTime);
 
     default int getMaxRepeatMatchesPerSeries() {
         return 1;

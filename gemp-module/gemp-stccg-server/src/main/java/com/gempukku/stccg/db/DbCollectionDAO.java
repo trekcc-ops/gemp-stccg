@@ -215,7 +215,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    private MutableCardCollection deserializeCollection(DBData.Collection coll, List<DBData.CollectionEntry> entries)
+    private MutableCardCollection deserializeCollection(DBData.Collection coll, List<? extends DBData.CollectionEntry> entries)
             throws IOException {
         DefaultCardCollection newColl = new DefaultCardCollection();
 

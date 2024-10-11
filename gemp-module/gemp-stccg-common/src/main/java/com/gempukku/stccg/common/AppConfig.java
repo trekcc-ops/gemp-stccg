@@ -17,7 +17,7 @@ public class AppConfig {
             Properties props = new Properties();
             try {
                 Class<AppConfig> thisClass = AppConfig.class;
-                InputStream propertyFile = thisClass.getResourceAsStream("/gemp-stccg-properties");
+                InputStream propertyFile = thisClass.getResourceAsStream("/gemp-stccg.properties");
                 props.load(propertyFile);
                 String gempPropertiesOverride = System.getProperty("gemp-module.override");
                 if (gempPropertiesOverride != null) {

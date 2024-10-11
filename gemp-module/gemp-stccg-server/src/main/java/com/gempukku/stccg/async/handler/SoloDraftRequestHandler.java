@@ -204,7 +204,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private void appendAvailablePics(Document doc, Element rootElem, Iterable<SoloDraft.DraftChoice> availablePics) {
+    private void appendAvailablePics(Document doc, Element rootElem, Iterable<? extends SoloDraft.DraftChoice> availablePics) {
         for (SoloDraft.DraftChoice availableChoice : availablePics) {
             String choiceId = availableChoice.getChoiceId();
             String blueprintId = availableChoice.getBlueprintId();
@@ -225,7 +225,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private SoloDraft.DraftChoice getSelectedDraftChoice(String choiceId, Iterable<SoloDraft.DraftChoice> availableChoices) {
+    private SoloDraft.DraftChoice getSelectedDraftChoice(String choiceId, Iterable<? extends SoloDraft.DraftChoice> availableChoices) {
         for (SoloDraft.DraftChoice availableChoice : availableChoices) {
             if (availableChoice.getChoiceId().equals(choiceId))
                 return availableChoice;

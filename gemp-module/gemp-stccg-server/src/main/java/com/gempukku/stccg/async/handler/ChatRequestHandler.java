@@ -246,7 +246,8 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void serializeChatRoomData(String room, List<ChatMessage> chatMessages, Collection<String> usersInRoom, Document doc) {
+    private void serializeChatRoomData(String room, Iterable<? extends ChatMessage> chatMessages,
+                                       Collection<String> usersInRoom, Document doc) {
         Element chatElem = doc.createElement("chat");
         chatElem.setAttribute("roomName", room);
         doc.appendChild(chatElem);

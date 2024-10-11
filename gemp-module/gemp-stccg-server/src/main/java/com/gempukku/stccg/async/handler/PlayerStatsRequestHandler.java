@@ -46,7 +46,7 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
         }
     }
 
-    private void appendStatistics(List<PlayerStatistic> statistics, Document doc, Element type) {
+    private void appendStatistics(List<? extends PlayerStatistic> statistics, Document doc, Element type) {
         for (PlayerStatistic casualStatistic : statistics) {
             Element entry = doc.createElement("entry");
             entry.setAttribute("deckName", casualStatistic.getDeckName());

@@ -109,7 +109,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         }
     }
 
-    private int getPlayerPoints(List<PlayerStanding> standings, String player) {
+    private int getPlayerPoints(List<? extends PlayerStanding> standings, String player) {
         for (PlayerStanding standing : standings) {
             if (standing.getPlayerName().equals(player))
                 return standing.getPoints();

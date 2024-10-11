@@ -11,7 +11,7 @@ import java.text.Normalizer;
 import java.util.*;
 
 public class SortAndFilterCards {
-    public <T extends CardItem> List<T> process(String filter, Iterable<T> items, CardBlueprintLibrary cardLibrary,
+    public <T extends CardItem> List<T> process(String filter, Iterable<? extends T> items, CardBlueprintLibrary cardLibrary,
                                                 FormatLibrary formatLibrary) {
         if (filter == null)
             filter = "";
@@ -229,9 +229,9 @@ public class SortAndFilterCards {
     }
 
     private static class NameComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
+        private final Map<String, ? extends CardBlueprint> _cardBlueprintMap;
 
-        private NameComparator(Map<String, CardBlueprint> cardBlueprintMap) {
+        private NameComparator(Map<String, ? extends CardBlueprint> cardBlueprintMap) {
             _cardBlueprintMap = cardBlueprintMap;
         }
 
@@ -242,9 +242,9 @@ public class SortAndFilterCards {
     }
 
     private static class TribblesValueComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
+        private final Map<String, ? extends CardBlueprint> _cardBlueprintMap;
 
-        private TribblesValueComparator(Map<String, CardBlueprint> cardBlueprintMap) {
+        private TribblesValueComparator(Map<String, ? extends CardBlueprint> cardBlueprintMap) {
             _cardBlueprintMap = cardBlueprintMap;
         }
 
@@ -255,9 +255,9 @@ public class SortAndFilterCards {
     }
 
     private static class StrengthComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
+        private final Map<String, ? extends CardBlueprint> _cardBlueprintMap;
 
-        private StrengthComparator(Map<String, CardBlueprint> cardBlueprintMap) {
+        private StrengthComparator(Map<String, ? extends CardBlueprint> cardBlueprintMap) {
             _cardBlueprintMap = cardBlueprintMap;
         }
 
@@ -276,9 +276,9 @@ public class SortAndFilterCards {
     }
 
     private static class CardTypeComparator implements Comparator<CardItem> {
-        private final Map<String, CardBlueprint> _cardBlueprintMap;
+        private final Map<String, ? extends CardBlueprint> _cardBlueprintMap;
 
-        private CardTypeComparator(Map<String, CardBlueprint> cardBlueprintMap) {
+        private CardTypeComparator(Map<String, ? extends CardBlueprint> cardBlueprintMap) {
             _cardBlueprintMap = cardBlueprintMap;
         }
 

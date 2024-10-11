@@ -236,7 +236,7 @@ public class LeagueService {
         return createStandingsForMatchesAndPoints(playersParticipating, matches);
     }
 
-    private List<PlayerStanding> createStandingsForMatchesAndPoints(Collection<String> playersParticipating, Collection<LeagueMatchResult> matches) {
+    private List<PlayerStanding> createStandingsForMatchesAndPoints(Collection<String> playersParticipating, Collection<? extends LeagueMatchResult> matches) {
         return BestOfOneStandingsProducer.produceStandings(playersParticipating, matches, 2, 1, Collections.emptyMap());
     }
 

@@ -187,7 +187,6 @@ public class HallServer extends AbstractServer {
             hallCommunicationChannel.hallChanged();
     }
 
-    @Override
     protected void doAfterStartup() {
         for (Tournament tournament : _tournamentService.getLiveTournaments())
             _runningTournaments.put(tournament.getTournamentId(), tournament);

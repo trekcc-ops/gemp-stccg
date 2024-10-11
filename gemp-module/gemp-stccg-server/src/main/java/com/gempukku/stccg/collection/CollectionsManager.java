@@ -219,7 +219,7 @@ public class CollectionsManager {
     }
 
     public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, User player,
-                                           CollectionType collectionType, Iterable<GenericCardItem> items)  {
+                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items)  {
         addItemsToPlayerCollection(notifyPlayer, reason, player, collectionType, items, null);
     }
 

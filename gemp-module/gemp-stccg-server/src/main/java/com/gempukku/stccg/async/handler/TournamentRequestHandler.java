@@ -85,7 +85,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         getTournamentsData(responseWriter, _tournamentService.getLiveTournaments());
     }
 
-    private void getTournamentsData(ResponseWriter responseWriter, List<Tournament> tournamentList) throws Exception {
+    private void getTournamentsData(ResponseWriter responseWriter, List<? extends Tournament> tournamentList) throws Exception {
         Document doc = createNewDoc();
         Element tournaments = doc.createElement("tournaments");
         for (Tournament tournament : tournamentList)
