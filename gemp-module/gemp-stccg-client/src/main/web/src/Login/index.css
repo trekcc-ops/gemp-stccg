@@ -60,8 +60,7 @@ body {
 .login {
     margin: 10px;
     padding: 10px;
-    font-size: 125%;
-    display:grid;
+    display: grid;
     grid-row-gap: 10px;
 }
 
