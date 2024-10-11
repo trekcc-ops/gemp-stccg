@@ -98,41 +98,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         getEffectModifiers(modifierEffect).add(modifier);
     }
 
-    private List<Modifier> getModifiers(ModifierEffect modifierEffect) {
-        return getKeywordModifiersAffectingCard(modifierEffect, null, null);
+    private List<Modifier> getModifiers() {
+        return Collections.emptyList();
     }
 
     public List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card) {
-        return getKeywordModifiersAffectingCard(modifierEffect, null, card);
-    }
-
-    private List<Modifier> getKeywordModifiersAffectingCard(ModifierEffect modifierEffect,
-                                                            Keyword keyword, PhysicalCard card) {
-        List<Modifier> modifiers = _modifiers.get(modifierEffect);
-        if (modifiers == null)
-            return Collections.emptyList();
-        else {
-            LinkedList<Modifier> liveModifiers = new LinkedList<>();
-            for (Modifier modifier : modifiers) {
-                if (keyword == null || ((KeywordAffectingModifier) modifier).getKeyword() == keyword) {
-                    if (!_skipSet.contains(modifier)) {
-                        _skipSet.add(modifier);
-                        Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFulfilled())
-                            if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
-                                    modifier.isNonCardTextModifier() ||
-                                    !modifier.getSource().hasTextRemoved()) {
-                                if ((card == null || modifier.affectsCard(card)) &&
-                                        (foundNoCumulativeConflict(liveModifiers, modifier)))
-                                    liveModifiers.add(modifier);
-                            }
-                        _skipSet.remove(modifier);
-                    }
-                }
-            }
-
-            return liveModifiers;
-        }
+        return Collections.emptyList();
     }
 
     private List<Modifier> getIconModifiersAffectingCard(ModifierEffect modifierEffect,
@@ -339,7 +310,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean canPlayAction(String performingPlayer, Action action) {
-        for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
+        for (Modifier modifier : getModifiers())
             if (!modifier.canPlayAction(_game, performingPlayer, action))
                 return false;
         return true;
@@ -347,7 +318,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean canNotPlayCard(String performingPlayer, PhysicalCard card) {
-        for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
+        for (Modifier modifier : getModifiers())
             if (modifier.cantPlayCard(_game, performingPlayer, card))
                 return true;
         return false;
@@ -363,7 +334,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId) {
-        for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
+        for (Modifier modifier : getModifiers())
             if (modifier.shouldSkipPhase(game, phase, playerId))
                 return true;
         return false;
@@ -427,7 +398,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean canLookOrRevealCardsInHand(String revealingPlayerId, String performingPlayerId) {
-        for (Modifier modifier : getModifiers(ModifierEffect.LOOK_OR_REVEAL_MODIFIER))
+        for (Modifier modifier : getModifiers())
             if (!modifier.canLookOrRevealCardsInHand(_game, revealingPlayerId, performingPlayerId))
                 return false;
         return true;
@@ -460,7 +431,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public boolean hasFlagActive(ModifierFlag modifierFlag) {
-        return getModifiers(ModifierEffect.SPECIAL_FLAG_MODIFIER).stream()
+        return getModifiers().stream()
                 .anyMatch(modifier -> modifier.hasFlagActive(modifierFlag));
     }
 

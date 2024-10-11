@@ -74,27 +74,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean isKeywordRemoved(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
-        return false;
-    }
-
-    @Override
-    public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
-        return false;
-    }
-    @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         return false;
-    }
-
-    @Override
-    public int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword) {
-        return 0;
-    }
-
-    @Override
-    public boolean appliesKeywordModifier(DefaultGame game, PhysicalCard modifierSource, Keyword keyword) {
-        return true;
     }
 
     @Override

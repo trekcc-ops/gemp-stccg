@@ -51,7 +51,6 @@ public class CardBlueprint {
     private Integer _opponentSpan;
     private MissionType _missionType;
     private FacilityType _facilityType;
-    private Map<Keyword, Integer> keywords;
     private int cost = -1;
     private final Map<CardAttribute, Integer> _cardAttributes = new HashMap<>();
     private int _specialDownloadIcons;
@@ -203,8 +202,6 @@ public class CardBlueprint {
     // LotR
     public void setCost(int cost) { this.cost = cost; }
     public int getCost() { return this.cost; }
-
-    public boolean hasKeyword(Keyword keyword) { return keywords != null && keywords.containsKey(keyword); }
 
 
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
