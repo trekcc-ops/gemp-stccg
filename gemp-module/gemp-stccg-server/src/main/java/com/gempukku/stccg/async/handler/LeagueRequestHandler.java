@@ -3,7 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.League;
@@ -19,29 +19,25 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class LeagueRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final LeagueService _leagueService;
     private final FormatLibrary _formatLibrary;
-    private final CardBlueprintLibrary _library;
 
-    public LeagueRequestHandler(Map<Type, Object> context) {
-        super(context);
+    public LeagueRequestHandler(ServerObjects objects) {
+        super(objects);
 
-        _library = extractObject(context, CardBlueprintLibrary.class);
-        _soloDraftDefinitions = extractObject(context, SoloDraftDefinitions.class);
-        _leagueService = extractObject(context, LeagueService.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
+        _soloDraftDefinitions = objects.getSoloDraftDefinitions();
+        _leagueService = objects.getLeagueService();
+        _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getNonExpiredLeagues(responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
@@ -81,7 +77,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         if (league == null)
             throw new HttpProcessingException(404);
 
-        final LeagueData leagueData = league.getLeagueData(_library, _formatLibrary, _soloDraftDefinitions);
+        final LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
         final List<LeagueSeriesData> allSeries = leagueData.getSeries();
 
         int end = allSeries.getLast().getEnd();
@@ -148,7 +144,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         Element leagues = doc.createElement("leagues");
 
         for (League league : _leagueService.getActiveLeagues()) {
-            final LeagueData leagueData = league.getLeagueData(_library, _formatLibrary, _soloDraftDefinitions);
+            final LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
             final List<LeagueSeriesData> series = leagueData.getSeries();
 
             int end = series.getLast().getEnd();

@@ -1,8 +1,11 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.db.DbAccess;
+import com.gempukku.stccg.db.DbLeagueParticipationDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
 import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.log.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;
@@ -18,6 +21,11 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
     private final Map<String, Set<String>> _cachedParticipants = Collections.synchronizedMap(new LRUMap<>(5));
+
+    public CachedLeagueParticipationDAO(DbAccess dbAccess) {
+        _leagueParticipationDAO =
+                LoggingProxy.createLoggingProxy(LeagueParticipationDAO.class, new DbLeagueParticipationDAO(dbAccess));
+    }
 
     public CachedLeagueParticipationDAO(LeagueParticipationDAO leagueParticipationDAO) {
         _leagueParticipationDAO = leagueParticipationDAO;

@@ -27,13 +27,5 @@ public abstract class AbstractServer {
 
     }
 
-    public void stopServer() {
-        if (_started) {
-            _cleaningTask.removeServer(this);
-            _started = false;
-            LOGGER.debug("Stopped: "+getClass().getSimpleName());
-        }
-    }
-
     protected abstract void cleanup() throws SQLException, IOException;
 }

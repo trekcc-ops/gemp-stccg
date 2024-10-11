@@ -1,14 +1,12 @@
 package com.gempukku.stccg.tournament;
 
 public class PairingMechanismRegistry {
-    public PairingMechanism getPairingMechanism(String pairingType) {
-        if (pairingType.equals("singleElimination"))
-            return new SingleEliminationPairing("singleElimination");
-        if (pairingType.equals("swiss"))
-            return new SwissPairingMechanism("swiss");
-        if (pairingType.equals("swiss-3"))
-            return new SwissPairingMechanism("swiss-3", 3);
-
-        return null;
+    public static PairingMechanism getPairingMechanism(String pairingType) {
+        return switch(pairingType) {
+            case "singleElimination" -> new SingleEliminationPairing(pairingType);
+            case "swiss" -> new SwissPairingMechanism(pairingType);
+            case "swiss-3" -> new SwissPairingMechanism(pairingType, 3);
+            default -> null;
+        };
     }
 }

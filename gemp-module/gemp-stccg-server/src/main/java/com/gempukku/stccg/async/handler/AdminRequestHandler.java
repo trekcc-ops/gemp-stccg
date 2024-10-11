@@ -3,18 +3,18 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cache.CacheManager;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.LeagueDAO;
 import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.*;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -30,12 +30,10 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AdminRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final CardBlueprintLibrary _cardLibrary;
     private final ProductLibrary _productLibrary;
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final LeagueService _leagueService;
@@ -51,25 +49,25 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
     private static final Logger LOGGER = LogManager.getLogger(AdminRequestHandler.class);
 
-    public AdminRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _soloDraftDefinitions = extractObject(context, SoloDraftDefinitions.class);
-        _leagueService = extractObject(context, LeagueService.class);
-        _tournamentService = extractObject(context, TournamentService.class);
-        _cacheManager = extractObject(context, CacheManager.class);
-        _hallServer = extractObject(context, HallServer.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
-        _leagueDao = extractObject(context, LeagueDAO.class);
-        _playerDAO = extractObject(context, PlayerDAO.class);
-        _collectionManager = extractObject(context, CollectionsManager.class);
-        _adminService = extractObject(context, AdminService.class);
-        _cardLibrary = extractObject(context, CardBlueprintLibrary.class);
-        _productLibrary = extractObject(context, ProductLibrary.class);
-        _chatServer = extractObject(context, ChatServer.class);
+    public AdminRequestHandler(ServerObjects objects) {
+        super(objects);
+        _soloDraftDefinitions = objects.getSoloDraftDefinitions();
+        _leagueService = objects.getLeagueService();
+        _tournamentService = objects.getTournamentService();
+        _cacheManager = objects.getCacheManager();
+        _hallServer = objects.getHallServer();
+        _formatLibrary = objects.getFormatLibrary();
+        _leagueDao = objects.getLeagueDAO();
+        _playerDAO = objects.getPlayerDAO();
+        _collectionManager = objects.getCollectionsManager();
+        _adminService = objects.getAdminService();
+        _productLibrary = objects.getProductLibrary();
+        _chatServer = objects.getChatServer();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request,
+                              ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("/clearCache") && request.method() == HttpMethod.POST) {
             clearCache(request, responseWriter);
         } else if (uri.equals("/shutdown") && request.method() == HttpMethod.POST) {
@@ -333,7 +331,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         int cost = Integer.parseInt(parameters.get("cost"));
 
         LeagueData leagueData =
-                new NewConstructedLeagueData(_cardLibrary, _formatLibrary, parameters.get("serializedParams"));
+                new NewConstructedLeagueData(_cardBlueprintLibrary, _formatLibrary, parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
         int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
@@ -347,7 +345,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private void previewConstructedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         Map<String,String> parameters = getConstructedLeagueParameters(request);
         LeagueData leagueData =
-                new NewConstructedLeagueData(_cardLibrary, _formatLibrary, parameters.get("serializedParams"));
+                new NewConstructedLeagueData(_cardBlueprintLibrary, _formatLibrary, parameters.get("serializedParams"));
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 
@@ -384,7 +382,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
     private void addSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = new SoloDraftLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions,
+        LeagueData leagueData = new SoloDraftLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions,
                 parameters.get("serializedParams"));
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
@@ -400,7 +398,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
     private void previewSoloDraftLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         Map<String, String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = new SoloDraftLeagueData(_cardLibrary,  _formatLibrary, _soloDraftDefinitions,
+        LeagueData leagueData = new SoloDraftLeagueData(_cardBlueprintLibrary,  _formatLibrary, _soloDraftDefinitions,
                 parameters.get("serializedParams"));
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
@@ -491,7 +489,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         Map<String, String> parameters = getSoloDraftOrSealedLeagueParameters(request);
         int cost = Integer.parseInt(parameters.get("cost"));
         String serializedParameters = serializeSealedLeagueParameters(parameters);
-        LeagueData leagueData = new NewSealedLeagueData(_cardLibrary, _formatLibrary, serializedParameters);
+        LeagueData leagueData = new NewSealedLeagueData(_cardBlueprintLibrary, _formatLibrary, serializedParameters);
         List<LeagueSeriesData> series = leagueData.getSeries();
         int leagueStart = series.getFirst().getStart();
         int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
@@ -503,7 +501,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
     private void previewSealedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request);
-        LeagueData leagueData = new NewSealedLeagueData(_cardLibrary, _formatLibrary,
+        LeagueData leagueData = new NewSealedLeagueData(_cardBlueprintLibrary, _formatLibrary,
                 parameters.get("serializedParameters"));
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
@@ -559,7 +557,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         _chatServer.sendSystemMessageToAllChatRooms("@everyone Server is reloading card definitions.  This will impact game speed until it is complete.");
 
         Thread.sleep(6000);
-        _cardLibrary.reloadAllDefinitions();
+        _cardBlueprintLibrary.reloadAllDefinitions();
 
         _productLibrary.ReloadPacks();
 

@@ -2,6 +2,7 @@ package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.DBData;
+import com.gempukku.stccg.log.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.sql.SQLException;
@@ -13,8 +14,8 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     private final Map<String, User> _playerByName = Collections.synchronizedMap(new LRUMap<>(500));
     private Set<String> _bannedUsernames = new HashSet<>();
 
-    public CachedPlayerDAO(PlayerDAO delegate) {
-        _delegate = delegate;
+    public CachedPlayerDAO(DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(PlayerDAO.class, new DbPlayerDAO(dbAccess));
     }
 
     @Override

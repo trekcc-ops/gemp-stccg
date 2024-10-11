@@ -1,6 +1,7 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.DateUtils;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
@@ -8,11 +9,11 @@ import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.LeagueDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.io.IOException;
@@ -37,6 +38,18 @@ public class LeagueService {
 
     private int _activeLeaguesLoadedDate;
     private List<League> _activeLeagues;
+
+    public LeagueService(ServerObjects objects, CachedLeagueMatchDAO leagueMatchDAO,
+                         CachedLeagueParticipationDAO participationDAO) {
+        _leagueDao = objects.getLeagueDAO();
+        _cardLibrary = objects.getCardBlueprintLibrary();
+        _formatLibrary = objects.getFormatLibrary();
+        _leagueMatchDao = leagueMatchDAO;
+        _leagueParticipationDAO = participationDAO;
+        _collectionsManager = objects.getCollectionsManager();
+        _soloDraftDefinitions = objects.getSoloDraftDefinitions();
+    }
+
 
     public LeagueService(LeagueDAO leagueDao, LeagueMatchDAO leagueMatchDao,
                          LeagueParticipationDAO leagueParticipationDAO, CollectionsManager collectionsManager,

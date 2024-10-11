@@ -18,7 +18,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -35,14 +34,12 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     private static final Logger LOGGER = LogManager.getLogger(GempukkuHttpRequestHandler.class);
     private final Map<String, byte[]> _fileCache = Collections.synchronizedMap(new HashMap<>());
 
-    private final Map<Type, Object> _objects;
     private final UriRequestHandler _uriRequestHandler;
     private final IpBanDAO _ipBanDAO;
 
-    public GempukkuHttpRequestHandler(Map<Type, Object> objects, UriRequestHandler uriRequestHandler) {
-        _objects = objects;
+    public GempukkuHttpRequestHandler(ServerObjects serverObjects, UriRequestHandler uriRequestHandler) {
         _uriRequestHandler = uriRequestHandler;
-        _ipBanDAO = (IpBanDAO) _objects.get(IpBanDAO.class);
+        _ipBanDAO = serverObjects.getIpBanDAO();
     }
 
     private record RequestInformation(String uri, String remoteIp, long requestTime) {
@@ -76,7 +73,7 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                 LOGGER.info("Denying entry to user from banned IP " + requestInformation.remoteIp);
             }
             else {
-                _uriRequestHandler.handleRequest(uri, httpRequest, _objects, responseSender, requestInformation.remoteIp);
+                _uriRequestHandler.handleRequest(uri, httpRequest, responseSender, requestInformation.remoteIp);
             }
         } catch (HttpProcessingException exp) {
             int code = exp.getStatus();

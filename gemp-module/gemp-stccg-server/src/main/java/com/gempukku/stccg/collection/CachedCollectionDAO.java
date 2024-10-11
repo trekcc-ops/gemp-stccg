@@ -2,6 +2,9 @@ package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.cache.Cached;
 import com.gempukku.stccg.db.CollectionDAO;
+import com.gempukku.stccg.db.DbAccess;
+import com.gempukku.stccg.db.DbCollectionDAO;
+import com.gempukku.stccg.log.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.io.IOException;
@@ -13,8 +16,8 @@ public class CachedCollectionDAO implements CollectionDAO, Cached {
     private final CollectionDAO _delegate;
     private final Map<String, CardCollection> _playerCollections = Collections.synchronizedMap(new LRUMap<>(100));
 
-    public CachedCollectionDAO(CollectionDAO delegate) {
-        _delegate = delegate;
+    public CachedCollectionDAO(DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(CollectionDAO.class, new DbCollectionDAO(dbAccess));
     }
 
     @Override

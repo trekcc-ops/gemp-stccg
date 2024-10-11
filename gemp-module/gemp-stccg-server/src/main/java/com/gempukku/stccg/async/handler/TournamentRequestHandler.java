@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -15,26 +16,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Map;
 
 public class TournamentRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
     private final SortAndFilterCards _sortAndFilterCards;
 
-    public TournamentRequestHandler(Map<Type, Object> context) {
-        super(context);
-
-        _tournamentService = extractObject(context, TournamentService.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
+    public TournamentRequestHandler(ServerObjects objects) {
+        super(objects);
+        _tournamentService = objects.getTournamentService();
+        _formatLibrary = objects.getFormatLibrary();
         _sortAndFilterCards = new SortAndFilterCards();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCurrentTournaments(responseWriter);
         } else if (uri.equals("/history") && request.method() == HttpMethod.GET) {

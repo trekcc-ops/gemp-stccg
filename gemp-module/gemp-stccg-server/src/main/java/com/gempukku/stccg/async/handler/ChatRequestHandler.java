@@ -6,6 +6,7 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatMessage;
 import com.gempukku.stccg.chat.ChatRoomMediator;
@@ -32,7 +33,6 @@ import org.commonmark.renderer.html.HtmlWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -46,9 +46,9 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
 
     private static final Logger LOGGER = LogManager.getLogger(ChatRequestHandler.class);
 
-    public ChatRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
-        super(context);
-        _chatServer = extractObject(context, ChatServer.class);
+    public ChatRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+        super(objects);
+        _chatServer = objects.getChatServer();
         this.longPollingSystem = longPollingSystem;
 
         List<Extension> adminExt = Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create());
@@ -65,7 +65,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getMessages(request, URLDecoder.decode(uri.substring(1), StandardCharsets.UTF_8), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {

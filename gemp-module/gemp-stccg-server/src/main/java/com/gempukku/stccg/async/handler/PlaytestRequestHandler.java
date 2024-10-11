@@ -3,6 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
@@ -13,23 +14,21 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
 public class PlaytestRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private final PlayerDAO _playerDAO;
     private final GameHistoryService _gameHistoryService;
 
-    public PlaytestRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _playerDAO = extractObject(context, PlayerDAO.class);
-        _gameHistoryService = extractObject(context, GameHistoryService.class);
+    public PlaytestRequestHandler(ServerObjects objects) {
+        super(objects);
+        _playerDAO = objects.getPlayerDAO();
+        _gameHistoryService = objects.getGameHistoryService();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("/addTesterFlag") && request.method() == HttpMethod.POST) {
             addTesterFlag(request, responseWriter);
         } else if (uri.equals("/removeTesterFlag") && request.method() == HttpMethod.POST) {

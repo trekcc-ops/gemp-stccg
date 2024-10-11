@@ -1,8 +1,11 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.db.DbAccess;
+import com.gempukku.stccg.db.DbLeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
+import com.gempukku.stccg.log.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;
@@ -18,6 +21,9 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
 
     private final Map<String, Collection<LeagueMatchResult>> _cachedMatches = Collections.synchronizedMap(new LRUMap<>(5));
 
+    public CachedLeagueMatchDAO(DbAccess dbAccess) {
+        _leagueMatchDAO = LoggingProxy.createLoggingProxy(LeagueMatchDAO.class, new DbLeagueMatchDAO(dbAccess));
+    }
     public CachedLeagueMatchDAO(LeagueMatchDAO leagueMatchDAO) {
         _leagueMatchDAO = leagueMatchDAO;
     }

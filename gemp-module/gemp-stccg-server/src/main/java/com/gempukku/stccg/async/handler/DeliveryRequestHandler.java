@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
@@ -13,19 +14,18 @@ import io.netty.handler.codec.http.HttpRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 public class DeliveryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final TransferDAO _transferDAO;
 
-    public DeliveryRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _transferDAO = extractObject(context, TransferDAO.class);
+    public DeliveryRequestHandler(ServerObjects objects) {
+        super(objects);
+        _transferDAO = objects.getTransferDAO();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getDelivery(request, responseWriter);
         } else {

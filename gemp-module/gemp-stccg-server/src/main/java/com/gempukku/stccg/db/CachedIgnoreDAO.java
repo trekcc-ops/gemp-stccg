@@ -1,6 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.log.LoggingProxy;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,10 +12,9 @@ public class CachedIgnoreDAO implements IgnoreDAO, Cached {
     private final Map<String, Set<String>> ignores = new ConcurrentHashMap<>();
     private final IgnoreDAO delegate;
 
-    public CachedIgnoreDAO(IgnoreDAO delegate) {
-        this.delegate = delegate;
+    public CachedIgnoreDAO(DbAccess dbAccess) {
+        this.delegate = LoggingProxy.createLoggingProxy(IgnoreDAO.class, new DbIgnoreDAO(dbAccess));
     }
-
     @Override
     public void clearCache() {
         ignores.clear();

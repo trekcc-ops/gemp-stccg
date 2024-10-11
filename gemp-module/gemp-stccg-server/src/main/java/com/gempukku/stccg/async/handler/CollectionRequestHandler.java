@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -25,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,20 +36,18 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private final LeagueService _leagueService;
     private final CollectionsManager _collectionsManager;
     private final ProductLibrary _productLibrary;
-    private final CardBlueprintLibrary _library;
     private final FormatLibrary _formatLibrary;
 
-    public CollectionRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _leagueService = extractObject(context, LeagueService.class);
-        _collectionsManager = extractObject(context, CollectionsManager.class);
-        _productLibrary = extractObject(context, ProductLibrary.class);
-        _library = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
+    public CollectionRequestHandler(ServerObjects objects) {
+        super(objects);
+        _leagueService = objects.getLeagueService();
+        _collectionsManager = objects.getCollectionsManager();
+        _productLibrary = objects.getProductLibrary();
+        _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter,
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter,
                               String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCollectionTypes(request, responseWriter);
@@ -67,7 +65,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         //noinspection SpellCheckingInspection
         List<GenericCardItem> importResult = processImport(
-                getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"), _library
+                getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"),
+                _cardBlueprintLibrary
         );
 
         Document doc = createNewDoc();
@@ -101,7 +100,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
         Iterable<GenericCardItem> items = collection.getAll();
         SortAndFilterCards sortAndFilter = new SortAndFilterCards();
-        List<GenericCardItem> filteredResult = sortAndFilter.process(filter, items, _library, _formatLibrary);
+        List<GenericCardItem> filteredResult = sortAndFilter.process(filter, items, _cardBlueprintLibrary, _formatLibrary);
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
@@ -135,7 +134,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         }
         card.setAttribute("count", String.valueOf(item.getCount()));
         card.setAttribute("blueprintId", item.getBlueprintId());
-        CardBlueprint blueprint = _library.getCardBlueprint(item.getBlueprintId());
+        CardBlueprint blueprint = _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId());
         card.setAttribute("imageUrl", blueprint.getImageUrl());
         collectionElem.appendChild(card);
     }

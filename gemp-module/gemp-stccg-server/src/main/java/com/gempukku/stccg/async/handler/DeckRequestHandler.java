@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameFormat;
@@ -25,7 +26,6 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -38,17 +38,17 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private final SoloDraftDefinitions _draftLibrary;
     private final GameServer _gameServer;
 
-    public DeckRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _deckDao = extractObject(context, DeckDAO.class);
+    public DeckRequestHandler(ServerObjects objects) {
+        super(objects);
+        _deckDao = objects.getDeckDAO();
         _sortAndFilterCards = new SortAndFilterCards();
-        _formatLibrary = extractObject(context, FormatLibrary.class);
-        _gameServer = extractObject(context, GameServer.class);
-        _draftLibrary = extractObject(context, SoloDraftDefinitions.class);
+        _formatLibrary = objects.getFormatLibrary();
+        _gameServer = objects.getGameServer();
+        _draftLibrary = objects.getSoloDraftDefinitions();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+    public void handleRequest(String uri, HttpRequest request,
                               ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("/list") && request.method() == HttpMethod.GET) {
             listDecks(request, responseWriter);
@@ -507,7 +507,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                 cardElement.setAttribute("blueprintId", card);
                 cardElement.setAttribute("subDeck", subDeck.name());
                 try {
-                    cardElement.setAttribute("imageUrl", _library.getCardBlueprint(card).getImageUrl());
+                    cardElement.setAttribute("imageUrl", _cardBlueprintLibrary.getCardBlueprint(card).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprints not found: " + card);
                 }

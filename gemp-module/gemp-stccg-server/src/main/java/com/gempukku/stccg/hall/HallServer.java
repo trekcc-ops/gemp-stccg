@@ -49,9 +49,7 @@ public class HallServer extends AbstractServer {
     private final FormatLibrary _formatLibrary;
     private final CollectionsManager _collectionsManager;
     private final GameServer _gameServer;
-    private final PairingMechanismRegistry _pairingMechanismRegistry;
     private final AdminService _adminService;
-    private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
 
     private String _messageOfTheDay;
 
@@ -72,9 +70,7 @@ public class HallServer extends AbstractServer {
 
     public HallServer(IgnoreDAO ignoreDAO, GameServer gameServer, ChatServer chatServer, LeagueService leagueService, 
                       TournamentService tournamentService, CardBlueprintLibrary library, FormatLibrary formatLibrary, 
-                      CollectionsManager collectionsManager, AdminService adminService, 
-                      TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry, 
-                      PairingMechanismRegistry pairingMechanismRegistry) {
+                      CollectionsManager collectionsManager, AdminService adminService) {
         _gameServer = gameServer;
         _chatServer = chatServer;
         _leagueService = leagueService;
@@ -83,8 +79,6 @@ public class HallServer extends AbstractServer {
         _formatLibrary = formatLibrary;
         _collectionsManager = collectionsManager;
         _adminService = adminService;
-        _tournamentPrizeSchemeRegistry = tournamentPrizeSchemeRegistry;
-        _pairingMechanismRegistry = pairingMechanismRegistry;
 
         tableHolder = new TableHolder(leagueService, ignoreDAO);
         
@@ -644,8 +638,8 @@ public class HallServer extends AbstractServer {
                         ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId, queueInfo.getCost(),
                                 true, _tournamentService, queueInfo.getStartTime(), queueInfo.getTournamentName(),
                                 queueInfo.getFormat(), CollectionType.ALL_CARDS, Tournament.Stage.PLAYING_GAMES,
-                                _pairingMechanismRegistry.getPairingMechanism(queueInfo.getPlayOffSystem()),
-                                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library,
+                                PairingMechanismRegistry.getPairingMechanism(queueInfo.getPlayOffSystem()),
+                                TournamentPrizeSchemeRegistry.getTournamentPrizes(_library,
                                         queueInfo.getPrizeScheme()),
                                 queueInfo.getMinimumPlayers());
                         _tournamentQueues.put(scheduledTournamentId, scheduledQueue);

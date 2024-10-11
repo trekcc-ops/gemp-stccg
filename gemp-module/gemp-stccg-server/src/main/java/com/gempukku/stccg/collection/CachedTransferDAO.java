@@ -1,6 +1,9 @@
 package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.db.DbAccess;
+import com.gempukku.stccg.db.DbTransferDAO;
+import com.gempukku.stccg.log.LoggingProxy;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,8 +14,8 @@ public class CachedTransferDAO implements TransferDAO, Cached {
     private final TransferDAO _delegate;
     private final Set<String> _playersWithoutDelivery = Collections.synchronizedSet(new HashSet<>());
 
-    public CachedTransferDAO(TransferDAO delegate) {
-        _delegate = delegate;
+    public CachedTransferDAO(DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(TransferDAO.class, new DbTransferDAO(dbAccess));
     }
 
     @Override

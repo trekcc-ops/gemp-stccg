@@ -7,6 +7,7 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.game.CardGameMediator;
@@ -26,7 +27,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,9 +39,9 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
     private static final Logger LOGGER = LogManager.getLogger(GameRequestHandler.class);
 
-    public GameRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
-        super(context);
-        _gameServer = extractObject(context, GameServer.class);
+    public GameRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+        super(objects);
+        _gameServer = objects.getGameServer();
         this.longPollingSystem = longPollingSystem;
 
         _autoPassDefault.add(Phase.FELLOWSHIP);
@@ -52,7 +52,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.startsWith("/") && uri.endsWith("/cardInfo") && request.method() == HttpMethod.GET) {
             getCardInfo(request, uri.substring(1, uri.length() - 9), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/concede") && request.method() == HttpMethod.POST) {

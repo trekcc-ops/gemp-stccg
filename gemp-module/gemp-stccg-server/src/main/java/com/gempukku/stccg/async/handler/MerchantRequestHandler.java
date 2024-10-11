@@ -2,7 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
@@ -23,31 +23,28 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class MerchantRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final CollectionsManager _collectionsManager;
     private final SortAndFilterCards _sortAndFilterCards;
     private final MerchantService _merchantService;
-    private final CardBlueprintLibrary _library;
     private final FormatLibrary _formatLibrary;
 
     private static final Logger LOGGER = LogManager.getLogger(MerchantRequestHandler.class);
 
-    public MerchantRequestHandler(Map<Type, Object> context) {
-        super(context);
+    public MerchantRequestHandler(ServerObjects objects) {
+        super(objects);
 
-        _collectionsManager = extractObject(context, CollectionsManager.class);
+        _collectionsManager = objects.getCollectionsManager();
         _sortAndFilterCards = new SortAndFilterCards();
-        _merchantService = extractObject(context, MerchantService.class);
-        _library = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
+        _merchantService = objects.getMerchantService();
+        _formatLibrary = objects.getFormatLibrary();
 
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getMerchantOffers(request, responseWriter);
         } else if (uri.equals("/buy") && request.method() == HttpMethod.POST) {
@@ -146,7 +143,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             }
         }
 
-        List<BasicCardItem> filteredResult = _sortAndFilterCards.process(filter, cardItems, _library, _formatLibrary);
+        List<BasicCardItem> filteredResult = _sortAndFilterCards.process(filter, cardItems, _cardBlueprintLibrary, _formatLibrary);
 
         List<CardItem> pageToDisplay = new ArrayList<>();
         for (int i = start; i < start + count; i++) {
@@ -178,7 +175,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             if (blueprintId.contains("_") && !blueprintId.endsWith("*") && collection.getItemCount(blueprintId) >= 4)
                 elem.setAttribute("tradeFoil", "true");
             elem.setAttribute("blueprintId", blueprintId);
-            elem.setAttribute("imageUrl", _library.getCardBlueprint(blueprintId).getImageUrl());
+            elem.setAttribute("imageUrl", _cardBlueprintLibrary.getCardBlueprint(blueprintId).getImageUrl());
             Integer buyPrice = buyPrices.get(blueprintId);
             if (buyPrice != null && collection.getItemCount(blueprintId) > 0)
                 elem.setAttribute("buyPrice", buyPrice.toString());

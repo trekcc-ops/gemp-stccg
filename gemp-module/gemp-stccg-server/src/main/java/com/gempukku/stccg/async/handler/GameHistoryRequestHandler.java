@@ -3,6 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
@@ -11,22 +12,19 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 public class GameHistoryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final GameHistoryService _gameHistoryService;
 
-    public GameHistoryRequestHandler(Map<Type, Object> context) {
-        super(context);
-
-        _gameHistoryService = extractObject(context, GameHistoryService.class);
+    public GameHistoryRequestHandler(ServerObjects objects) {
+        super(objects);
+        _gameHistoryService = objects.getGameHistoryService();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getGameHistory(request, responseWriter);
         } else {

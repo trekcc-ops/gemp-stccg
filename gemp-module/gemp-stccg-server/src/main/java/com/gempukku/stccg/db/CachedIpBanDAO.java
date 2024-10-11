@@ -1,6 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.log.LoggingProxy;
 
 import java.util.Set;
 
@@ -9,8 +10,8 @@ public class CachedIpBanDAO implements IpBanDAO, Cached {
     private Set<String> _bannedIps;
     private Set<String> _bannedIpPrefixes;
 
-    public CachedIpBanDAO(IpBanDAO delegate) {
-        _delegate = delegate;
+    public CachedIpBanDAO(DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(IpBanDAO.class, new DbIpBanDAO(dbAccess));
     }
 
     @Override

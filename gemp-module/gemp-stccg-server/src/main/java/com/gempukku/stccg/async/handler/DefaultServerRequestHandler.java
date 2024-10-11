@@ -2,17 +2,21 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.SortAndFilterCards;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -28,7 +32,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -38,18 +41,20 @@ import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 public class DefaultServerRequestHandler {
-    protected final CardBlueprintLibrary _library;
+    protected final CardBlueprintLibrary _cardBlueprintLibrary;
     protected final PlayerDAO _playerDao;
     protected final LoggedUserHolder _loggedUserHolder;
     private final TransferDAO _transferDAO;
-    private final CollectionsManager _collectionManager;
+    protected final CollectionsManager _collectionsManager;
+    protected final GameHistoryService _gameHistoryService;
 
-    public DefaultServerRequestHandler(Map<Type, Object> context) {
-        _playerDao = extractObject(context, PlayerDAO.class);
-        _loggedUserHolder = extractObject(context, LoggedUserHolder.class);
-        _transferDAO = extractObject(context, TransferDAO.class);
-        _collectionManager = extractObject(context, CollectionsManager.class);
-        _library = extractObject(context, CardBlueprintLibrary.class);
+    public DefaultServerRequestHandler(ServerObjects objects) {
+        _playerDao = objects.getPlayerDAO();
+        _loggedUserHolder = objects.getLoggedUserHolder();
+        _transferDAO = objects.getTransferDAO();
+        _collectionsManager = objects.getCollectionsManager();
+        _cardBlueprintLibrary = objects.getCardBlueprintLibrary();
+        _gameHistoryService = objects.getGameHistoryService();
     }
 
     private boolean isTest() {
@@ -66,12 +71,12 @@ public class DefaultServerRequestHandler {
                 Integer lastReward = player.getLastLoginReward();
                 if (lastReward == null) {
                     _playerDao.setLastReward(player, latestMonday);
-                    _collectionManager.addCurrencyToPlayerCollection(true, "Signup reward", player,
+                    _collectionsManager.addCurrencyToPlayerCollection(true, "Signup reward", player,
                             CollectionType.MY_CARDS, 20000);
                 } else {
                     if (latestMonday != lastReward) {
                         if (_playerDao.updateLastReward(player, lastReward, latestMonday))
-                            _collectionManager.addCurrencyToPlayerCollection(true, "Weekly reward",
+                            _collectionsManager.addCurrencyToPlayerCollection(true, "Weekly reward",
                                     player, CollectionType.MY_CARDS, 5000);
                     }
                 }
@@ -187,10 +192,6 @@ public class DefaultServerRequestHandler {
         return result;
     }
 
-    protected <T> T extractObject(Map<Type, Object> context, Class<T> clazz) {
-        return (T) context.get(clazz);
-    }
-
     protected Map<String, String> logUserReturningHeaders(String remoteIp, String login) throws SQLException {
         _playerDao.updateLastLoginIp(login, remoteIp);
 
@@ -202,7 +203,7 @@ public class DefaultServerRequestHandler {
     @SuppressWarnings("SpellCheckingInspection")
     protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
         String blueprintId = item.getBlueprintId();
-        CardBlueprint bp = _library.getCardBlueprint(blueprintId);
+        CardBlueprint bp = _cardBlueprintLibrary.getCardBlueprint(blueprintId);
         return "<span class=\"tooltip\">" + bp.getFullName()
                 + "<span><img class=\"ttimage\" src=\"" + bp.getImageUrl() + "\"></span></span>";
     }
@@ -212,11 +213,11 @@ public class DefaultServerRequestHandler {
             throws CardNotFoundException {
         StringBuilder sb = new StringBuilder();
         sb.append("<br/><b>").append(deckName).append(":</b><br/>");
-        for (GenericCardItem item : sortAndFilter.process(filter, deckCards.getAll(), _library, formatLibrary)) {
+        for (GenericCardItem item : sortAndFilter.process(filter, deckCards.getAll(), _cardBlueprintLibrary, formatLibrary)) {
             if (countCards)
                 sb.append(item.getCount()).append("x ");
             String cardText = showToolTip?
-                    generateCardTooltip(item) : _library.getCardBlueprint(item.getBlueprintId()).getFullName();
+                    generateCardTooltip(item) : _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId()).getFullName();
             sb.append(cardText).append("<br/>");
         }
         return sb.toString();
@@ -230,7 +231,7 @@ public class DefaultServerRequestHandler {
 
         DefaultCardCollection deckCards = new DefaultCardCollection();
         for (String card : deck.getDrawDeckCards())
-            deckCards.addItem(_library.getBaseBlueprintId(card), 1);
+            deckCards.addItem(_cardBlueprintLibrary.getBaseBlueprintId(card), 1);
 
         result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
                 deckCards,false, sortAndFilter, formatLibrary, showToolTip));

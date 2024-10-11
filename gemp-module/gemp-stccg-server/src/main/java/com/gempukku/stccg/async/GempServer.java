@@ -1,8 +1,6 @@
 package com.gempukku.stccg.async;
 
 import com.gempukku.stccg.async.handler.RootUriRequestHandler;
-import com.gempukku.stccg.builder.DaoBuilder;
-import com.gempukku.stccg.builder.ServerBuilder;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -14,34 +12,15 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GempServer {
-    private static final Logger LOGGER = LogManager.getLogger(GempServer.class);
 
     public static void main(String[] server) throws InterruptedException {
         int httpPort = Integer.parseInt(AppConfig.getProperty("port"));
 
-        Map<Type, Object> objects = new HashMap<>();
-
         Thread.sleep(2_000); // sleep for 2 sec to allow time to create database
 
-        //Libraries and other important prerequisite managers that are used by lots of other managers
-        LOGGER.info("GempukkuServer loading prerequisites...");
-        ServerBuilder.CreatePrerequisites(objects);
-        //Now bulk initialize various managers
-        LOGGER.info("GempukkuServer loading DAOs...");
-        DaoBuilder.CreateDatabaseAccessObjects(objects);
-        LOGGER.info("GempukkuServer loading services...");
-        ServerBuilder.CreateServices(objects);
-        LOGGER.info("GempukkuServer starting servers...");
-        ServerBuilder.StartServers(objects);
-        LOGGER.info("GempukkuServer startup complete.");
+        ServerObjects objects = new ServerObjects();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -50,7 +29,7 @@ public class GempServer {
             LongPollingSystem longPollingSystem = new LongPollingSystem();
             longPollingSystem.start();
 
-            RootUriRequestHandler uriRequestHandler = new RootUriRequestHandler(objects, longPollingSystem);
+            RootUriRequestHandler uriRequestHandler = new RootUriRequestHandler(longPollingSystem, objects);
 
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)

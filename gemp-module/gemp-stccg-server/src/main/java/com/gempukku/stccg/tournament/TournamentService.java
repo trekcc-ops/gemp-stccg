@@ -11,8 +11,6 @@ import java.util.*;
 
 public class TournamentService {
     private static final Logger LOGGER = LogManager.getLogger(TournamentService.class);
-    private final PairingMechanismRegistry _pairingMechanismRegistry;
-    private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
     private final TournamentDAO _tournamentDao;
     private final TournamentPlayerDAO _tournamentPlayerDao;
     private final TournamentMatchDAO _tournamentMatchDao;
@@ -20,12 +18,8 @@ public class TournamentService {
 
     private final Map<String, Tournament> _tournamentById = new HashMap<>();
 
-    public TournamentService(PairingMechanismRegistry pairingMechanismRegistry,
-                             TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry, TournamentDAO tournamentDao,
-                             TournamentPlayerDAO tournamentPlayerDao, TournamentMatchDAO tournamentMatchDao,
-                             CardBlueprintLibrary library) {
-        _pairingMechanismRegistry = pairingMechanismRegistry;
-        _tournamentPrizeSchemeRegistry = tournamentPrizeSchemeRegistry;
+    public TournamentService(TournamentDAO tournamentDao, TournamentPlayerDAO tournamentPlayerDao,
+                             TournamentMatchDAO tournamentMatchDao, CardBlueprintLibrary library) {
         _tournamentDao = tournamentDao;
         _tournamentPlayerDao = tournamentPlayerDao;
         _tournamentMatchDao = tournamentMatchDao;
@@ -149,10 +143,10 @@ public class TournamentService {
         try {
             tournament = new DefaultTournament(this,
                     tournamentId,  tournamentInfo.getTournamentName(), tournamentInfo.getTournamentFormat(),
-                    tournamentInfo.getCollectionType(), tournamentInfo.getTournamentRound(), tournamentInfo.getTournamentStage(), 
-                    _pairingMechanismRegistry.getPairingMechanism(tournamentInfo.getPairingMechanism()),
-                    _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, tournamentInfo.getPrizesScheme()));
-
+                    tournamentInfo.getCollectionType(), tournamentInfo.getTournamentRound(),
+                    tournamentInfo.getTournamentStage(),
+                    PairingMechanismRegistry.getPairingMechanism(tournamentInfo.getPairingMechanism()),
+                    TournamentPrizeSchemeRegistry.getTournamentPrizes(_library, tournamentInfo.getPrizesScheme()));
         } catch (Exception exp) {
             throw new RuntimeException("Unable to create Tournament", exp);
         }

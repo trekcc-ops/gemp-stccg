@@ -2,6 +2,7 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.game.GameRecorder;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -12,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,14 +23,13 @@ public class ReplayRequestHandler extends DefaultServerRequestHandler implements
 
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
 
-    public ReplayRequestHandler(Map<Type, Object> context) {
-        super(context);
-
-        _gameRecorder = extractObject(context, GameRecorder.class);
+    public ReplayRequestHandler(ServerObjects objects) {
+        super(objects);
+        _gameRecorder = objects.getGameRecorder();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             String replayId = uri.substring(1);
 

@@ -7,16 +7,14 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.*;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
@@ -29,32 +27,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 
 public class HallRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(HallRequestHandler.class);
-    private final CollectionsManager _collectionManager;
     private final FormatLibrary _formatLibrary;
     private final HallServer _hallServer;
     private final LeagueService _leagueService;
-    private final CardBlueprintLibrary _library;
-    private final LongPollingSystem longPollingSystem;
+    private final LongPollingSystem _longPollingSystem;
 
-    public HallRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
-        super(context);
-        _collectionManager = extractObject(context, CollectionsManager.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
-        _hallServer = extractObject(context, HallServer.class);
-        _leagueService = extractObject(context, LeagueService.class);
-        _library = extractObject(context, CardBlueprintLibrary.class);
-        extractObject(context, GameServer.class);
-        this.longPollingSystem = longPollingSystem;
+    public HallRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+        super(objects);
+        _formatLibrary = objects.getFormatLibrary();
+        _hallServer = objects.getHallServer();
+        _leagueService = objects.getLeagueService();
+        _longPollingSystem = longPollingSystem;
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+    public void handleRequest(String uri, HttpRequest request,
                               ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getHall(request, responseWriter);
@@ -335,14 +327,14 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
         if (!additionalValidCards.isEmpty()) {
             for (String blueprintId : additionalValidCards)
-                result.append(_library.getCardBlueprint(blueprintId).getCardLink()).append(", ");
+                result.append(_cardBlueprintLibrary.getCardBlueprint(blueprintId).getCardLink()).append(", ");
             if (additionalValidCards.isEmpty())
                 result.append("none,");
         }
     }
 
     private void getErrataInfo(ResponseWriter responseWriter) throws JsonProcessingException {
-        responseWriter.writeJsonResponse(JsonUtils.toJsonString(_library.getErrata()));
+        responseWriter.writeJsonResponse(JsonUtils.toJsonString(_cardBlueprintLibrary.getErrata()));
     }
 
     private void getHall(HttpRequest request, ResponseWriter responseWriter) {
@@ -352,7 +344,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             User player = getResourceOwnerSafely(request, null);
 
             Element hall = doc.createElement("hall");
-            hall.setAttribute("currency", String.valueOf(_collectionManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
+            hall.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
 
             _hallServer.signupUserForHall(resourceOwner, new SerializeHallInfoVisitor(doc, hall));
             for (Map.Entry<String, GameFormat> format : _formatLibrary.getHallFormats().entrySet()) {
@@ -398,7 +390,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 HallCommunicationChannel commChannel = _hallServer.getCommunicationChannel(resourceOwner, channelNumber);
                 HallUpdateLongPollingResource polledResource =
                         new HallUpdateLongPollingResource(commChannel, request, resourceOwner, responseWriter);
-                longPollingSystem.processLongPollingResource(polledResource, commChannel);
+                _longPollingSystem.processLongPollingResource(polledResource, commChannel);
             }
             catch (SubscriptionExpiredException exp) {
                 logHttpError(LOGGER, 410, request.uri(), exp);
@@ -440,7 +432,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
                     Element hall = doc.createElement("hall");
                     _hallCommunicationChannel.processCommunicationChannel(_hallServer, _resourceOwner, new SerializeHallInfoVisitor(doc, hall));
-                    hall.setAttribute("currency", String.valueOf(_collectionManager.getPlayerCollection(_resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
+                    hall.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(_resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
 
                     doc.appendChild(hall);
 

@@ -3,11 +3,10 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
@@ -25,27 +24,22 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class SoloDraftRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final CollectionsManager _collectionsManager;
     private final SoloDraftDefinitions _soloDraftDefinitions;
-    private final CardBlueprintLibrary _cardLibrary;
     private final FormatLibrary _formatLibrary;
     private final LeagueService _leagueService;
 
-    public SoloDraftRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _leagueService = extractObject(context, LeagueService.class);
-        _cardLibrary = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
-        _soloDraftDefinitions = extractObject(context, SoloDraftDefinitions.class);
-        _collectionsManager = extractObject(context, CollectionsManager.class);
+    public SoloDraftRequestHandler(ServerObjects objects) {
+        super(objects);
+        _leagueService = objects.getLeagueService();
+        _formatLibrary = objects.getFormatLibrary();
+        _soloDraftDefinitions = objects.getSoloDraftDefinitions();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
+    public void handleRequest(String uri, HttpRequest request,
                               ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             makePick(request, uri.substring(1), responseWriter);
@@ -66,7 +60,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         if (league == null)
             throw new HttpProcessingException(404);
 
-        LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
+        LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
@@ -127,7 +121,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         if (league == null)
             throw new HttpProcessingException(404);
 
-        LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
+        LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
@@ -192,7 +186,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             Element pickedCard = doc.createElement("pickedCard");
             pickedCard.setAttribute("blueprintId", item.getBlueprintId());
             pickedCard.setAttribute("count", String.valueOf(item.getCount()));
-            pickedCard.setAttribute("imageUrl", _library.getCardBlueprint(item.getBlueprintId()).getImageUrl());
+            pickedCard.setAttribute("imageUrl", _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId()).getImageUrl());
             pickResultElem.appendChild(pickedCard);
         }
 
@@ -217,7 +211,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             if (blueprintId != null) {
                 availablePick.setAttribute("blueprintId", blueprintId);
                 try {
-                    availablePick.setAttribute("imageUrl", _library.getCardBlueprint(blueprintId).getImageUrl());
+                    availablePick.setAttribute("imageUrl", _cardBlueprintLibrary.getCardBlueprint(blueprintId).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprint " + blueprintId + " not found in library");
                 }
