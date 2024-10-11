@@ -4,9 +4,6 @@ import com.gempukku.stccg.async.ResponseWriter;
 import io.netty.handler.codec.http.HttpRequest;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 public interface UriRequestHandler {
     void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception;
 

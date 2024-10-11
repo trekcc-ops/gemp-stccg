@@ -4,13 +4,10 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.handler.codec.http.HttpHeaderNames;
-
 import io.netty.handler.codec.http.HttpRequest;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.Map;
 
 public class WebRequestHandler implements UriRequestHandler {
     private final String _root;
