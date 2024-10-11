@@ -215,22 +215,6 @@
         strength: 5
         image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01251.jpg
     }
-    1_253: {
-        title: Andrea Brand
-        type: personnel
-        uniqueness: unique
-        affiliation: federation
-        cost: 2
-        species: Human
-        icons: command, earth
-        skill-box: "[*] Law [*] 2 Leadership [*] Navigation [*] Officer [*] Transporters"
-        // TODO - keyword: admiral
-        lore: '"Your statements cannot be reconciled with the data collected from the NacCon satellite. ... We cannot escape the conclusion that either the data is faulty in some way... or you have lied to us."'
-        integrity: 6
-        cunning: 6
-        strength: 3
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01253.jpg
-    }
     1_254: {
         title: Bandee
         type: personnel
@@ -302,21 +286,6 @@
         strength: 6
         image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01278.jpg
     }
-    1_284: {
-        title: "T'Lara"
-        type: personnel
-        affiliation: federation
-        cost: 2
-        species: Vulcan
-        icons: command, earth
-        skill-box: "[*] Exobiology [*] Law [*] Leadership [*] Officer"
-        lore: "\"This hearing will come to order. We are here to consider the request of the Klingon Empire that Lieutenant Commander Worf be extradited for trial on charges of murder. Advocate Ch'Pok, you may present your charges.\""
-        // TODO - keyword: admiral
-        integrity: 6
-        cunning: 7
-        strength: 5
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01284.jpg
-    }
     1_307: {
         title: Kroval
         type: personnel
@@ -330,21 +299,6 @@
         cunning: 5
         strength: 6
         image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01307.jpg
-    }
-    1_341: {
-        title: Regana Tosh
-        type: personnel
-        affiliation: non-aligned
-        cost: 1
-        species: Markalian
-        icons: command
-        skill-box: "[*] Acquisition [*] Geology [*] Science [*] Treachery"
-        // TODO - keyword: smuggler
-        lore: Middleman in a network that smuggled crystals off the Tallonian homeworld. In an uncharacteristic show of cooperation, Quark and Odo attempted a sting on the operation in 2372.
-        integrity: 3
-        cunning: 5
-        strength: 5
-        image-url: https://www.trekcc.org/2e/cardimages/ST2E-EN01341.jpg
     }
     1_393: {
         title: U.S.S. Excelsior
