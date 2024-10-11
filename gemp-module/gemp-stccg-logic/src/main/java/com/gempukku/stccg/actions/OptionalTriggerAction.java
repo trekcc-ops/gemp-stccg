@@ -1,26 +1,18 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.sources.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class OptionalTriggerAction extends AbstractCostToEffectAction {
-    private PhysicalCard _physicalCard;
+    private final PhysicalCard _physicalCard;
     private final PhysicalCard _actionAttachedToCard;
 
     private String _message;
 
     private boolean _sentMessage;
-    private String _triggerIdentifier;
     private final DefaultGame _game;
     private ActionSource _actionSource;
-
-    public OptionalTriggerAction(String triggerIdentifier, PhysicalCard attachedToCard) {
-        _game = attachedToCard.getGame();
-        _actionAttachedToCard = attachedToCard;
-        _triggerIdentifier = triggerIdentifier;
-    }
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
         super(physicalCard.getOwner(), ActionType.TRIGGER);
@@ -30,20 +22,11 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
 
         setText("Optional trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " optional triggered effect is used";
-        _triggerIdentifier = String.valueOf(physicalCard.getCardId());
     }
 
     public OptionalTriggerAction(PhysicalCard physicalCard, ActionSource actionSource) {
         this(physicalCard);
         _actionSource = actionSource;
-    }
-
-    public void setTriggerIdentifier(String triggerIdentifier) {
-        _triggerIdentifier = triggerIdentifier;
-    }
-
-    public String getTriggerIdentifier() {
-        return _triggerIdentifier;
     }
 
     public void setMessage(String message) {
@@ -61,7 +44,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)

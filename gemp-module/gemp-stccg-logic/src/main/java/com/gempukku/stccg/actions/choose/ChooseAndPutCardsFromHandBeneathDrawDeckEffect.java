@@ -64,7 +64,7 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
         }
 
         @Override
-        protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
+        protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
             for (PhysicalCard selectedCard : selectedCards) {
                 _subAction.appendEffect(
                         new PutCardsFromZoneOnEndOfPileEffect(_game, _reveal,  Zone.HAND, Zone.DRAW_DECK, EndOfPile.BOTTOM, selectedCard));

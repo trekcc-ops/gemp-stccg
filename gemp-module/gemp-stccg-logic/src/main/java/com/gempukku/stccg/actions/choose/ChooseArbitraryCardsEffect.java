@@ -53,9 +53,9 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
             minimum = possibleCards.size();
 
         if (_maximum == 0) {
-            cardsSelected(_game, Collections.emptySet());
+            cardsSelected(Collections.emptySet());
         } else if (possibleCards.size() == minimum) {
-            cardsSelected(_game, possibleCards);
+            cardsSelected(possibleCards);
         } else {
             Collection<PhysicalCard> toShow = _cards;
             if (_showMatchingOnly)
@@ -65,7 +65,7 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
                     new ArbitraryCardsSelectionDecision(1, _choiceText, toShow, possibleCards, _minimum, _maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            cardsSelected(_game, getSelectedCardsByResponse(result));
+                            cardsSelected(getSelectedCardsByResponse(result));
                         }
                     });
         }
@@ -73,5 +73,5 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
         return new FullEffectResult(success);
     }
 
-    protected abstract void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards);
+    protected abstract void cardsSelected(Collection<PhysicalCard> selectedCards);
 }

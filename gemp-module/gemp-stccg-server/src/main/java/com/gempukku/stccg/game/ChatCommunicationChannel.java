@@ -20,9 +20,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
     }
 
     @Override
-    public synchronized void deregisterRequest(WaitingRequest waitingRequest) {
-        _waitingRequest = null;
-    }
+    public synchronized void deregisterRequest() { _waitingRequest = null; }
 
     @Override
     public synchronized boolean registerRequest(WaitingRequest waitingRequest) {
@@ -49,11 +47,6 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
         List<ChatMessage> messages = _messages;
         _messages = new LinkedList<>();
         return messages;
-    }
-
-    public synchronized boolean hasMessages() {
-        updateLastAccess();
-        return !_messages.isEmpty();
     }
 
     private synchronized void updateLastAccess() {

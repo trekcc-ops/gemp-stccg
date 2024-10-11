@@ -53,9 +53,7 @@ public class HallServer extends AbstractServer {
     private final AdminService _adminService;
     private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
 
-    private final CollectionType _defaultCollectionType = CollectionType.ALL_CARDS;
-
-    private String _motd;
+    private String _messageOfTheDay;
 
     private boolean _shutdown;
 
@@ -204,40 +202,7 @@ public class HallServer extends AbstractServer {
                 (from, parameters, admin) -> _hallChat.sendToUser(
                         "System", from, "\"" + parameters + "\" is not a recognized command."
                 ));
-
-/*        _tournamentQueues.put("fotr_queue", new ImmediateRecurringQueue(
-                1500, "Tribbles", CollectionType.ALL_CARDS, "tribblesQueue-",
-                "Tribbles Block", 4, true, tournamentService,
-                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"),
-                _pairingMechanismRegistry.getPairingMechanism("singleElimination")
-        ));
-        _tournamentQueues.put("ts_queue", new ImmediateRecurringQueue(1500, "towers_standard",
-                CollectionType.ALL_CARDS, "tsQueue-", "Towers Standard", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
-        _tournamentQueues.put("movie_queue", new ImmediateRecurringQueue(1500, "movie",
-                CollectionType.ALL_CARDS, "movieQueue-", "Movie Block", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
-        _tournamentQueues.put("expanded_queue", new ImmediateRecurringQueue(1500, "expanded",
-                CollectionType.ALL_CARDS, "expandedQueue-", "Expanded", 4,
-                true, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "onDemand"), _pairingMechanismRegistry.getPairingMechanism("singleElimination")));
-*/
-
-/*        try {
-            _tournamentQueues.put("fotr_daily_eu", new RecurringScheduledQueue(7, "fotrDailyEu-", "Daily Gondor Fellowship Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "fotr_block", 4));
-            _tournamentQueues.put("fotr_daily_us", new RecurringScheduledQueue(7, "fotrDailyUs-", "Daily Rohan Fellowship Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "fotr_block", 4));
-            _tournamentQueues.put("movie_daily_eu", new RecurringScheduledQueue(7, "movieDailyEu-", "Daily Gondor Movie Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "movie", 4));
-            _tournamentQueues.put("movie_daily_us", new RecurringScheduledQueue(7, "movieDailyUs-", "Daily Rohan Movie Block", 0,
-                    true, _defaultCollectionType, tournamentService, _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library, "daily"), _pairingMechanismRegistry.getPairingMechanism("swiss-3"),
-                    "movie", 4));
-        } catch (ParseException exp) {
-            // Ignore, can't happen
-        }*/
+        // TODO - Take reloadTournaments method from LotR
     }
 
     private void hallChanged() {
@@ -273,7 +238,7 @@ public class HallServer extends AbstractServer {
     public String getDailyMessage() {
         _hallDataAccessLock.readLock().lock();
         try {
-            return _motd;
+            return _messageOfTheDay;
         } finally {
             _hallDataAccessLock.readLock().unlock();
         }
@@ -282,7 +247,7 @@ public class HallServer extends AbstractServer {
     public void setDailyMessage(String motd) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            _motd = motd;
+            _messageOfTheDay = motd;
             hallChanged();
         } finally {
             _hallDataAccessLock.writeLock().unlock();
@@ -339,7 +304,6 @@ public class HallServer extends AbstractServer {
             throws HallException {
         League league = null;
         LeagueSeriesData leagueSerie = null;
-        CollectionType collectionType = _defaultCollectionType;
         GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
         GameTimer gameTimer = GameTimer.ResolveTimer(timer);
 
@@ -364,7 +328,6 @@ public class HallServer extends AbstractServer {
                     description = "";
 
                 format = leagueSerie.getFormat();
-                collectionType = leagueSerie.getCollectionType();
 
                 gameTimer = GameTimer.COMPETITIVE_TIMER;
             }
@@ -373,7 +336,7 @@ public class HallServer extends AbstractServer {
         if (format == null)
             throw new HallException("This format is not supported: " + formatSelection);
 
-        return new GameSettings(collectionType, format, league, leagueSerie,
+        return new GameSettings(format, league, leagueSerie,
                 league != null, isPrivate, isInviteOnly, isHidden, gameTimer, description);
     }
 
@@ -541,8 +504,8 @@ public class HallServer extends AbstractServer {
         _hallDataAccessLock.readLock().lock();
         try {
             visitor.serverTime(DateUtils.getCurrentDateAsString());
-            if (_motd != null)
-                visitor.motd(_motd);
+            if (_messageOfTheDay != null)
+                visitor.motd(_messageOfTheDay);
 
             tableHolder.processTables(isAdmin, player, visitor);
 
@@ -730,8 +693,9 @@ public class HallServer extends AbstractServer {
 
         private HallTournamentCallback(Tournament tournament) {
             _tournament = tournament;
-            tournamentGameSettings = new GameSettings(null, _formatLibrary.getFormat(_tournament.getFormat()),
-                    null, null, true, false, false, false, GameTimer.TOURNAMENT_TIMER, null);
+            tournamentGameSettings = new GameSettings(_formatLibrary.getFormat(_tournament.getFormat()),
+                    null, null, true, false, false, false,
+                    GameTimer.TOURNAMENT_TIMER, null);
         }
 
         @Override

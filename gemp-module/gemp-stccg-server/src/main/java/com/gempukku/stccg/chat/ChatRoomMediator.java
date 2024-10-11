@@ -29,13 +29,14 @@ public class ChatRoomMediator {
     private final Map<String, ChatCommandCallback> _chatCommandCallbacks = new HashMap<>();
     private String welcomeMessage;
 
-    public ChatRoomMediator(IgnoreDAO ignoreDAO, PlayerDAO playerDAO, String roomName, boolean muteJoinPartMessages, int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage) {
-        this(ignoreDAO, playerDAO, roomName, muteJoinPartMessages, secondsTimeoutPeriod, null, allowIncognito);
+    public ChatRoomMediator(IgnoreDAO ignoreDAO, PlayerDAO playerDAO, boolean muteJoinPartMessages,
+                            int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage) {
+        this(ignoreDAO, playerDAO, muteJoinPartMessages, secondsTimeoutPeriod, null, allowIncognito);
         this.welcomeMessage = welcomeMessage;
     }
 
-    public ChatRoomMediator(IgnoreDAO ignoreDAO, PlayerDAO playerDAO, String roomName, boolean muteJoinPartMessages, int secondsTimeoutPeriod, Set<String> allowedPlayers,
-                            boolean allowIncognito) {
+    public ChatRoomMediator(IgnoreDAO ignoreDAO, PlayerDAO playerDAO, boolean muteJoinPartMessages,
+                            int secondsTimeoutPeriod, Set<String> allowedPlayers, boolean allowIncognito) {
         this.ignoreDAO = ignoreDAO;
         this.playerDAO = playerDAO;
         _allowedPlayers = allowedPlayers;
@@ -76,16 +77,6 @@ public class ChatRoomMediator {
             return gatheringChatRoomListener;
         } finally {
             _lock.readLock().unlock();
-        }
-    }
-
-    public void partUser(String playerId) {
-        _lock.writeLock().lock();
-        try {
-            _chatRoom.partChatRoom(playerId);
-            _listeners.remove(playerId);
-        } finally {
-            _lock.writeLock().unlock();
         }
     }
 

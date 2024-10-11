@@ -38,7 +38,7 @@ public class PlayersPlayPhaseActionsInOrderGameProcess extends GameProcess {
         }
 
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
-        if (playableActions.isEmpty() && _game.shouldAutoPass(playerId, currentPhase))
+        if (playableActions.isEmpty() && _game.shouldAutoPass(currentPhase))
             playerPassed();
         else {
             _game.getUserFeedback().sendAwaitingDecision(playerId,

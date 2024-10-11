@@ -12,7 +12,7 @@ import com.gempukku.stccg.db.DeckDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.formats.SealedLeagueDefinition;
+import com.gempukku.stccg.formats.SealedEventDefinition;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import io.netty.handler.codec.http.HttpMethod;
@@ -23,8 +23,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -97,7 +95,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
                         .map(GameFormat::Serialize)
                         .collect(Collectors.toMap(x-> x.code, x-> x));
                 data.SealedTemplates = _formatLibrary.GetAllSealedTemplates().values().stream()
-                        .map(SealedLeagueDefinition::Serialize)
+                        .map(SealedEventDefinition::Serialize)
                         .collect(Collectors.toMap(x-> x.name, x-> x));
                 data.DraftTemplates = _draftLibrary.getAllSoloDrafts().values().stream()
                         .map(soloDraft -> new JSONDefs.ItemStub(soloDraft.getCode(), soloDraft.getFormat()))
@@ -248,10 +246,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
             _deckDao.saveDeckForPlayer(resourceOwner, deckName, validatedFormat.getName(), notes, deck);
 
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-            Document doc = documentBuilder.newDocument();
+            Document doc = createNewDoc();
             Element deckElem = doc.createElement("ok");
             doc.appendChild(deckElem);
 
@@ -397,23 +392,16 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
     private void listDecks(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
-        QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
+        User resourceOwner = getResourceOwner(request);
         List<Map.Entry<GameFormat, String>> decks = GetDeckNamesAndFormats(resourceOwner);
         SortDecks(decks);
-
         Document doc = ConvertDeckNamesToXML(decks);
         responseWriter.writeXmlResponse(doc);
     }
 
     private Document ConvertDeckNamesToXML(List<Map.Entry<GameFormat, String>> deckNames)
             throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
         Element decksElem = doc.createElement("decks");
 
         for (Map.Entry<GameFormat, String> pair : deckNames) {
@@ -494,10 +482,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private Document serializeDeck(CardDeck deck) throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
         Element deckElem = doc.createElement("deck");
         doc.appendChild(deckElem);
 

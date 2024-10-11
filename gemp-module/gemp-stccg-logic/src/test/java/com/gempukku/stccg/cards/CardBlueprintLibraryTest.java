@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.AbstractLogicTest;
+import com.gempukku.stccg.TextUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,13 +12,19 @@ public class CardBlueprintLibraryTest extends AbstractLogicTest {
     // TODO - Add check that all card images are valid URLs
     // TODO - Remove this later
     @Test
-    public void AllBlueprintsAreBuilt() {
+    public void AllBlueprintsAreBuilt() throws CardNotFoundException {
         assertTrue(_cardLibrary.checkLoadSuccess());
-        try {
-            assertEquals("Admiral McCoy", _cardLibrary.getCardBlueprint("106_014").getTitle());
-        } catch(CardNotFoundException exp) {
-            System.out.println("Invalid card definition");
+        assertEquals("Admiral McCoy", _cardLibrary.getCardBlueprint("106_014").getTitle());
+        int totalCardCount = 0;
+
+        for (SetDefinition set : _cardLibrary.getSetDefinitions().values()) {
+            System.out.println("Set " + set.getSetId() + " '" + set.getSetName() + "' - " +
+                            TextUtils.plural(set.getAllCards().size(), "card"));
+            totalCardCount += set.getAllCards().size();
         }
+
+        System.out.println("Total cards: " + totalCardCount);
+        assertEquals(totalCardCount, _cardLibrary.getAllBlueprintIds().size());
     }
 
     @Test

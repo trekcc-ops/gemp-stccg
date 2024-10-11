@@ -23,7 +23,7 @@ public class TribblesPlayerPlaysOrDraws extends GameProcess {
     public void process() {
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_playerId);
 
-        if (playableActions.isEmpty() && _game.shouldAutoPass(_playerId, _game.getGameState().getCurrentPhase())) {
+        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _nextProcess = new TribblesPlayerDrawsAndCanPlayProcess(_playerId, _game);
         } else {
             String userMessage;

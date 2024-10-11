@@ -1,19 +1,17 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.ActionProxy;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
-import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
 
 public class GenericCardTestHelper extends AbstractAtTest {
-
-    private final CardBlueprintFactory Environment = new CardBlueprintFactory();
 
     // Player key, then name/card
     public final Map<String, Map<String, PhysicalCardGeneric>> Cards = new HashMap<>();
@@ -236,12 +234,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
     public int GetStrength(PhysicalCardGeneric card)
     {
         return _game.getModifiersQuerying().getStrength(card);
-    }
-
-    public boolean IsType(PhysicalCardGeneric card, CardType type)
-    {
-        return card.getCardType() == type
-            || _game.getModifiersQuerying().isAdditionalCardType(_game, card, type);
     }
 
 

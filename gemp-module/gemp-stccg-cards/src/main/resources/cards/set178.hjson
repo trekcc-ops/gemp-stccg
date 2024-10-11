@@ -5,13 +5,14 @@
         title: Continuing Mission
         type: incident
         property-logo: tng-logo
-        seed: {
-            limit: 1
-            where: table
-        }
 		effects: [
+            {
+                type: seed
+                limit: 1
+                where: table
+            }
 		    {
-                type: trigger
+                type: action
                 optional: true
                 trigger: {
                     type: played
@@ -31,7 +32,7 @@
                 }
             }
             {
-                type: trigger
+                type: action
                 optional: false
                 trigger: {
                     type: played
@@ -44,9 +45,9 @@
                 }
             }
             {
-                type: trigger
+                type: action
                 optional: true
-                limit: once each turn
+                limitPerTurn: 1
                 trigger: {
                     type: played
                     player: you
@@ -65,13 +66,14 @@
         title: Reshape the Quadrant
         type: incident
         property-logo: ds9-logo
-        seed: {
-            limit: 1
-            where: table
-        }
 		effects: [
+            {
+                type: seed
+                limit: 1
+                where: table
+            }
 		    {
-                type: trigger
+                type: action
                 optional: true
                 trigger: {
                     type: played
@@ -91,7 +93,7 @@
                 }
             }
             {
-                type: trigger
+                type: action
                 optional: false
                 trigger: {
                     type: played

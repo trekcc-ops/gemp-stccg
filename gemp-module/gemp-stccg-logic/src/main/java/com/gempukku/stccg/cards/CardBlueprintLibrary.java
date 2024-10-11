@@ -1,9 +1,12 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.CardBlueprintFactory;
+import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONDefs;
@@ -26,8 +29,6 @@ public class CardBlueprintLibrary {
     private final Map<String, Set<String>> _alternateBlueprintMapping = new HashMap<>();
     private final Map<String, SetDefinition> _allSets = new LinkedHashMap<>();
 
-    private final CardBlueprintFactory cardBlueprintBuilder = new CardBlueprintFactory();
-
     private final Semaphore collectionReady = new Semaphore(1);
     private final File _cardPath = AppConfig.getCardsPath();
     private final List<ICallback> _refreshCallbacks = new ArrayList<>();
@@ -36,12 +37,17 @@ public class CardBlueprintLibrary {
 
     public CardBlueprintLibrary() {
         LOGGER.info("Locking blueprint library in constructor");
+
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(CardBlueprint.class, new CardBlueprintDeserializer());
+        _objectMapper.registerModule(module);
+
         //This will be released after the library has been initialized. Until then, all functional uses will be blocked.
         collectionReady.acquireUninterruptibly();
         _blueprintLoadErrorEncountered = false;
 
         loadSets();
-        loadCards(_cardPath, true);
+        loadCards(_cardPath);
         loadMappings();
 
         LOGGER.info("Unlocking blueprint library in constructor");
@@ -93,7 +99,7 @@ public class CardBlueprintLibrary {
         _blueprintLoadErrorEncountered = false;
         try {
             collectionReady.acquire();
-            loadCards(_cardPath, false);
+            loadCards(_cardPath);
             collectionReady.release();
         } catch (InterruptedException e) {
             _blueprintLoadErrorEncountered = true;
@@ -117,7 +123,7 @@ public class CardBlueprintLibrary {
                     SetDefinition setDefinition = new SetDefinition(setId, setName, flags);
                     _allSets.put(setId, setDefinition);
                 }
-        } finally {
+            } finally {
                 IOUtils.closeQuietly(reader);
             }
         } catch (IOException exp) {
@@ -153,18 +159,18 @@ public class CardBlueprintLibrary {
         _alternateBlueprintMapping.computeIfAbsent(blueprint2, k -> new HashSet<>()).add(blueprint1);
     }
 
-    private void loadCards(File path, boolean initial) {
+    private void loadCards(File path) {
         if (path.isFile()) {
-            loadCardsFromFile(path, initial);
+            loadCardsFromFile(path);
         }
         else if (path.isDirectory()) {
             for (File file : Objects.requireNonNull(path.listFiles())) {
-                loadCards(file, initial);
+                loadCards(file);
             }
         }
     }
 
-    private void loadCardsFromFile(File file, boolean validateNew) {
+    private void loadCardsFromFile(File file) {
         if (JsonUtils.IsInvalidHjsonFile(file))
             return;
         try {
@@ -174,14 +180,13 @@ public class CardBlueprintLibrary {
 
             for (String blueprintId : blueprintIds) {
                 try {
-                    final CardBlueprint cardBlueprint =
-                            cardBlueprintBuilder.buildFromJsonNew(blueprintId, jsonNode.get(blueprintId));
+                    final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, jsonNode);
                     _blueprints.put(blueprintId, cardBlueprint);
                     String setNumber = blueprintId.substring(0, blueprintId.indexOf("_"));
                     _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
-                } catch (Exception exp){
+                } catch (Exception exp) {
                     _blueprintLoadErrorEncountered = true;
-                    LOGGER.error("Unable to load card ", exp);
+                    LOGGER.error("Unable to load card " + blueprintId, exp);
                 }
             }
         } catch (Exception exp) {
@@ -194,6 +199,19 @@ public class CardBlueprintLibrary {
             LOGGER.error(errorMessage + " " + file.getAbsolutePath(), exp);
         }
         LOGGER.debug("Loaded JSON card file " + file.getName());
+    }
+
+    private CardBlueprint loadCardFromDeserializer(String blueprintId, JsonNode node)
+            throws JsonProcessingException, InvalidCardDefinitionException {
+        JsonNode cardNode = node.get(blueprintId);
+        if (cardNode == null)
+            throw new InvalidCardDefinitionException("Could not find node for blueprintId " + blueprintId);
+        if (!cardNode.has("blueprintId"))
+            ((ObjectNode) cardNode).put("blueprintId", blueprintId);
+        else if (!cardNode.get("blueprintId").textValue().equals(blueprintId))
+            throw new InvalidCardDefinitionException("Non-matching card blueprint property 'blueprintId' " +
+                    cardNode.get("blueprintId").textValue() + " for blueprint " + blueprintId);
+        return _objectMapper.readValue(cardNode.toString(), CardBlueprint.class);
     }
 
     public String getBaseBlueprintId(String blueprintId) {
@@ -296,7 +314,7 @@ public class CardBlueprintLibrary {
     public CardBlueprint getCardBlueprint(String blueprintId) throws CardNotFoundException {
         blueprintId = stripBlueprintModifiers(blueprintId);
         CardBlueprint bp = null;
-        
+
         try {
             collectionReady.acquire();
             if (_blueprints.containsKey(blueprintId)) {

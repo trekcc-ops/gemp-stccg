@@ -1,19 +1,18 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.actions.EffectResult;
 import com.google.common.collect.Multimap;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public interface ActionContext {
     Map<String, String> getValueMemory();
@@ -31,7 +30,7 @@ public interface ActionContext {
     PhysicalCard getSource();
     EffectResult getEffectResult();
     Effect getEffect();
-    boolean acceptsAllRequirements(Stream<Requirement> requirements);
+
     boolean acceptsAllRequirements(Requirement[] requirementArray);
     boolean acceptsAllRequirements(List<Requirement> requirementList);
     boolean acceptsAnyRequirements(Requirement[] requirementArray);

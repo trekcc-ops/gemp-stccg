@@ -9,18 +9,22 @@ import com.gempukku.stccg.TextUtils;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
+public class LookAtRandomCardsFromHandEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final int _count;
     private final String _actingPlayer;
     private final String _playerHand;
+    private final String _memoryId;
+    private final ActionContext _actionContext;
 
-    public LookAtRandomCardsFromHandEffect(ActionContext actionContext, String handOfPlayer, int count) {
+    public LookAtRandomCardsFromHandEffect(ActionContext actionContext, String handOfPlayer, int count, String memoryId) {
         super(actionContext);
         _source = actionContext.getSource();
+        _actionContext = actionContext;
         _count = count;
         _actingPlayer = actionContext.getPerformingPlayerId();
         _playerHand = handOfPlayer;
+        _memoryId = memoryId;
     }
 
     @Override
@@ -32,12 +36,12 @@ public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
     public boolean isPlayableInFull() {
         if (_game.getGameState().getHand(_playerHand).size() < _count)
             return false;
-        return _actingPlayer.equals(_playerHand) || _game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer);
+        return _actingPlayer.equals(_playerHand) || _game.getGameState().getPlayer(_actingPlayer).canLookOrRevealCardsInHandOfPlayer(_playerHand);
     }
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_game, _playerHand, _actingPlayer)) {
+        if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_playerHand, _actingPlayer)) {
             List<PhysicalCard> randomCards = TextUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
@@ -53,13 +57,12 @@ public abstract class LookAtRandomCardsFromHandEffect extends DefaultEffect {
             else {
                 _game.sendMessage("No cards in " + _playerHand + " hand to look at");
             }
-
-            cardsSeen(randomCards);
+            if (_memoryId != null)
+                _actionContext.setCardMemory(_memoryId, randomCards);
 
             return new FullEffectResult(randomCards.size() == _count);
         }
         return new FullEffectResult(false);
     }
 
-    protected abstract void cardsSeen(List<PhysicalCard> revealedCards);
 }

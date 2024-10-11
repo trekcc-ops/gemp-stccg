@@ -10,10 +10,6 @@ import com.gempukku.stccg.condition.Condition;
 public class CantDiscardFromPlayModifier extends AbstractModifier {
     private final Filter _sourceFilter;
 
-    public CantDiscardFromPlayModifier(PhysicalCard source, String text, Filterable affectFilter, Filterable sourceFilter) {
-        this(source, text, null, affectFilter, sourceFilter);
-    }
-
     public CantDiscardFromPlayModifier(PhysicalCard source, String text, Condition condition, Filterable affectFilter, Filterable sourceFilter) {
         super(source, text, affectFilter, condition, ModifierEffect.DISCARD_FROM_PLAY_MODIFIER);
         _sourceFilter = Filters.and(sourceFilter);

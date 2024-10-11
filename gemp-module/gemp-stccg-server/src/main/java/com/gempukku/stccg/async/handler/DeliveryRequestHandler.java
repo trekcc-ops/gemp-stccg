@@ -2,8 +2,8 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.db.User;
@@ -13,8 +13,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -41,10 +39,7 @@ public class DeliveryRequestHandler extends DefaultServerRequestHandler implemen
         if (delivery == null)
             throw new HttpProcessingException(404);
 
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
 
         Element deliveryElem = doc.createElement("delivery");
         for (Map.Entry<String, ? extends CardCollection> collectionTypeItems : delivery.entrySet()) {

@@ -2,9 +2,10 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.sources.ActionSource;
-import com.gempukku.stccg.actions.sources.TriggerActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
 import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filters;
@@ -13,8 +14,8 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 
 import java.util.*;
 
@@ -73,15 +74,9 @@ public class CardBlueprint {
 
     private List<ModifierSource> inPlayModifiers;
 
-    private List<TwilightCostModifierSource> _twilightCostModifierSources;
-
     private List<ExtraPlayCostSource> extraPlayCosts;
-    private List<DiscountSource> _discountSources;
-
     private List<Requirement> playInOtherPhaseConditions;
     private List<Requirement> playOutOfSequenceConditions;
-
-    private ActionSource _playEventAction;
     private ActionSource _seedCardActionSource;
 
     public CardBlueprint(String blueprintId) {
@@ -208,21 +203,10 @@ public class CardBlueprint {
     // LotR
     public void setCost(int cost) { this.cost = cost; }
     public int getCost() { return this.cost; }
-    public int getTwilightCost() { return cost; }
 
-    public void setKeywords(Map<Keyword, Integer> keywords) {
-        this.keywords = keywords;
-    }
     public boolean hasKeyword(Keyword keyword) { return keywords != null && keywords.containsKey(keyword); }
-    public int getKeywordCount(Keyword keyword) {
-        if (keywords == null)
-            return 0;
-        Integer count = keywords.get(keyword);
-        return Objects.requireNonNullElse(count, 0);
-    }
 
 
-    public void setCanInsertIntoSpaceline(boolean canInsert) { _canInsertIntoSpaceline = canInsert; }
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
     public void setAnyCrewOrAwayTeamCanAttempt() { }
     public Affiliation homeworldAffiliation() {
@@ -253,12 +237,6 @@ public class CardBlueprint {
         if (playOutOfSequenceConditions == null)
             playOutOfSequenceConditions = new LinkedList<>();
         playOutOfSequenceConditions.add(requirement);
-    }
-
-    public void appendDiscountSource(DiscountSource discountSource) {
-        if (_discountSources == null)
-            _discountSources = new LinkedList<>();
-        _discountSources.add(discountSource);
     }
 
     public void appendOptionalInHandTrigger(ActionSource actionSource, TriggerTiming timing) {
@@ -327,8 +305,6 @@ public class CardBlueprint {
         inDiscardPhaseActions.add(actionSource);
     }
 
-    public ActionSource getPlayEventAction() { return _playEventAction; }
-
     public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionSource actionSource) {
         _discardedFromPlayTriggers.put(requiredType, actionSource);
     }
@@ -342,20 +318,9 @@ public class CardBlueprint {
     }
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
     public List<Requirement> getPlayInOtherPhaseConditions() { return playInOtherPhaseConditions; }
-    public List<DiscountSource> getDiscountSources() { return _discountSources; }
     public List<ActionSource> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
     public List<ActionSource> getActivatedTriggers(TriggerTiming timing) { return _activatedTriggers.get(timing); }
     public List<Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
-
-    
-    public int getTwilightCostModifier(PhysicalCard self, PhysicalCard target) {
-        if (_twilightCostModifierSources == null)
-            return 0;
-        int result = 0;
-        for (TwilightCostModifierSource twilightCostModifier : _twilightCostModifierSources)
-            result += twilightCostModifier.getTwilightCostModifier(self.createActionContext(), target);
-        return result;
-    }
 
 
     public List<ActionSource> getBeforeOrAfterTriggers(RequiredType requiredType, TriggerTiming timing) {
@@ -389,30 +354,6 @@ public class CardBlueprint {
         throw new InvalidCardDefinitionException(message);
     }
 
-    public void validateConsistency() throws InvalidCardDefinitionException {
-        if (title == null) throwException("Card has to have a title");
-        if (_cardType == null)
-            throwException("Card has to have a type");
-        if (_cardType == CardType.MISSION) {
-            if (_propertyLogo != null) throwException("Mission card should not have a property logo");
-                // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            if (location == null && !title.equals("Space") && !_blueprintId.startsWith("1_"))
-                throwException("Mission card should have a location");
-        } else if (_cardType == CardType.TRIBBLE) {
-            if (tribblePower == null) throwException("Tribble card has to have a Tribble power");
-            if (!Arrays.asList(1, 10, 100, 1000, 10000, 100000).contains(tribbleValue))
-                throwException("Tribble card does not have a valid Tribble value");
-        } else if (_propertyLogo == null && !_blueprintId.startsWith("1_"))
-            // TODO - The substring "1_" condition is filtering out 2E Premiere cards. Not sustainable.
-            // TODO - Technically tribbles should have property logos too, they're just never relevant
-            throwException("Non-mission card has to have a property logo");
-
-        // Checks below are LotR-specific
-        if (_cardType != CardType.EVENT && _playEventAction != null)
-            throwException("Only events should have an event type effect");
-    }
-
-
 
     public String getFullName() {
         if (getSubtitle() != null)
@@ -427,11 +368,6 @@ public class CardBlueprint {
         boolean showUniversalSymbol = typesWithUniversalSymbol.contains(getCardType()) && isUniversal();
         return "<div class='cardHint' value='" + _blueprintId + "' + card_img_url='" + getImageUrl() + "'>" +
                 (showUniversalSymbol ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
-    }
-
-    public boolean hasNoTransporters() {
-        // TODO - No actual code built here for cards that don't have transporters
-        return false;
     }
 
     public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
@@ -476,10 +412,8 @@ public class CardBlueprint {
         List<Action> result = new LinkedList<>();
         getBeforeOrAfterTriggers(RequiredType.REQUIRED, TriggerTiming.AFTER).forEach(actionSource -> {
             if (actionSource != null) {
-                Action action =
-                        card.getActionFromActionSource(actionSource, card.getOwnerName(), null, effectResult);
-                if (action != null)
-                    result.add(action);
+                Action action = actionSource.createActionWithNewContext(card, effectResult);
+                if (action != null) result.add(action);
             }
         });
         return result;

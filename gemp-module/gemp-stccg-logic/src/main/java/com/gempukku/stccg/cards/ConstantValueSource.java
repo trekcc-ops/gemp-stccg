@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;

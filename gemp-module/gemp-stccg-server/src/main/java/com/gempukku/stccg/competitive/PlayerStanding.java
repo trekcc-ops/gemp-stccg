@@ -5,17 +5,15 @@ public class PlayerStanding {
     private final int _points;
     private final int _gamesPlayed;
     private final int _playerWins;
-    private final int _playerLosses;
     private final int _playerByes;
     private float _opponentWin;
     private int _standing;
 
-    public PlayerStanding(String playerName, int points, int gamesPlayed, int playerWins, int playerLosses, int playerByes) {
+    public PlayerStanding(String playerName, int points, int gamesPlayed, int playerWins, int playerByes) {
         _playerName = playerName;
         _points = points;
         _gamesPlayed = gamesPlayed;
         _playerWins = playerWins;
-        _playerLosses = playerLosses;
         _playerByes = playerByes;
     }
 
@@ -41,10 +39,6 @@ public class PlayerStanding {
 
     public int getPlayerWins() {
         return _playerWins;
-    }
-
-    public int getPlayerLosses() {
-        return _playerLosses;
     }
 
     public int getPlayerByes() {

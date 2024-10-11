@@ -2,7 +2,6 @@ package com.gempukku.stccg.builder;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.*;
@@ -37,98 +36,95 @@ public class ServerBuilder {
         LoggedUserHolder loggedUserHolder = new LoggedUserHolder();
         loggedUserHolder.start();
         objectMap.put(LoggedUserHolder.class, loggedUserHolder);
-
-        CollectionSerializer collectionSerializer = new CollectionSerializer();
-        objectMap.put(CollectionSerializer.class, collectionSerializer);
         LOGGER.debug("Ending CreatePrerequisites function");
     }
 
-    public static void CreateServices(Map<Type, Object> objectMap) {
+    public static void CreateServices(Map<Type, Object> objects) {
         LOGGER.debug("Calling CreateServices function");
-        objectMap.put(FormatLibrary.class,
-                new FormatLibrary(extract(objectMap, CardBlueprintLibrary.class)));
+        objects.put(FormatLibrary.class,
+                new FormatLibrary(extract(objects, CardBlueprintLibrary.class)));
 
-        objectMap.put(GameHistoryService.class,
+        objects.put(GameHistoryService.class,
                 new GameHistoryService(
-                        extract(objectMap, GameHistoryDAO.class)));
-        objectMap.put(GameRecorder.class,
+                        extract(objects, GameHistoryDAO.class)));
+        objects.put(GameRecorder.class,
                 new GameRecorder(
-                        extract(objectMap, GameHistoryService.class),
-                        extract(objectMap, PlayerDAO.class)));
+                        extract(objects, GameHistoryService.class),
+                        extract(objects, PlayerDAO.class)));
 
-        objectMap.put(CollectionsManager.class,
+        objects.put(CollectionsManager.class,
                 new CollectionsManager(
-                        extract(objectMap, PlayerDAO.class),
-                        extract(objectMap, CollectionDAO.class),
-                        extract(objectMap, TransferDAO.class),
-                        extract(objectMap, CardBlueprintLibrary.class)));
+                        extract(objects, PlayerDAO.class),
+                        extract(objects, CollectionDAO.class),
+                        extract(objects, TransferDAO.class),
+                        extract(objects, CardBlueprintLibrary.class)));
 
-        objectMap.put(SoloDraftDefinitions.class,
+        objects.put(SoloDraftDefinitions.class,
                 new SoloDraftDefinitions(
-                    extract(objectMap, CollectionsManager.class),
-                    extract(objectMap, CardBlueprintLibrary.class),
-                    extract(objectMap, FormatLibrary.class)
+                    extract(objects, CollectionsManager.class),
+                    extract(objects, CardBlueprintLibrary.class),
+                    extract(objects, FormatLibrary.class)
                 ));
 
-        objectMap.put(LeagueService.class,
+        objects.put(LeagueService.class,
                 new LeagueService(
-                        extract(objectMap, LeagueDAO.class),
-                        extract(objectMap, LeagueMatchDAO.class),
-                        extract(objectMap, LeagueParticipationDAO.class),
-                        extract(objectMap, CollectionsManager.class),
-                        extract(objectMap, CardBlueprintLibrary.class),
-                        extract(objectMap, FormatLibrary.class),
-                        extract(objectMap, SoloDraftDefinitions.class)));
+                        extract(objects, LeagueDAO.class),
+                        extract(objects, LeagueMatchDAO.class),
+                        extract(objects, LeagueParticipationDAO.class),
+                        extract(objects, CollectionsManager.class),
+                        extract(objects, CardBlueprintLibrary.class),
+                        extract(objects, FormatLibrary.class),
+                        extract(objects, SoloDraftDefinitions.class)));
 
-        objectMap.put(AdminService.class,
+        objects.put(AdminService.class,
                 new AdminService(
-                        extract(objectMap, PlayerDAO.class),
-                        extract(objectMap, IpBanDAO.class),
-                        extract(objectMap, LoggedUserHolder.class)
+                        extract(objects, PlayerDAO.class),
+                        extract(objects, IpBanDAO.class),
+                        extract(objects, LoggedUserHolder.class)
                 ));
 
         TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry = new TournamentPrizeSchemeRegistry();
         PairingMechanismRegistry pairingMechanismRegistry = new PairingMechanismRegistry();
 
-        objectMap.put(TournamentService.class,
+        objects.put(TournamentService.class,
                 new TournamentService(
-                        extract(objectMap, CollectionsManager.class),
-                        extract(objectMap, ProductLibrary.class),
+                        extract(objects, CollectionsManager.class),
+                        extract(objects, ProductLibrary.class),
                         new DraftPackStorage(),
                         pairingMechanismRegistry,
                         tournamentPrizeSchemeRegistry,
-                        extract(objectMap, TournamentDAO.class),
-                        extract(objectMap, TournamentPlayerDAO.class),
-                        extract(objectMap, TournamentMatchDAO.class),
-                        extract(objectMap, CardBlueprintLibrary.class)));
+                        extract(objects, TournamentDAO.class),
+                        extract(objects, TournamentPlayerDAO.class),
+                        extract(objects, TournamentMatchDAO.class),
+                        extract(objects, CardBlueprintLibrary.class)));
 
-        objectMap.put(MerchantService.class,
+        objects.put(MerchantService.class,
                 new MerchantService(
-                        extract(objectMap, CardBlueprintLibrary.class),
-                        extract(objectMap, CollectionsManager.class)));
+                        extract(objects, CardBlueprintLibrary.class),
+                        extract(objects, CollectionsManager.class)));
 
-        objectMap.put(ChatServer.class, new ChatServer(
-                extract(objectMap, IgnoreDAO.class),
-                extract(objectMap, PlayerDAO.class)));
+        objects.put(ChatServer.class, new ChatServer(
+                extract(objects, IgnoreDAO.class),
+                extract(objects, PlayerDAO.class)));
 
-        objectMap.put(GameServer.class,
+        objects.put(GameServer.class,
                 new GameServer(
-                        extract(objectMap, DeckDAO.class),
-                        extract(objectMap, CardBlueprintLibrary.class),
-                        extract(objectMap, ChatServer.class),
-                        extract(objectMap, GameRecorder.class)));
+                        extract(objects, DeckDAO.class),
+                        extract(objects, CardBlueprintLibrary.class),
+                        extract(objects, ChatServer.class),
+                        extract(objects, GameRecorder.class)));
 
-        objectMap.put(HallServer.class,
+        objects.put(HallServer.class,
                 new HallServer(
-                        extract(objectMap, IgnoreDAO.class),
-                        extract(objectMap, GameServer.class),
-                        extract(objectMap, ChatServer.class),
-                        extract(objectMap, LeagueService.class),
-                        extract(objectMap, TournamentService.class),
-                        extract(objectMap, CardBlueprintLibrary.class),
-                        extract(objectMap, FormatLibrary.class),
-                        extract(objectMap, CollectionsManager.class),
-                        extract(objectMap, AdminService.class),
+                        extract(objects, IgnoreDAO.class),
+                        extract(objects, GameServer.class),
+                        extract(objects, ChatServer.class),
+                        extract(objects, LeagueService.class),
+                        extract(objects, TournamentService.class),
+                        extract(objects, CardBlueprintLibrary.class),
+                        extract(objects, FormatLibrary.class),
+                        extract(objects, CollectionsManager.class),
+                        extract(objects, AdminService.class),
                         tournamentPrizeSchemeRegistry,
                         pairingMechanismRegistry
                 ));

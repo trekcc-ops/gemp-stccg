@@ -54,7 +54,6 @@ public class ST1EGameState extends GameState {
             return _inPlay;
     }
 
-    @Override
     public void createPhysicalCards() {
         for (Player player : _players.values()) {
             String playerId = player.getPlayerId();
@@ -115,7 +114,6 @@ public class ST1EGameState extends GameState {
         } else {
             _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));
         }
-        refreshSpacelineIndices();
         addCardToZone(missionCard, Zone.SPACELINE, true, shared);
     }
 
@@ -123,12 +121,6 @@ public class ST1EGameState extends GameState {
         _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(card, Zone.AT_LOCATION, true);
-    }
-
-    public void refreshSpacelineIndices() {
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            _spacelineLocations.get(i).refreshSpacelineIndex(i);
-        }
     }
 
     public Integer indexOfLocation(String location, Quadrant quadrant) {

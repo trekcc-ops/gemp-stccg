@@ -2,6 +2,7 @@
 
 {
     105_015: {
+        blueprintId: 105_015
         title: Q-Flash
         type: doorway
         property-logo: tng-logo

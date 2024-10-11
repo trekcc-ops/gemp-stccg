@@ -9,7 +9,7 @@ import com.gempukku.stccg.filters.Filters;
 public class CanPlayCardOutOfSequenceModifier extends AbstractModifier {
 
     private final Filter _filters;
-    protected CanPlayCardOutOfSequenceModifier(PhysicalCard source, Condition condition, Filterable... filters) {
+    public CanPlayCardOutOfSequenceModifier(PhysicalCard source, Condition condition, Filterable... filters) {
         super(source, null, null, condition, ModifierEffect.PLAY_OUT_OF_SEQUENCE);
         _filters = Filters.and(filters);
     }

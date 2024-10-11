@@ -3,7 +3,6 @@ package com.gempukku.stccg.filters;
 import com.gempukku.stccg.cards.CompletePhysicalCardVisitor;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.evaluator.Evaluator;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -22,7 +21,6 @@ public class Filters {
     private static final Map<Affiliation, Filter> _affiliationFilterMap = new HashMap<>();
     private static final Map<Uniqueness, Filter> _uniquenessFilterMap = new HashMap<>();
     private static final Map<Zone, Filter> _zoneFilterMap = new HashMap<>();
-    private static final Map<Keyword, Filter> _keywordFilterMap = new HashMap<>();
     private static final Map<Characteristic, Filter> _characteristicFilterMap = new HashMap<>();
 
     static {
@@ -42,8 +40,6 @@ public class Filters {
             _uniquenessFilterMap.put(uniqueness, uniqueness(uniqueness));
         for (Species species : Species.values())
             _speciesFilterMap.put(species, species(species));
-        for (Keyword keyword : Keyword.values())
-            _keywordFilterMap.put(keyword, keyword(keyword));
         for (Characteristic characteristic : Characteristic.values())
             _characteristicFilterMap.put(characteristic, characteristic(characteristic));
     }
@@ -114,19 +110,8 @@ public class Filters {
         return matchingFilterVisitor.getCounter();
     }
 
+
     // Filters available
-
-    public static Filter conditionFilter(final Filterable defaultFilters, final Condition condition, final Filterable conditionMetFilter) {
-        final Filter filter1 = changeToFilter(defaultFilters);
-        final Filter filter2 = changeToFilter(conditionMetFilter);
-        return (game, physicalCard) -> {
-            if (condition.isFulfilled())
-                return filter2.accepts(game, physicalCard);
-            else
-                return filter1.accepts(game, physicalCard);
-        };
-    }
-
     public static Filter strengthEqual(final Evaluator evaluator) {
         return (game, physicalCard) -> game.getModifiersQuerying().getStrength(physicalCard) == evaluator.evaluateExpression(game, null);
     }
@@ -205,6 +190,9 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(source.getOwnerName(), physicalCard, source);
     }
 
+    public static final Filter canBeRemovedFromTheGame = (game, physicalCard) -> true;
+
+
     public static Filter canBeDiscarded(final String performingPlayer, final PhysicalCard source) {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
     }
@@ -212,15 +200,15 @@ public class Filters {
     public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed();
 
     public static Filter playable(final DefaultGame game) {
-        return playable(game, 0);
+        return playable(0);
     }
     public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(); }
 
-    public static Filter playable(final DefaultGame game, final int twilightModifier) {
-        return playable(game, twilightModifier, false);
+    public static Filter playable(final int twilightModifier) {
+        return playable(twilightModifier, false);
     }
 
-    public static Filter playable(final DefaultGame game, final int twilightModifier, final boolean ignoreRoamingPenalty) {
+    public static Filter playable(final int twilightModifier, final boolean ignoreRoamingPenalty) {
         return playable(twilightModifier, ignoreRoamingPenalty, false);
     }
 
@@ -357,8 +345,7 @@ public class Filters {
     }
 
     private static Filter cardType(final CardType cardType) {
-        return (game, physicalCard) -> (physicalCard.getCardType() == cardType)
-                || game.getModifiersQuerying().isAdditionalCardType(game, physicalCard, cardType);
+        return (game, physicalCard) -> (physicalCard.getCardType() == cardType);
     }
 
     private static Filter skillName(final SkillName skillName) {
@@ -387,10 +374,6 @@ public class Filters {
 
     public static Filter specialDownloadIconCount(Integer count) {
         return (game, physicalCard) -> physicalCard.getBlueprint().getSpecialDownloadIconCount() == count;
-    }
-
-    private static Filter keyword(final Keyword keyword) {
-        return (game, physicalCard) -> game.getModifiersQuerying().hasKeyword(physicalCard, keyword);
     }
 
     private static Filter characteristic(final Characteristic characteristic) {
@@ -427,7 +410,6 @@ public class Filters {
             case Characteristic characteristic -> _characteristicFilterMap.get(characteristic);
             case SkillName enumFilter -> _skillNameFilterMap.get(enumFilter);
             case CardIcon icon -> (game, physicalCard) -> physicalCard.hasIcon(icon);
-            case Keyword keyword -> _keywordFilterMap.get(keyword);
             case MissionType missionType ->
                 // TODO - Does not properly account for dual missions
                     (game, physicalCard) -> physicalCard.getBlueprint().getMissionType() == missionType;
@@ -497,7 +479,7 @@ public class Filters {
     }
 
     public static Filter attachableTo(final DefaultGame game, final int twilightModifier, final Filterable... filters) {
-        return Filters.and(Filters.playable(game, twilightModifier),
+        return Filters.and(Filters.playable(twilightModifier),
                 (Filter) (game1, physicalCard) -> {
                     if (physicalCard.getBlueprint().getValidTargetFilter() == null)
                         return false;
@@ -523,6 +505,7 @@ public class Filters {
     public static Filterable yourCardsPresentWith(Player player, PhysicalCard card) {
         return and(your(player), presentWith(card));
     }
+
 
 
     private static class FindFirstActiveCardInPlayVisitor implements PhysicalCardVisitor {

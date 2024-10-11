@@ -11,16 +11,20 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
+public class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final String _playerId;
     private final int _count;
+    private final ActionContext _actionContext;
+    private final String _memoryId;
 
-    public RevealBottomCardsOfDrawDeckEffect(ActionContext actionContext, String playerId, int count) {
+    public RevealBottomCardsOfDrawDeckEffect(ActionContext actionContext, String playerId, int count, String memoryId) {
         super(actionContext.getGame(), playerId);
+        _actionContext = actionContext;
         _source = actionContext.getSource();
         _playerId = playerId;
         _count = count;
+        _memoryId = memoryId;
     }
 
     @Override
@@ -49,9 +53,9 @@ public abstract class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
 
             _game.sendMessage(_source.getCardLink() + " revealed cards from bottom of " + _playerId + " deck - " + TextUtils.getConcatenatedCardLinks(bottomCards));
         }
-        cardsRevealed(bottomCards);
+        if (_memoryId != null)
+            _actionContext.setCardMemory(_memoryId, bottomCards);
         return new FullEffectResult(bottomCards.size() == _count);
     }
 
-    protected abstract void cardsRevealed(List<PhysicalCard> cards);
 }

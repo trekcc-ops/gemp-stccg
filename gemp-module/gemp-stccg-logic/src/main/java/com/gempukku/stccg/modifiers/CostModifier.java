@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.ValueSource;
+import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.condition.Condition;
@@ -23,8 +23,4 @@ public class CostModifier extends AbstractModifier {
                 " from " + _cardSource.getCardLink();
     }
 
-    @Override
-    public int getTwilightCostModifier(PhysicalCard physicalCard, PhysicalCard target, boolean ignoreRoamingPenalty) {
-        return _valueSource.evaluateExpression(_actionContext, physicalCard);
-    }
 }

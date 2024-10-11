@@ -26,7 +26,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         String _currentPlayer = _playOrder.getCurrentPlayer();
 
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
-        if (playableActions.isEmpty() && _game.shouldAutoPass(_currentPlayer, _game.getGameState().getCurrentPhase())) {
+        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
             _game.getUserFeedback().sendAwaitingDecision(_currentPlayer,

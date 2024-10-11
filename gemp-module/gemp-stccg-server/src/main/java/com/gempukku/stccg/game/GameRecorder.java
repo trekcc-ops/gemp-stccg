@@ -10,7 +10,6 @@ import com.gempukku.stccg.gamestate.GameEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -163,9 +162,7 @@ public class GameRecorder {
             }
 
             try {
-                DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-                Document doc = documentBuilder.newDocument();
+                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 
                 var info = doc.createElement("info");
 

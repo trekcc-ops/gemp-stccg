@@ -17,7 +17,7 @@ public class AttributeModifier extends AbstractModifier {
     private final List<CardAttribute> _attributes = new LinkedList<>();
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
-                             Evaluator evaluator, boolean cumulative, CardAttribute attribute,
+                             Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
         super(modifierSource, affectFilter, condition, effectType);
         _evaluator = evaluator;
@@ -25,7 +25,7 @@ public class AttributeModifier extends AbstractModifier {
     }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
-                             Evaluator evaluator, boolean cumulative, ModifierEffect effectType) {
+                             Evaluator evaluator, ModifierEffect effectType) {
         super(modifierSource, affectFilter, condition, effectType);
         _evaluator = evaluator;
         _attributes.add(CardAttribute.STRENGTH);

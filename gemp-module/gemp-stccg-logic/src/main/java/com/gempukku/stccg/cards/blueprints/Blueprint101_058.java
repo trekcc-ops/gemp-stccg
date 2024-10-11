@@ -14,13 +14,9 @@ import java.util.List;
 
 public class Blueprint101_058 extends CardBlueprint {
     Blueprint101_058() {
-        super("101_058");
-        setTitle("Klingon Disruptor");
-        setCardType(CardType.EQUIPMENT);
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
+        super("101_058"); // Klingon Disruptor
         setLore("Phase-disruptor used by Klingons and other races. Similar to a phaser.");
 //        setGameText("Klingon and Non-Aligned use only. Each of your personnel STRENGTH +2 where present. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/klingondisruptor95.jpg");
     }
 
     @Override
@@ -29,7 +25,7 @@ public class Blueprint101_058 extends CardBlueprint {
         Filterable usageFilter = Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.NON_ALIGNED, Filters.Klingon));
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL);
         modifiers.add(new StrengthModifier(thisCard, affectFilter,
-                new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));
+                new PresentWithYourCardCondition(thisCard, usageFilter), 2));
         return modifiers;
     }
 }

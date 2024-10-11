@@ -3,13 +3,13 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
+import com.gempukku.stccg.async.LongPollingResource;
+import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatMessage;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.async.LongPollingResource;
-import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.db.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -32,8 +32,6 @@ import org.commonmark.renderer.html.HtmlWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -93,7 +91,6 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
 
             try {
                 final boolean admin = resourceOwner.hasType(User.Type.ADMIN);
-                final boolean leagueAdmin = resourceOwner.hasType(User.Type.LEAGUE_ADMIN);
                 if (message != null && !message.trim().isEmpty()) {
                     String newMsg;
                     newMsg = message.trim().replaceAll("\n\n\n+", "\n\n\n");
@@ -211,16 +208,9 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
             if (!processed) {
                 try {
                     List<ChatMessage> chatMessages = chatRoom.getChatRoomListener(playerId).consumeMessages();
-
                     Collection<String> usersInRoom = chatRoom.getUsersInRoom(admin);
-
-                    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-                    Document doc = documentBuilder.newDocument();
-
+                    Document doc = createNewDoc();
                     serializeChatRoomData(room, chatMessages, usersInRoom, doc);
-
                     responseWriter.writeXmlResponse(doc);
                 } catch (SubscriptionExpiredException exp) {
                     logHttpError(LOGGER, 410, "chat poller", exp);
@@ -247,14 +237,8 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
             final boolean admin = resourceOwner.hasType(User.Type.ADMIN);
             List<ChatMessage> chatMessages = chatRoom.joinUser(resourceOwner.getName(), admin);
             Collection<String> usersInRoom = chatRoom.getUsersInRoom(admin);
-
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-            Document doc = documentBuilder.newDocument();
-
+            Document doc = createNewDoc();
             serializeChatRoomData(room, chatMessages, usersInRoom, doc);
-
             responseWriter.writeXmlResponse(doc);
         } catch (PrivateInformationException exp) {
             logHttpError(LOGGER, 403, request.uri(), exp);

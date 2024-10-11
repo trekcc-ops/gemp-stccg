@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collections;
 
@@ -34,7 +33,8 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         _playedFrom = card.getZone();
 
         _chooseTargetEffect =
-                new ChooseActiveCardEffect(null, card.getOwnerName(), "Attach " + card.getFullName() + ". Choose target to attach to", filter) {
+                new ChooseActiveCardEffect(null, card.getOwnerName(), "Attach " + card.getFullName() +
+                        ". Choose target to attach to", filter) {
                     @Override
                     protected void cardSelected(PhysicalCard target) {
                         _target = target;
@@ -42,9 +42,6 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
                                 " from " + _playedFrom.getHumanReadable() + " on " + target.getCardLink());
                     }
                 };
-    }
-    public PhysicalCard getTarget() {
-        return _target;
     }
 
     @Override
@@ -58,11 +55,12 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToAttach.getZone();
-            _game.getGameState().removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
+            _game.getGameState()
+                    .removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
             if (playedFromZone == Zone.HAND)
                 _game.getGameState().addCardToZone(_cardToAttach, Zone.VOID_FROM_HAND);
             else

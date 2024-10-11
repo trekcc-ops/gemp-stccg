@@ -46,10 +46,6 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         return true;
     }
 
-    public boolean isCompatibleWithCardAndItsCrew(CardWithCrew cardWithCrew) {
-        return isCompatibleWithCardAndItsCrewAsAffiliation(cardWithCrew, _currentAffiliation);
-    }
-
     public void reportToFacility(FacilityCard facility) {
         setLocation(facility.getLocation());
         _game.getGameState().attachCard(this, facility);

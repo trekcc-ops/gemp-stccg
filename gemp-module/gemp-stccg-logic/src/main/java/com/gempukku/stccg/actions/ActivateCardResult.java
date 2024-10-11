@@ -14,10 +14,6 @@ public class ActivateCardResult extends EffectResult {
         return _source;
     }
 
-    public void cancelEffect() {
-        _effectCancelled = true;
-    }
-
     public boolean isEffectCancelled() {
         return _effectCancelled;
     }

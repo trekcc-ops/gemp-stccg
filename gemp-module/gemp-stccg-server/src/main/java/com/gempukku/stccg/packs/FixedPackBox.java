@@ -43,8 +43,4 @@ public class FixedPackBox implements PackBox {
         return result;
     }
 
-    //Not used in non-random packs
-    @Override
-    public List<GenericCardItem> openPack(int selection) { return openPack(); }
-
 }

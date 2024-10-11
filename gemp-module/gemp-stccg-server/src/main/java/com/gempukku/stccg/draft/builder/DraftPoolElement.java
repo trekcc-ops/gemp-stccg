@@ -1,6 +1,5 @@
 package com.gempukku.stccg.draft.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface DraftPoolElement {

@@ -3,16 +3,13 @@ package com.gempukku.stccg.async.handler;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.db.PlayerStatistic;
-import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -30,18 +27,14 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
     @Override
     public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
-            QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-            String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-            User resourceOwner = getResourceOwnerSafely(request, participantId);
+            User resourceOwner = getResourceOwner(request);
 
             List<PlayerStatistic> casualStatistics = _gameHistoryService.getCasualPlayerStatistics(resourceOwner);
             List<PlayerStatistic> competitiveStatistics = _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner);
 
             DecimalFormat percFormat = new DecimalFormat("#0.0%");
 
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document doc = documentBuilder.newDocument();
+            Document doc = createNewDoc();
             Element stats = doc.createElement("playerStats");
 
             Element casual = doc.createElement("casual");

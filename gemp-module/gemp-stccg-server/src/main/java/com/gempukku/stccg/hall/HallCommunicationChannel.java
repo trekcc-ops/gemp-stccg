@@ -24,7 +24,7 @@ public class HallCommunicationChannel implements LongPollableResource {
     }
 
     @Override
-    public synchronized void deregisterRequest(WaitingRequest waitingRequest) {
+    public synchronized void deregisterRequest() {
         _waitingRequest = null;
     }
 

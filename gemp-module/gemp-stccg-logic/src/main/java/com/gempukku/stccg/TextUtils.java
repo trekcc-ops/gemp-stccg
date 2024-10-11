@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class TextUtils {
 
-    public static <T> List<T> getRandomFromList(List<? extends T> list, int count) {
+    public static <T> List<T> getRandomFromList(Collection<? extends T> list, int count) {
         List<T> randomizedList = new ArrayList<>(list);
         Collections.shuffle(randomizedList, ThreadLocalRandom.current());
         return new LinkedList<>(randomizedList.subList(0, Math.min(count, randomizedList.size())));

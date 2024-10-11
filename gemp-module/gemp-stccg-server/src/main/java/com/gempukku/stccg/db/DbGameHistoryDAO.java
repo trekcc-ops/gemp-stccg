@@ -295,33 +295,6 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
-    @Override
-    public List<DBDefs.GameHistory> getLastGames(String requestedFormatName, int count) {
-
-        try {
-
-            Sql2o db = new Sql2o(_dbAccess.getDataSource());
-
-            try (org.sql2o.Connection conn = db.open()) {
-                String sql = """
-                        SELECT winner, winnerId, loser, loserId, win_reason, lose_reason, win_recording_id, lose_recording_id, 
-                            format_name, tournament, winner_deck_name, loser_deck_name, start_date, end_date, replay_version
-                        FROM game_history
-                        WHERE format_name = :formatName 
-                        ORDER BY end_date DESC
-                        LIMIT :count
-                    """;
-
-                return conn.createQuery(sql)
-                        .addParameter("formatName", requestedFormatName)
-                        .addParameter("count", count)
-                        .executeAndFetch(DBDefs.GameHistory.class);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to retrieve last games", ex);
-        }
-    }
-
     public List<PlayerStatistic> getCompetitivePlayerStatistics(User player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {

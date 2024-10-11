@@ -65,7 +65,7 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
         }
 
         @Override
-        protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> selectedCards) {
+        protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
             for (PhysicalCard selectedCard : selectedCards) {
                 _subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(
                         _game, false, Zone.DRAW_DECK, Zone.DRAW_DECK, EndOfPile.TOP, selectedCard));

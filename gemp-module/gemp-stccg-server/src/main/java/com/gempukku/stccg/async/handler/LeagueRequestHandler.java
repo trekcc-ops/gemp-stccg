@@ -5,23 +5,20 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.competitive.PlayerStanding;
+import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.db.vo.LeagueMatchResult;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -77,16 +74,8 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
     }
 
     private void getLeagueInformation(HttpRequest request, String leagueType, ResponseWriter responseWriter) throws Exception {
-        QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
-
-        Document doc = documentBuilder.newDocument();
-
+        User resourceOwner = getResourceOwner(request);
+        Document doc = createNewDoc();
         League league = getLeagueByType(leagueType);
 
         if (league == null)
@@ -155,10 +144,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
     }
 
     private void getNonExpiredLeagues(ResponseWriter responseWriter) throws Exception {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        Document doc = documentBuilder.newDocument();
+        Document doc = createNewDoc();
         Element leagues = doc.createElement("leagues");
 
         for (League league : _leagueService.getActiveLeagues()) {

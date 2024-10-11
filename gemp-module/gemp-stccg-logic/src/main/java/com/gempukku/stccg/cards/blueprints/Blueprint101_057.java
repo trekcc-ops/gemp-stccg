@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.PropertyLogo;
 import com.gempukku.stccg.condition.PresentWithYourCardCondition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
@@ -16,13 +15,9 @@ import java.util.List;
 
 public class Blueprint101_057 extends CardBlueprint {
     Blueprint101_057() {
-        super("101_057");
-        setTitle("Federation PADD");
-        setCardType(CardType.EQUIPMENT);
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
+        super("101_057"); // Federation PADD
         setLore("Standard Federation Personal Access Display Device for computerized information.");
 //        setGameText("Federation use only. Each of your personnel CUNNING +2 where present. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/federationpadd95.jpg");
     }
 
     @Override

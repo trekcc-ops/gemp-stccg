@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.requirement.missionrequirements.MissionRequirement;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 
 public class AttemptMissionEffect extends DefaultEffect {
     private final MissionCard _mission;

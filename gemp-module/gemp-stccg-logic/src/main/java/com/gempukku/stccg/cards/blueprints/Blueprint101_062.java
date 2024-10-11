@@ -14,13 +14,9 @@ import java.util.List;
 
 public class Blueprint101_062 extends CardBlueprint {
     Blueprint101_062() {
-        super("101_062");
-        setTitle("Romulan Disruptor");
-        setCardType(CardType.EQUIPMENT);
-        setPropertyLogo(PropertyLogo.TNG_LOGO);
+        super("101_062"); // Romulan Disruptor
         setLore("Directed-energy weapon used by Romulans and other races. Disruptor fire can be identified by a high residue of antiprotons that linger for several hours.");
 //        setGameText("Romulan and Non-Aligned use only. Each of your personnel STRENGTH +2 where present. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/premiere/romulandisruptor95.jpg");
     }
 
     @Override
@@ -29,7 +25,7 @@ public class Blueprint101_062 extends CardBlueprint {
         Filterable usageFilter = Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.NON_ALIGNED, Filters.Romulan));
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL);
         modifiers.add(new StrengthModifier(thisCard, affectFilter,
-                new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));
+                new PresentWithYourCardCondition(thisCard, usageFilter), 2));
         return modifiers;
     }
 }

@@ -6,6 +6,8 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.ModifierEffect;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -84,4 +86,8 @@ public class Player {
     public void addCardSeeded(PhysicalCard card) { _cardsSeeded.add(card); }
     public void addSolvedMission(MissionCard card) { _solvedMissions.add(card); }
     public List<MissionCard> getSolvedMissions() { return _solvedMissions; }
+
+    public boolean canLookOrRevealCardsInHandOfPlayer(String targetPlayerId) {
+        return _game.getModifiersQuerying().canLookOrRevealCardsInHand(targetPlayerId, _playerId);
+    }
 }

@@ -35,10 +35,6 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/bog/lupaza.gif
     }
-    116_054: {
-        title: Riker Wil
-        java-blueprint: true
-    }
     116_070: {
         title: Enrique Muniz
         type: personnel

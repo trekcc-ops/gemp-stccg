@@ -37,28 +37,14 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchLoser(int winCountThisSerie, int totalGamesPlayedThisSerie) {
-        return null;
-    }
-
-    @Override
     public CardCollection getPrizeForLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed, CollectionType collectionType) {
         if (collectionType.equals(CollectionType.ALL_CARDS)) {
-            return getPrizeForConstructedLeague(position, playersCount, gamesPlayed, maxGamesPlayed);
+            return getPrizeForConstructedLeague(position);
         } else if (collectionType.equals(CollectionType.MY_CARDS) || collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
-            return getPrizeForCollectorsLeague(position, playersCount, gamesPlayed, maxGamesPlayed);
+            return getPrizeForCollectorsLeague(position);
         } else {
             return getPrizeForSealedLeague(position);
         }
-    }
-
-    @Override
-    public CardCollection getTrophiesForLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed, CollectionType collectionType) {
-        DefaultCardCollection prize = new DefaultCardCollection();
-        prize.addItem("(S)Tengwar", getTengwarCount(position));
-        if (prize.getAll().iterator().hasNext())
-            return prize;
-        return null;
     }
 
     private CardCollection getPrizeForSealedLeague(int position) {
@@ -86,7 +72,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return 0;
     }
 
-    private CardCollection getPrizeForCollectorsLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
+    private CardCollection getPrizeForCollectorsLeague(int position) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getCollectorsBoosterCount(position));
         addPrizes(prize, getRandomFoil(_rares, getRandomRareFoilCount(position)));
@@ -107,14 +93,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return 0;
     }
 
-    //1st - 10 boosters, 4 tengwar, 3 foil rares
-//2nd - 8 boosters, 3 tengwar, 2 foil rares
-//3rd - 6 boosters, 2 tengwar, 1 foil rare
-//4th - 4 boosters, 1 tengwar
-//5th-8th - 3 boosters
-//9th-16th - 2 boosters
-//17th-32nd - 1 boosters
-    private CardCollection getPrizeForConstructedLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed) {
+    private CardCollection getPrizeForConstructedLeague(int position) {
         DefaultCardCollection prize = new DefaultCardCollection();
         prize.addItem("(S)All Decipher Choice - Booster", getConstructedBoosterCount(position));
         addPrizes(prize, getRandomFoil(_allCards, getRandomRareFoilCount(position)));
@@ -145,12 +124,6 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     private void addPrizes(DefaultCardCollection leaguePrize, List<String> cards) {
         for (String card : cards)
             leaguePrize.addItem(card, 1);
-    }
-
-    private int getTengwarCount(int position) {
-        if (position < 5)
-            return 5 - position;
-        return 0;
     }
 
     private List<String> getRandomFoil(List<String> list, int count) {

@@ -1,7 +1,5 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.SubscriptionConflictException;
-import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.vo.CollectionType;
@@ -15,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 // TODO - it has to be thread safe
-public class DefaultDraft implements Draft {
+public class DefaultDraft {
     // 35 seconds
     public static final int PICK_TIME = 35 * 1000;
 
@@ -38,7 +36,6 @@ public class DefaultDraft implements Draft {
     private boolean _finishedDraft;
 
     private final Map<String, DraftCommunicationChannel> _playerDraftCommunications = new HashMap<>();
-    private int _nextChannelNumber = 0;
 
     public DefaultDraft(CollectionsManager collectionsManager, CollectionType collectionType, ProductLibrary productLibrary, DraftPack draftPack, Set<String> players) {
         _collectionsManager = collectionsManager;
@@ -55,7 +52,6 @@ public class DefaultDraft implements Draft {
             _collectionsManager.addPlayerCollection(false, "New draft fixed collection", player, _collectionType, fixedCollection);
     }
 
-    @Override
     public void advanceDraft(TournamentCallback draftCallback) {
         if (haveAllPlayersPicked()) {
             if (haveAllCardsBeenChosen()) {
@@ -78,43 +74,6 @@ public class DefaultDraft implements Draft {
         }
     }
 
-    @Override
-    public void playerChosenCard(String playerName, String cardId) {
-        playerChosen(playerName, cardId);
-        _playerDraftCommunications.get(playerName).draftChanged();
-    }
-
-    public void signUpForDraft(String playerName, DraftChannelVisitor draftChannelVisitor) {
-        DraftCommunicationChannel draftCommunicationChannel = new DraftCommunicationChannel(_nextChannelNumber++);
-        _playerDraftCommunications.put(playerName, draftCommunicationChannel);
-        draftCommunicationChannel.processCommunicationChannel(getCardChoice(playerName), getChosenCards(playerName), draftChannelVisitor);
-    }
-
-    public DraftCommunicationChannel getCommunicationChannel(String playerName, int channelNumber) throws SubscriptionExpiredException, SubscriptionConflictException {
-        DraftCommunicationChannel communicationChannel = _playerDraftCommunications.get(playerName);
-        if (communicationChannel != null) {
-            if (communicationChannel.getChannelNumber() == channelNumber) {
-                return communicationChannel;
-            } else {
-                throw new SubscriptionConflictException();
-            }
-        } else {
-            throw new SubscriptionExpiredException();
-        }
-    }
-
-    public DraftCardChoice getCardChoice(String playerName) {
-        MutableCardCollection cardChoice = _cardChoice.get(playerName);
-
-        return new DefaultDraftCardChoice(cardChoice, _lastPickStart + PICK_TIME);
-    }
-
-    @Override
-    public CardCollection getChosenCards(String playerName) {
-        return _collectionsManager.getPlayerCollection(playerName, _collectionType.getCode());
-    }
-
-    @Override
     public boolean isFinished() {
         return _finishedDraft;
     }

@@ -40,7 +40,6 @@ public abstract class GameState implements Snapshotable<GameState> {
 
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
 
-    protected String _currentPlayerId;
     protected Phase _currentPhase;
 
     private boolean _consecutiveAction;
@@ -104,8 +103,6 @@ public abstract class GameState implements Snapshotable<GameState> {
         }
     }
 
-    public abstract void createPhysicalCards();
-
     public PhysicalCard createPhysicalCard(String playerId, CardBlueprintLibrary library, String blueprintId)
             throws CardNotFoundException {
         CardBlueprint card = library.getCardBlueprint(blueprintId);
@@ -151,7 +148,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
         if (_playerOrder != null) {
             listener.initializeBoard();
-            if (_currentPlayerId != null) listener.setCurrentPlayerId(_currentPlayerId);
+            if (getCurrentPlayerId() != null) listener.setCurrentPlayerId(getCurrentPlayerId());
             if (_currentPhase != null) listener.setCurrentPhase(_currentPhase);
 
             sendCardsToClient(playerId, listener, restoreSnapshot);
@@ -435,7 +432,7 @@ public abstract class GameState implements Snapshotable<GameState> {
         return Collections.unmodifiableList(_inPlay);
     }
     public List<PhysicalCard> getHand(String playerId) { return getCardGroup(Zone.HAND, playerId); }
-    public List<PhysicalCard> getVoidFromHand(String playerId) { return getCardGroup(Zone.VOID_FROM_HAND, playerId); }
+
     public List<PhysicalCard> getRemoved(String playerId) { return getCardGroup(Zone.REMOVED, playerId); }
     public List<PhysicalCard> getDrawDeck(String playerId) { return getCardGroup(Zone.DRAW_DECK, playerId); }
 
@@ -555,7 +552,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     public void addToPlayerScore(String player, int points) {
         _players.get(player).scorePoints(points);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(player, getPlayerScore(player));
+            listener.setPlayerScore(player);
     }
 
     public int getPlayerScore(String playerId) {
@@ -622,9 +619,9 @@ public abstract class GameState implements Snapshotable<GameState> {
         if (state == null) {
             return;
         }
-        PlayCardAction action = state.getPlayCardAction();
             // TODO SNAPSHOT - Review against Star Wars GEMP algorithm for PlayCardActions
-/*        getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getPlayedCard());
+/*        PlayCardAction action = state.getPlayCardAction();
+        getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getPlayedCard());
         if (action.getOtherPlayedCard() != null) {
             getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getOtherPlayedCard());
         } */

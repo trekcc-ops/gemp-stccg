@@ -38,7 +38,6 @@ public class JSONDefs {
         public String name;
         public int order = 1000;
         public String surveyUrl;
-        public String sites = "Fellowship";
         public boolean cancelRingBearerSkirmish = false;
         public boolean ruleOfFour = false;
         public boolean winAtEndOfRegroup = false;

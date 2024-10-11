@@ -9,14 +9,12 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbAccess {
     private static final Logger LOGGER = LogManager.getLogger(DbAccess.class);
-    private final DataSource _dataSource;
+    private final PoolingDataSource _dataSource;
 
     public DbAccess() {
         this(AppConfig.getProperty("db.connection.url"), AppConfig.getProperty("db.connection.username"), AppConfig.getProperty("db.connection.password"), false);
@@ -34,11 +32,11 @@ public class DbAccess {
         LOGGER.debug("DbAccess - _dataSource created for " + url);
     }
 
-    public DataSource getDataSource() {
+    public PoolingDataSource getDataSource() {
         return _dataSource;
     }
 
-    private DataSource setupDataSource(String connectURI, String user, String pass, Boolean batch) {
+    private PoolingDataSource setupDataSource(String connectURI, String user, String pass, Boolean batch) {
         //
         // First, we'll create a ConnectionFactory that the
         // pool will use to create Connections.
@@ -83,14 +81,14 @@ public class DbAccess {
         // passing in the object pool we created.
         //
 
+        PoolingDataSource dataSource = new PoolingDataSource(connectionPool);
         try {
-            Connection connection = new PoolingDataSource(connectionPool).getConnection();
+            dataSource.getConnection();
             LOGGER.debug("setupDataSource - connection successfully created");
         } catch(SQLException exp) {
             LOGGER.debug("setupDataSource - unable to connect");
-//            throw new RuntimeException(exp);
         }
 
-        return new PoolingDataSource(connectionPool);
+        return dataSource;
     }
 }

@@ -31,7 +31,7 @@ public class ST1ELocation {
 
     public List<MissionCard> getMissions() { return _missionCards; }
     public Set<FacilityCard> getOutposts() { return _outpostCards; }
-    public boolean hasMissions() { return !_missionCards.isEmpty(); }
+
     public void addMission(MissionCard card) {
         _missionCards.add(card);
         card.setLocation(this);
@@ -57,13 +57,6 @@ public class ST1ELocation {
         _nonMissionCards.add(card);
         if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
             _outpostCards.add((FacilityCard) card);
-    }
-
-    public void refreshSpacelineIndex(int newIndex) {
-        for (MissionCard mission : _missionCards)
-            mission.setLocationZoneIndex(newIndex);
-        for (PhysicalCard nonMission : _nonMissionCards)
-            nonMission.setLocationZoneIndex(newIndex);
     }
 
     public boolean hasFacilityOwnedByPlayer(String playerId) {
@@ -104,34 +97,6 @@ public class ST1ELocation {
 
     public int getSpan(Player player) throws InvalidGameLogicException {
         return getMissionForPlayer(player.getPlayerId()).getSpan(player);
-    }
-
-    // TODO - Really this needs to be a decision
-    public ST1ELocation getFarEndOfSpaceline(Player player) throws InvalidGameLogicException {
-        List<ST1ELocation> spaceline = _game.getGameState().getSpacelineLocations();
-        List<ST1ELocation> farthestSpan = new LinkedList<>();
-        List<ST1ELocation> farthestCards = new LinkedList<>();
-        int maxCards = 0;
-        int maxSpan = 0;
-        for (ST1ELocation location : spaceline) {
-            if (getDistanceToLocation(location, player) > maxSpan) {
-                farthestSpan = new LinkedList<>();
-                maxSpan = getDistanceToLocation(location, player);
-            }
-            if (getDistanceToLocation(location, player) >= maxSpan) {
-                farthestSpan.add(location);
-            }
-            if (Math.abs(spaceline.indexOf(location) - spaceline.indexOf(this)) > maxCards) {
-                farthestCards = new LinkedList<>();
-                maxCards = Math.abs(spaceline.indexOf(location) - spaceline.indexOf(this));
-            }
-            if (getDistanceToLocation(location, player) >= maxCards) {
-                farthestCards.add(location);
-            }
-        }
-        if (farthestCards.size() > 1)
-            return farthestSpan.getFirst();
-        else return farthestCards.getFirst();
     }
 
 }

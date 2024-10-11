@@ -14,13 +14,8 @@ import java.util.List;
 
 public class Blueprint112_046 extends CardBlueprint {
     Blueprint112_046() {
-        super("112_046");
-        setTitle("Bajoran Phaser");
-        setCardType(CardType.EQUIPMENT);
-        setPropertyLogo(PropertyLogo.DS9_LOGO);
-        setLore("Standard-issue phased energy weapon of the Bajoran Militia. Provides firepower equivalent to that of the Starfleet type II phaser.");
+        super("112_046"); // Bajoran Phaser
 //        setGameText("Bajoran and Non-Aligned use only. Each of your personnel present is STRENGTH +2. (Cumulative.)");
-        setImageUrl("https://www.trekcc.org/1e/cardimages/ds9/bajoranphaser.gif");
     }
 
     @Override
@@ -29,7 +24,7 @@ public class Blueprint112_046 extends CardBlueprint {
         Filterable usageFilter = Filters.and(CardType.PERSONNEL, Filters.or(Affiliation.NON_ALIGNED, Affiliation.BAJORAN, Species.BAJORAN));
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL);
         modifiers.add(new StrengthModifier(thisCard, affectFilter,
-                new PresentWithYourCardCondition(thisCard, usageFilter), 2, true));
+                new PresentWithYourCardCondition(thisCard, usageFilter), 2));
         return modifiers;
     }
 }

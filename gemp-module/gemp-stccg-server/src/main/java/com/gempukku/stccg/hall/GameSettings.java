@@ -1,12 +1,10 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 
 public class GameSettings {
-    private final CollectionType collectionType;
     private final GameFormat gameFormat;
     private final League league;
     private final LeagueSeriesData seriesData;
@@ -17,10 +15,9 @@ public class GameSettings {
     private final String userDescription;
     private final boolean isInviteOnly;
 
-    public GameSettings(CollectionType collectionType, GameFormat gameFormat, League league, LeagueSeriesData seriesData,
+    public GameSettings(GameFormat gameFormat, League league, LeagueSeriesData seriesData,
                         boolean competitive, boolean privateGame, boolean isInviteOnly, boolean hiddenGame,
                         GameTimer timer, String description) {
-        this.collectionType = collectionType;
         this.gameFormat = gameFormat;
         this.league = league;
         this.seriesData = seriesData;
@@ -30,10 +27,6 @@ public class GameSettings {
         this.timeSettings = timer;
         this.userDescription = description;
         this.isInviteOnly = isInviteOnly;
-    }
-
-    public CollectionType getCollectionType() {
-        return collectionType;
     }
 
     public GameFormat getGameFormat() {

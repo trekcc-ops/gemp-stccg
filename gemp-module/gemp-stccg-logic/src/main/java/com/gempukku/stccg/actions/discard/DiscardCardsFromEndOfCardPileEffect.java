@@ -1,12 +1,12 @@
 package com.gempukku.stccg.actions.discard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.DefaultEffect;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -19,20 +19,26 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
     private final boolean _forced;
     private final Zone _fromZone;
     private final EndOfPile _endOfPile;
+    private final String _memoryId;
+    private final ActionContext _context;
 
-    public DiscardCardsFromEndOfCardPileEffect(DefaultGame game, PhysicalCard source, Zone fromZone, EndOfPile endOfPile, String playerId) {
-        this(game, source, fromZone, endOfPile, playerId, 1, true);
+    public DiscardCardsFromEndOfCardPileEffect(Zone fromZone, EndOfPile endOfPile,
+                                               String playerId, ActionContext context) {
+        this(fromZone, endOfPile, playerId, 1, true, context, null);
     }
 
-    public DiscardCardsFromEndOfCardPileEffect(DefaultGame game, PhysicalCard source, Zone fromZone, EndOfPile endOfPile,
-                                               String playerId, int count, boolean forced) {
-        super(game, playerId);
-        _source = source;
+    public DiscardCardsFromEndOfCardPileEffect(Zone fromZone,
+                                               EndOfPile endOfPile, String playerId, int count, boolean forced,
+                                               ActionContext context, String memoryId) {
+        super(context.getGame(), playerId);
+        _source = context.getSource();
         _fromZone = fromZone;
         _playerId = playerId;
         _count = count;
         _forced = forced;
         _endOfPile = endOfPile;
+        _context = context;
+        _memoryId = memoryId;
     }
 
     @Override
@@ -59,6 +65,7 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
             if (!cardsDiscarded.isEmpty()) {
                 gameState.sendMessage(_playerId + " discards " + _endOfPile.name().toLowerCase() +
                         " cards from their " + _fromZone.getHumanReadable() + " - " + TextUtils.getConcatenatedCardLinks(cardsDiscarded));
+                _context.setCardMemory(_memoryId, cardsDiscarded);
                 cardsDiscardedCallback(cardsDiscarded);
             }
 
@@ -69,7 +76,7 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
                     );
                 else if (_fromZone == Zone.PLAY_PILE)
                     _game.getActionsEnvironment().emitEffectResult(
-                            new DiscardCardFromPlayPileResult(this, _source, discardedCard)
+                            new DiscardCardFromPlayPileResult(this, _source)
                     );
             }
             return new FullEffectResult(_count == cardsDiscarded.size());

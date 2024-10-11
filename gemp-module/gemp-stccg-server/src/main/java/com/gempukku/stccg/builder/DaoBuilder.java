@@ -3,7 +3,6 @@ package com.gempukku.stccg.builder;
 import com.gempukku.stccg.cache.CacheManager;
 import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
-import com.gempukku.stccg.collection.CollectionSerializer;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.db.*;
 import com.gempukku.stccg.log.LoggingProxy;
@@ -15,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 public class DaoBuilder {
+
     public static void CreateDatabaseAccessObjects(Map<Type, Object> objectMap) {
         DbAccess dbAccess = new DbAccess();
 
@@ -23,10 +23,6 @@ public class DaoBuilder {
         objectMap.put(TournamentDAO.class, LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess)));
         objectMap.put(TournamentPlayerDAO.class, LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(dbAccess)));
         objectMap.put(TournamentMatchDAO.class, LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess)));
-
-        CachedMerchantDAO merchantDao =
-                new CachedMerchantDAO(LoggingProxy.createLoggingProxy(MerchantDAO.class, new DbMerchantDAO(dbAccess)));
-        objectMap.put(MerchantDAO.class, merchantDao);
 
         objectMap.put(LeagueDAO.class, LoggingProxy.createLoggingProxy(LeagueDAO.class, new DbLeagueDAO(dbAccess)));
         objectMap.put(GameHistoryDAO.class, LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess)));
@@ -41,7 +37,7 @@ public class DaoBuilder {
         objectMap.put(DeckDAO.class, deckDao);
 
         CollectionDAO dbCollectionDao =
-                LoggingProxy.createLoggingProxy(CollectionDAO.class, new DbCollectionDAO(dbAccess, extract(objectMap, CollectionSerializer.class)));
+                LoggingProxy.createLoggingProxy(CollectionDAO.class, new DbCollectionDAO(dbAccess));
         CachedCollectionDAO collectionDao = new CachedCollectionDAO(dbCollectionDao);
         objectMap.put(CollectionDAO.class, collectionDao);
 
@@ -61,20 +57,12 @@ public class DaoBuilder {
         objectMap.put(IpBanDAO.class, ipBanDao);
 
         CacheManager cacheManager = new CacheManager();
-        cacheManager.addCache(merchantDao);
         cacheManager.addCache(deckDao);
         cacheManager.addCache(collectionDao);
         cacheManager.addCache(playerDao);
         cacheManager.addCache(transferDao);
         cacheManager.addCache(ipBanDao);
         objectMap.put(CacheManager.class, cacheManager);
-    }
-
-    private static <T> T extract(Map<Type, Object> objectMap, Class<T> clazz) {
-        T result = (T) objectMap.get(clazz);
-        if (result == null)
-            throw new RuntimeException("Unable to find class " + clazz.getName());
-        return result;
     }
 
 }

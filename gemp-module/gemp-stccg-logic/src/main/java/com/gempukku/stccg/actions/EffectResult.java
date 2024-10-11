@@ -13,9 +13,9 @@ public abstract class EffectResult {
     public enum Type {
         // May be relevant to multiple games
         ACTIVATE, END_OF_PHASE, END_OF_TURN,
-        FOR_EACH_DISCARDED_FROM_DECK, FOR_EACH_DISCARDED_FROM_HAND, FOR_EACH_DISCARDED_FROM_PLAY, FOR_EACH_KILLED,
+        FOR_EACH_DISCARDED_FROM_DECK, FOR_EACH_DISCARDED_FROM_HAND, FOR_EACH_DISCARDED_FROM_PLAY,
         FOR_EACH_RETURNED_TO_HAND, FOR_EACH_REVEALED_FROM_HAND, FOR_EACH_REVEALED_FROM_TOP_OF_DECK, PLAY_CARD,
-        START_OF_PHASE, START_OF_TURN, WHEN_MOVE_FROM, WHEN_MOVE_TO,
+        START_OF_PHASE, START_OF_TURN, WHEN_MOVE_FROM,
 
         // Tribbles-specific
         ACTIVATE_TRIBBLE_POWER,  DRAW_CARD_OR_PUT_INTO_HAND, FOR_EACH_DISCARDED_FROM_PLAY_PILE,
@@ -58,14 +58,6 @@ public abstract class EffectResult {
         _source = source;
         _performingPlayerId = effect.getPerformingPlayerId();
     }
-
-    protected EffectResult(Type type, Effect effect, DefaultGame game) {
-        _type = type;
-        _game = game;
-        _performingPlayerId = effect.getPerformingPlayerId();
-        _source = effect.getSource();
-    }
-
 
 
     public Type getType() {

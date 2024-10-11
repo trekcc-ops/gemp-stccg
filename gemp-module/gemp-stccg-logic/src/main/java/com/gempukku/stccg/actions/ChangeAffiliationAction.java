@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -61,7 +60,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionAttachedToCard() { return (PhysicalCard) _card; }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect() {
 
         if (!_affiliationWasChosen) {
             if (_affiliationOptions.size() > 1) {

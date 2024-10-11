@@ -13,7 +13,7 @@ public interface SoloDraft {
 
     CardCollection getCardsForChoiceId(String choiceId, long seed, int stage);
 
-    boolean hasNextStage(long seed, int stage);
+    boolean hasNextStage(int stage);
 
     String getCode();
     String getFormat();
