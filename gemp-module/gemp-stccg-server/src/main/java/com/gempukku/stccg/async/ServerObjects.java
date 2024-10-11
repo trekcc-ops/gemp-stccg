@@ -31,9 +31,9 @@ import org.apache.logging.log4j.Logger;
 
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
-    private CardBlueprintLibrary _cardBlueprintLibrary;
-    private ProductLibrary _productLibrary;
-    private LoggedUserHolder _loggedUserHolder;
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
+    private final ProductLibrary _productLibrary;
+    private final LoggedUserHolder _loggedUserHolder;
     private CachedLeagueParticipationDAO _leagueParticipationDAO;
     private CachedLeagueMatchDAO _leagueMatchDAO;
     private TournamentDAO _tournamentDAO;
@@ -64,7 +64,11 @@ public class ServerObjects {
     public ServerObjects() {
         //Libraries and other important prerequisite managers that are used by lots of other managers
         LOGGER.info("GempukkuServer loading prerequisites...");
-        createPrerequisites();
+        _cardBlueprintLibrary = new CardBlueprintLibrary();
+        _productLibrary = new ProductLibrary(_cardBlueprintLibrary);
+        _loggedUserHolder = new LoggedUserHolder();
+        _loggedUserHolder.start();
+
         //Now bulk initialize various managers
         LOGGER.info("GempukkuServer loading DAOs...");
         createDatabaseObjects();
@@ -73,13 +77,6 @@ public class ServerObjects {
         LOGGER.info("GempukkuServer starting servers...");
         startServers();
         LOGGER.info("GempukkuServer startup complete.");
-    }
-
-    public void createPrerequisites() {
-        _cardBlueprintLibrary = new CardBlueprintLibrary();
-        _productLibrary = new ProductLibrary(_cardBlueprintLibrary);
-        _loggedUserHolder = new LoggedUserHolder();
-        _loggedUserHolder.start();
     }
 
     public void createDatabaseObjects() {
@@ -119,9 +116,7 @@ public class ServerObjects {
         _merchantService = new MerchantService(_cardBlueprintLibrary, _collectionsManager);
         _chatServer = new ChatServer(_ignoreDAO, _playerDAO);
         _gameServer = new GameServer(_deckDAO, _cardBlueprintLibrary, _chatServer, _gameRecorder);
-        _hallServer = new HallServer(_ignoreDAO, _gameServer, _chatServer, _leagueService, _tournamentService,
-                _cardBlueprintLibrary, _formatLibrary, _collectionsManager, _adminService
-        );
+        _hallServer = new HallServer(this);
     }
 
     public void startServers() {
@@ -138,6 +133,7 @@ public class ServerObjects {
     public ProductLibrary getProductLibrary() { return _productLibrary; }
     public LoggedUserHolder getLoggedUserHolder() { return _loggedUserHolder; }
     public LeagueDAO getLeagueDAO() { return _leagueDAO; }
+    public IgnoreDAO getIgnoreDAO() { return _ignoreDAO; }
     public DeckDAO getDeckDAO() { return _deckDAO; }
     public PlayerDAO getPlayerDAO() { return _playerDAO; }
     public TransferDAO getTransferDAO() { return _transferDAO; }

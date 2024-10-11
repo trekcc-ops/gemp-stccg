@@ -13,6 +13,7 @@ import com.gempukku.stccg.modifiers.attributes.CunningModifier;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Blueprint101_057 extends CardBlueprint {
     Blueprint101_057() {
         super("101_057"); // Federation PADD

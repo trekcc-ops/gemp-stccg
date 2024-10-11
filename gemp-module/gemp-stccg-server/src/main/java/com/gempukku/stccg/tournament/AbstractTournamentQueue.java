@@ -1,9 +1,10 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.db.vo.CollectionType;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -24,15 +25,30 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     protected final CollectionType _collectionType;
     protected final TournamentPrizes _tournamentPrizes;
     protected final String _format;
+    protected final TournamentService _tournamentService;
 
-    public AbstractTournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType, TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism, String format) {
+    public AbstractTournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType,
+                                   TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism,
+                                   String format, TournamentService tournamentService) {
         _cost = cost;
         _requiresDeck = requiresDeck;
         _collectionType = collectionType;
         _tournamentPrizes = tournamentPrizes;
         _pairingMechanism = pairingMechanism;
         _format = format;
+        _tournamentService = tournamentService;
     }
+
+    public AbstractTournamentQueue(TournamentQueueInfo queueInfo, ServerObjects objects) {
+        _cost = queueInfo.getCost();
+        _requiresDeck = true;
+        _collectionType = CollectionType.ALL_CARDS;
+        _tournamentPrizes = queueInfo.getPrizes(objects.getCardBlueprintLibrary());
+        _pairingMechanism = queueInfo.getPairingMechanism();
+        _format = queueInfo.getFormat();
+        _tournamentService = objects.getTournamentService();
+    }
+
 
     @Override
     public String getPairingDescription() {

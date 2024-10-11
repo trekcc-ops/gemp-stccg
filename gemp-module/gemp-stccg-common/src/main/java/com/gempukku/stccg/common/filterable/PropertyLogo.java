@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("unused")
 public enum PropertyLogo implements Filterable {
     // TV shows
     TOS_LOGO,

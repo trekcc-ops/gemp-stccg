@@ -512,10 +512,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String dailyMessage = _hallServer.getDailyMessage();
-
-            if(dailyMessage != null) {
+            if(dailyMessage != null)
                 responseWriter.writeJsonResponse(dailyMessage.replace("\n", "<br>"));
-            }
         } finally {
             postDecoder.destroy();
         }
@@ -554,7 +552,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private void reloadCards(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, InterruptedException {
         validateAdmin(request);
 
-        _chatServer.sendSystemMessageToAllChatRooms("@everyone Server is reloading card definitions.  This will impact game speed until it is complete.");
+        _chatServer.sendSystemMessageToAllUsers(
+                "Server is reloading card definitions.  This will impact game speed until it is complete.");
 
         Thread.sleep(6000);
         _cardBlueprintLibrary.reloadAllDefinitions();
@@ -564,7 +563,9 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         _formatLibrary.ReloadFormats();
         _formatLibrary.ReloadSealedTemplates();
 
-        _chatServer.sendSystemMessageToAllChatRooms("@everyone Card definition reload complete.  If you are mid-game and you notice any oddities, reload the page and please let the mod team know in the game hall ASAP if the problem doesn't go away.");
+        _chatServer.sendSystemMessageToAllUsers(
+                "Card definition reload complete.  If you are mid-game and you notice any oddities, reload the page " +
+                        "and please let the mod team know in the game hall ASAP if the problem doesn't go away.");
 
         responseWriter.writeHtmlResponse("OK");
     }

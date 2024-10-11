@@ -1,7 +1,7 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.*;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
@@ -10,7 +10,6 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.CardGameMediator;
@@ -45,7 +44,6 @@ public class HallServer extends AbstractServer {
     private final ChatServer _chatServer;
     private final LeagueService _leagueService;
     private final TournamentService _tournamentService;
-    private final CardBlueprintLibrary _library;
     private final FormatLibrary _formatLibrary;
     private final CollectionsManager _collectionsManager;
     private final GameServer _gameServer;
@@ -67,23 +65,27 @@ public class HallServer extends AbstractServer {
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final ChatRoomMediator _hallChat;
     private final GameResultListener _notifyHallListeners = new NotifyHallListenersGameResultListener();
+    private final ServerObjects _serverObjects;
 
-    public HallServer(IgnoreDAO ignoreDAO, GameServer gameServer, ChatServer chatServer, LeagueService leagueService, 
-                      TournamentService tournamentService, CardBlueprintLibrary library, FormatLibrary formatLibrary, 
-                      CollectionsManager collectionsManager, AdminService adminService) {
-        _gameServer = gameServer;
-        _chatServer = chatServer;
-        _leagueService = leagueService;
-        _tournamentService = tournamentService;
-        _library = library;
-        _formatLibrary = formatLibrary;
-        _collectionsManager = collectionsManager;
-        _adminService = adminService;
+    public HallServer(ServerObjects objects) {
+        _serverObjects = objects;
+        _gameServer = objects.getGameServer();
+        _chatServer = objects.getChatServer();
+        _leagueService = objects.getLeagueService();
+        _tournamentService = objects.getTournamentService();
+        _formatLibrary = objects.getFormatLibrary();
+        _collectionsManager = objects.getCollectionsManager();
+        _adminService = objects.getAdminService();
+        final IgnoreDAO ignoreDAO = objects.getIgnoreDAO();
 
-        tableHolder = new TableHolder(leagueService, ignoreDAO);
+        tableHolder = new TableHolder(_leagueService, ignoreDAO);
         
-        _hallChat = _chatServer.createChatRoom("Game Hall", true, 300, true,
-                "You're now in the Game Hall, use /help to get a list of available commands.<br>Don't forget to check out the new Discord chat integration! Click the 'Switch to Discord' button in the lower right ---->");
+        _hallChat = _chatServer.createChatRoom(
+                "Game Hall", true, 300, true,
+                "You're now in the Game Hall, use /help to get a list of available commands.<br>" +
+                        "Don't forget to check out the new Discord chat integration! " +
+                        "Click the 'Switch to Discord' button in the lower right ---->"
+        );
         _hallChat.addChatCommandCallback("ban",
                 (from, parameters, admin) -> {
                     if (admin) {
@@ -197,13 +199,15 @@ public class HallServer extends AbstractServer {
             boolean cancelMessage = _shutdown && !shutdown;
             _shutdown = shutdown;
             if (shutdown) {
-                cancelWaitingTables();
+                tableHolder.cancelWaitingTables();
                 cancelTournamentQueues();
-                _chatServer.sendSystemMessageToAllChatRooms("@everyone System is entering shutdown mode and will be restarted when all games are finished.");
+                _chatServer.sendSystemMessageToAllUsers(
+                        "System is entering shutdown mode and will be restarted when all games are finished.");
                 hallChanged();
             }
             else if(cancelMessage){
-                _chatServer.sendSystemMessageToAllChatRooms("@everyone Shutdown mode canceled; games may now resume.");
+                _chatServer.sendSystemMessageToAllUsers(
+                        "Shutdown mode canceled; games may now resume.");
             }
         } finally {
             _hallDataAccessLock.writeLock().unlock();
@@ -236,10 +240,6 @@ public class HallServer extends AbstractServer {
         } finally {
             _hallDataAccessLock.readLock().unlock();
         }
-    }
-
-    private void cancelWaitingTables() {
-        tableHolder.cancelWaitingTables();
     }
 
     private void cancelTournamentQueues() throws SQLException, IOException {
@@ -621,7 +621,8 @@ public class HallServer extends AbstractServer {
 
             for (Map.Entry<String, Tournament> tournamentEntry : new HashMap<>(_runningTournaments).entrySet()) {
                 Tournament runningTournament = tournamentEntry.getValue();
-                boolean changed = runningTournament.advanceTournament(new HallTournamentCallback(runningTournament), _collectionsManager);
+                boolean changed = runningTournament.advanceTournament(
+                        new HallTournamentCallback(runningTournament), _collectionsManager);
                 if (runningTournament.getTournamentStage() == Tournament.Stage.FINISHED)
                     _runningTournaments.remove(tournamentEntry.getKey());
                 if (changed)
@@ -635,13 +636,8 @@ public class HallServer extends AbstractServer {
                 for (TournamentQueueInfo queueInfo : futureTournamentQueues) {
                     String scheduledTournamentId = queueInfo.getScheduledTournamentId();
                     if (!_tournamentQueues.containsKey(scheduledTournamentId)) {
-                        ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId, queueInfo.getCost(),
-                                true, _tournamentService, queueInfo.getStartTime(), queueInfo.getTournamentName(),
-                                queueInfo.getFormat(), CollectionType.ALL_CARDS, Tournament.Stage.PLAYING_GAMES,
-                                PairingMechanismRegistry.getPairingMechanism(queueInfo.getPlayOffSystem()),
-                                TournamentPrizeSchemeRegistry.getTournamentPrizes(_library,
-                                        queueInfo.getPrizeScheme()),
-                                queueInfo.getMinimumPlayers());
+                        ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId,
+                                Tournament.Stage.PLAYING_GAMES, queueInfo, _serverObjects);
                         _tournamentQueues.put(scheduledTournamentId, scheduledQueue);
                         hallChanged();
                     }

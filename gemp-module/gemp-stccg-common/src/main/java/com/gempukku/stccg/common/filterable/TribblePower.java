@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("SpellCheckingInspection")
 public enum TribblePower implements Filterable {
     ACQUIRE("Acquire",true), ADVANCE("Advance",false),
     ANTE("Ante",true), ANTIDOTE("Antidote",false),

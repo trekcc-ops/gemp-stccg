@@ -1,7 +1,7 @@
 package com.gempukku.stccg.tournament;
 
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,24 +15,19 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     private final long _startTime;
     private final int _minimumPlayers;
     private final String _startCondition;
-    private final TournamentService _tournamentService;
     private final String _tournamentName;
-    private final CollectionType _collectionType;
     private final Tournament.Stage _stage;
     private final String _scheduledTournamentId;
 
-    public ScheduledTournamentQueue(String scheduledTournamentId, int cost, boolean requiresDeck, TournamentService tournamentService, long startTime,
-                                    String tournamentName, String format, CollectionType collectionType, Tournament.Stage stage,
-                                    PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes, int minimumPlayers) {
-        super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format);
+    public ScheduledTournamentQueue(String scheduledTournamentId, Tournament.Stage stage, TournamentQueueInfo queueInfo,
+                                    ServerObjects objects) {
+        super(queueInfo, objects);
         _scheduledTournamentId = scheduledTournamentId;
-        _tournamentService = tournamentService;
-        _startTime = startTime;
-        _minimumPlayers = minimumPlayers;
+        _startTime = queueInfo.getStartTime();
+        _minimumPlayers = queueInfo.getMinimumPlayers();
         ZonedDateTime startDate = new Date(_startTime).toInstant().atZone(ZoneId.of("GMT"));
         _startCondition = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        _tournamentName = tournamentName;
-        _collectionType = collectionType;
+        _tournamentName = queueInfo.getTournamentName();
         _stage = stage;
     }
 

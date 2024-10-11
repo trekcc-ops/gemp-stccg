@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 public class Blueprint112_167 extends CardBlueprint {
     Blueprint112_167() {
         super("112_167"); // Shakaar Edon

@@ -291,7 +291,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         result.append("<b>").append(gameFormat.getName()).append("</b>");
         result.append("<ul>");
         result.append("<li>valid sets: ");
-        for (Integer integer : gameFormat.getValidSetNums())
+        for (Integer integer : gameFormat.getValidSetIds())
             result.append(integer).append(", ");
         result.append("</li>");
         if (!gameFormat.getBannedCards().isEmpty()) {

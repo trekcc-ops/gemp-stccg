@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("SpellCheckingInspection")
 public enum SkillName implements Filterable {
     // Personnel types
     ANIMAL("ANIMAL"), CIVILIAN("CIVILIAN"), ENGINEER("ENGINEER"),

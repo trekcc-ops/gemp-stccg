@@ -5,6 +5,7 @@ public enum Zone implements Filterable {
     MISSIONS_PILE("missions pile", false, false, false, true),
     SEED_DECK("seed deck", false, true, false, true),
     TABLE("table", true, true, true, true),
+    @SuppressWarnings("SpellCheckingInspection")
     SPACELINE("spaceline", true, true, true, false),
     AT_LOCATION("location", true, true, true, false),
 

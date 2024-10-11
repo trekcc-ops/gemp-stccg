@@ -21,14 +21,6 @@ public class ServerCleaner {
         }
     }
 
-    public synchronized void removeServer(AbstractServer server) {
-        _servers.remove(server);
-        if (_servers.isEmpty() && _thr != null) {
-            _thr.pleaseStop();
-            _thr = null;
-        }
-    }
-
     private class CleaningThread extends Thread {
         private boolean _stopped;
 
@@ -51,10 +43,6 @@ public class ServerCleaner {
             } catch (InterruptedException exp) {
                 // Thread interrupted - get lost
             }
-        }
-
-        public void pleaseStop() {
-            _stopped = true;
         }
     }
 }

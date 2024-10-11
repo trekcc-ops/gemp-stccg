@@ -2,6 +2,7 @@ package com.gempukku.stccg.common.filterable;
 
 import org.apache.commons.lang.StringUtils;
 
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum Species implements Filterable {
     ANDROID("android"),
     BAJORAN, BENZITE, FERENGI,

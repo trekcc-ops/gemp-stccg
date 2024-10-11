@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -66,11 +64,6 @@ public class AppConfig {
 
     public static File getResourceFile(String subPath) {
         return new File(getResourcePath(subPath));
-    }
-
-    public static FileInputStream getResourceStream(String subPath) throws IOException {
-        String path = Paths.get(getResourcePath(), subPath).toString();
-        return new FileInputStream(path);
     }
 
     public static String getWebPath() { return getProperty("web.path"); }

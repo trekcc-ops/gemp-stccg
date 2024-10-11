@@ -9,17 +9,16 @@ import java.util.Date;
 public class ImmediateRecurringQueue extends AbstractTournamentQueue implements TournamentQueue {
     private final String _tournamentQueueName;
     private final int _playerCap;
-    private final TournamentService _tournamentService;
     private final String _tournamentIdPrefix;
 
     public ImmediateRecurringQueue(int cost, String format, CollectionType collectionType, String tournamentIdPrefix,
                                            String tournamentQueueName, int playerCap, boolean requiresDeck,
-                                           TournamentService tournamentService, TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism) {
-        super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format);
+                                           TournamentService tournamentService, TournamentPrizes tournamentPrizes,
+                                   PairingMechanism pairingMechanism) {
+        super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format, tournamentService);
         _tournamentQueueName = tournamentQueueName;
         _playerCap = playerCap;
         _tournamentIdPrefix = tournamentIdPrefix;
-        _tournamentService = tournamentService;
     }
 
     @Override

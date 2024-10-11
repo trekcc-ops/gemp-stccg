@@ -123,7 +123,7 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public List<Integer> getValidSetNums() {
+    public List<Integer> getValidSetIds() {
         return Collections.unmodifiableList(_validSets);
     }
 
