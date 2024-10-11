@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class ChatRoom {
     private static final int MAX_MESSAGE_HISTORY_COUNT = 500;
-    private final LinkedList<ChatMessage> _lastMessages = new LinkedList<>();
+    private final Deque<ChatMessage> _lastMessages = new LinkedList<>();
     private final Map<String, ChatRoomInfo> _chatRoomListeners = new TreeMap<>(
             String::compareToIgnoreCase);
     private final boolean muteJoinPartMessages;

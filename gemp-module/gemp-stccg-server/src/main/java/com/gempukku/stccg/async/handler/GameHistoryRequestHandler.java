@@ -5,7 +5,6 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -16,11 +15,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class GameHistoryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final GameHistoryService _gameHistoryService;
 
     public GameHistoryRequestHandler(ServerObjects objects) {
         super(objects);
-        _gameHistoryService = objects.getGameHistoryService();
     }
 
     @Override
@@ -35,15 +32,19 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
     private void getGameHistory(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, "start"));
-        int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, "count"));
 
-        if (start < 0 || count < 1 || count > 100)
-            throw new HttpProcessingException(400);
+        String startParameter = getQueryParameterSafely(queryDecoder, "start");
+        String countParameter = getQueryParameterSafely(queryDecoder, "count");
+
+        int start = Integer.parseInt(startParameter);
+        int count = Integer.parseInt(countParameter);
+
+        if (start < 0 || count < 1 || count > 100) throw new HttpProcessingException(400);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        final List<DBData.GameHistory> playerGameHistory = _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
+        final List<DBData.GameHistory> playerGameHistory =
+                _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
         int recordCount = _gameHistoryService.getGameHistoryForPlayerCount(resourceOwner);
 
         Document doc = createNewDoc();

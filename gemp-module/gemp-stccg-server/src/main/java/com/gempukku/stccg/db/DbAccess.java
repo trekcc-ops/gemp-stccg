@@ -17,7 +17,8 @@ public class DbAccess {
     private final PoolingDataSource _dataSource;
 
     public DbAccess() {
-        this(AppConfig.getProperty("db.connection.url"), AppConfig.getProperty("db.connection.username"), AppConfig.getProperty("db.connection.password"), false);
+        this(AppConfig.getProperty("db.connection.url"), AppConfig.getProperty("db.connection.username"),
+                AppConfig.getProperty("db.connection.password"), false);
     }
 
     public DbAccess(String url, String user, String pass, boolean batch) {

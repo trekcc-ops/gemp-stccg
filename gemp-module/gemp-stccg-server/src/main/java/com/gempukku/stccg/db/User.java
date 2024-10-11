@@ -1,11 +1,11 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.DBData;
+import com.gempukku.stccg.async.HttpProcessingException;
+import com.mysql.cj.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.net.HttpURLConnection;
+import java.util.*;
 
 public class User {
 
@@ -135,4 +135,26 @@ public class User {
             type = info;
         }
     }
+
+    private boolean isType(User.Type type) {
+        return _type.contains(type.getValue());
+    }
+
+    private boolean hasNoPassword() {
+        return StringUtils.isNullOrEmpty(_password);
+    }
+
+    public void checkLogin() throws HttpProcessingException {
+        if (hasNoPassword()) {
+            throw new HttpProcessingException(HttpURLConnection.HTTP_ACCEPTED); // 202
+        }
+        if (isType(User.Type.USER)) {
+            final Date bannedUntil = getBannedUntil();
+            if (bannedUntil != null && bannedUntil.after(new Date()))
+                throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
+        } else {
+            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
+        }
+    }
+
 }

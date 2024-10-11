@@ -631,14 +631,16 @@ public class HallServer extends AbstractServer {
 
             if (_tickCounter == 60) {
                 _tickCounter = 0;
-                List<TournamentQueueInfo> futureTournamentQueues = _tournamentService.getFutureScheduledTournamentQueues(
-                        System.currentTimeMillis() + _scheduledTournamentLoadTime);
+                long nextLoadTime = System.currentTimeMillis() + _scheduledTournamentLoadTime;
+                List<TournamentQueueInfo> futureTournamentQueues =
+                        _tournamentService.getFutureScheduledTournamentQueues(nextLoadTime);
                 for (TournamentQueueInfo queueInfo : futureTournamentQueues) {
-                    String scheduledTournamentId = queueInfo.getScheduledTournamentId();
-                    if (!_tournamentQueues.containsKey(scheduledTournamentId)) {
-                        ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId,
-                                Tournament.Stage.PLAYING_GAMES, queueInfo, _serverObjects);
-                        _tournamentQueues.put(scheduledTournamentId, scheduledQueue);
+                    String tournamentId = queueInfo.getScheduledTournamentId();
+                    if (!_tournamentQueues.containsKey(tournamentId)) {
+                        ScheduledTournamentQueue scheduledQueue =
+                                queueInfo.createNewScheduledTournamentQueue(
+                                        _serverObjects, Tournament.Stage.PLAYING_GAMES);
+                        _tournamentQueues.put(tournamentId, scheduledQueue);
                         hallChanged();
                     }
                 }
@@ -738,5 +740,10 @@ public class HallServer extends AbstractServer {
         result.add("...");
         result.add("We... We told him to go away! And away he goes, preciouss! Gone, gone, gone! Smeagol is free!");
         return result;
+    }
+
+    public void startServer() {
+        basicStartup();
+        doAfterStartup();
     }
 }

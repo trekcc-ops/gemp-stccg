@@ -1,6 +1,7 @@
 package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.User;
@@ -43,7 +44,8 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
         _cost = queueInfo.getCost();
         _requiresDeck = true;
         _collectionType = CollectionType.ALL_CARDS;
-        _tournamentPrizes = queueInfo.getPrizes(objects.getCardBlueprintLibrary());
+        CardBlueprintLibrary library = objects.getCardBlueprintLibrary();
+        _tournamentPrizes = queueInfo.getPrizes(library);
         _pairingMechanism = queueInfo.getPairingMechanism();
         _format = queueInfo.getFormat();
         _tournamentService = objects.getTournamentService();
@@ -67,22 +69,27 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
 
     @Override
     public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException {
-        if (!_players.contains(player.getName()) && isJoinable()) {
-            if (_cost <= 0 || collectionsManager.removeCurrencyFromPlayerCollection("Joined "+getTournamentQueueName()+" queue", player, _currencyCollection, _cost)) {
-                _players.add(player.getName());
+        String playerName = player.getName();
+        if (!_players.contains(playerName) && isJoinable()) {
+            if (_cost <= 0 || collectionsManager.removeCurrencyFromPlayerCollection(
+                    "Joined " + getTournamentQueueName() + " queue", player, _currencyCollection, _cost)) {
+                _players.add(playerName);
                 if (_requiresDeck)
-                    _playerDecks.put(player.getName(), deck);
+                    _playerDecks.put(playerName, deck);
             }
         }
     }
 
     @Override
     public final synchronized void leavePlayer(CollectionsManager collectionsManager, User player) throws SQLException, IOException {
-        if (_players.contains(player.getName())) {
+        String playerName = player.getName();
+        if (_players.contains(playerName)) {
             if (_cost > 0)
-                collectionsManager.addCurrencyToPlayerCollection(true, "Return for leaving "+getTournamentQueueName()+" queue", player, _currencyCollection, _cost);
-            _players.remove(player.getName());
-            _playerDecks.remove(player.getName());
+                collectionsManager.addCurrencyToPlayerCollection(true,
+                        "Return for leaving " + getTournamentQueueName() + " queue", player, _currencyCollection,
+                        _cost);
+            _players.remove(playerName);
+            _playerDecks.remove(playerName);
         }
     }
 
@@ -90,7 +97,7 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     public final synchronized void leaveAllPlayers(CollectionsManager collectionsManager) throws SQLException, IOException {
         if (_cost > 0) {
             for (String player : _players)
-                collectionsManager.addCurrencyToPlayerCollection(false, "Return for leaving "+getTournamentQueueName()+" queue", player, _currencyCollection, _cost);
+                collectionsManager.addCurrencyToPlayerCollection(false, "Return for leaving " + getTournamentQueueName() + " queue", player, _currencyCollection, _cost);
         }
         _players.clear();
         _playerDecks.clear();

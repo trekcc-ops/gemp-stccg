@@ -78,16 +78,12 @@ public class TextUtils {
     }
 
     public static String arrayToCommaSeparated(int[] integers) {
-        int iMax = integers.length - 1;
-        if (iMax == -1)
+        if (integers.length == 0)
             return "";
 
-        StringBuilder b = new StringBuilder();
-        for (int i = 0; ; i++) {
-            b.append(integers[i]);
-            if (i == iMax)
-                return b.toString();
-            b.append(",");
-        }
+        StringJoiner sj = new StringJoiner(",");
+        for (int item : integers)
+            sj.add(String.valueOf(item));
+        return sj.toString();
     }
 }

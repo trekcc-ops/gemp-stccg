@@ -7,7 +7,6 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
@@ -19,12 +18,10 @@ import java.util.List;
 public class PlaytestRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private final PlayerDAO _playerDAO;
-    private final GameHistoryService _gameHistoryService;
 
     public PlaytestRequestHandler(ServerObjects objects) {
         super(objects);
         _playerDAO = objects.getPlayerDAO();
-        _gameHistoryService = objects.getGameHistoryService();
     }
 
     @Override

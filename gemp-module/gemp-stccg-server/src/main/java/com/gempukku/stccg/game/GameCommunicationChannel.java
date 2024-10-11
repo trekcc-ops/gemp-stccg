@@ -7,7 +7,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -124,7 +124,7 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         return _lastConsumed;
     }
 
-    public void serializeConsumedEvents(Document doc, Element element) {
+    public void serializeConsumedEvents(Document doc, Node element) {
         for (GameEvent event : consumeGameEvents())
             element.appendChild(event.serialize(doc));
     }

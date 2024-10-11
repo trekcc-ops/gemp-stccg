@@ -1,5 +1,7 @@
 package com.gempukku.stccg.common.filterable;
 
+import java.util.Locale;
+
 public enum Phase {
     // Generic
     BETWEEN_TURNS("Between turns"),
@@ -31,11 +33,13 @@ public enum Phase {
     }
 
     public static Phase findPhase(String name) {
-        String nameCaps = name.toUpperCase().trim().replace(' ', '_').replace('-', '_');
-        String nameLower = name.toLowerCase();
+        String nameCaps = name.toUpperCase(Locale.ROOT).strip().replace(' ', '_').replace('-', '_');
+        String nameLower = name.toLowerCase(Locale.ROOT);
 
         for (Phase phase : values()) {
-            if (phase.getHumanReadable().toLowerCase().equals(nameLower) || phase.toString().equals(nameCaps))
+            String phaseStringLower = phase.getHumanReadable().toLowerCase(Locale.ROOT);
+            String phaseStringUpper = phase.toString();
+            if (phaseStringLower.equals(nameLower) || phaseStringUpper.equals(nameCaps))
                 return phase;
         }
         return null;

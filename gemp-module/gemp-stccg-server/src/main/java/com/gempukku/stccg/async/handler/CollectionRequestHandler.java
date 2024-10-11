@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.db.User;
@@ -25,6 +24,7 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,14 +34,12 @@ import java.util.regex.Pattern;
 
 public class CollectionRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final LeagueService _leagueService;
-    private final CollectionsManager _collectionsManager;
     private final ProductLibrary _productLibrary;
     private final FormatLibrary _formatLibrary;
 
     public CollectionRequestHandler(ServerObjects objects) {
         super(objects);
         _leagueService = objects.getLeagueService();
-        _collectionsManager = objects.getCollectionsManager();
         _productLibrary = objects.getProductLibrary();
         _formatLibrary = objects.getFormatLibrary();
     }
@@ -84,7 +82,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeXmlResponse(doc, headers);
     }
 
-    private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter) throws Exception {
+    private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter)
+            throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         String filter = getQueryParameterSafely(queryDecoder, "filter");
@@ -100,7 +99,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
         Iterable<GenericCardItem> items = collection.getAll();
         SortAndFilterCards sortAndFilter = new SortAndFilterCards();
-        List<GenericCardItem> filteredResult = sortAndFilter.process(filter, items, _cardBlueprintLibrary, _formatLibrary);
+        List<GenericCardItem> filteredResult =
+                sortAndFilter.process(filter, items, _cardBlueprintLibrary, _formatLibrary);
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
@@ -124,7 +124,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeXmlResponse(doc, headers);
     }
 
-    private void appendCardElement(Document doc, Element collectionElem, GenericCardItem item,
+    private void appendCardElement(Document doc, Node collectionElem, GenericCardItem item,
                                    boolean setSubDeckAttribute) throws Exception {
         Element card = doc.createElement("card");
         if (setSubDeckAttribute) {

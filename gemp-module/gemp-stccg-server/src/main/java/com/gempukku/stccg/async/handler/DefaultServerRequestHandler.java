@@ -18,6 +18,7 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.service.LoggedUserHolder;
+import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -26,6 +27,7 @@ import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -47,8 +49,10 @@ public class DefaultServerRequestHandler {
     private final TransferDAO _transferDAO;
     protected final CollectionsManager _collectionsManager;
     protected final GameHistoryService _gameHistoryService;
+    protected final ServerObjects _serverObjects;
 
     public DefaultServerRequestHandler(ServerObjects objects) {
+        _serverObjects = objects;
         _playerDao = objects.getPlayerDAO();
         _loggedUserHolder = objects.getLoggedUserHolder();
         _transferDAO = objects.getTransferDAO();
@@ -84,7 +88,7 @@ public class DefaultServerRequestHandler {
         }
     }
 
-    private String getLoggedUser(HttpRequest request) {
+    private String getLoggedUser(HttpMessage request) {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
         String cookieHeader = request.headers().get(COOKIE);
         if (cookieHeader != null) {
@@ -147,8 +151,8 @@ public class DefaultServerRequestHandler {
             return null;
     }
 
-    protected List<String> getFormMultipleParametersSafely(HttpPostRequestDecoder postRequestDecoder,
-                                                           String parameterName)
+    List<String> getFormMultipleParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,
+                                                 String parameterName)
             throws HttpPostRequestDecoder.NotEnoughDataDecoderException, IOException {
         List<String> result = new LinkedList<>();
         List<InterfaceHttpData> dataList = postRequestDecoder.getBodyHttpDatas(parameterName);

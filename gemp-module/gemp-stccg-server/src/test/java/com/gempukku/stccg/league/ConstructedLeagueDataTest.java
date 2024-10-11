@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("MagicNumber")
 public class ConstructedLeagueDataTest extends AbstractServerTest {
     @Test
     @SuppressWarnings("SpellCheckingInspection")

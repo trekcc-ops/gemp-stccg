@@ -73,7 +73,8 @@ public class SealedLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus,
+                       int currentTime) {
         int status = oldStatus;
 
         for (int i = status; i < _allSeries.size(); i++) {
@@ -84,7 +85,8 @@ public class SealedLeagueData implements LeagueData {
 
                 Map<User, CardCollection> map = collectionsManager.getPlayersCollection(_collectionType.getCode());
                 for (Map.Entry<User, CardCollection> playerCardCollectionEntry : map.entrySet()) {
-                    collectionsManager.addItemsToPlayerCollection(true, "New sealed league product", playerCardCollectionEntry.getKey(), _collectionType, leagueProduct);
+                    collectionsManager.addItemsToPlayerCollection(true, "New sealed league product",
+                            playerCardCollectionEntry.getKey(), _collectionType, leagueProduct);
                 }
                 status = i + 1;
             }

@@ -312,13 +312,13 @@ public class CardBlueprintLibrary {
     }
 
     public CardBlueprint getCardBlueprint(String blueprintId) throws CardNotFoundException {
-        blueprintId = stripBlueprintModifiers(blueprintId);
+        String blueprintId1 = stripBlueprintModifiers(blueprintId);
         CardBlueprint bp = null;
 
         try {
             collectionReady.acquire();
-            if (_blueprints.containsKey(blueprintId)) {
-                bp = _blueprints.get(blueprintId);
+            if (_blueprints.containsKey(blueprintId1)) {
+                bp = _blueprints.get(blueprintId1);
             }
             collectionReady.release();
 
@@ -330,15 +330,16 @@ public class CardBlueprintLibrary {
         }
 
         // Throw exception if card not found in blueprints
-        throw new CardNotFoundException(blueprintId);
+        throw new CardNotFoundException(blueprintId1);
     }
 
     public String stripBlueprintModifiers(String blueprintId) {
-        if (blueprintId.endsWith("*"))
-            blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
-        if (blueprintId.endsWith("T"))
-            blueprintId = blueprintId.substring(0, blueprintId.length() - 1);
-        return blueprintId;
+        String blueprintId1 = blueprintId;
+        if (blueprintId1.endsWith("*"))
+            blueprintId1 = blueprintId1.substring(0, blueprintId1.length() - 1);
+        if (blueprintId1.endsWith("T"))
+            blueprintId1 = blueprintId1.substring(0, blueprintId1.length() - 1);
+        return blueprintId1;
     }
 
     private void determineNeedsLoadingFlag(JsonNode setDefinition, Set<String> flags) {
@@ -371,5 +372,10 @@ public class CardBlueprintLibrary {
         }
 
         throw new CardNotFoundException("Could not find card " + title + " in set " + setName);
+    }
+
+    public SetDefinition getSetDefinition(String setId) {
+        Map<String, SetDefinition> sets = Collections.unmodifiableMap(_allSets);
+        return sets.get(setId);
     }
 }

@@ -3,6 +3,7 @@ package com.gempukku.stccg.league;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
@@ -36,12 +37,13 @@ public class NewConstructedLeagueData implements LeagueData {
         int series = Integer.parseInt(params[4]);
 
         for (int i = 0; i < series; i++) {
-            String format = params[5 + i * 3];
             int duration = Integer.parseInt(params[6 + i * 3]);
             int maxMatches = Integer.parseInt(params[7 + i * 3]);
+            int endDate = DateUtils.offsetDate(start, duration - 1);
+            GameFormat format = formatLibrary.getFormat(params[5 + i * 3]);
             _allSeries.add(new DefaultLeagueSeriesData(_leaguePrizes, false, "Series " + (i + 1),
-                    start, DateUtils.offsetDate(start, duration - 1),
-                    maxMatches, formatLibrary.getFormat(format), _collectionType));
+                    start, endDate, maxMatches, format, _collectionType));
+
 
             start = DateUtils.offsetDate(start, duration);
         }

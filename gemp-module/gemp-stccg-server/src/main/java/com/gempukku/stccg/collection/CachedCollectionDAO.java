@@ -76,6 +76,7 @@ public class CachedCollectionDAO implements CollectionDAO, Cached {
 
     private void recacheCollection(int playerId, String type) throws SQLException, IOException {
         String id = constructCacheKey(playerId, type);
-        _playerCollections.put(id, _delegate.getPlayerCollection(playerId, type));
+        CardCollection playerCollection = _delegate.getPlayerCollection(playerId, type);
+        _playerCollections.put(id, playerCollection);
     }
 }

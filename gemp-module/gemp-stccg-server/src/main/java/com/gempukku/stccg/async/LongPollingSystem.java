@@ -41,7 +41,8 @@ public class LongPollingSystem {
 
     private void processWaitingRequest(final ResourceWaitingRequest request) {
         _waitingActions.remove(request);
-        execute(request.getLongPollingResource());
+        LongPollingResource longPollingResource = request.getLongPollingResource();
+        execute(longPollingResource);
     }
 
     private void execute(final LongPollingResource resource) {

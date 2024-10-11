@@ -400,7 +400,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         responseWriter.writeXmlResponse(doc);
     }
 
-    private Document ConvertDeckNamesToXML(List<Map.Entry<GameFormat, String>> deckNames)
+    private Document ConvertDeckNamesToXML(Iterable<? extends Map.Entry<GameFormat, String>> deckNames)
             throws ParserConfigurationException {
         Document doc = createNewDoc();
         Element decksElem = doc.createElement("decks");

@@ -40,7 +40,7 @@ public class ServerObjects {
     private TournamentPlayerDAO _tournamentPlayerDAO;
     private TournamentMatchDAO _tournamentMatchDAO;
     private LeagueDAO _leagueDAO;
-    private final CacheManager _cacheManager = new CacheManager();
+    private CacheManager _cacheManager;
     private GameHistoryDAO _gameHistoryDAO;
     private IgnoreDAO _ignoreDAO;
     private CachedDeckDAO _deckDAO;
@@ -84,23 +84,23 @@ public class ServerObjects {
 
         _leagueParticipationDAO = new CachedLeagueParticipationDAO(dbAccess);
         _leagueMatchDAO = new CachedLeagueMatchDAO(dbAccess);
-        _tournamentDAO = LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess));
-        _tournamentPlayerDAO = LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(dbAccess));
-        _tournamentMatchDAO = LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess));
-        _leagueDAO = LoggingProxy.createLoggingProxy(LeagueDAO.class, new DbLeagueDAO(dbAccess));
-        _gameHistoryDAO = LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
+        _tournamentDAO =
+                LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess));
+        _tournamentPlayerDAO =
+                LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(dbAccess));
+        _tournamentMatchDAO =
+                LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess));
+        _leagueDAO =
+                LoggingProxy.createLoggingProxy(LeagueDAO.class, new DbLeagueDAO(dbAccess));
+        _gameHistoryDAO =
+                LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
         _ignoreDAO = new CachedIgnoreDAO(dbAccess);
         _deckDAO = new CachedDeckDAO(dbAccess);
         _collectionDAO = new CachedCollectionDAO(dbAccess);
         _playerDAO = new CachedPlayerDAO(dbAccess);
         _transferDAO = new CachedTransferDAO(dbAccess);
         _ipBanDAO = new CachedIpBanDAO(dbAccess);
-
-        _cacheManager.addCache(_deckDAO);
-        _cacheManager.addCache(_collectionDAO);
-        _cacheManager.addCache(_playerDAO);
-        _cacheManager.addCache(_transferDAO);
-        _cacheManager.addCache(_ipBanDAO);
+        _cacheManager = new CacheManager(_deckDAO, _collectionDAO, _playerDAO, _transferDAO, _ipBanDAO);
     }
 
     public void createServices() {

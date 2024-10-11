@@ -1,12 +1,17 @@
 package com.gempukku.stccg.cache;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 public class CacheManager {
-    private final Set<Cached> _caches = new HashSet<>();
+    private final Collection<Cached> _caches = new HashSet<>();
 
-    public void addCache(Cached cached) {
+    public CacheManager(Cached... params) {
+        for (Cached cachedObject : params)
+            addCache(cachedObject);
+    }
+
+    private void addCache(Cached cached) {
         _caches.add(cached);
     }
 

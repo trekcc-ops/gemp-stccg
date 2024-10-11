@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class JsonUtils {
+public class JsonUtils {
 
     private static final ObjectMapper _mapper = new ObjectMapper();
 

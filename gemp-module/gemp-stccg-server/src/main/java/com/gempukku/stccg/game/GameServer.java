@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class GameServer extends AbstractServer {
 
+    private static final long MILLIS_TO_MINUTES = 1000 * 60;
     private final CardBlueprintLibrary _CardBlueprintLibrary;
 
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
@@ -49,7 +50,7 @@ public class GameServer extends AbstractServer {
             for (Map.Entry<String, Date> finishedGame : copy.entrySet()) {
                 String gameId = finishedGame.getKey();
                 // 4 minutes
-                long _timeToGameDeathWarning = 1000 * 60 * 4;
+                long _timeToGameDeathWarning = MILLIS_TO_MINUTES * 4;
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeathWarning
                         && !_gameDeathWarningsSent.contains(gameId)) {
                     try {
@@ -62,7 +63,7 @@ public class GameServer extends AbstractServer {
                     _gameDeathWarningsSent.add(gameId);
                 }
                 // 5 minutes
-                long _timeToGameDeath = 1000 * 60 * 5;
+                long _timeToGameDeath = MILLIS_TO_MINUTES * 5;
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeath) {
                     _runningGames.get(gameId).destroy();
                     _gameDeathWarningsSent.remove(gameId);
@@ -131,8 +132,9 @@ public class GameServer extends AbstractServer {
             for (GameParticipant participant : participants) {
                 if (!players.isEmpty())
                     players.append(", ");
-                players.append(participant.getPlayerId());
-                decks.put(participant.getPlayerId(), participant.getDeck());
+                String playerId = participant.getPlayerId();
+                players.append(playerId);
+                decks.put(playerId, participant.getDeck());
             }
 
             cardGameMediator.sendMessageToPlayers("Players in the game are: " + players);

@@ -1,8 +1,9 @@
 package com.gempukku.stccg.common;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class DescComparator<T> implements Comparator<T> {
+public class DescComparator<T> implements Comparator<T>, Serializable {
     private final Comparator<T> _comparator;
 
     public DescComparator(Comparator<T> comparator) {

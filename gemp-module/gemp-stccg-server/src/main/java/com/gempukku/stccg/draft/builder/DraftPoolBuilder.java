@@ -10,7 +10,7 @@ public class DraftPoolBuilder {
     public static DraftPoolProducer buildDraftPoolProducer(JsonNode draftPoolComponents) {
         if (draftPoolComponents == null)
             return null;
-        List<DraftPoolElement> fullDraftPool = new ArrayList<>();
+        Collection<DraftPoolElement> fullDraftPool = new ArrayList<>();
         if (draftPoolComponents.isArray()) {
             for (JsonNode component : draftPoolComponents)
                 fullDraftPool.add(buildDraftPool(component));

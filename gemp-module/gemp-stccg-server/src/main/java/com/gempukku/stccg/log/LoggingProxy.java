@@ -16,7 +16,8 @@ public class LoggingProxy {
     @SuppressWarnings("unchecked")
     public static <T> T createLoggingProxy(Class<T> clazz, T delegate) {
         final String simpleName = clazz.getSimpleName();
-        return (T) Proxy.newProxyInstance(LoggingProxy.class.getClassLoader(), new Class[]{clazz},
+        ClassLoader classLoader = LoggingProxy.class.getClassLoader();
+        return (T) Proxy.newProxyInstance(classLoader, new Class[]{clazz},
                 (proxy, method, args) -> {
                     long start = System.currentTimeMillis();
                     try {

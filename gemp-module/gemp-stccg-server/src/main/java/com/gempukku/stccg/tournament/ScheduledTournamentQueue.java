@@ -5,9 +5,6 @@ import com.gempukku.stccg.collection.CollectionsManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ScheduledTournamentQueue extends AbstractTournamentQueue implements TournamentQueue {
@@ -19,15 +16,15 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     private final Tournament.Stage _stage;
     private final String _scheduledTournamentId;
 
-    public ScheduledTournamentQueue(String scheduledTournamentId, Tournament.Stage stage, TournamentQueueInfo queueInfo,
-                                    ServerObjects objects) {
-        super(queueInfo, objects);
-        _scheduledTournamentId = scheduledTournamentId;
-        _startTime = queueInfo.getStartTime();
-        _minimumPlayers = queueInfo.getMinimumPlayers();
-        ZonedDateTime startDate = new Date(_startTime).toInstant().atZone(ZoneId.of("GMT"));
-        _startCondition = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        _tournamentName = queueInfo.getTournamentName();
+    public ScheduledTournamentQueue(TournamentQueueInfo tournamentQueueInfo, String tournamentId, long startTime,
+                                    int minimumPlayers, String format, String tournamentName,
+                                    Tournament.Stage stage, ServerObjects objects) {
+        super(tournamentQueueInfo, objects);
+        _scheduledTournamentId = tournamentId;
+        _startTime = startTime;
+        _minimumPlayers = minimumPlayers;
+        _startCondition = format;
+        _tournamentName = tournamentName;
         _stage = stage;
     }
 

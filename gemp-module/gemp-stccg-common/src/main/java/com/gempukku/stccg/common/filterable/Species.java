@@ -2,6 +2,8 @@ package com.gempukku.stccg.common.filterable;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Locale;
+
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum Species implements Filterable {
     ANDROID("android"),
@@ -11,7 +13,7 @@ public enum Species implements Filterable {
     KLINGON, MARKALIAN, ROMULAN, VULCAN;
     private final String _humanReadable;
 
-    Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase()); }
+    Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase(Locale.ROOT)); }
     Species(String humanReadable) {
         _humanReadable = humanReadable;
     }

@@ -48,7 +48,8 @@ public class ProductLibrary {
             loadPackFromFile(path);
         }
         else if (path.isDirectory()) {
-            for (File file : Objects.requireNonNull(path.listFiles())) {
+            File[] files = path.listFiles();
+            for (File file : Objects.requireNonNull(files)) {
                 loadPacks(file);
             }
         }
@@ -94,8 +95,8 @@ public class ProductLibrary {
                             System.out.println(def.name + " BOOSTER pack type must define exactly one set.");
                             continue;
                         }
-                        String set = def.data.get("set").textValue().trim();
-                        result = new BoosterPack(_cardLibrary.getSetDefinitions().get(set), def.items);
+                        String set = def.data.get("set").textValue().strip();
+                        result = new BoosterPack(_cardLibrary.getSetDefinition(set), def.items);
                     }
                     case pack, selection -> {
                         if (def.items == null || def.items.isEmpty())

@@ -6,7 +6,6 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -25,8 +24,8 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.*;
 
+@SuppressWarnings({"NestedMethodCall", "FeatureEnvy"})
 public class MerchantRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final CollectionsManager _collectionsManager;
     private final SortAndFilterCards _sortAndFilterCards;
     private final MerchantService _merchantService;
     private final FormatLibrary _formatLibrary;
@@ -36,7 +35,6 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     public MerchantRequestHandler(ServerObjects objects) {
         super(objects);
 
-        _collectionsManager = objects.getCollectionsManager();
         _sortAndFilterCards = new SortAndFilterCards();
         _merchantService = objects.getMerchantService();
         _formatLibrary = objects.getFormatLibrary();

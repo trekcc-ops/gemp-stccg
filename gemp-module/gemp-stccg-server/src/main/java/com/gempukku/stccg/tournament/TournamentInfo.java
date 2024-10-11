@@ -1,5 +1,6 @@
 package com.gempukku.stccg.tournament;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.db.vo.CollectionType;
 
 public class TournamentInfo {
@@ -25,36 +26,15 @@ public class TournamentInfo {
         _tournamentStage = tournamentStage;
     }
 
-
     public String getTournamentId() {
         return _tournamentId;
     }
 
-    public String getTournamentName() {
-        return _tournamentName;
-    }
-
-    public String getTournamentFormat() {
-        return _tournamentFormat;
-    }
-
-    public CollectionType getCollectionType() {
-        return _collectionType;
-    }
-
-    public int getTournamentRound() {
-        return _tournamentRound;
-    }
-
-    public String getPairingMechanism() {
-        return _pairingMechanism;
-    }
-
-    public String getPrizesScheme() {
-        return _prizesScheme;
-    }
-
-    public Tournament.Stage getTournamentStage() {
-        return _tournamentStage;
+    Tournament createDefaultTournament(TournamentService tournamentService, String tournamentId,
+                                       CardBlueprintLibrary library) {
+        PairingMechanism pairingMechanism = PairingMechanismRegistry.getPairingMechanism(_pairingMechanism);
+        TournamentPrizes tournamentPrizes = TournamentPrizeSchemeRegistry.getTournamentPrizes(library, _prizesScheme);
+        return new DefaultTournament(tournamentService, tournamentId, _tournamentName, _tournamentFormat,
+                _collectionType, _tournamentRound, _tournamentStage, pairingMechanism, tournamentPrizes);
     }
 }

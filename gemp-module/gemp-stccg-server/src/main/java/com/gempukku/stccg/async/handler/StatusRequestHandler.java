@@ -4,7 +4,6 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.hall.HallServer;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -14,13 +13,11 @@ import java.time.ZonedDateTime;
 
 public class StatusRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final HallServer _hallServer;
-    private final GameHistoryService _gameHistoryService;
     private final ChatServer _chatServer;
 
     public StatusRequestHandler(ServerObjects objects) {
         super(objects);
         _hallServer = objects.getHallServer();
-        _gameHistoryService = objects.getGameHistoryService();
         _chatServer = objects.getChatServer();
     }
 

@@ -141,12 +141,7 @@ public class TournamentService {
     private Tournament createTournamentAndStoreInCache(String tournamentId, TournamentInfo tournamentInfo) {
         Tournament tournament;
         try {
-            tournament = new DefaultTournament(this,
-                    tournamentId,  tournamentInfo.getTournamentName(), tournamentInfo.getTournamentFormat(),
-                    tournamentInfo.getCollectionType(), tournamentInfo.getTournamentRound(),
-                    tournamentInfo.getTournamentStage(),
-                    PairingMechanismRegistry.getPairingMechanism(tournamentInfo.getPairingMechanism()),
-                    TournamentPrizeSchemeRegistry.getTournamentPrizes(_library, tournamentInfo.getPrizesScheme()));
+            tournament = tournamentInfo.createDefaultTournament(this, tournamentId, _library);
         } catch (Exception exp) {
             throw new RuntimeException("Unable to create Tournament", exp);
         }

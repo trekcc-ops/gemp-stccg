@@ -40,7 +40,8 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     @Override
     public void deleteDeckForPlayer(User player, String name) {
         _delegate.deleteDeckForPlayer(player, name);
-        _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
+        String key = constructPlayerDeckNamesKey(player);
+        _playerDeckNames.remove(key);
     }
 
     @Override

@@ -76,7 +76,8 @@ public class NewSealedLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus,
+                       int currentTime) {
         int status = oldStatus;
 
         for (int i = status; i < _allSeries.size(); i++) {

@@ -36,7 +36,7 @@ public class ConstructedLeagueData implements LeagueData {
         for (int i = 0; i < series; i++) {
             GameFormat format = formatLibrary.getFormat(params[8 + i * 2]);
 
-            DefaultLeagueSeriesData data = new DefaultLeagueSeriesData(_leaguePrizes, false, "Week " + (i + 1),
+            LeagueSeriesData data = new DefaultLeagueSeriesData(_leaguePrizes, false, "Week " + (i + 1),
                     DateUtils.offsetDate(start, i * days), DateUtils.offsetDate(start, ((i + 1) * days) - 1),
                     matchCount, format, _collectionType);
             _allSeries.add(data);

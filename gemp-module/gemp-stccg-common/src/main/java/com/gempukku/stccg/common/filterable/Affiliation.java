@@ -1,9 +1,11 @@
 package com.gempukku.stccg.common.filterable;
 
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 public enum Affiliation implements Filterable {
-    BAJORAN("Bajoran",""),
+    BAJORAN("Bajoran", ""),
     BORG("Borg",""),
     CARDASSIAN("Cardassian",""),
     DOMINION("Dominion",""),
@@ -19,24 +21,29 @@ public enum Affiliation implements Filterable {
     VIDIIAN("Vidiian",""),
     VULCAN("Vulcan", "https://www.trekcc.org/images/icons/1e/1E-VUL.gif");
 
-    private final String _humanReadable, _iconURL;
+    private final String humanReadable, iconURL;
+
     Affiliation(String humanReadable, String iconURL) {
-        _humanReadable = humanReadable;
-        _iconURL = iconURL;
+        this.humanReadable = humanReadable;
+        this.iconURL = iconURL;
     }
-    public String getHumanReadable() { return _humanReadable; }
+
+    public String getHumanReadable() {
+        return this.humanReadable;
+    }
+
     public String toHTML() {
-        if (_iconURL.isEmpty())
-            return _humanReadable;
+        if (iconURL.isEmpty())
+            return humanReadable;
         else
-            return "<img src='" + _iconURL + "' class='inline-icon' title='" + _humanReadable + "'>"; }
+            return "<img src='" + iconURL + "' class='inline-icon' title='" + this.humanReadable + "'>"; }
 
     public static Affiliation findAffiliation(String name) {
-            // TODO - Copied this logic from the LotR Culture class. May not be appropriate for this one.
-        return Arrays.stream(values()).filter(
-                affiliation -> affiliation.getHumanReadable().equalsIgnoreCase(name) ||
-                        affiliation.toString().equals(
-                                name.toUpperCase().replace(' ', '_').replace('-', '_')))
+        Stream<Affiliation> affiliationValues = Arrays.stream(values());
+        return affiliationValues.filter(
+                        affiliation -> affiliation.getHumanReadable().equalsIgnoreCase(name) ||
+                                affiliation.toString().equals(
+                                        name.toUpperCase(Locale.ROOT).replace(' ', '_').replace('-', '_')))
                 .findFirst().orElse(null);
     }
 

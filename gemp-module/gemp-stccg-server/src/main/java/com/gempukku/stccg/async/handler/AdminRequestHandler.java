@@ -10,16 +10,13 @@ import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.LeagueDAO;
-import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.*;
-import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.service.AdminService;
-import com.gempukku.stccg.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
@@ -34,40 +31,33 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AdminRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final ProductLibrary _productLibrary;
     private final SoloDraftDefinitions _soloDraftDefinitions;
     private final LeagueService _leagueService;
-    private final TournamentService _tournamentService;
     private final CacheManager _cacheManager;
     private final HallServer _hallServer;
     private final FormatLibrary _formatLibrary;
     private final LeagueDAO _leagueDao;
     private final CollectionsManager _collectionManager;
-    private final PlayerDAO _playerDAO;
     private final AdminService _adminService;
     private final ChatServer _chatServer;
-
     private static final Logger LOGGER = LogManager.getLogger(AdminRequestHandler.class);
 
-    public AdminRequestHandler(ServerObjects objects) {
+    AdminRequestHandler(ServerObjects objects) {
         super(objects);
         _soloDraftDefinitions = objects.getSoloDraftDefinitions();
         _leagueService = objects.getLeagueService();
-        _tournamentService = objects.getTournamentService();
         _cacheManager = objects.getCacheManager();
         _hallServer = objects.getHallServer();
         _formatLibrary = objects.getFormatLibrary();
         _leagueDao = objects.getLeagueDAO();
-        _playerDAO = objects.getPlayerDAO();
         _collectionManager = objects.getCollectionsManager();
         _adminService = objects.getAdminService();
-        _productLibrary = objects.getProductLibrary();
         _chatServer = objects.getChatServer();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request,
+                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.equals("/clearCache") && request.method() == HttpMethod.POST) {
             clearCache(request, responseWriter);
         } else if (uri.equals("/shutdown") && request.method() == HttpMethod.POST) {
@@ -76,7 +66,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             reloadCards(request, responseWriter);
         } else if (uri.equals("/getDailyMessage") && request.method() == HttpMethod.GET) {
             getDailyMessage(request, responseWriter);
-        }else if (uri.equals("/setDailyMessage") && request.method() == HttpMethod.POST) {
+        } else if (uri.equals("/setDailyMessage") && request.method() == HttpMethod.POST) {
             setDailyMessage(request, responseWriter);
         }else if (uri.equals("/previewSealedLeague") && request.method() == HttpMethod.POST) {
             previewSealedLeague(request, responseWriter);
@@ -118,7 +108,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         try {
             String login = getFormParameterSafely(postDecoder, "login").trim();
 
-            List<User> similarPlayers = _playerDAO.findSimilarAccounts(login);
+            List<User> similarPlayers = _serverObjects.getPlayerDAO().findSimilarAccounts(login);
             if (similarPlayers == null)
                 throw new HttpProcessingException(400);
 
@@ -163,7 +153,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         try {
             String login = getFormParameterSafely(postDecoder, "login");
 
-            if (login==null)
+            if (login == null)
                 throw new HttpProcessingException(400);
 
             if (!_adminService.resetUserPassword(login))
@@ -206,9 +196,9 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             for (String login : logins) {
                 if (!_adminService.banUser(login))
                     throw new HttpProcessingException(404);
-        }
+            }
 
-        responseWriter.writeHtmlResponse("OK");
+            responseWriter.writeHtmlResponse("OK");
         } finally {
             postDecoder.destroy();
         }
@@ -307,12 +297,12 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private Collection<GenericCardItem> getProductItems(String values) {
         List<GenericCardItem> result = new LinkedList<>();
         for (String item : values.split("\n")) {
-            item = item.trim();
-            if (!item.isEmpty()) {
-                final String[] itemSplit = item.split("x", 2);
+            String strippedItem = item.strip();
+            if (!strippedItem.isEmpty()) {
+                final String[] itemSplit = strippedItem.split("x", 2);
                 if (itemSplit.length != 2)
                     throw new RuntimeException("Unable to parse the items");
-                result.add(GenericCardItem.createItem(itemSplit[1].trim(), Integer.parseInt(itemSplit[0].trim())));
+                result.add(GenericCardItem.createItem(itemSplit[1].strip(), Integer.parseInt(itemSplit[0].strip())));
             }
         }
         return result;
@@ -558,7 +548,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         Thread.sleep(6000);
         _cardBlueprintLibrary.reloadAllDefinitions();
 
-        _productLibrary.ReloadPacks();
+        _serverObjects.getProductLibrary().ReloadPacks();
 
         _formatLibrary.ReloadFormats();
         _formatLibrary.ReloadSealedTemplates();
@@ -574,7 +564,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         validateAdmin(request);
 
         _leagueService.clearCache();
-        _tournamentService.clearCache();
+        _serverObjects.getTournamentService().clearCache();
 
         int before = _cacheManager.getTotalCount();
 

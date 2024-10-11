@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.net.HttpURLConnection;
 import java.util.*;
 
 public class SoloDraftRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
@@ -39,14 +40,16 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
+    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
+        if (uri.isEmpty() || uri.charAt(0) != '/')
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        else if (request.method() == HttpMethod.POST) {
             makePick(request, uri.substring(1), responseWriter);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
+        } else if (request.method() == HttpMethod.GET) {
             getAvailablePicks(request, uri.substring(1), responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
@@ -58,13 +61,13 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         League league = findLeagueByType(leagueType);
 
         if (league == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         SoloDraftLeagueData soloDraftLeagueData = (SoloDraftLeagueData) leagueData;
         CollectionType collectionType = soloDraftLeagueData.getCollectionType();

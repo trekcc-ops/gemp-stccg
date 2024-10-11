@@ -14,10 +14,12 @@ import java.util.TreeMap;
 public class DraftTests extends AbstractServerTest {
     @Test
     public void DraftTest() {
-        CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
+        CollectionsManager collectionsManager =
+                new CollectionsManager(null, null, null, _cardLibrary);
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
-        SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, formatLibrary);
+        SoloDraftDefinitions soloDraftDefinitions =
+                new SoloDraftDefinitions(collectionsManager, _cardLibrary, formatLibrary);
 
         final SoloDraft soloDraft = soloDraftDefinitions.getSoloDraft("test_draft");
 

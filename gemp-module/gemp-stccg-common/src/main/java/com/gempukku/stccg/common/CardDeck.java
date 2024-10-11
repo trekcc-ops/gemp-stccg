@@ -40,7 +40,7 @@ public class CardDeck {
     }
 
     public String buildContentsFromDeck() {
-        List<String> parts = new ArrayList<>();
+        Collection<String> parts = new ArrayList<>();
         _subDecks.forEach((k, v) -> {
             parts.add(k.name());
             parts.add(String.join(",",v));
