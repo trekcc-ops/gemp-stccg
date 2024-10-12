@@ -1,4 +1,4 @@
-package com.gempukku.stccg.db.vo;
+package com.gempukku.stccg.collection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,13 +41,13 @@ public final class CollectionType {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (obj == null || getClass() != obj.getClass())
             return false;
 
-        CollectionType that = (CollectionType) o;
+        CollectionType that = (CollectionType) obj;
 
         return Objects.equals(_code, that._code);
     }
@@ -55,5 +55,13 @@ public final class CollectionType {
     @Override
     public int hashCode() {
         return _code != null ? _code.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "CollectionType{" +
+                "_code='" + _code + '\'' +
+                ", _fullName='" + _fullName + '\'' +
+                '}';
     }
 }

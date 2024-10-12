@@ -18,11 +18,12 @@ public class WeightedRandomPack implements PackBox {
     public static WeightedRandomPack LoadFromArray(Iterable<String> items) {
         WeightedRandomPack box = new WeightedRandomPack();
         for (String item : items) {
-            item = item.trim();
-            if (!item.isEmpty()) {
-                String[] result = item.split("[x%]", 3);
+            String item1 = item.strip();
+            if (!item1.isEmpty()) {
+                String[] result = item1.split("[x%]", 3);
                 if(result.length != 3) {
-                    System.out.println("Unexpected number of entries in a WeightedRandomPack! Skipping: '" + item + "'");
+                    System.out.println(
+                            "Unexpected number of entries in a WeightedRandomPack! Skipping: '" + item1 + "'");
                     continue;
                 }
                 var reward = new Reward(result[2], Integer.parseInt(result[1]), Integer.parseInt(result[0]));
@@ -34,7 +35,7 @@ public class WeightedRandomPack implements PackBox {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public final List<GenericCardItem> openPack() {
         int totalWeight = _contents.values().stream()
                 .mapToInt(Reward::weight)
                 .sum();
@@ -55,7 +56,7 @@ public class WeightedRandomPack implements PackBox {
         return generateItems(_contents.keySet().stream().findFirst().orElse(null));
     }
 
-    public List<GenericCardItem> generateItems(String name) {
+    private final List<GenericCardItem> generateItems(String name) {
         var result = GenericCardItem.createItem(name, _contents.get(name).quantity, true);
         return Collections.singletonList(result);
     }

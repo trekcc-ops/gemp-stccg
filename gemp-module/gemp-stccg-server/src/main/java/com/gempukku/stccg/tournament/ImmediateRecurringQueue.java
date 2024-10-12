@@ -2,11 +2,11 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 
 import java.util.Date;
 
-public class ImmediateRecurringQueue extends AbstractTournamentQueue implements TournamentQueue {
+public class ImmediateRecurringQueue extends AbstractTournamentQueue {
     private final String _tournamentQueueName;
     private final int _playerCap;
     private final String _tournamentIdPrefix;
@@ -22,17 +22,17 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
     }
 
     @Override
-    public String getTournamentQueueName() {
+    public final String getTournamentQueueName() {
         return _tournamentQueueName;
     }
 
     @Override
-    public String getStartCondition() {
+    public final String getStartCondition() {
         return "When "+_playerCap+" players join";
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) {
+    public final synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) {
         if (_players.size() >= _playerCap) {
             String tournamentId = _tournamentIdPrefix + System.currentTimeMillis();
 
@@ -53,7 +53,7 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
     }
 
     @Override
-    public boolean isJoinable() {
+    public final boolean isJoinable() {
         return true;
     }
 }

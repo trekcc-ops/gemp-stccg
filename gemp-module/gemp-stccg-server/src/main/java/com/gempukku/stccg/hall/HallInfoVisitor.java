@@ -11,6 +11,9 @@ public interface HallInfoVisitor {
 
     void setDailyMessage(String message);
 
+    void visitTable(String tableId, String gameId, boolean watchable, TableStatus status, String statusDescription,
+                    GameTable table, String tournamentName, List<String> playerIds, boolean playing);
+
     void visitTable(String tableId, String gameId, boolean watchable, TableStatus status, String statusDescription, String gameType, String formatName, String tournamentName, String userDesc, List<String> playerIds, boolean playing, boolean isPrivate, boolean isInviteOnly, String winner);
 
     void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName, String tournamentQueueName, String tournamentPrizes,

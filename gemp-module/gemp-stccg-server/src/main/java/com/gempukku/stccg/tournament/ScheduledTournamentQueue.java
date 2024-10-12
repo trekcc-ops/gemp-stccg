@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class ScheduledTournamentQueue extends AbstractTournamentQueue implements TournamentQueue {
+public class ScheduledTournamentQueue extends AbstractTournamentQueue {
     private static final long _signupTimeBeforeStart = 1000 * 60 * 60; // 60 minutes before start
     private final long _startTime;
     private final int _minimumPlayers;
@@ -16,10 +16,10 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     private final Tournament.Stage _stage;
     private final String _scheduledTournamentId;
 
-    public ScheduledTournamentQueue(TournamentQueueInfo tournamentQueueInfo, String tournamentId, long startTime,
+    public ScheduledTournamentQueue(TournamentQueueInfo queueInfo, String tournamentId, long startTime,
                                     int minimumPlayers, String format, String tournamentName,
                                     Tournament.Stage stage, ServerObjects objects) {
-        super(tournamentQueueInfo, objects);
+        super(queueInfo, objects);
         _scheduledTournamentId = tournamentId;
         _startTime = startTime;
         _minimumPlayers = minimumPlayers;
@@ -29,22 +29,23 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     }
 
     @Override
-    public String getTournamentQueueName() {
+    public final String getTournamentQueueName() {
         return _tournamentName;
     }
 
     @Override
-    public String getPairingDescription() {
+    public final String getPairingDescription() {
         return _pairingMechanism.getPlayOffSystem() + ", minimum players: " + _minimumPlayers;
     }
 
     @Override
-    public String getStartCondition() {
+    public final String getStartCondition() {
         return _startCondition;
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException {
+    public final synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager)
+            throws SQLException, IOException {
         long now = System.currentTimeMillis();
         if (now > _startTime) {
             if (_players.size() >= _minimumPlayers) {
@@ -66,7 +67,7 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     }
 
     @Override
-    public boolean isJoinable() {
+    public final boolean isJoinable() {
         return System.currentTimeMillis() >= _startTime - _signupTimeBeforeStart;
     }
 }

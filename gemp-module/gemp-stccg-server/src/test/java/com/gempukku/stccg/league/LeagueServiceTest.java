@@ -6,30 +6,27 @@ import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.LeagueDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
-import com.gempukku.stccg.db.vo.League;
-import com.gempukku.stccg.db.vo.LeagueMatchResult;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LeagueServiceTest extends AbstractServerTest {
-
+@SuppressWarnings("StaticMethodReferencedViaSubclass")
+class LeagueServiceTest extends AbstractServerTest {
+    private static final int DEFAULT_COST = 5000;
     private final String leagueData = "20120502,default,1,1,1" + (",test_block,7,2").repeat(1);
 
     @Test
-    public void testJoiningLeagueAfterMaxGamesPlayed() throws Exception {
+    final void testJoiningLeagueAfterMaxGamesPlayed() throws Exception {
 
         LeagueDAO leagueDao = Mockito.mock(LeagueDAO.class);
 
 
         List<League> leagues = new ArrayList<>();
-        League league = new League(5000, "League name", "leagueType",
+        League league = new League(DEFAULT_COST, "League name", "leagueType",
                 NewConstructedLeagueData.class.getName(), leagueData, 0);
         leagues.add(league);
 
@@ -74,12 +71,12 @@ public class LeagueServiceTest extends AbstractServerTest {
     }
 
     @Test
-    public void testJoiningLeagueAfterMaxGamesPlayedWithPreloadedDb() throws Exception {
+    final void testJoiningLeagueAfterMaxGamesPlayedWithPreloadedDb() throws Exception {
         LeagueDAO leagueDao = Mockito.mock(LeagueDAO.class);
 
         List<League> leagues = new ArrayList<>();
         League league = new League(
-                5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), leagueData, 0
+                DEFAULT_COST, "League name", "leagueType", NewConstructedLeagueData.class.getName(), leagueData, 0
         );
         leagues.add(league);
 
@@ -116,11 +113,11 @@ public class LeagueServiceTest extends AbstractServerTest {
     }
 
     @Test
-    public void testStandings() throws Exception {
+    final void testStandings() throws Exception {
         LeagueDAO leagueDao = Mockito.mock(LeagueDAO.class);
 
         List<League> leagues = new ArrayList<>();
-        League league = new League(5000, "League name", "leagueType", NewConstructedLeagueData.class.getName(), leagueData, 0);
+        League league = new League(DEFAULT_COST, "League name", "leagueType", NewConstructedLeagueData.class.getName(), leagueData, 0);
         leagues.add(league);
 
         LeagueSeriesData seriesData = league.getLeagueData(_cardLibrary, _formatLibrary,null).getSeries().getFirst();
@@ -132,7 +129,7 @@ public class LeagueServiceTest extends AbstractServerTest {
         Mockito.when(leagueMatchDAO.getLeagueMatches(league.getType())).thenReturn(new HashSet<>());
 
         LeagueParticipationDAO leagueParticipationDAO = Mockito.mock(LeagueParticipationDAO.class);
-        Set<String> players = new HashSet<>();
+        Collection<String> players = new HashSet<>();
         players.add("player1");
         players.add("player2");
         players.add("player3");

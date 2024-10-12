@@ -3,14 +3,11 @@ package com.gempukku.stccg.packs;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomFoilPack implements PackBox {
-    private final List<String> _availableCards = new ArrayList<>();
+    private final Collection<String> _availableCards = new ArrayList<>();
 
     public RandomFoilPack(String[] rarities, String[] sets, CardBlueprintLibrary library) {
         var setList = Arrays.stream(sets).toList();
@@ -24,7 +21,7 @@ public class RandomFoilPack implements PackBox {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public final List<GenericCardItem> openPack() {
         return openPack(ThreadLocalRandom.current().nextInt(_availableCards.size()));
     }
 

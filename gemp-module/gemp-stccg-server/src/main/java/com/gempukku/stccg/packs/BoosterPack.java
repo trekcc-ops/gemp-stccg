@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoosterPack implements PackBox {
     private final SetDefinition _setDefinition;
-    final Map<String, Integer> _rarityCounts = new HashMap<>();
+    private final Map<String, Integer> _rarityCounts = new HashMap<>();
 
     BoosterPack(SetDefinition setDefinition, Iterable<String> rarityCounts) {
 
@@ -20,7 +20,7 @@ public class BoosterPack implements PackBox {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public final List<GenericCardItem> openPack() {
         List<GenericCardItem> result = new LinkedList<>();
         for (Map.Entry<String, Integer> rarityCount : _rarityCounts.entrySet())
             addRandomCardsOfRarity(result, rarityCount.getValue(), rarityCount.getKey());
@@ -33,7 +33,7 @@ public class BoosterPack implements PackBox {
             result.add(GenericCardItem.createItem(cardsOfRarity.get(cardIndex), 1));
     }
 
-    private Set<Integer> getRandomIndices(int count, int elementCount) {
+    private static Set<Integer> getRandomIndices(int count, int elementCount) {
         Set<Integer> addedIndices = new HashSet<>();
         for (int i = 0; i < count; i++) {
             int index;

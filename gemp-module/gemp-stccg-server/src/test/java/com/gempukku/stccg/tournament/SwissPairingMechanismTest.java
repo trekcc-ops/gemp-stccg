@@ -11,10 +11,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SwissPairingMechanismTest extends AbstractServerTest {
+@SuppressWarnings({"MagicNumber", "StringConcatenationMissingWhitespace"})
+class SwissPairingMechanismTest extends AbstractServerTest {
 
     @Test
-    public void testPairingSmallTournament() {
+    final void testPairingSmallTournament() {
         int repeatCount = 10;
         int playerCount = 12;
 
@@ -24,7 +25,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
     }
 
     @Test
-    public void testPairingVerySmallTournament() {
+    final void testPairingVerySmallTournament() {
         int repeatCount = 10;
         int playerCount = 8;
 
@@ -34,7 +35,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
     }
 
     @Test
-    public void testPairingSmallTournamentWithOddNumberOfPlayers() {
+    final void testPairingSmallTournamentWithOddNumberOfPlayers() {
         int repeatCount = 10;
         int playerCount = 9;
 
@@ -43,7 +44,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         }
     }
 
-    private void testSwissPairingForPlayerCount(int playerCount) {
+    private static void testSwissPairingForPlayerCount(int playerCount) {
         Set<String> players = new HashSet<>();
         for (int i = 0; i < playerCount; i++)
             players.add("p" + i);
@@ -51,12 +52,12 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         Set<String> droppedPlayers = new HashSet<>();
         Map<String, Integer> byes = new HashMap<>();
 
-        Set<TournamentMatch> matches = new HashSet<>();
+        Collection<TournamentMatch> matches = new HashSet<>();
         Map<String, Set<String>> previouslyPaired = new HashMap<>();
         for (String player : players)
             previouslyPaired.put(player, new HashSet<>());
 
-        SwissPairingMechanism pairing = new SwissPairingMechanism("swiss");
+        PairingMechanism pairing = new SwissPairingMechanism("swiss");
         for (int i = 1; i < 20; i++) {
             if (!pairing.isFinished(i - 1, players, droppedPlayers)) {
                 System.out.println("Pairing round " + i);
@@ -109,7 +110,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         }
     }
 
-    private int getPlayerPoints(List<? extends PlayerStanding> standings, String player) {
+    private static int getPlayerPoints(Iterable<? extends PlayerStanding> standings, String player) {
         for (PlayerStanding standing : standings) {
             if (standing.getPlayerName().equals(player))
                 return standing.getPoints();

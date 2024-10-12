@@ -1,5 +1,8 @@
 package com.gempukku.stccg.chat;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.util.Date;
 
 public class ChatMessage {
@@ -15,19 +18,19 @@ public class ChatMessage {
         this.fromAdmin = fromAdmin;
     }
 
-    public String getFrom() {
+    public final String getFrom() {
         return _from;
     }
 
-    public String getMessage() {
-        return _message;
-    }
-
-    public Date getWhen() {
-        return _when;
-    }
-
-    public boolean isFromAdmin() {
+    public final boolean isFromAdmin() {
         return fromAdmin;
+    }
+
+    public Element serializeForDocument(Document doc, String elemName) {
+        Element messageElem = doc.createElement(elemName);
+        messageElem.setAttribute("from", _from);
+        messageElem.setAttribute("date", String.valueOf(_when.getTime()));
+        messageElem.appendChild(doc.createTextNode(_message));
+        return messageElem;
     }
 }

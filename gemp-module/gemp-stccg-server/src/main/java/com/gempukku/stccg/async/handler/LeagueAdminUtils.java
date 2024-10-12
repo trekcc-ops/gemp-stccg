@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.db.PlayerDAO;
@@ -11,8 +10,10 @@ import com.gempukku.stccg.league.LeagueData;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.NewSealedLeagueData;
 import com.gempukku.stccg.service.LoggedUserHolder;
+import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class LeagueAdminUtils {
+final class LeagueAdminUtils {
     private static final Logger LOGGER = LogManager.getLogger(LeagueAdminUtils.class);
 
     static void previewSealedLeague(HttpRequest request, ResponseWriter responseWriter,
@@ -43,7 +44,7 @@ public final class LeagueAdminUtils {
         validateLeagueAdmin(request, playerDAO, loggedUserHolder);
         String[] parameterNames = {"format", "start", "seriesDuration", "maxMatches", "name", "cost"};
         Map<String, String> parameterMap = new HashMap<>();
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
 
         try {
             for (String parameterName : parameterNames) {
@@ -60,8 +61,8 @@ public final class LeagueAdminUtils {
             parameterMap.put("serializedParams", serializedParams);
             return parameterMap;
         } catch (RuntimeException ex) {
-            HttpUtils.logHttpError(LOGGER, HttpURLConnection.HTTP_SERVER_ERROR, request.uri(), ex);
-            throw new HttpProcessingException(HttpURLConnection.HTTP_SERVER_ERROR); // 500
+            HttpUtils.logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, request.uri(), ex);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
         } finally {
             postDecoder.destroy();
         }
@@ -98,7 +99,7 @@ public final class LeagueAdminUtils {
         responseWriter.writeXmlResponse(doc);
     }
 
-    private static void validateLeagueAdmin(HttpRequest request, PlayerDAO playerDAO, LoggedUserHolder loggedUserHolder) throws HttpProcessingException {
+    private static void validateLeagueAdmin(HttpMessage request, PlayerDAO playerDAO, LoggedUserHolder loggedUserHolder) throws HttpProcessingException {
         User player = DOMUtils.getResourceOwnerSafely(request, null, playerDAO, loggedUserHolder);
 
         if (!player.hasType(User.Type.LEAGUE_ADMIN))

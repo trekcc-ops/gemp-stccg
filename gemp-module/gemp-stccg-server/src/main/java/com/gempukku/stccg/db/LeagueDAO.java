@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.league.League;
 
 import java.sql.SQLException;
 import java.util.List;

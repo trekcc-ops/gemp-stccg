@@ -2,7 +2,7 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.db.User;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,12 +12,13 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
+@SuppressWarnings("StaticMethodReferencedViaSubclass")
+class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test
-    public void joiningQueue() throws SQLException, IOException {
+    final void joiningQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
 
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
+        TournamentQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
                 "id-", "name-", 2, false, tournamentService,
                 new NoPrizes(), new SingleEliminationPairing("singleElimination"));
 
@@ -41,10 +42,10 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     }
 
     @Test
-    public void leavingQueue() throws SQLException, IOException {
+    final void leavingQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
 
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
+        TournamentQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
                 "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
 
         User player = new User(1, "p1", "pass", "u", null, null, null, null);
@@ -66,10 +67,10 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     }
     
     @Test
-    public void cancellingQueue() throws SQLException, IOException {
+    final void cancellingQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
 
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
+        TournamentQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
                 "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
 
         User player = new User(1, "p1", "pass", "u", null, null, null, null);
@@ -91,7 +92,7 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     }
 
     @Test
-    public void fillingQueue() throws SQLException, IOException {
+    final void fillingQueue() throws SQLException, IOException {
         Tournament tournament = Mockito.mock(Tournament.class);
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
         Mockito.when(tournamentService.addTournament(Mockito.anyString(), Mockito.eq(null), Mockito.anyString(), Mockito.eq("format"),
@@ -137,7 +138,7 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     }
 
     @Test
-    public void overflowingQueue() throws SQLException, IOException {
+    final void overflowingQueue() throws SQLException, IOException {
         Tournament tournament = Mockito.mock(Tournament.class);
 
         TournamentService tournamentService = Mockito.mock(TournamentService.class);

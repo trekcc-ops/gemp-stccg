@@ -7,35 +7,36 @@ import java.util.*;
 public class SingleEliminationPairing implements PairingMechanism {
     private final String _registryRepresentation;
 
-    public SingleEliminationPairing(String registryRepresentation) {
-        _registryRepresentation = registryRepresentation;
+    public SingleEliminationPairing(String pairingType) {
+        _registryRepresentation = pairingType;
     }
 
     @Override
-    public String getRegistryRepresentation() {
+    public final String getRegistryRepresentation() {
         return _registryRepresentation;
     }
 
     @Override
-    public boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers) {
+    public final boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers) {
         return players.size() - droppedPlayers.size() < 2;
     }
 
     @Override
-    public String getPlayOffSystem() {
+    public final String getPlayOffSystem() {
         return "Single elimination";
     }
 
     @Override
-    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers,
-                               Map<String, Integer> playerByes, List<PlayerStanding> currentStandings,
-                               Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults,
-                               Set<String> byeResults) {
+    public final boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers,
+                                     Map<String, Integer> playerByes, List<? extends PlayerStanding> currentStandings,
+                                     Map<String, ? extends Set<String>> previouslyPaired,
+                                     Map<? super String, ? super String> pairingResults,
+                                     Set<? super String> byeResults) {
 
         if (isFinished(round, players, droppedPlayers))
             return true;
 
-        Set<String> playersInContention = new HashSet<>(players);
+        Collection<String> playersInContention = new HashSet<>(players);
         playersInContention.removeAll(droppedPlayers);
         int maxByes = (playerByes.isEmpty()) ? 0 : Collections.max(playerByes.values());
 
@@ -83,7 +84,7 @@ public class SingleEliminationPairing implements PairingMechanism {
     }
 
     @Override
-    public boolean shouldDropLoser() {
+    public final boolean shouldDropLoser() {
         return true;
     }
 }

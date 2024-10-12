@@ -9,7 +9,7 @@ import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SoloDraftLeagueData implements LeagueData {
-    public static final int HIGH_ENOUGH_PRIME_NUMBER = 8963;
+    private static final int HIGH_ENOUGH_PRIME_NUMBER = 8963;
     private final SoloDraft _draft;
     private final CollectionType _collectionType;
     private final long _code;
@@ -45,21 +45,21 @@ public class SoloDraftLeagueData implements LeagueData {
                 formatLibrary.getFormat(_draft.getFormat()), _collectionType);
     }
 
-    public CollectionType getCollectionType() {
+    public final CollectionType getCollectionType() {
         return _collectionType;
     }
 
-    public SoloDraft getSoloDraft() {
+    public final SoloDraft getSoloDraft() {
         return _draft;
     }
 
     @Override
-    public boolean isSoloDraftLeague() {
+    public final boolean isSoloDraftLeague() {
         return true;
     }
 
     @Override
-    public List<LeagueSeriesData> getSeries() {
+    public final List<LeagueSeriesData> getSeries() {
         return Collections.singletonList(_seriesData);
     }
 
@@ -68,7 +68,7 @@ public class SoloDraftLeagueData implements LeagueData {
     }
 
     @Override
-    public void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
+    public final void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
         MutableCardCollection startingCollection = new DefaultCardCollection();
         long seed = getSeed(player);
 
@@ -91,7 +91,7 @@ public class SoloDraftLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
+    public final int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
         int status = oldStatus;
 
         if (status == 0) {

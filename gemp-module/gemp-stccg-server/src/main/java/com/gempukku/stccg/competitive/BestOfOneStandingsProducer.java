@@ -4,7 +4,6 @@ import com.gempukku.stccg.common.DescComparator;
 import com.gempukku.stccg.common.MultipleComparator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,8 +19,10 @@ public class BestOfOneStandingsProducer {
                     new DescComparator<>(new OpponentsWinComparator()));
 
 
-    public static List<PlayerStanding> produceStandings(Collection<String> participants, Collection<? extends CompetitiveMatchResult> matches,
-                                                        int pointsForWin, int pointsForLoss, Map<String, Integer> playersWithByes) {
+    public static List<PlayerStanding> produceStandings(Iterable<String> participants,
+                                                        Iterable<? extends CompetitiveMatchResult> matches,
+                                                        int pointsForWin, int pointsForLoss,
+                                                        Map<String, Integer> playersWithByes) {
         Map<String, List<String>> playerOpponents = new HashMap<>();
         Map<String, AtomicInteger> playerWinCounts = new HashMap<>();
         Map<String, AtomicInteger> playerLossCounts = new HashMap<>();
@@ -63,10 +64,10 @@ public class BestOfOneStandingsProducer {
                 opponentWins += playerWinCounts.get(opponent).intValue();
                 opponentGames += playerWinCounts.get(opponent).intValue() + playerLossCounts.get(opponent).intValue();
             }
-            if (opponentGames != 0) {
-                standing.setOpponentWin(opponentWins * 1f / opponentGames);
-            } else {
+            if (opponentGames == 0) {
                 standing.setOpponentWin(0f);
+            } else {
+                standing.setOpponentWin(opponentWins * 1f / opponentGames);
             }
             leagueStandings.add(standing);
         }
@@ -90,21 +91,21 @@ public class BestOfOneStandingsProducer {
 
     private static class PointsComparator implements Comparator<PlayerStanding> {
         @Override
-        public int compare(PlayerStanding o1, PlayerStanding o2) {
+        public final int compare(PlayerStanding o1, PlayerStanding o2) {
             return o1.getPoints() - o2.getPoints();
         }
     }
 
     private static class GamesPlayedComparator implements Comparator<PlayerStanding> {
         @Override
-        public int compare(PlayerStanding o1, PlayerStanding o2) {
+        public final int compare(PlayerStanding o1, PlayerStanding o2) {
             return o1.getGamesPlayed() - o2.getGamesPlayed();
         }
     }
 
     private static class OpponentsWinComparator implements Comparator<PlayerStanding> {
         @Override
-        public int compare(PlayerStanding o1, PlayerStanding o2) {
+        public final int compare(PlayerStanding o1, PlayerStanding o2) {
             final float diff = o1.getOpponentWin() - o2.getOpponentWin();
             if (diff < 0) {
                 return -1;

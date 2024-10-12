@@ -2,7 +2,7 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.db.User;
 
 import java.io.IOException;
@@ -25,7 +25,8 @@ public interface TournamentQueue {
 
     boolean isRequiresDeck();
 
-    boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException;
+    boolean process(TournamentQueueCallback callback, CollectionsManager collectionsManager)
+            throws SQLException, IOException;
 
     void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException;
 

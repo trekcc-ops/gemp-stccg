@@ -15,7 +15,7 @@ public class DbIpBanDAO implements IpBanDAO {
     }
 
     @Override
-    public void addIpBan(String ip) {
+    public final void addIpBan(String ip) {
         try {
             String sqlStatement = "insert into ip_ban (ip, prefix) values (?, 0)";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement, ip);
@@ -25,7 +25,7 @@ public class DbIpBanDAO implements IpBanDAO {
     }
 
     @Override
-    public void addIpPrefixBan(String ipPrefix) {
+    public final void addIpPrefixBan(String ipPrefix) {
         try {
             String sqlStatement = "insert into ip_ban (ip, prefix) values (?, 1)";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement, ipPrefix);
@@ -35,7 +35,7 @@ public class DbIpBanDAO implements IpBanDAO {
     }
 
     @Override
-    public Set<String> getIpBans() {
+    public final Set<String> getIpBans() {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select ip from ip_ban where prefix=0")) {
@@ -56,7 +56,7 @@ public class DbIpBanDAO implements IpBanDAO {
     }
 
     @Override
-    public Set<String> getIpPrefixBans() {
+    public final Set<String> getIpPrefixBans() {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select ip from ip_ban where prefix=1")) {

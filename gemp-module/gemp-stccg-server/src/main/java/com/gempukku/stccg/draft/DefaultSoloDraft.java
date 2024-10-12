@@ -1,7 +1,5 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.draft.builder.CardCollectionProducer;
-import com.gempukku.stccg.draft.builder.DraftPoolProducer;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 
@@ -14,46 +12,48 @@ public class DefaultSoloDraft implements SoloDraft {
     private final DraftPoolProducer _draftPool;
     private final List<? extends DraftChoiceDefinition> _draftChoiceDefinitions;
 
-    public DefaultSoloDraft(String code, String format, CardCollectionProducer newCollection, List<? extends DraftChoiceDefinition> draftChoiceDefinitions, DraftPoolProducer draftPool) {
+    public DefaultSoloDraft(String code, String format, CardCollectionProducer newCollection,
+                            List<? extends DraftChoiceDefinition> draftChoices,
+                            DraftPoolProducer draftPool) {
         _code = code;
         _format = format;
         _newCollection = newCollection;
         _draftPool = draftPool;
-        _draftChoiceDefinitions = draftChoiceDefinitions;
+        _draftChoiceDefinitions = draftChoices;
     }
 
     @Override
-    public CardCollection initializeNewCollection(long seed) {
+    public final CardCollection initializeNewCollection(long seed) {
         return (_newCollection != null) ? _newCollection.getCardCollection(seed) : null;
     }
 
     @Override
-    public List<String> initializeDraftPool(long seed, long code) {
+    public final List<String> initializeDraftPool(long seed, long code) {
         return (_draftPool != null) ? _draftPool.getDraftPool(seed, code) : null;
     }
 
     @Override
-    public Iterable<DraftChoice> getAvailableChoices(long seed, int stage, DefaultCardCollection draftPool) {
+    public final Iterable<DraftChoice> getAvailableChoices(long seed, int stage, DefaultCardCollection draftPool) {
         return _draftChoiceDefinitions.get(stage).getDraftChoice(seed, stage, draftPool);
     }
 
     @Override
-    public CardCollection getCardsForChoiceId(String choiceId, long seed, int stage) {
+    public final CardCollection getCardsForChoiceId(String choiceId, long seed, int stage) {
         return _draftChoiceDefinitions.get(stage).getCardsForChoiceId(choiceId, seed, stage);
     }
 
     @Override
-    public boolean hasNextStage(int stage) {
+    public final boolean hasNextStage(int stage) {
         return stage + 1 < _draftChoiceDefinitions.size();
     }
 
     @Override
-    public String getCode() {
+    public final String getCode() {
         return _code;
     }
 
     @Override
-    public String getFormat() {
+    public final String getFormat() {
         return _format;
     }
 }

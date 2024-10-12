@@ -1,11 +1,11 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.async.Cached;
 import com.gempukku.stccg.db.DbAccess;
 import com.gempukku.stccg.db.DbLeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
-import com.gempukku.stccg.db.vo.LeagueMatchResult;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
+import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;
@@ -19,7 +19,8 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     private final LeagueMatchDAO _leagueMatchDAO;
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
-    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches = Collections.synchronizedMap(new LRUMap<>(5));
+    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches =
+            Collections.synchronizedMap(new LRUMap<>(5));
 
     public CachedLeagueMatchDAO(DbAccess dbAccess) {
         _leagueMatchDAO = LoggingProxy.createLoggingProxy(LeagueMatchDAO.class, new DbLeagueMatchDAO(dbAccess));
@@ -29,7 +30,7 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     }
 
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         _readWriteLock.writeLock().lock();
         try {
             _cachedMatches.clear();
@@ -39,12 +40,12 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return _cachedMatches.size();
     }
 
     @Override
-    public Collection<LeagueMatchResult> getLeagueMatches(String leagueId) {
+    public final Collection<LeagueMatchResult> getLeagueMatches(String leagueId) {
         _readWriteLock.readLock().lock();
         try {
             Collection<LeagueMatchResult> leagueMatches = _cachedMatches.get(leagueId);
@@ -75,7 +76,7 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     }
 
     @Override
-    public void addPlayedMatch(String leagueId, String seriesId, String winner, String loser) {
+    public final void addPlayedMatch(String leagueId, String seriesId, String winner, String loser) {
         _readWriteLock.writeLock().lock();
         try {
             LeagueMatchResult match = new LeagueMatchResult(seriesId, winner, loser);

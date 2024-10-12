@@ -3,7 +3,7 @@ package com.gempukku.stccg.merchant;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.cards.SetDefinition;
 import org.apache.commons.collections4.map.LRUMap;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-@SuppressWarnings("NestedMethodCall")
+@SuppressWarnings({"NestedMethodCall", "MagicNumber", "LongLine"})
 public class MerchantService {
     private final Map<String, PriceGuarantee> _priceGuarantees = Collections.synchronizedMap(new LRUMap<>(100));
 
@@ -37,11 +37,11 @@ public class MerchantService {
         }
     }
 
-    public Set<BasicCardItem> getSellableItems() {
+    public final Set<BasicCardItem> getSellableItems() {
         return Collections.unmodifiableSet(_merchantableItems);
     }
 
-    public PriceGuarantee priceCards(User player) {
+    public final PriceGuarantee priceCards(User player) {
         Lock lock = _lock.readLock();
         lock.lock();
         try {
@@ -55,7 +55,8 @@ public class MerchantService {
         }
     }
 
-    public void merchantBuysCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
+    public final void merchantBuysCard(User player, String blueprintId, int price)
+            throws MerchantException, SQLException, IOException {
         priceCards(player);
 
         Lock lock = _lock.writeLock();
@@ -74,7 +75,7 @@ public class MerchantService {
         }
     }
 
-    public void merchantSellsCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
+    public final void merchantSellsCard(User player, String blueprintId, int price) throws MerchantException, SQLException, IOException {
         priceCards(player);
 
         Lock lock = _lock.writeLock();
@@ -93,13 +94,15 @@ public class MerchantService {
         }
     }
 
-    public void tradeForFoil(User player, String blueprintId) throws MerchantException, SQLException, IOException {
+    public final void tradeForFoil(User player, String blueprintId) throws MerchantException, SQLException, IOException {
         if (!blueprintId.contains("_") || blueprintId.endsWith("*"))
             throw new MerchantException("Unable to trade in this type of item");
         Lock lock = _lock.writeLock();
         lock.lock();
         try {
-            boolean success = _collectionsManager.tradeCards(player, _permanentCollection, blueprintId, 4, blueprintId + "*", 1, 400);
+            boolean success = _collectionsManager.tradeCards(
+                    player, _permanentCollection, blueprintId, 4, blueprintId + "*", 1,
+                    400);
             if (!success)
                 throw new MerchantException("Unable to remove the required cards or currency from your collection");
         } finally {
@@ -116,11 +119,11 @@ public class MerchantService {
             _buyPrices = buyPrices;
         }
 
-        public Map<String, Integer> getBuyPrices() {
+        public final Map<String, Integer> getBuyPrices() {
             return _buyPrices;
         }
 
-        public Map<String, Integer> getSellPrices() {
+        public final Map<String, Integer> getSellPrices() {
             return _sellPrices;
         }
     }

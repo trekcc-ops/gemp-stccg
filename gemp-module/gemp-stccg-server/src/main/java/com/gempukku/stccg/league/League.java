@@ -1,9 +1,8 @@
-package com.gempukku.stccg.db.vo;
+package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.league.*;
 
 import java.util.Objects;
 
@@ -25,22 +24,22 @@ public class League {
         _status = status;
     }
 
-    public int getCost() {
+    public final int getCost() {
         return _cost;
     }
 
-    public String getName() {
+    public final String getName() {
         return _name;
     }
 
-    public String getType() {
+    public final String getType() {
         return _type;
     }
 
-    public synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
+    public final synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
         if (_leagueData == null) {
             try {
-                if(_clazz.equals(ConstructedLeagueData.class.getName())) {
+                if (_clazz.equals(ConstructedLeagueData.class.getName())) {
                     _leagueData = new ConstructedLeagueData(bpLibrary, formatLibrary, _parameters);
                 }
                 else if(_clazz.equals(NewConstructedLeagueData.class.getName())) {
@@ -65,22 +64,22 @@ public class League {
         return _leagueData;
     }
 
-    public int getStatus() {
+    public final int getStatus() {
         return _status;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        League league = (League) o;
+        League league = (League) obj;
 
         return Objects.equals(_type, league._type);
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return _type != null ? _type.hashCode() : 0;
     }
 }

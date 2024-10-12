@@ -1,8 +1,8 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 
 public class DefaultLeagueSeriesData implements LeagueSeriesData {
     private final LeaguePrizes _leaguePrizes;
@@ -26,43 +26,43 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
         return _name;
     }
 
     @Override
-    public int getStart() {
+    public final int getStart() {
         return _start;
     }
 
     @Override
-    public int getEnd() {
+    public final int getEnd() {
         return _end;
     }
 
     @Override
-    public int getMaxMatches() {
+    public final int getMaxMatches() {
         return _maxMatches;
     }
 
     @Override
-    public boolean isLimited() {
+    public final boolean isLimited() {
         return _limited;
     }
 
     @Override
-    public GameFormat getFormat() {
+    public final GameFormat getFormat() {
         return _format;
     }
 
     @Override
-    public CollectionType getCollectionType() {
+    public final CollectionType getCollectionType() {
         return _collectionType;
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries) {
-        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries);
+    public final CardCollection getPrizeForLeagueMatchWinner(int winCount) {
+        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCount);
     }
 
 }

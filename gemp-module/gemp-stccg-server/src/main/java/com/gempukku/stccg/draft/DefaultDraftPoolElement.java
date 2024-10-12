@@ -1,4 +1,4 @@
-package com.gempukku.stccg.draft.builder;
+package com.gempukku.stccg.draft;
 
 import java.util.List;
 
@@ -15,17 +15,17 @@ public class DefaultDraftPoolElement implements DraftPoolElement {
     }
 
     @Override
-    public String getDraftPoolType() {
+    public final String getDraftPoolType() {
         return _draftPoolType;
     }
 
     @Override
-    public List<List<String>> getDraftPackList() {
+    public final List<List<String>> getDraftPackList() {
         return _draftPackList;
     }
 
     @Override
-    public int getPacksToDraft() {
+    public final int getPacksToDraft() {
         return _packsToDraft;
     }
 }

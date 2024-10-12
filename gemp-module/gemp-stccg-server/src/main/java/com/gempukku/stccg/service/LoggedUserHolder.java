@@ -16,19 +16,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LoggedUserHolder {
 
+    private final static long SESSION_LENGTH = 1000 * 60 * 10;
+    private final static long EXPIRE_CHECK_INTERVAL = 1000 * 60;
+    private final static int SESSION_ID_LENGTH = 20;
     private final Map<String, String> _sessionIdsToUsers = new HashMap<>();
     private final Multimap<String, String> _usersToSessionIds = HashMultimap.create();
 
     private final Map<String, Long> _lastAccess = Collections.synchronizedMap(new HashMap<>());
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
-    public void start() {
-        ClearExpiredRunnable _clearExpiredRunnable = new ClearExpiredRunnable();
-        Thread thr = new Thread(_clearExpiredRunnable);
+    public final void start() {
+        ClearExpiredRunnable runnable = new ClearExpiredRunnable();
+        Thread thr = new Thread(runnable);
         thr.start();
     }
 
-    public String getLoggedUser(String sessionId) {
+    public final String getLoggedUser(String sessionId) {
         _readWriteLock.readLock().lock();
         try {
             String loggedUser = _sessionIdsToUsers.get(sessionId);
@@ -42,7 +45,7 @@ public class LoggedUserHolder {
         return null;
     }
 
-    public String getLoggedUser(HttpMessage request) {
+    public final String getLoggedUser(HttpMessage request) {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
         HttpHeaders headers = request.headers();
         String cookieHeader = headers.get(HttpHeaderNames.COOKIE);
@@ -62,7 +65,7 @@ public class LoggedUserHolder {
     }
 
 
-    public String logUser(String userName) {
+    public final String logUser(String userName) {
         _readWriteLock.writeLock().lock();
         try {
             String userValue = insertValueForUser(userName);
@@ -73,10 +76,10 @@ public class LoggedUserHolder {
         }
     }
 
-    public void forceLogoutUser(String userName) {
+    public final void forceLogoutUser(String userName) {
         _readWriteLock.writeLock().lock();
         try {
-            final Collection<String> sessionIds = new HashSet<>(_usersToSessionIds.get(userName));
+            final Iterable<String> sessionIds = new HashSet<>(_usersToSessionIds.get(userName));
             for (String sessionId : sessionIds) {
                 _sessionIdsToUsers.remove(sessionId);
                 _usersToSessionIds.remove(userName, sessionId);
@@ -93,7 +96,7 @@ public class LoggedUserHolder {
         String sessionId;
         do {
             StringBuilder result = new StringBuilder();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < SESSION_ID_LENGTH; i++)
                 result.append(_chars[rnd.nextInt(_chars.length)]);
             sessionId = result.toString();
         } while (_sessionIdsToUsers.containsKey(sessionId));
@@ -105,7 +108,7 @@ public class LoggedUserHolder {
     private class ClearExpiredRunnable implements Runnable {
         @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
         @Override
-        public void run() {
+        public final void run() {
             while (true) {
                 _readWriteLock.writeLock().lock();
                 try {
@@ -113,9 +116,7 @@ public class LoggedUserHolder {
                     Iterator<Map.Entry<String, Long>> iterator = _lastAccess.entrySet().iterator();
                     if (iterator.hasNext()) {
                         Map.Entry<String, Long> lastAccess = iterator.next();
-                        // 10 minutes session length
-                        long _loggedUserExpireLength = 1000 * 60 * 10;
-                        long expireAt = lastAccess.getValue() + _loggedUserExpireLength;
+                        long expireAt = lastAccess.getValue() + SESSION_LENGTH;
                         if (expireAt < currentTime) {
                             String sessionId = lastAccess.getKey();
                             final String userName = _sessionIdsToUsers.remove(sessionId);
@@ -128,9 +129,7 @@ public class LoggedUserHolder {
                     _readWriteLock.writeLock().unlock();
                 }
                 try {
-                    // check every minute
-                    long _expireCheckInterval = 1000 * 60;
-                    Thread.sleep(_expireCheckInterval);
+                    Thread.sleep(EXPIRE_CHECK_INTERVAL);
                 } catch (InterruptedException ignored) {
 
                 }

@@ -13,25 +13,25 @@ public class TournamentMatch implements CompetitiveMatchResult {
         _winner = winner;
     }
 
-    public String getPlayerOne() {
+    public final String getPlayerOne() {
         return _playerOne;
     }
 
-    public String getPlayerTwo() {
+    public final String getPlayerTwo() {
         return _playerTwo;
     }
 
-    public boolean isFinished() {
+    public final boolean isFinished() {
         return _winner != null;
     }
 
     @Override
-    public String getWinner() {
+    public final String getWinner() {
         return _winner;
     }
 
     @Override
-    public String getLoser() {
+    public final String getLoser() {
         return _playerOne.equals(_winner) ? _playerTwo : _playerOne;
     }
 }

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.db;
 
 import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
@@ -20,14 +21,14 @@ public class DbTransferDAO implements TransferDAO {
     }
 
     @Override
-    public void addTransferFrom(String player, String reason, String collectionName, int currency,
-                                CardCollection items) {
+    public final void addTransferFrom(String player, String reason, String collectionName, int currency,
+                                      CardCollection items) {
         addTransfer(false, player, reason, collectionName, currency, items, "from");
     }
 
     @Override
-    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
-                              CardCollection items) {
+    public final void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
+                                    CardCollection items) {
         addTransfer(notifyPlayer, player, reason, collectionName, currency, items, "to");
     }
 
@@ -48,7 +49,7 @@ public class DbTransferDAO implements TransferDAO {
     }
 
     @Override
-    public boolean hasUndeliveredPackages(String player) {
+    public final boolean hasUndeliveredPackages(String player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 String sql = "select count(*) from transfer where player=? and notify=1";
@@ -70,7 +71,7 @@ public class DbTransferDAO implements TransferDAO {
 
     // For now, very naive synchronization
     @Override
-    public synchronized Map<String, ? extends CardCollection> consumeUndeliveredPackages(String player) {
+    public final synchronized Map<String, ? extends CardCollection> consumeUndeliveredPackages(String player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 Map<String, DefaultCardCollection> result = new HashMap<>();
@@ -108,15 +109,15 @@ public class DbTransferDAO implements TransferDAO {
         }
     }
 
-    private String serializeCollection(CardCollection cardCollection) {
+    private static String serializeCollection(CardCollection cardCollection) {
         StringBuilder sb = new StringBuilder();
         for (GenericCardItem item : cardCollection.getAll())
             sb.append(item.getCount()).append("x").append(item.getBlueprintId()).append(",");
         return sb.toString();
     }
 
-    private CardCollection deserializeCollection(String collection) {
-        DefaultCardCollection cardCollection = new DefaultCardCollection();
+    private static CardCollection deserializeCollection(String collection) {
+        MutableCardCollection cardCollection = new DefaultCardCollection();
         for (String item : collection.split(",")) {
             if (!item.isEmpty()) {
                 String[] itemSplit = item.split("x", 2);

@@ -7,7 +7,7 @@ public class HttpProcessingException extends Exception {
         _status = status;
     }
 
-    public int getStatus() {
+    public final int getStatus() {
         return _status;
     }
 }

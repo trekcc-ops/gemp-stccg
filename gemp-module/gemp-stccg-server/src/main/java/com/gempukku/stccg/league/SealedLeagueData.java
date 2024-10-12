@@ -9,7 +9,7 @@ import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.Collections;
@@ -47,17 +47,17 @@ public class SealedLeagueData implements LeagueData {
     }
 
     @Override
-    public boolean isSoloDraftLeague() {
+    public final boolean isSoloDraftLeague() {
         return false;
     }
 
     @Override
-    public List<LeagueSeriesData> getSeries() {
+    public final List<LeagueSeriesData> getSeries() {
         return Collections.unmodifiableList(_allSeries);
     }
 
     @Override
-    public void joinLeague(CollectionsManager collectionManager, User player, int currentTime) {
+    public final void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
         MutableCardCollection startingCollection = new DefaultCardCollection();
         for (int i = 0; i < _allSeries.size(); i++) {
             LeagueSeriesData seriesData = _allSeries.get(i);
@@ -69,12 +69,12 @@ public class SealedLeagueData implements LeagueData {
                     startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
             }
         }
-        collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
+        collectionsManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
-                       int currentTime) {
+    public final int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings,
+                             int oldStatus, int currentTime) {
         int status = oldStatus;
 
         for (int i = status; i < _allSeries.size(); i++) {
@@ -84,9 +84,9 @@ public class SealedLeagueData implements LeagueData {
                 var leagueProduct = sealedLeague.GetProductForSeries(i);
 
                 Map<User, CardCollection> map = collectionsManager.getPlayersCollection(_collectionType.getCode());
-                for (Map.Entry<User, CardCollection> playerCardCollectionEntry : map.entrySet()) {
+                for (Map.Entry<User, CardCollection> collection : map.entrySet()) {
                     collectionsManager.addItemsToPlayerCollection(true, "New sealed league product",
-                            playerCardCollectionEntry.getKey(), _collectionType, leagueProduct);
+                            collection.getKey(), _collectionType, leagueProduct);
                 }
                 status = i + 1;
             }
@@ -97,9 +97,12 @@ public class SealedLeagueData implements LeagueData {
             LeagueSeriesData lastSeries = _allSeries.getLast();
             if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
-                    CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
+                    CardCollection leaguePrize =
+                            _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
                     if (leaguePrize != null)
-                        collectionsManager.addItemsToPlayerCollection(true, "End of league prizes", leagueStanding.getPlayerName(), _prizeCollectionType, leaguePrize.getAll());
+                        collectionsManager.addItemsToPlayerCollection(
+                                true, "End of league prizes", leagueStanding.getPlayerName(),
+                                _prizeCollectionType, leaguePrize.getAll());
                 }
                 status++;
             }

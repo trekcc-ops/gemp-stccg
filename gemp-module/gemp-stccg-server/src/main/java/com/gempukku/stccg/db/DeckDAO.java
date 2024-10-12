@@ -8,7 +8,7 @@ import java.util.Set;
 public interface DeckDAO {
     CardDeck getDeckForPlayer(User player, String name);
 
-    void saveDeckForPlayer(User player, String name, String target_format, String notes, CardDeck deck);
+    void saveDeckForPlayer(User player, String name, String targetFormat, String notes, CardDeck deck);
 
     void deleteDeckForPlayer(User player, String name);
 

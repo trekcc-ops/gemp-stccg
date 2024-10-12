@@ -24,16 +24,16 @@ public class ProductLibrary {
     public ProductLibrary(CardBlueprintLibrary cardLibrary) {
         this(cardLibrary, AppConfig.getProductPath());
     }
-    public ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionDirectory) {
+    private ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionPath) {
         _cardLibrary = cardLibrary;
-        _packDirectory = packDefinitionDirectory;
+        _packDirectory = packDefinitionPath;
 
         collectionReady.acquireUninterruptibly();
         loadPacks(_packDirectory);
         collectionReady.release();
     }
 
-    public void ReloadPacks() {
+    public final void ReloadPacks() {
         try {
             collectionReady.acquire();
             loadPacks(_packDirectory);
@@ -62,7 +62,7 @@ public class ProductLibrary {
             List<JSONData.Pack> packs = JsonUtils.readListOfClassFromReader(reader, JSONData.Pack.class);
 
             for (JSONData.Pack def : packs) {
-                LOGGER.debug("Loading pack definitions for " + def.name);
+                LOGGER.debug("Loading pack definitions for {}", def.name);
 
                 PackBox result = null;
                 String[] rarities;
@@ -122,7 +122,7 @@ public class ProductLibrary {
         }
     }
 
-    public Map<String, PackBox> getAllProducts() {
+    public final Map<String, PackBox> getAllProducts() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_products);
@@ -134,7 +134,7 @@ public class ProductLibrary {
         }
     }
 
-    public PackBox GetProduct(String name) {
+    public final PackBox GetProduct(String name) {
         try {
             collectionReady.acquire();
             var data = _products.get(name);

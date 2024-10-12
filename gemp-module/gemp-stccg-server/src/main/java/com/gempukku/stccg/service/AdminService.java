@@ -7,7 +7,7 @@ import com.gempukku.stccg.db.User;
 import java.sql.SQLException;
 
 public class AdminService {
-    public static final int DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
+    private static final int DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private final PlayerDAO _playerDAO;
     private final LoggedUserHolder _loggedUserHolder;
     private final IpBanDAO _ipBanDAO;
@@ -18,19 +18,14 @@ public class AdminService {
         _loggedUserHolder = loggedUserHolder;
     }
 
-    public boolean resetUserPassword(String login) {
-        try {
-            final boolean success = _playerDAO.resetUserPassword(login);
-            if (!success)
-                return false;
-            _loggedUserHolder.forceLogoutUser(login);
-            return true;
-        } catch (SQLException exp) {
-            return false;
-        }
+    public final void resetUserPassword(String login) throws SQLException {
+        final boolean success = _playerDAO.resetUserPassword(login);
+        if (!success)
+            throw new SQLException();
+        _loggedUserHolder.forceLogoutUser(login);
     }
 
-    public boolean banUser(String login) {
+    public final boolean banUser(String login) {
         try {
             final boolean success = _playerDAO.banPlayerPermanently(login);
             if (!success)
@@ -42,7 +37,7 @@ public class AdminService {
         }
     }
 
-    public boolean banUserTemp(String login, int days) {
+    public final boolean banUserTemp(String login, int days) {
         try {
             final boolean success = _playerDAO.banPlayerTemporarily(
                     login, System.currentTimeMillis() + (long) days * DAY_IN_MILLIS
@@ -56,7 +51,7 @@ public class AdminService {
         }
     }
 
-    public boolean unBanUser(String login) {
+    public final boolean unBanUser(String login) {
         try {
             return _playerDAO.unBanPlayer(login);
         } catch (SQLException exp) {
@@ -64,7 +59,7 @@ public class AdminService {
         }
     }
 
-    public void banIp(String login) {
+    public final void banIp(String login) {
         final User player = _playerDAO.getPlayer(login);
         if (player == null)
             return;
@@ -75,15 +70,11 @@ public class AdminService {
         banUser(login);
     }
 
-    public void banIpPrefix(String login) {
+    public final void banIpPrefix(String login) {
         final User player = _playerDAO.getPlayer(login);
         if (player == null)
             return;
-        final String lastIp = player.getLastIp();
-        String lastIpPrefix = lastIp.substring(0, lastIp.lastIndexOf(".")+1);
-
-        _ipBanDAO.addIpPrefixBan(lastIpPrefix);
-
+        player.banIpPrefix(_ipBanDAO);
         banUser(login);
     }
 }

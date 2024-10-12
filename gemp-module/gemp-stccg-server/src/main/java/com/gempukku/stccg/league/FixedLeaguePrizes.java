@@ -1,20 +1,18 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.SetDefinition;
+import com.gempukku.stccg.collection.MutableCardCollection;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class FixedLeaguePrizes implements LeaguePrizes {
-    private final List<String> _rares = new ArrayList<>();
-    private final List<String> _allCards = new ArrayList<>();
+    private final Collection<String> _rares = new ArrayList<>();
+    private final Collection<String> _allCards = new ArrayList<>();
     private final CardBlueprintLibrary _library;
 
     public FixedLeaguePrizes(CardBlueprintLibrary library) {
@@ -26,8 +24,9 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCount) {
-        DefaultCardCollection winnerPrize = new DefaultCardCollection();
+    public final CardCollection getPrizeForLeagueMatchWinner(int winCount) {
+        MutableCardCollection winnerPrize = new DefaultCardCollection();
+        //noinspection BadOddness
         if (winCount % 2 == 1) {
             winnerPrize.addItem("(S)All Decipher Choice - Booster", 1);
         } else {
@@ -37,7 +36,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeague(int position, CollectionType collectionType) {
+    public final CardCollection getPrizeForLeague(int position, CollectionType collectionType) {
         if (collectionType.equals(CollectionType.ALL_CARDS)) {
             return getPrizeForConstructedLeague(position);
         } else if (collectionType.equals(CollectionType.MY_CARDS) ||
@@ -57,7 +56,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return null;
     }
 
-    private int getSealedBoosterCount(int position) {
+    private static int getSealedBoosterCount(int position) {
         if (position < 5)
             return 65 - position * 5;
         else if (position < 9)
@@ -82,7 +81,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return null;
     }
 
-    private int getCollectorsBoosterCount(int position) {
+    private static int getCollectorsBoosterCount(int position) {
         if (position < 5)
             return 35 - position * 5;
         else if (position < 9)
@@ -103,7 +102,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         return null;
     }
 
-    private int getConstructedBoosterCount(int position) {
+    private static int getConstructedBoosterCount(int position) {
         if (position < 5)
             return 12 - position * 2;
         else if (position < 9)
@@ -116,18 +115,18 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
 
-    private int getRandomRareFoilCount(int position) {
+    private static int getRandomRareFoilCount(int position) {
         if (position < 4)
             return 4 - position;
         return 0;
     }
 
-    private void addPrizes(DefaultCardCollection leaguePrize, List<String> cards) {
+    private static void addPrizes(MutableCardCollection leaguePrize, Iterable<String> cards) {
         for (String card : cards)
             leaguePrize.addItem(card, 1);
     }
 
-    private List<String> getRandomFoil(List<String> list, int count) {
+    private static List<String> getRandomFoil(Iterable<String> list, int count) {
         List<String> result = new LinkedList<>();
         for (String element : list)
             result.add(element + "*");

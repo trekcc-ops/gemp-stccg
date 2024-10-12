@@ -5,30 +5,29 @@ import com.gempukku.stccg.cards.CardItem;
 import java.util.Objects;
 
 public class BasicCardItem implements CardItem {
-    private final String _blueprintId;
+    private final String blueprintId;
 
     public BasicCardItem(String blueprintId) {
-        _blueprintId = blueprintId;
+        this.blueprintId = blueprintId;
     }
 
     @Override
-    public String getBlueprintId() {
-        return _blueprintId;
+    public final String getBlueprintId() {
+        return blueprintId;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        BasicCardItem that = (BasicCardItem) o;
+        CardItem that = (CardItem) obj;
 
-        return Objects.equals(_blueprintId, that._blueprintId);
+        return Objects.equals(blueprintId, that.getBlueprintId());
     }
 
     @Override
-    public int hashCode() {
-        return _blueprintId != null ? _blueprintId.hashCode() : 0;
+    public final int hashCode() {
+        return blueprintId != null ? blueprintId.hashCode() : 0;
     }
 }
-

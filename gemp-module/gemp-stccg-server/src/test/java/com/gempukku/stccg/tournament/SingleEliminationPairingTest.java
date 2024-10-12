@@ -7,11 +7,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SingleEliminationPairingTest extends AbstractServerTest {
-    private final SingleEliminationPairing _pairing = new SingleEliminationPairing("singleElimination");
+class SingleEliminationPairingTest extends AbstractServerTest {
+    private final PairingMechanism _pairing = new SingleEliminationPairing("singleElimination");
 
     @Test
-    public void correctlyDetectsFinishedTournament() {
+    final void correctlyDetectsFinishedTournament() {
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4"));
         Set<String> playersWithoutFirst = new HashSet<>(Arrays.asList("p2", "p3", "p4"));
         Set<String> playersWithoutTwo = new HashSet<>(Arrays.asList("p3", "p4"));
@@ -25,12 +25,12 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
     }
 
     @Test
-    public void shouldDropLoser() {
+    final void shouldDropLoser() {
         assertTrue(_pairing.shouldDropLoser());
     }
 
     @Test
-    public void pairingDoneCorrectlyForEvenNumberOfPlayers() {
+    final void pairingDoneCorrectlyForEvenNumberOfPlayers() {
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4"));
 
         Map<String, String> pairingResults = new HashMap<>();
@@ -42,7 +42,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         assertEquals(0, byeResults.size());
         assertEquals(2, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>();
+        Collection<String> pairedPlayers = new HashSet<>();
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
             pairedPlayers.add(pairing.getValue());
@@ -52,7 +52,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
     }
 
     @Test
-    public void pairingDoneCorrectlyForOddNumberOfPlayers() {
+    final void pairingDoneCorrectlyForOddNumberOfPlayers() {
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3"));
 
         Map<String, String> pairingResults = new HashMap<>();
@@ -63,7 +63,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         assertEquals(1, byeResults.size());
         assertEquals(1, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>(byeResults);
+        Collection<String> pairedPlayers = new HashSet<>(byeResults);
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
             pairedPlayers.add(pairing.getValue());
@@ -73,7 +73,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
     }
 
     @Test
-    public void playerWithLowestNumberOfByesGetsIt() {
+    final void playerWithLowestNumberOfByesGetsIt() {
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3"));
 
         Map<String, String> pairingResults = new HashMap<>();
@@ -91,7 +91,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         assertTrue(byeResults.contains("p1"));
         assertEquals(1, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>(byeResults);
+        Collection<String> pairedPlayers = new HashSet<>(byeResults);
 
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
@@ -102,7 +102,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
     }
     
     @Test
-    public void droppedPlayersNotIncluded() {
+    final void droppedPlayersNotIncluded() {
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4"));
         Set<String> droppedPlayers = new HashSet<>(List.of("p4"));
 
@@ -115,7 +115,7 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         assertEquals(1, byeResults.size());
         assertEquals(1, pairingResults.size());
 
-        Set<String> pairedPlayers = new HashSet<>(byeResults);
+        Collection<String> pairedPlayers = new HashSet<>(byeResults);
         for (Map.Entry<String, String> pairing : pairingResults.entrySet()) {
             pairedPlayers.add(pairing.getKey());
             pairedPlayers.add(pairing.getValue());

@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.random.RandomGenerator;
 
-public class DraftTests extends AbstractServerTest {
+@SuppressWarnings("MagicNumber")
+class DraftTests extends AbstractServerTest {
     @Test
-    public void DraftTest() {
+    final void DraftTest() {
         CollectionsManager collectionsManager =
                 new CollectionsManager(null, null, null, _cardLibrary);
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
@@ -64,7 +66,7 @@ public class DraftTests extends AbstractServerTest {
     }
 
     @Test
-    public void testRandomness() {
+    final void testRandomness() {
         doRandomTest(4, false);
         doRandomTest(3, false);
         doRandomTest(4, true);
@@ -76,7 +78,7 @@ public class DraftTests extends AbstractServerTest {
         System.out.println("Next int value: " + nextIntValue);
         int[] values = new int[nextIntValue];
         for (int i = 0; i < 1000; i++) {
-            Random rnd = new Random(i);
+            RandomGenerator rnd = new Random(i);
             if (getFloatBeforeInt)
                 rnd.nextFloat();
             values[rnd.nextInt(nextIntValue)]++;

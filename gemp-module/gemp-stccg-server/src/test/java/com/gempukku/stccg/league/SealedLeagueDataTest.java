@@ -3,7 +3,7 @@ package com.gempukku.stccg.league;
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
@@ -18,18 +18,18 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SuppressWarnings("FeatureEnvy")
-public class SealedLeagueDataTest extends AbstractServerTest {
+@SuppressWarnings({"FeatureEnvy", "MagicNumber", "StaticMethodReferencedViaSubclass"})
+class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
-    final SealedLeagueData data = new SealedLeagueData(
+    private final LeagueData data = new SealedLeagueData(
             _cardLibrary, _formatLibrary, "test_sealed,20120101,test,Test Collection");
-    final CollectionType collectionType = new CollectionType("test", "Test Collection");
-    final User player = new User(1, "Test", "pass", "u", null, null,
+    private final CollectionType collectionType = new CollectionType("test", "Test Collection");
+    private final User player = new User(1, "Test", "pass", "u", null, null,
             null, null);
 
     @Test
-    public void testJoinLeagueFirstWeek() {
+    final void testJoinLeagueFirstWeek() {
         for (int i = 20120101; i < 20120108; i++) {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             data.joinLeague(collectionsManager, player, i);
@@ -48,7 +48,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
     }
 
     @Test
-    public void testJoinLeagueSecondWeek() {
+    final void testJoinLeagueSecondWeek() {
         for (int i = 20120108; i < 20120115; i++) {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             data.joinLeague(collectionsManager, player, i);
@@ -71,7 +71,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
     }
 
     @Test
-    public void testSwitchToFirstWeek() {
+    final void testSwitchToFirstWeek() {
         for (int i = 20120101; i < 20120108; i++) {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             Mockito.when(collectionsManager.getPlayersCollection("test")).thenReturn(new HashMap<>());
@@ -84,7 +84,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
     }
 
     @Test
-    public void testProcessMidFirstWeek() {
+    final void testProcessMidFirstWeek() {
         for (int i = 20120101; i < 20120108; i++) {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             Mockito.when(collectionsManager.getPlayersCollection("test")).thenReturn(new HashMap<>());
@@ -95,7 +95,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
     }
 
     @Test
-    public void testSwitchToSecondWeek() {
+    final void testSwitchToSecondWeek() {
         for (int i = 20120108; i < 20120115; i++) {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             Map<User, CardCollection> playersInLeague = new HashMap<>();
@@ -103,7 +103,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
             Mockito.when(collectionsManager.getPlayersCollection("test")).thenReturn(playersInLeague);
             assertEquals(2, data.process(collectionsManager, null, 1, i));
 
-            final List<GenericCardItem> expectedToAdd = new ArrayList<>();
+            final Collection<GenericCardItem> expectedToAdd = new ArrayList<>();
             expectedToAdd.add(GenericCardItem.createItem("First Contact - Booster", 6));
             expectedToAdd.add(GenericCardItem.createItem("155_079", 1));
 
@@ -126,7 +126,7 @@ public class SealedLeagueDataTest extends AbstractServerTest {
     }
 
     @Test
-    public void testProcessMidSecondWeek() {
+    final void testProcessMidSecondWeek() {
         for (int i = 20120108; i < 20120115; i++) {
             CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
             Mockito.when(collectionsManager.getPlayersCollection("test")).thenReturn(new HashMap<>());

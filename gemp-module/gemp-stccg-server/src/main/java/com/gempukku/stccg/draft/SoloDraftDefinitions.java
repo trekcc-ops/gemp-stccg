@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.draft.builder.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.io.File;
@@ -24,14 +23,14 @@ public class SoloDraftDefinitions {
         this(collectionsManager, cardLibrary, formatLibrary, AppConfig.getDraftPath());
     }
 
-    public SoloDraftDefinitions(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
-                                FormatLibrary formatLibrary, File draftDefinitionPath) {
+    private SoloDraftDefinitions(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
+                                 FormatLibrary formatLibrary, File draftDefinitionPath) {
         _draftChoiceBuilder = new DraftChoiceBuilder(collectionsManager, cardLibrary, formatLibrary);
         _draftDefinitionPath = draftDefinitionPath;
         ReloadDraftsFromFile();
     }
 
-    public void ReloadDraftsFromFile() {
+    private final void ReloadDraftsFromFile() {
         try {
             collectionReady.acquire();
             loadDrafts(_draftDefinitionPath);
@@ -91,7 +90,7 @@ public class SoloDraftDefinitions {
         }
     }
 
-    public SoloDraft getSoloDraft(String draftType) {
+    public final SoloDraft getSoloDraft(String draftType) {
         try {
             collectionReady.acquire();
             var data = _draftTypes.get(draftType);
@@ -102,7 +101,7 @@ public class SoloDraftDefinitions {
         }
     }
 
-    public Map<String, SoloDraft> getAllSoloDrafts() {
+    public final Map<String, SoloDraft> getAllSoloDrafts() {
         try {
             collectionReady.acquire();
             var data = Collections.unmodifiableMap(_draftTypes);

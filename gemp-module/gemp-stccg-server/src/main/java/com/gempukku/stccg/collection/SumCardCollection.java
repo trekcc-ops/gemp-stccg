@@ -14,7 +14,7 @@ public class SumCardCollection implements CardCollection {
     }
 
     @Override
-    public int getCurrency() {
+    public final int getCurrency() {
         int sum = 0;
         for (CardCollection cardCollection : _cardCollections)
             sum += cardCollection.getCurrency();
@@ -23,7 +23,7 @@ public class SumCardCollection implements CardCollection {
     }
 
     @Override
-    public Map<String, Object> getExtraInformation() {
+    public final Map<String, Object> getExtraInformation() {
         Map<String, Object> result = new HashMap<>();
         for (CardCollection cardCollection : _cardCollections) {
             result.putAll(cardCollection.getExtraInformation());
@@ -32,7 +32,7 @@ public class SumCardCollection implements CardCollection {
     }
 
     @Override
-    public Iterable<GenericCardItem> getAll() {
+    public final Iterable<GenericCardItem> getAll() {
         Map<String, GenericCardItem> sum = new HashMap<>();
         for (CardCollection cardCollection : _cardCollections) {
             Iterable<GenericCardItem> inCollection = cardCollection.getAll();
@@ -47,7 +47,7 @@ public class SumCardCollection implements CardCollection {
     }
 
     @Override
-    public int getItemCount(String blueprintId) {
+    public final int getItemCount(String blueprintId) {
         int sum = 0;
         for (CardCollection cardCollection : _cardCollections)
             sum += cardCollection.getItemCount(blueprintId);

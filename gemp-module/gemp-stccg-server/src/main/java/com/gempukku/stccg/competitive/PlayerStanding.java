@@ -17,39 +17,39 @@ public class PlayerStanding {
         _playerByes = playerByes;
     }
 
-    public int getGamesPlayed() {
+    public final int getGamesPlayed() {
         return _gamesPlayed;
     }
 
-    public float getOpponentWin() {
+    public final float getOpponentWin() {
         return _opponentWin;
     }
 
-    public String getPlayerName() {
+    public final String getPlayerName() {
         return _playerName;
     }
 
-    public int getPoints() {
+    public final int getPoints() {
         return _points;
     }
 
-    public int getStanding() {
+    public final int getStanding() {
         return _standing;
     }
 
-    public int getPlayerWins() {
+    public final int getPlayerWins() {
         return _playerWins;
     }
 
-    public int getPlayerByes() {
+    public final int getPlayerByes() {
         return _playerByes;
     }
 
-    public void setOpponentWin(float opponentWin) {
+    public final void setOpponentWin(float opponentWin) {
         _opponentWin = opponentWin;
     }
 
-    public void setStanding(int standing) {
+    public final void setStanding(int standing) {
         _standing = standing;
     }
 }

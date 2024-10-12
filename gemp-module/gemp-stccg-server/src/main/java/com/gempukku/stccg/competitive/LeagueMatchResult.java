@@ -1,6 +1,4 @@
-package com.gempukku.stccg.db.vo;
-
-import com.gempukku.stccg.competitive.CompetitiveMatchResult;
+package com.gempukku.stccg.competitive;
 
 public class LeagueMatchResult implements CompetitiveMatchResult {
     private final String _winner;
@@ -13,15 +11,15 @@ public class LeagueMatchResult implements CompetitiveMatchResult {
         _loser = loser;
     }
 
-    public String getSeriesName() {
+    public final String getSeriesName() {
         return _seriesName;
     }
 
-    public String getLoser() {
+    public final String getLoser() {
         return _loser;
     }
 
-    public String getWinner() {
+    public final String getWinner() {
         return _winner;
     }
 }

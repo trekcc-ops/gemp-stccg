@@ -18,16 +18,16 @@ public class DbDeckDAO implements DeckDAO {
         _dbAccess = dbAccess;
     }
 
-    public synchronized CardDeck getDeckForPlayer(User player, String name) {
+    public final synchronized CardDeck getDeckForPlayer(User player, String name) {
         return getPlayerDeck(player.getId(), name);
     }
 
-    public synchronized void saveDeckForPlayer(User player, String name, String target_format, String notes, CardDeck deck) {
+    public final synchronized void saveDeckForPlayer(User player, String name, String targetFormat, String notes, CardDeck deck) {
         boolean newDeck = getPlayerDeck(player.getId(), name) == null;
-        storeDeckToDB(player.getId(), name, target_format, notes, deck, newDeck);
+        storeDeckToDB(player.getId(), name, targetFormat, notes, deck, newDeck);
     }
 
-    public synchronized void deleteDeckForPlayer(User player, String name) {
+    public final synchronized void deleteDeckForPlayer(User player, String name) {
         try {
             String sqlStatement = "delete from deck where player_id=? and name=?";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
@@ -37,7 +37,7 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    public synchronized CardDeck renameDeck(User player, String oldName, String newName) {
+    public final synchronized CardDeck renameDeck(User player, String oldName, String newName) {
         CardDeck deck = getDeckForPlayer(player, oldName);
         if (deck == null)
             return null;
@@ -47,7 +47,7 @@ public class DbDeckDAO implements DeckDAO {
         return deck;
     }
 
-    public synchronized Set<Map.Entry<String, String>> getPlayerDeckNames(User player) {
+    public final synchronized Set<Map.Entry<String, String>> getPlayerDeckNames(User player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select name, target_format from deck where player_id=?")) {
@@ -91,7 +91,7 @@ public class DbDeckDAO implements DeckDAO {
         }
     }
 
-    private void storeDeckToDB(int playerId, String name, String target_format, String notes, CardDeck deck,
+    private void storeDeckToDB(int playerId, String name, String targetFormat, String notes, CardDeck deck,
                                boolean newDeck) {
         String contents = deck.buildContentsFromDeck();
         try {
@@ -99,13 +99,13 @@ public class DbDeckDAO implements DeckDAO {
                 String sqlStatement =
                         "insert into deck (player_id, name, target_format, notes, contents) values (?, ?, ?, ?, ?)";
                 SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                        playerId, name, target_format, notes, contents);
+                        playerId, name, targetFormat, notes, contents);
             }
             else {
                 String sqlStatement =
                         "update deck set contents=?, target_format=?, notes=? where player_id=? and name=?";
                 SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                        contents, target_format, notes, playerId, name);
+                        contents, targetFormat, notes, playerId, name);
             }
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to store player deck to DB", exp);

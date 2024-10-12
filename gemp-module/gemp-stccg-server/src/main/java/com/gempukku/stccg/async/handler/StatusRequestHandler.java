@@ -1,13 +1,13 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.hall.HallServer;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 
+import java.net.HttpURLConnection;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -22,7 +22,7 @@ public class StatusRequestHandler extends DefaultServerRequestHandler implements
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
 
             var today = ZonedDateTime.now(ZoneOffset.UTC);
@@ -35,7 +35,7 @@ public class StatusRequestHandler extends DefaultServerRequestHandler implements
 
             responseWriter.writeHtmlResponse(sb);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 }

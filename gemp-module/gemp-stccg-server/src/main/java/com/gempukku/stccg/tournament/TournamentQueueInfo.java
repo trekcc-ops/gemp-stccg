@@ -18,9 +18,9 @@ public class TournamentQueueInfo {
     private final String _prizeScheme;
     private final int _minimumPlayers;
 
-    public TournamentQueueInfo(String scheduledTournamentId, String tournamentName, String format, long startTime,
+    public TournamentQueueInfo(String tournamentId, String tournamentName, String format, long startTime,
                                int cost, String playOffSystem, String prizeScheme, int minimumPlayers) {
-        _scheduledTournamentId = scheduledTournamentId;
+        _scheduledTournamentId = tournamentId;
         _tournamentName = tournamentName;
         _format = format;
         _startTime = startTime;
@@ -30,39 +30,39 @@ public class TournamentQueueInfo {
         _minimumPlayers = minimumPlayers;
     }
 
-    public String getScheduledTournamentId() {
+    public final String getScheduledTournamentId() {
         return _scheduledTournamentId;
     }
 
-    public int getCost() {
+    public final int getCost() {
         return _cost;
     }
 
-    public long getStartTime() {
+    public final long getStartTime() {
         return _startTime;
     }
 
-    public String getTournamentName() {
+    public final String getTournamentName() {
         return _tournamentName;
     }
 
-    public String getFormat() {
+    public final String getFormat() {
         return _format;
     }
 
-    public PairingMechanism getPairingMechanism() {
+    public final PairingMechanism getPairingMechanism() {
         return PairingMechanismRegistry.getPairingMechanism(_playOffSystem);
     }
 
-    public TournamentPrizes getPrizes(CardBlueprintLibrary library) {
+    public final TournamentPrizes getPrizes(CardBlueprintLibrary library) {
         return TournamentPrizeSchemeRegistry.getTournamentPrizes(library, _prizeScheme);
     }
 
-    public int getMinimumPlayers() {
+    public final int getMinimumPlayers() {
         return _minimumPlayers;
     }
 
-    public ScheduledTournamentQueue createNewScheduledTournamentQueue(ServerObjects objects, Tournament.Stage stage) {
+    public final ScheduledTournamentQueue createNewScheduledTournamentQueue(ServerObjects objects, Tournament.Stage stage) {
         ZonedDateTime startDate = new Date(_startTime).toInstant().atZone(ZoneId.of("GMT"));
         String startCondition = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return new ScheduledTournamentQueue(this, _scheduledTournamentId, _startTime, _minimumPlayers,

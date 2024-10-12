@@ -14,8 +14,8 @@ public class SingleEliminationOnDemandPrizes implements TournamentPrizes{
     private final List<String> _promos = new ArrayList<>();
     private final String _registryRepresentation;
 
-    public SingleEliminationOnDemandPrizes(CardBlueprintLibrary library, String registryRepresentation) {
-        _registryRepresentation = registryRepresentation;
+    public SingleEliminationOnDemandPrizes(CardBlueprintLibrary library, String prizesScheme) {
+        _registryRepresentation = prizesScheme;
         for (SetDefinition setDefinition : library.getSetDefinitions().values()) {
             if (setDefinition.hasFlag("originalSet"))
                 _promos.addAll(setDefinition.getCardsOfRarity("P"));
@@ -23,7 +23,7 @@ public class SingleEliminationOnDemandPrizes implements TournamentPrizes{
     }
 
     @Override
-    public CardCollection getPrizeForTournament(PlayerStanding playerStanding) {
+    public final CardCollection getPrizeForTournament(PlayerStanding playerStanding) {
         DefaultCardCollection tournamentPrize = new DefaultCardCollection();
         if (playerStanding.getPoints() == 4) {
             tournamentPrize.addItem("(S)All Decipher Choice - Booster", 2);
@@ -39,17 +39,17 @@ public class SingleEliminationOnDemandPrizes implements TournamentPrizes{
         return tournamentPrize;
     }
 
-    private String getRandom(List<String> list) {
+    private static String getRandom(List<String> list) {
         return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }
 
     @Override
-    public String getRegistryRepresentation() {
+    public final String getRegistryRepresentation() {
         return _registryRepresentation;
     }
 
     @Override
-    public String getPrizeDescription() {
+    public final String getPrizeDescription() {
         return "<div class='prizeHint' value='2 wins - 2 boosters and a random promo, 1 win - 2 boosters, 0 wins - 1 booster'>(2+promo)-2-1</div>";
     }
 }

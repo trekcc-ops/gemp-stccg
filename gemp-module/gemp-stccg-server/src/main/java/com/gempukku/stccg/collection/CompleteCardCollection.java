@@ -9,30 +9,30 @@ import java.util.stream.Collectors;
 
 public class CompleteCardCollection implements CardCollection {
 
+    private static final int COMPLETE_COUNT = 4;
     private final CardBlueprintLibrary _library;
-    private final int _completeCount = 4;
 
     public CompleteCardCollection(CardBlueprintLibrary library) {
         _library = library;
     }
     @Override
-    public int getCurrency() {
+    public final int getCurrency() {
         return 0;
     }
 
     @Override
-    public Iterable<GenericCardItem> getAll() {
+    public final Iterable<GenericCardItem> getAll() {
         return _library.getBaseCards().keySet().stream().map(blueprintId ->
-                GenericCardItem.createItem(blueprintId, _completeCount)).collect(Collectors.toList());
+                GenericCardItem.createItem(blueprintId, COMPLETE_COUNT)).collect(Collectors.toList());
     }
 
     @Override
-    public int getItemCount(String blueprintId) {
-        return _library.getBaseBlueprintId(blueprintId).equals(blueprintId) ? _completeCount : 0;
+    public final int getItemCount(String blueprintId) {
+        return _library.getBaseBlueprintId(blueprintId).equals(blueprintId) ? COMPLETE_COUNT : 0;
     }
 
     @Override
-    public Map<String, Object> getExtraInformation() {
+    public final Map<String, Object> getExtraInformation() {
         return Collections.emptyMap();
     }
 }

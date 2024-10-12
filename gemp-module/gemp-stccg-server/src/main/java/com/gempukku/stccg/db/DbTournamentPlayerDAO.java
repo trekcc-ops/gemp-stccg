@@ -20,7 +20,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public void addPlayer(String tournamentId, String playerName, CardDeck deck) {
+    public final void addPlayer(String tournamentId, String playerName, CardDeck deck) {
         try {
             String sqlMessage =
                     "insert into tournament_player (tournament_id, player, deck_name, deck) values (?, ?, ?, ?)";
@@ -32,7 +32,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public void dropPlayer(String tournamentId, String playerName) {
+    public final void dropPlayer(String tournamentId, String playerName) {
         try {
             String sqlMessage = "update tournament_player set dropped=true where tournament_id=? and player=?";
             SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlMessage,
@@ -43,7 +43,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public Set<String> getPlayers(String tournamentId) {
+    public final Set<String> getPlayers(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement(
@@ -65,7 +65,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
+    public final Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement(
@@ -90,7 +90,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public Set<String> getDroppedPlayers(String tournamentId) {
+    public final Set<String> getDroppedPlayers(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select player from tournament_player where tournament_id=? and dropped=true")) {
@@ -110,7 +110,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     }
 
     @Override
-    public CardDeck getPlayerDeck(String tournamentId, String playerName, String format) {
+    public final CardDeck getPlayerDeck(String tournamentId, String playerName, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement(

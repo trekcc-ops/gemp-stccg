@@ -1,4 +1,8 @@
-package com.gempukku.stccg.common;
+package com.gempukku.stccg.formats;
+
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.JSONData;
 
 import java.util.List;
 import java.util.Map;
@@ -38,4 +42,5 @@ public interface GameFormat {
     int getHandSize();
 
     JSONData.Format Serialize();
+    String serializeForHall() throws CardNotFoundException;
 }

@@ -13,19 +13,19 @@ public class PlayerStatistic {
         _losses = losses;
     }
 
-    public String getDeckName() {
+    public final String getDeckName() {
         return _deckName;
     }
 
-    public String getFormatName() {
+    public final String getFormatName() {
         return _formatName;
     }
 
-    public int getWins() {
+    public final int getWins() {
         return _wins;
     }
 
-    public int getLosses() {
+    public final int getLosses() {
         return _losses;
     }
 }

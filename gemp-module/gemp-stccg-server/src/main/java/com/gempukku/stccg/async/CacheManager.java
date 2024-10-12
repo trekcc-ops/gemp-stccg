@@ -1,4 +1,4 @@
-package com.gempukku.stccg.cache;
+package com.gempukku.stccg.async;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,12 +15,12 @@ public class CacheManager {
         _caches.add(cached);
     }
 
-    public void clearCaches() {
+    public final void clearCaches() {
         for (Cached cache : _caches)
             cache.clearCache();
     }
 
-    public int getTotalCount() {
+    public final int getTotalCount() {
         int total = 0;
         for (Cached cache : _caches)
             total+=cache.getItemCount();

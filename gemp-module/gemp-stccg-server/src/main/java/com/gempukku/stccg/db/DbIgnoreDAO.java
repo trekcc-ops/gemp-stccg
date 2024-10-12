@@ -15,7 +15,7 @@ public class DbIgnoreDAO implements IgnoreDAO {
     }
 
     @Override
-    public Set<String> getIgnoredUsers(String playerId) {
+    public final Set<String> getIgnoredUsers(String playerId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select ignoredName from ignores where playerName=?")) {
@@ -36,7 +36,7 @@ public class DbIgnoreDAO implements IgnoreDAO {
     }
 
     @Override
-    public boolean addIgnoredUser(String playerId, String ignoredName) {
+    public final boolean addIgnoredUser(String playerId, String ignoredName) {
         try {
             String sqlStatement = "insert into ignores (playerName, ignoredName) values (?, ?)";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
@@ -48,7 +48,7 @@ public class DbIgnoreDAO implements IgnoreDAO {
     }
 
     @Override
-    public boolean removeIgnoredUser(String playerId, String ignoredName) {
+    public final boolean removeIgnoredUser(String playerId, String ignoredName) {
         try {
             String sqlStatement = "delete from ignores where playerName=? and ignoredName=?";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,

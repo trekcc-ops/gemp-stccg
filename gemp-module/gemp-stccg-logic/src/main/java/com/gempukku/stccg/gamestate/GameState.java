@@ -14,7 +14,7 @@ import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import org.apache.logging.log4j.LogManager;

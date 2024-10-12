@@ -2,7 +2,7 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 
-public class TournamentPrizeSchemeRegistry {
+class TournamentPrizeSchemeRegistry {
     public static TournamentPrizes getTournamentPrizes(CardBlueprintLibrary library, String prizesScheme) {
         return switch(prizesScheme) {
             case null -> new NoPrizes();

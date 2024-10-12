@@ -7,13 +7,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ServerCleaner {
+class ServerCleaner {
     private static final Logger LOGGER = LogManager.getLogger(ServerCleaner.class);
     private final Set<AbstractServer> _servers = Collections.synchronizedSet(new HashSet<>());
     private CleaningThread _thr;
 
-    public synchronized void addServer(AbstractServer server) {
-        LOGGER.debug("Adding server: " + server.getClass());
+    public final synchronized void addServer(AbstractServer server) {
+        LOGGER.debug("Adding server: {}", server.getClass());
         _servers.add(server);
         if (_thr == null) {
             _thr = new CleaningThread();
@@ -25,7 +25,7 @@ public class ServerCleaner {
         private boolean _stopped;
 
         @SuppressWarnings("BusyWait")
-        public void run() {
+        public final void run() {
             try {
                 while (!_stopped) {
                     synchronized (ServerCleaner.this) {

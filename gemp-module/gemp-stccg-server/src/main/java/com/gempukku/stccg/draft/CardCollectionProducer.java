@@ -1,4 +1,4 @@
-package com.gempukku.stccg.draft.builder;
+package com.gempukku.stccg.draft;
 
 import com.gempukku.stccg.collection.CardCollection;
 

@@ -3,7 +3,7 @@ package com.gempukku.stccg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.SealedEventDefinition;
@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DeckRequestHandlerTest extends AbstractServerTest {
+class DeckRequestHandlerTest extends AbstractServerTest {
 
     @SuppressWarnings("WriteOnlyObject")
     @Test
-    public void formatTest2() throws JsonProcessingException {
+    final void formatTest2() throws JsonProcessingException {
         CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
 
         SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, _formatLibrary);

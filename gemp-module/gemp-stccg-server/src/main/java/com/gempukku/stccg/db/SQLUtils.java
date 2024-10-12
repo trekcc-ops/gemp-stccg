@@ -2,7 +2,7 @@ package com.gempukku.stccg.db;
 
 import java.sql.*;
 
-public final class SQLUtils {
+final class SQLUtils {
 
     private static void addParametersToStatement(PreparedStatement statement, Object... params) throws SQLException {
         int i = 0;

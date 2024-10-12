@@ -3,7 +3,7 @@ package com.gempukku.stccg.tournament;
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.Times;
@@ -13,11 +13,12 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DefaultTournamentTest extends AbstractServerTest {
+@SuppressWarnings({"FeatureEnvy", "StaticMethodReferencedViaSubclass", "LocalVariableNamingConvention"})
+class DefaultTournamentTest extends AbstractServerTest {
 
     @SuppressWarnings("unchecked") // Unchecked assignment but since it's only a test it doesn't hurt anything
     @Test
-    public void testTournament() throws InterruptedException {
+    final void testTournament() throws InterruptedException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
         String tournamentId = "t1";
         Map<String, CardDeck> playerDecks = new HashMap<>();

@@ -5,17 +5,17 @@ import com.gempukku.stccg.collection.CardCollection;
 
 public class NoPrizes implements TournamentPrizes{
     @Override
-    public CardCollection getPrizeForTournament(PlayerStanding playerStanding) {
+    public final CardCollection getPrizeForTournament(PlayerStanding playerStanding) {
         return null;
     }
 
     @Override
-    public String getRegistryRepresentation() {
+    public final String getRegistryRepresentation() {
         return null;
     }
 
     @Override
-    public String getPrizeDescription() {
+    public final String getPrizeDescription() {
         return "No prizes";
     }
 }

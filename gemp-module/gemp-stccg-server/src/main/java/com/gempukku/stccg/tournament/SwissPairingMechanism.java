@@ -9,32 +9,32 @@ public class SwissPairingMechanism implements PairingMechanism {
     private final String _registryRepresentation;
     private Integer _maxRounds;
 
-    public SwissPairingMechanism(String registryRepresentation) {
-        _registryRepresentation = registryRepresentation;
+    public SwissPairingMechanism(String pairingType) {
+        _registryRepresentation = pairingType;
     }
 
-    public SwissPairingMechanism(String registryRepresentation, int maxRounds) {
-        this(registryRepresentation);
+    public SwissPairingMechanism(String pairingType, int maxRounds) {
+        this(pairingType);
         _maxRounds = maxRounds;
     }
 
     @Override
-    public String getRegistryRepresentation() {
+    public final String getRegistryRepresentation() {
         return _registryRepresentation;
     }
 
     @Override
-    public String getPlayOffSystem() {
+    public final String getPlayOffSystem() {
         return "Swiss";
     }
 
     @Override
-    public boolean shouldDropLoser() {
+    public final boolean shouldDropLoser() {
         return false;
     }
 
     @Override
-    public boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers) {
+    public final boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers) {
         if (_maxRounds != null) {
             if (round >= _maxRounds)
                 return true;
@@ -43,8 +43,8 @@ public class SwissPairingMechanism implements PairingMechanism {
     }
 
     @Override
-    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes, List<PlayerStanding> currentStandings,
-                               Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults, Set<String> byeResults) {
+    public final boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes, List<? extends PlayerStanding> currentStandings,
+                                     Map<String, ? extends Set<String>> previouslyPaired, Map<? super String, ? super String> pairingResults, Set<? super String> byeResults) {
         int maxNumberOfPoints = determineMaximumNumberOfPoints(droppedPlayers, currentStandings);
 
         List<List<String>> playersGroupedByBracket = groupPlayersByPointBracket(droppedPlayers, currentStandings, maxNumberOfPoints);
@@ -60,9 +60,14 @@ public class SwissPairingMechanism implements PairingMechanism {
         // We can't pair, just finish the tournament
     }
 
-    private boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers, Set<String> carryOverFromThisBracket, List<? extends List<String>> playersGroupedByBracket, Set<String> playersWithByes,
-                                             Map<String, ? extends Set<String>> previouslyPaired, Map<String, String> pairingsResult, Set<String> byes) {
-        List<String> playersInBracket = playersGroupedByBracket.get(bracketIndex);
+    private static boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers,
+                                                    Set<String> carryOverFromThisBracket,
+                                                    List<? extends List<String>> playersByBracket,
+                                                    Set<String> playersWithByes,
+                                                    Map<String, ? extends Set<String>> previouslyPaired,
+                                                    Map<? super String, ? super String> pairingsResult,
+                                                    Set<? super String> byes) {
+        List<String> playersInBracket = playersByBracket.get(bracketIndex);
 
         // First try to pair carried over players
         while (!carryOverPlayers.isEmpty()) {
@@ -76,7 +81,7 @@ public class SwissPairingMechanism implements PairingMechanism {
                     // This might be a good pairing
                     pairingsResult.put(firstCarryOver, player);
                     // Let's give it a try
-                    boolean success = tryPairBracketAndFurther(bracketIndex, carryOverPlayers, carryOverFromThisBracket, playersGroupedByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
+                    boolean success = tryPairBracketAndFurther(bracketIndex, carryOverPlayers, carryOverFromThisBracket, playersByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
                     if (success) {
                         return true;
                     }
@@ -100,7 +105,7 @@ public class SwissPairingMechanism implements PairingMechanism {
                         // This pairing might work
                         pairingsResult.put(firstPlayer, secondPlayer);
                         // Let's give it a try
-                        boolean success = tryPairBracketAndFurther(bracketIndex, Collections.emptySet(), carryOverFromThisBracket, playersGroupedByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
+                        boolean success = tryPairBracketAndFurther(bracketIndex, Collections.emptySet(), carryOverFromThisBracket, playersByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
                         if (success) {
                             return true;
                         }
@@ -114,15 +119,15 @@ public class SwissPairingMechanism implements PairingMechanism {
         }
 
         // We have to go to next bracket
-        if (bracketIndex + 1 < playersGroupedByBracket.size()) {
+        if (bracketIndex + 1 < playersByBracket.size()) {
             // Remaining players can't be paired within this bracket
             Set<String> carryOverForNextBracket = new HashSet<>(carryOverFromThisBracket);
             carryOverForNextBracket.addAll(playersInBracket);
 
-            return tryPairBracketAndFurther(bracketIndex + 1, carryOverForNextBracket, new HashSet<>(), playersGroupedByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
+            return tryPairBracketAndFurther(bracketIndex + 1, carryOverForNextBracket, new HashSet<>(), playersByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
         } else {
             // There is no more brackets left, whatever is left, has to get a bye
-            Set<String> leftoverPlayers = new HashSet<>(carryOverFromThisBracket);
+            Collection<String> leftoverPlayers = new HashSet<>(carryOverFromThisBracket);
             leftoverPlayers.addAll(playersInBracket);
 
             // We only accept one bye
@@ -144,7 +149,7 @@ public class SwissPairingMechanism implements PairingMechanism {
         }
     }
 
-    private Set<String> getPlayersWithByes(Map<String, Integer> playerByes) {
+    private static Set<String> getPlayersWithByes(Map<String, Integer> playerByes) {
         Set<String> playersWithByes = new HashSet<>();
         for (Map.Entry<String, Integer> playerByeCount : playerByes.entrySet()) {
             if (playerByeCount.getValue() != null && playerByeCount.getValue() > 0) {
@@ -154,14 +159,14 @@ public class SwissPairingMechanism implements PairingMechanism {
         return playersWithByes;
     }
 
-    private void shufflePlayersWithinBrackets(List<? extends List<String>> playersGroupedByPoints) {
-        for (List<String> playersByPoint : playersGroupedByPoints) {
+    private static void shufflePlayersWithinBrackets(Iterable<? extends List<String>> playersByPoints) {
+        for (List<String> playersByPoint : playersByPoints) {
             Collections.shuffle(playersByPoint, ThreadLocalRandom.current());
         }
     }
 
-    private List<List<String>> groupPlayersByPointBracket(Set<String> droppedPlayers,
-                                                          List<? extends PlayerStanding> currentStandings, int maxNumberOfPoints) {
+    private static List<List<String>> groupPlayersByPointBracket(Collection<String> droppedPlayers,
+                                                                 Iterable<? extends PlayerStanding> currentStandings, int maxNumberOfPoints) {
 
         Map<Integer, List<String>> playersByPoints = new HashMap<>();
         for (PlayerStanding currentStanding : currentStandings) {
@@ -182,7 +187,7 @@ public class SwissPairingMechanism implements PairingMechanism {
         return result;
     }
 
-    private int determineMaximumNumberOfPoints(Set<String> droppedPlayers, List<? extends PlayerStanding> currentStandings) {
+    private static int determineMaximumNumberOfPoints(Collection<String> droppedPlayers, Iterable<? extends PlayerStanding> currentStandings) {
         int maxNumberOfPoints = 0;
         for (PlayerStanding currentStanding : currentStandings) {
             if (!droppedPlayers.contains(currentStanding.getPlayerName())) {

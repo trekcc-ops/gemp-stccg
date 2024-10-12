@@ -9,7 +9,7 @@ import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.Collections;
@@ -50,17 +50,17 @@ public class NewSealedLeagueData implements LeagueData {
     }
 
     @Override
-    public boolean isSoloDraftLeague() {
+    public final boolean isSoloDraftLeague() {
         return false;
     }
 
     @Override
-    public List<LeagueSeriesData> getSeries() {
+    public final List<LeagueSeriesData> getSeries() {
         return Collections.unmodifiableList(_allSeries);
     }
 
     @Override
-    public void joinLeague(CollectionsManager collectionManager, User player, int currentTime) {
+    public final void joinLeague(CollectionsManager collectionsManager, User player, int currentTime) {
         MutableCardCollection startingCollection = new DefaultCardCollection();
         for (int i = 0; i < _allSeries.size(); i++) {
             LeagueSeriesData series = _allSeries.get(i);
@@ -72,12 +72,12 @@ public class NewSealedLeagueData implements LeagueData {
                     startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
             }
         }
-        collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
+        collectionsManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
-                       int currentTime) {
+    public final int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
+                             int currentTime) {
         int status = oldStatus;
 
         for (int i = status; i < _allSeries.size(); i++) {

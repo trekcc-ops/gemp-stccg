@@ -1,6 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.common.JSONData;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
@@ -25,8 +24,8 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
-    public int addGameHistory(String winner, int winnerId, String loser, int loserId, String winReason, String loseReason, String winRecordingId, String loseRecordingId,
-                               String formatName, String tournament, String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate, int replayVersion) {
+    public final int addGameHistory(String winner, int winnerId, String loser, int loserId, String winReason, String loseReason, String winRecordingId, String loseRecordingId,
+                                    String formatName, String tournament, String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate, int version) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -53,7 +52,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                         .addParameter("loser_deck_name", loserDeckName)
                         .addParameter("start_date", startDate.format(_dateTimeFormat))
                         .addParameter("end_date", endDate.format(_dateTimeFormat))
-                        .addParameter("version", replayVersion);
+                        .addParameter("version", version);
 
                 int id = query.executeUpdate()
                         .getKey(Integer.class);
@@ -67,7 +66,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
-    public List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
+    public final List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
 
         try {
 
@@ -97,7 +96,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
-    public DBData.GameHistory getGameHistory(String recordID) {
+    public final DBData.GameHistory getGameHistory(String recordID) {
         try {
 
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -122,7 +121,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
 
     }
 
-    public boolean doesReplayIDExist(String id) {
+    public final boolean doesReplayIDExist(String id) {
         try {
 
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -147,7 +146,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
     @Override
-    public List<DBData.GameHistory> getGameHistoryForFormat(String format, int count)  {
+    public final List<DBData.GameHistory> getGameHistoryForFormat(String format, int count)  {
         try {
 
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -173,7 +172,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
-    public int getGameHistoryForPlayerCount(User player) {
+    public final int getGameHistoryForPlayerCount(User player) {
         try {
 
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
@@ -197,7 +196,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
-    public int getActivePlayersCount(ZonedDateTime from, ZonedDateTime to) {
+    public final int getActivePlayersCount(ZonedDateTime from, ZonedDateTime to) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -230,7 +229,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
-    public int getGamesPlayedCount(ZonedDateTime from, ZonedDateTime to) {
+    public final int getGamesPlayedCount(ZonedDateTime from, ZonedDateTime to) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -252,7 +251,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
-    public List<JSONData.FormatStats> GetAllGameFormatData(ZonedDateTime from, ZonedDateTime to) {
+    public final List<JSONData.FormatStats> GetAllGameFormatData(ZonedDateTime from, ZonedDateTime to) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -278,7 +277,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
 
-    public List<PlayerStatistic> getCasualPlayerStatistics(User player) {
+    public final List<PlayerStatistic> getCasualPlayerStatistics(User player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement(
@@ -301,7 +300,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
         }
     }
 
-    public List<PlayerStatistic> getCompetitivePlayerStatistics(User player) {
+    public final List<PlayerStatistic> getCompetitivePlayerStatistics(User player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement(

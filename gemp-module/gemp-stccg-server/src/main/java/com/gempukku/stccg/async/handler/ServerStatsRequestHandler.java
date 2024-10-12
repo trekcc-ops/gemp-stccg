@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
@@ -11,6 +10,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -25,8 +25,8 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request,
+                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
             String startDay = getQueryParameterSafely(queryDecoder, "startDay");
@@ -46,7 +46,7 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                     case "month" -> to = from.plusMonths(1);
                     case "week" -> to = from.plusDays(7);
                     case "day" -> to = from.plusDays(1);
-                    default -> throw new HttpProcessingException(400);
+                    default -> throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
                 }
 
                 var stats = new JSONData.PlayHistoryStats();
@@ -58,11 +58,11 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
 
                 responseWriter.writeJsonResponse(JsonUtils.toJsonString(stats));
             } catch (Exception exp) {
-                logHttpError(LOGGER, 400, request.uri(), exp);
-                throw new HttpProcessingException(400);
+                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
             }
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 }

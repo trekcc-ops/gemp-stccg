@@ -1,11 +1,11 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.async.Cached;
 import com.gempukku.stccg.db.DbAccess;
 import com.gempukku.stccg.db.DbLeagueParticipationDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;
@@ -27,12 +27,12 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
                 LoggingProxy.createLoggingProxy(LeagueParticipationDAO.class, new DbLeagueParticipationDAO(dbAccess));
     }
 
-    public CachedLeagueParticipationDAO(LeagueParticipationDAO leagueParticipationDAO) {
-        _leagueParticipationDAO = leagueParticipationDAO;
+    public CachedLeagueParticipationDAO(LeagueParticipationDAO participationDAO) {
+        _leagueParticipationDAO = participationDAO;
     }
 
     @Override
-    public void userJoinsLeague(String leagueId, User player, String remoteAddress) {
+    public final void userJoinsLeague(String leagueId, User player, String remoteAddress) {
         _readWriteLock.writeLock().lock();
         try {
             getLeagueParticipantsInWriteLock(leagueId).add(player.getName());
@@ -43,7 +43,7 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     }
 
     @Override
-    public Collection<String> getUsersParticipating(String leagueId) {
+    public final Collection<String> getUsersParticipating(String leagueId) {
         _readWriteLock.readLock().lock();
         try {
             Collection<String> leagueParticipants = _cachedParticipants.get(leagueId);
@@ -74,12 +74,12 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return _cachedParticipants.size();
     }
 
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         _readWriteLock.writeLock().lock();
         try {
             _cachedParticipants.clear();

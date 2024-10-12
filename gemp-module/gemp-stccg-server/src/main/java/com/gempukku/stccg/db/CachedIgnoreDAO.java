@@ -1,7 +1,7 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.cache.Cached;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.async.Cached;
+import com.gempukku.stccg.async.LoggingProxy;
 
 import java.util.Collections;
 import java.util.Map;
@@ -16,17 +16,17 @@ public class CachedIgnoreDAO implements IgnoreDAO, Cached {
         this.delegate = LoggingProxy.createLoggingProxy(IgnoreDAO.class, new DbIgnoreDAO(dbAccess));
     }
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         ignores.clear();
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return ignores.size();
     }
 
     @Override
-    public Set<String> getIgnoredUsers(String playerId) {
+    public final Set<String> getIgnoredUsers(String playerId) {
         Set<String> ignoredUsers = ignores.get(playerId);
         if (ignoredUsers == null) {
             ignoredUsers = Collections.synchronizedSet(delegate.getIgnoredUsers(playerId));
@@ -36,7 +36,7 @@ public class CachedIgnoreDAO implements IgnoreDAO, Cached {
     }
 
     @Override
-    public boolean addIgnoredUser(String playerId, String ignoredName) {
+    public final boolean addIgnoredUser(String playerId, String ignoredName) {
         final Set<String> ignoredUsers = getIgnoredUsers(playerId);
         if (!ignoredUsers.contains(ignoredName)) {
             delegate.addIgnoredUser(playerId, ignoredName);
@@ -47,7 +47,7 @@ public class CachedIgnoreDAO implements IgnoreDAO, Cached {
     }
 
     @Override
-    public boolean removeIgnoredUser(String playerId, String ignoredName) {
+    public final boolean removeIgnoredUser(String playerId, String ignoredName) {
         final Set<String> ignoredUsers = getIgnoredUsers(playerId);
         if (ignoredUsers.contains(ignoredName)) {
             delegate.removeIgnoredUser(playerId, ignoredName);

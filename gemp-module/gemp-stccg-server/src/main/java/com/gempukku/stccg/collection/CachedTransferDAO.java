@@ -1,9 +1,9 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.async.Cached;
 import com.gempukku.stccg.db.DbAccess;
 import com.gempukku.stccg.db.DbTransferDAO;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.async.LoggingProxy;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,16 +19,16 @@ public class CachedTransferDAO implements TransferDAO, Cached {
     }
 
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         _playersWithoutDelivery.clear();
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return _playersWithoutDelivery.size();
     }
 
-    public boolean hasUndeliveredPackages(String player) {
+    public final boolean hasUndeliveredPackages(String player) {
         if (_playersWithoutDelivery.contains(player))
             return false;
         boolean value = _delegate.hasUndeliveredPackages(player);
@@ -37,17 +37,19 @@ public class CachedTransferDAO implements TransferDAO, Cached {
         return value;
     }
 
-    public Map<String, ? extends CardCollection> consumeUndeliveredPackages(String player) {
+    public final Map<String, ? extends CardCollection> consumeUndeliveredPackages(String player) {
         return _delegate.consumeUndeliveredPackages(player);
     }
 
-    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency, CardCollection items) {
+    public final void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName,
+                                    int currency, CardCollection items) {
         if (notifyPlayer)
             _playersWithoutDelivery.remove(player);
         _delegate.addTransferTo(notifyPlayer, player, reason, collectionName, currency, items);
     }
 
-    public void addTransferFrom(String player, String reason, String collectionName, int currency, CardCollection items) {
+    public final void addTransferFrom(String player, String reason, String collectionName, int currency,
+                                      CardCollection items) {
         _delegate.addTransferFrom(player, reason, collectionName, currency, items);
     }
 }

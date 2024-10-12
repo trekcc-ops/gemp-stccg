@@ -1,4 +1,4 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.chat;
 
 public class PrivateInformationException extends Exception {
 }

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.db.vo.LeagueMatchResult;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
 
 import java.util.Collection;
 

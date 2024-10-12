@@ -7,11 +7,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SuppressWarnings("MagicNumber")
-public class ConstructedLeagueDataTest extends AbstractServerTest {
+@SuppressWarnings({"MagicNumber", "FeatureEnvy", "DuplicateStringLiteralInspection"})
+class ConstructedLeagueDataTest extends AbstractServerTest {
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void testParameters() {
+    final void testParameters() {
         final List<LeagueSeriesData> series = getLeagueSeriesData();
         assertEquals(3, series.size());
         assertEquals(20120312, series.getFirst().getStart());

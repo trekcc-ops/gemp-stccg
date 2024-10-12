@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class DefaultCardCollection implements MutableCardCollection {
-    public static final String CurrencyKey = "currency";
+    private static final String CurrencyKey = "currency";
     private final Map<String, GenericCardItem> _counts = new LinkedHashMap<>();
     private final Map<String, Object> _extraInformation = new HashMap<>();
 
@@ -25,11 +25,11 @@ public class DefaultCardCollection implements MutableCardCollection {
         _extraInformation.putAll(cardCollection.getExtraInformation());
     }
 
-    public synchronized void setExtraInformation(Map<String, Object> extraInfo) {
-        _extraInformation.putAll(extraInfo);
+    public final synchronized void setExtraInformation(Map<String, Object> extraInformation) {
+        _extraInformation.putAll(extraInformation);
         //Some deserialization defaults to making the currency a Long rather than an Integer
-        if(extraInfo.containsKey(CurrencyKey)) {
-            var input = extraInfo.get(CurrencyKey);
+        if(extraInformation.containsKey(CurrencyKey)) {
+            var input = extraInformation.get(CurrencyKey);
             if(input instanceof Long longInput) {
                 _extraInformation.put(CurrencyKey, longInput.intValue());
             }
@@ -37,18 +37,18 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     @Override
-    public synchronized Map<String, Object> getExtraInformation() {
+    public final synchronized Map<String, Object> getExtraInformation() {
         return Collections.unmodifiableMap(_extraInformation);
     }
 
     @Override
-    public synchronized void addCurrency(int currency) {
+    public final synchronized void addCurrency(int currency) {
         int oldCurrency = (Integer) _extraInformation.get(CurrencyKey);
         _extraInformation.put(CurrencyKey, oldCurrency + currency);
     }
 
     @Override
-    public synchronized boolean removeCurrency(int currency) {
+    public final synchronized boolean removeCurrency(int currency) {
         int oldCurrency = (Integer) _extraInformation.get(CurrencyKey);
 
         if (oldCurrency < currency)
@@ -58,28 +58,28 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     @Override
-    public synchronized int getCurrency() {
+    public final synchronized int getCurrency() {
         return (Integer) _extraInformation.get(CurrencyKey);
     }
 
     @Override
-    public synchronized void addItem(String itemId, int toAdd) {
-        if (toAdd > 0) {
+    public final synchronized void addItem(String itemId, int count) {
+        if (count > 0) {
             GenericCardItem oldCount = _counts.get(itemId);
             if (oldCount == null) {
-                _counts.put(itemId, GenericCardItem.createItem(itemId, toAdd));
+                _counts.put(itemId, GenericCardItem.createItem(itemId, count));
             } else
-                _counts.put(itemId, GenericCardItem.createItem(itemId, toAdd + oldCount.getCount()));
+                _counts.put(itemId, GenericCardItem.createItem(itemId, count + oldCount.getCount()));
         }
     }
 
     @Override
-    public synchronized boolean removeItem(String itemId, int toRemove) {
-        if (toRemove > 0) {
+    public final synchronized boolean removeItem(String itemId, int count) {
+        if (count > 0) {
             GenericCardItem oldCount = _counts.get(itemId);
-            if (oldCount == null || oldCount.getCount() < toRemove)
+            if (oldCount == null || oldCount.getCount() < count)
                 return false;
-            _counts.put(itemId, GenericCardItem.createItem(itemId, Math.max(0, oldCount.getCount() - toRemove)));
+            _counts.put(itemId, GenericCardItem.createItem(itemId, Math.max(0, oldCount.getCount() - count)));
         }
         return true;
     }
@@ -105,7 +105,7 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     @Override
-    public synchronized CardCollection openPack(String packId, String selection, ProductLibrary productLibrary) {
+    public final synchronized CardCollection openPack(String packId, String selection, ProductLibrary productLibrary) {
         GenericCardItem count = _counts.get(packId);
         if (count == null)
             return null;
@@ -140,19 +140,19 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     @Override
-    public synchronized Iterable<GenericCardItem> getAll() {
+    public final synchronized Iterable<GenericCardItem> getAll() {
         return _counts.values();
     }
 
     @Override
-    public synchronized int getItemCount(String blueprintId) {
+    public final synchronized int getItemCount(String blueprintId) {
         GenericCardItem count = _counts.get(blueprintId);
         if (count == null)
             return 0;
         return count.getCount();
     }
 
-    private boolean hasSelection(String packId, String selection, ProductLibrary productLibrary) {
+    private static boolean hasSelection(String packId, String selection, ProductLibrary productLibrary) {
         for (GenericCardItem item : productLibrary.GetProduct(packId).openPack()) {
             if (item.getBlueprintId().equals(selection))
                 return true;
@@ -161,16 +161,16 @@ public class DefaultCardCollection implements MutableCardCollection {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other)
+    public final boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (other == null || getClass() != other.getClass())
+        if (obj == null || getClass() != obj.getClass())
             return false;
 
-        return this.equals((DefaultCardCollection) other);
+        return this.equals((DefaultCardCollection) obj);
     }
 
-    public boolean equals(DefaultCardCollection other) {
+    private final boolean equals(DefaultCardCollection other) {
         if (this == other)
             return true;
 

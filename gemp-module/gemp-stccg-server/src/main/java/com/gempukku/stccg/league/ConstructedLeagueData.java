@@ -4,9 +4,9 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 
@@ -44,12 +44,12 @@ public class ConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public boolean isSoloDraftLeague() {
+    public final boolean isSoloDraftLeague() {
         return false;
     }
 
     @Override
-    public List<LeagueSeriesData> getSeries() {
+    public final List<LeagueSeriesData> getSeries() {
         return _allSeries;
     }
 
@@ -58,8 +58,8 @@ public class ConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
-                       int currentTime) {
+    public final int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
+                             int currentTime) {
         int status = oldStatus;
         if (status == 0) {
             LeagueSeriesData lastSeries = _allSeries.getLast();

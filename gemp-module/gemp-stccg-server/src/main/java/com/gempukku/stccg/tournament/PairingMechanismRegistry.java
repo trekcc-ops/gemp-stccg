@@ -1,6 +1,6 @@
 package com.gempukku.stccg.tournament;
 
-public class PairingMechanismRegistry {
+class PairingMechanismRegistry {
     public static PairingMechanism getPairingMechanism(String pairingType) {
         return switch(pairingType) {
             case "singleElimination" -> new SingleEliminationPairing(pairingType);

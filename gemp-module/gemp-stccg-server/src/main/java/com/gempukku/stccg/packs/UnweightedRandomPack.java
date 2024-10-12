@@ -17,9 +17,9 @@ public class UnweightedRandomPack implements PackBox {
     public static UnweightedRandomPack LoadFromArray(Iterable<String> items) {
         UnweightedRandomPack box = new UnweightedRandomPack();
         for (String item : items) {
-            item = item.trim();
-            if (!item.startsWith("#") && !item.isEmpty()) {
-                String[] result = item.split("x", 2);
+            String trimmedItem = item.strip();
+            if (!trimmedItem.startsWith("#") && !trimmedItem.isEmpty()) {
+                String[] result = trimmedItem.split("x", 2);
                 box._contents.put(result[1], Integer.parseInt(result[0]));
             }
         }
@@ -28,7 +28,7 @@ public class UnweightedRandomPack implements PackBox {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public final List<GenericCardItem> openPack() {
         int selection = ThreadLocalRandom.current().nextInt(_contents.size());
         return openPack(selection);
     }

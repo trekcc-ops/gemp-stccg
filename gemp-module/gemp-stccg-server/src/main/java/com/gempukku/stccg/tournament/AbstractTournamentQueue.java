@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,22 +15,22 @@ import java.util.Map;
 import java.util.Queue;
 
 public abstract class AbstractTournamentQueue implements TournamentQueue {
-    protected final int _cost;
-    protected final Queue<String> _players = new LinkedList<>();
-    protected final Map<String, CardDeck> _playerDecks = new HashMap<>();
-    protected final boolean _requiresDeck;
+    private final int _cost;
+    final Queue<String> _players = new LinkedList<>();
+    final Map<String, CardDeck> _playerDecks = new HashMap<>();
+    private final boolean _requiresDeck;
 
     private final CollectionType _currencyCollection = CollectionType.MY_CARDS;
 
-    protected final PairingMechanism _pairingMechanism;
-    protected final CollectionType _collectionType;
-    protected final TournamentPrizes _tournamentPrizes;
-    protected final String _format;
-    protected final TournamentService _tournamentService;
+    final PairingMechanism _pairingMechanism;
+    final CollectionType _collectionType;
+    final TournamentPrizes _tournamentPrizes;
+    final String _format;
+    final TournamentService _tournamentService;
 
-    public AbstractTournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType,
-                                   TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism,
-                                   String format, TournamentService tournamentService) {
+    AbstractTournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType,
+                            TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism,
+                            String format, TournamentService tournamentService) {
         _cost = cost;
         _requiresDeck = requiresDeck;
         _collectionType = collectionType;
@@ -40,7 +40,7 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
         _tournamentService = tournamentService;
     }
 
-    public AbstractTournamentQueue(TournamentQueueInfo queueInfo, ServerObjects objects) {
+    AbstractTournamentQueue(TournamentQueueInfo queueInfo, ServerObjects objects) {
         _cost = queueInfo.getCost();
         _requiresDeck = true;
         _collectionType = CollectionType.ALL_CARDS;
@@ -68,11 +68,13 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     }
 
     @Override
-    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException {
+    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck)
+            throws SQLException, IOException {
         String playerName = player.getName();
         if (!_players.contains(playerName) && isJoinable()) {
+            String tournamentQueueName = getTournamentQueueName();
             if (_cost <= 0 || collectionsManager.removeCurrencyFromPlayerCollection(
-                    "Joined " + getTournamentQueueName() + " queue", player, _currencyCollection, _cost)) {
+                    "Joined " + tournamentQueueName + " queue", player, _currencyCollection, _cost)) {
                 _players.add(playerName);
                 if (_requiresDeck)
                     _playerDecks.put(playerName, deck);
@@ -81,27 +83,46 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     }
 
     @Override
-    public final synchronized void leavePlayer(CollectionsManager collectionsManager, User player) throws SQLException, IOException {
+    public final synchronized void leavePlayer(CollectionsManager collectionsManager, User player)
+            throws SQLException, IOException {
         String playerName = player.getName();
         if (_players.contains(playerName)) {
             if (_cost > 0)
-                collectionsManager.addCurrencyToPlayerCollection(true,
-                        "Return for leaving " + getTournamentQueueName() + " queue", player, _currencyCollection,
-                        _cost);
+                refundCurrencyForPlayer(collectionsManager, player);
             _players.remove(playerName);
             _playerDecks.remove(playerName);
         }
     }
 
     @Override
-    public final synchronized void leaveAllPlayers(CollectionsManager collectionsManager) throws SQLException, IOException {
+    public final synchronized void leaveAllPlayers(CollectionsManager collectionsManager)
+            throws SQLException, IOException {
         if (_cost > 0) {
             for (String player : _players)
-                collectionsManager.addCurrencyToPlayerCollection(false, "Return for leaving " + getTournamentQueueName() + " queue", player, _currencyCollection, _cost);
+                refundCurrencyForPlayer(collectionsManager, player);
         }
         _players.clear();
         _playerDecks.clear();
     }
+
+    private void refundCurrencyForPlayer(CollectionsManager collectionsManager, String player)
+            throws SQLException, IOException {
+        String tournamentQueueName = getTournamentQueueName();
+        collectionsManager.addCurrencyToPlayerCollection(
+                false, "Return for leaving " + tournamentQueueName + " queue",
+                player, _currencyCollection, _cost
+        );
+    }
+
+    private void refundCurrencyForPlayer(CollectionsManager collectionsManager, User user)
+            throws SQLException, IOException {
+        String tournamentQueueName = getTournamentQueueName();
+        collectionsManager.addCurrencyToPlayerCollection(
+                false, "Return for leaving " + tournamentQueueName + " queue",
+                user, _currencyCollection, _cost
+        );
+    }
+
 
     @Override
     public final synchronized int getPlayerCount() {

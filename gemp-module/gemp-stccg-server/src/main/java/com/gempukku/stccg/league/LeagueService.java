@@ -10,9 +10,8 @@ import com.gempukku.stccg.db.LeagueDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.vo.League;
-import com.gempukku.stccg.db.vo.LeagueMatchResult;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
 
@@ -25,17 +24,12 @@ public class LeagueService {
     private final LeagueDAO _leagueDao;
     private final CardBlueprintLibrary _cardLibrary;
     private final FormatLibrary _formatLibrary;
-
-    // Cached on this layer
     private final CachedLeagueMatchDAO _leagueMatchDao;
     private final CachedLeagueParticipationDAO _leagueParticipationDAO;
-
     private final CollectionsManager _collectionsManager;
     private final SoloDraftDefinitions _soloDraftDefinitions;
-
     private final Map<String, List<PlayerStanding>> _leagueStandings = new ConcurrentHashMap<>();
     private final Map<String, List<PlayerStanding>> _seriesStandings = new ConcurrentHashMap<>();
-
     private int _activeLeaguesLoadedDate;
     private List<League> _activeLeagues;
 
@@ -50,20 +44,20 @@ public class LeagueService {
         _soloDraftDefinitions = objects.getSoloDraftDefinitions();
     }
 
-
-    public LeagueService(LeagueDAO leagueDao, LeagueMatchDAO leagueMatchDao,
-                         LeagueParticipationDAO leagueParticipationDAO, CollectionsManager collectionsManager,
-                         CardBlueprintLibrary library, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
+    LeagueService(LeagueDAO leagueDao, LeagueMatchDAO leagueMatchDao,
+                  LeagueParticipationDAO participationDAO, CollectionsManager collectionsManager,
+                  CardBlueprintLibrary library, FormatLibrary formatLibrary,
+                  SoloDraftDefinitions soloDraftDefinitions) {
         _leagueDao = leagueDao;
         _cardLibrary = library;
         _formatLibrary = formatLibrary;
         _leagueMatchDao = new CachedLeagueMatchDAO(leagueMatchDao);
-        _leagueParticipationDAO = new CachedLeagueParticipationDAO(leagueParticipationDAO);
+        _leagueParticipationDAO = new CachedLeagueParticipationDAO(participationDAO);
         _collectionsManager = collectionsManager;
         _soloDraftDefinitions = soloDraftDefinitions;
     }
 
-    public synchronized void clearCache() {
+    public final synchronized void clearCache() {
         _seriesStandings.clear();
         _leagueStandings.clear();
         _activeLeaguesLoadedDate = 0;
@@ -88,7 +82,7 @@ public class LeagueService {
         }
     }
 
-    public synchronized List<League> getActiveLeagues() {
+    public final synchronized List<League> getActiveLeagues() {
         if (DateUtils.getCurrentDateAsInt() == _activeLeaguesLoadedDate)
             return Collections.unmodifiableList(_activeLeagues);
         else {
@@ -106,11 +100,11 @@ public class LeagueService {
         }
     }
 
-    public synchronized boolean isPlayerInLeague(League league, User player) {
+    public final synchronized boolean isPlayerInLeague(League league, User player) {
         return _leagueParticipationDAO.getUsersParticipating(league.getType()).contains(player.getName());
     }
 
-    public synchronized boolean playerJoinsLeague(League league, User player, String remoteAddress)
+    public final synchronized boolean playerJoinsLeague(League league, User player, String remoteAddress)
             throws SQLException, IOException {
         if (isPlayerInLeague(league, player))
             return false;
@@ -126,7 +120,7 @@ public class LeagueService {
         }
     }
 
-    public synchronized League getLeagueByType(String type) {
+    public final synchronized League getLeagueByType(String type) {
         for (League league : getActiveLeagues()) {
             if (league.getType().equals(type))
                 return league;
@@ -134,10 +128,10 @@ public class LeagueService {
         return null;
     }
 
-    public synchronized CollectionType getCollectionTypeByCode(String collectionTypeCode) {
+    public final synchronized CollectionType getCollectionTypeByCode(String collectionTypeCode) {
         for (League league : getActiveLeagues()) {
-            for (LeagueSeriesData LeagueSeriesData : league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).getSeries()) {
-                CollectionType collectionType = LeagueSeriesData.getCollectionType();
+            for (LeagueSeriesData seriesData : league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).getSeries()) {
+                CollectionType collectionType = seriesData.getCollectionType();
                 if (collectionType != null && collectionType.getCode().equals(collectionTypeCode))
                     return collectionType;
             }
@@ -145,18 +139,18 @@ public class LeagueService {
         return null;
     }
 
-    public synchronized LeagueSeriesData getCurrentLeagueSeries(League league) {
+    public final synchronized LeagueSeriesData getCurrentLeagueSeries(League league) {
         final int currentDate = DateUtils.getCurrentDateAsInt();
 
-        for (LeagueSeriesData LeagueSeriesData : league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).getSeries()) {
-            if (currentDate >= LeagueSeriesData.getStart() && currentDate <= LeagueSeriesData.getEnd())
-                return LeagueSeriesData;
+        for (LeagueSeriesData seriesData : league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).getSeries()) {
+            if (currentDate >= seriesData.getStart() && currentDate <= seriesData.getEnd())
+                return seriesData;
         }
 
         return null;
     }
 
-    public synchronized void reportLeagueGameResult(League league, LeagueSeriesData series, String winner, String loser) {
+    public final synchronized void reportLeagueGameResult(League league, LeagueSeriesData series, String winner, String loser) {
         _leagueMatchDao.addPlayedMatch(league.getType(), series.getName(), winner, loser);
 
         _leagueStandings.remove(LeagueMapKeys.getLeagueMapKey(league));
@@ -182,11 +176,11 @@ public class LeagueService {
         }
     }
 
-    public synchronized Collection<LeagueMatchResult> getPlayerMatchesInSeries(League league,
-                                                                               LeagueSeriesData seriesData,
-                                                                               String player) {
+    public final synchronized Collection<LeagueMatchResult> getPlayerMatchesInSeries(League league,
+                                                                                     LeagueSeriesData seriesData,
+                                                                                     String player) {
         final Collection<LeagueMatchResult> allMatches = _leagueMatchDao.getLeagueMatches(league.getType());
-        Set<LeagueMatchResult> result = new HashSet<>();
+        Collection<LeagueMatchResult> result = new HashSet<>();
         for (LeagueMatchResult match : allMatches) {
             if (match.getSeriesName().equals(seriesData.getName()) && (match.getWinner().equals(player) || match.getLoser().equals(player)))
                 result.add(match);
@@ -194,7 +188,7 @@ public class LeagueService {
         return result;
     }
 
-    public synchronized List<PlayerStanding> getLeagueStandings(League league) {
+    public final synchronized List<PlayerStanding> getLeagueStandings(League league) {
         List<PlayerStanding> leagueStandings = _leagueStandings.get(LeagueMapKeys.getLeagueMapKey(league));
         if (leagueStandings == null) {
             synchronized (this) {
@@ -205,7 +199,7 @@ public class LeagueService {
         return leagueStandings;
     }
 
-    public synchronized List<PlayerStanding> getLeagueSeriesStandings(League league, LeagueSeriesData seriesData) {
+    public final synchronized List<PlayerStanding> getLeagueSeriesStandings(League league, LeagueSeriesData seriesData) {
         List<PlayerStanding> standings = _seriesStandings.get(LeagueMapKeys.getLeagueSeriesMapKey(league, seriesData));
         if (standings == null) {
             synchronized (this) {
@@ -220,7 +214,7 @@ public class LeagueService {
         final Collection<String> playersParticipating = _leagueParticipationDAO.getUsersParticipating(league.getType());
         final Collection<LeagueMatchResult> matches = _leagueMatchDao.getLeagueMatches(league.getType());
 
-        Set<LeagueMatchResult> matchResults = new HashSet<>();
+        Collection<LeagueMatchResult> matchResults = new HashSet<>();
         for (LeagueMatchResult match : matches) {
             if (match.getSeriesName().equals(seriesData.getName()))
                 matchResults.add(match);
@@ -236,17 +230,17 @@ public class LeagueService {
         return createStandingsForMatchesAndPoints(playersParticipating, matches);
     }
 
-    private List<PlayerStanding> createStandingsForMatchesAndPoints(Collection<String> playersParticipating, Collection<? extends LeagueMatchResult> matches) {
+    private static List<PlayerStanding> createStandingsForMatchesAndPoints(Iterable<String> playersParticipating, Iterable<? extends LeagueMatchResult> matches) {
         return BestOfOneStandingsProducer.produceStandings(playersParticipating, matches, 2, 1, Collections.emptyMap());
     }
 
-    public synchronized boolean canPlayRankedGame(League league, LeagueSeriesData season, String player) {
+    public final synchronized boolean canPlayRankedGame(League league, LeagueSeriesData season, String player) {
         int maxMatches = season.getMaxMatches();
         Collection<LeagueMatchResult> playedInSeason = getPlayerMatchesInSeries(league, season, player);
         return playedInSeason.size() < maxMatches;
     }
 
-    public synchronized boolean canPlayRankedGameAgainst(League league, LeagueSeriesData season, String playerOne, String playerTwo) {
+    public final synchronized boolean canPlayRankedGameAgainst(League league, LeagueSeriesData season, String playerOne, String playerTwo) {
         Collection<LeagueMatchResult> playedInSeason = getPlayerMatchesInSeries(league, season, playerOne);
         int maxGames = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions)
                 .getMaxRepeatMatchesPerSeries();

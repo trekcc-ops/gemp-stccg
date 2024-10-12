@@ -13,9 +13,9 @@ public class FixedPackBox implements PackBox {
     public static FixedPackBox LoadFromArray(Iterable<String> items) {
         FixedPackBox box = new FixedPackBox();
         for (String item : items) {
-            item = item.trim();
-            if (!item.startsWith("#") && !item.isEmpty()) {
-                String[] result = item.split("x", 2);
+            String item1 = item.trim();
+            if (!item1.startsWith("#") && !item1.isEmpty()) {
+                String[] result = item1.split("x", 2);
                 box._contents.put(result[1], Integer.parseInt(result[0]));
             }
         }
@@ -24,7 +24,7 @@ public class FixedPackBox implements PackBox {
     }
 
     @Override
-    public List<GenericCardItem> openPack() {
+    public final List<GenericCardItem> openPack() {
         List<GenericCardItem> result = new LinkedList<>();
         for (Map.Entry<String, Integer> contentsEntry : _contents.entrySet()) {
             String blueprintId = contentsEntry.getKey();

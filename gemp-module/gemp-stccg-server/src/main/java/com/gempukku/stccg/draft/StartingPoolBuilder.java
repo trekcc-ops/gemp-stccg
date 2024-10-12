@@ -1,23 +1,22 @@
-package com.gempukku.stccg.draft.builder;
+package com.gempukku.stccg.draft;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
+import com.gempukku.stccg.collection.MutableCardCollection;
 import com.google.common.collect.Iterables;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.random.RandomGenerator;
 
 public class StartingPoolBuilder {
     public static CardCollectionProducer buildCardCollectionProducer(JsonNode startingPool) {
         if (startingPool == null)
             return null;
         String cardCollectionProducerType = startingPool.get("type").textValue();
-        if (cardCollectionProducerType.equals("randomCardPool")) {
+        if ("randomCardPool".equals(cardCollectionProducerType)) {
             return buildRandomCardPool(startingPool.get("data"));
-        } else if (cardCollectionProducerType.equals("boosterDraftRun")) {
+        } else if ("boosterDraftRun".equals(cardCollectionProducerType)) {
             return buildBoosterDraftRun(startingPool.get("data"));
         }
         throw new RuntimeException("Unknown cardCollectionProducer type: " + cardCollectionProducerType);
@@ -27,21 +26,21 @@ public class StartingPoolBuilder {
         final List<CardCollection> cardCollections = new ArrayList<>();
         if (randomCardPool.get("randomResult").isArray()) {
             for (JsonNode cards : randomCardPool.get("randomResult")) {
-                DefaultCardCollection cardCollection = new DefaultCardCollection();
+                MutableCardCollection cardCollection = new DefaultCardCollection();
                 for (JsonNode card : cards) {
                     cardCollection.addItem(card.textValue(), 1);
                 }
                 cardCollections.add(cardCollection);
             }
         } else {
-            DefaultCardCollection cardCollection = new DefaultCardCollection();
+            MutableCardCollection cardCollection = new DefaultCardCollection();
             for (JsonNode card :randomCardPool.get("randomResult")) {
                 cardCollection.addItem(card.textValue(), 1);
             }
             cardCollections.add(cardCollection);
         }
         return seed -> {
-            Random rnd = new Random(seed);
+            RandomGenerator rnd = new Random(seed);
             rnd.nextFloat();
             return cardCollections.get(rnd.nextInt(cardCollections.size()));
         };
@@ -49,7 +48,7 @@ public class StartingPoolBuilder {
 
     private static CardCollectionProducer buildBoosterDraftRun(JsonNode boosterDraftRun) {
         final int runLength = boosterDraftRun.get("runLength").asInt();
-        final List<String> coreCards = new LinkedList<>();
+        final Collection<String> coreCards = new LinkedList<>();
         final List<JsonNode> freePeoplesRuns = new LinkedList<>();
         final List<JsonNode> shadowRuns = new LinkedList<>();
 
@@ -58,12 +57,12 @@ public class StartingPoolBuilder {
         for (JsonNode run : boosterDraftRun.get("shadowRuns")) shadowRuns.add(run);
 
         return seed -> {
-            Random rnd = new Random(seed);
+            RandomGenerator rnd = new Random(seed);
             JsonNode freePeoplesRunNode = freePeoplesRuns.get(rnd.nextInt(freePeoplesRuns.size()));
             JsonNode shadowRunNode = shadowRuns.get(rnd.nextInt(shadowRuns.size()));
 
-            List<String> freePeoplesRun = new LinkedList<>();
-            List<String> shadowRun = new LinkedList<>();
+            Collection<String> freePeoplesRun = new LinkedList<>();
+            Collection<String> shadowRun = new LinkedList<>();
 
             for (JsonNode card : freePeoplesRunNode)
                 freePeoplesRun.add(card.textValue());
@@ -75,7 +74,7 @@ public class StartingPoolBuilder {
             Iterable<String> shadowIterable =
                     getCyclingIterable(shadowRun, rnd.nextInt(shadowRun.size()), runLength);
 
-            final DefaultCardCollection startingCollection = new DefaultCardCollection();
+            final MutableCardCollection startingCollection = new DefaultCardCollection();
 
             for (String card : Iterables.concat(coreCards, freePeopleIterable, shadowIterable))
                 startingCollection.addItem(card, 1);
@@ -85,7 +84,7 @@ public class StartingPoolBuilder {
     }
 
 
-    private static Iterable<String> getCyclingIterable(List<String> list, int start, int length) {
+    private static Iterable<String> getCyclingIterable(Iterable<String> list, int start, int length) {
         return Iterables.limit(Iterables.skip(Iterables.cycle(list), start), length);
     }
 }
