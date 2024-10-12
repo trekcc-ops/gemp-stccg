@@ -3,7 +3,7 @@ package com.gempukku.stccg.league;
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;

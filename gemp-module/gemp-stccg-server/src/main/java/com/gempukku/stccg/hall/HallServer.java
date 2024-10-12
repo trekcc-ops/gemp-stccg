@@ -7,7 +7,7 @@ import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.League;

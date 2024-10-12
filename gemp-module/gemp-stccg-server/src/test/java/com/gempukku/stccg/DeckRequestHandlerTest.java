@@ -3,7 +3,7 @@ package com.gempukku.stccg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.SealedEventDefinition;

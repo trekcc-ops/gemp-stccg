@@ -4,7 +4,7 @@ import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.gamestate.GameEvent;

@@ -3,7 +3,7 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;

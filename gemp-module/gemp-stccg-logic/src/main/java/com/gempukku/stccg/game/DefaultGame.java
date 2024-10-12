@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
@@ -295,6 +295,7 @@ public abstract class DefaultGame {
     }
     
     public void sendMessage(String message) { getGameState().sendMessage(message); }
+    public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
     public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 

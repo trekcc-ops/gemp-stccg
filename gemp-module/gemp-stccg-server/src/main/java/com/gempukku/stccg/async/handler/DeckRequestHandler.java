@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.SubDeck;

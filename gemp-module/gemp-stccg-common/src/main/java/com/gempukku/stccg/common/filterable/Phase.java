@@ -45,4 +45,8 @@ public enum Phase {
         return null;
     }
 
+    public boolean isSeedPhase() {
+        return name().startsWith("SEED");
+    }
+
 }

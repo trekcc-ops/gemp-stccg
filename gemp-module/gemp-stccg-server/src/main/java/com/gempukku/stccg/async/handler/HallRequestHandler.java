@@ -9,7 +9,7 @@ import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;

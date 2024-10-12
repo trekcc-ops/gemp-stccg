@@ -2,7 +2,6 @@ package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.GameFormat;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 
