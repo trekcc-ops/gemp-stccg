@@ -77,7 +77,7 @@ public class ServerObjects {
         LOGGER.info("GempukkuServer startup complete.");
     }
 
-    public void createDatabaseObjects() {
+    private final void createDatabaseObjects() {
         DbAccess dbAccess = new DbAccess();
 
         _leagueParticipationDAO = new CachedLeagueParticipationDAO(dbAccess);
@@ -101,7 +101,7 @@ public class ServerObjects {
         _cacheManager = new CacheManager(_deckDAO, _collectionDAO, _playerDAO, _transferDAO, _ipBanDAO);
     }
 
-    public void createServices() {
+    private final void createServices() {
         _formatLibrary = new FormatLibrary(_cardBlueprintLibrary);
         _gameHistoryService = new GameHistoryService(_gameHistoryDAO);
         _gameRecorder = new GameRecorder(_gameHistoryService, _playerDAO);
@@ -117,7 +117,7 @@ public class ServerObjects {
         _hallServer = new HallServer(this);
     }
 
-    public void startServers() {
+    private final void startServers() {
         LOGGER.debug("Function StartServers - starting HallServer");
         _hallServer.startServer();
         LOGGER.debug("Function StartServers - starting GameServer");
@@ -127,26 +127,26 @@ public class ServerObjects {
     }
 
 
-    public CardBlueprintLibrary getCardBlueprintLibrary() { return _cardBlueprintLibrary; }
-    public ProductLibrary getProductLibrary() { return _productLibrary; }
-    public LoggedUserHolder getLoggedUserHolder() { return _loggedUserHolder; }
-    public LeagueDAO getLeagueDAO() { return _leagueDAO; }
-    public IgnoreDAO getIgnoreDAO() { return _ignoreDAO; }
-    public DeckDAO getDeckDAO() { return _deckDAO; }
-    public PlayerDAO getPlayerDAO() { return _playerDAO; }
-    public TransferDAO getTransferDAO() { return _transferDAO; }
-    public IpBanDAO getIpBanDAO() { return _ipBanDAO; }
-    public CacheManager getCacheManager() { return _cacheManager; }
-    public FormatLibrary getFormatLibrary() { return _formatLibrary; }
-    public GameHistoryService getGameHistoryService() { return _gameHistoryService; }
-    public GameRecorder getGameRecorder() { return _gameRecorder; }
-    public CollectionsManager getCollectionsManager() { return _collectionsManager; }
-    public SoloDraftDefinitions getSoloDraftDefinitions() { return _soloDraftDefinitions; }
-    public LeagueService getLeagueService() { return _leagueService; }
-    public AdminService getAdminService() { return _adminService; }
-    public TournamentService getTournamentService() { return _tournamentService; }
-    public MerchantService getMerchantService() { return _merchantService; }
-    public ChatServer getChatServer() { return _chatServer; }
-    public GameServer getGameServer() { return _gameServer; }
-    public HallServer getHallServer() { return _hallServer; }
+    public final CardBlueprintLibrary getCardBlueprintLibrary() { return _cardBlueprintLibrary; }
+    public final ProductLibrary getProductLibrary() { return _productLibrary; }
+    public final LoggedUserHolder getLoggedUserHolder() { return _loggedUserHolder; }
+    public final LeagueDAO getLeagueDAO() { return _leagueDAO; }
+    public final IgnoreDAO getIgnoreDAO() { return _ignoreDAO; }
+    public final DeckDAO getDeckDAO() { return _deckDAO; }
+    public final PlayerDAO getPlayerDAO() { return _playerDAO; }
+    public final TransferDAO getTransferDAO() { return _transferDAO; }
+    final IpBanDAO getIpBanDAO() { return _ipBanDAO; }
+    public final CacheManager getCacheManager() { return _cacheManager; }
+    public final FormatLibrary getFormatLibrary() { return _formatLibrary; }
+    public final GameHistoryService getGameHistoryService() { return _gameHistoryService; }
+    public final GameRecorder getGameRecorder() { return _gameRecorder; }
+    public final CollectionsManager getCollectionsManager() { return _collectionsManager; }
+    public final SoloDraftDefinitions getSoloDraftDefinitions() { return _soloDraftDefinitions; }
+    public final LeagueService getLeagueService() { return _leagueService; }
+    public final AdminService getAdminService() { return _adminService; }
+    public final TournamentService getTournamentService() { return _tournamentService; }
+    public final MerchantService getMerchantService() { return _merchantService; }
+    public final ChatServer getChatServer() { return _chatServer; }
+    public final GameServer getGameServer() { return _gameServer; }
+    public final HallServer getHallServer() { return _hallServer; }
 }

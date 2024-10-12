@@ -28,15 +28,15 @@ public class LoggingProxy {
                         long time = System.currentTimeMillis() - start;
                         String name = method.getName();
                         if (time >= ERROR_LEVEL)
-                            LOGGER.error(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.error("{}::{}(...) {}ms", simpleName, name, time);
                         else if (time >= WARN_LEVEL)
-                            LOGGER.warn(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.warn("{}::{}(...) {}ms", simpleName, name, time);
                         else if (time >= INFO_LEVEL)
-                            LOGGER.info(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.info("{}::{}(...) {}ms", simpleName, name, time);
                         else if (time >= DEBUG_LEVEL)
-                            LOGGER.debug(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.debug("{}::{}(...) {}ms", simpleName, name, time);
                         else
-                            LOGGER.trace(simpleName + "::" + name + "(...) " + time + "ms");
+                            LOGGER.trace("{}::{}(...) {}ms", simpleName, name, time);
                     }
                 });
     }
