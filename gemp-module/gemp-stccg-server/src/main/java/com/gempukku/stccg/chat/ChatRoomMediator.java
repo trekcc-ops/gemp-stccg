@@ -43,11 +43,7 @@ public class ChatRoomMediator {
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
     }
 
-    public void addChatCommandCallback(String command, ChatCommandCallback callback) {
-        _chatCommandCallbacks.put(command.toLowerCase(), callback);
-    }
-
-    public List<ChatMessage> joinUser(String playerId, boolean admin) throws PrivateInformationException, SQLException {
+    public final List<ChatMessage> joinUser(String playerId, boolean admin) throws PrivateInformationException, SQLException {
         _lock.writeLock().lock();
         try {
             if (!admin && _allowedPlayers != null && !_allowedPlayers.contains(playerId))
@@ -67,7 +63,7 @@ public class ChatRoomMediator {
         }
     }
 
-    public ChatCommunicationChannel getChatRoomListener(String playerId) throws SubscriptionExpiredException {
+    public final ChatCommunicationChannel getChatRoomListener(String playerId) throws SubscriptionExpiredException {
         _lock.readLock().lock();
         try {
             ChatCommunicationChannel chatListener = _listeners.get(playerId);

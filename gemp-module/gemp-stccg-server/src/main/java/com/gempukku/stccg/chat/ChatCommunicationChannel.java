@@ -1,7 +1,5 @@
 package com.gempukku.stccg.chat;
 
-import com.gempukku.stccg.chat.ChatMessage;
-import com.gempukku.stccg.chat.ChatRoomListener;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 
@@ -15,15 +13,15 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
     private volatile WaitingRequest _waitingRequest;
     private final Set<String> ignoredUsers;
 
-    public ChatCommunicationChannel(Set<String> ignoredUsers) {
+    ChatCommunicationChannel(Set<String> ignoredUsers) {
         this.ignoredUsers = ignoredUsers;
     }
 
     @Override
-    public synchronized void deregisterRequest() { _waitingRequest = null; }
+    public final synchronized void deregisterRequest() { _waitingRequest = null; }
 
     @Override
-    public synchronized boolean registerRequest(WaitingRequest waitingRequest) {
+    public final synchronized boolean registerRequest(WaitingRequest waitingRequest) {
         if (!_messages.isEmpty())
             return true;
 
@@ -32,8 +30,9 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
     }
 
     @Override
-    public synchronized void messageReceived(ChatMessage message) {
-        if (message.isFromAdmin() || !ignoredUsers.contains(message.getFrom())) {
+    public final synchronized void messageReceived(ChatMessage message) {
+        String messageSender = message.getFrom();
+        if (message.isFromAdmin() || !ignoredUsers.contains(messageSender)) {
             _messages.add(message);
             if (_waitingRequest != null) {
                 _waitingRequest.processRequest();
@@ -42,7 +41,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
         }
     }
 
-    public synchronized List<ChatMessage> consumeMessages() {
+    public final synchronized List<ChatMessage> consumeMessages() {
         updateLastAccess();
         List<ChatMessage> messages = _messages;
         _messages = new LinkedList<>();
@@ -53,7 +52,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
         _lastConsumed = System.currentTimeMillis();
     }
 
-    public synchronized long getLastAccessed() {
+    public final synchronized long getLastAccessed() {
         return _lastConsumed;
     }
 }

@@ -18,7 +18,12 @@ public class ChatServer extends AbstractServer {
         this.playerDAO = playerDAO;
     }
 
-    public ChatRoomMediator createChatRoom(String name, boolean muteJoinPartMessages, int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage) {
+    public void addChatRoom(ChatRoomMediator chatRoom, String name) {
+        _chatRooms.put(name, chatRoom);
+    }
+
+    public final ChatRoomMediator createChatRoom(String name, boolean muteJoinPartMessages, int secondsTimeoutPeriod,
+                                                 boolean allowIncognito, String welcomeMessage) {
         ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, muteJoinPartMessages,
                 secondsTimeoutPeriod, allowIncognito, welcomeMessage);
         try {
@@ -32,8 +37,26 @@ public class ChatServer extends AbstractServer {
         return chatRoom;
     }
 
-    public void createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers, int secondsTimeoutPeriod) {
-        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, muteJoinPartMessages, secondsTimeoutPeriod, allowedUsers, false);
+    public final ChatRoomMediator createChatRoom(String name, boolean muteJoinPartMessages, int secondsTimeoutPeriod,
+                                                 boolean allowIncognito) {
+        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, muteJoinPartMessages,
+                secondsTimeoutPeriod, allowIncognito, null);
+        try {
+            chatRoom.sendMessage("System", "Welcome to room: " + name, true);
+        } catch (PrivateInformationException exp) {
+            // Ignore, sent as admin
+        } catch (ChatCommandErrorException e) {
+            // Ignore, no command
+        }
+        _chatRooms.put(name, chatRoom);
+        return chatRoom;
+    }
+
+
+    public final void createPrivateChatRoom(String name, boolean muteJoinPartMessages, Set<String> allowedUsers,
+                                            int secondsTimeoutPeriod) {
+        ChatRoomMediator chatRoom = new ChatRoomMediator(ignoreDAO, playerDAO, muteJoinPartMessages,
+                secondsTimeoutPeriod, allowedUsers, false);
         try {
             chatRoom.sendMessage("System", "Welcome to private room: " + name, true);
         } catch (PrivateInformationException exp) {
@@ -44,7 +67,7 @@ public class ChatServer extends AbstractServer {
         _chatRooms.put(name, chatRoom);
     }
 
-    public void sendSystemMessageToAllUsers(String message) {
+    public final void sendSystemMessageToAllUsers(String message) {
         // Sends the message to all users in all chat rooms
         try {
             for (ChatRoomMediator chatRoomMediator : _chatRooms.values())
@@ -56,16 +79,15 @@ public class ChatServer extends AbstractServer {
         }
     }
 
-
-    public ChatRoomMediator getChatRoom(String name) {
+    public final ChatRoomMediator getChatRoom(String name) {
         return _chatRooms.get(name);
     }
 
-    public void destroyChatRoom(String name) {
+    public final void destroyChatRoom(String name) {
         _chatRooms.remove(name);
     }
 
-    protected void cleanup() {
+    protected final void cleanup() {
         for (ChatRoomMediator chatRoomMediator : _chatRooms.values())
             chatRoomMediator.cleanup();
     }
