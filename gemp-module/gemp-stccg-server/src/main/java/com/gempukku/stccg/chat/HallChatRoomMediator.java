@@ -140,7 +140,7 @@ public class HallChatRoomMediator extends ChatRoomMediator {
         
     }
 
-    @SuppressWarnings({"SpellCheckingInspection"})
+    @SuppressWarnings("SpellCheckingInspection")
     /* Despite a thorough culling of most Lord of the Rings content in this code base for the Star Trek implementation,
         this is delightful and I never want to lose it. */
     private static List<String> getIgnoredUserMessages() {

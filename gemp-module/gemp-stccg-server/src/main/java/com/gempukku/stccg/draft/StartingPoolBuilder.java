@@ -15,9 +15,9 @@ public class StartingPoolBuilder {
         if (startingPool == null)
             return null;
         String cardCollectionProducerType = startingPool.get("type").textValue();
-        if (cardCollectionProducerType.equals("randomCardPool")) {
+        if ("randomCardPool".equals(cardCollectionProducerType)) {
             return buildRandomCardPool(startingPool.get("data"));
-        } else if (cardCollectionProducerType.equals("boosterDraftRun")) {
+        } else if ("boosterDraftRun".equals(cardCollectionProducerType)) {
             return buildBoosterDraftRun(startingPool.get("data"));
         }
         throw new RuntimeException("Unknown cardCollectionProducer type: " + cardCollectionProducerType);

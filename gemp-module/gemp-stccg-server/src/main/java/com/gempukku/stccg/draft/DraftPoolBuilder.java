@@ -43,9 +43,9 @@ public class DraftPoolBuilder {
 
     public static DraftPoolElement buildDraftPool(JsonNode draftPool) {
         String draftPoolProducerType = draftPool.get("type").textValue();
-        if (draftPoolProducerType.equals("singleDraft")) {
+        if ("singleDraft".equals(draftPoolProducerType)) {
             return buildSingleOrSharedDraftPool(draftPool.get("data"));
-        } else if (draftPoolProducerType.equals("sharedDraft")) {
+        } else if ("sharedDraft".equals(draftPoolProducerType)) {
             return buildSingleOrSharedDraftPool(draftPool.get("data"));
         }
         throw new RuntimeException("Unknown draftPoolProducer type: " + draftPoolProducerType);
