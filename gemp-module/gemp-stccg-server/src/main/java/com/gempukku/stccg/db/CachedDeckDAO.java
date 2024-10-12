@@ -20,32 +20,32 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         _playerDeckNames.clear();
         _decks.clear();
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return _playerDeckNames.size()+_decks.size();
     }
 
-    private String constructPlayerDeckNamesKey(User player) {
+    private static String constructPlayerDeckNamesKey(User player) {
         return player.getName();
     }
-    private String constructDeckKey(User player, String name) {
+    private static String constructDeckKey(User player, String name) {
         return player.getName()+"-"+name;
     }
 
     @Override
-    public void deleteDeckForPlayer(User player, String name) {
+    public final void deleteDeckForPlayer(User player, String name) {
         _delegate.deleteDeckForPlayer(player, name);
         String key = constructPlayerDeckNamesKey(player);
         _playerDeckNames.remove(key);
     }
 
     @Override
-    public CardDeck getDeckForPlayer(User player, String name) {
+    public final CardDeck getDeckForPlayer(User player, String name) {
         String key = constructDeckKey(player, name);
         CardDeck deck = _decks.get(key);
         if (deck == null) {
@@ -56,7 +56,7 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public Set<Map.Entry<String, String>> getPlayerDeckNames(User player) {
+    public final Set<Map.Entry<String, String>> getPlayerDeckNames(User player) {
         String cacheKey = constructPlayerDeckNamesKey(player);
         Set<Map.Entry<String, String>> deckNames = _playerDeckNames.get(cacheKey);
         if (deckNames == null) {
@@ -67,7 +67,7 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public CardDeck renameDeck(User player, String oldName, String newName) {
+    public final CardDeck renameDeck(User player, String oldName, String newName) {
         CardDeck deck = _delegate.renameDeck(player, oldName, newName);
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.remove(constructDeckKey(player, oldName));
@@ -77,8 +77,8 @@ public class CachedDeckDAO implements DeckDAO, Cached {
     }
 
     @Override
-    public void saveDeckForPlayer(User player, String name, String target_format, String notes, CardDeck deck) {
-        _delegate.saveDeckForPlayer(player, name, target_format, notes, deck);
+    public final void saveDeckForPlayer(User player, String name, String targetFormat, String notes, CardDeck deck) {
+        _delegate.saveDeckForPlayer(player, name, targetFormat, notes, deck);
         _playerDeckNames.remove(constructPlayerDeckNamesKey(player));
         _decks.put(constructDeckKey(player, name), deck);
     }

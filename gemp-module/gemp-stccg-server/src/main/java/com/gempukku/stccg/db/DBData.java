@@ -74,7 +74,7 @@ public class DBData {
         public String create_ip;
         public String last_ip;
 
-        public Date GetBannedUntilDate()
+        public final Date GetBannedUntilDate()
         {
             if(banned_until == null)
                 return null;

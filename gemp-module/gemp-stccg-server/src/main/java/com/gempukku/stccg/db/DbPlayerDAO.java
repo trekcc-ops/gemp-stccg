@@ -13,7 +13,7 @@ import java.util.*;
 
 @SuppressWarnings("TrailingWhitespacesInTextBlock")
 public class DbPlayerDAO implements PlayerDAO {
-    private final String _selectPlayer = """
+    private static final String SELECT_PLAYER = """
         SELECT 
             id, 
             name, 
@@ -34,7 +34,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public User getPlayer(int id) {
+    public final User getPlayer(int id) {
         try {
             return getPlayerFromDBById(id);
         } catch (SQLException exp) {
@@ -43,7 +43,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public User getPlayer(String playerName) {
+    public final User getPlayer(String playerName) {
         try {
             return getPlayerFromDBByName(playerName);
         } catch (SQLException exp) {
@@ -52,7 +52,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public List<User> findSimilarAccounts(String login) throws SQLException {
+    public final List<User> findSimilarAccounts(String login) throws SQLException {
         final User player = getPlayerFromDBByName(login);
         if (player == null)
             return null;
@@ -98,13 +98,13 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public Set<String> getBannedUsernames() {
+    public final Set<String> getBannedUsernames() {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT name FROM player WHERE type = '' ORDER BY ID DESC LIMIT 50")) {
 
                     try (ResultSet resultSet = statement.executeQuery()) {
-                        TreeSet<String> users = new TreeSet<>();
+                        Set<String> users = new TreeSet<>();
                         while (resultSet.next()) {
                             users.add(resultSet.getString(1));
                         }
@@ -118,7 +118,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public boolean resetUserPassword(String login) {
+    public final boolean resetUserPassword(String login) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -142,26 +142,26 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public boolean banPlayerPermanently(String login) throws SQLException {
+    public final boolean banPlayerPermanently(String login) throws SQLException {
         String sqlStatement = "update player set type='', banned_until=null where name=?";
         return SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement, login);
     }
 
     @Override
-    public boolean banPlayerTemporarily(String login, long dateTo) throws SQLException {
+    public final boolean banPlayerTemporarily(String login, long dateTo) throws SQLException {
         String sqlStatement = "update player set banned_until=?, type='un' where name=?";
         return SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
                 dateTo, login);
     }
 
     @Override
-    public boolean unBanPlayer(String login) throws SQLException {
+    public final boolean unBanPlayer(String login) throws SQLException {
         String sqlStatement = "update player set type='un', banned_until=null where name=?";
         return SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement, login);
     }
 
     @Override
-    public boolean addPlayerFlag(String login, User.Type flag) {
+    public final boolean addPlayerFlag(String login, User.Type flag) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -186,7 +186,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public boolean removePlayerFlag(String login, User.Type flag) {
+    public final boolean removePlayerFlag(String login, User.Type flag) {
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
@@ -211,13 +211,13 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public User loginUser(String login, String password) {
+    public final User loginUser(String login, String password) {
 
         try {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
             try (org.sql2o.Connection conn = db.open()) {
-                String sql = _selectPlayer +
+                String sql = SELECT_PLAYER +
                         """
                             WHERE name = :login
                                 AND (password = :password OR password = '')
@@ -238,7 +238,7 @@ public class DbPlayerDAO implements PlayerDAO {
         }
     }
 
-    private User getPlayerFromResultSet(ResultSet rs) throws SQLException {
+    private static User getPlayerFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt(1);
         String name = rs.getString(2);
         String password = rs.getString(3);
@@ -260,7 +260,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public void setLastReward(User player, int currentReward) throws SQLException {
+    public final void setLastReward(User player, int currentReward) throws SQLException {
         String sqlStatement = "update player set last_login_reward =? where id=?";
         SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
                 currentReward, player.getId());
@@ -268,7 +268,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public synchronized boolean updateLastReward(User player, int previousReward, int currentReward)
+    public final synchronized boolean updateLastReward(User player, int previousReward, int currentReward)
             throws SQLException {
         String sqlStatement = "update player set last_login_reward =? where id=? and last_login_reward=?";
         if (SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
@@ -280,7 +280,7 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public synchronized boolean registerUser(String login, String password, String remoteAddress)
+    public final synchronized boolean registerUser(String login, String password, String remoteAddress)
             throws LoginInvalidException {
         if (!validLoginName(login))
             return false;
@@ -336,7 +336,7 @@ public class DbPlayerDAO implements PlayerDAO {
         }
     }
 
-    private boolean validLoginName(String login) throws LoginInvalidException {
+    private static boolean validLoginName(String login) throws LoginInvalidException {
         if (login.length() < 2 || login.length() > 30)
             throw new LoginInvalidException();
         for (int i = 0; i < login.length(); i++) {
@@ -355,7 +355,7 @@ public class DbPlayerDAO implements PlayerDAO {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
             try (org.sql2o.Connection conn = db.open()) {
-                String sql = _selectPlayer +
+                String sql = SELECT_PLAYER +
                         """
                             WHERE LOWER(name) = :login
                         """;
@@ -376,7 +376,7 @@ public class DbPlayerDAO implements PlayerDAO {
             Sql2o db = new Sql2o(_dbAccess.getDataSource());
 
             try (org.sql2o.Connection conn = db.open()) {
-                String sql = _selectPlayer +
+                String sql = SELECT_PLAYER +
                         """
                             WHERE LOWER(name) = :login
                                 AND (password = '' OR password IS NULL)
@@ -393,7 +393,7 @@ public class DbPlayerDAO implements PlayerDAO {
         }
     }
 
-    private String encodePassword(String password) {
+    private static String encodePassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.reset();
@@ -403,7 +403,7 @@ public class DbPlayerDAO implements PlayerDAO {
         }
     }
 
-    private String convertToHexString(byte[] bytes) {
+    private static String convertToHexString(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
         for (byte aByte : bytes) {
             String hex = Integer.toHexString(0xFF & aByte);
@@ -416,7 +416,7 @@ public class DbPlayerDAO implements PlayerDAO {
 
     private User getPlayerFromDBById(int id) throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement(_selectPlayer + " where id=?")) {
+            try (PreparedStatement statement = conn.prepareStatement(SELECT_PLAYER + " where id=?")) {
                 statement.setInt(1, id);
                 try (ResultSet rs = statement.executeQuery()) {
                     if (rs.next()) {
@@ -431,7 +431,7 @@ public class DbPlayerDAO implements PlayerDAO {
 
     private User getPlayerFromDBByName(String playerName) throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement(_selectPlayer + " where name=?")) {
+            try (PreparedStatement statement = conn.prepareStatement(SELECT_PLAYER + " where name=?")) {
                 statement.setString(1, playerName);
                 try (ResultSet rs = statement.executeQuery()) {
                     if (rs.next()) {
@@ -445,14 +445,14 @@ public class DbPlayerDAO implements PlayerDAO {
     }
 
     @Override
-    public void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
+    public final void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
         String sqlStatement = "update player set last_ip=? where name=?";
         SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
                 remoteAddress, login);
     }
 
     @Override
-    public List<DBData.DBPlayer> getAllPlayers() {
+    public final List<DBData.DBPlayer> getAllPlayers() {
 
         try {
 

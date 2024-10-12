@@ -1,7 +1,5 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.draft.builder.CardCollectionProducer;
-import com.gempukku.stccg.draft.builder.DraftPoolProducer;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 

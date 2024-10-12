@@ -16,13 +16,14 @@ public class DbAccess {
     private static final Logger LOGGER = LogManager.getLogger(DbAccess.class);
     private final PoolingDataSource _dataSource;
 
+    @SuppressWarnings("FeatureEnvy")
     public DbAccess() {
         this(AppConfig.getProperty("db.connection.url"), AppConfig.getProperty("db.connection.username"),
                 AppConfig.getProperty("db.connection.password"), false);
     }
 
-    public DbAccess(String url, String user, String pass, boolean batch) {
-        LOGGER.debug("Creating DbAccess for " + url);
+    private DbAccess(String url, String user, String pass, boolean batch) {
+        LOGGER.debug("Creating DbAccess for {}", url);
         try {
             Class.forName(AppConfig.getProperty("db.connection.class"));
         } catch (ClassNotFoundException e) {
@@ -30,15 +31,15 @@ public class DbAccess {
         }
 
         _dataSource = setupDataSource(url, user, pass, batch);
-        LOGGER.debug("DbAccess - _dataSource created for " + url);
+        LOGGER.debug("DbAccess - _dataSource created for {}", url);
     }
 
-    public PoolingDataSource getDataSource() {
+    public final PoolingDataSource getDataSource() {
         return _dataSource;
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    private PoolingDataSource setupDataSource(String connectURI, String user, String pass, Boolean batch) {
+    private static PoolingDataSource setupDataSource(String connectURI, String user, String pass, Boolean batch) {
         //
         // First, we'll create a ConnectionFactory that the
         // pool will use to create Connections.

@@ -15,13 +15,13 @@ public class CachedIpBanDAO implements IpBanDAO, Cached {
     }
 
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         _bannedIps = null;
         _bannedIpPrefixes = null;
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         int total = 0;
         if(_bannedIps != null)
             total += _bannedIps.size();
@@ -31,19 +31,19 @@ public class CachedIpBanDAO implements IpBanDAO, Cached {
     }
 
     @Override
-    public void addIpBan(String ip) {
+    public final void addIpBan(String ip) {
         _delegate.addIpBan(ip);
         _bannedIps = null;
     }
 
     @Override
-    public void addIpPrefixBan(String ipPrefix) {
+    public final void addIpPrefixBan(String ipPrefix) {
         _delegate.addIpPrefixBan(ipPrefix);
         _bannedIpPrefixes = null;
     }
 
     @Override
-    public Set<String> getIpBans() {
+    public final Set<String> getIpBans() {
         Set<String> result = _bannedIps;
         if (result != null)
             return result;
@@ -54,7 +54,7 @@ public class CachedIpBanDAO implements IpBanDAO, Cached {
     }
 
     @Override
-    public Set<String> getIpPrefixBans() {
+    public final Set<String> getIpPrefixBans() {
         Set<String> result = _bannedIpPrefixes;
         if (result != null)
             return result;

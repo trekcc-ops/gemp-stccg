@@ -28,17 +28,6 @@ public class User {
         public String toString() {
             return getValue();
         }
-
-        public static List<Type> getTypes(String typeString) {
-            List<Type> types = new ArrayList<>();
-            for (Type type : values()) {
-                if (typeString.contains(type.getValue())) {
-                    types.add(type);
-                }
-            }
-            return types;
-        }
-
     }
 
     private final int _id;
@@ -65,62 +54,68 @@ public class User {
         _lastIp = lastIp;
     }
 
-    public int getId() {
+    public final int getId() {
         return _id;
     }
 
-    public String getName() {
+    public final String getName() {
         return _name;
     }
 
-    public String getPassword() {
+    public final String getPassword() {
         return _password;
     }
 
-    public String getType() {
+    public final String getType() {
         return _type;
     }
 
-    public boolean hasType(Type type) {
-        return Type.getTypes(_type).contains(type);
+    public final boolean hasType(Type type) {
+        Collection<Type> types = new ArrayList<>();
+        for (Type typeItr : Type.values()) {
+            if (_type.contains(typeItr.getValue())) {
+                types.add(typeItr);
+            }
+        }
+        return types.contains(type);
     }
 
-    public Integer getLastLoginReward() {
+    public final Integer getLastLoginReward() {
         return _lastLoginReward;
     }
 
-    public void setLastLoginReward(int lastLoginReward) {
+    public final void setLastLoginReward(int lastLoginReward) {
         _lastLoginReward = lastLoginReward;
     }
 
-    public Date getBannedUntil() {
+    public final Date getBannedUntil() {
         return _bannedUntil;
     }
 
-    public String getCreateIp() {
+    public final String getCreateIp() {
         return _createIp;
     }
 
-    public String getLastIp() {
+    public final String getLastIp() {
         return _lastIp;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        User player = (User) o;
+        User player = (User) obj;
 
         return Objects.equals(_name, player._name);
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return _name != null ? _name.hashCode() : 0;
     }
 
-    public PlayerInfo GetUserInfo() {
+    public final PlayerInfo GetUserInfo() {
         return new PlayerInfo(_name, _type);
     }
 
@@ -136,14 +131,15 @@ public class User {
     }
 
     private boolean isType(User.Type type) {
-        return _type.contains(type.getValue());
+        String typeValue = type.getValue();
+        return _type.contains(typeValue);
     }
 
     private boolean hasNoPassword() {
         return StringUtils.isNullOrEmpty(_password);
     }
 
-    public void checkLogin() throws HttpProcessingException {
+    public final void checkLogin() throws HttpProcessingException {
         if (hasNoPassword()) {
             throw new HttpProcessingException(HttpURLConnection.HTTP_ACCEPTED); // 202
         }
@@ -156,4 +152,10 @@ public class User {
         }
     }
 
+    public final void banIpPrefix(IpBanDAO ipBanDAO) {
+        final String lastIp = _lastIp;
+        int finalPeriodIndex = lastIp.lastIndexOf('.');
+        String lastIpPrefix = lastIp.substring(0, finalPeriodIndex + 1);
+        ipBanDAO.addIpPrefixBan(lastIpPrefix);
+    }
 }

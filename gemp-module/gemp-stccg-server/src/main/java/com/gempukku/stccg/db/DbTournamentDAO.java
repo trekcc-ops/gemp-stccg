@@ -18,36 +18,36 @@ import java.util.List;
 
 
 public class DbTournamentDAO implements TournamentDAO {
+    private static final String TOURNAMENT_FIELDS =
+            "tournament_id, draft_type, name, format, collection, stage, pairing, round, prizes";
     private static final Logger LOGGER = LogManager.getLogger(DbTournamentDAO.class);
     private final DbAccess _dbAccess;
-    private final String _tournamentFields =
-            "tournament_id, draft_type, name, format, collection, stage, pairing, round, prizes";
 
     public DbTournamentDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
     }
 
     @Override
-    public void addTournament(String tournamentId, String draftType, String tournamentName, String format,
-                              CollectionType collectionType, Tournament.Stage stage, String pairingMechanism,
-                              String prizesScheme, Date start) {
+    public final void addTournament(String tournamentId, String draftType, String tournamentName, String format,
+                                    CollectionType collectionType, Tournament.Stage stage, String pairingMechanism,
+                                    String prizeScheme, Date start) {
         try {
             String sqlMessage =
-                    "insert into tournament (" + _tournamentFields + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "insert into tournament (" + TOURNAMENT_FIELDS + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             String collectionString = collectionType.getCode() + ":" + collectionType.getFullName();
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlMessage,
                     tournamentId, draftType, tournamentName, format, collectionString,
-                    stage.name(), pairingMechanism, start.getTime(), 0, prizesScheme);
+                    stage.name(), pairingMechanism, start.getTime(), 0, prizeScheme);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }
     }
 
     @Override
-    public TournamentInfo getTournamentById(String tournamentId) {
+    public final TournamentInfo getTournamentById(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                String sqlMessage = "select " + _tournamentFields + " from tournament where tournament_id=?";
+                String sqlMessage = "select " + TOURNAMENT_FIELDS + " from tournament where tournament_id=?";
                 try (PreparedStatement statement = connection.prepareStatement(sqlMessage)) {
                     statement.setString(1, tournamentId);
                     ResultSet rs = statement.executeQuery();
@@ -60,12 +60,12 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public List<TournamentInfo> getUnfinishedTournaments() {
+    public final List<TournamentInfo> getUnfinishedTournaments() {
         LOGGER.debug("Called getUnfinishedTournaments function");
-        LOGGER.debug("getUnfinishedTournaments function - attempting connection to " + _dbAccess.getDataSource());
+        LOGGER.debug("getUnfinishedTournaments function - attempting connection to {}", _dbAccess.getDataSource());
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                String sqlMessage = "select " + _tournamentFields + " from tournament where stage <> '" +
+                String sqlMessage = "select " + TOURNAMENT_FIELDS + " from tournament where stage <> '" +
                         Tournament.Stage.FINISHED.name() + "'";
                 try (PreparedStatement statement = connection.prepareStatement(sqlMessage)) {
                     try (ResultSet rs = statement.executeQuery()) {
@@ -81,7 +81,7 @@ public class DbTournamentDAO implements TournamentDAO {
         }
     }
 
-    private TournamentInfo createTournamentInfoFromResultSet(ResultSet rs) throws SQLException {
+    private static TournamentInfo createTournamentInfoFromResultSet(ResultSet rs) throws SQLException {
         // Assumes rs is a ResultSet with _tournamentFields in that order
         String[] collectionTypeStr = rs.getString(5).split(":", 2);
         return new TournamentInfo(
@@ -94,10 +94,10 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public List<TournamentInfo> getFinishedTournamentsSince(long time) {
+    public final List<TournamentInfo> getFinishedTournamentsSince(long time) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                String sqlMessage = "select " + _tournamentFields + " from tournament where stage = '" +
+                String sqlMessage = "select " + TOURNAMENT_FIELDS + " from tournament where stage = '" +
                         Tournament.Stage.FINISHED.name() + "' and start>?";
                 try (PreparedStatement statement = connection.prepareStatement(sqlMessage)) {
                     statement.setLong(1, time);
@@ -115,7 +115,7 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public void updateTournamentStage(String tournamentId, Tournament.Stage stage) {
+    public final void updateTournamentStage(String tournamentId, Tournament.Stage stage) {
         try {
             String sqlStatement = "update tournament set stage=? where tournament_id=?";
             SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
@@ -126,7 +126,7 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public void updateTournamentRound(String tournamentId, int round) {
+    public final void updateTournamentRound(String tournamentId, int round) {
         try {
             String sqlStatement = "update tournament set round=? where tournament_id=?";
             SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
@@ -137,7 +137,7 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public List<TournamentQueueInfo> getFutureScheduledTournamentQueues(long tillDate) {
+    public final List<TournamentQueueInfo> getFutureScheduledTournamentQueues(long tillDate) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 String sqlMessage =
@@ -163,11 +163,11 @@ public class DbTournamentDAO implements TournamentDAO {
     }
 
     @Override
-    public void updateScheduledTournamentStarted(String scheduledTournamentId) {
+    public final void updateScheduledTournamentStarted(String tournamentId) {
         try {
             String sqlStatement = "update scheduled_tournament set started=1 where tournament_id=?";
             SQLUtils.executeUpdateStatementWithParameters(_dbAccess, sqlStatement,
-                    scheduledTournamentId);
+                    tournamentId);
         } catch (SQLException exp) {
             throw new RuntimeException(exp);
         }

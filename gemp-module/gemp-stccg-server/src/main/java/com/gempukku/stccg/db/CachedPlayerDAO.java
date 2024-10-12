@@ -18,19 +18,19 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public void clearCache() {
+    public final void clearCache() {
         _playerById.clear();
         _playerByName.clear();
         _bannedUsernames.clear();
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return _playerById.size() + _playerByName.size();
     }
 
     @Override
-    public boolean resetUserPassword(String login) throws SQLException {
+    public final boolean resetUserPassword(String login) throws SQLException {
         final boolean success = _delegate.resetUserPassword(login);
         if (success)
             clearCache();
@@ -38,7 +38,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public boolean banPlayerPermanently(String login) throws SQLException {
+    public final boolean banPlayerPermanently(String login) throws SQLException {
         final boolean success = _delegate.banPlayerPermanently(login);
         if (success)
             clearCache();
@@ -46,7 +46,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public boolean banPlayerTemporarily(String login, long dateTo) throws SQLException {
+    public final boolean banPlayerTemporarily(String login, long dateTo) throws SQLException {
         final boolean success = _delegate.banPlayerTemporarily(login, dateTo);
         if (success)
             clearCache();
@@ -54,7 +54,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public boolean unBanPlayer(String login) throws SQLException {
+    public final boolean unBanPlayer(String login) throws SQLException {
         final boolean success = _delegate.unBanPlayer(login);
         if (success)
             clearCache();
@@ -62,7 +62,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public boolean addPlayerFlag(String login, User.Type flag) throws SQLException {
+    public final boolean addPlayerFlag(String login, User.Type flag) throws SQLException {
         final boolean success = _delegate.addPlayerFlag(login, flag);
         if (success)
             clearCache();
@@ -70,7 +70,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public boolean removePlayerFlag(String login, User.Type flag) throws SQLException {
+    public final boolean removePlayerFlag(String login, User.Type flag) throws SQLException {
         final boolean success = _delegate.removePlayerFlag(login, flag);
         if (success)
             clearCache();
@@ -78,19 +78,19 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public List<User> findSimilarAccounts(String login) throws SQLException {
+    public final List<User> findSimilarAccounts(String login) throws SQLException {
         return _delegate.findSimilarAccounts(login);
     }
 
     @Override
-    public Set<String> getBannedUsernames() throws SQLException {
+    public final Set<String> getBannedUsernames() throws SQLException {
         if(_bannedUsernames.isEmpty())
             _bannedUsernames = _delegate.getBannedUsernames();
         return new HashSet<>(_bannedUsernames);
     }
 
     @Override
-    public User getPlayer(int id) {
+    public final User getPlayer(int id) {
         User player = _playerById.get(id);
         if (player == null) {
             player = _delegate.getPlayer(id);
@@ -103,7 +103,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public User getPlayer(String playerName) {
+    public final User getPlayer(String playerName) {
         User player = _playerByName.get(playerName);
         if (player == null) {
             player = _delegate.getPlayer(playerName);
@@ -116,12 +116,13 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public User loginUser(String login, String password) throws SQLException {
+    public final User loginUser(String login, String password) throws SQLException {
         return _delegate.loginUser(login, password);
     }
 
     @Override
-    public boolean registerUser(String login, String password, String remoteAddress) throws SQLException, LoginInvalidException {
+    public final boolean registerUser(String login, String password, String remoteAddress)
+            throws SQLException, LoginInvalidException {
         boolean registered = _delegate.registerUser(login, password, remoteAddress);
         if (registered)
             _playerByName.remove(login);
@@ -129,23 +130,23 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public void setLastReward(User player, int currentReward) throws SQLException {
+    public final void setLastReward(User player, int currentReward) throws SQLException {
         _delegate.setLastReward(player, currentReward);
         _playerById.remove(player.getId());
         _playerByName.remove(player.getName());
     }
 
     @Override
-    public void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
+    public final void updateLastLoginIp(String login, String remoteAddress) throws SQLException {
         _delegate.updateLastLoginIp(login, remoteAddress);
     }
 
-    public List<DBData.DBPlayer> getAllPlayers() {
+    public final List<DBData.DBPlayer> getAllPlayers() {
         return _delegate.getAllPlayers();
     }
 
     @Override
-    public boolean updateLastReward(User player, int previousReward, int currentReward) throws SQLException {
+    public final boolean updateLastReward(User player, int previousReward, int currentReward) throws SQLException {
         boolean updated = _delegate.updateLastReward(player, previousReward, currentReward);
         if (updated) {
             _playerById.remove(player.getId());

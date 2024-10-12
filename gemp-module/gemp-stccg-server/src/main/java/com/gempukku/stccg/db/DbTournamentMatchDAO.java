@@ -20,7 +20,7 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     }
 
     @Override
-    public void addMatch(String tournamentId, int round, String playerOne, String playerTwo) {
+    public final void addMatch(String tournamentId, int round, String playerOne, String playerTwo) {
         try {
             String sqlStatement =
                     "insert into tournament_match (tournament_id, round, player_one, player_two) values (?, ?, ?, ?)";
@@ -32,7 +32,7 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     }
 
     @Override
-    public void setMatchResult(String tournamentId, String winner) {
+    public final void setMatchResult(String tournamentId, String winner) {
         try {
             String sqlStatement =
                     "update tournament_match set winner=? where tournament_id=? and (player_one=? or player_two=?)";
@@ -44,7 +44,7 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     }
 
     @Override
-    public List<TournamentMatch> getMatches(String tournamentId) {
+    public final List<TournamentMatch> getMatches(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select player_one, player_two, winner, round from tournament_match where tournament_id=? and player_two <> 'bye'")) {
@@ -68,12 +68,12 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     }
 
     @Override
-    public void addBye(String tournamentId, String player, int round) {
+    public final void addBye(String tournamentId, String player, int round) {
         addMatch(tournamentId, round, player, "bye");
     }
 
     @Override
-    public Map<String, Integer> getPlayerByes(String tournamentId) {
+    public final Map<String, Integer> getPlayerByes(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement("select player_one from tournament_match where tournament_id=? and player_two = 'bye'")) {

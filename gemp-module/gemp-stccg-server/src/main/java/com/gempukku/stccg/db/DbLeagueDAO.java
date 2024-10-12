@@ -16,7 +16,7 @@ public class DbLeagueDAO implements LeagueDAO {
         _dbAccess = dbAccess;
     }
 
-    public void addLeague(int cost, String name, String type, String clazz, String parameters, int start, int endTime) {
+    public final void addLeague(int cost, String name, String type, String clazz, String parameters, int start, int endTime) {
         try {
             String sqlStatement = "insert into league (name, type, class, parameters, start, end, status, cost) values (?, ?, ?, ?, ?, ?, ?, ?)";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
@@ -26,7 +26,7 @@ public class DbLeagueDAO implements LeagueDAO {
         }
     }
 
-    public List<League> loadActiveLeagues(int currentTime) throws SQLException {
+    public final List<League> loadActiveLeagues(int currentTime) throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
             try (PreparedStatement statement = conn.prepareStatement("select name, type, class, parameters, status, cost from league where end>=? order by start desc")) {
                 statement.setInt(1, currentTime);
@@ -47,7 +47,7 @@ public class DbLeagueDAO implements LeagueDAO {
         }
     }
 
-    public void setStatus(League league, int newStatus) {
+    public final void setStatus(League league, int newStatus) {
         try {
             String sqlStatement = "update league set status=? where type=?";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,

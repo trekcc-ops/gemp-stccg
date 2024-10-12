@@ -21,14 +21,14 @@ public class DbCollectionDAO implements CollectionDAO {
         _dbAccess = dbAccess;
     }
 
-    public Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws IOException {
+    public final Map<Integer, CardCollection> getPlayerCollectionsByType(String type) throws IOException {
         Map<Integer, CardCollection> result = new HashMap<>();
         for(var coll : getCollectionInfoByType(type))
             result.put(coll.player_id, deserializeCollection(coll, extractCollectionEntries(coll.id)));
         return result;
     }
 
-    public CardCollection getPlayerCollection(int playerId, String type) throws IOException {
+    public final CardCollection getPlayerCollection(int playerId, String type) throws IOException {
         DBData.Collection collection = getCollectionInfo(playerId, type);
         return (collection == null) ? null : deserializeCollection(collection, extractCollectionEntries(collection.id));
     }
@@ -111,7 +111,7 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    public int getCollectionID(int playerId, String type)  {
+    private final int getCollectionID(int playerId, String type)  {
         var coll = getCollectionInfo(playerId,  type);
         if(coll == null)
             return -1;
@@ -121,18 +121,18 @@ public class DbCollectionDAO implements CollectionDAO {
 
 
     @SuppressWarnings("SpellCheckingInspection")
-    public void overwriteCollectionContents(int playerId, String type, CardCollection collection, String source) {
+    public final void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
                         VALUES (:collid, :quantity, :type, :product, :source)
                         ON DUPLICATE KEY UPDATE quantity = :quantity, source = :source;
                         """;
         String error = "Unable to update product via upsert into collection_entries.";
-        updateCollectionContents(playerId, type, collection, source, sql, error);
+        updateCollectionContents(playerId, type, collection, reason, sql, error);
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    public void addToCollectionContents(int playerId, String type, CardCollection collection, String source) {
+    public final void addToCollectionContents(int playerId, String type, CardCollection collection, String source) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
                         VALUES (:collid, :quantity, :type, :product, :source)
@@ -143,7 +143,7 @@ public class DbCollectionDAO implements CollectionDAO {
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    public void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source) {
+    public final void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
                         VALUES (:collid, :quantity, :type, :product, :source)
@@ -154,7 +154,7 @@ public class DbCollectionDAO implements CollectionDAO {
     }
 
     @Override
-    public void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation) {
+    public final void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation) {
         upsertCollectionInfo(playerId, type, extraInformation);
     }
 
@@ -214,9 +214,9 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    private MutableCardCollection deserializeCollection(DBData.Collection coll, List<? extends DBData.CollectionEntry> entries)
+    private MutableCardCollection deserializeCollection(DBData.Collection coll, Iterable<? extends DBData.CollectionEntry> entries)
             throws IOException {
-        DefaultCardCollection newColl = new DefaultCardCollection();
+        MutableCardCollection newColl = new DefaultCardCollection();
 
         if(coll.extra_info != null) {
             newColl.setExtraInformation(_mapper.convertValue(
