@@ -14,6 +14,6 @@ public class ST2EGameMediator extends CardGameMediator {
     }
 
     @Override
-    public ST2EGame getGame() { return _game; }
+    public final ST2EGame getGame() { return _game; }
 
 }

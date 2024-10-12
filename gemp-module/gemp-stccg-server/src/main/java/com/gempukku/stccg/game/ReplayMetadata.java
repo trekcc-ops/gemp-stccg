@@ -21,20 +21,18 @@ public class ReplayMetadata {
 
     @SuppressWarnings("unused")
     public final DBData.GameHistory GameReplayInfo; // Class accessed via JSON which may not be obvious to IDE
-    public final Map<String, DeckMetadata> Decks = new HashMap<>();
-    public final Map<String, Integer> PlayerIDs = new HashMap<>();
-    public final Map<String, Integer> Bids = new HashMap<>();
+    private final Map<String, Integer> PlayerIDs = new HashMap<>();
     @SuppressWarnings("unused") // Class accessed via JSON which may not be obvious to IDE
     public String WentFirst;
-    public boolean GameStarted = false;
+    private boolean GameStarted;
 
-    public final Map<String, String> AllCards = new HashMap<>();
+    private final Map<String, String> AllCards = new HashMap<>();
 
-    public final Set<String> SeenCards = new HashSet<>();
+    private final Collection<String> SeenCards = new HashSet<>();
 
-    public final HashSet<String> PlayedCards = new HashSet<>();
+    private final Collection<String> PlayedCards = new HashSet<>();
 
-    public ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks) {
+    private ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks) {
         GameReplayInfo = game;
 
         for(var pair : decks.entrySet()) {
@@ -47,24 +45,25 @@ public class ReplayMetadata {
                 DrawDeck = deck.getDrawDeckCards();
             }};
 
-            Decks.put(player, metadata);
+            Map<String, DeckMetadata> decks1 = new HashMap<>();
+            decks1.put(player, metadata);
         }
 
     }
 
-    public ReplayMetadata(DBData.GameHistory game, Map<String, CardDeck> decks, String player, List<GameEvent> events) {
+    public ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks, String player, Iterable<? extends GameEvent> events) {
         this(game, decks);
         ParseReplay(player, events);
     }
 
-    public String GetOpponent(String player) {
+    private final String GetOpponent(String player) {
         return PlayerIDs.keySet().stream().filter(x -> !x.equals(player)).findFirst().orElse(null);
     }
 
     private final Pattern gameStartPattern = Pattern.compile("Players in the game are: ([\\w-]+), ([\\w-]+)");
     private final Pattern orderPattern = Pattern.compile("([\\w-]+) has chosen to go (.*)");
-    private final Pattern bidPattern = Pattern.compile("([\\w-]+) bid (\\d+)");
-    public void ParseReplay(String player, List<? extends GameEvent> events) {
+
+    private final void ParseReplay(String player, Iterable<? extends GameEvent> events) {
         GameStarted = false;
 
         for(var event : events) {
@@ -84,20 +83,12 @@ public class ReplayMetadata {
                 if(regex.matches()) {
                     String bidder = regex.group(1);
                     String order = regex.group(2);
-                    if(order.equals("first")) {
+                    if("first".equals(order)) {
                         WentFirst = bidder;
                     }
-                    else if(order.equals("second")) {
+                    else if("second".equals(order)) {
                         WentFirst = GetOpponent(bidder);
                     }
-                    continue;
-                }
-
-                regex = bidPattern.matcher(message);
-                if(regex.matches()) {
-                    String bidder = regex.group(1);
-                    String bid = regex.group(2);
-                    Bids.put(bidder, Integer.valueOf(bid));
                 }
             }
             else if(!GameStarted && event.getType() == GameEvent.Type.GAME_PHASE_CHANGE) {

@@ -17,12 +17,11 @@ public class GameParticipant {
         _deck = deck;
     }
 
-
-    public String getPlayerId() {
+    public final String getPlayerId() {
         return _playerId;
     }
 
-    public CardDeck getDeck() {
+    public final CardDeck getDeck() {
         return _deck;
     }
 }

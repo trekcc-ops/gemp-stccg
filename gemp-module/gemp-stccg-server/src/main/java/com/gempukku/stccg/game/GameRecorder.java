@@ -8,6 +8,7 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.gamestate.GameEvent;
+import com.gempukku.stccg.hall.GameTimer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -19,8 +20,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +44,8 @@ public class GameRecorder {
     }
 
 
-    public GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
-                                              final String tournamentName, final Map<String, CardDeck> decks) {
+    public final GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
+                                                    final String tournamentName, final Map<String, CardDeck> decks) {
         final ZonedDateTime startDate = ZonedDateTime.now(ZoneOffset.UTC);
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();
         for (String playerId : game.getPlayersPlaying()) {
@@ -56,42 +59,8 @@ public class GameRecorder {
 
             var time = game.getTimeSettings();
             var clocks = game.getPlayerClocks();
-            var gameInfo = new DBData.GameHistory() {{
-                gameId = game.getGameId();
-
-                winner = winnerName;
-                winnerId = _playerDAO.getPlayer(winnerName).getId();
-                loser = loserName;
-                loserId = _playerDAO.getPlayer(loserName).getId();
-
-                win_reason = winReason;
-                lose_reason = loseReason;
-
-                win_recording_id = getNewRecordingID();
-                lose_recording_id = getNewRecordingID();
-
-                start_date = startDate;
-                end_date = endDate;
-
-                format_name = format.getName();
-
-                winner_deck_name = decks.get(winner).getDeckName();
-                loser_deck_name = decks.get(loser).getDeckName();
-
-                tournament = tournamentName;
-
-                winner_site = 0;
-                loser_site = 0;
-
-                game_length_type = time.name();
-                max_game_time = time.maxSecondsPerPlayer();
-                game_timeout = time.maxSecondsPerDecision();
-                winner_clock_remaining = clocks.getOrDefault(winnerName, -1);
-                loser_clock_remaining = clocks.getOrDefault(loserName, -1);
-
-                //Update this version as needed; note that this is the REPLAY FORMAT, not the JSON summary
-                replay_version = 1;
-            }};
+            var gameInfo = new MyGameHistory(game, winnerName, loserName, winReason, loseReason, startDate, endDate,
+                    format, decks, tournamentName, time, clocks);
 
             var playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
             gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
@@ -114,12 +83,12 @@ public class GameRecorder {
         void finishRecording(String winner, String winReason, String loser, String loseReason);
     }
 
-    private File getRecordingFileVersion0(String playerId, String gameId) {
+    private static File getRecordingFileVersion0(String playerId, String gameId) {
         File playerReplayFolder = new File(AppConfig.getReplayPath(), playerId);
         return new File(playerReplayFolder, gameId + ".xml.gz");
     }
 
-    private File getRecordingFileVersion1(String playerId, String gameId, ZonedDateTime startDate) {
+    private static File getRecordingFileVersion1(String playerId, String gameId, ChronoZonedDateTime<LocalDate> startDate) {
         //This dumb-ass formatting output is because anything that otherwise interacts with the
         // year subfield appears to trigger a JVM segfault in the guts of the java ecosystem.
         // Super-dumb.  Don't touch these two lines.
@@ -132,7 +101,7 @@ public class GameRecorder {
         return new File(playerReplayFolder, gameId + ".xml.gz");
     }
 
-    private File getSummaryFile(DBData.GameHistory history) {
+    private static File getSummaryFile(DBData.GameHistory history) {
         var summaryFolder = new File(AppConfig.getReplayPath(), "summaries");
         var yearFolder = new File(summaryFolder, String.format("%04d", history.start_date.getYear()));
         var monthFolder = new File(yearFolder, String.format("%02d", history.start_date.getMonthValue()));
@@ -142,7 +111,7 @@ public class GameRecorder {
                 history.win_recording_id + "_" + history.lose_recording_id+ ".json");
     }
 
-    private OutputStream getRecordingWriteStream(String playerId, String gameId, ZonedDateTime startDate) throws IOException {
+    private static OutputStream getRecordingWriteStream(String playerId, String gameId, ChronoZonedDateTime<LocalDate> startDate) throws IOException {
         File recordingFile = getRecordingFileVersion1(playerId, gameId, startDate);
         //noinspection ResultOfMethodCallIgnored
         recordingFile.getParentFile().mkdirs();
@@ -151,7 +120,9 @@ public class GameRecorder {
         return new DeflaterOutputStream(new FileOutputStream(recordingFile), deflater);
     }
 
-    private Map<String, String> saveRecordedChannels(Map<String, GameCommunicationChannel> gameProgress, DBData.GameHistory gameInfo, Map<String, CardDeck> decks) {
+    private Map<String, String> saveRecordedChannels(Map<String, GameCommunicationChannel> gameProgress,
+                                                     DBData.GameHistory gameInfo,
+                                                     Map<String, ? extends CardDeck> decks) {
         Map<String, String> result = new HashMap<>();
 
         for (Map.Entry<String, GameCommunicationChannel> playerRecordings : gameProgress.entrySet()) {
@@ -225,21 +196,7 @@ public class GameRecorder {
         return result;
     }
 
-    private String getNewRecordingID() {
-        String id;
-        do {
-            StringBuilder sb = new StringBuilder();
-            final String POSSIBLE_CHARS = TextUtils.getAllCharacters(false, false);
-            int idLength = 16;
-            Random rnd = ThreadLocalRandom.current();
-            for (int i = 0; i < idLength; i++)
-                sb.append(POSSIBLE_CHARS.charAt(rnd.nextInt(POSSIBLE_CHARS.length())));
-            id = sb.toString();
-        } while (_gameHistoryService.doesReplayIDExist(id));
-        return id;
-    }
-
-    public InputStream getRecordedGame(String playerId, String recordId) throws IOException {
+    public final InputStream getRecordedGame(String playerId, String recordId) throws IOException {
         var history = _gameHistoryService.getGameHistory(recordId);
 
         if(history == null)
@@ -258,5 +215,64 @@ public class GameRecorder {
             return null;
 
         return new InflaterInputStream(new FileInputStream(recordingFile));
+    }
+
+    private class MyGameHistory extends DBData.GameHistory {
+        public MyGameHistory(CardGameMediator game, String winnerName, String loserName, String winReason,
+                             String loseReason, ZonedDateTime startDate, ZonedDateTime endDate, GameFormat format,
+                             Map<String, ? extends CardDeck> decks, String tournamentName, GameTimer time,
+                             Map<String, Integer> clocks) {
+            gameId = game.getGameId();
+
+            winner = winnerName;
+            winnerId = _playerDAO.getPlayer(winnerName).getId();
+            loser = loserName;
+            loserId = _playerDAO.getPlayer(loserName).getId();
+
+            win_reason = winReason;
+            lose_reason = loseReason;
+
+            win_recording_id = getNewRecordingID();
+            lose_recording_id = getNewRecordingID();
+
+            start_date = startDate;
+            end_date = endDate;
+
+            format_name = format.getName();
+
+            winner_deck_name = decks.get(winner).getDeckName();
+            loser_deck_name = decks.get(loser).getDeckName();
+
+            tournament = tournamentName;
+
+            winner_site = 0;
+            loser_site = 0;
+
+            game_length_type = time.name();
+            max_game_time = time.maxSecondsPerPlayer();
+            game_timeout = time.maxSecondsPerDecision();
+            winner_clock_remaining = clocks.getOrDefault(winnerName, -1);
+            loser_clock_remaining = clocks.getOrDefault(loserName, -1);
+
+            //Update this version as needed; note that this is the REPLAY FORMAT, not the JSON summary
+            replay_version = 1;
+
+        }
+
+        private String getNewRecordingID() {
+            String id;
+            do {
+                StringBuilder sb = new StringBuilder();
+                final String possibleCharacters =
+                        TextUtils.getAllCharacters(false, false);
+                int idLength = 16;
+                Random rnd = ThreadLocalRandom.current();
+                for (int i = 0; i < idLength; i++)
+                    sb.append(possibleCharacters.charAt(rnd.nextInt(possibleCharacters.length())));
+                id = sb.toString();
+            } while (_gameHistoryService.doesReplayIDExist(id));
+            return id;
+        }
+
     }
 }

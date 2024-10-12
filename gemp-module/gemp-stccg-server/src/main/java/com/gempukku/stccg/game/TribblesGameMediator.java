@@ -13,6 +13,6 @@ public class TribblesGameMediator extends CardGameMediator {
         _tribblesgame = new TribblesGame(gameFormat, _playerDecks, library);
     }
     @Override
-    public TribblesGame getGame() { return _tribblesgame; }
+    public final TribblesGame getGame() { return _tribblesgame; }
 
 }

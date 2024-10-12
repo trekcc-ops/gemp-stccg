@@ -19,12 +19,12 @@ public class GameHistoryService {
         _gameHistoryDAO = gameHistoryDAO;
     }
 
-    public int addGameHistory(DBData.GameHistory gh) {
+    public final int addGameHistory(DBData.GameHistory gh) {
         return addGameHistory(gh.winner, gh.winnerId, gh.loser, gh.loserId, gh.win_reason, gh.lose_reason, gh.win_recording_id, gh.lose_recording_id,
                 gh.format_name, gh.tournament, gh.winner_deck_name, gh.loser_deck_name, gh.start_date, gh.end_date, gh.replay_version);
     }
 
-    public int addGameHistory(String winner, int winnerId, String loser, int loserId, String winReason, String loseReason, String winRecordingId, String loseRecordingId, String formatName, String tournament, String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate, int version) {
+    private final int addGameHistory(String winner, int winnerId, String loser, int loserId, String winReason, String loseReason, String winRecordingId, String loseRecordingId, String formatName, String tournament, String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate, int version) {
         int id = _gameHistoryDAO.addGameHistory(winner, winnerId, loser, loserId, winReason, loseReason, winRecordingId, loseRecordingId, formatName, tournament, winnerDeckName, loserDeckName, startDate, endDate, version);
         Integer winnerCount = _playerGameCount.get(winner);
         Integer loserCount = _playerGameCount.get(loser);
@@ -36,15 +36,15 @@ public class GameHistoryService {
         return id;
     }
 
-    public boolean doesReplayIDExist(String id) {
+    public final boolean doesReplayIDExist(String id) {
         return _gameHistoryDAO.doesReplayIDExist(id);
     }
 
-    public DBData.GameHistory getGameHistory(String recordID) {
+    public final DBData.GameHistory getGameHistory(String recordID) {
         return _gameHistoryDAO.getGameHistory(recordID);
     }
 
-    public int getGameHistoryForPlayerCount(User player) {
+    public final int getGameHistoryForPlayerCount(User player) {
         Integer result = _playerGameCount.get(player.getName());
         if (result != null)
             return result;
@@ -53,31 +53,31 @@ public class GameHistoryService {
         return count;
     }
 
-    public List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
+    public final List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
         return _gameHistoryDAO.getGameHistoryForPlayer(player, start, count);
     }
 
-    public List<DBData.GameHistory> getGameHistoryForFormat(String format, int count) {
+    public final List<DBData.GameHistory> getGameHistoryForFormat(String format, int count) {
         return _gameHistoryDAO.getGameHistoryForFormat(format, count);
     }
 
-    public int getActivePlayersCount(ZonedDateTime from, ZonedDateTime duration) {
+    public final int getActivePlayersCount(ZonedDateTime from, ZonedDateTime duration) {
         return _gameHistoryDAO.getActivePlayersCount(from, duration);
     }
 
-    public int getGamesPlayedCount(ZonedDateTime from, ZonedDateTime duration) {
+    public final int getGamesPlayedCount(ZonedDateTime from, ZonedDateTime duration) {
         return _gameHistoryDAO.getGamesPlayedCount(from, duration);
     }
 
-    public List<JSONData.FormatStats> getGameHistoryStatistics(ZonedDateTime from, ZonedDateTime to) {
+    public final List<JSONData.FormatStats> getGameHistoryStatistics(ZonedDateTime from, ZonedDateTime to) {
         return _gameHistoryDAO.GetAllGameFormatData(from, to);
     }
 
-    public List<PlayerStatistic> getCasualPlayerStatistics(User player) {
+    public final List<PlayerStatistic> getCasualPlayerStatistics(User player) {
         return _gameHistoryDAO.getCasualPlayerStatistics(player);
     }
 
-    public List<PlayerStatistic> getCompetitivePlayerStatistics(User player) {
+    public final List<PlayerStatistic> getCompetitivePlayerStatistics(User player) {
         return _gameHistoryDAO.getCompetitivePlayerStatistics(player);
     }
 }

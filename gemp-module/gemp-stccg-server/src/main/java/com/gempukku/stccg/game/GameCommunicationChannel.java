@@ -13,8 +13,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.gempukku.stccg.gamestate.GameEvent.Type.*;
-
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
     private final String _playerId;
@@ -29,23 +27,23 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         _channelNumber = channelNumber;
     }
 
-    public int getChannelNumber() {
+    public final int getChannelNumber() {
         return _channelNumber;
     }
 
-    public void initializeBoard() {
-        appendEvent(new GameEvent(PARTICIPANTS, _game.getGameState(), _game.getGameState().getPlayer(_playerId)));
+    public final void initializeBoard() {
+        appendEvent(new GameEvent(GameEvent.Type.PARTICIPANTS, _game.getGameState(), _game.getGameState().getPlayer(_playerId)));
     }
 
-    public String getPlayerId() { return _playerId; }
+    public final String getPlayerId() { return _playerId; }
 
     @Override
-    public synchronized void deregisterRequest() {
+    public final synchronized void deregisterRequest() {
         _waitingRequest = null;
     }
 
     @Override
-    public synchronized boolean registerRequest(WaitingRequest waitingRequest) {
+    public final synchronized boolean registerRequest(WaitingRequest waitingRequest) {
         if (!_events.isEmpty())
             return true;
 
@@ -61,55 +59,55 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         }
     }
 
-    public void sendEvent(GameEvent gameEvent) {
+    public final void sendEvent(GameEvent gameEvent) {
         appendEvent(gameEvent);
     }
-    public void sendEvent(GameEvent.Type eventType) {
+    public final void sendEvent(GameEvent.Type eventType) {
         appendEvent(new GameEvent(eventType));
     }
 
     @Override
-    public void setCurrentPhase(Phase phase) {
-        appendEvent(new GameEvent(GAME_PHASE_CHANGE, phase));
+    public final void setCurrentPhase(Phase phase) {
+        appendEvent(new GameEvent(GameEvent.Type.GAME_PHASE_CHANGE, phase));
     }
 
     @Override
-    public void setPlayerDecked(Player player) {
-        appendEvent(new GameEvent(PLAYER_DECKED, player));
+    public final void setPlayerDecked(Player player) {
+        appendEvent(new GameEvent(GameEvent.Type.PLAYER_DECKED, player));
     }
 
     @Override
-    public void setPlayerScore(String participant) {
-        appendEvent(new GameEvent(PLAYER_SCORE, _game.getGameState().getPlayer(participant)));
+    public final void setPlayerScore(String playerId) {
+        appendEvent(new GameEvent(GameEvent.Type.PLAYER_SCORE, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override
-    public void setTribbleSequence(String tribbleSequence) {
-        appendEvent(new GameEvent(TRIBBLE_SEQUENCE_UPDATE, tribbleSequence));
+    public final void setTribbleSequence(String tribbleSequence) {
+        appendEvent(new GameEvent(GameEvent.Type.TRIBBLE_SEQUENCE_UPDATE, tribbleSequence));
     }
 
     @Override
-    public void setCurrentPlayerId(String currentPlayerId) {
-        appendEvent(new GameEvent(TURN_CHANGE, _game.getGameState().getPlayer(currentPlayerId)));
+    public final void setCurrentPlayerId(String playerId) {
+        appendEvent(new GameEvent(GameEvent.Type.TURN_CHANGE, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override
-    public void sendMessage(String message) {
-        appendEvent(new GameEvent(SEND_MESSAGE, message));
+    public final void sendMessage(String message) {
+        appendEvent(new GameEvent(GameEvent.Type.SEND_MESSAGE, message));
     }
 
-    public void decisionRequired(String playerId, AwaitingDecision decision) {
+    public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(DECISION, decision, _game.getGameState().getPlayer(playerId)));
+            appendEvent(new GameEvent(GameEvent.Type.DECISION, awaitingDecision, _game.getGameState().getPlayer(playerId)));
     }
 
     @Override
-    public void sendWarning(String playerId, String warning) {
+    public final void sendWarning(String playerId, String warning) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(SEND_WARNING, warning));
+            appendEvent(new GameEvent(GameEvent.Type.SEND_WARNING, warning));
     }
 
-    public List<GameEvent> consumeGameEvents() {
+    public final List<GameEvent> consumeGameEvents() {
         updateLastAccess();
         List<GameEvent> result = _events;
         _events = Collections.synchronizedList(new LinkedList<>());
@@ -120,11 +118,11 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
         _lastConsumed = System.currentTimeMillis();
     }
 
-    public long getLastAccessed() {
+    public final long getLastAccessed() {
         return _lastConsumed;
     }
 
-    public void serializeConsumedEvents(Document doc, Node element) {
+    public final void serializeConsumedEvents(Document doc, Node element) {
         for (GameEvent event : consumeGameEvents())
             element.appendChild(event.serialize(doc));
     }

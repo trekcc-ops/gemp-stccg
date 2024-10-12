@@ -18,10 +18,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class GameServer extends AbstractServer {
 
     private static final long MILLIS_TO_MINUTES = 1000 * 60;
+    private static final int TIMEOUT_PERIOD = 30;
     private final CardBlueprintLibrary _CardBlueprintLibrary;
 
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
-    private final Set<String> _gameDeathWarningsSent = new HashSet<>();
+    private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
 
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
 
@@ -41,12 +42,12 @@ public class GameServer extends AbstractServer {
         _gameRecorder = gameRecorder;
     }
 
-    protected void cleanup() {
+    protected final void cleanup() {
         _lock.writeLock().lock();
         try {
             long currentTime = System.currentTimeMillis();
 
-            LinkedHashMap<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
+            Map<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
             for (Map.Entry<String, Date> finishedGame : copy.entrySet()) {
                 String gameId = finishedGame.getKey();
                 // 4 minutes
@@ -82,11 +83,12 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    private String getChatRoomName(String gameId) {
+    private static String getChatRoomName(String gameId) {
         return "Game" + gameId;
     }
 
-    public CardGameMediator createNewGame(String tournamentName, final GameParticipant[] participants, GameSettings gameSettings) {
+    public final CardGameMediator createNewGame(String tournamentName, final GameParticipant[] participants,
+                                                GameSettings gameSettings) {
         _lock.writeLock().lock();
         try {
             if (participants.length < 2)
@@ -97,16 +99,19 @@ public class GameServer extends AbstractServer {
                 Set<String> allowedUsers = new HashSet<>();
                 for (GameParticipant participant : participants)
                     allowedUsers.add(participant.getPlayerId());
-                _chatServer.createPrivateChatRoom(getChatRoomName(gameId), false, allowedUsers, 30);
+                _chatServer.createPrivateChatRoom(
+                        getChatRoomName(gameId), false, allowedUsers, TIMEOUT_PERIOD);
             } else
-                _chatServer.createChatRoom(getChatRoomName(gameId), false, 30, false, null);
+                _chatServer.createChatRoom(
+                        getChatRoomName(gameId), false, TIMEOUT_PERIOD, false);
 
             // Allow spectators for leagues, but not tournaments
             CardGameMediator cardGameMediator = getCardGameMediator(participants, gameSettings, gameId);
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
-                    public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
+                    public void gameFinished(String winnerPlayerId, String winReason,
+                                             Map<String, String> loserPlayerIdsWithReasons) {
                         _finishedGamesTime.put(gameId, new Date());
                     }
 
@@ -143,12 +148,14 @@ public class GameServer extends AbstractServer {
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
-                    public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
+                    public void gameFinished(String winnerPlayerId, String winReason,
+                                             Map<String, String> loserPlayerIdsWithReasons) {
                         final var loserEntry = loserPlayerIdsWithReasons.entrySet().iterator().next();
 
                         //potentially this is where to kick off any "reveal deck" events
                         //gameMediator.readoutParticipantDecks();
-                        gameRecordingInProgress.finishRecording(winnerPlayerId, winReason, loserEntry.getKey(), loserEntry.getValue());
+                        gameRecordingInProgress.finishRecording(
+                                winnerPlayerId, winReason, loserEntry.getKey(), loserEntry.getValue());
                     }
 
                     @Override
@@ -187,15 +194,11 @@ public class GameServer extends AbstractServer {
         return cardGameMediator;
     }
 
-    public CardDeck getParticipantDeck(User player, String deckName) {
+    public final CardDeck getParticipantDeck(User player, String deckName) {
         return _deckDao.getDeckForPlayer(player, deckName);
     }
 
-    public CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
-        return new CardDeck(deckName, contents, targetFormat, notes);
-    }
-
-    public CardGameMediator getGameById(String gameId) {
+    public final CardGameMediator getGameById(String gameId) {
         _lock.readLock().lock();
         try {
             return _runningGames.get(gameId);
