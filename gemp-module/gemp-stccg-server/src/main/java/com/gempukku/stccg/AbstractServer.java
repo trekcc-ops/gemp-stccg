@@ -13,15 +13,18 @@ public abstract class AbstractServer {
 
     private boolean _started;
 
+    protected AbstractServer() {
+    }
+
     public void startServer() {
         basicStartup();
     }
-    protected void basicStartup() {
-        LOGGER.debug("Starting startServer function for " + this);
+    protected final void basicStartup() {
+        LOGGER.debug("Starting startServer function for {}", this);
         if (!_started) {
             _cleaningTask.addServer(this);
             _started = true;
-            LOGGER.debug("Started: " + this);
+            LOGGER.debug("Started: {}", this);
         }
     }
     protected abstract void cleanup() throws SQLException, IOException;
