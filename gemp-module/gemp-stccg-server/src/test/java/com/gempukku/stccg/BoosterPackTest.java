@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("MagicNumber")
 public class BoosterPackTest extends AbstractServerTest {
 
     @Test

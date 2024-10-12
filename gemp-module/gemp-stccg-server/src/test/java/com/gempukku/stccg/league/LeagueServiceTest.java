@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("MagicNumber")
 public class LeagueServiceTest extends AbstractServerTest {
 
     private final String leagueData = "20120502,default,1,1,1" + (",test_block,7,2").repeat(1);

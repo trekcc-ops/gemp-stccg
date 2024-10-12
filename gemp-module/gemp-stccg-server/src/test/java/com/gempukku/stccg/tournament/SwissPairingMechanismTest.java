@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("MagicNumber")
 public class SwissPairingMechanismTest extends AbstractServerTest {
 
     @Test

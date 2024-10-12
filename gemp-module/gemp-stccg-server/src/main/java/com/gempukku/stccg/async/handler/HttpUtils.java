@@ -12,8 +12,8 @@ public final class HttpUtils {
         if(code < 500 && code != HttpURLConnection.HTTP_BAD_REQUEST)
             log.debug("HTTP {} response for {}", code, uri);
 
-            // record an HTTP 400
-        else if(code == HttpURLConnection.HTTP_BAD_REQUEST || (code < 600))
+            // record an HTTP 400 or 500 error
+        else if((code < 600))
             log.error("HTTP code {} response for {}", code, uri, exp);
     }
 

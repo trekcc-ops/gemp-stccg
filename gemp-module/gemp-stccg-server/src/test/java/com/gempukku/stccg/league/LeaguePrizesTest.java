@@ -6,6 +6,7 @@ import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("MagicNumber")
 public class LeaguePrizesTest extends AbstractServerTest {
 
     @Test
