@@ -2,7 +2,6 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.PlayerDAO;
@@ -10,9 +9,11 @@ import com.gempukku.stccg.db.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 
 public class PlaytestRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
@@ -25,22 +26,22 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("/addTesterFlag") && request.method() == HttpMethod.POST) {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+        if ("/addTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {
             addTesterFlag(request, responseWriter);
-        } else if (uri.equals("/removeTesterFlag") && request.method() == HttpMethod.POST) {
+        } else if ("/removeTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {
             removeTesterFlag(request, responseWriter);
-        } else if (uri.equals("/getTesterFlag") && request.method() == HttpMethod.GET) {
+        } else if ("/getTesterFlag".equals(uri) && request.method() == HttpMethod.GET) {
             getTesterFlag(request, responseWriter);
-        } else if (uri.equals("/getRecentReplays") && request.method() == HttpMethod.POST) {
+        } else if ("/getRecentReplays".equals(uri) && request.method() == HttpMethod.POST) {
             getRecentReplays(request, responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
     private void addTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             User player = getResourceOwnerSafely(request, null);
 
@@ -54,7 +55,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void removeTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             User player = getResourceOwnerSafely(request, null);
 
@@ -68,7 +69,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void getTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             User player = getResourceOwnerSafely(request, null);
 
@@ -85,7 +86,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void getRecentReplays(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
 
             String format = getFormParameterSafely(postDecoder, "format");

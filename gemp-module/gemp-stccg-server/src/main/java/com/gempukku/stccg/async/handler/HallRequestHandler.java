@@ -6,114 +6,122 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.*;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.util.*;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class HallRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(HallRequestHandler.class);
-    private final FormatLibrary _formatLibrary;
     private final HallServer _hallServer;
     private final LeagueService _leagueService;
     private final LongPollingSystem _longPollingSystem;
 
-    public HallRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
+    HallRequestHandler(ServerObjects objects, LongPollingSystem longPollingSystem) {
         super(objects);
-        _formatLibrary = objects.getFormatLibrary();
         _hallServer = objects.getHallServer();
         _leagueService = objects.getLeagueService();
         _longPollingSystem = longPollingSystem;
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request,
+                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getHall(request, responseWriter);
         } else if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             createTable(request, responseWriter);
-        } else if (uri.equals("/update") && request.method() == HttpMethod.POST) {
+        } else if ("/update".equals(uri) && request.method() == HttpMethod.POST) {
             updateHall(request, responseWriter);
-        } else if (uri.equals("/formats/html") && request.method() == HttpMethod.GET) {
+        } else if ("/formats/html".equals(uri) && request.method() == HttpMethod.GET) {
             getFormats(responseWriter);
-        } else if (uri.equals("/errata/json") && request.method() == HttpMethod.GET) {
+        } else if ("/errata/json".equals(uri) && request.method() == HttpMethod.GET) {
             getErrataInfo(responseWriter);
         } else if (uri.startsWith("/format/") && request.method() == HttpMethod.GET) {
-            getFormat(uri.substring(8), responseWriter);
+            int beginIndex = "/format/".length();
+            getFormat(uri.substring(beginIndex), responseWriter);
         } else if (uri.startsWith("/queue/") && request.method() == HttpMethod.POST) {
+            int beginIndex = "/queue/".length();
             if (uri.endsWith("/leave")) {
-                leaveQueue(request, uri.substring(7, uri.length() - 6), responseWriter);
+                int endIndex = uri.length() - "/leave".length();
+                leaveQueue(request, uri.substring(beginIndex, endIndex), responseWriter);
             } else {
-                joinQueue(request, uri.substring(7), responseWriter);
+                joinQueue(request, uri.substring(beginIndex), responseWriter);
             }
         } else if (uri.startsWith("/tournament/") && uri.endsWith("/leave") && request.method() == HttpMethod.POST) {
-            dropFromTournament(request, uri.substring(12, uri.length() - 6), responseWriter);
+            int beginIndex = "/tournament/".length();
+            int endIndex = uri.length() - "/leave".length();
+            dropFromTournament(request, uri.substring(beginIndex, endIndex), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/leave") && request.method() == HttpMethod.POST) {
-            leaveTable(request, uri.substring(1, uri.length() - 6), responseWriter);
+            int endIndex = uri.length() - "/leave".length();
+            leaveTable(request, uri.substring(1, endIndex), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             joinTable(request, uri.substring(1), responseWriter);
         } else {
-            responseWriter.writeError(404);
+            responseWriter.writeError(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
     private void joinTable(HttpRequest request, String tableId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
-        User resourceOwner = getResourceOwnerSafely(request, participantId);
+            String participantId = getFormParameterSafely(postDecoder, "participantId");
+            User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        String deckName = getFormParameterSafely(postDecoder, "deckName");
-        LOGGER.debug("HallRequestHandler - calling joinTableAsPlayer function from JoinTable");
+            String deckName = getFormParameterSafely(postDecoder, "deckName");
+            LOGGER.debug("HallRequestHandler - calling joinTableAsPlayer function from JoinTable");
 
-        try {
-            _hallServer.joinTableAsPlayer(tableId, resourceOwner, deckName);
-            responseWriter.writeXmlResponse(null);
-        } catch (HallException e) {
             try {
-                //Try again assuming it's a new player using the default deck library decks
-                User libraryOwner = _playerDao.getPlayer("Librarian");
-                _hallServer.joinTableAsPlayerWithSpoofedDeck(tableId, resourceOwner, libraryOwner, deckName);
+                _hallServer.joinTableAsPlayer(tableId, resourceOwner, deckName);
                 responseWriter.writeXmlResponse(null);
-                return;
-            } catch (HallException ex) {
-                if(doNotIgnoreError(ex)) {
-                    LOGGER.error("Error response for " + request.uri(), ex);
+            } catch (HallException e) {
+                try {
+                    //Try again assuming it's a new player using the default deck library decks
+                    User libraryOwner = _playerDao.getPlayer("Librarian");
+                    _hallServer.joinTableAsPlayerWithSpoofedDeck(tableId, resourceOwner, libraryOwner, deckName);
+                    responseWriter.writeXmlResponse(null);
+                    return;
+                } catch (HallException ex) {
+                    if(doNotIgnoreError(ex)) {
+                        LOGGER.error("Error response for {}", request.uri(), ex);
+                    }
                 }
+                catch (Exception ex) {
+                    LOGGER.error("Additional error response for {}", request.uri(), ex);
+                    throw ex;
+                }
+                Document document = marshalException(e);
+                responseWriter.writeXmlResponse(document);
             }
-            catch (Exception ex) {
-                LOGGER.error("Additional error response for " + request.uri(), ex);
-                throw ex;
-            }
-            responseWriter.writeXmlResponse(marshalException(e));
-        }
         } finally {
             postDecoder.destroy();
         }
     }
 
     private void leaveTable(HttpRequest request, String tableId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         User resourceOwner = getResourceOwnerSafely(request, participantId);
@@ -126,7 +134,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void createTable(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String format = getFormParameterSafely(postDecoder, "format");
@@ -139,7 +147,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             boolean isInviteOnly = (Boolean.parseBoolean(isInviteOnlyVal));
             //To prevent annoyance, super long glacial games are hidden from everyone except
             // the participants and admins.
-            boolean isHidden = timer.toLowerCase().equals(GameTimer.GLACIAL_TIMER.name());
+            boolean isVisible = !timer.toLowerCase().equals(GameTimer.GLACIAL_TIMER.name());
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -171,7 +179,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
 
             try {
-                _hallServer.createNewTable(format, resourceOwner, deckName, timer, desc, isInviteOnly, isPrivate, isHidden);
+                _hallServer.createNewTable(format, resourceOwner, deckName, timer, desc, isInviteOnly, isPrivate, !isVisible);
                 responseWriter.writeXmlResponse(null);
             }
             catch (HallException e) {
@@ -179,7 +187,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                 {
                     //try again assuming it's a new player with one of the default library decks selected
                     _hallServer.createNewTable(format, resourceOwner, _playerDao.getPlayer("Librarian"),
-                            deckName, timer, "(New Player) " + desc, isInviteOnly, isPrivate, isHidden);
+                            deckName, timer, "(New Player) " + desc, isInviteOnly, isPrivate, !isVisible);
                     responseWriter.writeXmlResponse(null);
                     return;
                 }
@@ -192,7 +200,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         {
             //This is a worthless error that doesn't need to be spammed into the log
             if(doNotIgnoreError(ex)) {
-                LOGGER.error("Error response for " + request.uri(), ex);
+                LOGGER.error("Error response for {}", request.uri(), ex);
             }
             responseWriter.writeXmlResponse(marshalException(new HallException("Failed to create table. Please try again later.")));
         }
@@ -203,7 +211,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
 
 
-    private boolean doNotIgnoreError(Exception ex) {
+    private static boolean doNotIgnoreError(Exception ex) {
         String msg = ex.getMessage();
 
         if ((msg != null && msg.contains("You don't have a deck registered yet"))) return false;
@@ -212,7 +220,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void dropFromTournament(HttpRequest request, String tournamentId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         User resourceOwner = getResourceOwnerSafely(request, participantId);
@@ -226,7 +234,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void joinQueue(HttpRequest request, String queueId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         String deckName = getFormParameterSafely(postDecoder, "deckName");
@@ -238,7 +246,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             responseWriter.writeXmlResponse(null);
         } catch (HallException e) {
             if(doNotIgnoreError(e)) {
-                LOGGER.error("Error response for " + request.uri(), e);
+                LOGGER.error("Error response for {}", request.uri(), e);
             }
             responseWriter.writeXmlResponse(marshalException(e));
         }
@@ -248,7 +256,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void leaveQueue(HttpRequest request, String queueId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
 
@@ -262,7 +270,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private Document marshalException(HallException e) throws ParserConfigurationException {
+    private static Document marshalException(HallException e) throws ParserConfigurationException {
         Document doc = createNewDoc();
         Element error = doc.createElement("error");
         error.setAttribute("message", e.getMessage());
@@ -272,65 +280,17 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getFormat(String format, ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
-        GameFormat gameFormat = _formatLibrary.getFormat(format);
-        appendFormat(result, gameFormat);
-
+        GameFormat gameFormat = _serverObjects.getFormatLibrary().getFormat(format);
+        result.append(gameFormat.serializeForHall());
         responseWriter.writeHtmlResponse(result.toString());
     }
 
     private void getFormats(ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
-        for (GameFormat gameFormat : _formatLibrary.getHallFormats().values()) {
-            appendFormat(result, gameFormat);
-        }
-
+        FormatLibrary formatLibrary = _serverObjects.getFormatLibrary();
+        for (GameFormat gameFormat : formatLibrary.getHallFormats().values())
+            result.append(gameFormat.serializeForHall());
         responseWriter.writeHtmlResponse(result.toString());
-    }
-
-    private void appendFormat(StringBuilder result, GameFormat gameFormat) throws CardNotFoundException {
-        result.append("<b>").append(gameFormat.getName()).append("</b>");
-        result.append("<ul>");
-        result.append("<li>valid sets: ");
-        for (Integer integer : gameFormat.getValidSetIds())
-            result.append(integer).append(", ");
-        result.append("</li>");
-        if (!gameFormat.getBannedCards().isEmpty()) {
-            result.append("<li>Banned cards (can't be played): ");
-            appendCards(result, gameFormat.getBannedCards());
-            result.append("</li>");
-        }
-        if (!gameFormat.getRestrictedCardNames().isEmpty()) {
-            result.append("<li>Restricted by card name: ");
-            boolean first = true;
-            for (String cardName : gameFormat.getRestrictedCardNames()) {
-                if (!first)
-                    result.append(", ");
-                result.append(cardName);
-                first = false;
-            }
-            result.append("</li>");
-        }
-        if (!gameFormat.getErrataCardMap().isEmpty()) {
-            result.append("<li>Errata: ");
-            appendCards(result, new ArrayList<>(new LinkedHashSet<>(gameFormat.getErrataCardMap().values())));
-            result.append("</li>");
-        }
-        if (!gameFormat.getValidCards().isEmpty()) {
-            result.append("<li>Additional valid: ");
-            List<String> additionalValidCards = gameFormat.getValidCards();
-            appendCards(result, additionalValidCards);
-            result.append("</li>");
-        }
-        result.append("</ul>");
-    }
-
-    private void appendCards(StringBuilder result, List<String> additionalValidCards) throws CardNotFoundException {
-        if (!additionalValidCards.isEmpty()) {
-            for (String blueprintId : additionalValidCards)
-                result.append(_cardBlueprintLibrary.getCardBlueprint(blueprintId).getCardLink()).append(", ");
-            if (additionalValidCards.isEmpty())
-                result.append("none,");
-        }
     }
 
     private void getErrataInfo(ResponseWriter responseWriter) throws JsonProcessingException {
@@ -344,10 +304,13 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             User player = getResourceOwnerSafely(request, null);
 
             Element hall = doc.createElement("hall");
-            hall.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
+            CardCollection playerCollection =
+                    _collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode());
+            String currency = String.valueOf(playerCollection.getCurrency());
+            hall.setAttribute("currency", currency);
 
             _hallServer.signupUserForHall(resourceOwner, new SerializeHallInfoVisitor(doc, hall));
-            for (Map.Entry<String, GameFormat> format : _formatLibrary.getHallFormats().entrySet()) {
+            for (Map.Entry<String, GameFormat> format : _serverObjects.getFormatLibrary().getHallFormats().entrySet()) {
                 //playtest formats are opt-in
                 if (format.getKey().startsWith("test") && !player.getType().contains("p"))
                     continue;
@@ -369,16 +332,17 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             doc.appendChild(hall);
             responseWriter.writeXmlResponse(doc);
         } catch (HttpProcessingException exp) {
-            logHttpError(LOGGER, exp.getStatus(), request.uri(), exp);
-            responseWriter.writeError(exp.getStatus());
+            int expStatus = exp.getStatus();
+            logHttpError(LOGGER, expStatus, request.uri(), exp);
+            responseWriter.writeError(expStatus);
         } catch (Exception exp) {
-            LOGGER.error("Error response for " + request.uri(), exp);
-            responseWriter.writeError(500);
+            LOGGER.error("Error response for {}", request.uri(), exp);
+            responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
         }
     }
 
     private void updateHall(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, "channelNumber"));
@@ -388,17 +352,17 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
             try {
                 HallCommunicationChannel commChannel = _hallServer.getCommunicationChannel(resourceOwner, channelNumber);
-                HallUpdateLongPollingResource polledResource =
+                LongPollingResource polledResource =
                         new HallUpdateLongPollingResource(commChannel, request, resourceOwner, responseWriter);
                 _longPollingSystem.processLongPollingResource(polledResource, commChannel);
             }
             catch (SubscriptionExpiredException exp) {
-                logHttpError(LOGGER, 410, request.uri(), exp);
-                responseWriter.writeError(410);
+                logHttpError(LOGGER, HttpURLConnection.HTTP_GONE, request.uri(), exp);
+                responseWriter.writeError(HttpURLConnection.HTTP_GONE); // 410
             }
             catch (SubscriptionConflictException exp) {
-                logHttpError(LOGGER, 409, request.uri(), exp);
-                responseWriter.writeError(409);
+                logHttpError(LOGGER, HttpURLConnection.HTTP_CONFLICT, request.uri(), exp);
+                responseWriter.writeError(HttpURLConnection.HTTP_CONFLICT); // 409
             }
         } finally {
             postDecoder.destroy();
@@ -412,28 +376,32 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         private final ResponseWriter _responseWriter;
         private boolean _processed;
 
-        private HallUpdateLongPollingResource(HallCommunicationChannel hallCommunicationChannel, HttpRequest request, User resourceOwner, ResponseWriter responseWriter) {
-            _hallCommunicationChannel = hallCommunicationChannel;
+        private HallUpdateLongPollingResource(HallCommunicationChannel commChannel, HttpRequest request,
+                                              User resourceOwner, ResponseWriter responseWriter) {
+            _hallCommunicationChannel = commChannel;
             _request = request;
             _resourceOwner = resourceOwner;
             _responseWriter = responseWriter;
         }
 
         @Override
-        public synchronized boolean wasProcessed() {
+        public final synchronized boolean wasProcessed() {
             return _processed;
         }
 
         @Override
-        public synchronized void processIfNotProcessed() {
+        public final synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
                     Document doc = createNewDoc();
 
                     Element hall = doc.createElement("hall");
-                    _hallCommunicationChannel.processCommunicationChannel(_hallServer, _resourceOwner, new SerializeHallInfoVisitor(doc, hall));
-                    hall.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(_resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
+                    _hallCommunicationChannel.processCommunicationChannel(
+                            _hallServer, _resourceOwner, new SerializeHallInfoVisitor(doc, hall));
+                    CardCollection playerCollection =
+                            _collectionsManager.getPlayerCollection(_resourceOwner, CollectionType.MY_CARDS.getCode());
 
+                    hall.setAttribute("currency", String.valueOf(playerCollection.getCurrency()));
                     doc.appendChild(hall);
 
                     Map<String, String> headers = new HashMap<>();
@@ -441,8 +409,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
                     _responseWriter.writeXmlResponse(doc, headers);
                 } catch (Exception exp) {
-                    logHttpError(LOGGER, 500, _request.uri(), exp);
-                    _responseWriter.writeError(500);
+                    logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, _request.uri(), exp);
+                    _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
                 }
                 _processed = true;
             }
@@ -453,74 +421,74 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         private final Document _doc;
         private final Element _hall;
 
-        public SerializeHallInfoVisitor(Document doc, Element hall) {
+        SerializeHallInfoVisitor(Document doc, Element hall) {
             _doc = doc;
             _hall = hall;
         }
 
         @Override
-        public void channelNumber(int channelNumber) {
+        public final void channelNumber(int channelNumber) {
             _hall.setAttribute("channelNumber", String.valueOf(channelNumber));
         }
 
         @Override
-        public void newPlayerGame(String gameId) {
+        public final void newPlayerGame(String gameId) {
             Element newGame = _doc.createElement("newGame");
             newGame.setAttribute("id", gameId);
             _hall.appendChild(newGame);
         }
 
         @Override
-        public void serverTime(String serverTime) {
+        public final void serverTime(String serverTime) {
             _hall.setAttribute("serverTime", serverTime);
         }
 
         @Override
-        public void changedDailyMessage(String message) {
+        public final void changedDailyMessage(String message) {
             _hall.setAttribute("messageOfTheDay", message);
         }
 
         @Override
-        public void addTournamentQueue(String queueId, Map<String, String> props) {
+        public final void addTournamentQueue(String queueId, Map<String, String> props) {
             appendElementWithProperties("queue", queueId, props, "add");
         }
 
         @Override
-        public void updateTournamentQueue(String queueId, Map<String, String> props) {
+        public final void updateTournamentQueue(String queueId, Map<String, String> props) {
             appendElementWithProperties("queue", queueId, props, "update");
         }
 
         @Override
-        public void removeTournamentQueue(String queueId) {
+        public final void removeTournamentQueue(String queueId) {
             appendRemoveElement("queue", queueId);
         }
 
         @Override
-        public void addTournament(String tournamentId, Map<String, String> props) {
+        public final void addTournament(String tournamentId, Map<String, String> props) {
             appendElementWithProperties("tournament", tournamentId, props, "add");
         }
 
         @Override
-        public void updateTournament(String tournamentId, Map<String, String> props) {
+        public final void updateTournament(String tournamentId, Map<String, String> props) {
             appendElementWithProperties("tournament", tournamentId, props, "update");
         }
 
         @Override
-        public void removeTournament(String tournamentId) {
+        public final void removeTournament(String tournamentId) {
             appendRemoveElement("tournament", tournamentId);
         }
 
         @Override
-        public void addTable(String tableId, Map<String, String> props) {
+        public final void addTable(String tableId, Map<String, String> props) {
             appendElementWithProperties("table", tableId, props, "add");
         }
 
         @Override
-        public void updateTable(String tableId, Map<String, String> props) {
+        public final void updateTable(String tableId, Map<String, String> props) {
             appendElementWithProperties("table", tableId, props, "update");
         }
         @Override
-        public void removeTable(String tableId) {
+        public final void removeTable(String tableId) {
             appendRemoveElement("table", tableId);
         }
 

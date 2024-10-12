@@ -1,11 +1,9 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -13,19 +11,20 @@ import com.gempukku.stccg.db.DeckDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.formats.SealedEventDefinition;
-import com.gempukku.stccg.game.GameServer;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -33,63 +32,63 @@ import java.util.stream.Collectors;
 
 public class DeckRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final DeckDAO _deckDao;
-    private final SortAndFilterCards _sortAndFilterCards;
     private final FormatLibrary _formatLibrary;
     private final SoloDraftDefinitions _draftLibrary;
-    private final GameServer _gameServer;
 
-    public DeckRequestHandler(ServerObjects objects) {
+    DeckRequestHandler(ServerObjects objects) {
         super(objects);
         _deckDao = objects.getDeckDAO();
-        _sortAndFilterCards = new SortAndFilterCards();
         _formatLibrary = objects.getFormatLibrary();
-        _gameServer = objects.getGameServer();
         _draftLibrary = objects.getSoloDraftDefinitions();
     }
 
+    private static CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
+        return new CardDeck(deckName, contents, targetFormat, notes);
+    }
+
     @Override
-    public void handleRequest(String uri, HttpRequest request,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("/list") && request.method() == HttpMethod.GET) {
+    public final void handleRequest(String uri, HttpRequest request,
+                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
+        if ("/list".equals(uri) && request.method() == HttpMethod.GET) {
             listDecks(request, responseWriter);
-        } else if (uri.equals("/libraryList") && request.method() == HttpMethod.GET) {
+        } else if ("/libraryList".equals(uri) && request.method() == HttpMethod.GET) {
             listLibraryDecks(responseWriter);
         } else if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getDeck(request, responseWriter);
         } else if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             saveDeck(request, responseWriter);
-        } else if (uri.equals("/library") && request.method() == HttpMethod.GET) {
+        } else if ("/library".equals(uri) && request.method() == HttpMethod.GET) {
             getLibraryDeck(request, responseWriter);
-        } else if (uri.equals("/share") && request.method() == HttpMethod.GET) {
+        } else if ("/share".equals(uri) && request.method() == HttpMethod.GET) {
             shareDeck(request, responseWriter);
-        } else if (uri.equals("/html") && request.method() == HttpMethod.GET) {
+        } else if ("/html".equals(uri) && request.method() == HttpMethod.GET) {
             getDeckInHtml(request, responseWriter);
-        } else if (uri.equals("/libraryHtml") && request.method() == HttpMethod.GET) {
+        } else if ("/libraryHtml".equals(uri) && request.method() == HttpMethod.GET) {
             getLibraryDeckInHtml(request, responseWriter);
-        } else if (uri.equals("/rename") && request.method() == HttpMethod.POST) {
+        } else if ("/rename".equals(uri) && request.method() == HttpMethod.POST) {
             renameDeck(request, responseWriter);
-        } else if (uri.equals("/delete") && request.method() == HttpMethod.POST) {
+        } else if ("/delete".equals(uri) && request.method() == HttpMethod.POST) {
             deleteDeck(request, responseWriter);
-        } else if (uri.equals("/stats") && request.method() == HttpMethod.POST) {
+        } else if ("/stats".equals(uri) && request.method() == HttpMethod.POST) {
             getDeckStats(request, responseWriter);
-        } else if (uri.equals("/formats") && request.method() == HttpMethod.POST) {
+        } else if ("/formats".equals(uri) && request.method() == HttpMethod.POST) {
             getAllFormats(request, responseWriter);
-        } else if (uri.equals("/sets") && request.method() == HttpMethod.POST) {
+        } else if ("/sets".equals(uri) && request.method() == HttpMethod.POST) {
             getSets(request, responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
 
 
     private void getAllFormats(HttpRequest request, ResponseWriter responseWriter) throws IOException {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String includeEventsStr = getFormParameterSafely(postDecoder, "includeEvents");
             String json;
 
-            if(includeEventsStr != null && includeEventsStr.equalsIgnoreCase("true"))
+            if("true".equalsIgnoreCase(includeEventsStr))
             {
                 JSONData.FullFormatReadout data = new JSONData.FullFormatReadout();
                 data.Formats = _formatLibrary.getAllFormats().values().stream()
@@ -121,7 +120,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void getSets(HttpRequest request, ResponseWriter responseWriter) throws IOException {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String format = getFormParameterSafely(postDecoder, "format");
             GameFormat currentFormat = _formatLibrary.getFormat(format);
@@ -138,7 +137,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void getDeckStats(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String targetFormat = getFormParameterSafely(postDecoder, "targetFormat");
@@ -147,9 +146,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             //check for valid access
             getResourceOwnerSafely(request, participantId);
 
-            CardDeck deck = _gameServer.createDeckWithValidate("tempDeck", contents, targetFormat, "");
-            if (deck == null)
-                throw new HttpProcessingException(400);
+            CardDeck deck = createDeckWithValidate("tempDeck", contents, targetFormat, "");
 
             StringBuilder sb = new StringBuilder();
 
@@ -195,7 +192,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void deleteDeck(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String deckName = getFormParameterSafely(postDecoder, "deckName");
@@ -210,7 +207,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void renameDeck(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException, ParserConfigurationException {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String deckName = getFormParameterSafely(postDecoder, "deckName");
@@ -220,7 +217,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
             CardDeck deck = _deckDao.renameDeck(resourceOwner, oldDeckName, deckName);
             if (deck == null)
-                throw new HttpProcessingException(404);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
             responseWriter.writeXmlResponse(serializeDeck(deck));
         } finally {
@@ -229,7 +226,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void saveDeck(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException, ParserConfigurationException {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String deckName = getFormParameterSafely(postDecoder, "deckName");
@@ -241,9 +238,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
             GameFormat validatedFormat = validateFormat(targetFormat);
 
-            CardDeck deck = _gameServer.createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
-            if (deck == null)
-                throw new HttpProcessingException(400);
+            CardDeck deck = createDeckWithValidate(deckName, contents, validatedFormat.getName(), notes);
 
             _deckDao.saveDeckForPlayer(resourceOwner, deckName, validatedFormat.getName(), notes, deck);
 
@@ -285,7 +280,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             String code = new String(Base64.getDecoder().decode(shareCode), StandardCharsets.UTF_8);
             String[] fields = code.split("\\|");
             if(fields.length != 2)
-                throw new HttpProcessingException(400);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
             String user = fields[0];
             String deckName2 = fields[1];
@@ -299,7 +294,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
 
         if (deck == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         String result = convertDeckToHTML(deck, resourceOwner.getName());
 
@@ -313,14 +308,14 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         CardDeck deck = _deckDao.getDeckForPlayer(getLibrarian(), deckName);
 
         if (deck == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         String result = convertDeckToHTML(deck, null);
 
         responseWriter.writeHtmlResponse(result);
     }
 
-    public String convertDeckToHTML(CardDeck deck, String author) throws CardNotFoundException {
+    private final String convertDeckToHTML(CardDeck deck, String author) throws CardNotFoundException {
 
         if (deck == null)
             return null;
@@ -365,7 +360,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             result.append("<h2>Author: ").append(StringEscapeUtils.escapeHtml(author)).append("</h2>");
         }
 
-        result.append(getHTMLDeck(deck, true, _sortAndFilterCards, _formatLibrary));
+        result.append(getHTMLDeck(deck, true, _formatLibrary));
         result.append("<h3>Notes</h3><br>").append(deck.getNotes().replace("\n", "<br/>"));
         result.append("</body></html>");
 
@@ -400,7 +395,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         responseWriter.writeXmlResponse(doc);
     }
 
-    private Document ConvertDeckNamesToXML(Iterable<? extends Map.Entry<GameFormat, String>> deckNames)
+    private static Document ConvertDeckNamesToXML(Iterable<? extends Map.Entry<GameFormat, String>> deckNames)
             throws ParserConfigurationException {
         Document doc = createNewDoc();
         Element decksElem = doc.createElement("decks");
@@ -417,14 +412,14 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
     private List<Map.Entry<GameFormat, String>> GetDeckNamesAndFormats(User player)
     {
-        Set<Map.Entry<String, String>> names = new HashSet<>(_deckDao.getPlayerDeckNames(player));
+        Collection<Map.Entry<String, String>> names = new HashSet<>(_deckDao.getPlayerDeckNames(player));
 
         return names.stream()
                 .map(pair -> new AbstractMap.SimpleEntry<>(_formatLibrary.getFormatByName(pair.getKey()), pair.getValue()))
                 .collect(Collectors.toList());
     }
 
-    private void SortDecks(List<? extends Map.Entry<GameFormat, String>> decks)
+    private static void SortDecks(List<? extends Map.Entry<GameFormat, String>> decks)
     {
         decks.sort(Comparator.comparing((deck) -> {
             GameFormat format = deck.getKey();

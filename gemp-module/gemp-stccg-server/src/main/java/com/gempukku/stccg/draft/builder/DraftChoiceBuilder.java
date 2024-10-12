@@ -2,6 +2,7 @@ package com.gempukku.stccg.draft.builder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.async.handler.SortAndFilterCards;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
@@ -11,7 +12,6 @@ import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.draft.DraftChoiceDefinition;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.SortAndFilterCards;
 
 import java.util.*;
 
@@ -20,14 +20,12 @@ public class DraftChoiceBuilder {
     private final CollectionsManager _collectionsManager;
     private final CardBlueprintLibrary _cardLibrary;
     private final FormatLibrary _formatLibrary;
-    private final SortAndFilterCards _sortAndFilterCards;
 
     public DraftChoiceBuilder(CollectionsManager collectionsManager, CardBlueprintLibrary cardLibrary,
                               FormatLibrary formatLibrary) {
         _collectionsManager = collectionsManager;
         _cardLibrary = cardLibrary;
         _formatLibrary = formatLibrary;
-        _sortAndFilterCards = new SortAndFilterCards();
     }
 
     public DraftChoiceDefinition buildDraftChoiceDefinition(JsonNode choiceDefinition) {
@@ -50,7 +48,7 @@ public class DraftChoiceBuilder {
         final int optionCount = data.get("optionCount").asInt();
         String filter = data.get("filter").textValue().replace(" ","|");
 
-        final List<GenericCardItem> possibleCards = _sortAndFilterCards.process(
+        final List<GenericCardItem> possibleCards = SortAndFilterCards.process(
                 filter, _collectionsManager.getCompleteCardCollection().getAll(), _cardLibrary, _formatLibrary);
 
         return new DraftChoiceDefinition() {
@@ -210,7 +208,7 @@ public class DraftChoiceBuilder {
             @Override
             public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
 
-                List<GenericCardItem> possibleCards = _sortAndFilterCards.process(
+                List<GenericCardItem> possibleCards = SortAndFilterCards.process(
                         filter, draftPool.getAll(), _cardLibrary, _formatLibrary);
 
                 final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
@@ -269,7 +267,7 @@ public class DraftChoiceBuilder {
                         fullDraftPool.add(item);
 
                 List<GenericCardItem> possibleCards =
-                        _sortAndFilterCards.process(filter, fullDraftPool, _cardLibrary, _formatLibrary);
+                        SortAndFilterCards.process(filter, fullDraftPool, _cardLibrary, _formatLibrary);
 
                 final List<GenericCardItem> cards = getCards(seed, stage, possibleCards);
 

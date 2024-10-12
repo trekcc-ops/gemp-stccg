@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
@@ -12,8 +11,6 @@ import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.db.vo.League;
-import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -21,11 +18,13 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,18 +34,16 @@ import java.util.regex.Pattern;
 public class CollectionRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final LeagueService _leagueService;
     private final ProductLibrary _productLibrary;
-    private final FormatLibrary _formatLibrary;
 
-    public CollectionRequestHandler(ServerObjects objects) {
+    CollectionRequestHandler(ServerObjects objects) {
         super(objects);
         _leagueService = objects.getLeagueService();
         _productLibrary = objects.getProductLibrary();
-        _formatLibrary = objects.getFormatLibrary();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter,
-                              String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter,
+                                    String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCollectionTypes(request, responseWriter);
         } else if (uri.startsWith("/import/") && request.method() == HttpMethod.GET) {
@@ -56,7 +53,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getCollection(request, uri.substring(1), responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
     
@@ -95,12 +92,11 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         CardCollection collection = _collectionsManager.getPlayerCollection(resourceOwner, collectionType);
 
         if (collection == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         Iterable<GenericCardItem> items = collection.getAll();
-        SortAndFilterCards sortAndFilter = new SortAndFilterCards();
         List<GenericCardItem> filteredResult =
-                sortAndFilter.process(filter, items, _cardBlueprintLibrary, _formatLibrary);
+                SortAndFilterCards.process(filter, items, _cardBlueprintLibrary, _serverObjects.getFormatLibrary());
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
@@ -139,7 +135,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         collectionElem.appendChild(card);
     }
 
-    private void appendPackElement(Document doc, Element collectionElem, GenericCardItem item, boolean setContentsAttribute) {
+    private void appendPackElement(Document doc, Node collectionElem, GenericCardItem item, boolean setContentsAttribute) {
         String blueprintId = item.getBlueprintId();
         Element pack = doc.createElement("pack");
         pack.setAttribute("count", String.valueOf(item.getCount()));
@@ -159,7 +155,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
 
     private void openPack(HttpRequest request, String collectionType, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         String selection = getFormParameterSafely(postDecoder, "selection");
@@ -174,7 +170,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
                 resourceOwner, collectionTypeObj, selection, _productLibrary, packId);
 
         if (packContents == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("pack");
@@ -215,7 +211,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
     private record CardCount(String name, int count) { }
 
-    private List<CardCount> getDecklist(String rawDeckList) {
+    private static List<CardCount> getDecklist(String rawDeckList) {
         int quantity;
         String cardLine;
 
@@ -224,9 +220,9 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
             if (line.isEmpty())
                 continue;
 
-            line = line.toLowerCase();
+            String line1 = line.toLowerCase();
             try {
-                var matches = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$").matcher(line);
+                var matches = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$").matcher(line1);
 
                 if(matches.matches()) {
                     if(!StringUtils.isEmpty(matches.group(1))) {
@@ -249,7 +245,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         return result;
     }
 
-    public List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
+    private static List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
         Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
         for (SubDeck subDeck : SubDeck.values()) {
             lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);

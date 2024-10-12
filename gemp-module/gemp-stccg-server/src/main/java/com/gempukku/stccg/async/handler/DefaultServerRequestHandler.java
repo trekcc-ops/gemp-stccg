@@ -4,19 +4,17 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.collection.TransferDAO;
+import com.gempukku.stccg.collection.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
@@ -34,6 +32,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -42,16 +41,18 @@ import java.util.*;
 import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
-public class DefaultServerRequestHandler {
-    protected final CardBlueprintLibrary _cardBlueprintLibrary;
-    protected final PlayerDAO _playerDao;
-    protected final LoggedUserHolder _loggedUserHolder;
+class DefaultServerRequestHandler {
+    private final static int SIGNUP_REWARD = 20000;
+    private final static int WEEKLY_REWARD = 5000;
+    final CardBlueprintLibrary _cardBlueprintLibrary;
+    final PlayerDAO _playerDao;
+    private final LoggedUserHolder _loggedUserHolder;
     private final TransferDAO _transferDAO;
-    protected final CollectionsManager _collectionsManager;
-    protected final GameHistoryService _gameHistoryService;
-    protected final ServerObjects _serverObjects;
+    final CollectionsManager _collectionsManager;
+    final GameHistoryService _gameHistoryService;
+    final ServerObjects _serverObjects;
 
-    public DefaultServerRequestHandler(ServerObjects objects) {
+    DefaultServerRequestHandler(ServerObjects objects) {
         _serverObjects = objects;
         _playerDao = objects.getPlayerDAO();
         _loggedUserHolder = objects.getLoggedUserHolder();
@@ -61,11 +62,11 @@ public class DefaultServerRequestHandler {
         _gameHistoryService = objects.getGameHistoryService();
     }
 
-    private boolean isTest() {
+    private static boolean isTest() {
         return Boolean.parseBoolean(System.getProperty("test"));
     }
 
-    protected final void processLoginReward(String loggedUser) throws Exception {
+    final void processLoginReward(String loggedUser) throws Exception {
         if (loggedUser != null) {
             User player = _playerDao.getPlayer(loggedUser);
             synchronized (player.getName().intern()) {
@@ -76,12 +77,12 @@ public class DefaultServerRequestHandler {
                 if (lastReward == null) {
                     _playerDao.setLastReward(player, latestMonday);
                     _collectionsManager.addCurrencyToPlayerCollection(true, "Signup reward", player,
-                            CollectionType.MY_CARDS, 20000);
+                            CollectionType.MY_CARDS, SIGNUP_REWARD);
                 } else {
                     if (latestMonday != lastReward) {
                         if (_playerDao.updateLastReward(player, lastReward, latestMonday))
                             _collectionsManager.addCurrencyToPlayerCollection(true, "Weekly reward",
-                                    player, CollectionType.MY_CARDS, 5000);
+                                    player, CollectionType.MY_CARDS, WEEKLY_REWARD);
                     }
                 }
             }
@@ -94,7 +95,7 @@ public class DefaultServerRequestHandler {
         if (cookieHeader != null) {
             Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
             for (Cookie cookie : cookies) {
-                if (cookie.name().equals("loggedUser")) {
+                if ("loggedUser".equals(cookie.name())) {
                     String value = cookie.value();
                     if (value != null) {
                         return _loggedUserHolder.getLoggedUser(value);
@@ -105,45 +106,46 @@ public class DefaultServerRequestHandler {
         return null;
     }
 
-    protected final void processDeliveryServiceNotification(HttpRequest request, Map<String, String> headersToAdd) {
+    final void processDeliveryServiceNotification(HttpMessage request,
+                                                  Map<? super String, ? super String> headersToAdd) {
         String logged = getLoggedUser(request);
         if (logged != null && _transferDAO.hasUndeliveredPackages(logged))
             headersToAdd.put("Delivery-Service-Package", "true");
     }
 
-    protected final User getResourceOwnerSafely(HttpRequest request, String participantId)
+    final User getResourceOwnerSafely(HttpMessage request, String participantId)
             throws HttpProcessingException {
         String loggedUser = getLoggedUser(request);
         if (isTest() && loggedUser == null)
             loggedUser = participantId;
 
         if (loggedUser == null)
-            throw new HttpProcessingException(401);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         User resourceOwner = _playerDao.getPlayer(loggedUser);
 
         if (resourceOwner == null)
-            throw new HttpProcessingException(401);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
-        if (resourceOwner.hasType(User.Type.ADMIN) && participantId != null && !participantId.equals("null") &&
+        if (resourceOwner.hasType(User.Type.ADMIN) && participantId != null && !"null".equals(participantId) &&
                 !participantId.isEmpty()) {
             resourceOwner = _playerDao.getPlayer(participantId);
             if (resourceOwner == null)
-                throw new HttpProcessingException(401);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
         }
         return resourceOwner;
     }
 
-    protected final User getLibrarian() throws HttpProcessingException {
+    final User getLibrarian() throws HttpProcessingException {
         User resourceOwner = _playerDao.getPlayer("Librarian");
 
         if (resourceOwner == null)
-            throw new HttpProcessingException(401);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
 
         return resourceOwner;
     }
 
-    protected String getQueryParameterSafely(QueryStringDecoder queryStringDecoder, String parameterName) {
+    static String getQueryParameterSafely(QueryStringDecoder queryStringDecoder, String parameterName) {
         List<String> parameterValues = queryStringDecoder.parameters().get(parameterName);
         if (parameterValues != null && !parameterValues.isEmpty())
             return parameterValues.getFirst();
@@ -151,8 +153,8 @@ public class DefaultServerRequestHandler {
             return null;
     }
 
-    List<String> getFormMultipleParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,
-                                                 String parameterName)
+    static List<String> getFormMultipleParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,
+                                                        String parameterName)
             throws HttpPostRequestDecoder.NotEnoughDataDecoderException, IOException {
         List<String> result = new LinkedList<>();
         List<InterfaceHttpData> dataList = postRequestDecoder.getBodyHttpDatas(parameterName);
@@ -168,7 +170,7 @@ public class DefaultServerRequestHandler {
         return result;
     }
 
-    protected String getFormParameterSafely(HttpPostRequestDecoder postRequestDecoder, String parameterName)
+    static String getFormParameterSafely(InterfaceHttpPostRequestDecoder postRequestDecoder, String parameterName)
             throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
         InterfaceHttpData data = postRequestDecoder.getBodyHttpData(parameterName);
         if (data == null)
@@ -181,7 +183,7 @@ public class DefaultServerRequestHandler {
         }
     }
 
-    protected List<String> getLoginParametersSafely(HttpPostRequestDecoder postRequestDecoder)
+    static List<String> getLoginParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder)
             throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
         List<InterfaceHttpData> httpData = postRequestDecoder.getBodyHttpDatas("login[]");
         if (httpData == null)
@@ -196,7 +198,7 @@ public class DefaultServerRequestHandler {
         return result;
     }
 
-    protected Map<String, String> logUserReturningHeaders(String remoteIp, String login) throws SQLException {
+    final Map<String, String> logUserReturningHeaders(String remoteIp, String login) throws SQLException {
         _playerDao.updateLastLoginIp(login, remoteIp);
 
         String sessionId = _loggedUserHolder.logUser(login);
@@ -205,15 +207,15 @@ public class DefaultServerRequestHandler {
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    protected String generateCardTooltip(GenericCardItem item) throws CardNotFoundException {
+    private final String generateCardTooltip(CardItem item) throws CardNotFoundException {
         String blueprintId = item.getBlueprintId();
         CardBlueprint bp = _cardBlueprintLibrary.getCardBlueprint(blueprintId);
         return "<span class=\"tooltip\">" + bp.getFullName()
                 + "<span><img class=\"ttimage\" src=\"" + bp.getImageUrl() + "\"></span></span>";
     }
 
-    protected String listCards(String deckName, String filter, DefaultCardCollection deckCards, boolean countCards,
-                               SortAndFilterCards sortAndFilter, FormatLibrary formatLibrary, boolean showToolTip)
+    private final String listCards(String deckName, String filter, CardCollection deckCards, boolean countCards,
+                                   SortAndFilterCards sortAndFilter, FormatLibrary formatLibrary, boolean showToolTip)
             throws CardNotFoundException {
         StringBuilder sb = new StringBuilder();
         sb.append("<br/><b>").append(deckName).append(":</b><br/>");
@@ -227,13 +229,13 @@ public class DefaultServerRequestHandler {
         return sb.toString();
     }
     
-    protected String getHTMLDeck(CardDeck deck, boolean showToolTip, SortAndFilterCards sortAndFilter,
-                                 FormatLibrary formatLibrary)
+    final String getHTMLDeck(CardDeck deck, boolean showToolTip, FormatLibrary formatLibrary)
             throws CardNotFoundException {
 
         StringBuilder result = new StringBuilder();
+        SortAndFilterCards sortAndFilter = new SortAndFilterCards();
 
-        DefaultCardCollection deckCards = new DefaultCardCollection();
+        MutableCardCollection deckCards = new DefaultCardCollection();
         for (String card : deck.getDrawDeckCards())
             deckCards.addItem(_cardBlueprintLibrary.getBaseBlueprintId(card), 1);
 
@@ -247,13 +249,13 @@ public class DefaultServerRequestHandler {
         return result.toString();
     }
 
-    protected Document createNewDoc() throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        return documentBuilder.newDocument();
+    static Document createNewDoc() throws ParserConfigurationException {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        return docBuilder.newDocument();
     }
 
-    protected User getResourceOwner(HttpRequest request) throws HttpProcessingException {
+    final User getResourceOwner(HttpRequest request) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         return getResourceOwnerSafely(request, participantId);

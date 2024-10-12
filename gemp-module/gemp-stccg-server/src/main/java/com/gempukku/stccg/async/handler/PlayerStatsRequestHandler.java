@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.PlayerStatistic;
 import com.gempukku.stccg.db.User;
@@ -9,7 +8,9 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             User resourceOwner = getResourceOwner(request);
 
@@ -42,11 +43,11 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
 
             responseWriter.writeXmlResponse(doc);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
-    private void appendStatistics(List<? extends PlayerStatistic> statistics, Document doc, Element type) {
+    private static void appendStatistics(Iterable<? extends PlayerStatistic> statistics, Document doc, Node type) {
         for (PlayerStatistic casualStatistic : statistics) {
             Element entry = doc.createElement("entry");
             entry.setAttribute("deckName", casualStatistic.getDeckName());

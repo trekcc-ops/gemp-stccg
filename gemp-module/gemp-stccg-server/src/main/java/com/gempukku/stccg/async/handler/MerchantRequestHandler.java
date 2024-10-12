@@ -1,7 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.cards.GenericCardItem;
@@ -9,22 +8,23 @@ import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.merchant.BasicCardItem;
 import com.gempukku.stccg.merchant.MerchantService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.net.HttpURLConnection;
 import java.util.*;
 
-@SuppressWarnings({"NestedMethodCall", "FeatureEnvy"})
+@SuppressWarnings({"NestedMethodCall", "FeatureEnvy", "CallToNumericToString", "LongLine", "LawOfDemeter", "InstantiationOfUtilityClass"})
 public class MerchantRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final SortAndFilterCards _sortAndFilterCards;
     private final MerchantService _merchantService;
@@ -42,22 +42,22 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getMerchantOffers(request, responseWriter);
-        } else if (uri.equals("/buy") && request.method() == HttpMethod.POST) {
+        } else if ("/buy".equals(uri) && request.method() == HttpMethod.POST) {
             buy(request, responseWriter);
-        } else if (uri.equals("/sell") && request.method() == HttpMethod.POST) {
+        } else if ("/sell".equals(uri) && request.method() == HttpMethod.POST) {
             sell(request, responseWriter);
-        } else if (uri.equals("/tradeFoil") && request.method() == HttpMethod.POST) {
+        } else if ("/tradeFoil".equals(uri) && request.method() == HttpMethod.POST) {
             tradeInFoil(request, responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
     private void tradeInFoil(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
@@ -67,7 +67,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 _merchantService.tradeForFoil(resourceOwner, blueprintId);
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
-                LOGGER.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for {}", request.uri(), exp);
                 responseWriter.writeXmlResponse(marshalException(exp));
             }
         } finally {
@@ -76,7 +76,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void sell(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
@@ -87,7 +87,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 _merchantService.merchantBuysCard(resourceOwner, blueprintId, price);
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
-                LOGGER.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for {}", request.uri(), exp);
                 responseWriter.writeXmlResponse(marshalException(exp));
             }
         } finally {
@@ -96,7 +96,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void buy(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
             String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
@@ -108,7 +108,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
                 _merchantService.merchantSellsCard(resourceOwner, blueprintId, price);
                 responseWriter.writeHtmlResponse("OK");
             } catch (Exception exp) {
-                LOGGER.error("Error response for " + request.uri(), exp);
+                LOGGER.error("Error response for {}", request.uri(), exp);
                 responseWriter.writeXmlResponse(marshalException(exp));
             }
         } finally {
@@ -128,7 +128,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
 
         CardCollection collection = _collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode());
 
-        Set<BasicCardItem> cardItems = new HashSet<>();
+        Collection<BasicCardItem> cardItems = new HashSet<>();
         if (ownedMin <= 0) {
             cardItems.addAll(_merchantService.getSellableItems());
             final Iterable<GenericCardItem> items = collection.getAll();
@@ -143,7 +143,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
 
         List<BasicCardItem> filteredResult = _sortAndFilterCards.process(filter, cardItems, _cardBlueprintLibrary, _formatLibrary);
 
-        List<CardItem> pageToDisplay = new ArrayList<>();
+        Collection<CardItem> pageToDisplay = new ArrayList<>();
         for (int i = start; i < start + count; i++) {
             if (i >= 0 && i < filteredResult.size())
                 pageToDisplay.add(filteredResult.get(i));
@@ -186,7 +186,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
         responseWriter.writeXmlResponse(doc);
     }
 
-    private Document marshalException(Exception e) throws ParserConfigurationException {
+    private static Document marshalException(Exception e) throws ParserConfigurationException {
         Document doc = createNewDoc();
 
         Element error = doc.createElement("error");

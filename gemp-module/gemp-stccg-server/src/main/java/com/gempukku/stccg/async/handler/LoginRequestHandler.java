@@ -1,12 +1,12 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 
 import java.net.HttpURLConnection;
 import java.util.Map;
@@ -18,10 +18,10 @@ public class LoginRequestHandler extends DefaultServerRequestHandler implements 
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
             throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
-            HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+            InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
             String login = getFormParameterSafely(postDecoder, "login");
             String password = getFormParameterSafely(postDecoder, "password");

@@ -1,12 +1,10 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.SortAndFilterCards;
 import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;
@@ -16,33 +14,33 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class TournamentRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
+    private final static long SEVEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 7;
     private final TournamentService _tournamentService;
     private final FormatLibrary _formatLibrary;
-    private final SortAndFilterCards _sortAndFilterCards;
 
-    public TournamentRequestHandler(ServerObjects objects) {
+    TournamentRequestHandler(ServerObjects objects) {
         super(objects);
         _tournamentService = objects.getTournamentService();
         _formatLibrary = objects.getFormatLibrary();
-        _sortAndFilterCards = new SortAndFilterCards();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCurrentTournaments(responseWriter);
-        } else if (uri.equals("/history") && request.method() == HttpMethod.GET) {
+        } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) {
             getTournamentHistory(responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/html") && uri.contains("/deck/") && request.method() == HttpMethod.GET) {
             getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")), uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getTournamentInfo(uri.substring(1), responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
@@ -50,7 +48,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         Document doc = createNewDoc();
         Tournament tournament = _tournamentService.getTournamentById(tournamentId);
         if (tournament == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         appendTournamentData(doc, doc, tournament, true);
         responseWriter.writeXmlResponse(doc);
     }
@@ -59,25 +57,25 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
             throws Exception {
         Tournament tournament = _tournamentService.getTournamentById(tournamentId);
         if (tournament == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         if (tournament.getTournamentStage() != Tournament.Stage.FINISHED)
-            throw new HttpProcessingException(403);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
 
         CardDeck deck = _tournamentService.getPlayerDeck(tournamentId, playerName, tournament.getFormat());
         if (deck == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         String result = "<html><body>" +
                 "<h1>" + StringEscapeUtils.escapeHtml(deck.getDeckName()) + "</h1>" +
                 "<h2>by " + playerName + "</h2>" +
-                getHTMLDeck(deck, false, _sortAndFilterCards, _formatLibrary) +
+                getHTMLDeck(deck, false, _formatLibrary) +
                 "</body></html>";
         responseWriter.writeHtmlResponse(result);
     }
 
     private void getTournamentHistory(ResponseWriter responseWriter) throws Exception {
-        long sevenDaysAgo = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7);
+        long sevenDaysAgo = System.currentTimeMillis() - SEVEN_DAYS_IN_MILLIS;
         getTournamentsData(responseWriter, _tournamentService.getOldTournaments(sevenDaysAgo));
     }
 
@@ -85,7 +83,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         getTournamentsData(responseWriter, _tournamentService.getLiveTournaments());
     }
 
-    private void getTournamentsData(ResponseWriter responseWriter, List<? extends Tournament> tournamentList) throws Exception {
+    private void getTournamentsData(ResponseWriter responseWriter, Iterable<? extends Tournament> tournamentList) throws Exception {
         Document doc = createNewDoc();
         Element tournaments = doc.createElement("tournaments");
         for (Tournament tournament : tournamentList)

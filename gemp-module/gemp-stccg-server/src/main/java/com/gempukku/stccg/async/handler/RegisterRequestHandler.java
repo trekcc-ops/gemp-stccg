@@ -1,14 +1,16 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.LoginInvalidException;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.net.HttpURLConnection;
 
 public class RegisterRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
@@ -18,9 +20,9 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
-            HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+            InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
             String login = getFormParameterSafely(postDecoder, "login");
             String password = getFormParameterSafely(postDecoder, "password");
@@ -28,17 +30,17 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
                 if (_playerDao.registerUser(login, password, remoteIp)) {
                     responseWriter.writeXmlResponse(null, logUserReturningHeaders(remoteIp, login));
                 } else {
-                    throw new HttpProcessingException(409);
+                    throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
                 }
             } catch (LoginInvalidException exp) {
-                logHttpError(LOGGER, 400, request.uri(), exp);
-                throw new HttpProcessingException(400);
+                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
             }
             } finally {
                 postDecoder.destroy();
             }
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 }

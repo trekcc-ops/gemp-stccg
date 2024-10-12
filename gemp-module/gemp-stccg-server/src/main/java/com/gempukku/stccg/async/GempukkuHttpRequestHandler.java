@@ -1,5 +1,6 @@
 package com.gempukku.stccg.async;
 
+import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.db.IpBanDAO;
 import io.netty.buffer.Unpooled;

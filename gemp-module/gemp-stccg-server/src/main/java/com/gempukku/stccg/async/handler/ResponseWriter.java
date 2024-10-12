@@ -1,4 +1,4 @@
-package com.gempukku.stccg.async;
+package com.gempukku.stccg.async.handler;
 
 import org.w3c.dom.Document;
 

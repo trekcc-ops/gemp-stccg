@@ -2,7 +2,6 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.User;
 import io.netty.handler.codec.http.HttpMethod;
@@ -11,6 +10,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.net.HttpURLConnection;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -21,11 +21,11 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getGameHistory(request, responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
@@ -39,7 +39,7 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
         int start = Integer.parseInt(startParameter);
         int count = Integer.parseInt(countParameter);
 
-        if (start < 0 || count < 1 || count > 100) throw new HttpProcessingException(400);
+        if (start < 0 || count < 1 || count > 100) throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 

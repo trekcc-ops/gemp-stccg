@@ -6,7 +6,6 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
-import com.gempukku.stccg.async.ResponseWriter;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.db.User;
@@ -14,19 +13,18 @@ import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameCommunicationChannel;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.game.ParticipantCommunicationVisitor;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,7 +50,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.startsWith("/") && uri.endsWith("/cardInfo") && request.method() == HttpMethod.GET) {
             getCardInfo(request, uri.substring(1, uri.length() - 9), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/concede") && request.method() == HttpMethod.POST) {
@@ -64,12 +62,12 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         } else if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
             updateGameState(request, uri.substring(1), responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
     private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, "channelNumber"));
@@ -83,7 +81,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         CardGameMediator gameMediator = _gameServer.getGameById(gameId);
         if (gameMediator == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
 
@@ -92,15 +90,15 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                 gameMediator.playerAnswered(resourceOwner, channelNumber, decisionId, decisionValue);
 
             GameCommunicationChannel commChannel = gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
-            GameUpdateLongPollingResource pollingResource =
+            LongPollingResource pollingResource =
                     new GameUpdateLongPollingResource(commChannel, channelNumber, gameMediator, responseWriter);
             longPollingSystem.processLongPollingResource(pollingResource, commChannel);
         } catch (SubscriptionConflictException exp) {
-            throw new HttpProcessingException(409);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
         } catch (PrivateInformationException e) {
-            throw new HttpProcessingException(403);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
         } catch (SubscriptionExpiredException e) {
-            throw new HttpProcessingException(410);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_GONE); // 410
         }
         } finally {
             postDecoder.destroy();
@@ -114,49 +112,50 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         private final ResponseWriter _responseWriter;
         private boolean _processed;
 
-        private GameUpdateLongPollingResource(GameCommunicationChannel gameCommunicationChannel, int channelNumber, CardGameMediator gameMediator, ResponseWriter responseWriter) {
-            _gameCommunicationChannel = gameCommunicationChannel;
+        private GameUpdateLongPollingResource(GameCommunicationChannel commChannel, int channelNumber,
+                                              CardGameMediator gameMediator, ResponseWriter responseWriter) {
+            _gameCommunicationChannel = commChannel;
             _channelNumber = channelNumber;
             _gameMediator = gameMediator;
             _responseWriter = responseWriter;
         }
 
         @Override
-        public synchronized boolean wasProcessed() {
+        public final synchronized boolean wasProcessed() {
             return _processed;
         }
 
         @Override
-        public synchronized void processIfNotProcessed() {
+        public final synchronized void processIfNotProcessed() {
             if (!_processed) {
                 try {
                     Document doc = createNewDoc();
                     Element update = doc.createElement("update");
 
-                    _gameMediator.processVisitor(_gameCommunicationChannel, _channelNumber, new SerializationVisitor(doc, update));
+                    _gameMediator.processVisitor(
+                            _gameCommunicationChannel, _channelNumber, new SerializationVisitor(doc, update));
 
                     doc.appendChild(update);
 
                     _responseWriter.writeXmlResponse(doc);
                 } catch (Exception e) {
-                    logHttpError(LOGGER, 500, "game update poller", e);
-                    _responseWriter.writeError(500);
+                    logHttpError(LOGGER, HttpURLConnection.HTTP_INTERNAL_ERROR, "game update poller", e);
+                    _responseWriter.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
                 }
                 _processed = true;
             }
         }
-
     }
 
     private void cancel(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
         CardGameMediator gameMediator = _gameServer.getGameById(gameId);
         if (gameMediator == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         gameMediator.cancel(resourceOwner);
 
@@ -167,7 +166,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     private void concede(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
 
@@ -175,7 +174,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         CardGameMediator gameMediator = _gameServer.getGameById(gameId);
         if (gameMediator == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         gameMediator.concede(resourceOwner);
 
@@ -195,7 +194,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
             CardGameMediator gameMediator = _gameServer.getGameById(gameId);
             if (gameMediator == null)
-                throw new HttpProcessingException(404);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
             responseWriter.writeHtmlResponse(gameMediator.produceCardInfo(cardId));
         }
@@ -210,7 +209,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         CardGameMediator gameMediator = _gameServer.getGameById(gameId);
 
         if (gameMediator == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), getAutoPassPhases(request));
 
@@ -220,7 +219,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         try {
             gameMediator.signupUserForGame(resourceOwner, new SerializationVisitor(doc, gameState));
         } catch (PrivateInformationException e) {
-            throw new HttpProcessingException(403);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
         }
 
         doc.appendChild(gameState);
@@ -228,13 +227,13 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         responseWriter.writeXmlResponse(doc);
     }
 
-    private Set<Phase> getAutoPassPhases(HttpRequest request) {
+    private Set<Phase> getAutoPassPhases(HttpMessage request) {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
         String cookieHeader = request.headers().get(HttpHeaderNames.COOKIE);
         if (cookieHeader != null) {
             Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
             for (Cookie cookie : cookies) {
-                if (cookie.name().equals("autoPassPhases")) {
+                if ("autoPassPhases".equals(cookie.name())) {
                     final String[] phases = cookie.value().split("0");
                     Set<Phase> result = new HashSet<>();
                     for (String phase : phases)
@@ -243,14 +242,14 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
                 }
             }
             for (Cookie cookie : cookies) {
-                if (cookie.name().equals("autoPass") && cookie.value().equals("false"))
+                if ("autoPass".equals(cookie.name()) && "false".equals(cookie.value()))
                     return Collections.emptySet();
             }
         }
         return _autoPassDefault;
     }
 
-    private class SerializationVisitor implements ParticipantCommunicationVisitor {
+    private static final class SerializationVisitor implements ParticipantCommunicationVisitor {
         private final Document _doc;
         private final Element _element;
 
@@ -260,30 +259,31 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
         }
 
         @Override
-        public void visitChannelNumber(int channelNumber) {
+        public final void visitChannelNumber(int channelNumber) {
             _element.setAttribute("cn", String.valueOf(channelNumber));
         }
 
         @Override
-        public void visitGameEvents(GameCommunicationChannel channel) {
+        public final void visitGameEvents(GameCommunicationChannel channel) {
             channel.serializeConsumedEvents(_doc, _element);
         }
 
         @Override
-        public void visitClock(Map<String, Integer> secondsLeft) {
+        public final void visitClock(Map<String, Integer> secondsLeft) {
             _element.appendChild(serializeClocks(_doc, secondsLeft));
         }
-    }
 
-    private Node serializeClocks(Document doc, Map<String, Integer> secondsLeft) {
-        Element clocks = doc.createElement("clocks");
-        for (Map.Entry<String, Integer> userClock : secondsLeft.entrySet()) {
-            Element clock = doc.createElement("clock");
-            clock.setAttribute("participantId", userClock.getKey());
-            clock.appendChild(doc.createTextNode(userClock.getValue().toString()));
-            clocks.appendChild(clock);
+        private static Node serializeClocks(Document doc, Map<String, Integer> secondsLeft) {
+            Element clocks = doc.createElement("clocks");
+            for (Map.Entry<String, Integer> userClock : secondsLeft.entrySet()) {
+                Element clock = doc.createElement("clock");
+                clock.setAttribute("participantId", userClock.getKey());
+                String clockString = String.valueOf(userClock.getValue());
+                clock.appendChild(doc.createTextNode(clockString));
+                clocks.appendChild(clock);
+            }
+
+            return clocks;
         }
-
-        return clocks;
     }
 }
