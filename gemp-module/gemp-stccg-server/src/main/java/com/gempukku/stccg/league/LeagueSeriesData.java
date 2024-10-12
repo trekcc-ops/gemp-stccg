@@ -1,6 +1,6 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.formats.GameFormat;
 

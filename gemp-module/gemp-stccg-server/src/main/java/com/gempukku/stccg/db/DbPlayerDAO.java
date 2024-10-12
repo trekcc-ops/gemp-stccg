@@ -1,6 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.TextUtils;
 import org.sql2o.Sql2o;
 

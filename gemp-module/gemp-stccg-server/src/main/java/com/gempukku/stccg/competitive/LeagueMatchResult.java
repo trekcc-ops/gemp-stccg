@@ -1,4 +1,4 @@
-package com.gempukku.stccg.db.vo;
+package com.gempukku.stccg.competitive;
 
 import com.gempukku.stccg.competitive.CompetitiveMatchResult;
 

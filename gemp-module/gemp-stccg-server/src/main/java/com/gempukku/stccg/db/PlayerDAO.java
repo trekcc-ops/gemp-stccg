@@ -1,7 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBData;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;

@@ -1,7 +1,6 @@
 package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.AbstractServer;
-import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 

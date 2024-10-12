@@ -2,7 +2,7 @@ package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
 import org.junit.jupiter.api.Test;
 

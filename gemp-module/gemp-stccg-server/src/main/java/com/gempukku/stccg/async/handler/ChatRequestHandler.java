@@ -1,6 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.PrivateInformationException;
+import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;

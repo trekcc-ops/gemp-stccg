@@ -1,4 +1,4 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.db;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;

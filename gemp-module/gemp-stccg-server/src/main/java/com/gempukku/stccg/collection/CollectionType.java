@@ -1,4 +1,4 @@
-package com.gempukku.stccg.db.vo;
+package com.gempukku.stccg.collection;
 
 import java.util.HashMap;
 import java.util.Map;

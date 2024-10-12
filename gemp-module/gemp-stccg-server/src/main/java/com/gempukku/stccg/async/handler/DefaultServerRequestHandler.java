@@ -12,7 +12,7 @@ import com.gempukku.stccg.collection.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.service.LoggedUserHolder;

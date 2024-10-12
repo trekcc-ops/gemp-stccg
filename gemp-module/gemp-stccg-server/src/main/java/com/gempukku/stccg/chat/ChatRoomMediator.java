@@ -1,11 +1,9 @@
 package com.gempukku.stccg.chat;
 
-import com.gempukku.stccg.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.db.IgnoreDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.game.ChatCommunicationChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

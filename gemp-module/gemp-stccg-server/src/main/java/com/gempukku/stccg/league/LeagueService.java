@@ -10,9 +10,8 @@ import com.gempukku.stccg.db.LeagueDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueParticipationDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.vo.League;
-import com.gempukku.stccg.db.vo.LeagueMatchResult;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
 

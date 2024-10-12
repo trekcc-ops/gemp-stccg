@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.merchant.BasicCardItem;
 import com.gempukku.stccg.merchant.MerchantService;

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.common.JSONData;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;

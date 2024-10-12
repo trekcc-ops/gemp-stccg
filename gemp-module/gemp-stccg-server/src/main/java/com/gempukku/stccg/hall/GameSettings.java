@@ -1,7 +1,7 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 
 public class GameSettings {

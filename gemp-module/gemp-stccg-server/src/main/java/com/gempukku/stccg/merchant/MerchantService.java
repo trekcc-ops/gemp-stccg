@@ -3,7 +3,7 @@ package com.gempukku.stccg.merchant;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.cards.SetDefinition;
 import org.apache.commons.collections4.map.LRUMap;
 

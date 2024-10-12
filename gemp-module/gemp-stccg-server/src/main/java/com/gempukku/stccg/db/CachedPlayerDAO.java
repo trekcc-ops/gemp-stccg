@@ -1,8 +1,7 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.cache.Cached;
-import com.gempukku.stccg.DBData;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.async.Cached;
+import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.sql.SQLException;

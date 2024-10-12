@@ -1,4 +1,4 @@
-package com.gempukku.stccg.log;
+package com.gempukku.stccg.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

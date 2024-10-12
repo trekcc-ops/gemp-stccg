@@ -1,6 +1,6 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.DBData;
+import com.gempukku.stccg.db.DBData;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.db.GameHistoryDAO;
 import com.gempukku.stccg.db.PlayerStatistic;

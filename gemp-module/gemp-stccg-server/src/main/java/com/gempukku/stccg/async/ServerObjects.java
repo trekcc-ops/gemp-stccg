@@ -1,6 +1,5 @@
 package com.gempukku.stccg.async;
 
-import com.gempukku.stccg.cache.CacheManager;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CachedCollectionDAO;
@@ -17,7 +16,6 @@ import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.CachedLeagueMatchDAO;
 import com.gempukku.stccg.league.CachedLeagueParticipationDAO;
 import com.gempukku.stccg.league.LeagueService;
-import com.gempukku.stccg.log.LoggingProxy;
 import com.gempukku.stccg.merchant.MerchantService;
 import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.service.AdminService;

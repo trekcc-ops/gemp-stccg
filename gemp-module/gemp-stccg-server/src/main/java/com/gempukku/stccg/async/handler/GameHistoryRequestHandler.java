@@ -1,6 +1,6 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.DBData;
+import com.gempukku.stccg.db.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.db.User;

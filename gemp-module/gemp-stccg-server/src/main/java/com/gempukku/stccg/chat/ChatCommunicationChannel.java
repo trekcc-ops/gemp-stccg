@@ -1,4 +1,4 @@
-package com.gempukku.stccg.game;
+package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.chat.ChatMessage;
 import com.gempukku.stccg.chat.ChatRoomListener;

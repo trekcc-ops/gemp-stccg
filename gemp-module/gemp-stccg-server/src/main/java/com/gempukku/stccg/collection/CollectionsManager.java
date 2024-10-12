@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.db.CollectionDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
 import com.gempukku.stccg.packs.ProductLibrary;
 
 import java.io.IOException;

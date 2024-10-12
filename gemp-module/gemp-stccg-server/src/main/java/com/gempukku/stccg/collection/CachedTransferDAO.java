@@ -1,9 +1,9 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.async.Cached;
 import com.gempukku.stccg.db.DbAccess;
 import com.gempukku.stccg.db.DbTransferDAO;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.async.LoggingProxy;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -1,6 +1,5 @@
 package com.gempukku.stccg.db;
 
-import com.gempukku.stccg.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.mysql.cj.util.StringUtils;
 

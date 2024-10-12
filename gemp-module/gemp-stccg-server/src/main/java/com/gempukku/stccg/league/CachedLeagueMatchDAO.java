@@ -1,11 +1,11 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.async.Cached;
 import com.gempukku.stccg.db.DbAccess;
 import com.gempukku.stccg.db.DbLeagueMatchDAO;
 import com.gempukku.stccg.db.LeagueMatchDAO;
-import com.gempukku.stccg.db.vo.LeagueMatchResult;
-import com.gempukku.stccg.log.LoggingProxy;
+import com.gempukku.stccg.competitive.LeagueMatchResult;
+import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.util.Collection;
