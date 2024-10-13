@@ -2,6 +2,7 @@ package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.competitive.PlayerStanding;
@@ -64,16 +65,21 @@ public class NewConstructedLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
-                       int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings,
+                       int oldStatus, int currentTime) {
         int status = oldStatus;
         if (status == 0) {
             LeagueSeriesData lastSeries = _allSeries.getLast();
             if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
-                    CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
-                    if (leaguePrize != null)
-                        collectionsManager.addItemsToPlayerCollection(true, "End of league prizes", leagueStanding.getPlayerName(), _prizeCollectionType, leaguePrize.getAll());
+                    CardCollection leaguePrize =
+                            _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
+                    if (leaguePrize != null) {
+                        String playerName = leagueStanding.getPlayerName();
+                        Iterable<GenericCardItem> prizes = leaguePrize.getAll();
+                        collectionsManager.addItemsToPlayerCollection(
+                                true, "End of league prizes", playerName, _prizeCollectionType, prizes);
+                    }
                 }
                 status++;
             }

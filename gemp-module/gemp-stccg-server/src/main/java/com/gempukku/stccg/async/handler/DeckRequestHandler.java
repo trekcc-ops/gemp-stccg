@@ -42,7 +42,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         _draftLibrary = objects.getSoloDraftDefinitions();
     }
 
-    private static CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
+    private static CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat,
+                                                   String notes) {
         return new CardDeck(deckName, contents, targetFormat, notes);
     }
 
@@ -136,7 +137,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void getDeckStats(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException {
+    private void getDeckStats(HttpRequest request, ResponseWriter responseWriter)
+            throws IOException, HttpProcessingException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
@@ -191,7 +193,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void deleteDeck(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException {
+    private void deleteDeck(HttpRequest request, ResponseWriter responseWriter)
+            throws IOException, HttpProcessingException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
@@ -206,7 +209,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void renameDeck(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException, ParserConfigurationException {
+    private void renameDeck(HttpRequest request, ResponseWriter responseWriter)
+            throws IOException, HttpProcessingException, ParserConfigurationException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
@@ -225,7 +229,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private void saveDeck(HttpRequest request, ResponseWriter responseWriter) throws IOException, HttpProcessingException, ParserConfigurationException {
+    private void saveDeck(HttpRequest request, ResponseWriter responseWriter)
+            throws IOException, HttpProcessingException, ParserConfigurationException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             String participantId = getFormParameterSafely(postDecoder, "participantId");
@@ -266,7 +271,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         responseWriter.writeHtmlResponse(result);
     }
 
-    private void getDeckInHtml(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, CardNotFoundException {
+    private void getDeckInHtml(HttpRequest request, ResponseWriter responseWriter)
+            throws HttpProcessingException, CardNotFoundException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         String deckName = getQueryParameterSafely(queryDecoder, "deckName");
@@ -301,7 +307,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         responseWriter.writeHtmlResponse(result);
     }
 
-    private void getLibraryDeckInHtml(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException, CardNotFoundException {
+    private void getLibraryDeckInHtml(HttpRequest request, ResponseWriter responseWriter)
+            throws HttpProcessingException, CardNotFoundException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String deckName = getQueryParameterSafely(queryDecoder, "deckName");
 
@@ -415,7 +422,10 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         Collection<Map.Entry<String, String>> names = new HashSet<>(_deckDao.getPlayerDeckNames(player));
 
         return names.stream()
-                .map(pair -> new AbstractMap.SimpleEntry<>(_formatLibrary.getFormatByName(pair.getKey()), pair.getValue()))
+                .map(pair -> {
+                    GameFormat format = _formatLibrary.getFormatByName(pair.getKey());
+                    return new AbstractMap.SimpleEntry<>(format, pair.getValue());
+                })
                 .collect(Collectors.toList());
     }
 

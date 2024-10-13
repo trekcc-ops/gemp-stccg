@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.AbstractServer;
+import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
@@ -55,7 +56,10 @@ public class GameServer extends AbstractServer {
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeathWarning
                         && !_gameDeathWarningsSent.contains(gameId)) {
                     try {
-                        _chatServer.getChatRoom(getChatRoomName(gameId)).sendMessage("System", "This game is already finished and will be shortly removed, please move to the Game Hall", true);
+                        String message = "This game is already finished and will be shortly removed, " +
+                                "please move to the Game Hall";
+                        ChatRoomMediator chatRoom = _chatServer.getChatRoom(getChatRoomName(gameId));
+                        chatRoom.sendMessage("System", message, true);
                     } catch (PrivateInformationException exp) {
                         // Ignore, sent as admin
                     } catch (ChatCommandErrorException e) {
@@ -144,7 +148,8 @@ public class GameServer extends AbstractServer {
 
             cardGameMediator.sendMessageToPlayers("Players in the game are: " + players);
 
-            final var gameRecordingInProgress = _gameRecorder.recordGame(cardGameMediator, gameSettings.getGameFormat(), tournamentName, decks);
+            final var gameRecordingInProgress =
+                    _gameRecorder.recordGame(cardGameMediator, gameSettings.getGameFormat(), tournamentName, decks);
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
@@ -160,7 +165,9 @@ public class GameServer extends AbstractServer {
 
                     @Override
                     public void gameCancelled() {
-                        gameRecordingInProgress.finishRecording(participants[0].getPlayerId(), "Game cancelled due to error", participants[1].getPlayerId(), "Game cancelled due to error");
+                        gameRecordingInProgress.finishRecording(participants[0].getPlayerId(),
+                                "Game cancelled due to error", participants[1].getPlayerId(),
+                                "Game cancelled due to error");
                     }
                 }
             );
@@ -173,7 +180,8 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings, String gameId) {
+    private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings,
+                                                 String gameId) {
         boolean spectate = (gameSettings.getLeague() != null) ||
                 (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
@@ -189,7 +197,8 @@ public class GameServer extends AbstractServer {
             cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
                     _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
         } else {
-            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() + "' does not belong to 1E, 2E, or Tribbles");
+            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() +
+                    "' does not belong to 1E, 2E, or Tribbles");
         }
         return cardGameMediator;
     }

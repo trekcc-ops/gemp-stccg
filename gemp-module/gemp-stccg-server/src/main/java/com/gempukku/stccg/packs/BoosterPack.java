@@ -11,7 +11,6 @@ public class BoosterPack implements PackBox {
     final Map<String, Integer> _rarityCounts = new HashMap<>();
 
     BoosterPack(SetDefinition setDefinition, Iterable<String> rarityCounts) {
-
         for (String rarityCount : rarityCounts) {
             String[] result = rarityCount.split("x", 2);
             _rarityCounts.put(result[1], Integer.parseInt(result[0]));

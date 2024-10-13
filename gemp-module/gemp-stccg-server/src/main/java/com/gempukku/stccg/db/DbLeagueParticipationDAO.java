@@ -27,7 +27,8 @@ public class DbLeagueParticipationDAO implements LeagueParticipationDAO {
     public final Collection<String> getUsersParticipating(String leagueId) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("select player_name from league_participation where league_type=?")) {
+                try (PreparedStatement statement = conn.prepareStatement(
+                        "select player_name from league_participation where league_type=?")) {
                     statement.setString(1, leagueId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Collection<String> result = new HashSet<>();

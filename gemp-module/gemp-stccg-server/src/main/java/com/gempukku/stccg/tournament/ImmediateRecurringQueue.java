@@ -32,7 +32,8 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) {
+    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback,
+                                        CollectionsManager collectionsManager) {
         if (_players.size() >= _playerCap) {
             String tournamentId = _tournamentIdPrefix + System.currentTimeMillis();
 
@@ -44,7 +45,8 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
                 _playerDecks.remove(player);
             }
 
-            Tournament tournament = _tournamentService.addTournament(tournamentId, null, tournamentName, _format, _collectionType, Tournament.Stage.PLAYING_GAMES, "singleElimination",
+            Tournament tournament = _tournamentService.addTournament(tournamentId, null, tournamentName,
+                    _format, _collectionType, Tournament.Stage.PLAYING_GAMES, "singleElimination",
                     _tournamentPrizes.getRegistryRepresentation(), new Date());
 
             tournamentQueueCallback.createTournament(tournament);

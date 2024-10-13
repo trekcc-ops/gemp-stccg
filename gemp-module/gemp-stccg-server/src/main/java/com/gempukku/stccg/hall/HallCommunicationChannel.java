@@ -100,7 +100,8 @@ public class HallCommunicationChannel implements LongPollableResource {
         _changed = false;
     }
 
-    private void notifyAboutTables(HallChannelVisitor hallChannelVisitor, Map<String, Map<String, String>> tablesOnServer) {
+    private void notifyAboutTables(HallChannelVisitor hallChannelVisitor,
+                                   Map<String, Map<String, String>> tablesOnServer) {
         for (Map.Entry<String, Map<String, String>> tableOnClient : _tablePropsOnClient.entrySet()) {
             String tableId = tableOnClient.getKey();
             Map<String, String> tableProps = tableOnClient.getValue();
@@ -139,7 +140,8 @@ public class HallCommunicationChannel implements LongPollableResource {
                         tournamentQueueOnServer.getKey(), tournamentQueueOnServer.getValue());
     }
 
-    private void notifyAboutTournaments(HallChannelVisitor hallChannelVisitor, Map<String, Map<String, String>> tournamentsOnServer) {
+    private void notifyAboutTournaments(HallChannelVisitor hallChannelVisitor,
+                                        Map<String, Map<String, String>> tournamentsOnServer) {
         for (Map.Entry<String, Map<String, String>> tournamentOnClient : _tournamentPropsOnClient.entrySet()) {
             String tournamentId = tournamentOnClient.getKey();
             Map<String, String> tournamentProps = tournamentOnClient.getValue();
@@ -218,8 +220,10 @@ public class HallCommunicationChannel implements LongPollableResource {
         }
 
         @Override
-        public void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName, String tournamentQueueName,
-                                         String tournamentPrizes, String pairingDescription, String startCondition, int playerCount, boolean playerSignedUp, boolean joinable) {
+        public void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName,
+                                         String tournamentQueueName, String tournamentPrizes, String pairingDescription,
+                                         String startCondition, int playerCount, boolean playerSignedUp,
+                                         boolean joinable) {
             Map<String, String> props = new HashMap<>();
             props.put("cost", String.valueOf(cost));
             props.put("collection", collectionName);

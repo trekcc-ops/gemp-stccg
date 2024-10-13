@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DbTournamentMatchDAO implements TournamentMatchDAO {
+    private final static String GET_MATCHES_STATEMENT =
+            "select player_one, player_two, winner, round from tournament_match " +
+                    "where tournament_id=? and player_two <> 'bye'";
     private final DbAccess _dbAccess;
 
     public DbTournamentMatchDAO(DbAccess dbAccess) {
@@ -47,7 +50,7 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     public final List<TournamentMatch> getMatches(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select player_one, player_two, winner, round from tournament_match where tournament_id=? and player_two <> 'bye'")) {
+                try (PreparedStatement statement = connection.prepareStatement(GET_MATCHES_STATEMENT)) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
                         List<TournamentMatch> result = new ArrayList<>();
@@ -76,7 +79,8 @@ public class DbTournamentMatchDAO implements TournamentMatchDAO {
     public final Map<String, Integer> getPlayerByes(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select player_one from tournament_match where tournament_id=? and player_two = 'bye'")) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "select player_one from tournament_match where tournament_id=? and player_two = 'bye'")) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Map<String, Integer> result = new HashMap<>();

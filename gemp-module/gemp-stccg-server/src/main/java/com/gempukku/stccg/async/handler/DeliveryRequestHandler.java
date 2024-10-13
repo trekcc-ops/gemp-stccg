@@ -26,7 +26,8 @@ public class DeliveryRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getDelivery(request, responseWriter);
         } else {
@@ -36,7 +37,8 @@ public class DeliveryRequestHandler extends DefaultServerRequestHandler implemen
 
     private void getDelivery(HttpMessage request, ResponseWriter responseWriter) throws Exception {
         User resourceOwner = getResourceOwnerSafely(request, null);
-        Map<String, ? extends CardCollection> delivery = _transferDAO.consumeUndeliveredPackages(resourceOwner.getName());
+        Map<String, ? extends CardCollection> delivery =
+                _transferDAO.consumeUndeliveredPackages(resourceOwner.getName());
         if (delivery == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 

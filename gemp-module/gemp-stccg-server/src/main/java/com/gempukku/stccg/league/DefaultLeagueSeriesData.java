@@ -14,7 +14,8 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     private final GameFormat _format;
     private final CollectionType _collectionType;
 
-    public DefaultLeagueSeriesData(LeaguePrizes leaguePrizes, boolean limited, String name, int start, int end, int maxMatches, GameFormat format, CollectionType collectionType) {
+    public DefaultLeagueSeriesData(LeaguePrizes leaguePrizes, boolean limited, String name, int start, int end,
+                                   int maxMatches, GameFormat format, CollectionType collectionType) {
         _leaguePrizes = leaguePrizes;
         _limited = limited;
         _name = name;

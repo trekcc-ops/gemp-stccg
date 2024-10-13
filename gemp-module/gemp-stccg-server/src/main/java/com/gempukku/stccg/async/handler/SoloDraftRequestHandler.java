@@ -190,7 +190,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             Element pickedCard = doc.createElement("pickedCard");
             pickedCard.setAttribute("blueprintId", item.getBlueprintId());
             pickedCard.setAttribute("count", String.valueOf(item.getCount()));
-            pickedCard.setAttribute("imageUrl", _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId()).getImageUrl());
+            pickedCard.setAttribute(
+                    "imageUrl", _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId()).getImageUrl());
             pickResultElem.appendChild(pickedCard);
         }
 
@@ -205,7 +206,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private void appendAvailablePics(Document doc, Node rootElem, Iterable<? extends SoloDraft.DraftChoice> availablePics) {
+    private void appendAvailablePics(Document doc, Node rootElem,
+                                     Iterable<? extends SoloDraft.DraftChoice> availablePics) {
         for (SoloDraft.DraftChoice availableChoice : availablePics) {
             String choiceId = availableChoice.getChoiceId();
             String blueprintId = availableChoice.getBlueprintId();
@@ -215,7 +217,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             if (blueprintId != null) {
                 availablePick.setAttribute("blueprintId", blueprintId);
                 try {
-                    availablePick.setAttribute("imageUrl", _cardBlueprintLibrary.getCardBlueprint(blueprintId).getImageUrl());
+                    availablePick.setAttribute("imageUrl",
+                            _cardBlueprintLibrary.getCardBlueprint(blueprintId).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprint " + blueprintId + " not found in library");
                 }
@@ -226,8 +229,9 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private static SoloDraft.DraftChoice getSelectedDraftChoice(String choiceId, Iterable<? extends SoloDraft.DraftChoice> availableChoices) {
-        for (SoloDraft.DraftChoice availableChoice : availableChoices) {
+    private static SoloDraft.DraftChoice getSelectedDraftChoice(String choiceId,
+                                                                Iterable<? extends SoloDraft.DraftChoice> choices) {
+        for (SoloDraft.DraftChoice availableChoice : choices) {
             if (availableChoice.getChoiceId().equals(choiceId))
                 return availableChoice;
         }

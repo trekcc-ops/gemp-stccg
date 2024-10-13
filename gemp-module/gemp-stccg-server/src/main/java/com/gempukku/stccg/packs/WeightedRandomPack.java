@@ -13,24 +13,24 @@ public class WeightedRandomPack implements PackBox {
 
     private final Map<String, Reward> _contents = new LinkedHashMap<>();
 
-    private WeightedRandomPack() { }
-
-    public static WeightedRandomPack LoadFromArray(Iterable<String> items) {
-        WeightedRandomPack box = new WeightedRandomPack();
+    public WeightedRandomPack(Iterable<String> items) {
         for (String item : items) {
             item = item.trim();
             if (!item.isEmpty()) {
-                String[] result = item.split("[x%]", 3);
+                String[] result = parseItem(item);
                 if(result.length != 3) {
-                    System.out.println("Unexpected number of entries in a WeightedRandomPack! Skipping: '" + item + "'");
+                    System.out.println("Unexpected number of entries in a WeightedRandomPack! Skipping: '" +
+                            item + "'");
                     continue;
                 }
                 var reward = new Reward(result[2], Integer.parseInt(result[1]), Integer.parseInt(result[0]));
-                box._contents.put(reward.name, reward);
+                _contents.put(reward.name, reward);
             }
         }
+    }
 
-        return box;
+    private static String[] parseItem(String item) {
+        return item.split("[x%]", 3);
     }
 
     @Override

@@ -89,7 +89,8 @@ class TableHolder {
             if (!leagueService.canPlayRankedGame(league, seriesData, player.getName()))
                 throw new HallException("You have already played max games in league");
             if (!awaitingTable.getPlayerNames().isEmpty() && !leagueService.canPlayRankedGameAgainst(league, seriesData, awaitingTable.getPlayerNames().getFirst(), player.getName()))
-                throw new HallException("You have already played ranked league game against this player in that series");
+                throw new HallException(
+                        "You have already played ranked league game against this player in that series");
         }
 
         final boolean tableFull = awaitingTable.addPlayer(new GameParticipant(player.getName(), deck));
@@ -216,8 +217,8 @@ class TableHolder {
                                 runningTable.getGameSettings().isUserInviteOnly(),
                                 cardGameMediator.getWinner()
                         );
-
-                    if (!cardGameMediator.isFinished() && cardGameMediator.getPlayersPlaying().contains(player.getName()))
+                    if (!cardGameMediator.isFinished() &&
+                            cardGameMediator.getPlayersPlaying().contains(player.getName()))
                         visitor.runningPlayerGame(cardGameMediator.getGameId());
                 }
             }

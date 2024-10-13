@@ -101,7 +101,8 @@ public class DbPlayerDAO implements PlayerDAO {
     public final Set<String> getBannedUsernames() {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT name FROM player WHERE type = '' ORDER BY ID DESC LIMIT 50")) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT name FROM player WHERE type = '' ORDER BY ID DESC LIMIT 50")) {
 
                     try (ResultSet resultSet = statement.executeQuery()) {
                         Set<String> users = new TreeSet<>();
@@ -346,7 +347,8 @@ public class DbPlayerDAO implements PlayerDAO {
         }
 
         String lowerCase = login.toLowerCase();
-        return !lowerCase.startsWith("admin") && !lowerCase.startsWith("guest") && !lowerCase.startsWith("system") && !lowerCase.startsWith("bye");
+        return !lowerCase.startsWith("admin") &&
+                !lowerCase.startsWith("guest") && !lowerCase.startsWith("system") && !lowerCase.startsWith("bye");
     }
 
     private boolean loginExists(String login) {

@@ -23,7 +23,8 @@ public class LongPollingSystem {
     }
 
     public final void processLongPollingResource(LongPollingResource resource, LongPollableResource pollableResource) {
-        ResourceWaitingRequest request = new ResourceWaitingRequest(pollableResource, resource, System.currentTimeMillis());
+        ResourceWaitingRequest request =
+                new ResourceWaitingRequest(pollableResource, resource, System.currentTimeMillis());
         if (pollableResource.registerRequest(request)) {
             execute(resource);
         } else {
@@ -77,7 +78,8 @@ public class LongPollingSystem {
         private final LongPollableResource _longPollableResource;
         private final long _start;
 
-        private ResourceWaitingRequest(LongPollableResource longPollableResource, LongPollingResource longPollingResource, long start) {
+        private ResourceWaitingRequest(LongPollableResource longPollableResource,
+                                       LongPollingResource longPollingResource, long start) {
             _longPollableResource = longPollableResource;
             _longPollingResource = longPollingResource;
             _start = start;

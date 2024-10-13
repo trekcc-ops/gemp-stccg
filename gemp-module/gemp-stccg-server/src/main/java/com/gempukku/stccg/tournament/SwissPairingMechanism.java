@@ -43,25 +43,33 @@ public class SwissPairingMechanism implements PairingMechanism {
     }
 
     @Override
-    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes, List<PlayerStanding> currentStandings,
-                               Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults, Set<String> byeResults) {
+    public boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers,
+                               Map<String, Integer> playerByes, List<PlayerStanding> currentStandings,
+                               Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults,
+                               Set<String> byeResults) {
         int maxNumberOfPoints = determineMaximumNumberOfPoints(droppedPlayers, currentStandings);
 
-        List<List<String>> playersGroupedByBracket = groupPlayersByPointBracket(droppedPlayers, currentStandings, maxNumberOfPoints);
+        List<List<String>> playersGroupedByBracket =
+                groupPlayersByPointBracket(droppedPlayers, currentStandings, maxNumberOfPoints);
 
         shufflePlayersWithinBrackets(playersGroupedByBracket);
 
         Set<String> playersWithByes = getPlayersWithByes(playerByes);
 
-        boolean success = tryPairBracketAndFurther(0, new HashSet<>(), new HashSet<>(), playersGroupedByBracket, playersWithByes, previouslyPaired, pairingResults, byeResults);
+        boolean success = tryPairBracketAndFurther(0, new HashSet<>(), new HashSet<>(),
+                playersGroupedByBracket, playersWithByes, previouslyPaired, pairingResults, byeResults);
         // Managed to pair with this carry over count - proceed with the pairings
         return !success;
 
         // We can't pair, just finish the tournament
     }
 
-    private boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers, Set<String> carryOverFromThisBracket, List<? extends List<String>> playersGroupedByBracket, Set<String> playersWithByes,
-                                             Map<String, ? extends Set<String>> previouslyPaired, Map<String, String> pairingsResult, Set<String> byes) {
+    private boolean tryPairBracketAndFurther(int bracketIndex, Set<String> carryOverPlayers,
+                                             Set<String> carryOverFromThisBracket,
+                                             List<? extends List<String>> playersGroupedByBracket,
+                                             Set<String> playersWithByes,
+                                             Map<String, ? extends Set<String>> previouslyPaired,
+                                             Map<String, String> pairingsResult, Set<String> byes) {
         List<String> playersInBracket = playersGroupedByBracket.get(bracketIndex);
 
         // First try to pair carried over players
@@ -71,12 +79,15 @@ public class SwissPairingMechanism implements PairingMechanism {
 
             for (int index = 0; index < playersInBracket.size(); index++) {
                 String player = playersInBracket.remove(index);
-                if (!previouslyPaired.get(firstCarryOver).contains(player)) //noinspection SpellCheckingInspection
+                if (!previouslyPaired.get(firstCarryOver).contains(player))
                 {
                     // This might be a good pairing
                     pairingsResult.put(firstCarryOver, player);
                     // Let's give it a try
-                    boolean success = tryPairBracketAndFurther(bracketIndex, carryOverPlayers, carryOverFromThisBracket, playersGroupedByBracket, playersWithByes, previouslyPaired, pairingsResult, byes);
+                    boolean success = tryPairBracketAndFurther(bracketIndex, carryOverPlayers,
+                            carryOverFromThisBracket, playersGroupedByBracket, playersWithByes, previouslyPaired,
+                            pairingsResult, byes
+                    );
                     if (success) {
                         return true;
                     }

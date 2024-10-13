@@ -12,7 +12,8 @@ public interface PairingMechanism {
     boolean isFinished(int round, Set<String> players, Set<String> droppedPlayers);
 
     boolean pairPlayers(int round, Set<String> players, Set<String> droppedPlayers, Map<String, Integer> playerByes,
-                               List<PlayerStanding> currentStandings, Map<String, Set<String>> previouslyPaired, Map<String, String> pairingResults, Set<String> byeResults);
+                        List<PlayerStanding> currentStandings, Map<String, Set<String>> previouslyPaired,
+                        Map<String, String> pairingResults, Set<String> byeResults);
 
     String getPlayOffSystem();
 

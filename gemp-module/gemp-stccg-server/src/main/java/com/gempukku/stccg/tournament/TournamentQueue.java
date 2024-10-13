@@ -25,7 +25,8 @@ public interface TournamentQueue {
 
     boolean isRequiresDeck();
 
-    boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException;
+    boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager)
+            throws SQLException, IOException;
 
     void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException;
 

@@ -17,9 +17,11 @@ public class DeckRequestHandlerTest extends AbstractServerTest {
     @SuppressWarnings("WriteOnlyObject")
     @Test
     public void formatTest2() throws JsonProcessingException {
-        CollectionsManager collectionsManager = new CollectionsManager(null, null, null, _cardLibrary);
+        CollectionsManager collectionsManager =
+                new CollectionsManager(null, null, null, _cardLibrary);
 
-        SoloDraftDefinitions soloDraftDefinitions = new SoloDraftDefinitions(collectionsManager, _cardLibrary, _formatLibrary);
+        SoloDraftDefinitions soloDraftDefinitions =
+                new SoloDraftDefinitions(collectionsManager, _cardLibrary, _formatLibrary);
 
             JSONData.FullFormatReadout data = new JSONData.FullFormatReadout();
             data.Formats = _formatLibrary.getAllFormats().values().stream()

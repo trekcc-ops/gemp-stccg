@@ -27,8 +27,8 @@ public class DbTransferDAO implements TransferDAO {
     }
 
     @Override
-    public final void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
-                                    CardCollection items) {
+    public final void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName,
+                                    int currency, CardCollection items) {
         addTransfer(notifyPlayer, player, reason, collectionName, currency, items, "to");
     }
 

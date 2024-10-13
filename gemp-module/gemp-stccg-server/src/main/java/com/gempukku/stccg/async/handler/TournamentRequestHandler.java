@@ -30,13 +30,16 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCurrentTournaments(responseWriter);
         } else if ("/history".equals(uri) && request.method() == HttpMethod.GET) {
             getTournamentHistory(responseWriter);
-        } else if (uri.startsWith("/") && uri.endsWith("/html") && uri.contains("/deck/") && request.method() == HttpMethod.GET) {
-            getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")), uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
+        } else if (uri.startsWith("/") && uri.endsWith("/html") &&
+                uri.contains("/deck/") && request.method() == HttpMethod.GET) {
+            getTournamentDeck(uri.substring(1, uri.indexOf("/deck/")),
+                    uri.substring(uri.indexOf("/deck/") + 6, uri.lastIndexOf("/html")), responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getTournamentInfo(uri.substring(1), responseWriter);
         } else {
@@ -83,7 +86,8 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         getTournamentsData(responseWriter, _tournamentService.getLiveTournaments());
     }
 
-    private void getTournamentsData(ResponseWriter responseWriter, Iterable<? extends Tournament> tournamentList) throws Exception {
+    private void getTournamentsData(ResponseWriter responseWriter, Iterable<? extends Tournament> tournamentList)
+            throws Exception {
         Document doc = createNewDoc();
         Element tournaments = doc.createElement("tournaments");
         for (Tournament tournament : tournamentList)

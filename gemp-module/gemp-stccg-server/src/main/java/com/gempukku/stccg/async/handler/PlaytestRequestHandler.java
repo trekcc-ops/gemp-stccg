@@ -26,7 +26,8 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if ("/addTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {
             addTesterFlag(request, responseWriter);
         } else if ("/removeTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {

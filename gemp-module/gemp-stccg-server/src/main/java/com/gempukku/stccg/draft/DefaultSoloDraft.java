@@ -12,7 +12,8 @@ public class DefaultSoloDraft implements SoloDraft {
     private final DraftPoolProducer _draftPool;
     private final List<? extends DraftChoiceDefinition> _draftChoiceDefinitions;
 
-    public DefaultSoloDraft(String code, String format, CardCollectionProducer newCollection, List<? extends DraftChoiceDefinition> draftChoiceDefinitions, DraftPoolProducer draftPool) {
+    public DefaultSoloDraft(String code, String format, CardCollectionProducer newCollection,
+                            List<? extends DraftChoiceDefinition> draftChoiceDefinitions, DraftPoolProducer draftPool) {
         _code = code;
         _format = format;
         _newCollection = newCollection;

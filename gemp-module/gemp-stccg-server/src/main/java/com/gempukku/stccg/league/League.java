@@ -36,7 +36,8 @@ public class League {
         return _type;
     }
 
-    public synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
+    public synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary,
+                                                 SoloDraftDefinitions soloDraftDefinitions) {
         if (_leagueData == null) {
             try {
                 if(_clazz.equals(ConstructedLeagueData.class.getName())) {
@@ -55,7 +56,8 @@ public class League {
                     _leagueData = new SoloDraftLeagueData(bpLibrary,  formatLibrary, soloDraftDefinitions, _parameters);
                 }
                 else {
-                    throw new IllegalArgumentException("Class '" + _clazz + "' does not have a constructor registered.");
+                    throw new IllegalArgumentException(
+                            "Class '" + _clazz + "' does not have a constructor registered.");
                 }
             } catch (Exception exp) {
                 throw new RuntimeException("Unable to create LeagueData", exp);

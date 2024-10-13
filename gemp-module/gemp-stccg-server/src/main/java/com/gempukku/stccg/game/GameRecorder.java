@@ -68,7 +68,8 @@ public class GameRecorder {
             if(format.isPlaytest())
             {
                 String url = AppConfig.getPlaytestUrl() +
-                        AppConfig.getPlaytestPrefixUrl() + winnerName + "$" + playerRecordingId.get(winnerName) + "%20" +
+                        AppConfig.getPlaytestPrefixUrl() + winnerName + "$" +
+                        playerRecordingId.get(winnerName) + "%20" +
                         AppConfig.getPlaytestPrefixUrl() + loserName + "$" + playerRecordingId.get(loserName);
                 String message = "Thank you for playtesting!  " +
                         "If you have any feedback, bugs, or other issues to report about this match, <a href= '" +
@@ -88,7 +89,8 @@ public class GameRecorder {
         return new File(playerReplayFolder, gameId + ".xml.gz");
     }
 
-    private static File getRecordingFileVersion1(String playerId, String gameId, ChronoZonedDateTime<LocalDate> startDate) {
+    private static File getRecordingFileVersion1(String playerId, String gameId,
+                                                 ChronoZonedDateTime<LocalDate> startDate) {
         //This dumb-ass formatting output is because anything that otherwise interacts with the
         // year subfield appears to trigger a JVM segfault in the guts of the java ecosystem.
         // Super-dumb.  Don't touch these two lines.
@@ -111,7 +113,8 @@ public class GameRecorder {
                 history.win_recording_id + "_" + history.lose_recording_id+ ".json");
     }
 
-    private static OutputStream getRecordingWriteStream(String playerId, String gameId, ChronoZonedDateTime<LocalDate> startDate) throws IOException {
+    private static OutputStream getRecordingWriteStream(String playerId, String gameId,
+                                                        ChronoZonedDateTime<LocalDate> startDate) throws IOException {
         File recordingFile = getRecordingFileVersion1(playerId, gameId, startDate);
         //noinspection ResultOfMethodCallIgnored
         recordingFile.getParentFile().mkdirs();

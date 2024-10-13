@@ -143,7 +143,8 @@ public class DbCollectionDAO implements CollectionDAO {
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    public final void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source) {
+    public final void removeFromCollectionContents(int playerId, String type, CardCollection collection,
+                                                   String source) {
         String sql = """
                         INSERT INTO collection_entries(collection_id, quantity, product_type, product, source)
                         VALUES (:collid, :quantity, :type, :product, :source)
@@ -214,7 +215,8 @@ public class DbCollectionDAO implements CollectionDAO {
         }
     }
 
-    private MutableCardCollection deserializeCollection(DBData.Collection coll, Iterable<? extends DBData.CollectionEntry> entries)
+    private MutableCardCollection deserializeCollection(DBData.Collection coll,
+                                                        Iterable<? extends DBData.CollectionEntry> entries)
             throws IOException {
         MutableCardCollection newColl = new DefaultCardCollection();
 

@@ -32,7 +32,8 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     public final void initializeBoard() {
-        appendEvent(new GameEvent(GameEvent.Type.PARTICIPANTS, _game.getGameState(), _game.getGameState().getPlayer(_playerId)));
+        appendEvent(new GameEvent(GameEvent.Type.PARTICIPANTS, _game.getGameState(),
+                _game.getGameState().getPlayer(_playerId)));
     }
 
     public final String getPlayerId() { return _playerId; }
@@ -98,7 +99,8 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
 
     public final void decisionRequired(String playerId, AwaitingDecision awaitingDecision) {
         if (playerId.equals(_playerId))
-            appendEvent(new GameEvent(GameEvent.Type.DECISION, awaitingDecision, _game.getGameState().getPlayer(playerId)));
+            appendEvent(new GameEvent(GameEvent.Type.DECISION, awaitingDecision,
+                    _game.getGameState().getPlayer(playerId)));
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("LongLine")
 public class DefaultTournamentTest extends AbstractServerTest {
 
     @SuppressWarnings("unchecked") // Unchecked assignment but since it's only a test it doesn't hurt anything

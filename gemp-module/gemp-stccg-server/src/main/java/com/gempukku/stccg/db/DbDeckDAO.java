@@ -22,7 +22,8 @@ public class DbDeckDAO implements DeckDAO {
         return getPlayerDeck(player.getId(), name);
     }
 
-    public final synchronized void saveDeckForPlayer(User player, String name, String targetFormat, String notes, CardDeck deck) {
+    public final synchronized void saveDeckForPlayer(User player, String name, String targetFormat, String notes,
+                                                     CardDeck deck) {
         boolean newDeck = getPlayerDeck(player.getId(), name) == null;
         storeDeckToDB(player.getId(), name, targetFormat, notes, deck, newDeck);
     }
@@ -50,7 +51,8 @@ public class DbDeckDAO implements DeckDAO {
     public final synchronized Set<Map.Entry<String, String>> getPlayerDeckNames(User player) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select name, target_format from deck where player_id=?")) {
+                String sqlStatement = "select name, target_format from deck where player_id=?";
+                try (PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
                     statement.setInt(1, player.getId());
                     try (ResultSet rs = statement.executeQuery()) {
                         Set<Map.Entry<String, String>> result = new HashSet<>();
@@ -73,7 +75,8 @@ public class DbDeckDAO implements DeckDAO {
     private CardDeck getPlayerDeck(int playerId, String name) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select contents, target_format, notes from deck where player_id=? and name=?")) {
+                String sqlStatement = "select contents, target_format, notes from deck where player_id=? and name=?";
+                try (PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
                     statement.setInt(1, playerId);
                     statement.setString(2, name);
                     try (ResultSet rs = statement.executeQuery()) {

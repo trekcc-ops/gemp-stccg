@@ -43,7 +43,8 @@ public class ChatRoomMediator {
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
     }
 
-    public final List<ChatMessage> joinUser(String playerId, boolean admin) throws PrivateInformationException, SQLException {
+    public final List<ChatMessage> joinUser(String playerId, boolean admin)
+            throws PrivateInformationException, SQLException {
         _lock.writeLock().lock();
         try {
             if (!admin && _allowedPlayers != null && !_allowedPlayers.contains(playerId))
@@ -80,7 +81,8 @@ public class ChatRoomMediator {
         return getChatRoomListener(userName);
     }
 
-    public final void sendMessage(String playerId, String message, boolean admin) throws PrivateInformationException, ChatCommandErrorException {
+    public final void sendMessage(String playerId, String message, boolean admin)
+            throws PrivateInformationException, ChatCommandErrorException {
         if (message.trim().startsWith("/")) {
             processIfKnownCommand(playerId, message.trim().substring(1), admin);
             return;
@@ -124,7 +126,8 @@ public class ChatRoomMediator {
         }
     }
 
-    private void processIfKnownCommand(String playerId, String commandString, boolean admin) throws ChatCommandErrorException {
+    private void processIfKnownCommand(String playerId, String commandString, boolean admin)
+            throws ChatCommandErrorException {
         int spaceIndex = commandString.indexOf(' ');
         String commandName;
         String commandParameters="";

@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DbIpBanDAO implements IpBanDAO {
+    private static final String GET_IP_BANS_STATEMENT = "select ip from ip_ban where prefix=0";
+    private static final String GET_IP_PREFIX_BANS_STATEMENT = "select ip from ip_ban where prefix=1";
     private final DbAccess _dbAccess;
 
     public DbIpBanDAO(DbAccess dbAccess) {
@@ -38,7 +40,7 @@ public class DbIpBanDAO implements IpBanDAO {
     public final Set<String> getIpBans() {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select ip from ip_ban where prefix=0")) {
+                try (PreparedStatement statement = connection.prepareStatement(GET_IP_BANS_STATEMENT)) {
                     try (ResultSet rs = statement.executeQuery()) {
                         Set<String> result = new HashSet<>();
                         while (rs.next()) {
@@ -59,7 +61,7 @@ public class DbIpBanDAO implements IpBanDAO {
     public final Set<String> getIpPrefixBans() {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select ip from ip_ban where prefix=1")) {
+                try (PreparedStatement statement = connection.prepareStatement(GET_IP_PREFIX_BANS_STATEMENT)) {
                     try (ResultSet rs = statement.executeQuery()) {
                         Set<String> result = new HashSet<>();
                         while (rs.next()) {
@@ -75,4 +77,5 @@ public class DbIpBanDAO implements IpBanDAO {
             throw new RuntimeException("Unable to get count of player games", exp);
         }
     }
+
 }

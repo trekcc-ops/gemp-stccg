@@ -58,7 +58,8 @@ public class SingleEliminationPairingTest extends AbstractServerTest {
         Map<String, String> pairingResults = new HashMap<>();
         Set<String> byeResults = new HashSet<>();
 
-        assertFalse(_pairing.pairPlayers(1, allPlayers, Collections.emptySet(), Collections.emptyMap(), null, null, pairingResults, byeResults));
+        assertFalse(_pairing.pairPlayers(1, allPlayers, Collections.emptySet(), Collections.emptyMap(),
+                null, null, pairingResults, byeResults));
 
         assertEquals(1, byeResults.size());
         assertEquals(1, pairingResults.size());

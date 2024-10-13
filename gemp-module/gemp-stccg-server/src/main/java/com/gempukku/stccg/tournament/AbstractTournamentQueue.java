@@ -96,10 +96,13 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     }
 
     @Override
-    public final synchronized void leaveAllPlayers(CollectionsManager collectionsManager) throws SQLException, IOException {
+    public final synchronized void leaveAllPlayers(CollectionsManager collectionsManager)
+            throws SQLException, IOException {
         if (_cost > 0) {
             for (String player : _players)
-                collectionsManager.addCurrencyToPlayerCollection(false, "Return for leaving " + getTournamentQueueName() + " queue", player, _currencyCollection, _cost);
+                collectionsManager.addCurrencyToPlayerCollection(
+                        false, "Return for leaving " + getTournamentQueueName() + " queue", player,
+                        _currencyCollection, _cost);
         }
         _players.clear();
         _playerDecks.clear();

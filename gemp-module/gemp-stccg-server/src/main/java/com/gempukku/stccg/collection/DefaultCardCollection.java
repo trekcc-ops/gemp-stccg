@@ -180,7 +180,9 @@ public class DefaultCardCollection implements MutableCardCollection {
         if(getCurrency() != other.getCurrency())
             return false;
 
-        for(String key : Stream.concat(_counts.keySet().stream(), other._counts.keySet().stream()).distinct().toList()) {
+        Set<String> countKeys = _counts.keySet();
+        Set<String> otherCountKeys = other._counts.keySet();
+        for(String key : Stream.concat(countKeys.stream(), otherCountKeys.stream()).distinct().toList()) {
             if(!_counts.containsKey(key) || !other._counts.containsKey(key))
                 return false;
             if(!_counts.get(key).equals(other._counts.get(key)))

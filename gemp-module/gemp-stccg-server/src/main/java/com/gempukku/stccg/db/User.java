@@ -40,10 +40,12 @@ public class User {
     private final String _lastIp;
 
     public User(DBData.DBPlayer def) {
-        this(def.id, def.name, def.password, def.type, def.last_login_reward, def.GetBannedUntilDate(), def.create_ip, def.last_ip);
+        this(def.id, def.name, def.password, def.type, def.last_login_reward, def.GetBannedUntilDate(), def.create_ip,
+                def.last_ip);
     }
 
-    public User(int id, String name, String password, String type, Integer lastLoginReward, Date bannedUntil, String createIp, String lastIp) {
+    public User(int id, String name, String password, String type, Integer lastLoginReward, Date bannedUntil,
+                String createIp, String lastIp) {
         _id = id;
         _name = name;
         _password = password;

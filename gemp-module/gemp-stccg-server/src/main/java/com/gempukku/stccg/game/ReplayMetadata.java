@@ -51,7 +51,8 @@ public class ReplayMetadata {
 
     }
 
-    public ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks, String player, Iterable<? extends GameEvent> events) {
+    public ReplayMetadata(DBData.GameHistory game, Map<String, ? extends CardDeck> decks, String player,
+                          Iterable<? extends GameEvent> events) {
         this(game, decks);
         ParseReplay(player, events);
     }

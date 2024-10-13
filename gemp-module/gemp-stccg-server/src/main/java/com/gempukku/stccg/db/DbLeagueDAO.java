@@ -10,16 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DbLeagueDAO implements LeagueDAO {
+    private static final String INSERT_STATEMENT =
+            "insert into league (name, type, class, parameters, start, end, status, cost) values (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_STATEMENT =
+            "select name, type, class, parameters, status, cost from league where end>=? order by start desc";
     private final DbAccess _dbAccess;
 
     public DbLeagueDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
     }
 
-    public final void addLeague(int cost, String name, String type, String clazz, String parameters, int start, int endTime) {
+    public final void addLeague(int cost, String name, String type, String clazz, String parameters, int start,
+                                int endTime) {
         try {
-            String sqlStatement = "insert into league (name, type, class, parameters, start, end, status, cost) values (?, ?, ?, ?, ?, ?, ?, ?)";
-            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
+            SQLUtils.executeStatementWithParameters(_dbAccess, INSERT_STATEMENT,
                     name, type, clazz, parameters, start, endTime, 0, cost);
         } catch(SQLException exp) {
             throw new RuntimeException("Unable to add league into DB", exp);
@@ -28,7 +32,7 @@ public class DbLeagueDAO implements LeagueDAO {
 
     public final List<League> loadActiveLeagues(int currentTime) throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("select name, type, class, parameters, status, cost from league where end>=? order by start desc")) {
+            try (PreparedStatement statement = conn.prepareStatement(SELECT_STATEMENT)) {
                 statement.setInt(1, currentTime);
                 try (ResultSet rs = statement.executeQuery()) {
                     List<League> activeLeagues = new ArrayList<>();

@@ -20,8 +20,10 @@ public class BestOfOneStandingsProducer {
                     new DescComparator<>(new OpponentsWinComparator()));
 
 
-    public static List<PlayerStanding> produceStandings(Collection<String> participants, Collection<? extends CompetitiveMatchResult> matches,
-                                                        int pointsForWin, int pointsForLoss, Map<String, Integer> playersWithByes) {
+    public static List<PlayerStanding> produceStandings(Collection<String> participants,
+                                                        Collection<? extends CompetitiveMatchResult> matches,
+                                                        int pointsForWin, int pointsForLoss,
+                                                        Map<String, Integer> playersWithByes) {
         Map<String, List<String>> playerOpponents = new HashMap<>();
         Map<String, AtomicInteger> playerWinCounts = new HashMap<>();
         Map<String, AtomicInteger> playerLossCounts = new HashMap<>();

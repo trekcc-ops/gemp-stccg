@@ -1,17 +1,17 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
+import com.gempukku.stccg.async.CacheManager;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.async.CacheManager;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.db.LeagueDAO;
 import com.gempukku.stccg.db.PlayerDAO;
 import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.*;

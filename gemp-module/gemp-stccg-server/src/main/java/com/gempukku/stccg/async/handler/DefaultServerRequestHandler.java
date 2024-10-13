@@ -215,15 +215,17 @@ class DefaultServerRequestHandler {
     }
 
     private final String listCards(String deckName, String filter, CardCollection deckCards, boolean countCards,
-                                   SortAndFilterCards sortAndFilter, FormatLibrary formatLibrary, boolean showToolTip)
+                                   FormatLibrary formatLibrary, boolean showToolTip)
             throws CardNotFoundException {
         StringBuilder sb = new StringBuilder();
         sb.append("<br/><b>").append(deckName).append(":</b><br/>");
-        for (GenericCardItem item : sortAndFilter.process(filter, deckCards.getAll(), _cardBlueprintLibrary, formatLibrary)) {
+        for (GenericCardItem item :
+                SortAndFilterCards.process(filter, deckCards.getAll(), _cardBlueprintLibrary, formatLibrary)) {
             if (countCards)
                 sb.append(item.getCount()).append("x ");
+            String blueprintId = item.getBlueprintId();
             String cardText = showToolTip?
-                    generateCardTooltip(item) : _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId()).getFullName();
+                    generateCardTooltip(item) : _cardBlueprintLibrary.getCardBlueprint(blueprintId).getFullName();
             sb.append(cardText).append("<br/>");
         }
         return sb.toString();
@@ -240,11 +242,11 @@ class DefaultServerRequestHandler {
             deckCards.addItem(_cardBlueprintLibrary.getBaseBlueprintId(card), 1);
 
         result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
-                deckCards,false, sortAndFilter, formatLibrary, showToolTip));
+                deckCards,false, formatLibrary, showToolTip));
         result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
-                deckCards,true, sortAndFilter, formatLibrary, showToolTip));
+                deckCards,true, formatLibrary, showToolTip));
         result.append(listCards("Shadow Draw Deck","sort:cardType,name",
-                deckCards,true, sortAndFilter, formatLibrary, showToolTip));
+                deckCards,true, formatLibrary, showToolTip));
 
         return result.toString();
     }

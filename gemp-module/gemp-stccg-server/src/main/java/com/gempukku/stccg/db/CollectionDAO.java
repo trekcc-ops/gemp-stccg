@@ -11,11 +11,15 @@ public interface CollectionDAO {
 
     CardCollection getPlayerCollection(int playerId, String type) throws SQLException, IOException;
 
-    void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) throws SQLException, IOException;
+    void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason)
+            throws SQLException, IOException;
 
-    void addToCollectionContents(int playerId, String type, CardCollection collection, String source) throws SQLException, IOException;
+    void addToCollectionContents(int playerId, String type, CardCollection collection, String source)
+            throws SQLException, IOException;
 
-    void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source) throws SQLException, IOException;
+    void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source)
+            throws SQLException, IOException;
 
-    void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation) throws SQLException, IOException;
+    void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation)
+            throws SQLException, IOException;
 }

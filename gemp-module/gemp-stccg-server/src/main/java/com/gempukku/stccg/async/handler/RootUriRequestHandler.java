@@ -58,7 +58,8 @@ public class RootUriRequestHandler implements UriRequestHandler {
             responseWriter.writeError(
                     HttpURLConnection.HTTP_MOVED_PERM, Collections.singletonMap("Location", webContextPath));
         } else if (uri.equals(SERVER_CONTEXT_PATH)) {
-            _statusRequestHandler.handleRequest(uri.substring(SERVER_CONTEXT_PATH.length()), request, responseWriter, remoteIp);
+            _statusRequestHandler.handleRequest(
+                    uri.substring(SERVER_CONTEXT_PATH.length()), request, responseWriter, remoteIp);
         } else {
             String origin = request.headers().get("Origin");
             if (origin != null) {

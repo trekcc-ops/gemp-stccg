@@ -8,9 +8,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class CachedPlayerDAO implements PlayerDAO, Cached {
+    private final static int MAX_MAP_SIZE = 500;
     private final PlayerDAO _delegate;
-    private final Map<Integer, User> _playerById = Collections.synchronizedMap(new LRUMap<>(500));
-    private final Map<String, User> _playerByName = Collections.synchronizedMap(new LRUMap<>(500));
+    private final Map<Integer, User> _playerById = Collections.synchronizedMap(new LRUMap<>(MAX_MAP_SIZE));
+    private final Map<String, User> _playerByName = Collections.synchronizedMap(new LRUMap<>(MAX_MAP_SIZE));
     private Set<String> _bannedUsernames = new HashSet<>();
 
     public CachedPlayerDAO(DbAccess dbAccess) {

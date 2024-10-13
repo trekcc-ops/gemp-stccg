@@ -52,7 +52,8 @@ public class LeagueService {
 
     public LeagueService(LeagueDAO leagueDao, LeagueMatchDAO leagueMatchDao,
                          LeagueParticipationDAO leagueParticipationDAO, CollectionsManager collectionsManager,
-                         CardBlueprintLibrary library, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions) {
+                         CardBlueprintLibrary library, FormatLibrary formatLibrary,
+                         SoloDraftDefinitions soloDraftDefinitions) {
         _leagueDao = leagueDao;
         _cardLibrary = library;
         _formatLibrary = formatLibrary;
@@ -99,7 +100,9 @@ public class LeagueService {
     private void processLoadedLeagues(int currentDate) {
         for (League activeLeague : _activeLeagues) {
             int oldStatus = activeLeague.getStatus();
-            int newStatus = activeLeague.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions).process(_collectionsManager, getLeagueStandings(activeLeague), oldStatus, currentDate);
+            LeagueData leagueData = activeLeague.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
+            List<PlayerStanding> leagueStandings = getLeagueStandings(activeLeague);
+            int newStatus = leagueData.process(_collectionsManager, leagueStandings, oldStatus, currentDate);
             if (newStatus != oldStatus)
                 _leagueDao.setStatus(activeLeague, newStatus);
         }

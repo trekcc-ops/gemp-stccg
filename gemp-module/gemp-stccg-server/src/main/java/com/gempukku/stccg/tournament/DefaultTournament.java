@@ -41,9 +41,9 @@ public class DefaultTournament implements Tournament {
 
     private List<PlayerStanding> _currentStandings;
 
-    public DefaultTournament(TournamentService tournamentService, String tournamentId, String tournamentName,
-                             String format, CollectionType collectionType, int tournamentRound, Stage tournamentStage,
-                             PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
+    DefaultTournament(TournamentService tournamentService, String tournamentId, String tournamentName,
+                      String format, CollectionType collectionType, int tournamentRound, Stage tournamentStage,
+                      PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
         _tournamentService = tournamentService;
         _tournamentId = tournamentId;
         _tournamentName = tournamentName;
@@ -75,7 +75,7 @@ public class DefaultTournament implements Tournament {
             }
 
             if (!matchesToCreate.isEmpty())
-                _nextTask = new CreateMissingGames(matchesToCreate);
+                _nextTask = new CreateMissingGames(this, matchesToCreate);
         } else if (_tournamentStage == Stage.DECK_BUILDING) {
             _deckBuildStartTime = System.currentTimeMillis();
         } else if (_tournamentStage == Stage.FINISHED) {
@@ -200,8 +200,10 @@ public class DefaultTournament implements Tournament {
                         if (_pairingMechanism.isFinished(_tournamentRound, _players, _droppedPlayers)) {
                             finishTournament(tournamentCallback, collectionsManager);
                         } else {
-                            tournamentCallback.broadcastMessage("Tournament " + _tournamentName + " will start round "+(_tournamentRound+1)+" in 2 minutes");
-                            _nextTask = new PairPlayers();
+                            tournamentCallback.broadcastMessage("Tournament " + _tournamentName +
+                                    " will start round " + (_tournamentRound+1) + " in 2 minutes");
+                            _nextTask = new PairPlayers(
+                                    this, System.currentTimeMillis() + _waitForPairingsTime);
                         }
                         result = true;
                     }
@@ -227,7 +229,9 @@ public class DefaultTournament implements Tournament {
 
         _lock.readLock().lock();
         try {
-            _currentStandings = BestOfOneStandingsProducer.produceStandings(_players, _finishedTournamentMatches, 2, 1, _playerByes);
+            _currentStandings =
+                    BestOfOneStandingsProducer.produceStandings(
+                            _players, _finishedTournamentMatches, 2, 1, _playerByes);
             return _currentStandings;
         } finally {
             _lock.readLock().unlock();
@@ -253,12 +257,12 @@ public class DefaultTournament implements Tournament {
         }
     }
 
-    private void createNewGame(TournamentCallback tournamentCallback, String playerOne, String playerTwo) {
+    public void createNewGame(TournamentCallback tournamentCallback, String playerOne, String playerTwo) {
         tournamentCallback.createGame(playerOne, _playerDecks.get(playerOne),
                 playerTwo, _playerDecks.get(playerTwo));
     }
 
-    private void doPairing(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
+    final void doPairing(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
         _tournamentRound++;
         _tournamentService.updateTournamentRound(_tournamentId, _tournamentRound);
         Map<String, String> pairingResults = new HashMap<>();
@@ -266,7 +270,9 @@ public class DefaultTournament implements Tournament {
 
         Map<String, Set<String>> previouslyPaired = getPreviouslyPairedPlayersMap();
 
-        boolean finished = _pairingMechanism.pairPlayers(_tournamentRound, _players, _droppedPlayers, _playerByes, getCurrentStandings(), previouslyPaired, pairingResults, byeResults);
+        List<PlayerStanding> currentStandings = getCurrentStandings();
+        boolean finished = _pairingMechanism.pairPlayers(_tournamentRound, _players, _droppedPlayers, _playerByes,
+                currentStandings, previouslyPaired, pairingResults, byeResults);
         if (finished) {
             finishTournament(tournamentCallback, collectionsManager);
         } else {
@@ -293,9 +299,11 @@ public class DefaultTournament implements Tournament {
         for (String player : _players)
             previouslyPaired.put(player, new HashSet<>());
 
-        for (TournamentMatch finishedTournamentMatch : _finishedTournamentMatches) {
-            previouslyPaired.get(finishedTournamentMatch.getWinner()).add(finishedTournamentMatch.getLoser());
-            previouslyPaired.get(finishedTournamentMatch.getLoser()).add(finishedTournamentMatch.getWinner());
+        for (TournamentMatch match : _finishedTournamentMatches) {
+            String winner = match.getWinner();
+            String loser = match.getLoser();
+            previouslyPaired.get(winner).add(loser);
+            previouslyPaired.get(loser).add(winner);
         }
         return previouslyPaired;
     }
@@ -307,39 +315,4 @@ public class DefaultTournament implements Tournament {
         _playerByes.put(player, byes + 1);
     }
 
-    private class PairPlayers implements TournamentTask {
-        private final long _taskStart = System.currentTimeMillis() + _waitForPairingsTime;
-
-        @Override
-        public void executeTask(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
-            doPairing(tournamentCallback, collectionsManager);
-        }
-
-        @Override
-        public long getExecuteAfter() {
-            return _taskStart;
-        }
-    }
-
-    private class CreateMissingGames implements TournamentTask {
-        private final Map<String, String> _gamesToCreate;
-
-        public CreateMissingGames(Map<String, String> gamesToCreate) {
-            _gamesToCreate = gamesToCreate;
-        }
-
-        @Override
-        public void executeTask(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
-            for (Map.Entry<String, String> pairings : _gamesToCreate.entrySet()) {
-                String playerOne = pairings.getKey();
-                String playerTwo = pairings.getValue();
-                createNewGame(tournamentCallback, playerOne, playerTwo);
-            }
-        }
-
-        @Override
-        public long getExecuteAfter() {
-            return 0;
-        }
-    }
 }

@@ -135,12 +135,12 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         collectionElem.appendChild(card);
     }
 
-    private void appendPackElement(Document doc, Node collectionElem, GenericCardItem item, boolean setContentsAttribute) {
+    private void appendPackElement(Document doc, Node collectionElem, GenericCardItem item, boolean setContents) {
         String blueprintId = item.getBlueprintId();
         Element pack = doc.createElement("pack");
         pack.setAttribute("count", String.valueOf(item.getCount()));
         pack.setAttribute("blueprintId", blueprintId);
-        if (setContentsAttribute) {
+        if (setContents) {
             if (item.getType() == CardItemType.SELECTION) {
                 List<GenericCardItem> contents = _productLibrary.GetProduct(blueprintId).openPack();
                 StringBuilder contentsStr = new StringBuilder();

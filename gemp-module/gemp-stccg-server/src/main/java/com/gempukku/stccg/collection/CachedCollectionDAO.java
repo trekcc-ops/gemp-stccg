@@ -51,25 +51,29 @@ public class CachedCollectionDAO implements CollectionDAO, Cached {
     }
 
     @Override
-    public void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason) throws SQLException, IOException {
+    public void overwriteCollectionContents(int playerId, String type, CardCollection collection, String reason)
+            throws SQLException, IOException {
         _delegate.overwriteCollectionContents(playerId, type, collection, reason);
         recacheCollection(playerId, type);
     }
 
     @Override
-    public void addToCollectionContents(int playerId, String type, CardCollection collection, String source) throws SQLException, IOException {
+    public void addToCollectionContents(int playerId, String type, CardCollection collection, String source)
+            throws SQLException, IOException {
         _delegate.addToCollectionContents(playerId, type, collection, source);
         recacheCollection(playerId, type);
     }
 
     @Override
-    public void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source) throws SQLException, IOException {
+    public void removeFromCollectionContents(int playerId, String type, CardCollection collection, String source)
+            throws SQLException, IOException {
         _delegate.removeFromCollectionContents(playerId, type, collection, source);
         recacheCollection(playerId, type);
     }
 
     @Override
-    public void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation) throws SQLException, IOException {
+    public void updateCollectionInfo(int playerId, String type, Map<String, Object> extraInformation)
+            throws SQLException, IOException {
         _delegate.updateCollectionInfo(playerId, type, extraInformation);
         recacheCollection(playerId, type);
     }

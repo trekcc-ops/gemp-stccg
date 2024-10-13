@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface TournamentDAO {
     void addTournament(String tournamentId, String draftType, String tournamentName, String format,
-                              CollectionType collectionType, Tournament.Stage stage, String pairingMechanism, String prizeScheme, Date start);
+                       CollectionType collectionType, Tournament.Stage stage, String pairingMechanism,
+                       String prizeScheme, Date start);
 
     List<TournamentInfo> getUnfinishedTournaments();
 

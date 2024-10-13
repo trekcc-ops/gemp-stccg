@@ -50,7 +50,8 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.startsWith("/") && uri.endsWith("/cardInfo") && request.method() == HttpMethod.GET) {
             getCardInfo(request, uri.substring(1, uri.length() - 9), responseWriter);
         } else if (uri.startsWith("/") && uri.endsWith("/concede") && request.method() == HttpMethod.POST) {

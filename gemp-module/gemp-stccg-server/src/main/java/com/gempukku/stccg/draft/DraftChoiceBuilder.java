@@ -9,8 +9,6 @@ import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.draft.DraftChoiceDefinition;
-import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.*;
@@ -126,7 +124,8 @@ public class DraftChoiceBuilder {
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
                 return draftChoices;
             }
 
@@ -206,7 +205,8 @@ public class DraftChoiceBuilder {
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
 
                 List<GenericCardItem> possibleCards = SortAndFilterCards.process(
                         filter, draftPool.getAll(), _cardLibrary, _formatLibrary);
@@ -260,7 +260,8 @@ public class DraftChoiceBuilder {
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
                 List<GenericCardItem> fullDraftPool = new ArrayList<>();
                 for (GenericCardItem item : draftPool.getAll())
                     for (int i = 0; i < draftPool.getItemCount(item.getBlueprintId()); i++)
@@ -323,7 +324,8 @@ public class DraftChoiceBuilder {
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
                 return TextUtils.getRandomFromList(draftChoiceDefinitionList, getRandom(seed, stage))
                         .getDraftChoice(seed, stage, draftPool);
             }
@@ -349,7 +351,8 @@ public class DraftChoiceBuilder {
 
         return new DraftChoiceDefinition() {
             @Override
-            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage, DefaultCardCollection draftPool) {
+            public Iterable<SoloDraft.DraftChoice> getDraftChoice(long seed, int stage,
+                                                                  DefaultCardCollection draftPool) {
                 Random rnd = getRandom(seed, stage);
                 float result = rnd.nextFloat();
                 for (Map.Entry<Float, DraftChoiceDefinition> weightEntry : draftChoiceDefinitionMap.entrySet()) {

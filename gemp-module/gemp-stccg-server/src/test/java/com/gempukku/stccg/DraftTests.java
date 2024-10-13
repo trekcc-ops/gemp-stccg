@@ -43,7 +43,8 @@ public class DraftTests extends AbstractServerTest {
             int stage = 0;
 
             while (soloDraft.hasNextStage(stage)) {
-                final Iterable<SoloDraft.DraftChoice> availableChoices = soloDraft.getAvailableChoices(seed, stage, null);
+                final Iterable<SoloDraft.DraftChoice> availableChoices =
+                        soloDraft.getAvailableChoices(seed, stage, null);
                 for (SoloDraft.DraftChoice availableChoice : availableChoices) {
                     final String blueprintId = availableChoice.getBlueprintId();
                     availableCards.merge(blueprintId, 1,

@@ -21,12 +21,14 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             User resourceOwner = getResourceOwner(request);
 
             List<PlayerStatistic> casualStatistics = _gameHistoryService.getCasualPlayerStatistics(resourceOwner);
-            List<PlayerStatistic> competitiveStatistics = _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner);
+            List<PlayerStatistic> competitiveStatistics =
+                    _gameHistoryService.getCompetitivePlayerStatistics(resourceOwner);
 
             Document doc = createNewDoc();
             Element stats = doc.createElement("playerStats");

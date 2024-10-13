@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
+    private final static String GET_DECKS_STATEMENT =
+            "select player, deck_name, deck from tournament_player where tournament_id=? and deck_name is not null";
+    private final static String GET_DROPPED_PLAYERS_STATEMENT =
+            "select player from tournament_player where tournament_id=? and dropped=true";
     private final DbAccess _dbAccess;
 
     public DbTournamentPlayerDAO(DbAccess dbAccess) {
@@ -68,8 +72,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     public final Map<String, CardDeck> getPlayerDecks(String tournamentId, String format) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement(
-                        "select player, deck_name, deck from tournament_player where tournament_id=? and deck_name is not null")) {
+                try (PreparedStatement statement = connection.prepareStatement(GET_DECKS_STATEMENT)) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Map<String, CardDeck> result = new HashMap<>();
@@ -93,7 +96,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     public final Set<String> getDroppedPlayers(String tournamentId) {
         try {
             try (Connection connection = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement("select player from tournament_player where tournament_id=? and dropped=true")) {
+                try (PreparedStatement statement = connection.prepareStatement(GET_DROPPED_PLAYERS_STATEMENT)) {
                     statement.setString(1, tournamentId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Set<String> result = new HashSet<>();

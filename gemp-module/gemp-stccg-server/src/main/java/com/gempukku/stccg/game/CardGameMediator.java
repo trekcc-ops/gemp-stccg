@@ -226,7 +226,8 @@ public abstract class CardGameMediator {
                                 startClocksForUsersPendingDecision();
 
                             } catch (DecisionResultInvalidException exp) {
-                                // Participant provided wrong answer - send a warning message, and ask again for the same decision
+                                /* Participant provided wrong answer - send a warning message,
+                                and ask again for the same decision */
                                 getGame().getGameState().sendWarning(
                                         playerName, exp.getWarningMessage());
                                 getGame().sendAwaitingDecision(playerName, awaitingDecision);
@@ -270,7 +271,8 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber, ParticipantCommunicationVisitor visitor) {
+    public final void processVisitor(GameCommunicationChannel communicationChannel, int channelNumber,
+                                     ParticipantCommunicationVisitor visitor) {
         _readLock.lock();
         try {
             visitor.visitChannelNumber(channelNumber);
@@ -281,7 +283,8 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final void signupUserForGame(User player, ParticipantCommunicationVisitor visitor) throws PrivateInformationException {
+    public final void signupUserForGame(User player, ParticipantCommunicationVisitor visitor)
+            throws PrivateInformationException {
         String playerName = player.getName();
         if (!player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(playerName))
             throw new PrivateInformationException();
@@ -306,7 +309,10 @@ public abstract class CardGameMediator {
     private Map<String, Integer> secondsLeft() {
         Map<String, Integer> secondsLeft = new HashMap<>();
         for (String playerId : _playersPlaying) {
-            secondsLeft.put(playerId, _timeSettings.maxSecondsPerPlayer() - _playerClocks.get(playerId) - getCurrentUserPendingTime(playerId));
+            int maxSeconds = _timeSettings.maxSecondsPerPlayer();
+            Integer playerClock = _playerClocks.get(playerId);
+            int playerPendingTime = getCurrentUserPendingTime(playerId);
+            secondsLeft.put(playerId, maxSeconds - playerClock - playerPendingTime);
         }
         return secondsLeft;
     }

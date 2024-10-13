@@ -35,7 +35,8 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getNonExpiredLeagues(responseWriter);
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
@@ -47,7 +48,8 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
         }
     }
 
-    private void joinLeague(HttpRequest request, String leagueType, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    private void joinLeague(HttpRequest request, String leagueType, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
@@ -89,7 +91,8 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
 
         leagueElem.setAttribute("member", String.valueOf(inLeague));
         leagueElem.setAttribute("joinable", String.valueOf(!inLeague && end >= currentDate));
-        leagueElem.setAttribute("draftable", String.valueOf(inLeague && leagueData.isSoloDraftLeague() && start <= currentDate));
+        leagueElem.setAttribute("draftable",
+                String.valueOf(inLeague && leagueData.isSoloDraftLeague() && start <= currentDate));
         leagueElem.setAttribute("type", league.getType());
         leagueElem.setAttribute("name", league.getName());
         leagueElem.setAttribute("cost", String.valueOf(league.getCost()));

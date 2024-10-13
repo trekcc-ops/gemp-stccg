@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class DbLeagueMatchDAO implements LeagueMatchDAO {
+    private static final String SELECT_STATEMENT =
+            "select winner, loser, season_type from league_match where league_type=?";
     private final DbAccess _dbAccess;
 
     public DbLeagueMatchDAO(DbAccess dbAccess) {
@@ -20,7 +22,7 @@ public class DbLeagueMatchDAO implements LeagueMatchDAO {
     public final Collection<LeagueMatchResult> getLeagueMatches(String leagueId) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
-                try (PreparedStatement statement = conn.prepareStatement("select winner, loser, season_type from league_match where league_type=?")) {
+                try (PreparedStatement statement = conn.prepareStatement(SELECT_STATEMENT)) {
                     statement.setString(1, leagueId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Collection<LeagueMatchResult> result = new HashSet<>();

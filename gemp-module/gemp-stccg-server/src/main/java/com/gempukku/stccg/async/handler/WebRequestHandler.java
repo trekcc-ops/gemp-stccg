@@ -22,7 +22,8 @@ public class WebRequestHandler implements UriRequestHandler {
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty())
             uri = "index.html";
 

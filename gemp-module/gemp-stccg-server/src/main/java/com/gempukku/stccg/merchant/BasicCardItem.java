@@ -12,12 +12,12 @@ public class BasicCardItem implements CardItem {
     }
 
     @Override
-    public String getBlueprintId() {
+    public final String getBlueprintId() {
         return _blueprintId;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -27,8 +27,7 @@ public class BasicCardItem implements CardItem {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return _blueprintId != null ? _blueprintId.hashCode() : 0;
     }
 }
-

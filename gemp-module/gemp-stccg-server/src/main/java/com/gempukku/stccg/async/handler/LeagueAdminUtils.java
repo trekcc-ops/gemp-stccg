@@ -31,7 +31,8 @@ final class LeagueAdminUtils {
 
     static void previewSealedLeague(HttpRequest request, ResponseWriter responseWriter,
                                     ServerObjects objects) throws Exception {
-        Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request, objects.getPlayerDAO(), objects.getLoggedUserHolder());
+        Map<String,String> parameters =
+                getSoloDraftOrSealedLeagueParameters(request, objects.getPlayerDAO(), objects.getLoggedUserHolder());
         String serializedParameters = parameters.get("serializedParameters");
         CardBlueprintLibrary cardBlueprintLibrary = objects.getCardBlueprintLibrary();
         FormatLibrary formatLibrary = objects.getFormatLibrary();
@@ -39,7 +40,8 @@ final class LeagueAdminUtils {
         writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 
-    private static Map<String,String> getSoloDraftOrSealedLeagueParameters(HttpRequest request, PlayerDAO playerDAO, LoggedUserHolder loggedUserHolder)
+    private static Map<String,String> getSoloDraftOrSealedLeagueParameters(HttpRequest request, PlayerDAO playerDAO,
+                                                                           LoggedUserHolder loggedUserHolder)
             throws HttpProcessingException, IOException {
         validateLeagueAdmin(request, playerDAO, loggedUserHolder);
         String[] parameterNames = {"format", "start", "seriesDuration", "maxMatches", "name", "cost"};
@@ -99,7 +101,8 @@ final class LeagueAdminUtils {
         responseWriter.writeXmlResponse(doc);
     }
 
-    private static void validateLeagueAdmin(HttpMessage request, PlayerDAO playerDAO, LoggedUserHolder loggedUserHolder) throws HttpProcessingException {
+    private static void validateLeagueAdmin(HttpMessage request, PlayerDAO playerDAO,
+                                            LoggedUserHolder loggedUserHolder) throws HttpProcessingException {
         User player = DOMUtils.getResourceOwnerSafely(request, null, playerDAO, loggedUserHolder);
 
         if (!player.hasType(User.Type.LEAGUE_ADMIN))

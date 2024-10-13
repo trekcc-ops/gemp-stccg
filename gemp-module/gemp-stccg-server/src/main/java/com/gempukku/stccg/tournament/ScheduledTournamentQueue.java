@@ -44,7 +44,8 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException {
+    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback,
+                                        CollectionsManager collectionsManager) throws SQLException, IOException {
         long now = System.currentTimeMillis();
         if (now > _startTime) {
             if (_players.size() >= _minimumPlayers) {

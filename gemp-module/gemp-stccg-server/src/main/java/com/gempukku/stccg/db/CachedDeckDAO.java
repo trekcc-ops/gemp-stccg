@@ -11,9 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 public class CachedDeckDAO implements DeckDAO, Cached {
+
+    private final static int DECK_LIMIT = 100;
     private final DeckDAO _delegate;
-    private final Map<String, Set<Map.Entry<String, String>>> _playerDeckNames = Collections.synchronizedMap(new LRUMap<>(100));
-    private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap<>(100));
+    private final Map<String, Set<Map.Entry<String, String>>> _playerDeckNames =
+            Collections.synchronizedMap(new LRUMap<>(DECK_LIMIT));
+    private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap<>(DECK_LIMIT));
 
     public CachedDeckDAO(DbAccess dbAccess) {
         _delegate = LoggingProxy.createLoggingProxy(DeckDAO.class, new DbDeckDAO(dbAccess));

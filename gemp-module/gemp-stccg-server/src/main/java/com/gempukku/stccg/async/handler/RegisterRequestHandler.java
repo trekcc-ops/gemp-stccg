@@ -20,7 +20,8 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {

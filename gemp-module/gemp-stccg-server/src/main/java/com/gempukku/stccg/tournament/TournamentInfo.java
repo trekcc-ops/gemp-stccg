@@ -26,12 +26,12 @@ public class TournamentInfo {
         _tournamentStage = tournamentStage;
     }
 
-    public String getTournamentId() {
+    public final String getTournamentId() {
         return _tournamentId;
     }
 
-    Tournament createDefaultTournament(TournamentService tournamentService, String tournamentId,
-                                       CardBlueprintLibrary library) {
+    final Tournament createDefaultTournament(TournamentService tournamentService, String tournamentId,
+                                             CardBlueprintLibrary library) {
         PairingMechanism pairingMechanism = PairingMechanismRegistry.getPairingMechanism(_pairingMechanism);
         TournamentPrizes tournamentPrizes = TournamentPrizeSchemeRegistry.getTournamentPrizes(library, _prizesScheme);
         return new DefaultTournament(tournamentService, tournamentId, _tournamentName, _tournamentFormat,

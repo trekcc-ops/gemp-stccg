@@ -24,16 +24,16 @@ public class ProductLibrary {
     public ProductLibrary(CardBlueprintLibrary cardLibrary) {
         this(cardLibrary, AppConfig.getProductPath());
     }
-    public ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionDirectory) {
+    private ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionPath) {
         _cardLibrary = cardLibrary;
-        _packDirectory = packDefinitionDirectory;
+        _packDirectory = packDefinitionPath;
 
         collectionReady.acquireUninterruptibly();
         loadPacks(_packDirectory);
         collectionReady.release();
     }
 
-    public void ReloadPacks() {
+    public final void ReloadPacks() {
         try {
             collectionReady.acquire();
             loadPacks(_packDirectory);
@@ -65,30 +65,20 @@ public class ProductLibrary {
                 LOGGER.debug("Loading pack definitions for {}", def.name);
 
                 PackBox result = null;
-                String[] rarities;
-                String[] sets;
                 switch (def.type) {
                     case random -> {
                         if (def.items == null || def.items.isEmpty())
                             continue;
                         if (def.items.stream().anyMatch(x -> x.contains("%"))) {
-                            result = WeightedRandomPack.LoadFromArray(def.items);
+                            result = new WeightedRandomPack(def.items);
                         } else {
-                            result = UnweightedRandomPack.LoadFromArray(def.items);
+                            result = new UnweightedRandomPack(def.items);
                         }
-                    }
-                    case random_foil -> {
-                        if (def.data == null || !def.data.has("rarities") || !def.data.has("sets")) {
-                            System.out.println(def.name + " RANDOM_FOIL pack type must contain a definition for 'rarities' and 'sets' within data.");
-                            continue;
-                        }
-                        rarities = def.data.get("rarities").textValue().toUpperCase().split("\\s*,\\s*");
-                        sets = def.data.get("sets").textValue().split("\\s*,\\s*");
-                        result = new RandomFoilPack(rarities, sets, _cardLibrary);
                     }
                     case booster -> {
                         if (def.data == null || !def.data.has("set")) {
-                            System.out.println(def.name + " BOOSTER pack type must contain a definition for 'set' within data.");
+                            System.out.println(def.name +
+                                    " BOOSTER pack type must contain a definition for 'set' within data.");
                             continue;
                         }
                         if (def.data.get("set").textValue().contains(",")) {
@@ -101,7 +91,7 @@ public class ProductLibrary {
                     case pack, selection -> {
                         if (def.items == null || def.items.isEmpty())
                             continue;
-                        result = FixedPackBox.LoadFromArray(def.items);
+                        result = new FixedPackBox(def.items);
                     }
                 }
                 if(result == null)

@@ -24,7 +24,8 @@ final class DOMUtils {
         return docBuilder.newDocument();
     }
 
-    public static String getFormParameterSafely(InterfaceHttpPostRequestDecoder postRequestDecoder, String parameterName)
+    public static String getFormParameterSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,
+                                                String parameterName)
             throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
         InterfaceHttpData data = postRequestDecoder.getBodyHttpData(parameterName);
         if (data == null)

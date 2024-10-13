@@ -41,7 +41,8 @@ public class SealedLeagueData implements LeagueData {
         for (int i = 0; i < 4; i++) {
             _allSeries.add(
                     new DefaultLeagueSeriesData(_leaguePrizes, true, "Week " + (i + 1),
-                            DateUtils.offsetDate(start, i * seriesDuration), DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
+                            DateUtils.offsetDate(start, i * seriesDuration),
+                            DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
                             formatLibrary.getFormatByName(_format), _collectionType));
         }
     }
@@ -69,12 +70,13 @@ public class SealedLeagueData implements LeagueData {
                     startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
             }
         }
-        collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
+        collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType,
+                startingCollection);
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
-                       int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings,
+                       int oldStatus, int currentTime) {
         int status = oldStatus;
 
         for (int i = status; i < _allSeries.size(); i++) {
@@ -97,9 +99,13 @@ public class SealedLeagueData implements LeagueData {
             LeagueSeriesData lastSeries = _allSeries.getLast();
             if (currentTime > DateUtils.offsetDate(lastSeries.getEnd(), 1)) {
                 for (PlayerStanding leagueStanding : leagueStandings) {
-                    CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
+                    CardCollection leaguePrize =
+                            _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
                     if (leaguePrize != null)
-                        collectionsManager.addItemsToPlayerCollection(true, "End of league prizes", leagueStanding.getPlayerName(), _prizeCollectionType, leaguePrize.getAll());
+                        collectionsManager.addItemsToPlayerCollection(
+                                true, "End of league prizes", leagueStanding.getPlayerName(),
+                                _prizeCollectionType, leaguePrize.getAll()
+                        );
                 }
                 status++;
             }
