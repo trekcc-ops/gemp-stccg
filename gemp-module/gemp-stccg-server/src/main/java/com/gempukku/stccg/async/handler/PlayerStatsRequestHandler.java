@@ -52,12 +52,15 @@ public class PlayerStatsRequestHandler extends DefaultServerRequestHandler imple
     private static void appendStatistics(Iterable<? extends PlayerStatistic> statistics, Document doc, Node type) {
         for (PlayerStatistic casualStatistic : statistics) {
             Element entry = doc.createElement("entry");
+            int wins = casualStatistic.getWins();
+            int losses = casualStatistic.getLosses();
+
             entry.setAttribute("deckName", casualStatistic.getDeckName());
             entry.setAttribute("format", casualStatistic.getFormatName());
-            entry.setAttribute("wins", String.valueOf(casualStatistic.getWins()));
-            entry.setAttribute("losses", String.valueOf(casualStatistic.getLosses()));
-            entry.setAttribute("percentage", new DecimalFormat("#0.0%").format(
-                    1f * casualStatistic.getWins() / (casualStatistic.getLosses() + casualStatistic.getWins())));
+            entry.setAttribute("wins", String.valueOf(wins));
+            entry.setAttribute("losses", String.valueOf(losses));
+            entry.setAttribute("percentage",
+                    new DecimalFormat("#0.0%").format(1.0f * wins / (losses + wins)));
             type.appendChild(entry);
         }
     }

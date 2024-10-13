@@ -329,6 +329,7 @@ public abstract class CardGameMediator {
         if (queryTime != null) {
             long currentTime = System.currentTimeMillis();
             long diffSec = (currentTime - queryTime) / 1000;
+            //noinspection NumericCastThatLosesPrecision
             _playerClocks.put(participantId, _playerClocks.get(participantId) + (int) diffSec);
         }
     }
@@ -338,6 +339,7 @@ public abstract class CardGameMediator {
         if (_decisionQuerySentTimes.containsKey(participantId)) {
             long queryTime = _decisionQuerySentTimes.get(participantId);
             long currentTime = System.currentTimeMillis();
+            //noinspection NumericCastThatLosesPrecision
             result = (int) ((currentTime - queryTime) / 1000);
         }
         return result;

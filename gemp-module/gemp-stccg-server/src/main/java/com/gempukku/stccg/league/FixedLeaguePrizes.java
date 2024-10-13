@@ -25,6 +25,7 @@ public class FixedLeaguePrizes implements LeaguePrizes {
         _library = library;
     }
 
+    @SuppressWarnings("BadOddness")
     @Override
     public CardCollection getPrizeForLeagueMatchWinner(int winCount) {
         DefaultCardCollection winnerPrize = new DefaultCardCollection();

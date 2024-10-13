@@ -210,7 +210,9 @@ public class SwissPairingMechanism implements PairingMechanism {
         return maxNumberOfPoints;
     }
 
+    @SuppressWarnings("NonReproducibleMathCall")
     private static int getRoundCountBasedOnNumberOfPlayers(int numberOfPlayers) {
+        //noinspection NumericCastThatLosesPrecision
         return (int) (Math.ceil(Math.log(numberOfPlayers) / Math.log(2)));
     }
 }

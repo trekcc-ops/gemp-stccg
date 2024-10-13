@@ -66,9 +66,9 @@ public class BestOfOneStandingsProducer {
                 opponentGames += playerWinCounts.get(opponent).intValue() + playerLossCounts.get(opponent).intValue();
             }
             if (opponentGames != 0) {
-                standing.setOpponentWin(opponentWins * 1f / opponentGames);
+                standing.setOpponentWin(opponentWins * 1.0f / opponentGames);
             } else {
-                standing.setOpponentWin(0f);
+                standing.setOpponentWin(0.0f);
             }
             leagueStandings.add(standing);
         }
