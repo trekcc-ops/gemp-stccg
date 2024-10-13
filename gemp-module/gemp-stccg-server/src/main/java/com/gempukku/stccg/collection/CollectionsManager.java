@@ -2,9 +2,9 @@ package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.db.CollectionDAO;
-import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.CollectionDAO;
+import com.gempukku.stccg.database.PlayerDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.packs.ProductLibrary;
 
 import java.io.IOException;

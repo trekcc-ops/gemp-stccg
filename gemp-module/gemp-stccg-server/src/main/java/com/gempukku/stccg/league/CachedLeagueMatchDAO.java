@@ -1,9 +1,9 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.async.Cached;
-import com.gempukku.stccg.db.DbAccess;
-import com.gempukku.stccg.db.DbLeagueMatchDAO;
-import com.gempukku.stccg.db.LeagueMatchDAO;
+import com.gempukku.stccg.database.DbAccess;
+import com.gempukku.stccg.database.DbLeagueMatchDAO;
+import com.gempukku.stccg.database.LeagueMatchDAO;
 import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;

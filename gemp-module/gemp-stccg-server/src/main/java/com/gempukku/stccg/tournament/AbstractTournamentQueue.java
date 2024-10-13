@@ -4,7 +4,7 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
 
 import java.io.IOException;

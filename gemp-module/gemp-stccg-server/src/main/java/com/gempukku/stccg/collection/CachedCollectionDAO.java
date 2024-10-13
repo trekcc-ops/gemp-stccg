@@ -1,9 +1,9 @@
 package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.async.Cached;
-import com.gempukku.stccg.db.CollectionDAO;
-import com.gempukku.stccg.db.DbAccess;
-import com.gempukku.stccg.db.DbCollectionDAO;
+import com.gempukku.stccg.database.CollectionDAO;
+import com.gempukku.stccg.database.DbAccess;
+import com.gempukku.stccg.database.DbCollectionDAO;
 import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 

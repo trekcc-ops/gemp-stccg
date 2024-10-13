@@ -2,8 +2,8 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.db.IgnoreDAO;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.IgnoreDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.league.League;

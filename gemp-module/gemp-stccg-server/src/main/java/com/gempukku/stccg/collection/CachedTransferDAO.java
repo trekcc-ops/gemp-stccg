@@ -1,8 +1,8 @@
 package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.async.Cached;
-import com.gempukku.stccg.db.DbAccess;
-import com.gempukku.stccg.db.DbTransferDAO;
+import com.gempukku.stccg.database.DbAccess;
+import com.gempukku.stccg.database.DbTransferDAO;
 import com.gempukku.stccg.async.LoggingProxy;
 
 import java.util.Collections;

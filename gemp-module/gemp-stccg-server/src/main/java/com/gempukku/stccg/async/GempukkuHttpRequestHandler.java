@@ -3,7 +3,7 @@ package com.gempukku.stccg.async;
 import com.gempukku.stccg.async.handler.HttpUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
-import com.gempukku.stccg.db.IpBanDAO;
+import com.gempukku.stccg.database.IpBanDAO;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

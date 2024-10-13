@@ -1,6 +1,6 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
 import org.apache.logging.log4j.LogManager;

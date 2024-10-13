@@ -5,7 +5,7 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardItem;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.merchant.BasicCardItem;

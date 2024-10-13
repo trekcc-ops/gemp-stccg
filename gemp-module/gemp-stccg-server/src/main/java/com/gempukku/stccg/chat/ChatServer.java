@@ -1,8 +1,8 @@
 package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.AbstractServer;
-import com.gempukku.stccg.db.IgnoreDAO;
-import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.database.IgnoreDAO;
+import com.gempukku.stccg.database.PlayerDAO;
 
 import java.util.Map;
 import java.util.Set;

@@ -6,7 +6,7 @@ import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.TransferDAO;
 import com.gempukku.stccg.common.CardItemType;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.google.common.collect.Iterables;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpMethod;

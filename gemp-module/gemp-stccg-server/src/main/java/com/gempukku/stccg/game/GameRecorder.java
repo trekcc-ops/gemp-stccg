@@ -1,12 +1,12 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.db.DBData;
+import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.db.PlayerDAO;
+import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.hall.GameTimer;
 import org.w3c.dom.Document;

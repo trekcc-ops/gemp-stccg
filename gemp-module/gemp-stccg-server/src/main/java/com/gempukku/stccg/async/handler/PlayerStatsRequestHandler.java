@@ -2,8 +2,8 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.db.PlayerStatistic;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.PlayerStatistic;
+import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import org.w3c.dom.Document;

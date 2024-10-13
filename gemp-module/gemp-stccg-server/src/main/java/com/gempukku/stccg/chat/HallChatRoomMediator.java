@@ -1,7 +1,7 @@
 package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.db.IgnoreDAO;
+import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.service.AdminService;
 
 import java.util.*;

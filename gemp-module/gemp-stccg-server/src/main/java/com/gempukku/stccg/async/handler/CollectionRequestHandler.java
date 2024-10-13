@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.common.filterable.SubDeck;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;

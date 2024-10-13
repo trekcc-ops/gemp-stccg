@@ -7,8 +7,8 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.db.DeckDAO;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.DeckDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.GameSettings;
 
 import java.util.*;

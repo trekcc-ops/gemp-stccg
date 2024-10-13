@@ -1,10 +1,10 @@
 package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.async.Cached;
-import com.gempukku.stccg.db.DbAccess;
-import com.gempukku.stccg.db.DbLeagueParticipationDAO;
-import com.gempukku.stccg.db.LeagueParticipationDAO;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.DbAccess;
+import com.gempukku.stccg.database.DbLeagueParticipationDAO;
+import com.gempukku.stccg.database.LeagueParticipationDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
 

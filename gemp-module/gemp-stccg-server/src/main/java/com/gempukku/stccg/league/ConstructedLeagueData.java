@@ -8,7 +8,7 @@ import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.ArrayList;

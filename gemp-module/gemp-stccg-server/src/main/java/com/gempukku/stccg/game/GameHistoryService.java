@@ -1,10 +1,10 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.db.DBData;
+import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.db.GameHistoryDAO;
-import com.gempukku.stccg.db.PlayerStatistic;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.GameHistoryDAO;
+import com.gempukku.stccg.database.PlayerStatistic;
+import com.gempukku.stccg.database.User;
 
 import java.time.ZonedDateTime;
 import java.util.List;

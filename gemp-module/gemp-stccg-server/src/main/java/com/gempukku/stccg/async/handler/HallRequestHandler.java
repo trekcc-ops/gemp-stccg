@@ -10,7 +10,7 @@ import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.formats.FormatLibrary;

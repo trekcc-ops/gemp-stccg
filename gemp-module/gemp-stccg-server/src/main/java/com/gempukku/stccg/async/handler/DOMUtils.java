@@ -1,8 +1,8 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.PlayerDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.multipart.Attribute;
