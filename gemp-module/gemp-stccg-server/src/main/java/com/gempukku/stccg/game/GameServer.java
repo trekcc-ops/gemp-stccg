@@ -111,7 +111,7 @@ public class GameServer extends AbstractServer {
                 new GameResultListener() {
                     @Override
                     public void gameFinished(String winnerPlayerId, String winReason,
-                                             Map<String, String> loserPlayerIdsWithReasons) {
+                                             Map<String, String> loserReasons) {
                         _finishedGamesTime.put(gameId, new Date());
                     }
 
@@ -149,8 +149,8 @@ public class GameServer extends AbstractServer {
                 new GameResultListener() {
                     @Override
                     public void gameFinished(String winnerPlayerId, String winReason,
-                                             Map<String, String> loserPlayerIdsWithReasons) {
-                        final var loserEntry = loserPlayerIdsWithReasons.entrySet().iterator().next();
+                                             Map<String, String> loserReasons) {
+                        final var loserEntry = loserReasons.entrySet().iterator().next();
 
                         //potentially this is where to kick off any "reveal deck" events
                         //gameMediator.readoutParticipantDecks();

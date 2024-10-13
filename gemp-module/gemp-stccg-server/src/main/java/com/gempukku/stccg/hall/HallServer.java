@@ -432,9 +432,9 @@ public class HallServer extends AbstractServer {
             listener = new GameResultListener() {
                 @Override
                 public void gameFinished(String winnerPlayerId, String winReason,
-                                         Map<String, String> loserPlayerIdsWithReasons) {
+                                         Map<String, String> loserReasons) {
                     _serverObjects.getLeagueService().reportLeagueGameResult(
-                            league, seriesData, winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
+                            league, seriesData, winnerPlayerId, loserReasons.keySet().iterator().next());
                 }
 
                 @Override
@@ -481,10 +481,13 @@ public class HallServer extends AbstractServer {
                 }
             }
 
-            for (Map.Entry<String, TournamentQueue> runningTournamentQueue : new HashMap<>(_tournamentQueues).entrySet()) {
+            TournamentQueueCallback queueCallback;
+
+            for (Map.Entry<String, TournamentQueue> runningTournamentQueue :
+                    new HashMap<>(_tournamentQueues).entrySet()) {
                 String tournamentQueueKey = runningTournamentQueue.getKey();
                 TournamentQueue tournamentQueue = runningTournamentQueue.getValue();
-                TournamentQueueCallback queueCallback = new HallTournamentQueueCallback();
+                queueCallback = new HallTournamentQueueCallback(_runningTournaments);
                 // If it's finished, remove it
                 if (tournamentQueue.process(queueCallback, _collectionsManager)) {
                     _tournamentQueues.remove(tournamentQueueKey);
@@ -522,13 +525,6 @@ public class HallServer extends AbstractServer {
 
         } finally {
             _hallDataAccessLock.writeLock().unlock();
-        }
-    }
-
-    private class HallTournamentQueueCallback implements TournamentQueueCallback {
-        @Override
-        public final void createTournament(Tournament tournament) {
-            _runningTournaments.put(tournament.getTournamentId(), tournament);
         }
     }
 
@@ -585,8 +581,8 @@ public class HallServer extends AbstractServer {
             }
 
             @Override
-            public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
-                _tournament.reportGameFinished(winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
+            public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
+                _tournament.reportGameFinished(winnerPlayerId, loserReasons.keySet().iterator().next());
             }
 
             @Override

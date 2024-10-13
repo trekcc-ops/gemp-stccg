@@ -117,7 +117,7 @@ public class TournamentService {
         for (TournamentInfo tournamentInfo : _tournamentDao.getUnfinishedTournaments()) {
             LOGGER.debug("Entered for loop");
             Tournament tournament = _tournamentById.get(tournamentInfo.getTournamentId());
-            LOGGER.debug("Adding tournament " + tournament);
+            LOGGER.debug("Adding tournament {}", tournament);
             if (tournament == null)
                 tournament = createTournamentAndStoreInCache(tournamentInfo.getTournamentId(), tournamentInfo);
             result.add(tournament);

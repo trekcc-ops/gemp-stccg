@@ -62,7 +62,7 @@ public class ProductLibrary {
             List<JSONData.Pack> packs = JsonUtils.readListOfClassFromReader(reader, JSONData.Pack.class);
 
             for (JSONData.Pack def : packs) {
-                LOGGER.debug("Loading pack definitions for " + def.name);
+                LOGGER.debug("Loading pack definitions for {}", def.name);
 
                 PackBox result = null;
                 String[] rarities;

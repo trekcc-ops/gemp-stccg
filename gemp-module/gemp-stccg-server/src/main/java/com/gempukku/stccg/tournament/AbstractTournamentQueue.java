@@ -68,7 +68,8 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     }
 
     @Override
-    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException {
+    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck)
+            throws SQLException, IOException {
         String playerName = player.getName();
         if (!_players.contains(playerName) && isJoinable()) {
             if (_cost <= 0 || collectionsManager.removeCurrencyFromPlayerCollection(
@@ -81,7 +82,8 @@ public abstract class AbstractTournamentQueue implements TournamentQueue {
     }
 
     @Override
-    public final synchronized void leavePlayer(CollectionsManager collectionsManager, User player) throws SQLException, IOException {
+    public final synchronized void leavePlayer(CollectionsManager collectionsManager, User player)
+            throws SQLException, IOException {
         String playerName = player.getName();
         if (_players.contains(playerName)) {
             if (_cost > 0)

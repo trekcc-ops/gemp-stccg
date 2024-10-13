@@ -1,5 +1,7 @@
 package com.gempukku.stccg.hall;
 
+import java.util.Locale;
+
 public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, int maxSecondsPerDecision) {
 
     private static final GameTimer DEBUG_TIMER =
@@ -14,20 +16,19 @@ public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, 
             new GameTimer(true, "Glacial",
                     60 * 60 * 24 * 3, 60 * 60 * 24);
     // 5 minutes timeout, 40 minutes per game per player
-    public static final GameTimer COMPETITIVE_TIMER =
+    static final GameTimer COMPETITIVE_TIMER =
             new GameTimer(false, "Competitive", 60 * 40, 60 * 5);
-    public static final GameTimer TOURNAMENT_TIMER =
+    static final GameTimer TOURNAMENT_TIMER =
             new GameTimer(false, "Tournament", 60 * 40, 60 * 5);
 
-    public static GameTimer ResolveTimer(String timer) {
-        if (timer != null) {
-            switch (timer.toLowerCase()) {
-                case "debug" -> { return DEBUG_TIMER; }
-                case "blitz" -> { return BLITZ_TIMER; }
-                case "slow" -> { return SLOW_TIMER; }
-                case "glacial" -> { return GLACIAL_TIMER; }
-            }
-        }
-        return DEFAULT_TIMER;
+    static GameTimer ResolveTimer(String timer) {
+        if (timer == null) return DEFAULT_TIMER;
+        return switch(timer.toLowerCase(Locale.ROOT)) {
+            case "debug" -> DEBUG_TIMER;
+            case "blitz" -> BLITZ_TIMER;
+            case "slow" -> SLOW_TIMER;
+            case "glacial" -> GLACIAL_TIMER;
+            default -> DEFAULT_TIMER;
+        };
     }
 }

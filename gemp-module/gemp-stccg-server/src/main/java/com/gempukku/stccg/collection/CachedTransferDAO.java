@@ -41,13 +41,15 @@ public class CachedTransferDAO implements TransferDAO, Cached {
         return _delegate.consumeUndeliveredPackages(player);
     }
 
-    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency, CardCollection items) {
+    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
+                              CardCollection items) {
         if (notifyPlayer)
             _playersWithoutDelivery.remove(player);
         _delegate.addTransferTo(notifyPlayer, player, reason, collectionName, currency, items);
     }
 
-    public void addTransferFrom(String player, String reason, String collectionName, int currency, CardCollection items) {
+    public void addTransferFrom(String player, String reason, String collectionName, int currency,
+                                CardCollection items) {
         _delegate.addTransferFrom(player, reason, collectionName, currency, items);
     }
 }

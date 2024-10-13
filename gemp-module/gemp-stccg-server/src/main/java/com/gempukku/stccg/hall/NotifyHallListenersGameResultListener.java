@@ -19,7 +19,7 @@ public class NotifyHallListenersGameResultListener implements GameResultListener
 
     @Override
     public final void gameFinished(String winnerPlayerId, String winReason,
-                                   Map<String, String> loserPlayerIdsWithReasons) {
+                                   Map<String, String> loserReasons) {
         _hallServer.hallChanged();
     }
 }

@@ -57,7 +57,8 @@ public class HallCommunicationChannel implements LongPollableResource {
         return _lastConsumed;
     }
 
-    public final void processCommunicationChannel(HallServer hallServer, final User player, final HallChannelVisitor hallChannelVisitor) {
+    public final void processCommunicationChannel(HallServer hallServer, final User player,
+                                                  final HallChannelVisitor hallChannelVisitor) {
         updateLastAccess();
 
         hallChannelVisitor.channelNumber(_channelNumber);

@@ -19,7 +19,8 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     private final LeagueMatchDAO _leagueMatchDAO;
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
-    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches = Collections.synchronizedMap(new LRUMap<>(5));
+    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches =
+            Collections.synchronizedMap(new LRUMap<>(5));
 
     public CachedLeagueMatchDAO(DbAccess dbAccess) {
         _leagueMatchDAO = LoggingProxy.createLoggingProxy(LeagueMatchDAO.class, new DbLeagueMatchDAO(dbAccess));
