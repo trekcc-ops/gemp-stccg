@@ -227,7 +227,7 @@ public class CollectionsManager {
     }
 
     public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, String player,
-                                           CollectionType collectionType, Iterable<GenericCardItem> items)  {
+                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items)  {
         addItemsToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, items);
     }
 
