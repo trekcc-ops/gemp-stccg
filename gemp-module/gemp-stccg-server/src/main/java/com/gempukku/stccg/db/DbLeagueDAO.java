@@ -11,7 +11,8 @@ import java.util.List;
 
 public class DbLeagueDAO implements LeagueDAO {
     private static final String INSERT_STATEMENT =
-            "insert into league (name, type, class, parameters, start, end, status, cost) values (?, ?, ?, ?, ?, ?, ?, ?)";
+            "insert into league (name, type, class, parameters, start, end, status, cost) " +
+                    "values (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_STATEMENT =
             "select name, type, class, parameters, status, cost from league where end>=? order by start desc";
     private final DbAccess _dbAccess;

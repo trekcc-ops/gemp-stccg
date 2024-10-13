@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class ScheduledTournamentQueue extends AbstractTournamentQueue implements TournamentQueue {
+public class ScheduledTournamentQueue extends AbstractTournamentQueue {
     private static final long _signupTimeBeforeStart = 1000 * 60 * 60; // 60 minutes before start
     private final long _startTime;
     private final int _minimumPlayers;

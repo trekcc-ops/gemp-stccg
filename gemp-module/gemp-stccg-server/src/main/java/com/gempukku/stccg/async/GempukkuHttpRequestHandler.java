@@ -93,26 +93,6 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         }
     }
 
-    private static void sendResponse(ChannelOutboundInvoker ctx, HttpMessage request, FullHttpResponse response) {
-        boolean keepAlive = HttpUtil.isKeepAlive(request);
-
-        if (keepAlive) {
-            // Add 'Content-Length' header only for a keep-alive connection.
-            response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
-            // Add keep alive header as per:
-            // - http://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01.html#Connection
-            response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        }
-
-        ctx.write(response);
-        ctx.flush();
-
-        if (!keepAlive) {
-            // If keep-alive is off, close the connection once the content is fully written.
-            ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
-    }
-
     private boolean isBanned(String ipAddress) {
         if (_ipBanDAO.getIpBans().contains(ipAddress))
             return true;
@@ -308,7 +288,24 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                                   ChannelOutboundInvoker context, HttpMessage message) {
             FullHttpResponse response = new DefaultFullHttpResponse(
                     HTTP_1_1, status, Unpooled.wrappedBuffer(content), headers, EmptyHttpHeaders.INSTANCE);
-            GempukkuHttpRequestHandler.sendResponse(context, message, response);
+            boolean keepAlive = HttpUtil.isKeepAlive(message);
+
+            if (keepAlive) {
+                // Add 'Content-Length' header only for a keep-alive connection.
+                response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
+                // Add keep alive header as per:
+                // - http://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01.html#Connection
+                response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+            }
+
+            context.write(response);
+            context.flush();
+
+            if (!keepAlive) {
+                // If keep-alive is off, close the connection once the content is fully written.
+                context.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+            }
+
         }
     }
 }

@@ -376,19 +376,25 @@ public class HallServer extends AbstractServer {
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                visitor.visitTournamentQueue(tournamentQueueKey, tournamentQueue.getCost(), tournamentQueue.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournamentQueue.getFormat()).getName(), tournamentQueue.getTournamentQueueName(),
-                        tournamentQueue.getPrizesDescription(), tournamentQueue.getPairingDescription(), tournamentQueue.getStartCondition(),
-                        tournamentQueue.getPlayerCount(), tournamentQueue.isPlayerSignedUp(player.getName()), tournamentQueue.isJoinable());
+                visitor.visitTournamentQueue(tournamentQueueKey, tournamentQueue.getCost(),
+                        tournamentQueue.getCollectionType().getFullName(),
+                        _formatLibrary.getFormat(tournamentQueue.getFormat()).getName(),
+                        tournamentQueue.getTournamentQueueName(), tournamentQueue.getPrizesDescription(),
+                        tournamentQueue.getPairingDescription(), tournamentQueue.getStartCondition(),
+                        tournamentQueue.getPlayerCount(), tournamentQueue.isPlayerSignedUp(player.getName()),
+                        tournamentQueue.isJoinable());
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
                 String tournamentKey = tournamentEntry.getKey();
                 Tournament tournament = tournamentEntry.getValue();
-                visitor.visitTournament(tournamentKey, tournament.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournament.getFormat()).getName(), tournament.getTournamentName(), tournament.getPlayOffSystem(),
-                        tournament.getTournamentStage().getHumanReadable(),
-                        tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(), tournament.isPlayerInCompetition(player.getName()));
+                visitor.visitTournament(
+                        tournamentKey, tournament.getCollectionType().getFullName(),
+                        _formatLibrary.getFormat(tournament.getFormat()).getName(), tournament.getTournamentName(),
+                        tournament.getPlayOffSystem(), tournament.getTournamentStage().getHumanReadable(),
+                        tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(),
+                        tournament.isPlayerInCompetition(player.getName())
+                );
             }
         } finally {
             _hallDataAccessLock.readLock().unlock();
@@ -422,7 +428,8 @@ public class HallServer extends AbstractServer {
 
         GameResultListener listener = getGameResultListener(league, seriesData);
 
-        CardGameMediator mediator = createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
+        CardGameMediator mediator =
+                createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
         gameTable.startGame(mediator);
     }
 

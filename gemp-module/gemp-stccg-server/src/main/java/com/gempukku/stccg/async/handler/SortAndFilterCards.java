@@ -11,8 +11,8 @@ import java.text.Normalizer;
 import java.util.*;
 
 public class SortAndFilterCards {
-    public static <T extends CardItem> List<T> process(String filter, Iterable<? extends T> items, CardBlueprintLibrary cardLibrary,
-                                                       FormatLibrary formatLibrary) {
+    public static <T extends CardItem> List<T> process(String filter, Iterable<? extends T> items,
+                                                       CardBlueprintLibrary cardLibrary, FormatLibrary formatLibrary) {
         if (filter == null)
             filter = "";
         String[] filterParams = filter.split("\\|");
@@ -20,8 +20,10 @@ public class SortAndFilterCards {
         String[] sets = getSetFilter(filterParams);
         List<String> words = getWords(filterParams);
         Set<CardType> cardTypes = getEnumFilter(CardType.values(), CardType.class, "cardType", filterParams);
-        Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class, "tribblePower", filterParams);
-        Set<Affiliation> affiliations = getEnumFilter(Affiliation.values(), Affiliation.class, "affiliation", filterParams);
+        Set<TribblePower> tribblePowers = getEnumFilter(TribblePower.values(), TribblePower.class,
+                "tribblePower", filterParams);
+        Set<Affiliation> affiliations = getEnumFilter(Affiliation.values(), Affiliation.class, "affiliation",
+                filterParams);
 
         List<T> result = new ArrayList<>();
         Map<String, CardBlueprint> cardBlueprintMap = new HashMap<>();
@@ -62,7 +64,8 @@ public class SortAndFilterCards {
         return result;
     }
 
-    private static Comparator<CardItem> getCardItemComparator(String oneSort, Map<String, ? extends CardBlueprint> blueprintMap) {
+    private static Comparator<CardItem> getCardItemComparator(String oneSort,
+                                                              Map<String, ? extends CardBlueprint> blueprintMap) {
         Comparator<CardItem> comparator;
         switch (oneSort) {
             case "strength" -> comparator = new StrengthComparator(blueprintMap);
@@ -74,9 +77,11 @@ public class SortAndFilterCards {
         return comparator;
     }
 
-    private static boolean acceptsFilters(CardBlueprint blueprint, CardBlueprintLibrary library, FormatLibrary formatLibrary,
-                                          String blueprintId, String[] sets, Collection<CardType> cardTypes, String[] rarity,
-                                          Collection<Affiliation> affiliations, Collection<TribblePower> tribblePowers, Iterable<String> words) {
+    private static boolean acceptsFilters(CardBlueprint blueprint, CardBlueprintLibrary library,
+                                          FormatLibrary formatLibrary, String blueprintId, String[] sets,
+                                          Collection<CardType> cardTypes, String[] rarity,
+                                          Collection<Affiliation> affiliations, Collection<TribblePower> tribblePowers,
+                                          Iterable<String> words) {
         if (sets != null && !isInSets(blueprintId, sets, library, formatLibrary))
             return false;
         if (rarity != null && !Arrays.stream(rarity).toList().contains(blueprint.getRarity()))
@@ -237,7 +242,11 @@ public class SortAndFilterCards {
 
         @Override
         public final int compare(CardItem o1, CardItem o2) {
-            return _cardBlueprintMap.get(o1.getBlueprintId()).getFullName().compareTo(_cardBlueprintMap.get(o2.getBlueprintId()).getFullName());
+            String blueprintId1 = o1.getBlueprintId();
+            String blueprintId2 = o2.getBlueprintId();
+            String cardName1 = _cardBlueprintMap.get(blueprintId1).getFullName();
+            String cardName2 = _cardBlueprintMap.get(blueprintId2).getFullName();
+            return cardName1.compareTo(cardName2);
         }
     }
 
@@ -250,7 +259,8 @@ public class SortAndFilterCards {
 
         @Override
         public final int compare(CardItem o1, CardItem o2) {
-            return _cardBlueprintMap.get(o1.getBlueprintId()).getTribbleValue() - _cardBlueprintMap.get(o2.getBlueprintId()).getTribbleValue();
+            return _cardBlueprintMap.get(o1.getBlueprintId()).getTribbleValue() -
+                    _cardBlueprintMap.get(o2.getBlueprintId()).getTribbleValue();
         }
     }
 
@@ -263,7 +273,8 @@ public class SortAndFilterCards {
 
         @Override
         public final int compare(CardItem o1, CardItem o2) {
-            return getStrengthSafely(_cardBlueprintMap.get(o1.getBlueprintId())) - getStrengthSafely(_cardBlueprintMap.get(o2.getBlueprintId()));
+            return getStrengthSafely(_cardBlueprintMap.get(o1.getBlueprintId())) -
+                    getStrengthSafely(_cardBlueprintMap.get(o2.getBlueprintId()));
         }
 
         private static int getStrengthSafely(CardBlueprint blueprint) {

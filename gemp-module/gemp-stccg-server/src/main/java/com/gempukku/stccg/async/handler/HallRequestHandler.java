@@ -153,12 +153,14 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
             if(isInviteOnly) {
                 if(desc.isEmpty()) {
-                    responseWriter.writeXmlResponse(marshalException(new HallException("Invite-only games must have your intended opponent in the description")));
+                    responseWriter.writeXmlResponse(marshalException(new HallException(
+                            "Invite-only games must have your intended opponent in the description")));
                     return;
                 }
 
                 if(desc.equalsIgnoreCase(resourceOwner.getName())) {
-                    responseWriter.writeXmlResponse(marshalException(new HallException("Absolutely no playing with yourself!!  Private matches must be with someone else.")));
+                    responseWriter.writeXmlResponse(marshalException(new HallException(
+                            "Absolutely no playing with yourself!!  Private matches must be with someone else.")));
                     return;
                 }
 
@@ -166,12 +168,16 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
                     var player = _playerDao.getPlayer(desc);
                     if(player == null)
                     {
-                        responseWriter.writeXmlResponse(marshalException(new HallException("Cannot find player '" + desc + "'. Check your spelling and capitalization and ensure it is exact.")));
+                        responseWriter.writeXmlResponse(marshalException(new HallException(
+                                "Cannot find player '" + desc +
+                                        "'. Check your spelling and capitalization and ensure it is exact.")));
                         return;
                     }
                 }
                 catch(RuntimeException ex) {
-                    responseWriter.writeXmlResponse(marshalException(new HallException("Cannot find player '" + desc + "'. Check your spelling and capitalization and ensure it is exact.")));
+                    responseWriter.writeXmlResponse(marshalException(new HallException(
+                            "Cannot find player '" + desc +
+                                    "'. Check your spelling and capitalization and ensure it is exact.")));
                     return;
                 }
             }
@@ -179,7 +185,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
 
 
             try {
-                _hallServer.createNewTable(format, resourceOwner, deckName, timer, desc, isInviteOnly, isPrivate, !isVisible);
+                _hallServer.createNewTable(
+                        format, resourceOwner, deckName, timer, desc, isInviteOnly, isPrivate, !isVisible);
                 responseWriter.writeXmlResponse(null);
             }
             catch (HallException e) {
@@ -202,7 +209,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             if(doNotIgnoreError(ex)) {
                 LOGGER.error("Error response for {}", request.uri(), ex);
             }
-            responseWriter.writeXmlResponse(marshalException(new HallException("Failed to create table. Please try again later.")));
+            responseWriter.writeXmlResponse(marshalException(
+                    new HallException("Failed to create table. Please try again later.")));
         }
         finally {
             postDecoder.destroy();
@@ -219,7 +227,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         return !msg.contains("Your selected deck is not valid for this format");
     }
 
-    private void dropFromTournament(HttpRequest request, String tournamentId, ResponseWriter responseWriter) throws Exception {
+    private void dropFromTournament(HttpRequest request, String tournamentId, ResponseWriter responseWriter)
+            throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
@@ -351,7 +360,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             processLoginReward(resourceOwner.getName());
 
             try {
-                HallCommunicationChannel commChannel = _hallServer.getCommunicationChannel(resourceOwner, channelNumber);
+                HallCommunicationChannel commChannel =
+                        _hallServer.getCommunicationChannel(resourceOwner, channelNumber);
                 LongPollingResource polledResource =
                         new HallUpdateLongPollingResource(commChannel, request, resourceOwner, responseWriter);
                 _longPollingSystem.processLongPollingResource(polledResource, commChannel);

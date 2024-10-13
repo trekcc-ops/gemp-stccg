@@ -24,7 +24,6 @@ public class ReplayMetadata {
     private final Map<String, Integer> PlayerIDs = new HashMap<>();
     @SuppressWarnings("unused") // Class accessed via JSON which may not be obvious to IDE
     public String WentFirst;
-    private boolean GameStarted;
 
     private final Map<String, String> AllCards = new HashMap<>();
 
@@ -65,7 +64,7 @@ public class ReplayMetadata {
     private final Pattern orderPattern = Pattern.compile("([\\w-]+) has chosen to go (.*)");
 
     private final void ParseReplay(String player, Iterable<? extends GameEvent> events) {
-        GameStarted = false;
+        boolean gameStarted = false;
 
         for(var event : events) {
             if(event.getType() == GameEvent.Type.SEND_MESSAGE) {
@@ -92,11 +91,11 @@ public class ReplayMetadata {
                     }
                 }
             }
-            else if(!GameStarted && event.getType() == GameEvent.Type.GAME_PHASE_CHANGE) {
+            else if(!gameStarted && event.getType() == GameEvent.Type.GAME_PHASE_CHANGE) {
                 var phase = Phase.findPhase(event.getAttribute(GameEvent.Attribute.phase));
                 if (phase == Phase.BETWEEN_TURNS)
                 {
-                    GameStarted = true;
+                    gameStarted = true;
                 }
             }
 

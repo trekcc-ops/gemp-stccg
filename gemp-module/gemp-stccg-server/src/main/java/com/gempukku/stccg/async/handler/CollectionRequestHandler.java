@@ -197,7 +197,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
         for (League league : _leagueService.getActiveLeagues()) {
             LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSeries(league);
-            if (seriesData != null && seriesData.isLimited() && _leagueService.isPlayerInLeague(league, resourceOwner)) {
+            if (seriesData != null && seriesData.isLimited() &&
+                    _leagueService.isPlayerInLeague(league, resourceOwner)) {
                 CollectionType collectionType = seriesData.getCollectionType();
                 Element collectionElem = doc.createElement("collection");
                 collectionElem.setAttribute("type", collectionType.getCode());

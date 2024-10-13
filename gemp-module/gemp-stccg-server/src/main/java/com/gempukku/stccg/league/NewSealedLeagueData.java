@@ -44,7 +44,8 @@ public class NewSealedLeagueData implements LeagueData {
         for (int i = 0; i < def.GetSeriesCount(); i++) {
             _allSeries.add(
                     new DefaultLeagueSeriesData(_leaguePrizes, true, "Series " + (i + 1),
-                            DateUtils.offsetDate(start, i * seriesDuration), DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
+                            DateUtils.offsetDate(start, i * seriesDuration),
+                            DateUtils.offsetDate(start, (i + 1) * seriesDuration - 1), maxMatches,
                             def.GetFormat(), _collectionType));
         }
     }
@@ -72,12 +73,13 @@ public class NewSealedLeagueData implements LeagueData {
                     startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
             }
         }
-        collectionManager.addPlayerCollection(true, "Sealed league product", player, _collectionType, startingCollection);
+        collectionManager.addPlayerCollection(
+                true, "Sealed league product", player, _collectionType, startingCollection);
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
-                       int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings,
+                       int oldStatus, int currentTime) {
         int status = oldStatus;
 
         for (int i = status; i < _allSeries.size(); i++) {
@@ -87,7 +89,9 @@ public class NewSealedLeagueData implements LeagueData {
                 var leagueProduct = sealedLeague.GetProductForSeries(i);
                 Map<User, CardCollection> map = collectionsManager.getPlayersCollection(_collectionType.getCode());
                 for (Map.Entry<User, CardCollection> playerCardCollectionEntry : map.entrySet()) {
-                    collectionsManager.addItemsToPlayerCollection(true, "New sealed league product", playerCardCollectionEntry.getKey(), _collectionType, leagueProduct);
+                    collectionsManager.addItemsToPlayerCollection(
+                            true, "New sealed league product", playerCardCollectionEntry.getKey(),
+                            _collectionType, leagueProduct);
                 }
                 status = i + 1;
             }

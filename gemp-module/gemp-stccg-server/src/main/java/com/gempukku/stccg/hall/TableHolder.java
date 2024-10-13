@@ -88,7 +88,9 @@ class TableHolder {
             LeagueSeriesData seriesData = awaitingTable.getGameSettings().getSeriesData();
             if (!leagueService.canPlayRankedGame(league, seriesData, player.getName()))
                 throw new HallException("You have already played max games in league");
-            if (!awaitingTable.getPlayerNames().isEmpty() && !leagueService.canPlayRankedGameAgainst(league, seriesData, awaitingTable.getPlayerNames().getFirst(), player.getName()))
+            if (!awaitingTable.getPlayerNames().isEmpty() &&
+                    !leagueService.canPlayRankedGameAgainst(league, seriesData,
+                            awaitingTable.getPlayerNames().getFirst(), player.getName()))
                 throw new HallException(
                         "You have already played ranked league game against this player in that series");
         }

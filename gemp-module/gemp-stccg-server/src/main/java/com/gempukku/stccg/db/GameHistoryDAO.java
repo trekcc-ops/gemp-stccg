@@ -8,7 +8,8 @@ import java.util.List;
 public interface GameHistoryDAO {
     int addGameHistory(String winner, int winnerId, String loser, int loserId, String winReason, String loseReason,
                        String winRecordingId, String loseRecordingId, String formatName, String tournament,
-                       String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate, int version);
+                       String winnerDeckName, String loserDeckName, ZonedDateTime startDate, ZonedDateTime endDate,
+                       int version);
     DBData.GameHistory getGameHistory(String recordID);
     boolean doesReplayIDExist(String id);
     List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count);

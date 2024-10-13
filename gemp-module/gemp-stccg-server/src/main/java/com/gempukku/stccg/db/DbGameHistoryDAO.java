@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("LongLine")
 public class DbGameHistoryDAO implements GameHistoryDAO {
     private final DbAccess _dbAccess;
     private final DateTimeFormatter _dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");

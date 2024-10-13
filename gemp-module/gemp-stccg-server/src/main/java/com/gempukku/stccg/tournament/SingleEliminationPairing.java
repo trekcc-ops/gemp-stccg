@@ -8,6 +8,7 @@ public class SingleEliminationPairing implements PairingMechanism {
     private final String _registryRepresentation;
 
     public SingleEliminationPairing(String registryRepresentation) {
+
         _registryRepresentation = registryRepresentation;
     }
 
