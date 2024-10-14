@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("MagicNumber")
 public class CardBlueprintLibraryTest extends AbstractLogicTest {
 
     // TODO - Add check that all card images are valid URLs

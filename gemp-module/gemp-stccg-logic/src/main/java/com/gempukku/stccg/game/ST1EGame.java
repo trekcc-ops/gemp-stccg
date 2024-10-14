@@ -56,7 +56,7 @@ public class ST1EGame extends DefaultGame {
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
                 st1estate.sendStateToAllListeners();
-            } else throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
+            } else throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
         }
     }
 

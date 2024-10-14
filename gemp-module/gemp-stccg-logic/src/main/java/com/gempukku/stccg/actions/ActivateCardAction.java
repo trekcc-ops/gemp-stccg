@@ -5,11 +5,11 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class ActivateCardAction extends AbstractCostToEffectAction {
 
-    protected final PhysicalCard _physicalCard;
-    protected ActivateCardEffect _activateCardEffect;
-    protected boolean _sentMessage;
-    protected boolean _activated;
-    protected boolean _prevented;
+    private final PhysicalCard _physicalCard;
+    private ActivateCardEffect _activateCardEffect;
+    private boolean _sentMessage;
+    private boolean _activated;
+    private boolean _prevented;
     protected final DefaultGame _game;
 
     public ActivateCardAction(PhysicalCard physicalCard) {

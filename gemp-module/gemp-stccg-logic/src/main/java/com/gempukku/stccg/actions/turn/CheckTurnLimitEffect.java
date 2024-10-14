@@ -25,7 +25,8 @@ public class CheckTurnLimitEffect extends DefaultEffect implements UsageEffect {
 
     @Override
     public FullEffectResult playEffectReturningResult() {
-        int incrementedBy = _game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix).incrementToLimit(_limit, 1);
+        int incrementedBy = _game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix)
+                .incrementToLimit(_limit, 1);
         return new FullEffectResult(incrementedBy > 0);
     }
 }

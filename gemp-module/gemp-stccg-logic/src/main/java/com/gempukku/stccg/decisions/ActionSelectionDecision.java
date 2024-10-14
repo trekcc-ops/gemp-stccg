@@ -54,7 +54,8 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
                 try {
                     images[i] = _game.getBlueprintLibrary().getCardBlueprint(blueprints[i]).getImageUrl();
                 } catch (CardNotFoundException exp) {
-                    throw new RuntimeException("ActionSelectionDecision unable to find image URLs for all card blueprints", exp);
+                    throw new RuntimeException(
+                            "ActionSelectionDecision unable to find image URLs for all card blueprints", exp);
                 }
             }
         }

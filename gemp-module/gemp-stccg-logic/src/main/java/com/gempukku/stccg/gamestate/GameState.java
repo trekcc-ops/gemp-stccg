@@ -359,7 +359,7 @@ public abstract class GameState implements Snapshotable<GameState> {
         }
 
         if (card.getZone() != null)
-            LOGGER.error("Card was in " + card.getZone() + " when tried to add to zone: " + zone);
+            LOGGER.error("Card was in {} when tried to add to zone: {}", card.getZone(), zone);
 
         card.setZone(zone);
         for (GameStateListener listener : getAllGameStateListeners())

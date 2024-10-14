@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
@@ -17,9 +16,9 @@ public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends Abstract
 
     private final boolean _reveal;
 
-    public PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(DefaultGame game, Action action, String playerId,
+    public PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(Action action, String playerId,
                                                               boolean reveal, Filterable... filters) {
-        super(game);
+        super(action.getGame());
         _action = action;
         _playerId = playerId;
         _filters = filters;

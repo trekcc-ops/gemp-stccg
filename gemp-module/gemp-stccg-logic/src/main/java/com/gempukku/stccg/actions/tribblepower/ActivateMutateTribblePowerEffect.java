@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class ActivateMutateTribblePowerEffect extends ActivateTribblePowerEffect
     protected FullEffectResult playEffectReturningResult() {
         SubAction subAction = _action.createSubAction();
         TribblesGameState gameState = getGame().getGameState();
-        List<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(_activatingPlayer));
+        Collection<PhysicalCard> playPile = new LinkedList<>(gameState.getPlayPile(_activatingPlayer));
 
         // Count the number of cards in your play pile.
         int cardsInPlayPile = playPile.size();

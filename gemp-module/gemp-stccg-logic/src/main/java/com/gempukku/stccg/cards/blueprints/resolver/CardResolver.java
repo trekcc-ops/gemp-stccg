@@ -62,9 +62,10 @@ public class CardResolver {
     }
 
 
-    public static EffectBlueprint resolveCardsInPlay(String type, FilterableSource typeFilter, FilterableSource choiceFilter,
-                                                     FilterableSource playabilityFilter, ValueSource countSource,
-                                                     String memory, PlayerSource choicePlayer, String choiceText,
+    public static EffectBlueprint resolveCardsInPlay(String type, FilterableSource typeFilter,
+                                                     FilterableSource choiceFilter, FilterableSource playabilityFilter,
+                                                     ValueSource countSource, String memory, PlayerSource choicePlayer,
+                                                     String choiceText,
                                                      Function<ActionContext, List<PhysicalCard>> cardSource) {
 
         String selectionType = (type.contains("(")) ? type.substring(0,type.indexOf("(")) : type;

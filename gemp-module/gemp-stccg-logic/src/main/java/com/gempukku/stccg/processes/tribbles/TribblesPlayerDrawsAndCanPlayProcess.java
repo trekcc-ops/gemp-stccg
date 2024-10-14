@@ -16,7 +16,6 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
     private final String _playerId;
     private final TribblesGame _game;
     public TribblesPlayerDrawsAndCanPlayProcess(String playerId, TribblesGame game) {
-        super();
         _playerId = playerId;
         _game = game;
     }

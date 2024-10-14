@@ -15,15 +15,16 @@ public class ActivateAcquireTribblePowerEffect extends ActivateTribblePowerEffec
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-
+        FullEffectResult result;
         if (isPlayableInFull()) {
             SubAction subAction = _action.createSubAction();
             subAction.appendEffect(new AllPlayersDiscardFromHandEffect(_action, false, true));
             subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(
                     getGame(), _action, _activatingPlayer,false,1));
-            return addActionAndReturnResult(getGame(), subAction);
+            result = addActionAndReturnResult(getGame(), subAction);
         }
         else
-            return new FullEffectResult(false);
+            result = new FullEffectResult(false);
+        return result;
     }
 }

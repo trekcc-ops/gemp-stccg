@@ -10,7 +10,6 @@ public class TribblesStartOfRoundGameProcess extends GameProcess {
     private final TribblesGame _game;
 
     public TribblesStartOfRoundGameProcess(String firstPlayer, TribblesGame game) {
-        super();
         _game = game;
         _firstPlayer = firstPlayer;
     }

@@ -12,7 +12,6 @@ public class TribblesEndOfTurnGameProcess extends GameProcess {
     private GameProcess _nextProcess;
     private final TribblesGame _game;
     public TribblesEndOfTurnGameProcess(TribblesGame game) {
-        super();
         _game = game;
     }
     @Override

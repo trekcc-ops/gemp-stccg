@@ -15,7 +15,8 @@ public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
 
     List<Action> getRequiredAfterTriggers(Collection<? extends EffectResult> effectResults);
 
-    Map<Action, EffectResult> getOptionalAfterTriggers(String playerId, Collection<? extends EffectResult> effectResults);
+    Map<Action, EffectResult> getOptionalAfterTriggers(String playerId,
+                                                       Collection<? extends EffectResult> effectResults);
 
     List<Action> getOptionalAfterActions(String playerId, Collection<? extends EffectResult> effectResults);
 

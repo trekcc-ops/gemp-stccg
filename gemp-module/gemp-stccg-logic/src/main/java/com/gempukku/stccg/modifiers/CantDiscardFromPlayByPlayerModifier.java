@@ -14,7 +14,8 @@ public class CantDiscardFromPlayByPlayerModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source) {
+    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card,
+                                          PhysicalCard source) {
         return _notPlayer.equals(performingPlayer);
     }
 }

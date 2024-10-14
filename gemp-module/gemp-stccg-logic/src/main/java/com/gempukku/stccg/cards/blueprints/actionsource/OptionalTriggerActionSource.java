@@ -11,7 +11,6 @@ public class OptionalTriggerActionSource extends TriggerActionSource {
     private final RequiredType _requiredType = RequiredType.OPTIONAL;
 
     public OptionalTriggerActionSource(TriggerTiming triggerTiming) {
-        super();
         _triggerTiming = triggerTiming;
     }
 

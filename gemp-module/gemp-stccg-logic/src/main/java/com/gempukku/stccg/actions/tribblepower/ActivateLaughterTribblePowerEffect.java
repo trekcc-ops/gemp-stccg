@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffect {
+
+    private final static int BONUS_POINTS = 25000;
     private String _discardingPlayer;
     public ActivateLaughterTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
         super(action, actionContext);
@@ -77,7 +79,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
                 game, _action, secondPlayerChosen, 1, false, Filters.any));
         if (!(Objects.equals(_discardingPlayer, _activatingPlayer) ||
                 Objects.equals(secondPlayerChosen, _activatingPlayer)))
-            subAction.appendEffect(new ScorePointsEffect(game, _source, _activatingPlayer, 25000));
+            subAction.appendEffect(new ScorePointsEffect(game, _source, _activatingPlayer, BONUS_POINTS));
         game.getActionsEnvironment().addActionToStack(subAction);
     }
 }

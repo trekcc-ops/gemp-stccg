@@ -12,7 +12,8 @@ public class CancelStrengthBonusSourceModifier extends AbstractModifier {
     }
 
     @Override
-    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget) {
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource,
+                                                PhysicalCard modifierTarget) {
         return true;
     }
 }

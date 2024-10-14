@@ -162,7 +162,9 @@ public class CardBlueprint {
     public FacilityType getFacilityType() { return _facilityType; }
     public void addAffiliation(Affiliation affiliation) { _affiliations.add(affiliation); }
     public Set<Affiliation> getAffiliations() { return _affiliations; }
-    public void setAttribute(CardAttribute attribute, int attributeValue) { _cardAttributes.put(attribute, attributeValue); }
+    public void setAttribute(CardAttribute attribute, int attributeValue) {
+        _cardAttributes.put(attribute, attributeValue);
+    }
     public int getAttribute(CardAttribute attribute) { return _cardAttributes.get(attribute); }
     public int getRange() { return _cardAttributes.get(CardAttribute.RANGE); }
     public void setStaffing(List<CardIcon> staffing) { _staffing = staffing; }
@@ -170,9 +172,6 @@ public class CardBlueprint {
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
     public void addSkill(Skill skill) { _skills.add(skill); }
-    public void addSkill(RegularSkill regularSkill) {
-        _skills.add(regularSkill);
-    }
     public void addSkill(SkillName skillName) { _skills.add(new RegularSkill(skillName, 1)); }
     public void addSkill(SkillName skillName, int level) { _skills.add(new RegularSkill(skillName, level)); }
         // TODO - Not an exact match for how skills are processed

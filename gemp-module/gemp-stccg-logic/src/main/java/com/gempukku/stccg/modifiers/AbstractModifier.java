@@ -24,7 +24,8 @@ public abstract class AbstractModifier implements Modifier {
         this(source, text, affectFilter, null, effect);
     }
 
-    protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition, ModifierEffect effect) {
+    protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition,
+                               ModifierEffect effect) {
         this(source, null, affectFilter, condition, effect);
     }
 
@@ -84,7 +85,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget) {
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource,
+                                                PhysicalCard modifierTarget) {
         return false;
     }
 
@@ -134,7 +136,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source) {
+    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card,
+                                          PhysicalCard source) {
         return true;
     }
 

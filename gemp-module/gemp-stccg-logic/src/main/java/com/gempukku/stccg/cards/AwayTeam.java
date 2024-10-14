@@ -79,8 +79,8 @@ public class AwayTeam implements AttemptingUnit {
     }
 
     public boolean canBeDisbanded() {
-            // TODO - Away Teams may also be eligible to be disbanded if they're not on a mission, this should check presence instead
-                // TODO - Check not sufficient in complex situations
+        /* TODO - Away Teams may also be eligible to be disbanded if they're not on a mission,
+            this should check presence instead. Check not sufficient in complex situations */
         if (_parentCard instanceof MissionCard mission) {
             List<AwayTeam> awayTeamsOnSurface = mission.getYourAwayTeamsOnSurface(_player).toList();
             for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {

@@ -40,7 +40,7 @@ public class ST2EGame extends DefaultGame {
     protected void restoreSnapshot() {
         if (_snapshotToRestore != null) {
             if (!(_snapshotToRestore.getGameState() instanceof ST2EGameState))
-                throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
+                throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
             else {
                 _gameState = (ST2EGameState) _snapshotToRestore.getGameState();
                 _modifiersLogic = _snapshotToRestore.getModifiersLogic();

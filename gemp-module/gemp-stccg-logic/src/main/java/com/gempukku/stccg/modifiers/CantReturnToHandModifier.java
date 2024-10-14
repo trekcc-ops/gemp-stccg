@@ -9,7 +9,8 @@ import com.gempukku.stccg.game.DefaultGame;
 public class CantReturnToHandModifier extends AbstractModifier {
     private final Filter _sourceFilter;
 
-    public CantReturnToHandModifier(PhysicalCard source, String text, Filterable affectFilter, Filterable sourceFilter) {
+    public CantReturnToHandModifier(PhysicalCard source, String text, Filterable affectFilter,
+                                    Filterable sourceFilter) {
         super(source, text, affectFilter, ModifierEffect.RETURN_TO_HAND_MODIFIER);
         _sourceFilter = Filters.and(sourceFilter);
     }

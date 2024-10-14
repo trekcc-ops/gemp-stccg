@@ -186,7 +186,7 @@ public class CardBlueprintLibrary {
                     _allSets.get(setNumber).addCard(blueprintId, cardBlueprint.getRarity());
                 } catch (Exception exp) {
                     _blueprintLoadErrorEncountered = true;
-                    LOGGER.error("Unable to load card " + blueprintId, exp);
+                    LOGGER.error("Unable to load card {}", blueprintId, exp);
                 }
             }
         } catch (Exception exp) {
@@ -196,9 +196,9 @@ public class CardBlueprintLibrary {
                 case IOException ioException -> "Error while loading file";
                 default -> "Unexpected error while parsing file";
             };
-            LOGGER.error(errorMessage + " " + file.getAbsolutePath(), exp);
+            LOGGER.error("{} {}", errorMessage, file.getAbsolutePath(), exp);
         }
-        LOGGER.debug("Loaded JSON card file " + file.getName());
+        LOGGER.debug("Loaded JSON card file {}", file.getName());
     }
 
     private CardBlueprint loadCardFromDeserializer(String blueprintId, JsonNode node)
