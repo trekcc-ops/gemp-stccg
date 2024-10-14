@@ -26,11 +26,11 @@ public class Blueprint_101_065_Test extends AbstractAtTest {
         final PhysicalReportableCard1E tricorder = 
                 new PhysicalReportableCard1E(_game, 102, player1, _cardLibrary.get("101_065"));
         final PersonnelCard geordi =
-                new PersonnelCard(_game, 103, player1, _cardLibrary.get("101_212"));
+                new PersonnelCard(_game, 103, player1, _cardLibrary.get("101_212")); // ENGINEER class, no SCIENCE
         final PersonnelCard tamal =
-                new PersonnelCard(_game, 104, player1, _cardLibrary.get("172_031"));
+                new PersonnelCard(_game, 104, player1, _cardLibrary.get("172_031")); // ENGINEER class + SCIENCE
         final PersonnelCard deanna =
-                new PersonnelCard(_game, 105, player1, _cardLibrary.get("101_205"));
+                new PersonnelCard(_game, 105, player1, _cardLibrary.get("101_205")); // no ENGINEER or SCIENCE
 
         // Federation Outpost
         final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
