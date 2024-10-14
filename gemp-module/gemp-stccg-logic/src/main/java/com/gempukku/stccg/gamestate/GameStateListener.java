@@ -25,5 +25,6 @@ public interface GameStateListener {
     void decisionRequired(String playerId, AwaitingDecision awaitingDecision);
 
     void sendWarning(String playerId, String warning);
-
+    long getLastAccessed();
+    int getChannelNumber();
 }

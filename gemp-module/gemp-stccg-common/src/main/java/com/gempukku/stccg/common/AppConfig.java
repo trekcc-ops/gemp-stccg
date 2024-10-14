@@ -81,4 +81,8 @@ public class AppConfig {
     public static File getDraftPath() { return getResourceFile("draft"); }
     public static String getPlaytestUrl() { return getProperty("playtest.url"); }
     public static String getPlaytestPrefixUrl() { return getProperty("playtest.prefix.url"); }
+    public static int getPort() {
+        String port = getProperty("port");
+        return Integer.parseInt(port);
+    }
 }

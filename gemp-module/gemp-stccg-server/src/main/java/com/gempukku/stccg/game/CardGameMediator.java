@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.hall.GameTimer;
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class CardGameMediator {
+    private static final long MILLIS_TO_SECONDS = 1000L;
     private static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     private static final String ERROR_MESSAGE = "Error processing game decision";
     private final Map<String, GameCommunicationChannel> _communicationChannels =
@@ -104,16 +106,7 @@ public abstract class CardGameMediator {
 
     public final String getGameStatus() {
         DefaultGame game = getGame();
-        final Phase currentPhase = game.getCurrentPhase();
-        String gameStatus;
-        if (game.isCancelled())
-            gameStatus = "Cancelled";
-        else if (game.isFinished())
-            gameStatus = "Finished";
-        else if (currentPhase.isSeedPhase())
-            gameStatus = "Seeding";
-        else gameStatus = "Playing";
-        return gameStatus;
+        return game.getStatus();
     }
 
     public final boolean isFinished() {
@@ -144,24 +137,27 @@ public abstract class CardGameMediator {
         try {
             long currentTime = System.currentTimeMillis();
             Map<String, GameCommunicationChannel> channelsCopy = new HashMap<>(_communicationChannels);
+            DefaultGame game = getGame();
             for (Map.Entry<String, GameCommunicationChannel> playerChannels : channelsCopy.entrySet()) {
                 String playerId = playerChannels.getKey();
                 // Channel is stale (user no longer connected to game, to save memory, we remove the channel
                 // User can always reconnect and establish a new channel
-                GameCommunicationChannel channel = playerChannels.getValue();
-                if (currentTime > channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * 1000L) {
-                    getGame().removeGameStateListener(channel);
+                GameStateListener channel = playerChannels.getValue();
+                if (currentTime >
+                        channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
+                    game.removeGameStateListener(channel);
                     _communicationChannels.remove(playerId);
                 }
             }
 
-            if (getGame() != null && getGame().getWinnerPlayerId() == null) {
-                for (Map.Entry<String, Long> playerDecision : new HashMap<>(_decisionQuerySentTimes).entrySet()) {
+            if (game != null && game.getWinnerPlayerId() == null) {
+                Map<String, Long> decisionTimes = new HashMap<>(_decisionQuerySentTimes);
+                for (Map.Entry<String, Long> playerDecision : decisionTimes.entrySet()) {
                     String player = playerDecision.getKey();
                     long decisionSent = playerDecision.getValue();
-                    if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * 1000L) {
+                    if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
                         addTimeSpentOnDecisionToUserClock(player);
-                        getGame().playerLost(player, "Player decision timed-out");
+                        game.playerLost(player, "Player decision timed-out");
                     }
                 }
 
@@ -170,7 +166,7 @@ public abstract class CardGameMediator {
                     if (_timeSettings.maxSecondsPerPlayer() -
                             playerClock.getValue() - getCurrentUserPendingTime(player) < 0) {
                         addTimeSpentOnDecisionToUserClock(player);
-                        getGame().playerLost(player, "Player run out of time");
+                        game.playerLost(player, "Player run out of time");
                     }
                 }
             }
@@ -210,7 +206,7 @@ public abstract class CardGameMediator {
         String playerName = player.getName();
         _writeLock.lock();
         try {
-            GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
+            GameStateListener communicationChannel = _communicationChannels.get(playerName);
             if (communicationChannel == null)
                 throw new SubscriptionExpiredException();
             if (communicationChannel.getChannelNumber() != channelNumber)
@@ -220,8 +216,9 @@ public abstract class CardGameMediator {
 
             if (awaitingDecision != null) {
                 if (awaitingDecision.getAwaitingDecisionId() == decisionId && !game.isFinished()) {
+                    GameState gameState = game.getGameState();
                     try {
-                        game.getGameState().playerDecisionFinished(playerName);
+                        gameState.playerDecisionFinished(playerName);
                         awaitingDecision.decisionMade(answer);
 
                         // Decision successfully made, add the time to user clock
@@ -233,7 +230,8 @@ public abstract class CardGameMediator {
                     } catch (DecisionResultInvalidException exp) {
                         /* Participant provided wrong answer - send a warning message,
                         and ask again for the same decision */
-                        game.getGameState().sendWarning(playerName, exp.getWarningMessage());
+                        String warningMessage = exp.getWarningMessage();
+                        gameState.sendWarning(playerName, warningMessage);
                         game.sendAwaitingDecision(playerName, awaitingDecision);
                     } catch (RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
@@ -256,15 +254,14 @@ public abstract class CardGameMediator {
         _readLock.lock();
         try {
             GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
-            if (communicationChannel != null) {
-                if (communicationChannel.getChannelNumber() == channelNumber) {
-                    return communicationChannel;
-                } else {
-                    throw new SubscriptionConflictException();
-                }
-            } else {
+            if (communicationChannel == null)
                 throw new SubscriptionExpiredException();
-            }
+
+            if (communicationChannel.getChannelNumber() == channelNumber)
+                return communicationChannel;
+            else
+                throw new SubscriptionConflictException();
+
         } finally {
             _readLock.unlock();
         }
@@ -274,9 +271,7 @@ public abstract class CardGameMediator {
                                      ParticipantCommunicationVisitor visitor) {
         _readLock.lock();
         try {
-            visitor.visitChannelNumber(channelNumber);
-            visitor.visitGameEvents(communicationChannel);
-            visitor.visitClock(secondsLeft());
+            visitor.process(channelNumber, communicationChannel, secondsLeft());
         } finally {
             _readLock.unlock();
         }

@@ -318,4 +318,17 @@ public abstract class DefaultGame {
             return card.getCardInfoHTML();
     }
 
+    public String getStatus() {
+        final Phase currentPhase = getCurrentPhase();
+        String gameStatus;
+        if (_cancelled)
+            gameStatus = "Cancelled";
+        else if (_finished)
+            gameStatus = "Finished";
+        else if (currentPhase.isSeedPhase())
+            gameStatus = "Seeding";
+        else gameStatus = "Playing";
+        return gameStatus;
+    }
+
 }

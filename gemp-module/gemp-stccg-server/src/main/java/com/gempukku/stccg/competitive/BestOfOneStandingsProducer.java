@@ -93,14 +93,18 @@ public class BestOfOneStandingsProducer {
     private static class PointsComparator implements Comparator<PlayerStanding> {
         @Override
         public int compare(PlayerStanding o1, PlayerStanding o2) {
-            return o1.getPoints() - o2.getPoints();
+            int points1 = o1.getPoints();
+            int points2 = o2.getPoints();
+            return Integer.compare(points1, points2);
         }
     }
 
     private static class GamesPlayedComparator implements Comparator<PlayerStanding> {
         @Override
         public int compare(PlayerStanding o1, PlayerStanding o2) {
-            return o1.getGamesPlayed() - o2.getGamesPlayed();
+            int games1 = o1.getGamesPlayed();
+            int games2 = o2.getGamesPlayed();
+            return Integer.compare(games1, games2);
         }
     }
 

@@ -20,7 +20,6 @@ import java.util.Map;
 public class ReplayRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final GameRecorder _gameRecorder;
     private final static int BYTE_LENGTH = 1024;
-
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
 
     public ReplayRequestHandler(ServerObjects objects) {

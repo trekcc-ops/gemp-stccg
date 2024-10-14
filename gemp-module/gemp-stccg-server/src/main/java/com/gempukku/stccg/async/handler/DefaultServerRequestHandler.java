@@ -235,7 +235,6 @@ class DefaultServerRequestHandler {
             throws CardNotFoundException {
 
         StringBuilder result = new StringBuilder();
-        SortAndFilterCards sortAndFilter = new SortAndFilterCards();
 
         MutableCardCollection deckCards = new DefaultCardCollection();
         for (String card : deck.getDrawDeckCards())

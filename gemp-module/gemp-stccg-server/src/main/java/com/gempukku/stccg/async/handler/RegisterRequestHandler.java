@@ -11,11 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
+import java.util.Map;
 
 public class RegisterRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(RegisterRequestHandler.class);
-    public RegisterRequestHandler(ServerObjects objects) {
+    RegisterRequestHandler(ServerObjects objects) {
         super(objects);
     }
 
@@ -25,18 +26,17 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
-            String login = getFormParameterSafely(postDecoder, "login");
-            String password = getFormParameterSafely(postDecoder, "password");
-            try {
+                String login = getFormParameterSafely(postDecoder, "login");
+                String password = getFormParameterSafely(postDecoder, "password");
                 if (_playerDao.registerUser(login, password, remoteIp)) {
-                    responseWriter.writeXmlResponse(null, logUserReturningHeaders(remoteIp, login));
-                } else {
+                    Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
+                    responseWriter.writeXmlResponse(null, headers);
+                } else
                     throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
-                }
             } catch (LoginInvalidException exp) {
-                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
+                String requestUri = request.uri();
+                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, requestUri, exp);
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
-            }
             } finally {
                 postDecoder.destroy();
             }

@@ -286,5 +286,14 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
             return clocks;
         }
+
+        @Override
+        public void process(int channelNumber, GameCommunicationChannel communicationChannel,
+                            Map<String, Integer> secondsLeft) {
+            visitChannelNumber(channelNumber);
+            visitGameEvents(communicationChannel);
+            visitClock(secondsLeft);
+        }
+
     }
 }
