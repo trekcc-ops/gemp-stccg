@@ -86,7 +86,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     _skipSet.add(modifier);
                     Condition condition = modifier.getCondition();
                     if (condition == null || condition.isFulfilled())
-                        if (isActive(modifierEffect, modifier)) {
+                        if (shouldAdd(modifierEffect, modifier)) {
                             if ((card == null || modifier.affectsCard(card)) &&
                                     (foundNoCumulativeConflict(liveModifiers, modifier)))
                                 liveModifiers.add(modifier);
@@ -98,15 +98,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private static boolean isActive(ModifierEffect modifierEffect, Modifier modifier) {
+    private static boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
         return modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
                 modifier.isNonCardTextModifier() ||
                 !modifier.getSource().hasTextRemoved();
     }
 
-    private List<Modifier> getIconModifiersAffectingCard(ModifierEffect modifierEffect,
-                                                         CardIcon icon, PhysicalCard card) {
-        List<Modifier> modifiers = _modifiers.get(modifierEffect);
+    private List<Modifier> getIconModifiersAffectingCard(CardIcon icon, PhysicalCard card) {
+        List<Modifier> modifiers = _modifiers.get(ModifierEffect.GAIN_ICON_MODIFIER);
         if (modifiers == null)
             return Collections.emptyList();
         else {
@@ -117,7 +116,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
                         if (condition == null || condition.isFulfilled())
-                            if (isActive(modifierEffect, modifier)) {
+                            if (shouldAdd(ModifierEffect.GAIN_ICON_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
                                     liveModifiers.add(modifier);
@@ -131,9 +130,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private List<Modifier> getSkillModifiersAffectingCard(ModifierEffect modifierEffect,
-                                                         SkillName skill, PhysicalCard card) {
-        List<Modifier> modifiers = _modifiers.get(modifierEffect);
+    private List<Modifier> getSkillModifiersAffectingCard(SkillName skill, PhysicalCard card) {
+        List<Modifier> modifiers = _modifiers.get(ModifierEffect.GAIN_SKILL_MODIFIER);
         if (modifiers == null)
             return Collections.emptyList();
         else {
@@ -144,7 +142,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
                         if (condition == null || condition.isFulfilled())
-                            if (isActive(modifierEffect, modifier)) {
+                            if (shouldAdd(ModifierEffect.GAIN_SKILL_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
                                     liveModifiers.add(modifier);
@@ -168,7 +166,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             return true;
 
         for (Modifier modifier : getIconModifiersAffectingCard(
-                ModifierEffect.GAIN_ICON_MODIFIER, icon, physicalCard)) {
+                icon, physicalCard)) {
             if (modifier.hasIcon(physicalCard, icon))
                 return true;
         }
@@ -188,7 +186,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             level += 1;
 
         for (Modifier modifier : getSkillModifiersAffectingCard(
-                ModifierEffect.GAIN_SKILL_MODIFIER, skillName, physicalCard)) {
+                skillName, physicalCard)) {
             if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkill() == skillName)
                 level += 1;
         }
@@ -361,11 +359,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
                 if (condition == null || condition.isFulfilled())
-                    playCost.appendExtraCosts(target.getGame(), action, target);
+                    playCost.appendExtraCosts(_game, action, target);
             }
 
         for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.EXTRA_COST_MODIFIER, target)) {
-            modifier.appendExtraCosts(target.getGame(), action, target);
+            modifier.appendExtraCosts(_game, action, target);
         }
     }
 
@@ -429,7 +427,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         // TODO SNAPSHOT - Basically need to copy everything here
     }
 
-    public class ModifierHookImpl implements ModifierHook {
+    final class ModifierHookImpl implements ModifierHook {
         private final Modifier _modifier;
 
         private ModifierHookImpl(Modifier modifier) {
@@ -452,15 +450,20 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             String forPlayer = modifier.getForPlayer();
 
             for (Modifier liveModifier : modifierList) {
-                if (liveModifier.getModifierEffect() == modifierEffect
-                        && liveModifier.getSource() != null
-                        && liveModifier.getSource().getTitle().equals(cardTitle)
-                        && liveModifier.isForPlayer(forPlayer)) {
+                if (isSameEffectFromSameCard(liveModifier, modifierEffect, cardTitle, forPlayer)) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    private static boolean isSameEffectFromSameCard(Modifier liveModifier, ModifierEffect modifierEffect,
+                                                    String cardTitle, String forPlayer) {
+        return liveModifier.getModifierEffect() == modifierEffect
+                && liveModifier.getSource() != null
+                && liveModifier.getSource().getTitle().equals(cardTitle)
+                && liveModifier.isForPlayer(forPlayer);
     }
 
     public int getNormalCardPlaysAvailable(Player player) { return _normalCardPlaysAvailable.get(player); }
