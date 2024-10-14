@@ -55,6 +55,7 @@
         property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/tricorder95.jpg
+        lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
         rarity: C
     }
     101_104: {
