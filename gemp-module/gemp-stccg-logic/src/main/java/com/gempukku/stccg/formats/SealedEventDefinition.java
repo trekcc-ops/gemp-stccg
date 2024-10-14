@@ -1,8 +1,7 @@
 package com.gempukku.stccg.formats;
 
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,9 +19,9 @@ public class SealedEventDefinition {
         _id = id;
         _format = format;
 
-        for(var serie : product) {
+        for(List<String> series : product) {
             List<GenericCardItem> items = new ArrayList<>();
-            for(String def : serie) {
+            for(String def : series) {
                 var item = GenericCardItem.createItem(def);
                 items.add(item);
             }
@@ -37,8 +36,8 @@ public class SealedEventDefinition {
     public GameFormat GetFormat() { return _format; }
     public List<GenericCardItem> GetProductForSeries(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
 
-    public JSONDefs.SealedTemplate Serialize() {
-        return new JSONDefs.SealedTemplate() {{
+    public JSONData.SealedTemplate Serialize() {
+        return new JSONData.SealedTemplate() {{
            name = _name;
            id = _id;
            format = _format.getCode();

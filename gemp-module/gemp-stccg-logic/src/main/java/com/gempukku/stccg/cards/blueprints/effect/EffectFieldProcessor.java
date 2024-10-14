@@ -30,8 +30,8 @@ public class EffectFieldProcessor {
                     appendActionSource(effect, blueprint);
                     break;
                 case "modifier":
-                    BlueprintUtils.validateAllowedFields(effect, "modifier");
-                    blueprint.appendInPlayModifier(BlueprintUtils.getModifier(effect.get("modifier")));
+                    BlueprintUtils.validateAllowedFields(effect, effectType);
+                    blueprint.appendInPlayModifier(BlueprintUtils.getModifier(effect.get(effectType)));
                     break;
                 case "playoutofsequence":
                     BlueprintUtils.validateAllowedFields(effect, "requires");

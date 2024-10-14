@@ -1,8 +1,7 @@
 package com.gempukku.stccg.async;
 
 import com.gempukku.stccg.async.handler.RootUriRequestHandler;
-import com.gempukku.stccg.builder.DaoBuilder;
-import com.gempukku.stccg.builder.ServerBuilder;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -14,34 +13,17 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GempServer {
-    private static final Logger LOGGER = LogManager.getLogger(GempServer.class);
+
+    private final static long DATABASE_CREATION_TIME = 2000;
 
     public static void main(String[] server) throws InterruptedException {
-        int httpPort = Integer.parseInt(AppConfig.getProperty("port"));
+        int httpPort = AppConfig.getPort();
 
-        Map<Type, Object> objects = new HashMap<>();
+        Thread.sleep(DATABASE_CREATION_TIME); // sleep for 2 sec to allow time to create database
 
-        Thread.sleep(2_000); // sleep for 2 sec to allow time to create database
-
-        //Libraries and other important prereq managers that are used by lots of other managers
-        LOGGER.info("GempukkuServer loading prerequisites...");
-        ServerBuilder.CreatePrerequisites(objects);
-        //Now bulk initialize various managers
-        LOGGER.info("GempukkuServer loading DAOs...");
-        DaoBuilder.CreateDatabaseAccessObjects(objects);
-        LOGGER.info("GempukkuServer loading services...");
-        ServerBuilder.CreateServices(objects);
-        LOGGER.info("GempukkuServer starting servers...");
-        ServerBuilder.StartServers(objects);
-        LOGGER.info("GempukkuServer startup complete.");
+        ServerObjects objects = new ServerObjects();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -50,30 +32,40 @@ public class GempServer {
             LongPollingSystem longPollingSystem = new LongPollingSystem();
             longPollingSystem.start();
 
-            RootUriRequestHandler uriRequestHandler = new RootUriRequestHandler(objects, longPollingSystem);
+            UriRequestHandler uriRequestHandler = new RootUriRequestHandler(longPollingSystem, objects);
 
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch) {
-                            ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new HttpServerCodec());
-                            pipeline.addLast(new HttpObjectAggregator(Short.MAX_VALUE));
-                            pipeline.addLast(new HttpContentCompressor());
-                            pipeline.addLast(new GempukkuHttpRequestHandler(objects, uriRequestHandler));
-                        }
-                    })
+                    .childHandler(new ServerChannelInitializer(objects, uriRequestHandler))
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true);
-
-            ChannelFuture bind = b.bind(httpPort);
-            bind.sync().channel().closeFuture().sync();
+            ChannelFuture bind = bootstrap.bind(httpPort);
+            Channel channel = bind.sync().channel();
+            channel.closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+        }
+    }
+
+    private static class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
+        private final ServerObjects _objects;
+        private final UriRequestHandler _uriRequestHandler;
+
+        private ServerChannelInitializer(ServerObjects objects, UriRequestHandler uriRequestHandler) {
+            _objects = objects;
+            _uriRequestHandler = uriRequestHandler;
+        }
+
+        @Override
+        public void initChannel(SocketChannel channel) {
+            ChannelPipeline pipeline = channel.pipeline();
+            pipeline.addLast(new HttpServerCodec());
+            pipeline.addLast(new HttpObjectAggregator(Short.MAX_VALUE));
+            pipeline.addLast(new HttpContentCompressor());
+            pipeline.addLast(new GempukkuHttpRequestHandler(_objects, _uriRequestHandler));
         }
     }
 }

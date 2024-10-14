@@ -29,7 +29,8 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         setParam("imageUrl", getImageUrlsForVirtualActions(actions));
         setParam("actionText", getActionTexts(actions));
         setParam("actionType", getActionTypes(actions));
-        setParam("revertEligible", String.valueOf(revertEligible)); // TODO SNAPSHOT - no methods for "revertEligible" in client
+        // TODO SNAPSHOT - no methods for "revertEligible" in client
+        setParam("revertEligible", String.valueOf(revertEligible));
     }
 
     /**

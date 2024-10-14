@@ -1,6 +1,9 @@
 package com.gempukku.stccg.collection;
 
-import com.gempukku.stccg.cache.Cached;
+import com.gempukku.stccg.async.Cached;
+import com.gempukku.stccg.database.DbAccess;
+import com.gempukku.stccg.database.DbTransferDAO;
+import com.gempukku.stccg.async.LoggingProxy;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,8 +14,8 @@ public class CachedTransferDAO implements TransferDAO, Cached {
     private final TransferDAO _delegate;
     private final Set<String> _playersWithoutDelivery = Collections.synchronizedSet(new HashSet<>());
 
-    public CachedTransferDAO(TransferDAO delegate) {
-        _delegate = delegate;
+    public CachedTransferDAO(DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(TransferDAO.class, new DbTransferDAO(dbAccess));
     }
 
     @Override
@@ -38,13 +41,15 @@ public class CachedTransferDAO implements TransferDAO, Cached {
         return _delegate.consumeUndeliveredPackages(player);
     }
 
-    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency, CardCollection items) {
+    public void addTransferTo(boolean notifyPlayer, String player, String reason, String collectionName, int currency,
+                              CardCollection items) {
         if (notifyPlayer)
             _playersWithoutDelivery.remove(player);
         _delegate.addTransferTo(notifyPlayer, player, reason, collectionName, currency, items);
     }
 
-    public void addTransferFrom(String player, String reason, String collectionName, int currency, CardCollection items) {
+    public void addTransferFrom(String player, String reason, String collectionName, int currency,
+                                CardCollection items) {
         _delegate.addTransferFrom(player, reason, collectionName, currency, items);
     }
 }

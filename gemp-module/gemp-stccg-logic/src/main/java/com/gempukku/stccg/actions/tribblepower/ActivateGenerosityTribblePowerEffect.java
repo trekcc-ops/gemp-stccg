@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEffect {
+
+    private final static int BONUS_POINTS = 25000;
     public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
@@ -41,8 +43,8 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
         // You and one other player (your choice) each score 25,000 points.
-        game.getGameState().addToPlayerScore(_activatingPlayer, 25000);
-        game.getGameState().addToPlayerScore(chosenPlayer, 25000);
+        game.getGameState().addToPlayerScore(_activatingPlayer, BONUS_POINTS);
+        game.getGameState().addToPlayerScore(chosenPlayer, BONUS_POINTS);
 
         // Draw a card.
         new DrawCardsEffect(game, _action, _activatingPlayer, 1).playEffect();

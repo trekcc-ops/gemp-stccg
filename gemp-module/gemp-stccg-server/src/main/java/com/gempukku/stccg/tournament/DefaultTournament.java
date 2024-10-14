@@ -5,10 +5,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.draft.DefaultDraft;
-import com.gempukku.stccg.draft.DraftPack;
-import com.gempukku.stccg.packs.ProductLibrary;
+import com.gempukku.stccg.collection.CollectionType;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
@@ -41,13 +38,12 @@ public class DefaultTournament implements Tournament {
     private TournamentTask _nextTask;
 
     private long _deckBuildStartTime;
-    private DefaultDraft _draft;
 
     private List<PlayerStanding> _currentStandings;
 
-    public DefaultTournament(CollectionsManager collectionsManager, TournamentService tournamentService,
-                             ProductLibrary productLibrary, DraftPack draftPack, String tournamentId, String tournamentName, String format, CollectionType collectionType,
-                             int tournamentRound, Stage tournamentStage, PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
+    DefaultTournament(TournamentService tournamentService, String tournamentId, String tournamentName,
+                      String format, CollectionType collectionType, int tournamentRound, Stage tournamentStage,
+                      PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
         _tournamentService = tournamentService;
         _tournamentId = tournamentId;
         _tournamentName = tournamentName;
@@ -79,10 +75,7 @@ public class DefaultTournament implements Tournament {
             }
 
             if (!matchesToCreate.isEmpty())
-                _nextTask = new CreateMissingGames(matchesToCreate);
-        } else if (_tournamentStage == Stage.DRAFT) {
-            _draft = new DefaultDraft(collectionsManager, _collectionType, productLibrary, draftPack,
-                    _players);
+                _nextTask = new CreateMissingGames(this, matchesToCreate);
         } else if (_tournamentStage == Stage.DECK_BUILDING) {
             _deckBuildStartTime = System.currentTimeMillis();
         } else if (_tournamentStage == Stage.FINISHED) {
@@ -167,28 +160,6 @@ public class DefaultTournament implements Tournament {
     }
 
     @Override
-    public void playerSubmittedDeck(String player, CardDeck deck) {
-        _lock.writeLock().lock();
-        try {
-            if (_tournamentStage == Stage.DECK_BUILDING && _players.contains(player)) {
-                _tournamentService.setPlayerDeck(_tournamentId, player, deck);
-                _playerDecks.put(player, deck);
-            }
-        } finally {
-            _lock.writeLock().unlock();
-        }
-    }
-
-    public CardDeck getPlayerDeck(String player) {
-        _lock.readLock().lock();
-        try {
-            return _playerDecks.get(player);
-        } finally {
-            _lock.readLock().unlock();
-        }
-    }
-
-    @Override
     public void dropPlayer(String player) {
         _lock.writeLock().lock();
         try {
@@ -214,17 +185,6 @@ public class DefaultTournament implements Tournament {
         try {
             boolean result = false;
             if (_nextTask == null) {
-                if (_tournamentStage == Stage.DRAFT) {
-                    _draft.advanceDraft(tournamentCallback);
-                    if (_draft.isFinished()) {
-                        tournamentCallback.broadcastMessage("Drafting in tournament " + _tournamentName + " is finished, starting deck building");
-                        _tournamentStage = Stage.DECK_BUILDING;
-                        _tournamentService.updateTournamentStage(_tournamentId, _tournamentStage);
-                        _deckBuildStartTime = System.currentTimeMillis();
-                        _draft = null;
-                        result = true;
-                    }
-                }
                 if (_tournamentStage == Stage.DECK_BUILDING) {
                     // 10 minutes
                     int _deckBuildTime = 10 * 60 * 1000;
@@ -240,8 +200,10 @@ public class DefaultTournament implements Tournament {
                         if (_pairingMechanism.isFinished(_tournamentRound, _players, _droppedPlayers)) {
                             finishTournament(tournamentCallback, collectionsManager);
                         } else {
-                            tournamentCallback.broadcastMessage("Tournament " + _tournamentName + " will start round "+(_tournamentRound+1)+" in 2 minutes");
-                            _nextTask = new PairPlayers();
+                            tournamentCallback.broadcastMessage("Tournament " + _tournamentName +
+                                    " will start round " + (_tournamentRound+1) + " in 2 minutes");
+                            _nextTask = new PairPlayers(
+                                    this, System.currentTimeMillis() + _waitForPairingsTime);
                         }
                         result = true;
                     }
@@ -267,7 +229,9 @@ public class DefaultTournament implements Tournament {
 
         _lock.readLock().lock();
         try {
-            _currentStandings = BestOfOneStandingsProducer.produceStandings(_players, _finishedTournamentMatches, 2, 1, _playerByes);
+            _currentStandings =
+                    BestOfOneStandingsProducer.produceStandings(
+                            _players, _finishedTournamentMatches, 2, 1, _playerByes);
             return _currentStandings;
         } finally {
             _lock.readLock().unlock();
@@ -284,7 +248,7 @@ public class DefaultTournament implements Tournament {
     private void awardPrizes(CollectionsManager collectionsManager) {
         List<PlayerStanding> list = getCurrentStandings();
         for (PlayerStanding playerStanding : list) {
-            CardCollection prizes = _tournamentPrizes.getPrizeForTournament(playerStanding, list.size());
+            CardCollection prizes = _tournamentPrizes.getPrizeForTournament(playerStanding);
             if (prizes != null)
                 collectionsManager.addItemsToPlayerCollection(
                         true, "Tournament " + getTournamentName() + " prize",
@@ -293,12 +257,12 @@ public class DefaultTournament implements Tournament {
         }
     }
 
-    private void createNewGame(TournamentCallback tournamentCallback, String playerOne, String playerTwo) {
+    public void createNewGame(TournamentCallback tournamentCallback, String playerOne, String playerTwo) {
         tournamentCallback.createGame(playerOne, _playerDecks.get(playerOne),
                 playerTwo, _playerDecks.get(playerTwo));
     }
 
-    private void doPairing(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
+    final void doPairing(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
         _tournamentRound++;
         _tournamentService.updateTournamentRound(_tournamentId, _tournamentRound);
         Map<String, String> pairingResults = new HashMap<>();
@@ -306,7 +270,9 @@ public class DefaultTournament implements Tournament {
 
         Map<String, Set<String>> previouslyPaired = getPreviouslyPairedPlayersMap();
 
-        boolean finished = _pairingMechanism.pairPlayers(_tournamentRound, _players, _droppedPlayers, _playerByes, getCurrentStandings(), previouslyPaired, pairingResults, byeResults);
+        List<PlayerStanding> currentStandings = getCurrentStandings();
+        boolean finished = _pairingMechanism.pairPlayers(_tournamentRound, _players, _droppedPlayers, _playerByes,
+                currentStandings, previouslyPaired, pairingResults, byeResults);
         if (finished) {
             finishTournament(tournamentCallback, collectionsManager);
         } else {
@@ -333,9 +299,11 @@ public class DefaultTournament implements Tournament {
         for (String player : _players)
             previouslyPaired.put(player, new HashSet<>());
 
-        for (TournamentMatch finishedTournamentMatch : _finishedTournamentMatches) {
-            previouslyPaired.get(finishedTournamentMatch.getWinner()).add(finishedTournamentMatch.getLoser());
-            previouslyPaired.get(finishedTournamentMatch.getLoser()).add(finishedTournamentMatch.getWinner());
+        for (TournamentMatch match : _finishedTournamentMatches) {
+            String winner = match.getWinner();
+            String loser = match.getLoser();
+            previouslyPaired.get(winner).add(loser);
+            previouslyPaired.get(loser).add(winner);
         }
         return previouslyPaired;
     }
@@ -347,39 +315,4 @@ public class DefaultTournament implements Tournament {
         _playerByes.put(player, byes + 1);
     }
 
-    private class PairPlayers implements TournamentTask {
-        private final long _taskStart = System.currentTimeMillis() + _waitForPairingsTime;
-
-        @Override
-        public void executeTask(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
-            doPairing(tournamentCallback, collectionsManager);
-        }
-
-        @Override
-        public long getExecuteAfter() {
-            return _taskStart;
-        }
-    }
-
-    private class CreateMissingGames implements TournamentTask {
-        private final Map<String, String> _gamesToCreate;
-
-        public CreateMissingGames(Map<String, String> gamesToCreate) {
-            _gamesToCreate = gamesToCreate;
-        }
-
-        @Override
-        public void executeTask(TournamentCallback tournamentCallback, CollectionsManager collectionsManager) {
-            for (Map.Entry<String, String> pairings : _gamesToCreate.entrySet()) {
-                String playerOne = pairings.getKey();
-                String playerTwo = pairings.getValue();
-                createNewGame(tournamentCallback, playerOne, playerTwo);
-            }
-        }
-
-        @Override
-        public long getExecuteAfter() {
-            return 0;
-        }
-    }
 }

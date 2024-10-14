@@ -3,11 +3,11 @@ package com.gempukku.stccg.league;
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
@@ -18,11 +18,12 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("ALL")
 public class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);
     final SealedLeagueData data = new SealedLeagueData(
-            _cardLibrary, _formatLibrary, "testsealed,20120101,test,Test Collection");
+            _cardLibrary, _formatLibrary, "test_sealed,20120101,test,Test Collection");
     final CollectionType collectionType = new CollectionType("test", "Test Collection");
     final User player = new User(1, "Test", "pass", "u", null, null,
             null, null);

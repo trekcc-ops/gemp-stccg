@@ -1,51 +1,52 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.game.GameHistoryService;
+import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 public class GameHistoryRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final GameHistoryService _gameHistoryService;
 
-    public GameHistoryRequestHandler(Map<Type, Object> context) {
-        super(context);
-
-        _gameHistoryService = extractObject(context, GameHistoryService.class);
+    public GameHistoryRequestHandler(ServerObjects objects) {
+        super(objects);
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getGameHistory(request, responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
     private void getGameHistory(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, "start"));
-        int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, "count"));
+
+        String startParameter = getQueryParameterSafely(queryDecoder, "start");
+        String countParameter = getQueryParameterSafely(queryDecoder, "count");
+
+        int start = Integer.parseInt(startParameter);
+        int count = Integer.parseInt(countParameter);
 
         if (start < 0 || count < 1 || count > 100)
-            throw new HttpProcessingException(400);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-        final List<DBDefs.GameHistory> playerGameHistory = _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
+        final List<DBData.GameHistory> playerGameHistory =
+                _gameHistoryService.getGameHistoryForPlayer(resourceOwner, start, count);
         int recordCount = _gameHistoryService.getGameHistoryForPlayerCount(resourceOwner);
 
         Document doc = createNewDoc();
@@ -55,7 +56,7 @@ public class GameHistoryRequestHandler extends DefaultServerRequestHandler imple
 
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        for (DBDefs.GameHistory game : playerGameHistory) {
+        for (DBData.GameHistory game : playerGameHistory) {
             Element historyEntry = doc.createElement("historyEntry");
             historyEntry.setAttribute("winner", game.winner);
             historyEntry.setAttribute("loser", game.loser);

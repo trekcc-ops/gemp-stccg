@@ -88,8 +88,8 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         Map<CardIcon, Long> staffingNeeded = frequencyMap(_blueprint.getStaffing().stream());
         List<List<CardIcon>> staffingIconsAvailable = new LinkedList<>();
         for (PhysicalCard card : getCrew()) {
-            if (card instanceof PersonnelCard) {
-                List<CardIcon> icons = ((PersonnelCard) card).getIcons();
+            if (card instanceof PersonnelCard personnelCard) {
+                List<CardIcon> icons = personnelCard.getIcons();
                 if (icons != null) {
                     List<CardIcon> cardIcons = new LinkedList<>(icons);
                     if (cardIcons.contains(CardIcon.COMMAND) && !cardIcons.contains(CardIcon.STAFF))

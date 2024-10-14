@@ -2,16 +2,14 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.DefaultCardCollection;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -22,37 +20,37 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.util.*;
 
 public class SoloDraftRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
-    private final CollectionsManager _collectionsManager;
     private final SoloDraftDefinitions _soloDraftDefinitions;
-    private final CardBlueprintLibrary _cardLibrary;
     private final FormatLibrary _formatLibrary;
     private final LeagueService _leagueService;
 
-    public SoloDraftRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _leagueService = extractObject(context, LeagueService.class);
-        _cardLibrary = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
-        _soloDraftDefinitions = extractObject(context, SoloDraftDefinitions.class);
-        _collectionsManager = extractObject(context, CollectionsManager.class);
+    public SoloDraftRequestHandler(ServerObjects objects) {
+        super(objects);
+        _leagueService = objects.getLeagueService();
+        _formatLibrary = objects.getFormatLibrary();
+        _soloDraftDefinitions = objects.getSoloDraftDefinitions();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.startsWith("/") && request.method() == HttpMethod.POST) {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
+        if (uri.isEmpty() || uri.charAt(0) != '/')
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        else if (request.method() == HttpMethod.POST) {
             makePick(request, uri.substring(1), responseWriter);
-        } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
+        } else if (request.method() == HttpMethod.GET) {
             getAvailablePicks(request, uri.substring(1), responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
@@ -64,13 +62,13 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         League league = findLeagueByType(leagueType);
 
         if (league == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
+        LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         SoloDraftLeagueData soloDraftLeagueData = (SoloDraftLeagueData) leagueData;
         CollectionType collectionType = soloDraftLeagueData.getCollectionType();
@@ -82,10 +80,13 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         Iterable<SoloDraft.DraftChoice> availableChoices;
 
         boolean finished = (Boolean) collection.getExtraInformation().get("finished");
-        if (!finished) {
+        if (finished) {
+            availableChoices = Collections.emptyList();
+        } else {
             int stage = ((Number) collection.getExtraInformation().get("stage")).intValue();
             long playerSeed = ((Number) collection.getExtraInformation().get("seed")).longValue();
-            List<String> draftPoolList = (List<String>) collection.getExtraInformation().get("draftPool");
+            //noinspection unchecked
+            Iterable<String> draftPoolList = (Iterable<String>) collection.getExtraInformation().get("draftPool");
 
             DefaultCardCollection draftPool = new DefaultCardCollection();
             if (draftPoolList != null)
@@ -94,8 +95,6 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
 
             SoloDraft soloDraft = soloDraftLeagueData.getSoloDraft();
             availableChoices = soloDraft.getAvailableChoices(playerSeed, stage, draftPool);
-        } else {
-            availableChoices = Collections.emptyList();
         }
 
         Document doc = createNewDoc();
@@ -116,7 +115,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
     }
 
     private void makePick(HttpRequest request, String leagueType, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         String selectedChoiceId = getFormParameterSafely(postDecoder, "choiceId");
@@ -124,13 +123,13 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         League league = findLeagueByType(leagueType);
 
         if (league == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        LeagueData leagueData = league.getLeagueData(_cardLibrary, _formatLibrary, _soloDraftDefinitions);
+        LeagueData leagueData = league.getLeagueData(_cardBlueprintLibrary, _formatLibrary, _soloDraftDefinitions);
         int leagueStart = leagueData.getSeries().getFirst().getStart();
 
         if (!leagueData.isSoloDraftLeague() || DateUtils.getCurrentDateAsInt() < leagueStart)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         SoloDraftLeagueData soloDraftLeagueData = (SoloDraftLeagueData) leagueData;
         CollectionType collectionType = soloDraftLeagueData.getCollectionType();
@@ -140,11 +139,13 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         CardCollection collection = _collectionsManager.getPlayerCollection(resourceOwner, collectionType.getCode());
         boolean finished = (Boolean) collection.getExtraInformation().get("finished");
         if (finished)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         int stage = ((Number) collection.getExtraInformation().get("stage")).intValue();
         long playerSeed = ((Number) collection.getExtraInformation().get("seed")).longValue();
-        List<String> draftPoolList = (List<String>) collection.getExtraInformation().get("draftPool");
+
+        //noinspection unchecked
+        Iterable<String> draftPoolList = (Iterable<String>) collection.getExtraInformation().get("draftPool");
         DefaultCardCollection draftPool = new DefaultCardCollection();
         
         if (draftPoolList != null)
@@ -156,7 +157,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
 
         SoloDraft.DraftChoice draftChoice = getSelectedDraftChoice(selectedChoiceId, possibleChoices);
         if (draftChoice == null)
-            throw new HttpProcessingException(400);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
         CardCollection selectedCards = soloDraft.getCardsForChoiceId(selectedChoiceId, playerSeed, stage);
         Map<String, Object> extraInformationChanges = new HashMap<>();
@@ -166,7 +167,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             extraInformationChanges.put("finished", true);
 
         if (draftPoolList != null) {
-            List<String> draftPoolListUpdate = new ArrayList<>();
+            Collection<String> draftPoolListUpdate = new ArrayList<>();
             for (GenericCardItem item : draftPool.getAll()) {
                 String blueprint = item.getBlueprintId();
                 for (int i = 0; i < draftPool.getItemCount(blueprint); i++)
@@ -189,7 +190,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             Element pickedCard = doc.createElement("pickedCard");
             pickedCard.setAttribute("blueprintId", item.getBlueprintId());
             pickedCard.setAttribute("count", String.valueOf(item.getCount()));
-            pickedCard.setAttribute("imageUrl", _library.getCardBlueprint(item.getBlueprintId()).getImageUrl());
+            pickedCard.setAttribute(
+                    "imageUrl", _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId()).getImageUrl());
             pickResultElem.appendChild(pickedCard);
         }
 
@@ -204,7 +206,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private void appendAvailablePics(Document doc, Element rootElem, Iterable<SoloDraft.DraftChoice> availablePics) {
+    private void appendAvailablePics(Document doc, Node rootElem,
+                                     Iterable<? extends SoloDraft.DraftChoice> availablePics) {
         for (SoloDraft.DraftChoice availableChoice : availablePics) {
             String choiceId = availableChoice.getChoiceId();
             String blueprintId = availableChoice.getBlueprintId();
@@ -214,7 +217,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
             if (blueprintId != null) {
                 availablePick.setAttribute("blueprintId", blueprintId);
                 try {
-                    availablePick.setAttribute("imageUrl", _library.getCardBlueprint(blueprintId).getImageUrl());
+                    availablePick.setAttribute("imageUrl",
+                            _cardBlueprintLibrary.getCardBlueprint(blueprintId).getImageUrl());
                 } catch (CardNotFoundException e) {
                     throw new RuntimeException("Blueprint " + blueprintId + " not found in library");
                 }
@@ -225,8 +229,9 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
     }
 
-    private SoloDraft.DraftChoice getSelectedDraftChoice(String choiceId, Iterable<SoloDraft.DraftChoice> availableChoices) {
-        for (SoloDraft.DraftChoice availableChoice : availableChoices) {
+    private static SoloDraft.DraftChoice getSelectedDraftChoice(String choiceId,
+                                                                Iterable<? extends SoloDraft.DraftChoice> choices) {
+        for (SoloDraft.DraftChoice availableChoice : choices) {
             if (availableChoice.getChoiceId().equals(choiceId))
                 return availableChoice;
         }

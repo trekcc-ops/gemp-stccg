@@ -26,14 +26,6 @@ public interface Modifier {
 
     boolean hasRemovedText(DefaultGame game, PhysicalCard physicalCard);
 
-    boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword);
-
-    int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword);
-
-    boolean appliesKeywordModifier(DefaultGame game, PhysicalCard modifierSource, Keyword keyword);
-
-    boolean isKeywordRemoved(DefaultGame game, PhysicalCard physicalCard, Keyword keyword);
-
     int getAttributeModifier(PhysicalCard physicalCard);
 
     boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTaget);

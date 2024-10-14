@@ -1,5 +1,6 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
 import org.apache.logging.log4j.LogManager;
@@ -19,45 +20,46 @@ public class GameTable {
     public GameTable(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.capacity = 2; // manually change Tribbles player limit
-        LOGGER.debug("Capacity of game: " + this.capacity);
+        LOGGER.debug("Capacity of game: {}", this.capacity);
     }
 
-    public void startGame(CardGameMediator cardGameMediator) {
+    public final void startGame(CardGameMediator cardGameMediator) {
         LOGGER.debug("GameTable - startGame function called;");
         this.cardGameMediator = cardGameMediator;
     }
 
-    public CardGameMediator getMediator() {
+    public final CardGameMediator getMediator() {
         return cardGameMediator;
     }
 
-    public boolean wasGameStarted() {
+    public final boolean wasGameStarted() {
         return cardGameMediator != null;
     }
 
-    public boolean addPlayer(GameParticipant player) {
+    public final boolean addPlayer(GameParticipant player) {
         players.put(player.getPlayerId(), player);
         return players.size() == capacity;
     }
 
-    public boolean removePlayer(String playerId) {
+    public final boolean removePlayer(String playerId) {
         players.remove(playerId);
         return players.isEmpty();
     }
 
-    public boolean hasPlayer(String playerId) {
+    public final boolean hasPlayer(String playerId) {
         return players.containsKey(playerId);
     }
+    public final boolean hasPlayer(User user) { return hasPlayer(user.getName()); }
 
-    public List<String> getPlayerNames() {
+    public final List<String> getPlayerNames() {
         return new LinkedList<>(players.keySet());
     }
 
-    public Set<GameParticipant> getPlayers() {
+    public final Set<GameParticipant> getPlayers() {
         return Set.copyOf(players.values());
     }
 
-    public GameSettings getGameSettings() {
+    public final GameSettings getGameSettings() {
         return gameSettings;
     }
 }

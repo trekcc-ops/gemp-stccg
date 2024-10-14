@@ -24,7 +24,8 @@ public abstract class AbstractModifier implements Modifier {
         this(source, text, affectFilter, null, effect);
     }
 
-    protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition, ModifierEffect effect) {
+    protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition,
+                               ModifierEffect effect) {
         this(source, null, affectFilter, condition, effect);
     }
 
@@ -74,27 +75,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean isKeywordRemoved(DefaultGame game, PhysicalCard physicalCard, Keyword keyword) {
-        return false;
-    }
-
-    @Override
-    public boolean hasKeyword(PhysicalCard physicalCard, Keyword keyword) {
-        return false;
-    }
-    @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         return false;
-    }
-
-    @Override
-    public int getKeywordCountModifier(PhysicalCard physicalCard, Keyword keyword) {
-        return 0;
-    }
-
-    @Override
-    public boolean appliesKeywordModifier(DefaultGame game, PhysicalCard modifierSource, Keyword keyword) {
-        return true;
     }
 
     @Override
@@ -103,7 +85,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget) {
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource,
+                                                PhysicalCard modifierTarget) {
         return false;
     }
 
@@ -153,7 +136,8 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card, PhysicalCard source) {
+    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card,
+                                          PhysicalCard source) {
         return true;
     }
 

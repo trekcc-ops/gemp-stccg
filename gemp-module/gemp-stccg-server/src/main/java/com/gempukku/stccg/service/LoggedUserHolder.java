@@ -1,7 +1,13 @@
 package com.gempukku.stccg.service;
 
+import com.gempukku.stccg.TextUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,6 +42,26 @@ public class LoggedUserHolder {
         return null;
     }
 
+    public String getLoggedUser(HttpMessage request) {
+        ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
+        HttpHeaders headers = request.headers();
+        String cookieHeader = headers.get(HttpHeaderNames.COOKIE);
+        if (cookieHeader != null) {
+            Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
+            for (Cookie cookie : cookies) {
+                String name = cookie.name();
+                if ("loggedUser".equals(name)) {
+                    String value = cookie.value();
+                    if (value != null) {
+                        return getLoggedUser(value);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
     public String logUser(String userName) {
         _readWriteLock.writeLock().lock();
         try {
@@ -60,7 +86,7 @@ public class LoggedUserHolder {
         }
     }
 
-    private final char[] _chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+    private final char[] _chars = TextUtils.getAllCharacters(true, false).toCharArray();
 
     private String insertValueForUser(String userName) {
         Random rnd = ThreadLocalRandom.current();
@@ -77,6 +103,7 @@ public class LoggedUserHolder {
     }
 
     private class ClearExpiredRunnable implements Runnable {
+        @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
         @Override
         public void run() {
             while (true) {
@@ -104,7 +131,7 @@ public class LoggedUserHolder {
                     // check every minute
                     long _expireCheckInterval = 1000 * 60;
                     Thread.sleep(_expireCheckInterval);
-                } catch (InterruptedException exp) {
+                } catch (InterruptedException ignored) {
 
                 }
             }

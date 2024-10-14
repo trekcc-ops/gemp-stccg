@@ -16,8 +16,11 @@ import com.gempukku.stccg.cards.PlayerSource;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.modifiers.ModifiersQuerying;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +108,9 @@ public class CardEffectBlueprintProducer {
             public boolean isPlayableInFull(ActionContext context) {
                 final int count = countSource.evaluateExpression(context, null);
                 final String targetPlayerId = targetPlayer.getPlayerId(context);
+                final DefaultGame game = context.getGame();
+                final PhysicalCard source = context.getSource();
+                final ModifiersQuerying modifiersQuerying = game.getModifiersQuerying();
                 return switch (effectType) {
                     case DISCARDBOTTOMCARDFROMDECK, DRAWCARDS, LOOKATTOPCARDSOFDRAWDECK,
                             PLACETOPCARDOFDRAWDECKONTOPOFPLAYPILE, REORDERTOPCARDSOFDRAWDECK,
@@ -112,22 +118,18 @@ public class CardEffectBlueprintProducer {
                             context.getGameState().getDrawDeck(targetPlayerId).size() >= count;
                     case DISCARDCARDATRANDOMFROMHAND ->
                             context.getGameState().getHand(targetPlayerId).size() >= count &&
-                                    (!forced ||
-                                            context.getGame().getModifiersQuerying()
-                                                    .canDiscardCardsFromHand(targetPlayerId, context.getSource()));
+                                    (!forced || modifiersQuerying.canDiscardCardsFromHand(targetPlayerId, source));
                     case DISCARDTOPCARDSFROMDECK ->
-                            context.getGameState().getDrawDeck(targetPlayerId).size() >= count
-                                    && (!forced || context.getGame().getModifiersQuerying().canDiscardCardsFromTopOfDeck(
-                                    context.getPerformingPlayerId(), context.getSource()));
+                            context.getGameState().getDrawDeck(targetPlayerId).size() >= count &&
+                                    (!forced || modifiersQuerying
+                                            .canDiscardCardsFromTopOfDeck(context.getPerformingPlayerId(), source));
                     case DISCARDTOPCARDFROMPLAYPILE ->
-                            context.getGameState().getZoneCards(targetPlayer.getPlayerId(context), Zone.PLAY_PILE)
-                                    .size() >= count;
+                            context.getGameState().getZoneCards(targetPlayerId, Zone.PLAY_PILE).size() >= count;
                     case LOOKATHAND, REVEALHAND ->
-                            context.getPerformingPlayer()
-                                    .canLookOrRevealCardsInHandOfPlayer(targetPlayer.getPlayerId(context));
+                            context.getPerformingPlayer().canLookOrRevealCardsInHandOfPlayer(targetPlayerId);
                     case LOOKATRANDOMCARDSFROMHAND -> 
                             context.getPerformingPlayer().canLookOrRevealCardsInHandOfPlayer(targetPlayerId) &&
-                            context.getGameState().getHand(targetPlayerId).size() >= count;
+                                    context.getGameState().getHand(targetPlayerId).size() >= count;
                     case PLACEPLAYEDCARDBENEATHDRAWDECK -> true;
                 };
             }

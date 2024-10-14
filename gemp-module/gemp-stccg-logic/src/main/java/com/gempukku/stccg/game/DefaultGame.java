@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
@@ -40,11 +40,10 @@ public abstract class DefaultGame {
     private final List<GameSnapshot> _snapshots = new LinkedList<>();
     protected GameSnapshot _snapshotToRestore;
     private int _nextSnapshotId;
-    private final int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS;
+    private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
 
     public DefaultGame(GameFormat format, Map<String, CardDeck> decks,
                        final CardBlueprintLibrary library) {
-        NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
         _format = format;
         _userFeedback = new DefaultUserFeedback(this);
         _library = library;
@@ -295,6 +294,7 @@ public abstract class DefaultGame {
     }
     
     public void sendMessage(String message) { getGameState().sendMessage(message); }
+    public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
     public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
@@ -315,6 +315,19 @@ public abstract class DefaultGame {
             return null;
         else
             return card.getCardInfoHTML();
+    }
+
+    public String getStatus() {
+        final Phase currentPhase = getCurrentPhase();
+        String gameStatus;
+        if (_cancelled)
+            gameStatus = "Cancelled";
+        else if (_finished)
+            gameStatus = "Finished";
+        else if (currentPhase.isSeedPhase())
+            gameStatus = "Seeding";
+        else gameStatus = "Playing";
+        return gameStatus;
     }
 
 }

@@ -10,8 +10,7 @@ public class BoosterPack implements PackBox {
     private final SetDefinition _setDefinition;
     final Map<String, Integer> _rarityCounts = new HashMap<>();
 
-    public BoosterPack(SetDefinition setDefinition, List<String> rarityCounts) {
-
+    BoosterPack(SetDefinition setDefinition, Iterable<String> rarityCounts) {
         for (String rarityCount : rarityCounts) {
             String[] result = rarityCount.split("x", 2);
             _rarityCounts.put(result[1], Integer.parseInt(result[0]));
@@ -27,7 +26,7 @@ public class BoosterPack implements PackBox {
         return result;
     }
 
-    private void addRandomCardsOfRarity(List<GenericCardItem> result, int count, String rarity) {
+    private void addRandomCardsOfRarity(Collection<? super GenericCardItem> result, int count, String rarity) {
         final List<String> cardsOfRarity = _setDefinition.getCardsOfRarity(rarity);
         for (Integer cardIndex : getRandomIndices(count, cardsOfRarity.size()))
             result.add(GenericCardItem.createItem(cardsOfRarity.get(cardIndex), 1));

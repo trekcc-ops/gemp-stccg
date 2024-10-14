@@ -1,46 +1,47 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
-import com.gempukku.stccg.db.LoginInvalidException;
+import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.database.LoginInvalidException;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 public class RegisterRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(RegisterRequestHandler.class);
-    public RegisterRequestHandler(Map<Type, Object> context) {
-        super(context);
+    RegisterRequestHandler(ServerObjects objects) {
+        super(objects);
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
-            HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+            InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
-            String login = getFormParameterSafely(postDecoder, "login");
-            String password = getFormParameterSafely(postDecoder, "password");
-            try {
+                String login = getFormParameterSafely(postDecoder, "login");
+                String password = getFormParameterSafely(postDecoder, "password");
                 if (_playerDao.registerUser(login, password, remoteIp)) {
-                    responseWriter.writeXmlResponse(null, logUserReturningHeaders(remoteIp, login));
-                } else {
-                    throw new HttpProcessingException(409);
-                }
+                    Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
+                    responseWriter.writeXmlResponse(null, headers);
+                } else
+                    throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
             } catch (LoginInvalidException exp) {
-                logHttpError(LOGGER, 400, request.uri(), exp);
-                throw new HttpProcessingException(400);
-            }
+                String requestUri = request.uri();
+                logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, requestUri, exp);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
             } finally {
                 postDecoder.destroy();
             }
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 }

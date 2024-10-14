@@ -5,7 +5,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.draft.builder.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.io.File;

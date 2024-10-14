@@ -1,56 +1,52 @@
 package com.gempukku.stccg.common.filterable;
 
+import java.util.Locale;
+
 public enum Phase {
     // Generic
-    BETWEEN_TURNS("Between turns", false, false),
+    BETWEEN_TURNS("Between turns"),
     // 1E
-    SEED_DOORWAY("Doorway seed phase", true, true),
-    SEED_MISSION("Mission seed phase", true, true),
-    SEED_DILEMMA("Dilemma seed phase", true, true),
-    SEED_FACILITY("Facility seed phase", true, true),
-    CARD_PLAY("Card play", true, true),
-    EXECUTE_ORDERS("Execute orders", true, true),
+    SEED_DOORWAY("Doorway seed phase"),
+    SEED_MISSION("Mission seed phase"),
+    SEED_DILEMMA("Dilemma seed phase"),
+    SEED_FACILITY("Facility seed phase"),
+    CARD_PLAY("Card play"),
+    EXECUTE_ORDERS("Execute orders"),
     // Tribbles
-    TRIBBLES_TURN("Tribbles turn", true, true),
+    TRIBBLES_TURN("Tribbles turn"),
 
     // LotR
-    FELLOWSHIP("Fellowship", true, true),
-    MANEUVER("Maneuver", true, true),
-    ARCHERY("Archery", true, true),
-    ASSIGNMENT("Assignment", true, true),
-    REGROUP("Regroup", true, true);
+    FELLOWSHIP("Fellowship"),
+    MANEUVER("Maneuver"),
+    ARCHERY("Archery"),
+    ASSIGNMENT("Assignment"),
+    REGROUP("Regroup");
 
     private final String humanReadable;
-    private final boolean realPhase;
-    private final boolean cardsAffectGame;
 
-    Phase(String humanReadable, boolean realPhase, boolean cardsAffectGame) {
+    Phase(String humanReadable) {
         this.humanReadable = humanReadable;
-        this.realPhase = realPhase;
-        this.cardsAffectGame = cardsAffectGame;
     }
 
     public String getHumanReadable() {
         return humanReadable;
     }
 
-    public boolean isRealPhase() {
-        return realPhase;
-    }
-
-    public boolean isCardsAffectGame() {
-        return cardsAffectGame;
-    }
-
     public static Phase findPhase(String name) {
-        String nameCaps = name.toUpperCase().trim().replace(' ', '_').replace('-', '_');
-        String nameLower = name.toLowerCase();
+        String nameCaps = name.toUpperCase(Locale.ROOT).strip().replace(' ', '_').replace('-', '_');
+        String nameLower = name.toLowerCase(Locale.ROOT);
 
         for (Phase phase : values()) {
-            if (phase.getHumanReadable().toLowerCase().equals(nameLower) || phase.toString().equals(nameCaps))
+            String phaseStringLower = phase.getHumanReadable().toLowerCase(Locale.ROOT);
+            String phaseStringUpper = phase.toString();
+            if (phaseStringLower.equals(nameLower) || phaseStringUpper.equals(nameCaps))
                 return phase;
         }
         return null;
+    }
+
+    public boolean isSeedPhase() {
+        return name().startsWith("SEED");
     }
 
 }

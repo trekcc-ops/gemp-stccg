@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ST1ERuleSetTest extends AbstractAtTest {
     @Test
     public void CompatibilityTest() throws CardNotFoundException {

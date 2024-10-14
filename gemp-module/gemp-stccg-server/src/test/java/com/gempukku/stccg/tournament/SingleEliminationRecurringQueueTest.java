@@ -2,8 +2,8 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.database.User;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -12,23 +12,29 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings({"LongLine", "StaticMethodReferencedViaSubclass"})
 public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test
     public void joiningQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
 
         ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
-                "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+                "id-", "name-", 2, false, tournamentService,
+                new NoPrizes(), new SingleEliminationPairing("singleElimination"));
 
-        User player = new User(1, "p1", "pass", "u", null, null, null, null);
+        User player = new User(1, "p1", "pass", "u",
+                null, null, null, null);
 
         CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
-        Mockito.when(collectionsManager.removeCurrencyFromPlayerCollection(Mockito.anyString(), Mockito.eq(player), Mockito.eq(CollectionType.MY_CARDS), Mockito.eq(10)))
+
+        Mockito.when(collectionsManager.removeCurrencyFromPlayerCollection(
+                Mockito.anyString(), Mockito.eq(player), Mockito.eq(CollectionType.MY_CARDS), Mockito.eq(10)))
                 .thenReturn(true);
 
         queue.joinPlayer(collectionsManager, player, null);
 
-        Mockito.verify(collectionsManager).removeCurrencyFromPlayerCollection(Mockito.anyString(), Mockito.eq(player), Mockito.eq(CollectionType.MY_CARDS), Mockito.eq(10));
+        Mockito.verify(collectionsManager).removeCurrencyFromPlayerCollection(
+                Mockito.anyString(), Mockito.eq(player), Mockito.eq(CollectionType.MY_CARDS), Mockito.eq(10));
         Mockito.verifyNoMoreInteractions(collectionsManager, tournamentService);
 
         assertEquals(1, queue.getPlayerCount());

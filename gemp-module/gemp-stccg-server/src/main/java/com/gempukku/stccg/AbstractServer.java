@@ -1,8 +1,8 @@
 package com.gempukku.stccg;
 
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,27 +13,24 @@ public abstract class AbstractServer {
 
     private boolean _started;
 
+    protected AbstractServer() {
+    }
+
     public void startServer() {
-        LOGGER.debug("Starting startServer function for " + getClass().getSimpleName());
+        basicStartup();
+    }
+    protected final void basicStartup() {
+        LOGGER.debug("Starting startServer function for {}", this);
         if (!_started) {
             _cleaningTask.addServer(this);
             _started = true;
-            LOGGER.debug("Started: "+getClass().getSimpleName());
-            doAfterStartup();
+            LOGGER.debug("Started: {}", this);
         }
     }
-
-    protected void doAfterStartup() {
-
-    }
-
-    public void stopServer() {
-        if (_started) {
-            _cleaningTask.removeServer(this);
-            _started = false;
-            LOGGER.debug("Stopped: "+getClass().getSimpleName());
-        }
-    }
-
     protected abstract void cleanup() throws SQLException, IOException;
+    @Override
+    public final String toString() {
+        Class<? extends AbstractServer> thisClass = getClass();
+        return thisClass.getSimpleName();
+    }
 }

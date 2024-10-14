@@ -7,7 +7,6 @@ public class TribblesTurnProcess extends GameProcess {
     private GameProcess _followingGameProcess;
     private final TribblesGame _game;
     public TribblesTurnProcess(TribblesGame game) {
-        super();
         _game = game;
     }
     @Override

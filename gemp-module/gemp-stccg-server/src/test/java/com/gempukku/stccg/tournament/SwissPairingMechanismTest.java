@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("MagicNumber")
 public class SwissPairingMechanismTest extends AbstractServerTest {
 
     @Test
@@ -109,7 +110,7 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         }
     }
 
-    private int getPlayerPoints(List<PlayerStanding> standings, String player) {
+    private int getPlayerPoints(List<? extends PlayerStanding> standings, String player) {
         for (PlayerStanding standing : standings) {
             if (standing.getPlayerName().equals(player))
                 return standing.getPoints();

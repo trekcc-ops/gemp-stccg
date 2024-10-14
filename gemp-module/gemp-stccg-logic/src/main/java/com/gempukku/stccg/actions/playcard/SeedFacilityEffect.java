@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
@@ -21,7 +22,7 @@ public class SeedFacilityEffect extends SeedCardEffect {
         gameState.removeCardFromZone(_cardSeeded);
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
         gameState.getPlayer(_cardSeeded.getOwnerName())
-                .addPlayedAffiliation(((FacilityCard) _cardSeeded).getAffiliation());
+                .addPlayedAffiliation(((PhysicalNounCard1E) _cardSeeded).getAffiliation());
         gameState.seedFacilityAtLocation((FacilityCard) _cardSeeded, _spacelineIndex);
         getGame().getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, _fromZone, _cardSeeded));

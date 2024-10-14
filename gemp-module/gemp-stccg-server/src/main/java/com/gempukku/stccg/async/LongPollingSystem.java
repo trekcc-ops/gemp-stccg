@@ -9,20 +9,22 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class LongPollingSystem {
+    private final static long POLLING_LENGTH = 5000;
     private final Set<ResourceWaitingRequest> _waitingActions = Collections.synchronizedSet(new HashSet<>());
 
     private final ExecutorService _executorService = new ThreadPoolExecutor(10, Integer.MAX_VALUE,
             60L, TimeUnit.SECONDS,
             new SynchronousQueue<>());
 
-    public void start() {
+    public final void start() {
         ProcessingRunnable _timeoutRunnable = new ProcessingRunnable();
         Thread thr = new Thread(_timeoutRunnable);
         thr.start();
     }
 
-    public void processLongPollingResource(LongPollingResource resource, LongPollableResource pollableResource) {
-        ResourceWaitingRequest request = new ResourceWaitingRequest(pollableResource, resource, System.currentTimeMillis());
+    public final void processLongPollingResource(LongPollingResource resource, LongPollableResource pollableResource) {
+        ResourceWaitingRequest request =
+                new ResourceWaitingRequest(pollableResource, resource, System.currentTimeMillis());
         if (pollableResource.registerRequest(request)) {
             execute(resource);
         } else {
@@ -30,27 +32,14 @@ public class LongPollingSystem {
         }
     }
 
-    private void pause() {
-        try {
-            long _pollingInterval = 100;
-            Thread.sleep(_pollingInterval);
-        } catch (InterruptedException exp) {
-            // Ignore
-        }
-    }
-
-    private void processWaitingRequest(final ResourceWaitingRequest request) {
-        _waitingActions.remove(request);
-        execute(request.getLongPollingResource());
-    }
-
     private void execute(final LongPollingResource resource) {
         _executorService.submit(resource::processIfNotProcessed);
     }
 
     private class ProcessingRunnable implements Runnable {
+        @SuppressWarnings("InfiniteLoopStatement")
         @Override
-        public void run() {
+        public final void run() {
             while (true) {
                 Set<ResourceWaitingRequest> resourcesCopy;
                 synchronized (_waitingActions) {
@@ -62,8 +51,7 @@ public class LongPollingSystem {
                     if (waitingRequest.getLongPollingResource().wasProcessed())
                         _waitingActions.remove(waitingRequest);
                     else {
-                        long _pollingLength = 5000;
-                        if (waitingRequest.getStart() + _pollingLength < now) {
+                        if (waitingRequest.getStart() + POLLING_LENGTH < now) {
                             waitingRequest.getLongPollableResource().deregisterRequest();
                             _waitingActions.remove(waitingRequest);
                             execute(waitingRequest.getLongPollingResource());
@@ -74,6 +62,15 @@ public class LongPollingSystem {
                 pause();
             }
         }
+
+        private static void pause() {
+            try {
+                long _pollingInterval = 100;
+                Thread.sleep(_pollingInterval);
+            } catch (InterruptedException exp) {
+                // Ignore
+            }
+        }
     }
 
     private class ResourceWaitingRequest implements WaitingRequest {
@@ -81,26 +78,28 @@ public class LongPollingSystem {
         private final LongPollableResource _longPollableResource;
         private final long _start;
 
-        private ResourceWaitingRequest(LongPollableResource longPollableResource, LongPollingResource longPollingResource, long start) {
+        private ResourceWaitingRequest(LongPollableResource longPollableResource,
+                                       LongPollingResource longPollingResource, long start) {
             _longPollableResource = longPollableResource;
             _longPollingResource = longPollingResource;
             _start = start;
         }
 
         @Override
-        public void processRequest() {
-            processWaitingRequest(this);
+        public final void processRequest() {
+            _waitingActions.remove(this);
+            execute(_longPollingResource);
         }
 
-        public LongPollableResource getLongPollableResource() {
+        final LongPollableResource getLongPollableResource() {
             return _longPollableResource;
         }
 
-        public LongPollingResource getLongPollingResource() {
+        final LongPollingResource getLongPollingResource() {
             return _longPollingResource;
         }
 
-        public long getStart() {
+        final long getStart() {
             return _start;
         }
     }

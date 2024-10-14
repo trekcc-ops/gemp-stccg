@@ -11,11 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class JsonUtils {
+public class JsonUtils {
 
     private static final ObjectMapper _mapper = new ObjectMapper();
 
-    public static boolean IsInvalidHjsonFile(File file) {
+    public static boolean isNotAValidHJSONFile(File file) {
         String ext = FilenameUtils.getExtension(file.getName());
         return !ext.equalsIgnoreCase("json") && !ext.equalsIgnoreCase("hjson");
     }

@@ -1,10 +1,13 @@
 package com.gempukku.stccg.async;
 
+import com.gempukku.stccg.async.handler.HttpUtils;
+import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
-import com.gempukku.stccg.db.IpBanDAO;
+import com.gempukku.stccg.database.IpBanDAO;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
@@ -13,12 +16,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -35,14 +40,12 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     private static final Logger LOGGER = LogManager.getLogger(GempukkuHttpRequestHandler.class);
     private final Map<String, byte[]> _fileCache = Collections.synchronizedMap(new HashMap<>());
 
-    private final Map<Type, Object> _objects;
     private final UriRequestHandler _uriRequestHandler;
     private final IpBanDAO _ipBanDAO;
 
-    public GempukkuHttpRequestHandler(Map<Type, Object> objects, UriRequestHandler uriRequestHandler) {
-        _objects = objects;
+    public GempukkuHttpRequestHandler(ServerObjects serverObjects, UriRequestHandler uriRequestHandler) {
         _uriRequestHandler = uriRequestHandler;
-        _ipBanDAO = (IpBanDAO) _objects.get(IpBanDAO.class);
+        _ipBanDAO = serverObjects.getIpBanDAO();
     }
 
     private record RequestInformation(String uri, String remoteIp, long requestTime) {
@@ -50,70 +53,43 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
+    protected final void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest httpRequest) {
         if (HttpUtil.is100ContinueExpected(httpRequest))
-            send100Continue(ctx);
+            send100Continue(channelHandlerContext);
 
         String uri = httpRequest.uri();
 
         if (uri.contains("?"))
-            uri = uri.substring(0, uri.indexOf("?"));
+            uri = uri.substring(0, uri.indexOf('?'));
 
         String ip = httpRequest.headers().get("X-Forwarded-For");
 
         if(ip == null)
-           ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
+           ip = ((InetSocketAddress) channelHandlerContext.channel().remoteAddress()).getAddress().getHostAddress();
 
         final RequestInformation requestInformation = new RequestInformation(httpRequest.uri(),
                 ip,
                 System.currentTimeMillis());
 
-        ResponseSender responseSender = new ResponseSender(ctx, httpRequest);
+        ResponseWriter responseSender = new ResponseSender(channelHandlerContext, httpRequest);
 
         try {
             if (isBanned(requestInformation.remoteIp)) {
-                responseSender.writeError(401);
-                LOGGER.info("Denying entry to user from banned IP " + requestInformation.remoteIp);
+                responseSender.writeError(HttpURLConnection.HTTP_UNAUTHORIZED); // 401
+                LOGGER.info("Denying entry to user from banned IP {}", requestInformation.remoteIp);
             }
             else {
-                _uriRequestHandler.handleRequest(uri, httpRequest, _objects, responseSender, requestInformation.remoteIp);
+                _uriRequestHandler.handleRequest(uri, httpRequest, responseSender, requestInformation.remoteIp);
             }
         } catch (HttpProcessingException exp) {
             int code = exp.getStatus();
-            //401, 403, 404, and other 400 errors should just do minimal logging,
-            // but 400 itself should error out
-            if(code % 400 < 100 && code != 400) {
-                LOGGER.debug("HTTP " + code + " response for " + requestInformation.remoteIp + ": " + requestInformation.uri);
-            }
-            // record an HTTP 400
-            else if(code == 400 || code % 500 < 100) {
-                LOGGER.error("HTTP code " + code + " response for " + requestInformation.remoteIp + ": " + requestInformation.uri, exp);
-            }
-
+            String message =
+                    "HTTP " + code + " response for " + requestInformation.remoteIp + ":" + requestInformation.uri;
+            HttpUtils.logHttpError(LOGGER, code, message, exp);
             responseSender.writeError(exp.getStatus());
         } catch (Exception exp) {
-            LOGGER.error("Error response for " + uri, exp);
-            responseSender.writeError(500);
-        }
-    }
-
-    private void sendResponse(ChannelHandlerContext ctx, HttpRequest request, FullHttpResponse response) {
-        boolean keepAlive = HttpUtil.isKeepAlive(request);
-
-        if (keepAlive) {
-            // Add 'Content-Length' header only for a keep-alive connection.
-            response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
-            // Add keep alive header as per:
-            // - http://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01.html#Connection
-            response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        }
-
-        ctx.write(response);
-        ctx.flush();
-
-        if (!keepAlive) {
-            // If keep-alive is off, close the connection once the content is fully written.
-            ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+            LOGGER.error("Error response for {}", uri, exp);
+            responseSender.writeError(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
         }
     }
 
@@ -127,68 +103,14 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         return false;
     }
 
-    private Map<String, String> getHeadersForFile(Map<String, String> headers, File file) {
-        Map<String, String> fileHeaders = new HashMap<>(headers);
-
-        boolean cache = false;
-
-        String fileName = file.getName();
-        String contentType;
-        if (fileName.endsWith(".html")) {
-            contentType = "text/html; charset=UTF-8";
-        } else if (fileName.endsWith(".js")) {
-            contentType = "application/javascript; charset=UTF-8";
-        } else if (fileName.endsWith(".css")) {
-            contentType = "text/css; charset=UTF-8";
-        } else if (fileName.endsWith(".jpg")) {
-            cache = true;
-            contentType = "image/jpeg";
-        } else if (fileName.endsWith(".png")) {
-            cache = true;
-            contentType = "image/png";
-        } else if (fileName.endsWith(".gif")) {
-            cache = true;
-            contentType = "image/gif";
-        }
-        else if (fileName.endsWith(".svg")) {
-            cache = true;
-            contentType = "image/svg+xml";
-        }
-        else if (fileName.endsWith(".wav")) {
-            cache = true;
-            contentType = "audio/wav";
-        } else {
-            contentType = "application/octet-stream";
-        }
-
-        if (cache) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
-            long sixMonthsFromNow = System.currentTimeMillis() + SIX_MONTHS;
-            fileHeaders.put(HttpHeaderNames.EXPIRES.toString(), dateFormat.format(new Date(sixMonthsFromNow)));
-        }
-
-        fileHeaders.put(CONTENT_TYPE.toString(), contentType);
-        return fileHeaders;
-    }
-
-    private HttpHeaders convertToHeaders(Map<? extends CharSequence, String> headersMap) {
-        HttpHeaders headers = new DefaultHttpHeaders();
-        if (headersMap != null) {
-            for (Map.Entry<? extends CharSequence, String> headerEntry : headersMap.entrySet()) {
-                headers.set(headerEntry.getKey(), headerEntry.getValue());
-            }
-        }
-        return headers;
-    }
-
-    private static void send100Continue(ChannelHandlerContext ctx) {
+    private static void send100Continue(ChannelOutboundInvoker ctx) {
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, CONTINUE);
         ctx.write(response);
         ctx.flush();
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public final void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (!(cause instanceof IOException) && !(cause instanceof IllegalArgumentException))
             LOGGER.error("Error while processing request", cause);
         ctx.close();
@@ -198,41 +120,36 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
         private final ChannelHandlerContext ctx;
         private final HttpRequest request;
 
-        public ResponseSender(ChannelHandlerContext ctx, HttpRequest request) {
+        ResponseSender(ChannelHandlerContext ctx, HttpRequest request) {
             this.ctx = ctx;
             this.request = request;
         }
 
         @Override
-        public void writeError(int status) {
-            byte[] content = new byte[0];
-            // Build the response object.
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status), Unpooled.wrappedBuffer(content), convertToHeaders(null), EmptyHttpHeaders.INSTANCE);
-            sendResponse(ctx, request, response);
+        public final void writeError(int status) {
+            sendResponse(HttpResponseStatus.valueOf(status), new byte[0], convertToHeaders(null), ctx,
+                    request);
         }
 
         @Override
-        public void writeError(int status, Map<String, String> headers) {
-            byte[] content = new byte[0];
-            // Build the response object.
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status), Unpooled.wrappedBuffer(content), convertToHeaders(headers), EmptyHttpHeaders.INSTANCE);
-            sendResponse(ctx, request, response);
+        public final void writeError(int status, Map<String, String> headers) {
+            sendResponse(HttpResponseStatus.valueOf(status), new byte[0], convertToHeaders(headers), ctx, request);
         }
 
         @Override
-        public void writeXmlResponse(Document document) {
+        public final void writeXmlResponse(Document document) {
             writeXmlResponse(document, null);
         }
 
         @Override
-        public void writeXmlResponse(Document document, Map<? extends CharSequence, String> headers) {
+        public final void writeXmlResponse(Document document, Map<? extends CharSequence, String> addHeaders) {
             try {
                 String contentType;
                 String response1;
                 if (document != null) {
-                    DOMSource domSource = new DOMSource(document);
+                    Source domSource = new DOMSource(document);
                     StringWriter writer = new StringWriter();
-                    StreamResult result = new StreamResult(writer);
+                    Result result = new StreamResult(writer);
                     TransformerFactory tf = TransformerFactory.newInstance();
                     Transformer transformer = tf.newTransformer();
                     transformer.transform(domSource, result);
@@ -243,103 +160,152 @@ public class GempukkuHttpRequestHandler extends SimpleChannelInboundHandler<Full
                     response1 = "OK";
                     contentType = "text/plain";
                 }
-                HttpHeaders headers1 = convertToHeaders(headers);
+                HttpHeaders headers1 = convertToHeaders(addHeaders);
                 headers1.set(CONTENT_TYPE, contentType);
-
-                // Build the response object.
-                FullHttpResponse response =
-                        new DefaultFullHttpResponse(
-                                HTTP_1_1, HttpResponseStatus.OK,
-                                Unpooled.wrappedBuffer(response1.getBytes(CharsetUtil.UTF_8)),
-                                headers1, EmptyHttpHeaders.INSTANCE);
-                sendResponse(ctx, request, response);
+                sendResponse(HttpResponseStatus.OK, response1.getBytes(CharsetUtil.UTF_8), headers1, ctx, request);
             } catch (Exception exp) {
-                byte[] content = new byte[0];
-                // Build the response object.
-                LOGGER.error("Error response for " + request.uri(), exp);
-                FullHttpResponse response =
-                        new DefaultFullHttpResponse(
-                                HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, Unpooled.wrappedBuffer(content),
-                                null, EmptyHttpHeaders.INSTANCE);
-                sendResponse(ctx, request, response);
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                sendResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, new byte[0], null, ctx, request);
             }
         }
 
         @Override
-        public void writeHtmlResponse(String html) {
+        public final void writeHtmlResponse(String html) {
             HttpHeaders headers = new DefaultHttpHeaders();
             headers.set(CONTENT_TYPE, "text/html; charset=UTF-8");
-
-            if (html == null)
-                html = "";
-            // Build the response object.
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(html.getBytes(CharsetUtil.UTF_8)), headers, EmptyHttpHeaders.INSTANCE);
-            sendResponse(ctx, request, response);
+            if (html == null) html = "";
+            sendResponse(HttpResponseStatus.OK, html.getBytes(CharsetUtil.UTF_8), headers, ctx, request);
         }
 
         @Override
-        public void writeJsonResponse(String json) {
+        public final void writeJsonResponse(String json) {
             HttpHeaders headers = new DefaultHttpHeaders();
             headers.set(CONTENT_TYPE, "application/json; charset=UTF-8");
 
-            if (json == null)
-                json = "{}";
+            if (json == null) json = "{}";
 
-            if(!json.startsWith("{") && !json.startsWith("[")) {
+            if(!json.startsWith("{") && !json.startsWith("["))
                 json = "{ \"response\": " + json + " }";
-            }
-            // Build the response object.
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK,
-                    Unpooled.wrappedBuffer(json.getBytes(CharsetUtil.UTF_8)), headers, EmptyHttpHeaders.INSTANCE);
-            sendResponse(ctx, request, response);
+
+            sendResponse(HttpResponseStatus.OK, json.getBytes(CharsetUtil.UTF_8), headers, ctx, request);
         }
 
         @Override
-        public void writeByteResponse(byte[] bytes, Map<? extends CharSequence, String> headers) {
+        public final void writeByteResponse(byte[] bytes, Map<? extends CharSequence, String> headers) {
             HttpHeaders headers1 = convertToHeaders(headers);
-
-            // Build the response object.
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(bytes), headers1, EmptyHttpHeaders.INSTANCE);
-            sendResponse(ctx, request, response);
+            sendResponse(HttpResponseStatus.OK, bytes, headers1, ctx, request);
         }
 
         @Override
-        public void writeFile(File file, Map<String, String> headers) {
+        public final void writeFile(File file, Map<String, String> headers) {
             try {
                 String canonicalPath = file.getCanonicalPath();
                 byte[] fileBytes = _fileCache.get(canonicalPath);
                 if (fileBytes == null) {
                     if (!file.exists() || !file.isFile()) {
-                        byte[] content = new byte[0];
-                        // Build the response object.
-                        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(404), Unpooled.wrappedBuffer(content), convertToHeaders(null), EmptyHttpHeaders.INSTANCE);
-                        sendResponse(ctx, request, response);
+                        HttpResponseStatus status =
+                                HttpResponseStatus.valueOf(HttpURLConnection.HTTP_NOT_FOUND); // 404
+                        sendResponse(status, new byte[0], convertToHeaders(null), ctx, request);
                         return;
                     }
 
                     FileInputStream fis = new FileInputStream(file);
                     try {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        IOUtils.copyLarge(fis, baos);
-                        fileBytes = baos.toByteArray();
+                        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                        IOUtils.copyLarge(fis, byteStream);
+                        fileBytes = byteStream.toByteArray();
                         _fileCache.put(canonicalPath, fileBytes);
                     } finally {
                         IOUtils.closeQuietly(fis);
                     }
                 }
-
                 HttpHeaders headers1 = convertToHeaders(getHeadersForFile(headers, file));
-
-                // Build the response object.
-                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(fileBytes), headers1, EmptyHttpHeaders.INSTANCE);
-                sendResponse(ctx, request, response);
+                sendResponse(HttpResponseStatus.OK, fileBytes, headers1, ctx, request);
             } catch (IOException exp) {
                 byte[] content = new byte[0];
                 // Build the response object.
-                LOGGER.error("Error response for " + request.uri(), exp);
-                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(500), Unpooled.wrappedBuffer(content), convertToHeaders(null), EmptyHttpHeaders.INSTANCE);
-                sendResponse(ctx, request, response);
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                HttpResponseStatus status = HttpResponseStatus.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR); // 500
+                sendResponse(status, content, convertToHeaders(null), ctx, request);
             }
+        }
+
+        private static Map<String, String> getHeadersForFile(Map<String, String> headers, File file) {
+            Map<String, String> fileHeaders = new HashMap<>(headers);
+
+            boolean cache = false;
+
+            String fileName = file.getName();
+            String contentType;
+            if (fileName.endsWith(".html")) {
+                contentType = "text/html; charset=UTF-8";
+            } else if (fileName.endsWith(".js")) {
+                contentType = "application/javascript; charset=UTF-8";
+            } else if (fileName.endsWith(".css")) {
+                contentType = "text/css; charset=UTF-8";
+            } else if (fileName.endsWith(".jpg")) {
+                cache = true;
+                contentType = "image/jpeg";
+            } else if (fileName.endsWith(".png")) {
+                cache = true;
+                contentType = "image/png";
+            } else if (fileName.endsWith(".gif")) {
+                cache = true;
+                contentType = "image/gif";
+            }
+            else if (fileName.endsWith(".svg")) {
+                cache = true;
+                contentType = "image/svg+xml";
+            }
+            else if (fileName.endsWith(".wav")) {
+                cache = true;
+                contentType = "audio/wav";
+            } else {
+                contentType = "application/octet-stream";
+            }
+
+            if (cache) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+                long sixMonthsFromNow = System.currentTimeMillis() + SIX_MONTHS;
+                fileHeaders.put(EXPIRES.toString(), dateFormat.format(new Date(sixMonthsFromNow)));
+            }
+
+            fileHeaders.put(CONTENT_TYPE.toString(), contentType);
+            return fileHeaders;
+        }
+
+        private static HttpHeaders convertToHeaders(Map<? extends CharSequence, String> headersMap) {
+            HttpHeaders headers = new DefaultHttpHeaders();
+            if (headersMap != null) {
+                for (Map.Entry<? extends CharSequence, String> headerEntry : headersMap.entrySet()) {
+                    headers.set(headerEntry.getKey(), headerEntry.getValue());
+                }
+            }
+            return headers;
+        }
+
+        private void sendResponse(HttpResponseStatus status, byte[] content, HttpHeaders headers,
+                                  ChannelOutboundInvoker context, HttpMessage message) {
+            FullHttpResponse response = new DefaultFullHttpResponse(
+                    HTTP_1_1, status, Unpooled.wrappedBuffer(content), headers, EmptyHttpHeaders.INSTANCE);
+            boolean keepAlive = HttpUtil.isKeepAlive(message);
+
+            if (keepAlive) {
+                // Add 'Content-Length' header only for a keep-alive connection.
+                response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
+                // Add keep alive header as per:
+                // - http://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01.html#Connection
+                response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+            }
+
+            context.write(response);
+            context.flush();
+
+            if (!keepAlive) {
+                // If keep-alive is off, close the connection once the content is fully written.
+                context.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+            }
+
         }
     }
 }

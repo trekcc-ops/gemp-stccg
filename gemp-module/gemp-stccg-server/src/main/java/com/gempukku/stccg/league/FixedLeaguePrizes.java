@@ -1,6 +1,6 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -22,11 +22,12 @@ public class FixedLeaguePrizes implements LeaguePrizes {
             _rares.addAll(setDefinition.getCardsOfRarity("R"));
         }
         _allCards.addAll(library.getAllBlueprintIds());
-        _library = library; // TODO - Not sure it's helpful to save this as a class member once rarities work
+        _library = library;
     }
 
+    @SuppressWarnings("BadOddness")
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCount, int gamesPlayed) {
+    public CardCollection getPrizeForLeagueMatchWinner(int winCount) {
         DefaultCardCollection winnerPrize = new DefaultCardCollection();
         if (winCount % 2 == 1) {
             winnerPrize.addItem("(S)All Decipher Choice - Booster", 1);
@@ -37,10 +38,11 @@ public class FixedLeaguePrizes implements LeaguePrizes {
     }
 
     @Override
-    public CardCollection getPrizeForLeague(int position, int playersCount, int gamesPlayed, int maxGamesPlayed, CollectionType collectionType) {
+    public CardCollection getPrizeForLeague(int position, CollectionType collectionType) {
         if (collectionType.equals(CollectionType.ALL_CARDS)) {
             return getPrizeForConstructedLeague(position);
-        } else if (collectionType.equals(CollectionType.MY_CARDS) || collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
+        } else if (collectionType.equals(CollectionType.MY_CARDS) ||
+                collectionType.equals(CollectionType.OWNED_TOURNAMENT_CARDS)) {
             return getPrizeForCollectorsLeague(position);
         } else {
             return getPrizeForSealedLeague(position);

@@ -1,10 +1,11 @@
 package com.gempukku.stccg.formats;
 
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.SetDefinition;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
@@ -43,7 +44,7 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
 
-    public DefaultGameFormat(CardBlueprintLibrary library, JSONDefs.Format def) throws InvalidPropertiesFormatException{
+    public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def) throws InvalidPropertiesFormatException{
         this(library, def.name, def.game, def.code, def.order, def.surveyUrl,
                 def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall);
@@ -123,7 +124,7 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public List<Integer> getValidSetNums() {
+    public List<Integer> getValidSetIds() {
         return Collections.unmodifiableList(_validSets);
     }
 
@@ -413,15 +414,6 @@ public class DefaultGameFormat implements GameFormat {
         return errata;
     }
 
-    @Override
-    public List<String> findBaseCards(String bpID) {
-        return _errataCardMap
-                .entrySet().stream()
-                .filter(x-> x.getValue().equals(bpID))
-                .map(Map.Entry::getKey)
-                .toList();
-    }
-
     private String validateDeckStructure(CardDeck deck) {
         StringBuilder result = new StringBuilder();
         int drawDeckSize = deck.getSubDeck(SubDeck.DRAW_DECK).size();
@@ -479,9 +471,58 @@ public class DefaultGameFormat implements GameFormat {
         counts.merge(name, 1, Integer::sum);
     }
 
+    public String serializeForHall() throws CardNotFoundException {
+        StringBuilder result = new StringBuilder();
+        result.append("<b>").append(getName()).append("</b>");
+        result.append("<ul>");
+        result.append("<li>valid sets: ");
+        for (Integer integer : getValidSetIds())
+            result.append(integer).append(", ");
+        result.append("</li>");
+        if (!getBannedCards().isEmpty()) {
+            result.append("<li>Banned cards (can't be played): ");
+            appendCards(result, getBannedCards());
+            result.append("</li>");
+        }
+        if (!getRestrictedCardNames().isEmpty()) {
+            result.append("<li>Restricted by card name: ");
+            boolean first = true;
+            for (String cardName : getRestrictedCardNames()) {
+                if (!first)
+                    result.append(", ");
+                result.append(cardName);
+                first = false;
+            }
+            result.append("</li>");
+        }
+        if (!getErrataCardMap().isEmpty()) {
+            result.append("<li>Errata: ");
+            appendCards(result, new ArrayList<>(new LinkedHashSet<>(getErrataCardMap().values())));
+            result.append("</li>");
+        }
+        if (!getValidCards().isEmpty()) {
+            result.append("<li>Additional valid: ");
+            List<String> additionalValidCards = getValidCards();
+            appendCards(result, additionalValidCards);
+            result.append("</li>");
+        }
+        result.append("</ul>");
+        return result.toString();
+    }
+
+    private void appendCards(StringBuilder result, Collection<String> additionalValidCards)
+            throws CardNotFoundException {
+        if (!additionalValidCards.isEmpty()) {
+            for (String blueprintId : additionalValidCards)
+                result.append(_library.getCardBlueprint(blueprintId).getCardLink()).append(", ");
+            if (additionalValidCards.isEmpty())
+                result.append("none,");
+        }
+    }
+
     @Override
-    public JSONDefs.Format Serialize() {
-        return new JSONDefs.Format() {{
+    public JSONData.Format Serialize() {
+        return new JSONData.Format() {{
             code = _code;
             game = _game;
             name = _name;

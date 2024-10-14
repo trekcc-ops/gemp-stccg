@@ -1,7 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.hall.GameTimer;
 
 public class TribblesGameMediator extends CardGameMediator {
@@ -13,6 +13,6 @@ public class TribblesGameMediator extends CardGameMediator {
         _tribblesgame = new TribblesGame(gameFormat, _playerDecks, library);
     }
     @Override
-    public TribblesGame getGame() { return _tribblesgame; }
+    public final TribblesGame getGame() { return _tribblesgame; }
 
 }

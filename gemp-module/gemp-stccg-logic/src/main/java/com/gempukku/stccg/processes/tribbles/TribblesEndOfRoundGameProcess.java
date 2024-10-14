@@ -14,7 +14,6 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
     private GameProcess _nextProcess;
     private final TribblesGame _game;
     TribblesEndOfRoundGameProcess(TribblesGame game) {
-        super();
         _game = game;
     }
     @Override

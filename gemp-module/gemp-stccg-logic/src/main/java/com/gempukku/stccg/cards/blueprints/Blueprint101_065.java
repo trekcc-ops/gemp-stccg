@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 public class Blueprint101_065 extends CardBlueprint {
     Blueprint101_065() {
         super("101_065"); // Tricorder

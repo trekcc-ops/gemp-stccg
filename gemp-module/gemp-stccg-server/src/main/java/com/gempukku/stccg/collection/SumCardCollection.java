@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 public class SumCardCollection implements CardCollection {
-    private final List<CardCollection> _cardCollections;
+    private final List<? extends CardCollection> _cardCollections;
 
-    public SumCardCollection(List<CardCollection> cardCollections) {
+    public SumCardCollection(List<? extends CardCollection> cardCollections) {
         _cardCollections = cardCollections;
     }
 

@@ -23,7 +23,7 @@ public class SingleEliminationOnDemandPrizes implements TournamentPrizes{
     }
 
     @Override
-    public CardCollection getPrizeForTournament(PlayerStanding playerStanding, int playersCount) {
+    public CardCollection getPrizeForTournament(PlayerStanding playerStanding) {
         DefaultCardCollection tournamentPrize = new DefaultCardCollection();
         if (playerStanding.getPoints() == 4) {
             tournamentPrize.addItem("(S)All Decipher Choice - Booster", 2);
@@ -50,6 +50,7 @@ public class SingleEliminationOnDemandPrizes implements TournamentPrizes{
 
     @Override
     public String getPrizeDescription() {
-        return "<div class='prizeHint' value='2 wins - 2 boosters and a random promo, 1 win - 2 boosters, 0 wins - 1 booster'>(2+promo)-2-1</div>";
+        return "<div class='prizeHint' value='" +
+                "2 wins - 2 boosters and a random promo, 1 win - 2 boosters, 0 wins - 1 booster'>(2+promo)-2-1</div>";
     }
 }

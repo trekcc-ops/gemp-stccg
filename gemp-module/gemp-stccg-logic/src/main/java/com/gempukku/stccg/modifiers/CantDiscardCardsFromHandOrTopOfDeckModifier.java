@@ -9,7 +9,8 @@ import com.gempukku.stccg.condition.Condition;
 public class CantDiscardCardsFromHandOrTopOfDeckModifier extends AbstractModifier {
     private final String _playerId;
 
-    public CantDiscardCardsFromHandOrTopOfDeckModifier(PhysicalCard source, Condition condition, String playerId, Filterable... discardSourceAffected) {
+    public CantDiscardCardsFromHandOrTopOfDeckModifier(PhysicalCard source, Condition condition, String playerId,
+                                                       Filterable... discardSourceAffected) {
         super(source, null, Filters.and(discardSourceAffected), condition, ModifierEffect.DISCARD_NOT_FROM_PLAY);
         _playerId = playerId;
     }

@@ -29,7 +29,7 @@ public class AttemptMissionEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         // TODO - Pretty much skipping all the actual pieces of attempting a mission except attempting to solve it
-        // TODO - NEver mind, didn't actual add that either
+        // TODO - NEver mind, didn't actually add that either
         MissionRequirement requirement = _mission.getBlueprint().getMissionRequirements();
         if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
             _game.sendMessage("DEBUG - Mission solved!");

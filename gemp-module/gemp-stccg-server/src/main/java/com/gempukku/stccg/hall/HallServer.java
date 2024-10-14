@@ -1,25 +1,24 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.*;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.AbstractServer;
+import com.gempukku.stccg.DateUtils;
+import com.gempukku.stccg.SubscriptionConflictException;
+import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
-import com.gempukku.stccg.chat.ChatRoomMediator;
-import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.chat.HallChatRoomMediator;
+import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.db.IgnoreDAO;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.database.IgnoreDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.game.GameResultListener;
-import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
-import com.gempukku.stccg.league.LeagueService;
-import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.tournament.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,207 +34,69 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class HallServer extends AbstractServer {
 
     private static final Logger LOGGER = LogManager.getLogger(HallServer.class);
-
-    private static final int _playerTableInactivityPeriod = 1000 * 20 ; // 20 seconds
-
-    private static final int _playerChatInactivityPeriod = 1000 * 60 * 5; // 5 minutes
-    private static final long _scheduledTournamentLoadTime = 1000 * 60 * 60 * 24 * 7; // Week
+    private static final int TICK_COUNTER_START = 60;
+    private static final int HALL_TIMEOUT_PERIOD = 300;
+    private static final int PLAYER_TABLE_INACTIVITY_PERIOD = 1000 * 20 ; // 20 seconds
+    private static final int PLAYER_CHAT_INACTIVITY_PERIOD = 1000 * 60 * 5; // 5 minutes
     // Repeat tournaments every 2 days
-
-    private final ChatServer _chatServer;
-    private final LeagueService _leagueService;
-    private final TournamentService _tournamentService;
-    private final CardBlueprintLibrary _library;
+    private static final long SCHEDULED_TOURNAMENT_LOAD_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
     private final FormatLibrary _formatLibrary;
     private final CollectionsManager _collectionsManager;
-    private final GameServer _gameServer;
-    private final PairingMechanismRegistry _pairingMechanismRegistry;
-    private final AdminService _adminService;
-    private final TournamentPrizeSchemeRegistry _tournamentPrizeSchemeRegistry;
-
     private String _messageOfTheDay;
-
     private boolean _shutdown;
-
     private final ReadWriteLock _hallDataAccessLock = new ReentrantReadWriteLock(false);
-
     private final TableHolder tableHolder;
-
     private final Map<User, HallCommunicationChannel> _playerChannelCommunication = new ConcurrentHashMap<>();
     private int _nextChannelNumber = 0;
-
     private final Map<String, Tournament> _runningTournaments = new LinkedHashMap<>();
-
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
-    private final ChatRoomMediator _hallChat;
-    private final GameResultListener _notifyHallListeners = new NotifyHallListenersGameResultListener();
+    private final HallChatRoomMediator _hallChat;
+    private final ServerObjects _serverObjects;
+    private int _tickCounter = TICK_COUNTER_START;
 
-    public HallServer(IgnoreDAO ignoreDAO, GameServer gameServer, ChatServer chatServer, LeagueService leagueService, TournamentService tournamentService, CardBlueprintLibrary library,
-                      FormatLibrary formatLibrary, CollectionsManager collectionsManager,
-                      AdminService adminService,
-                      TournamentPrizeSchemeRegistry tournamentPrizeSchemeRegistry,
-                      PairingMechanismRegistry pairingMechanismRegistry) {
-        _gameServer = gameServer;
-        _chatServer = chatServer;
-        _leagueService = leagueService;
-        _tournamentService = tournamentService;
-        _library = library;
-        _formatLibrary = formatLibrary;
-        _collectionsManager = collectionsManager;
-        _adminService = adminService;
-        _tournamentPrizeSchemeRegistry = tournamentPrizeSchemeRegistry;
-        _pairingMechanismRegistry = pairingMechanismRegistry;
-
-        tableHolder = new TableHolder(leagueService, ignoreDAO);
-
-        _hallChat = _chatServer.createChatRoom("Game Hall", true, 300, true,
-                "You're now in the Game Hall, use /help to get a list of available commands.<br>Don't forget to check out the new Discord chat integration! Click the 'Switch to Discord' button in the lower right ---->");
-        _hallChat.addChatCommandCallback("ban",
-                (from, parameters, admin) -> {
-                    if (admin) {
-                        _adminService.banUser(parameters.trim());
-                    } else {
-                        throw new ChatCommandErrorException("Only administrator can ban users");
-                    }
-                });
-        _hallChat.addChatCommandCallback("banIp",
-                (from, parameters, admin) -> {
-                    if (admin) {
-                        _adminService.banIp(parameters.trim());
-                    } else {
-                        throw new ChatCommandErrorException("Only administrator can ban users");
-                    }
-                });
-        _hallChat.addChatCommandCallback("banIpRange",
-                (from, parameters, admin) -> {
-                    if (admin) {
-                        _adminService.banIpPrefix(parameters.trim());
-                    } else {
-                        throw new ChatCommandErrorException("Only administrator can ban users");
-                    }
-                });
-        _hallChat.addChatCommandCallback("ignore",
-                (from, parameters, admin) -> {
-                    final String playerName = parameters.trim();
-                    if (playerName.length() >= 2 && playerName.length() <= 30) {
-                        if (!from.equals(playerName) && ignoreDAO.addIgnoredUser(from, playerName)) {
-                            _hallChat.sendToUser("System", from, "User " + playerName + " added to ignore list");
-                        } else if (from.equals(playerName)) {
-                            _hallChat.sendToUser(from, from, "You don't have any friends. Nobody likes you.");
-                            _hallChat.sendToUser(from, from, "Not listening. Not listening!");
-                            _hallChat.sendToUser(from, from, "You're a liar and a thief.");
-                            _hallChat.sendToUser(from, from, "Nope.");
-                            _hallChat.sendToUser(from, from, "Murderer!");
-                            _hallChat.sendToUser(from, from, "Go away. Go away!");
-                            _hallChat.sendToUser(from, from, "Hahahaha!");
-                            _hallChat.sendToUser(from, from, "I hate you, I hate you.");
-                            _hallChat.sendToUser(from, from, "Where would you be without me? Gollum, Gollum. I saved us. It was me. We survived because of me!");
-                            _hallChat.sendToUser(from, from, "Not anymore.");
-                            _hallChat.sendToUser(from, from, "What did you say?");
-                            _hallChat.sendToUser(from, from, "Master looks after us now. We don't need you.");
-                            _hallChat.sendToUser(from, from, "What?");
-                            _hallChat.sendToUser(from, from, "Leave now and never come back.");
-                            _hallChat.sendToUser(from, from, "No!");
-                            _hallChat.sendToUser(from, from, "Leave now and never come back!");
-                            _hallChat.sendToUser(from, from, "Argh!");
-                            _hallChat.sendToUser(from, from, "Leave NOW and NEVER COME BACK!");
-                            _hallChat.sendToUser(from, from, "...");
-                            _hallChat.sendToUser(from, from, "We... We told him to go away! And away he goes, preciouss! Gone, gone, gone! Smeagol is free!");
-                        } else {
-                            _hallChat.sendToUser("System", from, "User " + playerName + " is already on your ignore list");
-                        }
-                    } else {
-                        _hallChat.sendToUser("System", from, playerName + " is not a valid username");
-                    }
-                });
-        _hallChat.addChatCommandCallback("unignore",
-                (from, parameters, admin) -> {
-                    final String playerName = parameters.trim();
-                    if (playerName.length() >= 2 && playerName.length() <= 10) {
-                        if (ignoreDAO.removeIgnoredUser(from, playerName)) {
-                            _hallChat.sendToUser("System", from, "User " + playerName + " removed from ignore list");
-                        } else {
-                            _hallChat.sendToUser("System", from, "User " + playerName + " wasn't on your ignore list. Try ignoring them first.");
-                        }
-                    } else {
-                        _hallChat.sendToUser("System", from, playerName + " is not a valid username");
-                    }
-                });
-        _hallChat.addChatCommandCallback("listIgnores",
-                (from, parameters, admin) -> {
-                    final Set<String> ignoredUsers = ignoreDAO.getIgnoredUsers(from);
-                    _hallChat.sendToUser("System", from, "Your ignores: " + Arrays.toString(ignoredUsers.toArray(new String[0])));
-                });
-        _hallChat.addChatCommandCallback("incognito",
-                (from, parameters, admin) -> {
-                    _hallChat.setIncognito(from, true);
-                    _hallChat.sendToUser("System", from, "You are now incognito (do not appear in user list)");
-                });
-        _hallChat.addChatCommandCallback("endIncognito",
-                (from, parameters, admin) -> {
-                    _hallChat.setIncognito(from, false);
-                    _hallChat.sendToUser("System", from, "You are no longer incognito");
-                });
-        _hallChat.addChatCommandCallback("help",
-                (from, parameters, admin) -> {
-                    //_hallChat.sendToUser("System", from,
-                    String message = """
-                    List of available commands:
-                    /ignore username - Adds user 'username' to list of your ignores
-                    /unignore username - Removes user 'username' from list of your ignores
-                    /listIgnores - Lists all your ignored users
-                    /incognito - Makes you incognito (not visible in user list)
-                    /endIncognito - Turns your visibility 'on' again""";
-                    if (admin) {
-                        message += """
-                        
-                        
-                        Admin only commands:
-                        /ban username - Bans user 'username' permanently
-                        /banIp ip - Bans specified ip permanently
-                        /banIpRange ip - Bans ips with the specified prefix, ie. 10.10.10.""";
-                    }
-
-                    _hallChat.sendToUser("System", from, message.replace("\n", "<br />"));
-                });
-        _hallChat.addChatCommandCallback("noCommand",
-                (from, parameters, admin) -> _hallChat.sendToUser(
-                        "System", from, "\"" + parameters + "\" is not a recognized command."
-                ));
-        // TODO - Take reloadTournaments method from LotR
+    public HallServer(ServerObjects objects) {
+        _serverObjects = objects;
+        _formatLibrary = objects.getFormatLibrary();
+        _collectionsManager = objects.getCollectionsManager();
+        final IgnoreDAO ignoreDAO = objects.getIgnoreDAO();
+        tableHolder = new TableHolder(objects);
+        _hallChat = new HallChatRoomMediator(ignoreDAO, _serverObjects,
+                HALL_TIMEOUT_PERIOD);
+        _hallChat.initialize();
     }
 
-    private void hallChanged() {
-        for (HallCommunicationChannel hallCommunicationChannel : _playerChannelCommunication.values())
-            hallCommunicationChannel.hallChanged();
+    final void hallChanged() {
+        for (HallCommunicationChannel commChannel : _playerChannelCommunication.values())
+            commChannel.hallChanged();
     }
 
-    @Override
-    protected void doAfterStartup() {
-        for (Tournament tournament : _tournamentService.getLiveTournaments())
+    private void doAfterStartup() {
+        for (Tournament tournament : _serverObjects.getTournamentService().getLiveTournaments())
             _runningTournaments.put(tournament.getTournamentId(), tournament);
     }
 
-    public void setShutdown(boolean shutdown) throws SQLException, IOException {
+    public final void setShutdown(boolean shutdown) throws SQLException, IOException {
         _hallDataAccessLock.writeLock().lock();
         try {
             boolean cancelMessage = _shutdown && !shutdown;
             _shutdown = shutdown;
             if (shutdown) {
-                cancelWaitingTables();
+                tableHolder.cancelWaitingTables();
                 cancelTournamentQueues();
-                _chatServer.sendSystemMessageToAllChatRooms("@everyone System is entering shutdown mode and will be restarted when all games are finished.");
+                _serverObjects.getChatServer().sendSystemMessageToAllUsers(
+                        "System is entering shutdown mode and will be restarted when all games are finished.");
                 hallChanged();
             }
             else if(cancelMessage){
-                _chatServer.sendSystemMessageToAllChatRooms("@everyone Shutdown mode canceled; games may now resume.");
+                _serverObjects.getChatServer().sendSystemMessageToAllUsers(
+                        "Shutdown mode canceled; games may now resume.");
             }
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
     }
 
-    public String getDailyMessage() {
+    public final String getDailyMessage() {
         _hallDataAccessLock.readLock().lock();
         try {
             return _messageOfTheDay;
@@ -244,17 +105,17 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void setDailyMessage(String motd) {
+    public final void setDailyMessage(String message) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            _messageOfTheDay = motd;
+            _messageOfTheDay = message;
             hallChanged();
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
     }
 
-    public int getTablesCount() {
+    public final int getTablesCount() {
         _hallDataAccessLock.readLock().lock();
         try {
             return tableHolder.getTableCount();
@@ -263,23 +124,19 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private void cancelWaitingTables() {
-        tableHolder.cancelWaitingTables();
-    }
-
     private void cancelTournamentQueues() throws SQLException, IOException {
         for (TournamentQueue tournamentQueue : _tournamentQueues.values())
             tournamentQueue.leaveAllPlayers(_collectionsManager);
     }
 
-    public void createNewTable(String format, User player, String deckName, String timer,
-                               String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
+    public final void createNewTable(String type, User deckOwner, String deckName, String timer,
+                                     String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
-        createNewTable(format, player, player, deckName, timer, description, isInviteOnly, isPrivate, isHidden);
+        createNewTable(type, deckOwner, deckOwner, deckName, timer, description, isInviteOnly, isPrivate, isHidden);
     }
 
-    public void createNewTable(String type, User player, User deckOwner, String deckName, String timer,
-                               String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
+    public final void createNewTable(String type, User player, User deckOwner, String deckName, String timer,
+                                     String description, boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         if (_shutdown)
             throw new HallException("Server is in shutdown mode. " +
@@ -303,17 +160,17 @@ public class HallServer extends AbstractServer {
                                             boolean isInviteOnly, boolean isPrivate, boolean isHidden)
             throws HallException {
         League league = null;
-        LeagueSeriesData leagueSerie = null;
+        LeagueSeriesData seriesData = null;
         GameFormat format = _formatLibrary.getHallFormats().get(formatSelection);
         GameTimer gameTimer = GameTimer.ResolveTimer(timer);
 
         if (format == null) {
             // Maybe it's a league format?
-            league = _leagueService.getLeagueByType(formatSelection);
+            league = _serverObjects.getLeagueService().getLeagueByType(formatSelection);
             if (league != null) {
-                leagueSerie = _leagueService.getCurrentLeagueSerie(league);
-                if (leagueSerie == null)
-                    throw new HallException("There is no ongoing serie for that league");
+                seriesData = _serverObjects.getLeagueService().getCurrentLeagueSeries(league);
+                if (seriesData == null)
+                    throw new HallException("There is no ongoing series for that league");
 
                 if(isInviteOnly) {
                     throw new HallException("League games cannot be invite-only");
@@ -327,7 +184,7 @@ public class HallServer extends AbstractServer {
                 if(description != null)
                     description = "";
 
-                format = leagueSerie.getFormat();
+                format = seriesData.getFormat();
 
                 gameTimer = GameTimer.COMPETITIVE_TIMER;
             }
@@ -336,19 +193,22 @@ public class HallServer extends AbstractServer {
         if (format == null)
             throw new HallException("This format is not supported: " + formatSelection);
 
-        return new GameSettings(format, league, leagueSerie,
+        return new GameSettings(format, league, seriesData,
                 league != null, isPrivate, isInviteOnly, isHidden, gameTimer, description);
     }
 
-    public void joinQueue(String queueId, User player, String deckName) throws HallException, SQLException, IOException {
+    public final void joinQueue(String queueId, User player, String deckName)
+            throws HallException, SQLException, IOException {
         if (_shutdown)
-            throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
+            throw new HallException(
+                    "Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         _hallDataAccessLock.writeLock().lock();
         try {
             TournamentQueue tournamentQueue = _tournamentQueues.get(queueId);
             if (tournamentQueue == null)
-                throw new HallException("Tournament queue already finished accepting players, try again in a few seconds");
+                throw new HallException(
+                        "Tournament queue already finished accepting players, try again in a few seconds");
             if (tournamentQueue.isPlayerSignedUp(player.getName()))
                 throw new HallException("You have already joined that queue");
 
@@ -368,10 +228,11 @@ public class HallServer extends AbstractServer {
     /**
      *
      */
-    public void joinTableAsPlayer(String tableId, User player, String deckName) throws HallException {
+    public final void joinTableAsPlayer(String tableId, User player, String deckName) throws HallException {
         LOGGER.debug("HallServer - joinTableAsPlayer function called");
         if (_shutdown)
-            throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
+            throw new HallException(
+                    "Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
         CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), player, deckName);
@@ -389,9 +250,11 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void joinTableAsPlayerWithSpoofedDeck(String tableId, User player, User librarian, String deckName) throws HallException {
+    public final void joinTableAsPlayerWithSpoofedDeck(String tableId, User player, User librarian, String deckName)
+            throws HallException {
         if (_shutdown)
-            throw new HallException("Server is in shutdown mode. Server will be restarted after all running games are finished.");
+            throw new HallException(
+                    "Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
         CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), librarian, deckName);
@@ -409,7 +272,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void leaveQueue(String queueId, User player) throws SQLException, IOException {
+    public final void leaveQueue(String queueId, User player) throws SQLException, IOException {
         _hallDataAccessLock.writeLock().lock();
         try {
             TournamentQueue tournamentQueue = _tournamentQueues.get(queueId);
@@ -438,7 +301,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void dropFromTournament(String tournamentId, User player) {
+    public final void dropFromTournament(String tournamentId, User player) {
         _hallDataAccessLock.writeLock().lock();
         try {
             Tournament tournament = _runningTournaments.get(tournamentId);
@@ -451,7 +314,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void leaveAwaitingTable(User player, String tableId) {
+    public final void leaveAwaitingTable(User player, String tableId) {
         _hallDataAccessLock.writeLock().lock();
         try {
             if (tableHolder.leaveAwaitingTable(player, tableId))
@@ -461,7 +324,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public boolean leaveAwaitingTablesForLeavingPlayer(User player) {
+    private final boolean leaveAwaitingTablesForLeavingPlayer(User player) {
         _hallDataAccessLock.writeLock().lock();
         try {
             return tableHolder.leaveAwaitingTablesForPlayer(player);
@@ -470,7 +333,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public void signupUserForHall(User player, HallChannelVisitor hallChannelVisitor) {
+    public final void signupUserForHall(User player, HallChannelVisitor hallChannelVisitor) {
         _hallDataAccessLock.readLock().lock();
         try {
             HallCommunicationChannel channel = new HallCommunicationChannel(_nextChannelNumber++);
@@ -481,7 +344,8 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public HallCommunicationChannel getCommunicationChannel(User player, int channelNumber) throws SubscriptionExpiredException, SubscriptionConflictException {
+    public final HallCommunicationChannel getCommunicationChannel(User player, int channelNumber)
+            throws SubscriptionExpiredException, SubscriptionConflictException {
         _hallDataAccessLock.readLock().lock();
         try {
             HallCommunicationChannel communicationChannel = _playerChannelCommunication.get(player);
@@ -499,32 +363,38 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    protected void processHall(User player, HallInfoVisitor visitor) {
+    final void processHall(User player, HallInfoVisitor visitor) {
         final boolean isAdmin = player.getType().contains("a");
         _hallDataAccessLock.readLock().lock();
         try {
             visitor.serverTime(DateUtils.getCurrentDateAsString());
             if (_messageOfTheDay != null)
-                visitor.motd(_messageOfTheDay);
+                visitor.setDailyMessage(_messageOfTheDay);
 
             tableHolder.processTables(isAdmin, player, visitor);
 
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                visitor.visitTournamentQueue(tournamentQueueKey, tournamentQueue.getCost(), tournamentQueue.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournamentQueue.getFormat()).getName(), tournamentQueue.getTournamentQueueName(),
-                        tournamentQueue.getPrizesDescription(), tournamentQueue.getPairingDescription(), tournamentQueue.getStartCondition(),
-                        tournamentQueue.getPlayerCount(), tournamentQueue.isPlayerSignedUp(player.getName()), tournamentQueue.isJoinable());
+                visitor.visitTournamentQueue(tournamentQueueKey, tournamentQueue.getCost(),
+                        tournamentQueue.getCollectionType().getFullName(),
+                        _formatLibrary.getFormat(tournamentQueue.getFormat()).getName(),
+                        tournamentQueue.getTournamentQueueName(), tournamentQueue.getPrizesDescription(),
+                        tournamentQueue.getPairingDescription(), tournamentQueue.getStartCondition(),
+                        tournamentQueue.getPlayerCount(), tournamentQueue.isPlayerSignedUp(player.getName()),
+                        tournamentQueue.isJoinable());
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
                 String tournamentKey = tournamentEntry.getKey();
                 Tournament tournament = tournamentEntry.getValue();
-                visitor.visitTournament(tournamentKey, tournament.getCollectionType().getFullName(),
-                        _formatLibrary.getFormat(tournament.getFormat()).getName(), tournament.getTournamentName(), tournament.getPlayOffSystem(),
-                        tournament.getTournamentStage().getHumanReadable(),
-                        tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(), tournament.isPlayerInCompetition(player.getName()));
+                visitor.visitTournament(
+                        tournamentKey, tournament.getCollectionType().getFullName(),
+                        _formatLibrary.getFormat(tournament.getFormat()).getName(), tournament.getTournamentName(),
+                        tournament.getPlayOffSystem(), tournament.getTournamentStage().getHumanReadable(),
+                        tournament.getCurrentRound(), tournament.getPlayersInCompetitionCount(),
+                        tournament.isPlayerInCompetition(player.getName())
+                );
             }
         } finally {
             _hallDataAccessLock.readLock().unlock();
@@ -532,11 +402,9 @@ public class HallServer extends AbstractServer {
     }
 
     private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName) throws HallException {
-        CardDeck cardDeck = _gameServer.getParticipantDeck(player, deckName);
+        CardDeck cardDeck = _serverObjects.getGameServer().getParticipantDeck(player, deckName);
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
-        /* TODO - Removed code from LotR that checked against user's collection.
-            Revisit if collections are being implemented. */
         String validation = format.validateDeckForHall(format.applyErrata(cardDeck));
         if(!validation.isEmpty())
             throw new HallException("Your selected deck is not valid for this format: " + validation);
@@ -544,7 +412,7 @@ public class HallServer extends AbstractServer {
     }
 
 
-    private String getTournamentName(GameTable table) {
+    private static String getTournamentName(GameTable table) {
         final League league = table.getGameSettings().getLeague();
         if (league != null)
             return league.getName() + " - " + table.getGameSettings().getSeriesData().getName();
@@ -556,23 +424,24 @@ public class HallServer extends AbstractServer {
         Set<GameParticipant> players = gameTable.getPlayers();
         GameParticipant[] participants = players.toArray(new GameParticipant[0]);
         final League league = gameTable.getGameSettings().getLeague();
-        final LeagueSeriesData leagueSerie = gameTable.getGameSettings().getSeriesData();
+        final LeagueSeriesData seriesData = gameTable.getGameSettings().getSeriesData();
 
-        GameResultListener listener = getGameResultListener(league, leagueSerie);
+        GameResultListener listener = getGameResultListener(league, seriesData);
 
-        CardGameMediator mediator = createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
+        CardGameMediator mediator =
+                createGameMediator(participants, listener, getTournamentName(gameTable), gameTable.getGameSettings());
         gameTable.startGame(mediator);
     }
 
-    private GameResultListener getGameResultListener(League league, LeagueSeriesData leagueSerie) {
+    private GameResultListener getGameResultListener(League league, LeagueSeriesData seriesData) {
         GameResultListener listener = null;
         if (league != null) {
             listener = new GameResultListener() {
                 @Override
                 public void gameFinished(String winnerPlayerId, String winReason,
-                                         Map<String, String> loserPlayerIdsWithReasons) {
-                    _leagueService.reportLeagueGameResult(
-                            league, leagueSerie, winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
+                                         Map<String, String> loserReasons) {
+                    _serverObjects.getLeagueService().reportLeagueGameResult(
+                            league, seriesData, winnerPlayerId, loserReasons.keySet().iterator().next());
                 }
 
                 @Override
@@ -586,32 +455,17 @@ public class HallServer extends AbstractServer {
 
     private CardGameMediator createGameMediator(GameParticipant[] participants, GameResultListener listener,
                                                 String tournamentName, GameSettings gameSettings) {
-        final CardGameMediator cardGameMediator = _gameServer.createNewGame(tournamentName, participants, gameSettings);
+        final CardGameMediator cardGameMediator =
+                _serverObjects.getGameServer().createNewGame(tournamentName, participants, gameSettings);
         if (listener != null)
             cardGameMediator.addGameResultListener(listener);
         cardGameMediator.startGame();
-        cardGameMediator.addGameResultListener(_notifyHallListeners);
-
+        cardGameMediator.addGameResultListener(new NotifyHallListenersGameResultListener(this));
         return cardGameMediator;
     }
 
-    private class NotifyHallListenersGameResultListener implements GameResultListener {
-        @Override
-        public void gameCancelled() {
-            hallChanged();
-        }
-
-        @Override
-        public void gameFinished(String winnerPlayerId, String winReason,
-                                 Map<String, String> loserPlayerIdsWithReasons) {
-            hallChanged();
-        }
-    }
-
-    private int _tickCounter = 60;
-
     @Override
-    protected void cleanup() throws SQLException, IOException {
+    protected final void cleanup() throws SQLException, IOException {
         _hallDataAccessLock.writeLock().lock();
         try {
             // Remove finished games
@@ -620,7 +474,7 @@ public class HallServer extends AbstractServer {
             long currentTime = System.currentTimeMillis();
             Map<User, HallCommunicationChannel> visitCopy = new LinkedHashMap<>(_playerChannelCommunication);
             for (Map.Entry<User, HallCommunicationChannel> lastVisitedPlayer : visitCopy.entrySet()) {
-                if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + _playerTableInactivityPeriod) {
+                if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_TABLE_INACTIVITY_PERIOD) {
                     User player = lastVisitedPlayer.getKey();
                     boolean leftTables = leaveAwaitingTablesForLeavingPlayer(player);
                     boolean leftQueues = leaveQueuesForLeavingPlayer(player);
@@ -628,16 +482,19 @@ public class HallServer extends AbstractServer {
                         hallChanged();
                 }
 
-                if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + _playerChatInactivityPeriod) {
+                if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_CHAT_INACTIVITY_PERIOD) {
                     User player = lastVisitedPlayer.getKey();
                     _playerChannelCommunication.remove(player);
                 }
             }
 
-            for (Map.Entry<String, TournamentQueue> runningTournamentQueue : new HashMap<>(_tournamentQueues).entrySet()) {
+            TournamentQueueCallback queueCallback;
+
+            for (Map.Entry<String, TournamentQueue> runningTournamentQueue :
+                    new HashMap<>(_tournamentQueues).entrySet()) {
                 String tournamentQueueKey = runningTournamentQueue.getKey();
                 TournamentQueue tournamentQueue = runningTournamentQueue.getValue();
-                HallTournamentQueueCallback queueCallback = new HallTournamentQueueCallback();
+                queueCallback = new HallTournamentQueueCallback(_runningTournaments);
                 // If it's finished, remove it
                 if (tournamentQueue.process(queueCallback, _collectionsManager)) {
                     _tournamentQueues.remove(tournamentQueueKey);
@@ -647,28 +504,26 @@ public class HallServer extends AbstractServer {
 
             for (Map.Entry<String, Tournament> tournamentEntry : new HashMap<>(_runningTournaments).entrySet()) {
                 Tournament runningTournament = tournamentEntry.getValue();
-                boolean changed = runningTournament.advanceTournament(new HallTournamentCallback(runningTournament), _collectionsManager);
+                boolean changed = runningTournament.advanceTournament(
+                        new HallTournamentCallback(runningTournament), _collectionsManager);
                 if (runningTournament.getTournamentStage() == Tournament.Stage.FINISHED)
                     _runningTournaments.remove(tournamentEntry.getKey());
                 if (changed)
                     hallChanged();
             }
 
-            if (_tickCounter == 60) {
+            if (_tickCounter == TICK_COUNTER_START) {
                 _tickCounter = 0;
-                List<TournamentQueueInfo> unstartedTournamentQueues = _tournamentService.getUnstartedScheduledTournamentQueues(
-                        System.currentTimeMillis() + _scheduledTournamentLoadTime);
-                for (TournamentQueueInfo unstartedTournamentQueue : unstartedTournamentQueues) {
-                    String scheduledTournamentId = unstartedTournamentQueue.getScheduledTournamentId();
-                    if (!_tournamentQueues.containsKey(scheduledTournamentId)) {
-                        ScheduledTournamentQueue scheduledQueue = new ScheduledTournamentQueue(scheduledTournamentId, unstartedTournamentQueue.getCost(),
-                                true, _tournamentService, unstartedTournamentQueue.getStartTime(), unstartedTournamentQueue.getTournamentName(),
-                                unstartedTournamentQueue.getFormat(), CollectionType.ALL_CARDS, Tournament.Stage.PLAYING_GAMES,
-                                _pairingMechanismRegistry.getPairingMechanism(unstartedTournamentQueue.getPlayOffSystem()),
-                                _tournamentPrizeSchemeRegistry.getTournamentPrizes(_library,
-                                        unstartedTournamentQueue.getPrizeScheme()),
-                                unstartedTournamentQueue.getMinimumPlayers());
-                        _tournamentQueues.put(scheduledTournamentId, scheduledQueue);
+                long nextLoadTime = System.currentTimeMillis() + SCHEDULED_TOURNAMENT_LOAD_TIME;
+                List<TournamentQueueInfo> futureTournamentQueues =
+                        _serverObjects.getTournamentService().getFutureScheduledTournamentQueues(nextLoadTime);
+                for (TournamentQueueInfo queueInfo : futureTournamentQueues) {
+                    String tournamentId = queueInfo.getScheduledTournamentId();
+                    if (!_tournamentQueues.containsKey(tournamentId)) {
+                        ScheduledTournamentQueue scheduledQueue =
+                                queueInfo.createNewScheduledTournamentQueue(
+                                        _serverObjects, Tournament.Stage.PLAYING_GAMES);
+                        _tournamentQueues.put(tournamentId, scheduledQueue);
                         hallChanged();
                     }
                 }
@@ -677,13 +532,6 @@ public class HallServer extends AbstractServer {
 
         } finally {
             _hallDataAccessLock.writeLock().unlock();
-        }
-    }
-
-    private class HallTournamentQueueCallback implements TournamentQueueCallback {
-        @Override
-        public void createTournament(Tournament tournament) {
-            _runningTournaments.put(tournament.getTournamentId(), tournament);
         }
     }
 
@@ -699,7 +547,7 @@ public class HallServer extends AbstractServer {
         }
 
         @Override
-        public void createGame(String playerOne, CardDeck deckOne, String playerTwo, CardDeck deckTwo) {
+        public final void createGame(String playerOne, CardDeck deckOne, String playerTwo, CardDeck deckTwo) {
             final GameParticipant[] participants = new GameParticipant[2];
             participants[0] = new GameParticipant(playerOne, deckOne);
             participants[1] = new GameParticipant(playerTwo, deckTwo);
@@ -711,18 +559,9 @@ public class HallServer extends AbstractServer {
             try {
                 if (!_shutdown) {
                     final GameTable gameTable = tableHolder.setupTournamentTable(tournamentGameSettings, participants);
-                    final CardGameMediator mediator = createGameMediator(participants,
-                            new GameResultListener() {
-                                @Override
-                                public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
-                                    _tournament.reportGameFinished(winnerPlayerId, loserPlayerIdsWithReasons.keySet().iterator().next());
-                                }
-
-                                @Override
-                                public void gameCancelled() {
-                                    createGameInternal(participants);
-                                }
-                            }, _tournament.getTournamentName(), tournamentGameSettings);
+                    final CardGameMediator mediator =
+                            createGameMediator(participants, new MyGameResultListener(participants),
+                                    _tournament.getTournamentName(), tournamentGameSettings);
                     gameTable.startGame(mediator);
                 }
             } finally {
@@ -731,7 +570,7 @@ public class HallServer extends AbstractServer {
         }
 
         @Override
-        public void broadcastMessage(String message) {
+        public final void broadcastMessage(String message) {
             try {
                 _hallChat.sendMessage("TournamentSystem", message, true);
             } catch (PrivateInformationException exp) {
@@ -740,5 +579,28 @@ public class HallServer extends AbstractServer {
                 // Ignore, no command
             }
         }
+
+        private class MyGameResultListener implements GameResultListener {
+            private final GameParticipant[] participants;
+
+            public MyGameResultListener(GameParticipant[] participants) {
+                this.participants = participants;
+            }
+
+            @Override
+            public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
+                _tournament.reportGameFinished(winnerPlayerId, loserReasons.keySet().iterator().next());
+            }
+
+            @Override
+            public void gameCancelled() {
+                createGameInternal(participants);
+            }
+        }
+    }
+
+    public final void startServer() {
+        basicStartup();
+        doAfterStartup();
     }
 }

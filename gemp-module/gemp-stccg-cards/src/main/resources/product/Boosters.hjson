@@ -11,6 +11,30 @@
 			set: "101"
 		}
 	}
+/*	{
+		name: Alternate Universe - Booster
+		type: booster
+		items: [
+		    1x[3*(R-103_104)+1*(UR)] // rare sheets include 3 sets of rares (excl Ophidian Cane) + Future Enterprise
+		    3x[3*(U)+1*(103_104)] // uncommon sheets include 3 sets of uncommons + Ophidian Cane
+		    11x[3*(C)+1*(103_032)] // common sheets include 3 sets of commons + Alternate Universe Door
+		]
+		data: {
+			set: "103"
+		}
+	}
+	{
+		name: Q-Continuum - Booster
+		type: booster
+		items: [
+		    1x[3*(R-105_065)+1*(105_075)] // rare sheets inlcude 3 sets of rares (excl Data's Body) + Mortal Q
+		    3x[3*(U)+1*(105_065)] // uncommon sheets include 3 sets of uncommons + Data's Body
+		    11x[3*(C)+1*(105_015)] // common sheets include 3 sets of commons + Q-Flash
+		]
+		data: {
+			set: "105"
+		}
+	} */
 	{
 		name: First Contact - Booster
 		type: booster

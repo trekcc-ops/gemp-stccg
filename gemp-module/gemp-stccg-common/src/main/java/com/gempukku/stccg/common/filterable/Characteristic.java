@@ -1,6 +1,8 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("unused")
 public enum Characteristic implements Filterable {
-    COOK, K_EHLEYR
+    COOK,
+    @SuppressWarnings("SpellCheckingInspection") K_EHLEYR
 
 }

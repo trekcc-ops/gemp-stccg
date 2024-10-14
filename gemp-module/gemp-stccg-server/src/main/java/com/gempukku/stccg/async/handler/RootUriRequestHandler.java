@@ -2,66 +2,69 @@ package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingSystem;
-import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.handler.codec.http.HttpRequest;
 
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class RootUriRequestHandler implements UriRequestHandler {
-    final Map<String, UriRequestHandler> requestHandlers = new HashMap<>();
-    final String _serverContextPath = "/gemp-stccg-server/";
-    final String _webContextPath = "/gemp-module/";
+    private static final String SERVER_CONTEXT_PATH = "/gemp-stccg-server/";
+    private final Map<String, UriRequestHandler> requestHandlers = new HashMap<>();
     private final WebRequestHandler _webRequestHandler;
     private final StatusRequestHandler _statusRequestHandler;
 
     private final Pattern originPattern;
 
-    public RootUriRequestHandler(Map<Type, Object> context, LongPollingSystem longPollingSystem) {
+    public RootUriRequestHandler(LongPollingSystem longPollingSystem, ServerObjects objects) {
         _webRequestHandler = new WebRequestHandler();
-        _statusRequestHandler = new StatusRequestHandler(context);
+        _statusRequestHandler = new StatusRequestHandler(objects);
         String originAllowedPattern = AppConfig.getProperty("origin.allowed.pattern");
         originPattern = Pattern.compile(originAllowedPattern);
 
-        requestHandlers.put(_serverContextPath + "hall", new HallRequestHandler(context, longPollingSystem));
-        requestHandlers.put(_serverContextPath + "deck", new DeckRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "login", new LoginRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "register", new RegisterRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "replay", new ReplayRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "gameHistory", new GameHistoryRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "stats", new ServerStatsRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "playerStats", new PlayerStatsRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "admin", new AdminRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "chat", new ChatRequestHandler(context, longPollingSystem));
-        requestHandlers.put(_serverContextPath + "collection", new CollectionRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "delivery", new DeliveryRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "game", new GameRequestHandler(context, longPollingSystem));
-        requestHandlers.put(_serverContextPath + "league", new LeagueRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "merchant", new MerchantRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "tournament", new TournamentRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "soloDraft", new SoloDraftRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "playtesting", new PlaytestRequestHandler(context));
-        requestHandlers.put(_serverContextPath + "player", new PlayerInfoRequestHandler(context));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "hall", new HallRequestHandler(objects, longPollingSystem));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "deck", new DeckRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "login", new LoginRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "register", new RegisterRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "replay", new ReplayRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "gameHistory", new GameHistoryRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "stats", new ServerStatsRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "playerStats", new PlayerStatsRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "admin", new AdminRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "chat", new ChatRequestHandler(objects, longPollingSystem));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "collection", new CollectionRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "delivery", new DeliveryRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "game", new GameRequestHandler(objects, longPollingSystem));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "league", new LeagueRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "merchant", new MerchantRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "tournament", new TournamentRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "soloDraft", new SoloDraftRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "playtesting", new PlaytestRequestHandler(objects));
+        requestHandlers.put(SERVER_CONTEXT_PATH + "player", new PlayerInfoRequestHandler(objects));
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context,
-                              ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.startsWith(_webContextPath)) {
-            _webRequestHandler.handleRequest(uri.substring(_webContextPath.length()), request, context, responseWriter, remoteIp);
-        } else if (uri.equals("/gemp-module")) {
-            responseWriter.writeError(301, Collections.singletonMap("Location", "/gemp-module/"));
-        } else if (uri.equals(_serverContextPath)) {
-            _statusRequestHandler.handleRequest(uri.substring(_serverContextPath.length()), request, context, responseWriter, remoteIp);
+    public final void handleRequest(String uri, HttpRequest request,
+                                    ResponseWriter responseWriter, String remoteIp) throws Exception {
+        String webContextPath = "/gemp-module/";
+        if (uri.startsWith(webContextPath)) {
+            _webRequestHandler.handleRequest(uri.substring(webContextPath.length()), request, responseWriter, remoteIp);
+        } else if ("/gemp-module".equals(uri)) {
+            // 301 Moved Permanently
+            responseWriter.writeError(
+                    HttpURLConnection.HTTP_MOVED_PERM, Collections.singletonMap("Location", webContextPath));
+        } else if (uri.equals(SERVER_CONTEXT_PATH)) {
+            _statusRequestHandler.handleRequest(
+                    uri.substring(SERVER_CONTEXT_PATH.length()), request, responseWriter, remoteIp);
         } else {
             String origin = request.headers().get("Origin");
             if (origin != null) {
                 if (!originPattern.matcher(origin).matches())
-                    throw new HttpProcessingException(403);
+                    throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
             }
             boolean requestHandled = false;
 
@@ -69,13 +72,13 @@ public class RootUriRequestHandler implements UriRequestHandler {
             for (Map.Entry<String, UriRequestHandler> entry : requestHandlers.entrySet()) {
                 if (uri.startsWith(entry.getKey())) {
                     entry.getValue().handleRequest(
-                            uri.substring(entry.getKey().length()), request, context, responseWriter, remoteIp
+                            uri.substring(entry.getKey().length()), request, responseWriter, remoteIp
                     );
                     requestHandled = true;
                 }
             }
             if (!requestHandled)
-                throw new HttpProcessingException(404);
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 

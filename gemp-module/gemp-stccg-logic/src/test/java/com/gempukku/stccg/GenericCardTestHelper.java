@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
@@ -109,21 +108,6 @@ public class GenericCardTestHelper extends AbstractAtTest {
 
     public void ShuffleDeck(String player) {
         _game.getGameState().shuffleDeck(player);
-    }
-
-
-    public void RemoveCardZone(String player, PhysicalCardGeneric card) {
-        if(card.getZone() != null)
-        {
-            _game.getGameState().removeCardsFromZone(player, new ArrayList<>() {{
-                add(card);
-            }});
-        }
-    }
-
-    public void MoveCardToZone(String player, PhysicalCardGeneric card, Zone zone) {
-        RemoveCardZone(player, card);
-        _game.getGameState().addCardToZone(card, zone);
     }
 
 

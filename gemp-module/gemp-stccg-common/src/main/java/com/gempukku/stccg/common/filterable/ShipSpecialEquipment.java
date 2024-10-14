@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("unused")
 public enum ShipSpecialEquipment implements Filterable {
     CLOAKING_DEVICE("Cloaking Device"),
     ENERGY_DAMPENER("Energy Dampener"),

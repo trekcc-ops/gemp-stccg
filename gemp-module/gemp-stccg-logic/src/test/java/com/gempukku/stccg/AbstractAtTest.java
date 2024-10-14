@@ -11,20 +11,22 @@ import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
 
+@SuppressWarnings("MethodWithMultipleReturnPoints")
 public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected ST1EGame _game;
-    protected TribblesGame _tribblesGame;
+    private TribblesGame _tribblesGame;
     protected UserFeedback _userFeedback;
-    public static final String P1 = "player1";
-    public static final String P2 = "player2";
-    FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+    static final String P1 = "player1";
+    static final String P2 = "player2";
+    private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
@@ -180,7 +182,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected void validateContents(String[] array1, String[] array2) {
         if (array1.length != array2.length)
             Assertions.fail("Array sizes differ");
-        List<String> values = new ArrayList<>(Arrays.asList(array1));
+        Collection<String> values = new ArrayList<>(Arrays.asList(array1));
         for (String s : array2) {
             if (!values.remove(s))
                 Assertions.fail("Arrays contents differ");

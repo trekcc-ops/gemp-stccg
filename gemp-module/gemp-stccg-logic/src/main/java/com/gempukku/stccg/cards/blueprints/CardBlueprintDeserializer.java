@@ -182,7 +182,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                 Examples:
                     match -> Diplomacy x2 OR OFFICER + ENGINEER
                     match -> Honor or Treachery
-                    no match -> Diplomacy + Anthropology + (Jean-Luc Picard OR Tebok OR CUNNING >35) */
+                    no match -> Diplomacy + Anthropology + (Jean-Luc Picard OR Worf OR CUNNING >35) */
         String orNoParens = "\\s+(?i)OR\\s+(?![^(]*\\))";
 
             /* andNoParens splits requirements joined by "and", if they're not inside parentheses.

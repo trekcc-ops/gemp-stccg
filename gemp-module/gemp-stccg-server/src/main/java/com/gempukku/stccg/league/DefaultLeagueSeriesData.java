@@ -1,8 +1,8 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.common.GameFormat;
+import com.gempukku.stccg.formats.GameFormat;
 
 public class DefaultLeagueSeriesData implements LeagueSeriesData {
     private final LeaguePrizes _leaguePrizes;
@@ -14,7 +14,8 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     private final GameFormat _format;
     private final CollectionType _collectionType;
 
-    public DefaultLeagueSeriesData(LeaguePrizes leaguePrizes, boolean limited, String name, int start, int end, int maxMatches, GameFormat format, CollectionType collectionType) {
+    public DefaultLeagueSeriesData(LeaguePrizes leaguePrizes, boolean limited, String name, int start, int end,
+                                   int maxMatches, GameFormat format, CollectionType collectionType) {
         _leaguePrizes = leaguePrizes;
         _limited = limited;
         _name = name;
@@ -61,8 +62,8 @@ public class DefaultLeagueSeriesData implements LeagueSeriesData {
     }
 
     @Override
-    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries, int totalGamesPlayedThisSeries) {
-        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries, totalGamesPlayedThisSeries);
+    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries) {
+        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries);
     }
 
 }

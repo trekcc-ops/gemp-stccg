@@ -2,7 +2,7 @@ package com.gempukku.stccg.packs;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.common.JSONDefs;
+import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,16 +24,16 @@ public class ProductLibrary {
     public ProductLibrary(CardBlueprintLibrary cardLibrary) {
         this(cardLibrary, AppConfig.getProductPath());
     }
-    public ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionDirectory) {
+    private ProductLibrary(CardBlueprintLibrary cardLibrary, File packDefinitionPath) {
         _cardLibrary = cardLibrary;
-        _packDirectory = packDefinitionDirectory;
+        _packDirectory = packDefinitionPath;
 
         collectionReady.acquireUninterruptibly();
         loadPacks(_packDirectory);
         collectionReady.release();
     }
 
-    public void ReloadPacks() {
+    public final void ReloadPacks() {
         try {
             collectionReady.acquire();
             loadPacks(_packDirectory);
@@ -48,59 +48,50 @@ public class ProductLibrary {
             loadPackFromFile(path);
         }
         else if (path.isDirectory()) {
-            for (File file : Objects.requireNonNull(path.listFiles())) {
+            File[] files = path.listFiles();
+            for (File file : Objects.requireNonNull(files)) {
                 loadPacks(file);
             }
         }
     }
 
     private void loadPackFromFile(File file) {
-        if (JsonUtils.IsInvalidHjsonFile(file))
+        if (JsonUtils.isNotAValidHJSONFile(file))
             return;
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-            List<JSONDefs.Pack> defs = JsonUtils.readListOfClassFromReader(reader, JSONDefs.Pack.class);
+            List<JSONData.Pack> packs = JsonUtils.readListOfClassFromReader(reader, JSONData.Pack.class);
 
-            for (JSONDefs.Pack def : defs) {
-                LOGGER.debug("Loading pack definitions for " + def.name);
+            for (JSONData.Pack def : packs) {
+                LOGGER.debug("Loading pack definitions for {}", def.name);
 
                 PackBox result = null;
-                String[] rarities;
-                String[] sets;
                 switch (def.type) {
                     case random -> {
                         if (def.items == null || def.items.isEmpty())
                             continue;
                         if (def.items.stream().anyMatch(x -> x.contains("%"))) {
-                            result = WeightedRandomPack.LoadFromArray(def.items);
+                            result = new WeightedRandomPack(def.items);
                         } else {
-                            result = UnweightedRandomPack.LoadFromArray(def.items);
+                            result = new UnweightedRandomPack(def.items);
                         }
-                    }
-                    case random_foil -> {
-                        if (def.data == null || !def.data.has("rarities") || !def.data.has("sets")) {
-                            System.out.println(def.name + " RANDOM_FOIL pack type must contain a definition for 'rarities' and 'sets' within data.");
-                            continue;
-                        }
-                        rarities = def.data.get("rarities").textValue().toUpperCase().split("\\s*,\\s*");
-                        sets = def.data.get("sets").textValue().split("\\s*,\\s*");
-                        result = new RandomFoilPack(rarities, sets, _cardLibrary);
                     }
                     case booster -> {
                         if (def.data == null || !def.data.has("set")) {
-                            System.out.println(def.name + " BOOSTER pack type must contain a definition for 'set' within data.");
+                            System.out.println(def.name +
+                                    " BOOSTER pack type must contain a definition for 'set' within data.");
                             continue;
                         }
                         if (def.data.get("set").textValue().contains(",")) {
                             System.out.println(def.name + " BOOSTER pack type must define exactly one set.");
                             continue;
                         }
-                        String set = def.data.get("set").textValue().trim();
-                        result = new BoosterPack(_cardLibrary.getSetDefinitions().get(set), def.items);
+                        String set = def.data.get("set").textValue().strip();
+                        result = new BoosterPack(_cardLibrary.getSetDefinition(set), def.items);
                     }
                     case pack, selection -> {
                         if (def.items == null || def.items.isEmpty())
                             continue;
-                        result = FixedPackBox.LoadFromArray(def.items);
+                        result = new FixedPackBox(def.items);
                     }
                 }
                 if(result == null)
@@ -145,4 +136,3 @@ public class ProductLibrary {
         }
     }
 }
-

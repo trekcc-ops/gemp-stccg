@@ -8,7 +8,8 @@ import com.gempukku.stccg.condition.Condition;
 
 public abstract class AbstractExtraPlayCostModifier extends AbstractModifier implements ExtraPlayCost {
 
-    public AbstractExtraPlayCostModifier(PhysicalCard source, String text, Filterable affectFilter, Condition condition) {
+    public AbstractExtraPlayCostModifier(PhysicalCard source, String text, Filterable affectFilter,
+                                         Condition condition) {
         super(source, text, affectFilter, condition, ModifierEffect.EXTRA_COST_MODIFIER);
     }
 

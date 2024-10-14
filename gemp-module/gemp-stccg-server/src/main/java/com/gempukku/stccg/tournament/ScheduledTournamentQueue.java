@@ -1,38 +1,30 @@
 package com.gempukku.stccg.tournament;
 
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.db.vo.CollectionType;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class ScheduledTournamentQueue extends AbstractTournamentQueue implements TournamentQueue {
+public class ScheduledTournamentQueue extends AbstractTournamentQueue {
     private static final long _signupTimeBeforeStart = 1000 * 60 * 60; // 60 minutes before start
     private final long _startTime;
     private final int _minimumPlayers;
     private final String _startCondition;
-    private final TournamentService _tournamentService;
     private final String _tournamentName;
-    private final CollectionType _collectionType;
     private final Tournament.Stage _stage;
     private final String _scheduledTournamentId;
 
-    public ScheduledTournamentQueue(String scheduledTournamentId, int cost, boolean requiresDeck, TournamentService tournamentService, long startTime,
-                                    String tournamentName, String format, CollectionType collectionType, Tournament.Stage stage,
-                                    PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes, int minimumPlayers) {
-        super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format);
-        _scheduledTournamentId = scheduledTournamentId;
-        _tournamentService = tournamentService;
+    public ScheduledTournamentQueue(TournamentQueueInfo tournamentQueueInfo, String tournamentId, long startTime,
+                                    int minimumPlayers, String format, String tournamentName,
+                                    Tournament.Stage stage, ServerObjects objects) {
+        super(tournamentQueueInfo, objects);
+        _scheduledTournamentId = tournamentId;
         _startTime = startTime;
         _minimumPlayers = minimumPlayers;
-        ZonedDateTime startDate = new Date(_startTime).toInstant().atZone(ZoneId.of("GMT"));
-        _startCondition = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        _startCondition = format;
         _tournamentName = tournamentName;
-        _collectionType = collectionType;
         _stage = stage;
     }
 
@@ -52,7 +44,8 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue implements
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager) throws SQLException, IOException {
+    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback,
+                                        CollectionsManager collectionsManager) throws SQLException, IOException {
         long now = System.currentTimeMillis();
         if (now > _startTime) {
             if (_players.size() >= _minimumPlayers) {

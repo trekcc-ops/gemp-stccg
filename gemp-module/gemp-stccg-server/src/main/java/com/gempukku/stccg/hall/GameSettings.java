@@ -1,7 +1,7 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.common.GameFormat;
-import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 
 public class GameSettings {
@@ -10,7 +10,7 @@ public class GameSettings {
     private final LeagueSeriesData seriesData;
     private final boolean competitive;
     private final boolean privateGame;
-    private final boolean hiddenGame;
+    private final boolean _gameIsVisible;
     private final GameTimer timeSettings;
     private final String userDescription;
     private final boolean isInviteOnly;
@@ -23,39 +23,39 @@ public class GameSettings {
         this.seriesData = seriesData;
         this.competitive = competitive;
         this.privateGame = privateGame;
-        this.hiddenGame = hiddenGame;
+        _gameIsVisible = !hiddenGame;
         this.timeSettings = timer;
         this.userDescription = description;
         this.isInviteOnly = isInviteOnly;
     }
 
-    public GameFormat getGameFormat() {
+    public final GameFormat getGameFormat() {
         return gameFormat;
     }
 
-    public League getLeague() {
+    public final League getLeague() {
         return league;
     }
 
-    public LeagueSeriesData getSeriesData() {
+    public final LeagueSeriesData getSeriesData() {
         return seriesData;
     }
 
-    public boolean isCompetitive() {
+    public final boolean isCompetitive() {
         return competitive;
     }
 
-    public boolean isPrivateGame() {
+    public final boolean isPrivateGame() {
         return privateGame;
     }
 
-    public boolean isHiddenGame() {
-        return hiddenGame;
+    public final boolean isHiddenGame() {
+        return !_gameIsVisible;
     }
 
-    public GameTimer getTimeSettings() { return timeSettings; }
+    public final GameTimer getTimeSettings() { return timeSettings; }
 
-    public String getUserDescription() { return userDescription; }
+    public final String getUserDescription() { return userDescription; }
 
-    public boolean isUserInviteOnly() { return isInviteOnly; }
+    public final boolean isUserInviteOnly() { return isInviteOnly; }
 }

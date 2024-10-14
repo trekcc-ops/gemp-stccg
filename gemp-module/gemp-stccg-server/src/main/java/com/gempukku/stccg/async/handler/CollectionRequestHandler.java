@@ -1,19 +1,16 @@
 package com.gempukku.stccg.async.handler;
 
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardItemType;
 import com.gempukku.stccg.common.filterable.SubDeck;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
-import com.gempukku.stccg.db.vo.League;
-import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.SortAndFilterCards;
+import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -21,11 +18,13 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,23 +33,17 @@ import java.util.regex.Pattern;
 
 public class CollectionRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final LeagueService _leagueService;
-    private final CollectionsManager _collectionsManager;
     private final ProductLibrary _productLibrary;
-    private final CardBlueprintLibrary _library;
-    private final FormatLibrary _formatLibrary;
 
-    public CollectionRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _leagueService = extractObject(context, LeagueService.class);
-        _collectionsManager = extractObject(context, CollectionsManager.class);
-        _productLibrary = extractObject(context, ProductLibrary.class);
-        _library = extractObject(context, CardBlueprintLibrary.class);
-        _formatLibrary = extractObject(context, FormatLibrary.class);
+    CollectionRequestHandler(ServerObjects objects) {
+        super(objects);
+        _leagueService = objects.getLeagueService();
+        _productLibrary = objects.getProductLibrary();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter,
-                              String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter,
+                                    String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getCollectionTypes(request, responseWriter);
         } else if (uri.startsWith("/import/") && request.method() == HttpMethod.GET) {
@@ -60,13 +53,15 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         } else if (uri.startsWith("/") && request.method() == HttpMethod.GET) {
             getCollection(request, uri.substring(1), responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
     
     private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+        //noinspection SpellCheckingInspection
         List<GenericCardItem> importResult = processImport(
-                getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"), _library
+                getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"),
+                _cardBlueprintLibrary
         );
 
         Document doc = createNewDoc();
@@ -84,7 +79,8 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeXmlResponse(doc, headers);
     }
 
-    private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter) throws Exception {
+    private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter)
+            throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
         String participantId = getQueryParameterSafely(queryDecoder, "participantId");
         String filter = getQueryParameterSafely(queryDecoder, "filter");
@@ -96,11 +92,11 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         CardCollection collection = _collectionsManager.getPlayerCollection(resourceOwner, collectionType);
 
         if (collection == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         Iterable<GenericCardItem> items = collection.getAll();
-        SortAndFilterCards sortAndFilter = new SortAndFilterCards();
-        List<GenericCardItem> filteredResult = sortAndFilter.process(filter, items, _library, _formatLibrary);
+        List<GenericCardItem> filteredResult =
+                SortAndFilterCards.process(filter, items, _cardBlueprintLibrary, _serverObjects.getFormatLibrary());
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
@@ -124,7 +120,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         responseWriter.writeXmlResponse(doc, headers);
     }
 
-    private void appendCardElement(Document doc, Element collectionElem, GenericCardItem item,
+    private void appendCardElement(Document doc, Node collectionElem, GenericCardItem item,
                                    boolean setSubDeckAttribute) throws Exception {
         Element card = doc.createElement("card");
         if (setSubDeckAttribute) {
@@ -134,17 +130,17 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         }
         card.setAttribute("count", String.valueOf(item.getCount()));
         card.setAttribute("blueprintId", item.getBlueprintId());
-        CardBlueprint blueprint = _library.getCardBlueprint(item.getBlueprintId());
+        CardBlueprint blueprint = _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId());
         card.setAttribute("imageUrl", blueprint.getImageUrl());
         collectionElem.appendChild(card);
     }
 
-    private void appendPackElement(Document doc, Element collectionElem, GenericCardItem item, boolean setContentsAttribute) {
+    private void appendPackElement(Document doc, Node collectionElem, GenericCardItem item, boolean setContents) {
         String blueprintId = item.getBlueprintId();
         Element pack = doc.createElement("pack");
         pack.setAttribute("count", String.valueOf(item.getCount()));
         pack.setAttribute("blueprintId", blueprintId);
-        if (setContentsAttribute) {
+        if (setContents) {
             if (item.getType() == CardItemType.SELECTION) {
                 List<GenericCardItem> contents = _productLibrary.GetProduct(blueprintId).openPack();
                 StringBuilder contentsStr = new StringBuilder();
@@ -159,7 +155,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
 
     private void openPack(HttpRequest request, String collectionType, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
         String participantId = getFormParameterSafely(postDecoder, "participantId");
         String selection = getFormParameterSafely(postDecoder, "selection");
@@ -174,7 +170,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
                 resourceOwner, collectionTypeObj, selection, _productLibrary, packId);
 
         if (packContents == null)
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("pack");
@@ -200,8 +196,9 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         Element collectionsElem = doc.createElement("collections");
 
         for (League league : _leagueService.getActiveLeagues()) {
-            LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSerie(league);
-            if (seriesData != null && seriesData.isLimited() && _leagueService.isPlayerInLeague(league, resourceOwner)) {
+            LeagueSeriesData seriesData = _leagueService.getCurrentLeagueSeries(league);
+            if (seriesData != null && seriesData.isLimited() &&
+                    _leagueService.isPlayerInLeague(league, resourceOwner)) {
                 CollectionType collectionType = seriesData.getCollectionType();
                 Element collectionElem = doc.createElement("collection");
                 collectionElem.setAttribute("type", collectionType.getCode());
@@ -215,7 +212,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
     private record CardCount(String name, int count) { }
 
-    private List<CardCount> getDecklist(String rawDeckList) {
+    private static List<CardCount> getDecklist(String rawDeckList) {
         int quantity;
         String cardLine;
 
@@ -224,9 +221,9 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
             if (line.isEmpty())
                 continue;
 
-            line = line.toLowerCase();
+            String line1 = line.toLowerCase();
             try {
-                var matches = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$").matcher(line);
+                var matches = Pattern.compile("^(x?\\s*\\d+\\s*x?)?\\s*(.*?)\\s*(x?\\d+x?)?\\s*$").matcher(line1);
 
                 if(matches.matches()) {
                     if(!StringUtils.isEmpty(matches.group(1))) {
@@ -249,7 +246,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
         return result;
     }
 
-    public List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
+    private static List<GenericCardItem> processImport(String rawDeckList, CardBlueprintLibrary cardLibrary) {
         Map<String, SubDeck> lackeySubDeckMap = new HashMap<>();
         for (SubDeck subDeck : SubDeck.values()) {
             lackeySubDeckMap.put(subDeck.getLackeyName() + ":", subDeck);
@@ -262,15 +259,10 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
             SubDeck newSubDeck = lackeySubDeckMap.get(cardCount.name);
             if (newSubDeck != null) currentSubDeck = newSubDeck;
             else {
-                /* TODO - Create a card name to blueprint ID map when the card blueprint library is created.
-                    Accessing that map should be faster than iterating through the entire blueprint library
-                    for every card.
-                 */
                 for (Map.Entry<String, CardBlueprint> cardBlueprint : cardLibrary.getBaseCards().entrySet()) {
                     String id = cardBlueprint.getKey();
                     try {
                         // If set is not a nonzero number, the card is not from a supported set
-                        // TODO - Add a catch here for whether or not the card is supported in format
                         int set = Integer.parseInt(id.split("_")[0]);
                         if (set >= 0) {
                             CardBlueprint blueprint = cardBlueprint.getValue();

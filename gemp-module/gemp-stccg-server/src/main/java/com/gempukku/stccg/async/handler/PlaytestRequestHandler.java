@@ -1,50 +1,48 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.DBDefs;
+import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ResponseWriter;
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.db.PlayerDAO;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.game.GameHistoryService;
+import com.gempukku.stccg.database.PlayerDAO;
+import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.util.List;
-import java.util.Map;
 
 public class PlaytestRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
 
     private final PlayerDAO _playerDAO;
-    private final GameHistoryService _gameHistoryService;
 
-    public PlaytestRequestHandler(Map<Type, Object> context) {
-        super(context);
-        _playerDAO = extractObject(context, PlayerDAO.class);
-        _gameHistoryService = extractObject(context, GameHistoryService.class);
+    public PlaytestRequestHandler(ServerObjects objects) {
+        super(objects);
+        _playerDAO = objects.getPlayerDAO();
     }
 
     @Override
-    public void handleRequest(String uri, HttpRequest request, Map<Type, Object> context, ResponseWriter responseWriter, String remoteIp) throws Exception {
-        if (uri.equals("/addTesterFlag") && request.method() == HttpMethod.POST) {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp)
+            throws Exception {
+        if ("/addTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {
             addTesterFlag(request, responseWriter);
-        } else if (uri.equals("/removeTesterFlag") && request.method() == HttpMethod.POST) {
+        } else if ("/removeTesterFlag".equals(uri) && request.method() == HttpMethod.POST) {
             removeTesterFlag(request, responseWriter);
-        } else if (uri.equals("/getTesterFlag") && request.method() == HttpMethod.GET) {
+        } else if ("/getTesterFlag".equals(uri) && request.method() == HttpMethod.GET) {
             getTesterFlag(request, responseWriter);
-        } else if (uri.equals("/getRecentReplays") && request.method() == HttpMethod.POST) {
+        } else if ("/getRecentReplays".equals(uri) && request.method() == HttpMethod.POST) {
             getRecentReplays(request, responseWriter);
         } else {
-            throw new HttpProcessingException(404);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
     }
 
     private void addTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             User player = getResourceOwnerSafely(request, null);
 
@@ -58,7 +56,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void removeTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             User player = getResourceOwnerSafely(request, null);
 
@@ -72,7 +70,7 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void getTesterFlag(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
             User player = getResourceOwnerSafely(request, null);
 
@@ -89,13 +87,13 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     private void getRecentReplays(HttpRequest request, ResponseWriter responseWriter) throws Exception {
-        HttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
+        InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
 
             String format = getFormParameterSafely(postDecoder, "format");
             int count = Integer.parseInt(getFormParameterSafely(postDecoder, "count"));
 
-            final List<DBDefs.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
+            final List<DBData.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
 
             responseWriter.writeJsonResponse(JsonUtils.toJsonString(gameHistory));
 

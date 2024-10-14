@@ -8,8 +8,8 @@ import com.gempukku.stccg.collection.DefaultCardCollection;
 import com.gempukku.stccg.collection.MutableCardCollection;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.db.User;
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.SoloDraftDefinitions;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -26,9 +26,10 @@ public class SoloDraftLeagueData implements LeagueData {
     private final long _code;
     private final CollectionType _prizeCollectionType = CollectionType.MY_CARDS;
     private final LeaguePrizes _leaguePrizes;
-    private final LeagueSeriesData _serie;
+    private final LeagueSeriesData _seriesData;
 
-    public SoloDraftLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary, SoloDraftDefinitions soloDraftDefinitions, String parameters) {
+    public SoloDraftLeagueData(CardBlueprintLibrary library, FormatLibrary formatLibrary,
+                               SoloDraftDefinitions soloDraftDefinitions, String parameters) {
         _leaguePrizes = new FixedLeaguePrizes(library);
 
         String[] params = parameters.split(",");
@@ -40,7 +41,7 @@ public class SoloDraftLeagueData implements LeagueData {
 
         _collectionType = new CollectionType(params[4], params[5]);
 
-        _serie = new DefaultLeagueSeriesData(_leaguePrizes, true, "Serie 1",
+        _seriesData = new DefaultLeagueSeriesData(_leaguePrizes, true, "Series 1",
                 DateUtils.offsetDate(start, 0), DateUtils.offsetDate(start, seriesDuration - 1), maxMatches,
                 formatLibrary.getFormat(_draft.getFormat()), _collectionType);
     }
@@ -60,7 +61,7 @@ public class SoloDraftLeagueData implements LeagueData {
 
     @Override
     public List<LeagueSeriesData> getSeries() {
-        return Collections.singletonList(_serie);
+        return Collections.singletonList(_seriesData);
     }
 
     private long getSeed(User player) {
@@ -74,11 +75,12 @@ public class SoloDraftLeagueData implements LeagueData {
 
         CardCollection leagueProduct = _draft.initializeNewCollection(seed);
 
-        for (GenericCardItem serieCollectionItem : leagueProduct.getAll())
-            startingCollection.addItem(serieCollectionItem.getBlueprintId(), serieCollectionItem.getCount());
+        for (GenericCardItem collectionItem : leagueProduct.getAll())
+            startingCollection.addItem(collectionItem.getBlueprintId(), collectionItem.getCount());
 
         startingCollection.setExtraInformation(createExtraInformation(seed));
-        collectionsManager.addPlayerCollection(false, "Sealed league product", player, _collectionType, startingCollection);
+        collectionsManager.addPlayerCollection(false, "Sealed league product", player, _collectionType,
+                startingCollection);
     }
 
     private Map<String, Object> createExtraInformation(long seed) {
@@ -91,17 +93,19 @@ public class SoloDraftLeagueData implements LeagueData {
     }
 
     @Override
-    public int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime) {
+    public int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings,
+                       int oldStatus, int currentTime) {
         int status = oldStatus;
 
         if (status == 0) {
-            if (currentTime > DateUtils.offsetDate(_serie.getEnd(), 1)) {
-                int maxGamesTotal = _serie.getMaxMatches();
+            if (currentTime > DateUtils.offsetDate(_seriesData.getEnd(), 1)) {
 
                 for (PlayerStanding leagueStanding : leagueStandings) {
-                    CardCollection leaguePrize = _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), leagueStandings.size(), leagueStanding.getGamesPlayed(), maxGamesTotal, _collectionType);
+                    CardCollection leaguePrize =
+                            _leaguePrizes.getPrizeForLeague(leagueStanding.getStanding(), _collectionType);
                     if (leaguePrize != null)
-                        collectionsManager.addItemsToPlayerCollection(true, "End of league prizes", leagueStanding.getPlayerName(), _prizeCollectionType, leaguePrize.getAll());
+                        collectionsManager.addItemsToPlayerCollection(true, "End of league prizes",
+                                leagueStanding.getPlayerName(), _prizeCollectionType, leaguePrize.getAll());
                 }
                 status++;
             }

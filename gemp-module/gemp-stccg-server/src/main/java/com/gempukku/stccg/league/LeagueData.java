@@ -2,7 +2,7 @@ package com.gempukku.stccg.league;
 
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.User;
 
 import java.util.List;
 
@@ -13,9 +13,10 @@ public interface LeagueData {
 
     void joinLeague(CollectionsManager collectionsManager, User player, int currentTime);
 
-    int process(CollectionsManager collectionsManager, List<PlayerStanding> leagueStandings, int oldStatus, int currentTime);
+    int process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings, int oldStatus,
+                int currentTime);
 
-    default int getMaxRepeatMatchesPerSerie() {
+    default int getMaxRepeatMatchesPerSeries() {
         return 1;
     }
 }

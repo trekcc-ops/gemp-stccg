@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
+@SuppressWarnings("unused")
 public enum CardIcon implements Filterable {
     AU_ICON("Alternate Universe", "https://www.trekcc.org/forum/images/smilies/icon_1e_au.jpg"),
     COMMAND("Command", "https://www.trekcc.org/forum/images/smilies/icon_command.gif"),

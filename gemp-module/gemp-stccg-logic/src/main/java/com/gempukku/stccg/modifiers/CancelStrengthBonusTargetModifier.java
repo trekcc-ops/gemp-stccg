@@ -14,13 +14,16 @@ public class CancelStrengthBonusTargetModifier extends AbstractModifier {
         this(source, null, affectFilter, sourceFilter);
     }
 
-    public CancelStrengthBonusTargetModifier(PhysicalCard source, Condition condition, Filterable affectFilter, Filterable sourceFilter) {
-        super(source, "Has some strength bonuses cancelled", affectFilter, condition, ModifierEffect.STRENGTH_BONUS_TARGET_MODIFIER);
+    public CancelStrengthBonusTargetModifier(PhysicalCard source, Condition condition, Filterable affectFilter,
+                                             Filterable sourceFilter) {
+        super(source, "Has some strength bonuses cancelled", affectFilter, condition,
+                ModifierEffect.STRENGTH_BONUS_TARGET_MODIFIER);
         _sourceFilter = Filters.and(sourceFilter);
     }
 
     @Override
-    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource, PhysicalCard modifierTarget) {
+    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource,
+                                                PhysicalCard modifierTarget) {
         return _sourceFilter == null || (modifierSource != null && _sourceFilter.accepts(game, modifierSource));
     }
 }

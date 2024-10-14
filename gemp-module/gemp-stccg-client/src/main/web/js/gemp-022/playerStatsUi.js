@@ -49,7 +49,7 @@ export default class PlayerStatsUI {
             for (var i = 0; i < entries.length; i++) {
                 var entry = entries[i];
 
-                table.append("<tr><td>" + entry.getAttribute("format") + "</td><td>" + entry.getAttribute("deckName") + "</td><td>" + entry.getAttribute("wins") + "</td><td>" + entry.getAttribute("losses") + "</td><td>" + entry.getAttribute("perc") + "</td></tr>");
+                table.append("<tr><td>" + entry.getAttribute("format") + "</td><td>" + entry.getAttribute("deckName") + "</td><td>" + entry.getAttribute("wins") + "</td><td>" + entry.getAttribute("losses") + "</td><td>" + entry.getAttribute("percentage") + "</td></tr>");
             }
 
             $("#playerStats").append(table);

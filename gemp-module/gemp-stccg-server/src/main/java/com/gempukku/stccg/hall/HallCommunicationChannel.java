@@ -1,8 +1,8 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.db.User;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
+import com.gempukku.stccg.database.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableObject;
 
@@ -11,7 +11,7 @@ import java.util.*;
 public class HallCommunicationChannel implements LongPollableResource {
     private final int _channelNumber;
     private long _lastConsumed;
-    private String _lastMotd;
+    private String _lastDailyMessage;
     private Map<String, Map<String, String>> _tournamentQueuePropsOnClient = new LinkedHashMap<>();
     private Map<String, Map<String, String>> _tournamentPropsOnClient = new LinkedHashMap<>();
     private Map<String, Map<String, String>> _tablePropsOnClient = new LinkedHashMap<>();
@@ -24,12 +24,12 @@ public class HallCommunicationChannel implements LongPollableResource {
     }
 
     @Override
-    public synchronized void deregisterRequest() {
+    public final synchronized void deregisterRequest() {
         _waitingRequest = null;
     }
 
     @Override
-    public synchronized boolean registerRequest(WaitingRequest waitingRequest) {
+    public final synchronized boolean registerRequest(WaitingRequest waitingRequest) {
         if (_changed)
             return true;
 
@@ -37,7 +37,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         return false;
     }
 
-    public synchronized void hallChanged() {
+    public final synchronized void hallChanged() {
         _changed = true;
         if (_waitingRequest != null) {
             _waitingRequest.processRequest();
@@ -45,7 +45,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         }
     }
 
-    public int getChannelNumber() {
+    public final int getChannelNumber() {
         return _channelNumber;
     }
 
@@ -53,15 +53,16 @@ public class HallCommunicationChannel implements LongPollableResource {
         _lastConsumed = System.currentTimeMillis();
     }
 
-    public long getLastAccessed() {
+    public final long getLastAccessed() {
         return _lastConsumed;
     }
 
-    public void processCommunicationChannel(HallServer hallServer, final User player, final HallChannelVisitor hallChannelVisitor) {
+    public final void processCommunicationChannel(HallServer hallServer, final User player,
+                                                  final HallChannelVisitor hallChannelVisitor) {
         updateLastAccess();
 
         hallChannelVisitor.channelNumber(_channelNumber);
-        final MutableObject newMotd = new MutableObject();
+        final MutableObject newDailyMessage = new MutableObject();
 
         final Map<String, Map<String, String>> tournamentQueuesOnServer = new LinkedHashMap<>();
         final Map<String, Map<String, String>> tablesOnServer = new LinkedHashMap<>();
@@ -69,80 +70,11 @@ public class HallCommunicationChannel implements LongPollableResource {
         final Set<String> playedGamesOnServer = new HashSet<>();
 
         hallServer.processHall(player,
-                new HallInfoVisitor() {
-                    @Override
-                    public void serverTime(String time) {
-                        hallChannelVisitor.serverTime(time);
-                    }
-
-                    @Override
-                    public void motd(String motd) {
-                        newMotd.setValue(motd);
-                    }
-
-                    @Override
-                    public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status,
-                                           String statusDescription, String gameType, String formatName,
-                                           String tournamentName, String userDesc, List<String> playerIds,
-                                           boolean playing, boolean isPrivate, boolean isInviteOnly, String winner) {
-                        Map<String, String> props = new HashMap<>();
-                        props.put("gameId", gameId);
-                        props.put("watchable", String.valueOf(watchable));
-                        props.put("status", String.valueOf(status));
-                        props.put("statusDescription", statusDescription);
-                        props.put("gameType", gameType);
-                        props.put("format", formatName);
-                        props.put("userDescription", userDesc);
-                        props.put("isPrivate", String.valueOf(isPrivate));
-                        props.put("isInviteOnly", String.valueOf(isInviteOnly));
-                        props.put("tournament", tournamentName);
-                        props.put("players", StringUtils.join(playerIds, ","));
-                        props.put("playing", String.valueOf(playing));
-                        if (winner != null)
-                            props.put("winner", winner);
-
-                        tablesOnServer.put(tableId, props);
-                    }
-
-                    @Override
-                    public void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName, String tournamentQueueName,
-                                                     String tournamentPrizes, String pairingDescription, String startCondition, int playerCount, boolean playerSignedUp, boolean joinable) {
-                        Map<String, String> props = new HashMap<>();
-                        props.put("cost", String.valueOf(cost));
-                        props.put("collection", collectionName);
-                        props.put("format", formatName);
-                        props.put("queue", tournamentQueueName);
-                        props.put("playerCount", String.valueOf(playerCount));
-                        props.put("prizes", tournamentPrizes);
-                        props.put("system", pairingDescription);
-                        props.put("start", startCondition);
-                        props.put("signedUp", String.valueOf(playerSignedUp));
-                        props.put("joinable", String.valueOf(joinable));
-
-                        tournamentQueuesOnServer.put(tournamentQueueKey, props);
-                    }
-
-                    @Override
-                    public void visitTournament(String tournamentKey, String collectionName, String formatName, String tournamentName, String pairingDescription,
-                                                String tournamentStage, int round, int playerCount, boolean playerInCompetition) {
-                        Map<String, String> props = new HashMap<>();
-                        props.put("collection", collectionName);
-                        props.put("format", formatName);
-                        props.put("name", tournamentName);
-                        props.put("system", pairingDescription);
-                        props.put("stage", tournamentStage);
-                        props.put("round", String.valueOf(round));
-                        props.put("playerCount", String.valueOf(playerCount));
-                        props.put("signedUp", String.valueOf(playerInCompetition));
-
-                        tournamentsOnServer.put(tournamentKey, props);
-                    }
-
-                    @Override
-                    public void runningPlayerGame(String gameId) {
-                        playedGamesOnServer.add(gameId);
-                    }
-                });
+                new MyHallInfoVisitor(
+                        hallChannelVisitor, newDailyMessage, tablesOnServer, tournamentQueuesOnServer,
+                        tournamentsOnServer, playedGamesOnServer
+                )
+        );
 
         notifyAboutTournamentQueues(hallChannelVisitor, tournamentQueuesOnServer);
         _tournamentQueuePropsOnClient = tournamentQueuesOnServer;
@@ -153,10 +85,10 @@ public class HallCommunicationChannel implements LongPollableResource {
         notifyAboutTables(hallChannelVisitor, tablesOnServer);
         _tablePropsOnClient = tablesOnServer;
 
-        if (newMotd.getValue() != null && !newMotd.getValue().equals(_lastMotd)) {
-            String newMotdStr = (String) newMotd.getValue();
-            hallChannelVisitor.motdChanged(newMotdStr);
-            _lastMotd = newMotdStr;
+        if (newDailyMessage.getValue() != null && !newDailyMessage.getValue().equals(_lastDailyMessage)) {
+            String newDailyMessageString = (String) newDailyMessage.getValue();
+            hallChannelVisitor.changedDailyMessage(newDailyMessageString);
+            _lastDailyMessage = newDailyMessageString;
         }
 
         for (String gameId : playedGamesOnServer) {
@@ -168,7 +100,8 @@ public class HallCommunicationChannel implements LongPollableResource {
         _changed = false;
     }
 
-    private void notifyAboutTables(HallChannelVisitor hallChannelVisitor, Map<String, Map<String, String>> tablesOnServer) {
+    private void notifyAboutTables(HallChannelVisitor hallChannelVisitor,
+                                   Map<String, Map<String, String>> tablesOnServer) {
         for (Map.Entry<String, Map<String, String>> tableOnClient : _tablePropsOnClient.entrySet()) {
             String tableId = tableOnClient.getKey();
             Map<String, String> tableProps = tableOnClient.getValue();
@@ -186,11 +119,13 @@ public class HallCommunicationChannel implements LongPollableResource {
                 hallChannelVisitor.addTable(tableOnServer.getKey(), tableOnServer.getValue());
     }
 
-    private void notifyAboutTournamentQueues(HallChannelVisitor hallChannelVisitor, Map<String, Map<String, String>> tournamentQueuesOnServer) {
-        for (Map.Entry<String, Map<String, String>> tournamentQueueOnClient : _tournamentQueuePropsOnClient.entrySet()) {
+    private void notifyAboutTournamentQueues(HallChannelVisitor hallChannelVisitor,
+                                             Map<String, Map<String, String>> queues) {
+        for (Map.Entry<String, Map<String, String>> tournamentQueueOnClient :
+                _tournamentQueuePropsOnClient.entrySet()) {
             String tournamentQueueId = tournamentQueueOnClient.getKey();
             Map<String, String> tournamentProps = tournamentQueueOnClient.getValue();
-            Map<String, String> tournamentLatestProps = tournamentQueuesOnServer.get(tournamentQueueId);
+            Map<String, String> tournamentLatestProps = queues.get(tournamentQueueId);
             if (tournamentLatestProps != null) {
                 if (!tournamentProps.equals(tournamentLatestProps))
                     hallChannelVisitor.updateTournamentQueue(tournamentQueueId, tournamentLatestProps);
@@ -199,12 +134,14 @@ public class HallCommunicationChannel implements LongPollableResource {
             }
         }
 
-        for (Map.Entry<String, Map<String, String>> tournamentQueueOnServer : tournamentQueuesOnServer.entrySet())
+        for (Map.Entry<String, Map<String, String>> tournamentQueueOnServer : queues.entrySet())
             if (!_tournamentQueuePropsOnClient.containsKey(tournamentQueueOnServer.getKey()))
-                hallChannelVisitor.addTournamentQueue(tournamentQueueOnServer.getKey(), tournamentQueueOnServer.getValue());
+                hallChannelVisitor.addTournamentQueue(
+                        tournamentQueueOnServer.getKey(), tournamentQueueOnServer.getValue());
     }
 
-    private void notifyAboutTournaments(HallChannelVisitor hallChannelVisitor, Map<String, Map<String, String>> tournamentsOnServer) {
+    private void notifyAboutTournaments(HallChannelVisitor hallChannelVisitor,
+                                        Map<String, Map<String, String>> tournamentsOnServer) {
         for (Map.Entry<String, Map<String, String>> tournamentOnClient : _tournamentPropsOnClient.entrySet()) {
             String tournamentId = tournamentOnClient.getKey();
             Map<String, String> tournamentProps = tournamentOnClient.getValue();
@@ -220,5 +157,108 @@ public class HallCommunicationChannel implements LongPollableResource {
         for (Map.Entry<String, Map<String, String>> tournamentQueueOnServer : tournamentsOnServer.entrySet())
             if (!_tournamentPropsOnClient.containsKey(tournamentQueueOnServer.getKey()))
                 hallChannelVisitor.addTournament(tournamentQueueOnServer.getKey(), tournamentQueueOnServer.getValue());
+    }
+
+    private record MyHallInfoVisitor(HallChannelVisitor hallChannelVisitor, MutableObject newDailyMessage,
+                                     Map<String, Map<String, String>> tablesOnServer,
+                                     Map<String, Map<String, String>> tournamentQueuesOnServer,
+                                     Map<String, Map<String, String>> tournamentsOnServer,
+                                     Set<String> playedGamesOnServer) implements HallInfoVisitor {
+
+        @Override
+        public void serverTime(String time) {
+            hallChannelVisitor.serverTime(time);
+        }
+
+        @Override
+        public void setDailyMessage(String message) {
+            newDailyMessage.setValue(message);
+        }
+
+        public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status,
+                               String statusDescription, GameTable table, String tournamentName,
+                               List<String> playerIds, boolean playing) {
+            Map<String, String> props = new HashMap<>();
+            props.put("gameId", gameId);
+            props.put("watchable", String.valueOf(watchable));
+            props.put("status", String.valueOf(status));
+            props.put("statusDescription", statusDescription);
+            props.put("gameType", table.getGameSettings().getGameFormat().getGameType());
+            props.put("format", table.getGameSettings().getGameFormat().getName());
+            props.put("userDescription", table.getGameSettings().getUserDescription());
+            props.put("isPrivate", String.valueOf(table.getGameSettings().isPrivateGame()));
+            props.put("isInviteOnly", String.valueOf(table.getGameSettings().isUserInviteOnly()));
+            props.put("tournament", tournamentName);
+            props.put("players", StringUtils.join(playerIds, ","));
+            props.put("playing", String.valueOf(playing));
+            tablesOnServer.put(tableId, props);
+        }
+
+
+        @Override
+        public void visitTable(String tableId, String gameId, boolean watchable, TableStatus status,
+                               String statusDescription, String gameType, String formatName,
+                               String tournamentName, String userDesc, List<String> playerIds,
+                               boolean playing, boolean isPrivate, boolean isInviteOnly, String winner) {
+            Map<String, String> props = new HashMap<>();
+            props.put("gameId", gameId);
+            props.put("watchable", String.valueOf(watchable));
+            props.put("status", String.valueOf(status));
+            props.put("statusDescription", statusDescription);
+            props.put("gameType", gameType);
+            props.put("format", formatName);
+            props.put("userDescription", userDesc);
+            props.put("isPrivate", String.valueOf(isPrivate));
+            props.put("isInviteOnly", String.valueOf(isInviteOnly));
+            props.put("tournament", tournamentName);
+            props.put("players", StringUtils.join(playerIds, ","));
+            props.put("playing", String.valueOf(playing));
+            if (winner != null)
+                props.put("winner", winner);
+
+            tablesOnServer.put(tableId, props);
+        }
+
+        @Override
+        public void visitTournamentQueue(String tournamentQueueKey, int cost, String collectionName, String formatName,
+                                         String tournamentQueueName, String tournamentPrizes, String pairingDescription,
+                                         String startCondition, int playerCount, boolean playerSignedUp,
+                                         boolean joinable) {
+            Map<String, String> props = new HashMap<>();
+            props.put("cost", String.valueOf(cost));
+            props.put("collection", collectionName);
+            props.put("format", formatName);
+            props.put("queue", tournamentQueueName);
+            props.put("playerCount", String.valueOf(playerCount));
+            props.put("prizes", tournamentPrizes);
+            props.put("system", pairingDescription);
+            props.put("start", startCondition);
+            props.put("signedUp", String.valueOf(playerSignedUp));
+            props.put("joinable", String.valueOf(joinable));
+
+            tournamentQueuesOnServer.put(tournamentQueueKey, props);
+        }
+
+        @Override
+        public void visitTournament(String tournamentKey, String collectionName, String formatName,
+                                    String tournamentName, String pairingDescription, String tournamentStage,
+                                    int round, int playerCount, boolean playerInCompetition) {
+            Map<String, String> props = new HashMap<>();
+            props.put("collection", collectionName);
+            props.put("format", formatName);
+            props.put("name", tournamentName);
+            props.put("system", pairingDescription);
+            props.put("stage", tournamentStage);
+            props.put("round", String.valueOf(round));
+            props.put("playerCount", String.valueOf(playerCount));
+            props.put("signedUp", String.valueOf(playerInCompetition));
+
+            tournamentsOnServer.put(tournamentKey, props);
+        }
+
+        @Override
+        public void runningPlayerGame(String gameId) {
+            playedGamesOnServer.add(gameId);
+        }
     }
 }

@@ -1,13 +1,14 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.AbstractServer;
-import com.gempukku.stccg.PrivateInformationException;
+import com.gempukku.stccg.chat.ChatRoomMediator;
+import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.db.DeckDAO;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.database.DeckDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.GameSettings;
 
 import java.util.*;
@@ -17,10 +18,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class GameServer extends AbstractServer {
 
+    private static final long MILLIS_TO_MINUTES = 1000 * 60;
+    private static final int TIMEOUT_PERIOD = 30;
     private final CardBlueprintLibrary _CardBlueprintLibrary;
 
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
-    private final Set<String> _gameDeathWarningsSent = new HashSet<>();
+    private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
 
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
 
@@ -40,20 +43,23 @@ public class GameServer extends AbstractServer {
         _gameRecorder = gameRecorder;
     }
 
-    protected void cleanup() {
+    protected final void cleanup() {
         _lock.writeLock().lock();
         try {
             long currentTime = System.currentTimeMillis();
 
-            LinkedHashMap<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
+            Map<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
             for (Map.Entry<String, Date> finishedGame : copy.entrySet()) {
                 String gameId = finishedGame.getKey();
                 // 4 minutes
-                long _timeToGameDeathWarning = 1000 * 60 * 4;
+                long _timeToGameDeathWarning = MILLIS_TO_MINUTES * 4;
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeathWarning
                         && !_gameDeathWarningsSent.contains(gameId)) {
                     try {
-                        _chatServer.getChatRoom(getChatRoomName(gameId)).sendMessage("System", "This game is already finished and will be shortly removed, please move to the Game Hall", true);
+                        String message = "This game is already finished and will be shortly removed, " +
+                                "please move to the Game Hall";
+                        ChatRoomMediator chatRoom = _chatServer.getChatRoom(getChatRoomName(gameId));
+                        chatRoom.sendMessage("System", message, true);
                     } catch (PrivateInformationException exp) {
                         // Ignore, sent as admin
                     } catch (ChatCommandErrorException e) {
@@ -62,7 +68,7 @@ public class GameServer extends AbstractServer {
                     _gameDeathWarningsSent.add(gameId);
                 }
                 // 5 minutes
-                long _timeToGameDeath = 1000 * 60 * 5;
+                long _timeToGameDeath = MILLIS_TO_MINUTES * 5;
                 if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeath) {
                     _runningGames.get(gameId).destroy();
                     _gameDeathWarningsSent.remove(gameId);
@@ -81,11 +87,12 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    private String getChatRoomName(String gameId) {
+    private static String getChatRoomName(String gameId) {
         return "Game" + gameId;
     }
 
-    public CardGameMediator createNewGame(String tournamentName, final GameParticipant[] participants, GameSettings gameSettings) {
+    public final CardGameMediator createNewGame(String tournamentName, final GameParticipant[] participants,
+                                                GameSettings gameSettings) {
         _lock.writeLock().lock();
         try {
             if (participants.length < 2)
@@ -96,16 +103,19 @@ public class GameServer extends AbstractServer {
                 Set<String> allowedUsers = new HashSet<>();
                 for (GameParticipant participant : participants)
                     allowedUsers.add(participant.getPlayerId());
-                _chatServer.createPrivateChatRoom(getChatRoomName(gameId), false, allowedUsers, 30);
+                _chatServer.createPrivateChatRoom(
+                        getChatRoomName(gameId), false, allowedUsers, TIMEOUT_PERIOD);
             } else
-                _chatServer.createChatRoom(getChatRoomName(gameId), false, 30, false, null);
+                _chatServer.createChatRoom(
+                        getChatRoomName(gameId), false, TIMEOUT_PERIOD, false);
 
             // Allow spectators for leagues, but not tournaments
             CardGameMediator cardGameMediator = getCardGameMediator(participants, gameSettings, gameId);
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
-                    public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
+                    public void gameFinished(String winnerPlayerId, String winReason,
+                                             Map<String, String> loserReasons) {
                         _finishedGamesTime.put(gameId, new Date());
                     }
 
@@ -131,27 +141,33 @@ public class GameServer extends AbstractServer {
             for (GameParticipant participant : participants) {
                 if (!players.isEmpty())
                     players.append(", ");
-                players.append(participant.getPlayerId());
-                decks.put(participant.getPlayerId(), participant.getDeck());
+                String playerId = participant.getPlayerId();
+                players.append(playerId);
+                decks.put(playerId, participant.getDeck());
             }
 
             cardGameMediator.sendMessageToPlayers("Players in the game are: " + players);
 
-            final var gameRecordingInProgress = _gameRecorder.recordGame(cardGameMediator, gameSettings.getGameFormat(), tournamentName, decks);
+            final var gameRecordingInProgress =
+                    _gameRecorder.recordGame(cardGameMediator, gameSettings.getGameFormat(), tournamentName, decks);
             cardGameMediator.addGameResultListener(
                 new GameResultListener() {
                     @Override
-                    public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserPlayerIdsWithReasons) {
-                        final var loserEntry = loserPlayerIdsWithReasons.entrySet().iterator().next();
+                    public void gameFinished(String winnerPlayerId, String winReason,
+                                             Map<String, String> loserReasons) {
+                        final var loserEntry = loserReasons.entrySet().iterator().next();
 
                         //potentially this is where to kick off any "reveal deck" events
                         //gameMediator.readoutParticipantDecks();
-                        gameRecordingInProgress.finishRecording(winnerPlayerId, winReason, loserEntry.getKey(), loserEntry.getValue());
+                        gameRecordingInProgress.finishRecording(
+                                winnerPlayerId, winReason, loserEntry.getKey(), loserEntry.getValue());
                     }
 
                     @Override
                     public void gameCancelled() {
-                        gameRecordingInProgress.finishRecording(participants[0].getPlayerId(), "Game cancelled due to error", participants[1].getPlayerId(), "Game cancelled due to error");
+                        gameRecordingInProgress.finishRecording(participants[0].getPlayerId(),
+                                "Game cancelled due to error", participants[1].getPlayerId(),
+                                "Game cancelled due to error");
                     }
                 }
             );
@@ -164,7 +180,8 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings, String gameId) {
+    private CardGameMediator getCardGameMediator(GameParticipant[] participants, GameSettings gameSettings,
+                                                 String gameId) {
         boolean spectate = (gameSettings.getLeague() != null) ||
                 (!gameSettings.isCompetitive() && !gameSettings.isPrivateGame() && !gameSettings.isHiddenGame());
 
@@ -179,22 +196,18 @@ public class GameServer extends AbstractServer {
         } else if (Objects.equals(gameSettings.getGameFormat().getGameType(), "st2e")){
             cardGameMediator = new ST2EGameMediator(gameId, gameSettings.getGameFormat(), participants,
                     _CardBlueprintLibrary, gameSettings.getTimeSettings(), spectate, gameSettings.isHiddenGame());
-        } else { // TODO: This error catch should happen when the format library is created
-            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() + "' does not belong to 1E, 2E, or Tribbles");
+        } else {
+            throw new RuntimeException("Format '" + gameSettings.getGameFormat().getName() +
+                    "' does not belong to 1E, 2E, or Tribbles");
         }
         return cardGameMediator;
     }
 
-    public CardDeck getParticipantDeck(User player, String deckName) {
+    public final CardDeck getParticipantDeck(User player, String deckName) {
         return _deckDao.getDeckForPlayer(player, deckName);
     }
 
-    public CardDeck createDeckWithValidate(String deckName, String contents, String targetFormat, String notes) {
-            // TODO: Deck checking
-        return new CardDeck(deckName, contents, targetFormat, notes);
-    }
-
-    public CardGameMediator getGameById(String gameId) {
+    public final CardGameMediator getGameById(String gameId) {
         _lock.readLock().lock();
         try {
             return _runningGames.get(gameId);
@@ -204,4 +217,3 @@ public class GameServer extends AbstractServer {
     }
 
 }
-

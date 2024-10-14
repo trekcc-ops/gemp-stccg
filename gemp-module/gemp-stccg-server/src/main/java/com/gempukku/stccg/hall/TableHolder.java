@@ -1,11 +1,12 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.db.IgnoreDAO;
-import com.gempukku.stccg.db.vo.League;
+import com.gempukku.stccg.database.IgnoreDAO;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.db.User;
+import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeriesData;
 import com.gempukku.stccg.league.LeagueService;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-public class TableHolder {
+class TableHolder {
     private static final Logger LOGGER = LogManager.getLogger(TableHolder.class);
     private final LeagueService leagueService;
     private final IgnoreDAO ignoreDAO;
@@ -23,20 +24,25 @@ public class TableHolder {
 
     private int _nextTableId = 1;
 
+    public TableHolder(ServerObjects objects) {
+        this.leagueService = objects.getLeagueService();
+        this.ignoreDAO = objects.getIgnoreDAO();
+    }
+
     public TableHolder(LeagueService leagueService, IgnoreDAO ignoreDAO) {
         this.leagueService = leagueService;
         this.ignoreDAO = ignoreDAO;
     }
 
-    public int getTableCount() {
+    public final int getTableCount() {
         return runningTables.size();
     }
 
-    public void cancelWaitingTables() {
+    public final void cancelWaitingTables() {
         awaitingTables.clear();
     }
 
-    public GameTable createTable(User player, GameSettings gameSettings, CardDeck deck) throws HallException {
+    public final GameTable createTable(User player, GameSettings gameSettings, CardDeck deck) throws HallException {
         LOGGER.debug("TableHolder - createTable function called");
         String tableId = String.valueOf(_nextTableId++);
 
@@ -53,7 +59,7 @@ public class TableHolder {
 
         GameTable table = new GameTable(gameSettings);
 
-        boolean tableFull = table.addPlayer(new GameParticipant(player.getName(), deck));
+        boolean tableFull = table.addPlayer(new GameParticipant(player, deck));
         if (tableFull) {
             runningTables.put(tableId, table);
             return table;
@@ -63,13 +69,13 @@ public class TableHolder {
         return null;
     }
 
-    public GameTable joinTable(String tableId, User player, CardDeck deck) throws HallException {
+    public final GameTable joinTable(String tableId, User player, CardDeck deck) throws HallException {
         final GameTable awaitingTable = awaitingTables.get(tableId);
 
         if (awaitingTable == null || awaitingTable.wasGameStarted())
             throw new HallException("Table is already taken or was removed");
 
-        if (awaitingTable.hasPlayer(player.getName()))
+        if (awaitingTable.hasPlayer(player))
             throw new HallException("You can't play against yourself");
 
         final League league = awaitingTable.getGameSettings().getLeague();
@@ -82,8 +88,11 @@ public class TableHolder {
             LeagueSeriesData seriesData = awaitingTable.getGameSettings().getSeriesData();
             if (!leagueService.canPlayRankedGame(league, seriesData, player.getName()))
                 throw new HallException("You have already played max games in league");
-            if (!awaitingTable.getPlayerNames().isEmpty() && !leagueService.canPlayRankedGameAgainst(league, seriesData, awaitingTable.getPlayerNames().getFirst(), player.getName()))
-                throw new HallException("You have already played ranked league game against this player in that series");
+            if (!awaitingTable.getPlayerNames().isEmpty() &&
+                    !leagueService.canPlayRankedGameAgainst(league, seriesData,
+                            awaitingTable.getPlayerNames().getFirst(), player.getName()))
+                throw new HallException(
+                        "You have already played ranked league game against this player in that series");
         }
 
         final boolean tableFull = awaitingTable.addPlayer(new GameParticipant(player.getName(), deck));
@@ -100,7 +109,7 @@ public class TableHolder {
         return null;
     }
 
-    public GameTable setupTournamentTable(GameSettings gameSettings, GameParticipant[] participants) {
+    public final GameTable setupTournamentTable(GameSettings gameSettings, GameParticipant[] participants) {
         String tableId = String.valueOf(_nextTableId++);
 
         GameTable table = new GameTable(gameSettings);
@@ -112,7 +121,7 @@ public class TableHolder {
         return table;
     }
 
-    public GameSettings getGameSettings(String tableId) throws HallException {
+    public final GameSettings getGameSettings(String tableId) throws HallException {
         final GameTable gameTable = awaitingTables.get(tableId);
         if (gameTable != null)
             return gameTable.getGameSettings();
@@ -122,7 +131,7 @@ public class TableHolder {
         throw new HallException("Table was already removed");
     }
 
-    public boolean leaveAwaitingTable(User player, String tableId) {
+    public final boolean leaveAwaitingTable(User player, String tableId) {
         GameTable table = awaitingTables.get(tableId);
         if (table != null && table.hasPlayer(player.getName())) {
             boolean empty = table.removePlayer(player.getName());
@@ -133,7 +142,7 @@ public class TableHolder {
         return false;
     }
 
-    public boolean leaveAwaitingTablesForPlayer(User player) {
+    public final boolean leaveAwaitingTablesForPlayer(User player) {
         return leaveAwaitingTablesForPlayer(player.getName());
     }
 
@@ -169,19 +178,21 @@ public class TableHolder {
         }
     }
 
-    public void processTables(boolean isAdmin, User player, HallInfoVisitor visitor) {
+    final void processTables(boolean isAdmin, User player, HallInfoVisitor visitor) {
+
         // First waiting
         for (Map.Entry<String, GameTable> tableInformation : awaitingTables.entrySet()) {
             final GameTable table = tableInformation.getValue();
 
-            List<String> players;
-            if (table.getGameSettings().getLeague() != null)
-                players = Collections.emptyList();
-            else
-                players = table.getPlayerNames();
+            List<String> players = (table.getGameSettings().getLeague() != null) ?
+                    Collections.emptyList() : table.getPlayerNames();
 
             if (isAdmin || isNoIgnores(players, player.getName()))
-                visitor.visitTable(tableInformation.getKey(), null, false, HallInfoVisitor.TableStatus.WAITING, "Waiting", table.getGameSettings().getGameFormat().getGameType(), table.getGameSettings().getGameFormat().getName(), getTournamentName(table), table.getGameSettings().getUserDescription(), players, table.getPlayerNames().contains(player.getName()), table.getGameSettings().isPrivateGame(), table.getGameSettings().isUserInviteOnly(), null);
+                visitor.visitTable(
+                        tableInformation.getKey(), null, false, HallInfoVisitor.TableStatus.WAITING,
+                        "Waiting", table, getTournamentName(table), players,
+                        table.getPlayerNames().contains(player.getName())
+                );
         }
 
         // Then non-finished
@@ -208,8 +219,8 @@ public class TableHolder {
                                 runningTable.getGameSettings().isUserInviteOnly(),
                                 cardGameMediator.getWinner()
                         );
-
-                    if (!cardGameMediator.isFinished() && cardGameMediator.getPlayersPlaying().contains(player.getName()))
+                    if (!cardGameMediator.isFinished() &&
+                            cardGameMediator.getPlayersPlaying().contains(player.getName()))
                         visitor.runningPlayerGame(cardGameMediator.getGameId());
                 }
             }
@@ -234,7 +245,7 @@ public class TableHolder {
         }
     }
 
-    public void removeFinishedGames() {
+    public final void removeFinishedGames() {
         final Iterator<Map.Entry<String, GameTable>> iterator = runningTables.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, GameTable> runningTable = iterator.next();
@@ -265,7 +276,7 @@ public class TableHolder {
         return true;
     }
 
-    private String getTournamentName(GameTable table) {
+    private static String getTournamentName(GameTable table) {
         final League league = table.getGameSettings().getLeague();
         if (league != null)
             return league.getName() + " - " + table.getGameSettings().getSeriesData().getName();

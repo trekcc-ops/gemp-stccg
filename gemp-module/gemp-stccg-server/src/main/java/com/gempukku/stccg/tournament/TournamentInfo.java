@@ -1,10 +1,10 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.db.vo.CollectionType;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.collection.CollectionType;
 
 public class TournamentInfo {
     private final String _tournamentId;
-    private final String _draftType;
     private final String _tournamentName;
     private final String _tournamentFormat;
     private final CollectionType _collectionType;
@@ -13,10 +13,10 @@ public class TournamentInfo {
     private final String _pairingMechanism;
     private final Tournament.Stage _tournamentStage;
 
-    public TournamentInfo(String tournamentId, String draftType, String tournamentName, String tournamentFormat, CollectionType collectionType,
-                          Tournament.Stage tournamentStage, String pairingMechanism, String prizesScheme, int tournamentRound) {
+    public TournamentInfo(String tournamentId, String tournamentName, String tournamentFormat,
+                          CollectionType collectionType, Tournament.Stage tournamentStage, String pairingMechanism,
+                          String prizesScheme, int tournamentRound) {
         _tournamentId = tournamentId;
-        _draftType = draftType;
         _tournamentName = tournamentName;
         _tournamentFormat = tournamentFormat;
         _collectionType = collectionType;
@@ -26,39 +26,15 @@ public class TournamentInfo {
         _tournamentStage = tournamentStage;
     }
 
-    public String getTournamentId() {
+    public final String getTournamentId() {
         return _tournamentId;
     }
 
-    public String getDraftType() {
-        return _draftType;
-    }
-
-    public String getTournamentName() {
-        return _tournamentName;
-    }
-
-    public String getTournamentFormat() {
-        return _tournamentFormat;
-    }
-
-    public CollectionType getCollectionType() {
-        return _collectionType;
-    }
-
-    public int getTournamentRound() {
-        return _tournamentRound;
-    }
-
-    public String getPairingMechanism() {
-        return _pairingMechanism;
-    }
-
-    public String getPrizesScheme() {
-        return _prizesScheme;
-    }
-
-    public Tournament.Stage getTournamentStage() {
-        return _tournamentStage;
+    final Tournament createDefaultTournament(TournamentService tournamentService, String tournamentId,
+                                             CardBlueprintLibrary library) {
+        PairingMechanism pairingMechanism = PairingMechanismRegistry.getPairingMechanism(_pairingMechanism);
+        TournamentPrizes tournamentPrizes = TournamentPrizeSchemeRegistry.getTournamentPrizes(library, _prizesScheme);
+        return new DefaultTournament(tournamentService, tournamentId, _tournamentName, _tournamentFormat,
+                _collectionType, _tournamentRound, _tournamentStage, pairingMechanism, tournamentPrizes);
     }
 }

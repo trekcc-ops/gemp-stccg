@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.database.User;
 
 public class GameParticipant {
     private final String _playerId;
@@ -11,11 +12,16 @@ public class GameParticipant {
         _deck = deck;
     }
 
-    public String getPlayerId() {
+    public GameParticipant(User user, CardDeck deck) {
+        _playerId = user.getName();
+        _deck = deck;
+    }
+
+    public final String getPlayerId() {
         return _playerId;
     }
 
-    public CardDeck getDeck() {
+    public final CardDeck getDeck() {
         return _deck;
     }
 }

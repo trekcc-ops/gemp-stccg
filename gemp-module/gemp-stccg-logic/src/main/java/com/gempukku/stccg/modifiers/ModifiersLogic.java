@@ -99,38 +99,30 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     private List<Modifier> getModifiers(ModifierEffect modifierEffect) {
-        return getKeywordModifiersAffectingCard(modifierEffect, null, null);
+        return getModifiersAffectingCard(modifierEffect, null);
     }
 
     public List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card) {
-        return getKeywordModifiersAffectingCard(modifierEffect, null, card);
-    }
-
-    private List<Modifier> getKeywordModifiersAffectingCard(ModifierEffect modifierEffect,
-                                                            Keyword keyword, PhysicalCard card) {
         List<Modifier> modifiers = _modifiers.get(modifierEffect);
         if (modifiers == null)
             return Collections.emptyList();
         else {
             LinkedList<Modifier> liveModifiers = new LinkedList<>();
             for (Modifier modifier : modifiers) {
-                if (keyword == null || ((KeywordAffectingModifier) modifier).getKeyword() == keyword) {
-                    if (!_skipSet.contains(modifier)) {
-                        _skipSet.add(modifier);
-                        Condition condition = modifier.getCondition();
-                        if (condition == null || condition.isFulfilled())
-                            if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
-                                    modifier.isNonCardTextModifier() ||
-                                    !modifier.getSource().hasTextRemoved()) {
-                                if ((card == null || modifier.affectsCard(card)) &&
-                                        (foundNoCumulativeConflict(liveModifiers, modifier)))
-                                    liveModifiers.add(modifier);
-                            }
-                        _skipSet.remove(modifier);
-                    }
+                if (!_skipSet.contains(modifier)) {
+                    _skipSet.add(modifier);
+                    Condition condition = modifier.getCondition();
+                    if (condition == null || condition.isFulfilled())
+                        if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
+                                modifier.isNonCardTextModifier() ||
+                                !modifier.getSource().hasTextRemoved()) {
+                            if ((card == null || modifier.affectsCard(card)) &&
+                                    (foundNoCumulativeConflict(liveModifiers, modifier)))
+                                liveModifiers.add(modifier);
+                        }
+                    _skipSet.remove(modifier);
                 }
             }
-
             return liveModifiers;
         }
     }

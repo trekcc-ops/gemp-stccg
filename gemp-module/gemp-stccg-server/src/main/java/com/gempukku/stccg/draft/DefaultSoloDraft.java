@@ -1,7 +1,5 @@
 package com.gempukku.stccg.draft;
 
-import com.gempukku.stccg.draft.builder.CardCollectionProducer;
-import com.gempukku.stccg.draft.builder.DraftPoolProducer;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 
@@ -12,9 +10,10 @@ public class DefaultSoloDraft implements SoloDraft {
     private final String _format;
     private final CardCollectionProducer _newCollection;
     private final DraftPoolProducer _draftPool;
-    private final List<DraftChoiceDefinition> _draftChoiceDefinitions;
+    private final List<? extends DraftChoiceDefinition> _draftChoiceDefinitions;
 
-    public DefaultSoloDraft(String code, String format, CardCollectionProducer newCollection, List<DraftChoiceDefinition> draftChoiceDefinitions, DraftPoolProducer draftPool) {
+    public DefaultSoloDraft(String code, String format, CardCollectionProducer newCollection,
+                            List<? extends DraftChoiceDefinition> draftChoiceDefinitions, DraftPoolProducer draftPool) {
         _code = code;
         _format = format;
         _newCollection = newCollection;

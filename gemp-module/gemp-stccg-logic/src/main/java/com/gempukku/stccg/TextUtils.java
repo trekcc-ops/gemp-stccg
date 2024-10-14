@@ -9,9 +9,34 @@ import java.util.stream.Stream;
 public class TextUtils {
 
     public static <T> List<T> getRandomFromList(Collection<? extends T> list, int count) {
-        List<T> randomizedList = new ArrayList<>(list);
-        Collections.shuffle(randomizedList, ThreadLocalRandom.current());
+        List<T> randomizedList = getRandomizedList(list, ThreadLocalRandom.current());
         return new LinkedList<>(randomizedList.subList(0, Math.min(count, randomizedList.size())));
+    }
+
+    public static <T> T getRandomFromList(List<? extends T> list, Random random) {
+        random.nextFloat(); // This fixes random bug for some reason according to LotR Gemp comments
+        return list.get(random.nextInt(list.size()));
+    }
+
+    public static <T> List<T> getRandomizedList(List<? extends T> list, Random random) {
+        random.nextFloat(); // This fixes random bug for some reason according to LotR Gemp comments
+        List<T> newList = new ArrayList<>(list);
+        Collections.shuffle(newList, random);
+        return newList;
+    }
+
+    public static <T> List<T> getRandomizedList(Collection<? extends T> list, ThreadLocalRandom random) {
+        List<T> randomizedList = new ArrayList<>(list);
+        Collections.shuffle(randomizedList, random);
+        return randomizedList;
+    }
+
+    public static String getAllCharacters(boolean includeUpper, boolean includeDashAndUnderscore){
+        StringBuilder sb = new StringBuilder();
+        sb.append("abcdefghijklmnopqrstuvwxyz0123456789");
+        if (includeUpper) sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        if (includeDashAndUnderscore) sb.append("-_");
+        return sb.toString();
     }
 
     public static String signed(int value) {
@@ -53,16 +78,12 @@ public class TextUtils {
     }
 
     public static String arrayToCommaSeparated(int[] integers) {
-        int iMax = integers.length - 1;
-        if (iMax == -1)
+        if (integers.length == 0)
             return "";
 
-        StringBuilder b = new StringBuilder();
-        for (int i = 0; ; i++) {
-            b.append(integers[i]);
-            if (i == iMax)
-                return b.toString();
-            b.append(",");
-        }
+        StringJoiner sj = new StringJoiner(",");
+        for (int item : integers)
+            sj.add(String.valueOf(item));
+        return sj.toString();
     }
 }
