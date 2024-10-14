@@ -15,13 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ModifiersQuerying {
-    LimitCounter getUntilEndOfPhaseLimitCounter(PhysicalCard card, Phase phase);
-
-    LimitCounter getUntilEndOfPhaseLimitCounter(PhysicalCard card, String prefix, Phase phase);
-
-    LimitCounter getUntilStartOfPhaseLimitCounter(PhysicalCard card, Phase phase);
-
-    LimitCounter getUntilStartOfPhaseLimitCounter(PhysicalCard card, String prefix, Phase phase);
 
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card);
 
@@ -55,8 +48,6 @@ public interface ModifiersQuerying {
     boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source);
 
     boolean canBeReturnedToHand(PhysicalCard card, PhysicalCard source);
-
-    boolean canDrawCardNoIncrement(String playerId);
 
     boolean canLookOrRevealCardsInHand(String revealingPlayerId, String performingPlayerId);
 

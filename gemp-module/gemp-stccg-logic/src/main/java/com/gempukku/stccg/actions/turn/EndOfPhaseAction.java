@@ -38,7 +38,6 @@ public class EndOfPhaseAction extends SystemQueueAction {
 
                     @Override
                     public void playEffect() {
-                        _game.getModifiersEnvironment().signalEndOfPhase();
                         _game.getActionsEnvironment().signalEndOfPhase();
                         _game.sendMessage(message);
                     }
