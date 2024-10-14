@@ -2,6 +2,8 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.RegularSkill;
+import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
@@ -156,6 +158,36 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
+    private List<Modifier> getSkillModifiersAffectingCard(ModifierEffect modifierEffect,
+                                                         SkillName skill, PhysicalCard card) {
+        List<Modifier> modifiers = _modifiers.get(modifierEffect);
+        if (modifiers == null)
+            return Collections.emptyList();
+        else {
+            LinkedList<Modifier> liveModifiers = new LinkedList<>();
+            for (Modifier modifier : modifiers) {
+                if (skill == null || ((SkillAffectingModifier) modifier).getSkill() == skill) {
+                    if (!_skipSet.contains(modifier)) {
+                        _skipSet.add(modifier);
+                        Condition condition = modifier.getCondition();
+                        if (condition == null || condition.isFulfilled())
+                            if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
+                                    modifier.isNonCardTextModifier() ||
+                                    !modifier.getSource().hasTextRemoved()) {
+                                if ((card == null || modifier.affectsCard(card)) &&
+                                        (foundNoCumulativeConflict(liveModifiers, modifier)))
+                                    liveModifiers.add(modifier);
+                            }
+                        _skipSet.remove(modifier);
+                    }
+                }
+            }
+
+            return liveModifiers;
+        }
+    }
+
+
 
     @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
@@ -170,6 +202,26 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     return true;
         }
         return false;
+    }
+
+    public Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName) {
+        int level = 0;
+        for (Skill skill : physicalCard.getBlueprint().getSkills()) {
+            if (skill instanceof RegularSkill regularSkill) {
+                if (regularSkill.getRegularSkill() == skillName) {
+                    level += regularSkill.getLevel();
+                }
+            }
+        }
+        if (physicalCard.getBlueprint().getClassification() == skillName)
+            level += 1;
+
+        for (Modifier modifier : getSkillModifiersAffectingCard(
+                ModifierEffect.GAIN_SKILL_MODIFIER, skillName, physicalCard)) {
+            if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkill() == skillName)
+                level += 1;
+        }
+        return level;
     }
 
     private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, CardIcon icon) {

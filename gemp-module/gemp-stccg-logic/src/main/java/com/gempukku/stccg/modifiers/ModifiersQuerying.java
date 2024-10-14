@@ -1,11 +1,14 @@
 package com.gempukku.stccg.modifiers;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
@@ -68,4 +71,5 @@ public interface ModifiersQuerying {
     List<Modifier> getModifiersAffectingCard(ModifierEffect modifierEffect, PhysicalCard card);
     int getNormalCardPlaysAvailable(Player player);
 
+    Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName);
 }
