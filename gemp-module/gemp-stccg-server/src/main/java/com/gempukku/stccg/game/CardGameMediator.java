@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class CardGameMediator {
     private static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
+    private static final String ERROR_MESSAGE = "Error processing game decision";
     private final Map<String, GameCommunicationChannel> _communicationChannels =
             Collections.synchronizedMap(new HashMap<>());
     final Map<String, CardDeck> _playerDecks = new HashMap<>();
@@ -204,49 +205,47 @@ public abstract class CardGameMediator {
         }
     }
 
-    public final synchronized void playerAnswered(User player, int channelNumber, int decisionId, String answer)
+    public final synchronized void playerAnsweredNew(User player, int channelNumber, int decisionId, String answer)
             throws SubscriptionConflictException, SubscriptionExpiredException {
         String playerName = player.getName();
         _writeLock.lock();
         try {
             GameCommunicationChannel communicationChannel = _communicationChannels.get(playerName);
-            if (communicationChannel != null) {
-                if (communicationChannel.getChannelNumber() == channelNumber) {
-                    AwaitingDecision awaitingDecision = getGame().getAwaitingDecision(playerName);
-                    if (awaitingDecision != null) {
-                        if (awaitingDecision.getAwaitingDecisionId() == decisionId && !getGame().isFinished()) {
-                            try {
-                                getGame().getGameState().playerDecisionFinished(playerName);
-                                awaitingDecision.decisionMade(answer);
-
-                                // Decision successfully made, add the time to user clock
-                                addTimeSpentOnDecisionToUserClock(playerName);
-
-                                getGame().carryOutPendingActionsUntilDecisionNeeded();
-                                startClocksForUsersPendingDecision();
-
-                            } catch (DecisionResultInvalidException exp) {
-                                /* Participant provided wrong answer - send a warning message,
-                                and ask again for the same decision */
-                                getGame().getGameState().sendWarning(
-                                        playerName, exp.getWarningMessage());
-                                getGame().sendAwaitingDecision(playerName, awaitingDecision);
-                            } catch (RuntimeException runtimeException) {
-                                LOGGER.error("Error processing game decision", runtimeException);
-                                getGame().cancelGame();
-                            }
-                        }
-                    }
-                } else {
-                    throw new SubscriptionConflictException();
-                }
-            } else {
+            if (communicationChannel == null)
                 throw new SubscriptionExpiredException();
+            if (communicationChannel.getChannelNumber() != channelNumber)
+                throw new SubscriptionConflictException();
+            DefaultGame game = getGame();
+            AwaitingDecision awaitingDecision = game.getAwaitingDecision(playerName);
+
+            if (awaitingDecision != null) {
+                if (awaitingDecision.getAwaitingDecisionId() == decisionId && !game.isFinished()) {
+                    try {
+                        game.getGameState().playerDecisionFinished(playerName);
+                        awaitingDecision.decisionMade(answer);
+
+                        // Decision successfully made, add the time to user clock
+                        addTimeSpentOnDecisionToUserClock(playerName);
+
+                        game.carryOutPendingActionsUntilDecisionNeeded();
+                        startClocksForUsersPendingDecision();
+
+                    } catch (DecisionResultInvalidException exp) {
+                        /* Participant provided wrong answer - send a warning message,
+                        and ask again for the same decision */
+                        game.getGameState().sendWarning(playerName, exp.getWarningMessage());
+                        game.sendAwaitingDecision(playerName, awaitingDecision);
+                    } catch (RuntimeException runtimeException) {
+                        LOGGER.error(ERROR_MESSAGE, runtimeException);
+                        game.cancelGame();
+                    }
+                }
             }
         } finally {
             _writeLock.unlock();
         }
     }
+
 
     public final GameCommunicationChannel getCommunicationChannel(User player, int channelNumber)
             throws PrivateInformationException, SubscriptionConflictException, SubscriptionExpiredException {

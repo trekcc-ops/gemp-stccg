@@ -88,7 +88,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
         try {
             if (decisionId != null)
-                gameMediator.playerAnswered(resourceOwner, channelNumber, decisionId, decisionValue);
+                gameMediator.playerAnsweredNew(resourceOwner, channelNumber, decisionId, decisionValue);
 
             GameCommunicationChannel commChannel = gameMediator.getCommunicationChannel(resourceOwner, channelNumber);
             LongPollingResource pollingResource =

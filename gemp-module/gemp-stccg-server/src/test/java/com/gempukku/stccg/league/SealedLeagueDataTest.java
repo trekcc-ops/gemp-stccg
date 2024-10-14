@@ -18,7 +18,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SuppressWarnings({"FeatureEnvy", "MagicNumber"})
+@SuppressWarnings("ALL")
 public class SealedLeagueDataTest extends AbstractServerTest {
 
     private static final FormatLibrary _formatLibrary = new FormatLibrary(_cardLibrary);

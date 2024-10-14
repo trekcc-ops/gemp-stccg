@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("LongLine")
+@SuppressWarnings({"LongLine", "StaticMethodReferencedViaSubclass"})
 public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test
     public void joiningQueue() throws SQLException, IOException {

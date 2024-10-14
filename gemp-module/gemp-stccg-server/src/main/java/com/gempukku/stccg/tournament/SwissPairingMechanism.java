@@ -108,7 +108,7 @@ public class SwissPairingMechanism implements PairingMechanism {
                 String firstPlayer = playersInBracket.remove(index);
                 for (int index2 = index; index2 < playersInBracket.size(); index2++) {
                     String secondPlayer = playersInBracket.remove(index2);
-                    if (!previouslyPaired.get(firstPlayer).contains(secondPlayer)) //noinspection SpellCheckingInspection
+                    if (!previouslyPaired.get(firstPlayer).contains(secondPlayer))
                     {
                         // This pairing might work
                         pairingsResult.put(firstPlayer, secondPlayer);
@@ -119,7 +119,7 @@ public class SwissPairingMechanism implements PairingMechanism {
                         if (success) {
                             return true;
                         }
-                        // Naah, it didn't work out
+                        // Nah, it didn't work out
                         pairingsResult.remove(firstPlayer);
                     }
                     playersInBracket.add(index2, secondPlayer);
