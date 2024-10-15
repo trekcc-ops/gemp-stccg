@@ -15,10 +15,10 @@ public class ST1EStartOfMissionPhaseProcess extends ST1EGameProcess {
 
     @Override
     public void process() {
-            // TODO - No shuffling occurs here
         _game.getGameState().setCurrentPhase(Phase.SEED_MISSION);
         for (String player : _game.getPlayerIds()) {
             List<PhysicalCard> missionSeeds = new LinkedList<>(_game.getGameState().getMissionPile(player));
+            Collections.shuffle(missionSeeds);
             for (PhysicalCard card : missionSeeds) {
                 _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
                 _game.getGameState().addCardToZone(card, Zone.HAND);

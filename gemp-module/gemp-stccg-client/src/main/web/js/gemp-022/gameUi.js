@@ -1536,6 +1536,7 @@ export default class GameTableUI {
         var actionIds = this.getDecisionParameters(decision, "actionId");
         var actionTexts = this.getDecisionParameters(decision, "actionText");
         var actionTypes = this.getDecisionParameters(decision, "actionType");
+        var noPass = this.getDecisionParameters(decision, "noPass");
 
         var that = this;
 
@@ -1552,7 +1553,7 @@ export default class GameTableUI {
 
         var processButtons = function () {
             that.alertButtons.html("");
-            if (selectedCardIds.length == 0) {
+            if (noPass != "true" && selectedCardIds.length == 0) {
                 that.alertButtons.append("<button id='Pass'>Pass</button>");
                 $("#Pass").button().click(function () {
                     finishChoice();

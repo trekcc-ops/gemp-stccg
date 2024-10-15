@@ -18,6 +18,22 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         this(1, text, actions, false);
     }
 
+    public CardActionSelectionDecision(String text, List<? extends Action> actions, boolean noPass,
+                                       boolean revertEligible) {
+        super(1, text, AwaitingDecisionType.CARD_ACTION_CHOICE);
+        _actions = new LinkedList<>(actions);
+
+        setParam("actionId", getActionIds(actions));
+        setParam("cardId", getCardIds(actions));
+        setParam("blueprintId", getBlueprintIdsForVirtualActions(actions));
+        setParam("imageUrl", getImageUrlsForVirtualActions(actions));
+        setParam("actionText", getActionTexts(actions));
+        setParam("actionType", getActionTypes(actions));
+        setParam("noPass", String.valueOf(noPass));
+        // TODO SNAPSHOT - no methods for "revertEligible" in client
+        setParam("revertEligible", String.valueOf(revertEligible));
+    }
+
     public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions,
                                        boolean revertEligible) {
         super(decisionId, text, AwaitingDecisionType.CARD_ACTION_CHOICE);
