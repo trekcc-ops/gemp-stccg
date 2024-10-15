@@ -27,7 +27,7 @@ public class SeedMissionCardsAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return _topCard;
     }
 

@@ -39,7 +39,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return _actionAttachedToCard;
     }
 
