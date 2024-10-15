@@ -28,6 +28,11 @@ public class SeedPhaseTest extends AbstractAtTest {
             System.out.println((location.getLocationZoneIndex()+1) + " - " + location.getLocationName());
         }
 
+        assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
+        skipDilemma();
+        skipDilemma();
+
+        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         autoSeedFacility();
 
         // Verify that both facilities were seeded
