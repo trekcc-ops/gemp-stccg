@@ -40,15 +40,19 @@ public class DrawEffectAtTest extends AbstractAtTest {
     }
 
 
-    public void drawEffectTest(int cardsToDraw, int cardsInDeck, boolean prevented) throws DecisionResultInvalidException, CardNotFoundException {
+    public void drawEffectTest(int cardsToDraw, int cardsInDeck, boolean prevented)
+            throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimple1EGame(cardsInDeck);
+        skipDilemma();
+        skipDilemma();
         String playerId = _game.getCurrentPlayerId();
         int initialDeckSize = _game.getGameState().getDrawDeck(playerId).size();
         int initialHandSize = _game.getGameState().getHand(playerId).size();
         int expectedCardsDrawn = prevented ? 0 : Math.min(cardsToDraw, initialDeckSize+1);
         assertEquals(cardsInDeck,initialDeckSize + initialHandSize);
 
-        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, playerId, _cardLibrary.getCardBlueprint("101_215"));
+        final PhysicalCardGeneric picard =
+                new PhysicalCardGeneric(_game, 101, playerId, _cardLibrary.getCardBlueprint("101_215"));
 
         _game.getGameState().putCardOnTopOfDeck(picard);
 

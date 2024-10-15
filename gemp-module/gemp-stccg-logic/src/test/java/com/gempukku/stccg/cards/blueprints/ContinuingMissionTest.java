@@ -24,6 +24,8 @@ public class ContinuingMissionTest extends AbstractAtTest {
     public void introTwoPlayerGameWithSeedCardsTest() throws DecisionResultInvalidException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
+        skipDilemma();
+        skipDilemma();
         autoSeedFacility();
 
         // Should be 12 missions, 2 facilities, 2 Continuing Mission, 2 Attention All Hands
@@ -34,6 +36,8 @@ public class ContinuingMissionTest extends AbstractAtTest {
     public void makingDecisionsTest() throws DecisionResultInvalidException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
+        skipDilemma();
+        skipDilemma();
         Player currPlayer = _game.getCurrentPlayer();
 
         PhysicalCard continuingMission = getCardInGame("Continuing Mission", currPlayer, Zone.HAND);
