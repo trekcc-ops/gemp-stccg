@@ -8,6 +8,7 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +32,6 @@ public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EDilemmaSeedPhaseProcess(0, new ST1EStartOfFacilitySeedPhaseProcess(_game), _game);
+        return new ST1EDilemmaSeedPhaseProcess(new HashSet<>(), _game);
     }
 }
