@@ -1,6 +1,26 @@
 // Set 101: Premiere [1E]
 
 {
+/*    101_012: {
+        title: Anaphasic Organism
+        type: dilemma
+        mission-type: planet
+        lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/anaphasicorganism95.jpg
+        rarity: C
+    } */
+/*    101_014: {
+        title: Archer
+        type: dilemma
+        mission-type: planet
+        lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/archer.gif
+        rarity: C
+    } */
 /*    101_015: {
         title: Armus - Skin of Evil
         type: dilemma
@@ -10,6 +30,46 @@
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
         rarity: R
+    } */
+/*    101_024: {
+        title: "Female's Love Interest"
+        type: dilemma
+        mission-type: planet
+        lore: A genetically-engineered leader. Once romantically involved with Deanna Troi.
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Female_s-Love-Interest.jpg
+        rarity: C
+    } */
+/*    101_030: {
+        title: Impassable Door
+        type: dilemma
+        mission-type: planet
+        lore: Forcefields across door or hallway openings are commonly used to bar entry.
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/impassabledoor.gif
+        rarity: C
+    } */
+/*    101_032: {
+        title: "Male's Love Interest"
+        type: dilemma
+        mission-type: planet
+        lore: One of the many beautiful women who reside on the paradise planet of Risa.
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Male_s-Love-Interest.jpg
+        rarity: C
+    } */
+/*    101_036: {
+        title: Microvirus
+        type: dilemma
+        mission-type: planet
+        lore: Genetic weapon designed to attack humanoids who have specific DNA sequences.
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/microvirus95.jpg
+        rarity: C
     } */
     101_057: {
         title: Federation PADD
