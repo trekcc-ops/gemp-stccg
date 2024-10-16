@@ -24,8 +24,6 @@ public class AddUntilModifierEffect extends UnrespondableEffect {
 
         if (until.isEndOfTurn())
             _game.getModifiersEnvironment().addUntilEndOfTurnModifier(_modifier);
-        else if (until.isStart())
-            _game.getModifiersEnvironment().addUntilStartOfPhaseModifier(_modifier, phase);
         else
             _game.getModifiersEnvironment().addUntilEndOfPhaseModifier(_modifier, phase);
     }

@@ -83,8 +83,6 @@ public class EffectFieldProcessor {
         for (DefaultActionSource actionSource : actionSourceList) {
             if (text != null)
                 actionSource.setText(text);
-            if (limitPerPhase > 0)
-                actionSource.setPhaseLimit(phase, limitPerPhase);
             if (limitPerTurn > 0)
                 actionSource.setTurnLimit(limitPerTurn);
             if (phase != null)

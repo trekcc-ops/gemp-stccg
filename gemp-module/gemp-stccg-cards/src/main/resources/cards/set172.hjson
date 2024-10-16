@@ -15,6 +15,20 @@
         strength: 7
         image-url: https://www.trekcc.org/1e/cardimages/maquis/28V.jpg
     }
+    172_031: {
+        title: Tamal
+        type: personnel
+        affiliation: federation
+        property-logo: ds9-logo
+        classification: ENGINEER
+        icons: staff,maquis
+        lore: Technician and former petty officer aboard the <i>U.S.S. Gandhi</i>. Recruited into the Maquis by Thomas Riker. Enjoys studying early Earth warp technology.
+        skill-box: "[*] Anthropology [*] SCIENCE [*] Geology"
+        integrity: 7
+        cunning: 7
+        strength: 6
+        image-url: https://www.trekcc.org/1e/cardimages/maquis/31V.jpg
+    }
     172_040: {
         title: "M'vil"
         type: personnel

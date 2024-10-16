@@ -5,7 +5,6 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.actions.turn.IncrementPhaseLimitEffect;
 import com.gempukku.stccg.actions.turn.IncrementTurnLimitEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
@@ -17,7 +16,6 @@ import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.blueprints.requirement.RequirementFactory;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.common.filterable.Phase;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -92,17 +90,6 @@ public abstract class DefaultActionSource implements ActionSource {
 
 
     protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
-
-    public void setPhaseLimit(Phase phase, int limitPerPhase) {
-        addRequirement((actionContext) -> actionContext.getSource().checkPhaseLimit(phase, limitPerPhase));
-        addCost(
-                new DelayedEffectBlueprint() {
-                    @Override
-                    protected Effect createEffect(CostToEffectAction action, ActionContext actionContext) {
-                        return new IncrementPhaseLimitEffect(actionContext, phase, limitPerPhase);
-                    }
-                });
-    }
 
     public void setTurnLimit(int limitPerTurn) {
         addRequirement((actionContext) -> actionContext.getSource().checkTurnLimit(limitPerTurn));

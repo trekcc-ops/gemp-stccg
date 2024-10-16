@@ -2,6 +2,8 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.RegularSkill;
+import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
@@ -14,21 +16,14 @@ import com.gempukku.stccg.game.Snapshotable;
 import java.util.*;
 
 public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, Snapshotable<ModifiersLogic> {
-    private final Map<ModifierEffect, List<Modifier>> _modifiers = new HashMap<>();
 
-    private final Map<Phase, List<Modifier>> _untilStartOfPhaseModifiers = new HashMap<>();
-    private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new HashMap<>();
-
+    private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
+    private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
     private final Map<String, List<Modifier>> _untilEndOfPlayersNextTurnThisRoundModifiers = new HashMap<>();
-    private final List<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
-
-    private final Set<Modifier> _skipSet = new HashSet<>();
-
-    private final Map<Phase, Map<String, LimitCounter>> _endOfPhaseLimitCounters = new HashMap<>();
-    private final Map<Phase, Map<String, LimitCounter>> _startOfPhaseLimitCounters = new HashMap<>();
+    private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
+    private final Collection<Modifier> _skipSet = new HashSet<>();
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
     private final Map<ActionSource, LimitCounter> _turnLimitActionSourceCounters = new HashMap<>();
-
     private final DefaultGame _game;
     private final Map<Player, Integer> _normalCardPlaysAvailable = new HashMap<>();
     private final int _normalCardPlaysPerTurn;
@@ -39,47 +34,25 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public LimitCounter getUntilEndOfPhaseLimitCounter(PhysicalCard card, Phase phase) {
-        return getUntilEndOfPhaseLimitCounter(card, "", phase);
-    }
-
-    @Override
-    public LimitCounter getUntilStartOfPhaseLimitCounter(PhysicalCard card, Phase phase) {
-        return getUntilStartOfPhaseLimitCounter(card, "", phase);
-    }
-
-    @Override
-    public LimitCounter getUntilEndOfPhaseLimitCounter(PhysicalCard card, String prefix, Phase phase) {
-        Map<String, LimitCounter> limitCounterMap = _endOfPhaseLimitCounters.computeIfAbsent(phase, k -> new HashMap<>());
-        return limitCounterMap.computeIfAbsent(prefix + card.getCardId(), k -> new DefaultLimitCounter());
-    }
-
-    @Override
-    public LimitCounter getUntilStartOfPhaseLimitCounter(PhysicalCard card, String prefix, Phase phase) {
-        Map<String, LimitCounter> limitCounterMap = _startOfPhaseLimitCounters.computeIfAbsent(phase, k -> new HashMap<>());
-        return limitCounterMap.computeIfAbsent(prefix + card.getCardId(), k -> new DefaultLimitCounter());
-    }
-
-    @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card) {
         return getUntilEndOfTurnLimitCounter(card, "");
     }
 
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix) {
-        return _turnLimitCounters.computeIfAbsent(prefix + card.getCardId(), k -> new DefaultLimitCounter());
+        return _turnLimitCounters.computeIfAbsent(prefix + card.getCardId(), entry -> new DefaultLimitCounter());
     }
 
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(ActionSource actionSource) {
-        return _turnLimitActionSourceCounters.computeIfAbsent(actionSource, k -> new DefaultLimitCounter());
+        return _turnLimitActionSourceCounters.computeIfAbsent(actionSource, entry -> new DefaultLimitCounter());
     }
 
     private List<Modifier> getEffectModifiers(ModifierEffect modifierEffect) {
-        return _modifiers.computeIfAbsent(modifierEffect, k -> new LinkedList<>());
+        return _modifiers.computeIfAbsent(modifierEffect, entry -> new LinkedList<>());
     }
 
-    private void removeModifiers(List<Modifier> modifiers) {
+    private void removeModifiers(Collection<Modifier> modifiers) {
         _modifiers.values().forEach(list -> list.removeAll(modifiers));
     }
 
@@ -113,9 +86,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                     _skipSet.add(modifier);
                     Condition condition = modifier.getCondition();
                     if (condition == null || condition.isFulfilled())
-                        if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
-                                modifier.isNonCardTextModifier() ||
-                                !modifier.getSource().hasTextRemoved()) {
+                        if (shouldAdd(modifierEffect, modifier)) {
                             if ((card == null || modifier.affectsCard(card)) &&
                                     (foundNoCumulativeConflict(liveModifiers, modifier)))
                                 liveModifiers.add(modifier);
@@ -127,9 +98,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private List<Modifier> getIconModifiersAffectingCard(ModifierEffect modifierEffect,
-                                                         CardIcon icon, PhysicalCard card) {
-        List<Modifier> modifiers = _modifiers.get(modifierEffect);
+    private static boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
+        return modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
+                modifier.isNonCardTextModifier() ||
+                !modifier.getSource().hasTextRemoved();
+    }
+
+    private List<Modifier> getIconModifiersAffectingCard(CardIcon icon, PhysicalCard card) {
+        List<Modifier> modifiers = _modifiers.get(ModifierEffect.GAIN_ICON_MODIFIER);
         if (modifiers == null)
             return Collections.emptyList();
         else {
@@ -140,9 +116,33 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
                         _skipSet.add(modifier);
                         Condition condition = modifier.getCondition();
                         if (condition == null || condition.isFulfilled())
-                            if (modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
-                                    modifier.isNonCardTextModifier() ||
-                                    !modifier.getSource().hasTextRemoved()) {
+                            if (shouldAdd(ModifierEffect.GAIN_ICON_MODIFIER, modifier)) {
+                                if ((card == null || modifier.affectsCard(card)) &&
+                                        (foundNoCumulativeConflict(liveModifiers, modifier)))
+                                    liveModifiers.add(modifier);
+                            }
+                        _skipSet.remove(modifier);
+                    }
+                }
+            }
+
+            return liveModifiers;
+        }
+    }
+
+    private List<Modifier> getSkillModifiersAffectingCard(SkillName skill, PhysicalCard card) {
+        List<Modifier> modifiers = _modifiers.get(ModifierEffect.GAIN_SKILL_MODIFIER);
+        if (modifiers == null)
+            return Collections.emptyList();
+        else {
+            LinkedList<Modifier> liveModifiers = new LinkedList<>();
+            for (Modifier modifier : modifiers) {
+                if (skill == null || ((SkillAffectingModifier) modifier).getSkill() == skill) {
+                    if (!_skipSet.contains(modifier)) {
+                        _skipSet.add(modifier);
+                        Condition condition = modifier.getCondition();
+                        if (condition == null || condition.isFulfilled())
+                            if (shouldAdd(ModifierEffect.GAIN_SKILL_MODIFIER, modifier)) {
                                 if ((card == null || modifier.affectsCard(card)) &&
                                         (foundNoCumulativeConflict(liveModifiers, modifier)))
                                     liveModifiers.add(modifier);
@@ -157,24 +157,40 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
 
+
     @Override
     public boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         // TODO - Not accurate if the card has LOST an icon
+        // TODO - Does not account for modifiers that are inactive
         if (physicalCard.getBlueprint().hasIcon(icon))
             return true;
 
         for (Modifier modifier : getIconModifiersAffectingCard(
-                ModifierEffect.GAIN_ICON_MODIFIER, icon, physicalCard)) {
-            if (appliesIconModifier(physicalCard, modifier.getSource(), icon))
-                if (modifier.hasIcon(physicalCard, icon))
-                    return true;
+                icon, physicalCard)) {
+            if (modifier.hasIcon(physicalCard, icon))
+                return true;
         }
         return false;
     }
 
-    private boolean appliesIconModifier(PhysicalCard affecting, PhysicalCard modifierSource, CardIcon icon) {
-        return false;
-            // TODO - No real code here
+    public Integer getSkillLevel(PhysicalCard physicalCard, SkillName skillName) {
+        int level = 0;
+        for (Skill skill : physicalCard.getBlueprint().getSkills()) {
+            if (skill instanceof RegularSkill regularSkill) {
+                if (regularSkill.getRegularSkill() == skillName) {
+                    level += regularSkill.getLevel();
+                }
+            }
+        }
+        if (physicalCard.getBlueprint().getClassification() == skillName)
+            level += 1;
+
+        for (Modifier modifier : getSkillModifiersAffectingCard(
+                skillName, physicalCard)) {
+            if (modifier instanceof GainSkillModifier skillModifier && skillModifier.getSkill() == skillName)
+                level += 1;
+        }
+        return level;
     }
 
 
@@ -187,32 +203,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         return false;
     }
 
-    public void signalEndOfPhase() {
-        Phase phase = _game.getGameState().getCurrentPhase();
-        List<Modifier> list = _untilEndOfPhaseModifiers.get(phase);
-        if (list != null) {
-            removeModifiers(list);
-            list.clear();
-        }
-        Map<String, LimitCounter> counterMap = _endOfPhaseLimitCounters.get(phase);
-        if (counterMap != null)
-            counterMap.clear();
-
-        int _drawnThisPhaseCount = 0;
-    }
-
-
-    public void signalStartOfPhase(Phase phase) {
-        List<Modifier> list = _untilStartOfPhaseModifiers.get(phase);
-        if (list != null) {
-            removeModifiers(list);
-            list.clear();
-        }
-
-        Map<String, LimitCounter> counterMap = _startOfPhaseLimitCounters.get(phase);
-        if (counterMap != null)
-            counterMap.clear();
-    }
 
     public void signalStartOfTurn() { signalStartOfTurn(_game.getCurrentPlayer().getPlayerId()); }
 
@@ -231,18 +221,12 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         removeModifiers(_untilEndOfTurnModifiers);
         _untilEndOfTurnModifiers.clear();
 
-        for (List<Modifier> modifiers : _untilStartOfPhaseModifiers.values())
-            removeModifiers(modifiers);
-        _untilStartOfPhaseModifiers.clear();
-
         for (List<Modifier> modifiers : _untilEndOfPhaseModifiers.values())
             removeModifiers(modifiers);
         _untilEndOfPhaseModifiers.clear();
 
         _turnLimitCounters.clear();
         _turnLimitActionSourceCounters.clear();
-        _startOfPhaseLimitCounters.clear();
-        _endOfPhaseLimitCounters.clear();
     }
 
     public void signalEndOfRound() {
@@ -254,14 +238,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     @Override
     public void addUntilEndOfPhaseModifier(Modifier modifier, Phase phase) {
         addModifier(modifier);
-        List<Modifier> list = _untilEndOfPhaseModifiers.computeIfAbsent(phase, k -> new LinkedList<>());
-        list.add(modifier);
-    }
-
-    @Override
-    public void addUntilStartOfPhaseModifier(Modifier modifier, Phase phase) {
-        addModifier(modifier);
-        List<Modifier> list = _untilStartOfPhaseModifiers.computeIfAbsent(phase, k -> new LinkedList<>());
+        List<Modifier> list = _untilEndOfPhaseModifiers.computeIfAbsent(phase, entry -> new LinkedList<>());
         list.add(modifier);
     }
 
@@ -274,13 +251,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     @Override
     public void addUntilEndOfPlayersNextTurnThisRoundModifier(Modifier modifier, String playerId) {
         addModifier(modifier);
-        List<Modifier> list = _untilEndOfPlayersNextTurnThisRoundModifiers.computeIfAbsent(playerId, k -> new LinkedList<>());
+        List<Modifier> list =
+                _untilEndOfPlayersNextTurnThisRoundModifiers.computeIfAbsent(playerId, entry -> new LinkedList<>());
         list.add(modifier);
     }
 
     @Override
     public Collection<Modifier> getModifiersAffecting(PhysicalCard card) {
-        Set<Modifier> result = new HashSet<>();
+        Collection<Modifier> result = new HashSet<>();
         for (List<Modifier> modifiers : _modifiers.values()) {
             for (Modifier modifier : modifiers) {
                 Condition condition = modifier.getCondition();
@@ -313,7 +291,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             effectType = ModifierEffect.CUNNING_MODIFIER;
         else if (attribute == CardAttribute.INTEGRITY)
             effectType = ModifierEffect.INTEGRITY_MODIFIER;
-        List<Modifier> attributeModifiers = new LinkedList<>();
+        Collection<Modifier> attributeModifiers = new LinkedList<>();
         if (effectType != null)
             attributeModifiers.addAll(getModifiersAffectingCard(effectType, card));
         // TODO - Need to separate ships vs. personnel here
@@ -381,11 +359,11 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
                 if (condition == null || condition.isFulfilled())
-                    playCost.appendExtraCosts(target.getGame(), action, target);
+                    playCost.appendExtraCosts(_game, action, target);
             }
 
         for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.EXTRA_COST_MODIFIER, target)) {
-            modifier.appendExtraCosts(target.getGame(), action, target);
+            modifier.appendExtraCosts(_game, action, target);
         }
     }
 
@@ -402,18 +380,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         for (Modifier modifier : getModifiersAffectingCard(ModifierEffect.RETURN_TO_HAND_MODIFIER, card))
             if (!modifier.canBeReturnedToHand(_game, card, source))
                 return false;
-        return true;
-    }
-
-    /**
-     * Rule of 4. "You cannot draw (or take into hand) more than 4 cards during your fellowship phase."
-     *
-     * @param playerId
-     * @return
-     */
-    @Override
-    public boolean canDrawCardNoIncrement(String playerId) {
-        _game.getGameState().getCurrentPlayerId();
         return true;
     }
 
@@ -461,7 +427,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         // TODO SNAPSHOT - Basically need to copy everything here
     }
 
-    private class ModifierHookImpl implements ModifierHook {
+    final class ModifierHookImpl implements ModifierHook {
         private final Modifier _modifier;
 
         private ModifierHookImpl(Modifier modifier) {
@@ -474,7 +440,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private boolean foundNoCumulativeConflict(Collection<Modifier> modifierList, Modifier modifier) {
+    private static boolean foundNoCumulativeConflict(Iterable<Modifier> modifierList, Modifier modifier) {
         // If modifier is not cumulative, then check if modifiers from another copy
         // card of same title is already in the list
         if (!modifier.isCumulative() && modifier.getSource() != null) {
@@ -484,10 +450,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             String forPlayer = modifier.getForPlayer();
 
             for (Modifier liveModifier : modifierList) {
-                if (liveModifier.getModifierEffect() == modifierEffect
-                        && liveModifier.getSource() != null
-                        && liveModifier.getSource().getTitle().equals(cardTitle)
-                        && liveModifier.isForPlayer(forPlayer)) {
+                if (isSameEffectFromSameCard(liveModifier, modifierEffect, cardTitle, forPlayer)) {
                     return false;
                 }
             }
@@ -495,7 +458,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         return true;
     }
 
-    public DefaultGame getGame() { return _game; }
+    private static boolean isSameEffectFromSameCard(Modifier liveModifier, ModifierEffect modifierEffect,
+                                                    String cardTitle, String forPlayer) {
+        return liveModifier.getModifierEffect() == modifierEffect
+                && liveModifier.getSource() != null
+                && liveModifier.getSource().getTitle().equals(cardTitle)
+                && liveModifier.isForPlayer(forPlayer);
+    }
 
     public int getNormalCardPlaysAvailable(Player player) { return _normalCardPlaysAvailable.get(player); }
     public void useNormalCardPlay(Player player) {

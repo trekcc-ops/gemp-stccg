@@ -15,18 +15,17 @@ import java.util.List;
 
 
 @SuppressWarnings("unused")
-public class Blueprint101_065 extends CardBlueprint {
-    Blueprint101_065() {
-        super("101_065"); // Tricorder
-//        setGameText("Gives all of your ENGINEER-classification personnel the extra skill of SCIENCE where present.");
+public class Blueprint101_061 extends CardBlueprint {
+    Blueprint101_061() {
+        super("101_061"); // Medical Tricorder
     }
 
     @Override
     protected List<Modifier> getGameTextWhileActiveInPlayModifiers(Player player, final PhysicalCard thisCard) {
         List<Modifier> modifiers = new LinkedList<>();
         Filterable affectFilter = Filters.and(Filters.yourCardsPresentWith(player, thisCard), CardType.PERSONNEL,
-                Filters.classification(SkillName.ENGINEER));
-        modifiers.add(new GainSkillModifier(thisCard, affectFilter, new TrueCondition(), SkillName.SCIENCE));
+                Filters.classification(SkillName.SCIENCE));
+        modifiers.add(new GainSkillModifier(thisCard, affectFilter, new TrueCondition(), SkillName.MEDICAL));
         return modifiers;
     }
 }

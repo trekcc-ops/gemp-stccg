@@ -133,11 +133,6 @@ public class ValueResolver {
                 ValueSource limitSource = resolveEvaluator(object.get("limit"), 1);
                 ValueSource valueSource = resolveEvaluator(object.get("value"), 0);
                 return (actionContext) -> new LimitEvaluator(actionContext, valueSource, limitSource);
-            } else if (type.equalsIgnoreCase("cardphaselimit")) {
-                BlueprintUtils.validateAllowedFields(object, "limit", "amount");
-                ValueSource limitSource = resolveEvaluator(object.get("limit"), 0);
-                ValueSource valueSource = resolveEvaluator(object.get("amount"), 0);
-                return (actionContext) -> new CardPhaseLimitEvaluator(actionContext, limitSource, valueSource);
             } else if (type.equalsIgnoreCase("countStacked")) {
                 BlueprintUtils.validateAllowedFields(object, "on", "filter");
                 final FilterableSource filterableSource = BlueprintUtils.getFilterable(object, "any");
@@ -203,14 +198,6 @@ public class ValueResolver {
                 final ValueSource multiplier = ValueResolver.resolveEvaluator(object.get("multiplier"));
                 final ValueSource valueSource = ValueResolver.resolveEvaluator(object.get("source"), 0);
                 return (actionContext) -> new MultiplyEvaluator(actionContext, multiplier.getEvaluator(actionContext), valueSource.getEvaluator(actionContext));
-            } else if (type.equalsIgnoreCase("cardAffectedLimitPerPhase")) {
-                BlueprintUtils.validateAllowedFields(object, "limit", "source", "prefix");
-                final int limit = BlueprintUtils.getInteger(object, "limit", 0);
-                final String prefix = BlueprintUtils.getString(object, "prefix", "");
-                final ValueSource valueSource =
-                        ValueResolver.resolveEvaluator(object.get("source"), 0);
-                return (actionContext -> new CardAffectedPhaseLimitEvaluator(
-                        actionContext, limit, prefix, valueSource.getEvaluator(actionContext)));
             } else if (type.equalsIgnoreCase("forEachStrength")) {
                 BlueprintUtils.validateAllowedFields(object, "multiplier", "over", "filter");
                 final int multiplier = BlueprintUtils.getInteger(object, "multiplier", 1);

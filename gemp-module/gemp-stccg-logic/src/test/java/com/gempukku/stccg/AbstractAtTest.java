@@ -76,9 +76,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.MISSIONS, "106_013"); // Survey Instability
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         // Dilemmas, Events & Interrupts
-        // Engineering Kit
-        // Medical Kit
-        // Medical Tricorder
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_055"); // Engineering Kit
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_060"); // Medical Kit
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_061"); // Medical Tricorder
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_065"); // Tricorder
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_201"); // Calloway
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_202"); // Christopher Hobson
@@ -116,9 +116,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.MISSIONS, "106_012"); // Sensitive Search
         klingonDeck.addCard(SubDeck.SEED_DECK, "101_105"); // Klingon Outpost
         // Dilemmas, Events & Interrupts
-        // Engineering Kit
-        // Medical Kit
-        // Medical Tricorder
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_055"); // Engineering Kit
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_060"); // Medical Kit
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_061"); // Medical Tricorder
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_065"); // Tricorder
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_253"); // B'iJik
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_254"); // Batrell
