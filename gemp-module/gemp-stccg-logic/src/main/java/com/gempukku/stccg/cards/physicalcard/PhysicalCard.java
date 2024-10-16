@@ -34,7 +34,7 @@ public abstract class PhysicalCard implements Filterable {
     protected Object _whileInZoneData;
     protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
-    private List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
+    protected List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
 
     public PhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;

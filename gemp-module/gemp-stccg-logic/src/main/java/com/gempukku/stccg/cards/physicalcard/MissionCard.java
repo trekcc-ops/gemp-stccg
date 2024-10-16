@@ -97,6 +97,14 @@ public class MissionCard extends ST1EPhysicalCard {
         }
         sb.append("<br><br><b>Mission Requirements</b>: ").append(
                 getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
+        if (_cardsSeededUnderneath.size() > 0) {
+            sb.append("<br><br><b>Cards seeded underneath</b>:");
+            sb.append("<ol>");
+            for (PhysicalCard card : _cardsSeededUnderneath) {
+                sb.append("<li>" + card.getTitle() + "</li>");
+            }
+            sb.append("</ol>");
+        }
         return sb.toString();
     }
 

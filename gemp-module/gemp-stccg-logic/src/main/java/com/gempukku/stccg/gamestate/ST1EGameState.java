@@ -261,8 +261,7 @@ public class ST1EGameState extends GameState {
         // TODO - This probably doesn't pay close enough attention to order
         for (PhysicalCard card : cards) {
             removeCardFromZone(card);
-            card.attachTo(topCard);
-            addCardToZone(card, Zone.AT_LOCATION);
+            addCardToZone(card, Zone.VOID);
             topCard.addCardToSeededUnder(card);
         }
     }
