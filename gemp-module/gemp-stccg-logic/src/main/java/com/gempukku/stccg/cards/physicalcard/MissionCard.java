@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -12,9 +13,12 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class MissionCard extends ST1EPhysicalCard {
@@ -23,6 +27,7 @@ public class MissionCard extends ST1EPhysicalCard {
     private final MissionType _missionType;
     private final boolean _hasNoPointBox;
     protected boolean _completed = false;
+    private ST1EMission _mission;
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
         _quadrant = blueprint.getQuadrant();
@@ -124,4 +129,6 @@ public class MissionCard extends ST1EPhysicalCard {
         _completed = true;
         _game.getGameState().checkVictoryConditions();
     }
+
+    public void setMission(ST1EMission mission) { _mission = mission; }
 }

@@ -6,12 +6,12 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
-public class SeedMissionEffect extends SeedCardEffect {
+public class SeedMissionCardEffect extends SeedCardEffect {
     private final int _spacelineIndex;
     private final boolean _sharedMission;
 
-    public SeedMissionEffect(String performingPlayerId, MissionCard cardPlayed,
-                             int spacelineIndex, boolean sharedMission) {
+    public SeedMissionCardEffect(String performingPlayerId, MissionCard cardPlayed,
+                                 int spacelineIndex, boolean sharedMission) {
         super(performingPlayerId, cardPlayed, Zone.SPACELINE);
         _spacelineIndex = spacelineIndex;
         _sharedMission = sharedMission;
