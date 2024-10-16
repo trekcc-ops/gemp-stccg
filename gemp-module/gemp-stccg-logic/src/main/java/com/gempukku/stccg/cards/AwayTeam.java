@@ -1,25 +1,26 @@
 package com.gempukku.stccg.cards;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AwayTeam implements AttemptingUnit {
     private final Player _player;
     private final ST1EPhysicalCard _parentCard;
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
 
-    public AwayTeam(Player player, ST1EPhysicalCard parentCard) {
+    public AwayTeam(Player player, ST1EMission mission) {
         _player = player;
-        _parentCard = parentCard;
+
+        // TODO - Uses card instead of Mission. Prevents Away Teams attached to separate cards at a shared mission.
+        _parentCard = mission.getInitialMissionCard();
+
         _cardsInAwayTeam = new LinkedList<>();
-        parentCard.getGame().getGameState().addAwayTeamToGame(this);
+        _parentCard.getGame().getGameState().addAwayTeamToGame(this);
     }
 
     public boolean hasAffiliation(Affiliation affiliation) {
@@ -39,11 +40,17 @@ public class AwayTeam implements AttemptingUnit {
         return _parentCard == planet;
     }
 
+    public boolean isOnSurface(ST1EMission mission) {
+        return Objects.equals(mission, getMission());
+    }
+
+
     public Player getPlayer() { return _player; }
     public String getPlayerId() { return _player.getPlayerId(); }
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
-    public boolean canAttemptMission(MissionCard missionCard) {
-        return isOnSurface(missionCard) && hasAffiliationFromSet(missionCard.getAffiliationIconsForPlayer(_player));
+
+    public boolean canAttemptMission(ST1EMission mission) {
+        return isOnSurface(mission) && hasAffiliationFromSet(mission.getAffiliationIcons(_player));
     }
 
     public void add(PhysicalReportableCard1E card) {
@@ -81,23 +88,25 @@ public class AwayTeam implements AttemptingUnit {
     public boolean canBeDisbanded() {
         /* TODO - Away Teams may also be eligible to be disbanded if they're not on a mission,
             this should check presence instead. Check not sufficient in complex situations */
-        if (_parentCard instanceof MissionCard mission) {
-            List<AwayTeam> awayTeamsOnSurface = mission.getYourAwayTeamsOnSurface(_player).toList();
-            for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
-                boolean canJoinAnother = false;
-                for (AwayTeam awayTeam : awayTeamsOnSurface) {
-                    if (awayTeam != this && awayTeam.isCompatibleWith(reportable))
-                        canJoinAnother = true;
-                }
-                if (!canJoinAnother)
-                    return false;
+        ST1EMission mission = getMission();
+        if (mission == null)
+            return true;
+        List<AwayTeam> awayTeamsOnSurface = mission.getYourAwayTeamsOnSurface(_player).toList();
+        for (PhysicalReportableCard1E reportable : _cardsInAwayTeam) {
+            boolean canJoinAnother = false;
+            for (AwayTeam awayTeam : awayTeamsOnSurface) {
+                if (awayTeam != this && awayTeam.isCompatibleWith(reportable))
+                    canJoinAnother = true;
             }
+            if (!canJoinAnother)
+                return false;
         }
         return true;
     }
 
     public void disband() {
-        if (_parentCard instanceof MissionCard mission) {
+        ST1EMission mission = getMission();
+        if (mission != null) {
             for (PhysicalReportableCard1E card : _cardsInAwayTeam) {
                 card.leaveAwayTeam();
                 List<AwayTeam> awayTeamsOnSurface = mission.getYourAwayTeamsOnSurface(_player).toList();
@@ -109,5 +118,11 @@ public class AwayTeam implements AttemptingUnit {
             assert _cardsInAwayTeam.isEmpty() :
                     "Attempted to disband Away Team, but could not find a new Away Team for all cards";
         }
+    }
+
+    public ST1EMission getMission() {
+        if (_parentCard instanceof MissionCard missionCard)
+            return missionCard.getMission();
+        else return null; // TODO - NPE risk
     }
 }

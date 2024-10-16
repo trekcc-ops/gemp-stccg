@@ -5,16 +5,20 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
-public class SeedMissionEffect extends SeedCardEffect {
+import static com.gempukku.stccg.gamestate.ST1EMission.SharedStatus.NOT_SHARED;
+import static com.gempukku.stccg.gamestate.ST1EMission.SharedStatus.SHARED;
+
+public class SeedMissionCardEffect extends SeedCardEffect {
     private final int _spacelineIndex;
-    private final boolean _sharedMission;
+    private ST1EMission.SharedStatus _sharedStatus;
 
-    public SeedMissionEffect(String performingPlayerId, MissionCard cardPlayed,
-                             int spacelineIndex, boolean sharedMission) {
+    public SeedMissionCardEffect(String performingPlayerId, MissionCard cardPlayed,
+                                 int spacelineIndex, boolean sharedMission) {
         super(performingPlayerId, cardPlayed, Zone.SPACELINE);
         _spacelineIndex = spacelineIndex;
-        _sharedMission = sharedMission;
+        _sharedStatus = (sharedMission) ? SHARED : NOT_SHARED;
     }
 
     @Override
@@ -27,7 +31,7 @@ public class SeedMissionEffect extends SeedCardEffect {
         gameState.removeCardFromZone(_cardSeeded);
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
         try {
-            getGame().getGameState().addToSpaceline((MissionCard) _cardSeeded, _spacelineIndex, _sharedMission);
+            getGame().getGameState().addToSpaceline((MissionCard) _cardSeeded, _spacelineIndex, _sharedStatus);
             getGame().getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardSeeded));
             return new DefaultEffect.FullEffectResult(true);
         } catch(InvalidGameLogicException exp) {

@@ -14,44 +14,28 @@ public class ST1ELocation {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
-    private final List<MissionCard> _missionCards;
     private final Set<PhysicalCard> _nonMissionCards;
     private final Set<FacilityCard> _outpostCards;
     private final ST1EGame _game;
+    private final ST1EMission _mission;
     public ST1ELocation(MissionCard mission) {
         _quadrant = mission.getQuadrant();
         _region = mission.getBlueprint().getRegion();
         _locationName = mission.getBlueprint().getLocation();
-        _missionCards = new ArrayList<>();
         _nonMissionCards = new HashSet<>();
         _outpostCards = new HashSet<>();
         _game = mission.getGame();
-        addMission(mission);
+        _mission = new ST1EMission(mission, this); // TODO - This should probably be an inherited Location class
+        mission.setMission(_mission);
     }
 
-    public List<MissionCard> getMissions() { return _missionCards; }
+    public ST1EMission getST1EMission() { return _mission; }
+
     public Set<FacilityCard> getOutposts() { return _outpostCards; }
 
-    public void addMission(MissionCard card) {
-        _missionCards.add(card);
-        card.setLocation(this);
-    }
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
-
-    public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
-        if (_missionCards.size() == 1) {
-            return _missionCards.getFirst();
-        }
-        else if (_missionCards.size() == 2) {
-            for (MissionCard mission : _missionCards) {
-                if (Objects.equals(mission.getOwnerName(), playerId))
-                    return mission;
-            }
-        }
-        throw new InvalidGameLogicException("Could not find valid mission properties for player " + playerId + " at " + _locationName);
-    }
 
     public void addNonMission(PhysicalCard card) {
         _nonMissionCards.add(card);
@@ -95,8 +79,9 @@ public class ST1ELocation {
         return _game.getGameState().getSpacelineLocations().indexOf(this);
     }
 
-    public int getSpan(Player player) throws InvalidGameLogicException {
-        return getMissionForPlayer(player.getPlayerId()).getSpan(player);
+    public int getSpan(Player player) {
+        // TODO - Does not calculate span for non-mission locations
+        return _mission.getSpan(player);
     }
 
 }

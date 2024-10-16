@@ -1,11 +1,12 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -13,7 +14,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
 import java.util.*;
 
@@ -24,25 +25,29 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     public FacilityType getFacilityType() {
         return getBlueprint().getFacilityType();
     }
-    public boolean canSeedAtMission(MissionCard mission) {
+
+    public boolean canSeedAtMission(ST1EMission mission) {
         for (Affiliation affiliation : _affiliationOptions)
             if (canSeedAtMissionAsAffiliation(mission, affiliation))
                 return true;
         return false;
     }
-    public boolean canSeedAtMissionAsAffiliation(MissionCard mission, Affiliation affiliation) {
-        if (mission.isHomeworld())
+
+    public boolean canSeedAtMissionAsAffiliation(ST1EMission mission, Affiliation affiliation) {
+        ST1ELocation missionLocation = mission.getLocation();
+        if (mission.isHomeworldForPlayer(_owner))
             return false;
-        if (mission.getLocation().hasFacilityOwnedByPlayer(_owner.getPlayerId()))
+        if (missionLocation.hasFacilityOwnedByPlayer(_owner.getPlayerId()))
             return false;
-        return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) && mission.getQuadrant() == _nativeQuadrant;
+        Set<Affiliation> affiliationIcons = mission.getAffiliationIcons(_owner);
+
+        return affiliationIcons.contains(affiliation) && missionLocation.getQuadrant() == _nativeQuadrant;
     }
 
     @Override
     public boolean canBeSeeded() {
         for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
-            for (MissionCard mission : location.getMissions())
-                if (this.canSeedAtMission(mission))
+                if (this.canSeedAtMission(location.getST1EMission()))
                     return true;
         }
         return false;

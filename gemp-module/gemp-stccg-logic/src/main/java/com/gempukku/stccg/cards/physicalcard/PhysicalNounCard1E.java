@@ -35,7 +35,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
                         reportable.leaveAwayTeam();
                     if (reportable.getAwayTeam() == null)
-                        reportable.joinEligibleAwayTeam(mission);
+                        reportable.joinEligibleAwayTeam(mission.getMission());
                 }
             }
             String newImageUrl = _blueprint.getAffiliationImageUrl(affiliation);

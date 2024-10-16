@@ -1,14 +1,15 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.*;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.CardWithCrew;
-import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.gamestate.ST1EMission;
 import com.google.common.collect.Lists;
 
 import java.util.*;
@@ -163,26 +164,27 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         _rangeAvailable = _blueprint.getRange();
     }
 
-    public boolean canAttemptMission(MissionCard mission) {
+    public boolean canAttemptMission(ST1EMission mission) {
         if (_currentLocation != mission.getLocation())
             return false;
         if (_docked)
             return false;
-                // TODO - Does not include logic for dual missions
-        if (mission.getBlueprint().getMissionType() != MissionType.SPACE)
+        // TODO - Does not include logic for dual missions
+        if (mission.getMissionType() != MissionType.SPACE)
             return false;
-            // TODO - Does not include a check for infiltrators
+        // TODO - Does not include a check for infiltrators
         boolean matchesShip = false;
         boolean matchesMission = false;
         for (PersonnelCard card : getAttemptingPersonnel()) {
             Affiliation personnelAffiliation = card.getAffiliation();
             if (personnelAffiliation == _currentAffiliation)
                 matchesShip = true;
-            if (mission.getAffiliationIcons(_owner.getPlayerId()).contains(personnelAffiliation))
+            if (mission.getAffiliationIcons(_owner).contains(personnelAffiliation))
                 matchesMission = true;
         }
         return matchesShip && matchesMission;
     }
+
 
     public Collection<PersonnelCard> getAllPersonnel() {
         return getPersonnelInCrew();

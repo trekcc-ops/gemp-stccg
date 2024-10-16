@@ -1,34 +1,26 @@
 package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.ModifierEffect;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Player {
 
     private final String _playerId;
     private boolean _decked;
     private int _score;
-    private final Set<Affiliation> _playedAffiliations;
+    private final Set<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     private final DefaultGame _game;
     private final List<PhysicalCard> _cardsSeeded = new LinkedList<>();
-    private final List<MissionCard> _solvedMissions = new LinkedList<>();
 
     public Player(DefaultGame game, String playerId) {
         _playerId = playerId;
         _decked = false;
         _score = 0;
-        _playedAffiliations = new HashSet<>();
         _game = game;
     }
 
@@ -84,8 +76,6 @@ public class Player {
 
     public List<PhysicalCard> getCardsSeeded() { return _cardsSeeded; }
     public void addCardSeeded(PhysicalCard card) { _cardsSeeded.add(card); }
-    public void addSolvedMission(MissionCard card) { _solvedMissions.add(card); }
-    public List<MissionCard> getSolvedMissions() { return _solvedMissions; }
 
     public boolean canLookOrRevealCardsInHandOfPlayer(String targetPlayerId) {
         return _game.getModifiersQuerying().canLookOrRevealCardsInHand(targetPlayerId, _playerId);

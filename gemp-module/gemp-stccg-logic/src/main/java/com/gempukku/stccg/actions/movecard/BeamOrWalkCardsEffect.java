@@ -1,10 +1,11 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.actions.DefaultEffect;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
 import java.util.Collection;
 
@@ -38,11 +39,16 @@ public class BeamOrWalkCardsEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         for (PhysicalReportableCard1E card : _cardsToBeam) {
-            card.attachToCardAtLocation(_toCard);
             if (_fromCard instanceof MissionCard)
                 card.leaveAwayTeam();
-            if (_toCard instanceof MissionCard mission)
+            if (_toCard instanceof MissionCard missionCard) {
+                ST1EMission mission = missionCard.getMission();
+                PhysicalCard initialMission = mission.getInitialMissionCard();
+                card.attachToCardAtLocation(initialMission);
                 card.joinEligibleAwayTeam(mission);
+            } else {
+                card.attachToCardAtLocation(_toCard);
+            }
         }
         _game.sendMessage(_performingPlayerId + " " + _actionName.toLowerCase() + "ed " +
                 TextUtils.plural(_cardsToBeam.size(), "card") + " from " + _fromCard.getCardLink() + " to " +

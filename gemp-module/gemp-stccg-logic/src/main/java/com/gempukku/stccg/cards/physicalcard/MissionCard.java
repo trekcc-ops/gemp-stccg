@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -12,9 +13,12 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class MissionCard extends ST1EPhysicalCard {
@@ -23,6 +27,7 @@ public class MissionCard extends ST1EPhysicalCard {
     private final MissionType _missionType;
     private final boolean _hasNoPointBox;
     protected boolean _completed = false;
+    private ST1EMission _mission;
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
         _quadrant = blueprint.getQuadrant();
@@ -62,19 +67,18 @@ public class MissionCard extends ST1EPhysicalCard {
         if (wasSeededBy(player) || _pointsShown >= 40) {
             if (_missionType == MissionType.PLANET)
                 return getYourAwayTeamsOnSurface(player).anyMatch(
-                        awayTeam -> awayTeam.canAttemptMission(this));
+                        awayTeam -> awayTeam.canAttemptMission(_mission));
             if (_missionType == MissionType.SPACE)
                 return Filters.filterYourActive(player, Filters.ship, Filters.atLocation(_currentLocation))
-                        .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
+                        .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(_mission));
         }
         return false;
     }
 
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(Player player) {
-        return getAwayTeamsOnSurface().filter(awayTeam -> awayTeam.getPlayer() == player);
-    }
-    private Stream<AwayTeam> getAwayTeamsOnSurface() {
-        return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
+        Stream<AwayTeam> allAwayTeams =
+                getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
+        return allAwayTeams.filter(awayTeam -> awayTeam.getPlayer() == player);
     }
 
     @Override
@@ -82,23 +86,19 @@ public class MissionCard extends ST1EPhysicalCard {
         StringBuilder sb = new StringBuilder();
         sb.append(super.getCardInfoHTML());
         if (_missionType == MissionType.PLANET && _zone.isInPlay()) {
-            long awayTeamCount = getAwayTeamsOnSurface().count();
+            long awayTeamCount = _mission.getAwayTeamsOnSurface().count();
             sb.append("<br><b>Away Teams on Planet</b>: ").append(awayTeamCount);
             if (awayTeamCount > 0) {
-                getAwayTeamsOnSurface().forEach(awayTeam -> {
+                _mission.getAwayTeamsOnSurface().forEach(awayTeam -> {
                             sb.append("<br><b>Away Team:</b> (").append(awayTeam.getPlayerId()).append(") ");
                             sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
                         }
                 );
             }
         }
-        sb.append("<br><br><b>Mission Requirements</b>: ").append(
-                getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
+        sb.append("<br><br><b>Mission Requirements</b>: ").append(_blueprint.getMissionRequirementsText()
+                .replace(" OR ", " <a style='color:red'>OR</a> "));
         return sb.toString();
-    }
-
-    public String getMissionRequirements() {
-        return _blueprint.getMissionRequirementsText();
     }
 
     @Override
@@ -112,16 +112,6 @@ public class MissionCard extends ST1EPhysicalCard {
         return actions;
     }
 
-    public int getSpan(Player player) {
-        if (_owner == player)
-            return _blueprint.getOwnerSpan();
-        else return _blueprint.getOpponentSpan();
-    }
-
-    public void isSolvedByPlayer(String playerId) {
-        _game.getGameState().getPlayer(playerId).scorePoints(_blueprint.getPointsShown());
-        _game.getGameState().getPlayer(playerId).addSolvedMission(this);
-        _completed = true;
-        _game.getGameState().checkVictoryConditions();
-    }
+    public ST1EMission getMission() { return _mission; }
+    public void setMission(ST1EMission mission) { _mission = mission; }
 }

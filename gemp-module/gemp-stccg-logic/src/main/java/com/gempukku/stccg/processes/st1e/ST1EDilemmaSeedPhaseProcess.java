@@ -2,14 +2,13 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardsAction;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.ST1EMission;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.ArrayList;
@@ -33,11 +32,9 @@ public class ST1EDilemmaSeedPhaseProcess extends ST1EGameProcess {
         ST1EGameState gameState = _game.getGameState();
         List<Action> seedActions = new ArrayList<>();
         for (ST1ELocation location : gameState.getSpacelineLocations()) {
-            try {
-                MissionCard mission = location.getMissionForPlayer(_currentPlayer);
-                Action seedCardsAction = new SeedMissionCardsAction(gameState.getPlayer(_currentPlayer), mission);
-                seedActions.add(seedCardsAction);
-            } catch(InvalidGameLogicException exp) { }
+            ST1EMission mission = location.getST1EMission();
+            Action seedCardsAction = new SeedMissionCardsAction(gameState.getPlayer(_currentPlayer), mission);
+            seedActions.add(seedCardsAction);
         }
 
         _game.getUserFeedback().sendAwaitingDecision(_currentPlayer,

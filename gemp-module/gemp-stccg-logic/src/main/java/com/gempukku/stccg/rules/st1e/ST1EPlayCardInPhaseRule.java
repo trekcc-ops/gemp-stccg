@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.playcard.SeedMissionAction;
+import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
@@ -35,7 +35,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             return result;
         } else if (phase == Phase.SEED_MISSION && !cardsInHand.isEmpty()) {
             if (Objects.equals(playerId, currentPlayerId)) {
-                result.add(new SeedMissionAction((MissionCard) cardsInHand.getFirst()));
+                result.add(new SeedMissionCardAction((MissionCard) cardsInHand.getFirst()));
             }
         } else if (phase == Phase.SEED_FACILITY) {
             for (PhysicalCard card : cardsInHand) {

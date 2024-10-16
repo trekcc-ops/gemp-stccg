@@ -3,13 +3,14 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
 public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     private AwayTeam _awayTeam;
@@ -57,7 +58,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
 
     public void leaveAwayTeam() {
         _awayTeam.remove(this);
-        _awayTeam = null;
+        _awayTeam = null; // TODO - NPE risk
     }
 
     public void addToAwayTeam(AwayTeam awayTeam) {
@@ -65,9 +66,9 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         _awayTeam.add(this);
     }
 
-    public void joinEligibleAwayTeam(MissionCard mission) {
-                // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
-                // TODO - When there are multiple eligible away teams, there should be a player decision
+    public void joinEligibleAwayTeam(ST1EMission mission) {
+        // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
+        // TODO - When there are multiple eligible away teams, there should be a player decision
         for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(_owner).toList()) {
             if (awayTeam.isCompatibleWith(this) && _awayTeam == null) {
                 addToAwayTeam(awayTeam);
@@ -78,6 +79,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
             addToAwayTeam(awayTeam);
         }
     }
+
 
     public AwayTeam getAwayTeam() { return _awayTeam; }
 }

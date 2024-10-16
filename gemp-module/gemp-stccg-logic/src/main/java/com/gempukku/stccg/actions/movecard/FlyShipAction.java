@@ -35,10 +35,9 @@ public class FlyShipAction extends AbstractCostToEffectAction {
                 try {
                     int rangeNeeded = _currentLocation.getDistanceToLocation(location, player);
                     if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
-                        PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
+                        PhysicalCard destination = location.getST1EMission().getMissionCardForPlayer(player);
                         _destinationOptions.add(destination);
                         _destinationRangeMap.put(destination, rangeNeeded);
-                        _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                     }
                 } catch(InvalidGameLogicException exp) {
                     getGame().sendMessage(exp.getMessage());

@@ -12,6 +12,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ST1EMission;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,24 +30,26 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     private final Effect _chooseAwayTeamEffect;
     final Map<String, AttemptingUnit> _attemptingEntityMap = new HashMap<>();
     List<String> _seedCards;
+    private final ST1EMission _mission;
 
     public AttemptMissionAction(Player player, MissionCard missionCard) {
         super(player, ActionType.ATTEMPT_MISSION);
         _player = player;
         _game = missionCard.getGame();
         _missionCard = missionCard;
+        _mission = missionCard.getMission();
 
         // Get Away Teams that can attempt mission
-        Stream<AwayTeam> awayTeamOptions = missionCard.getYourAwayTeamsOnSurface(_player).filter(
-                awayTeam -> awayTeam.canAttemptMission(missionCard));
+        Stream<AwayTeam> awayTeamOptions = _mission.getYourAwayTeamsOnSurface(_player).filter(
+                awayTeam -> awayTeam.canAttemptMission(_mission));
         awayTeamOptions.forEach(awayTeam ->
                 _attemptingEntityMap.put(awayTeam.concatenateAwayTeam(), awayTeam));
 
         // Get ships that can attempt mission
         for (PhysicalCard card : Filters.filterYourActive(player,
-                Filters.ship, Filters.atLocation(missionCard.getLocation()))) {
+                Filters.ship, Filters.atLocation(_mission.getLocation()))) {
             if (card instanceof PhysicalShipCard ship)
-                if (ship.canAttemptMission(missionCard))
+                if (ship.canAttemptMission(_mission))
                     _attemptingEntityMap.put(ship.getTitle(), ship);
         }
 
@@ -56,7 +59,7 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
             protected void awayTeamChosen(String result) {
                 _attemptingEntityWasChosen = true;
                 _attemptingUnit = _attemptingEntityMap.get(result);
-                _attemptMissionEffect = new AttemptMissionEffect(_player, _attemptingUnit, _missionCard);
+                _attemptMissionEffect = new AttemptMissionEffect(_player, _attemptingUnit, _mission);
             }
         };
     }
