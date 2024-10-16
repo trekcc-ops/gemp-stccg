@@ -1,6 +1,16 @@
 // Set 101: Premiere [1E]
 
 {
+/*    101_015: {
+        title: Armus - Skin of Evil
+        type: dilemma
+        mission-type: planet
+        lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
+        rarity: R
+    } */
     101_057: {
         title: Federation PADD
         type: equipment

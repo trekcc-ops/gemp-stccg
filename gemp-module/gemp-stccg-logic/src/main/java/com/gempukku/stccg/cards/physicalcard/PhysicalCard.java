@@ -34,6 +34,7 @@ public abstract class PhysicalCard implements Filterable {
     protected Object _whileInZoneData;
     protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
+    private List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
 
     public PhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -478,6 +479,10 @@ public abstract class PhysicalCard implements Filterable {
 
     public boolean hasCharacteristic(Characteristic characteristic) {
         return _blueprint.hasCharacteristic(characteristic);
+    }
+
+    public void addCardToSeededUnder(PhysicalCard card) {
+        _cardsSeededUnderneath.add(card);
     }
 
 }

@@ -2,11 +2,11 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -253,5 +253,15 @@ public class ST1EGameState extends GameState {
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {
         _awayTeams.remove(awayTeam);
+    }
+
+    public void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) {
+        // TODO - This probably doesn't pay close enough attention to order
+        for (PhysicalCard card : cards) {
+            removeCardFromZone(card);
+            card.attachTo(topCard);
+            addCardToZone(card, Zone.AT_LOCATION);
+            topCard.addCardToSeededUnder(card);
+        }
     }
 }

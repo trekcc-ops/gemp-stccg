@@ -1,12 +1,9 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.PlayerOrder;
@@ -16,7 +13,6 @@ import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class ST1EDilemmaSeedPhaseProcess extends ST1EGameProcess {
@@ -62,25 +58,6 @@ public class ST1EDilemmaSeedPhaseProcess extends ST1EGameProcess {
     @Override
     public GameProcess getNextProcess() {
         return new ST1EStartOfFacilitySeedPhaseProcess(_game);
-    }
-
-    public void selectSeedCards(String playerId, PhysicalCard mission) {
-        ST1EGameState gameState = _game.getGameState();
-        List<PhysicalCard> eligibleCards = new ArrayList<>();
-        for (PhysicalCard card : gameState.getHand(playerId)) {
-            eligibleCards.add(card);
-        }
-
-        _game.getUserFeedback().sendAwaitingDecision(playerId,
-                new ArbitraryCardsSelectionDecision(1, "Select cards to seed under " + mission.getTitle(), eligibleCards
-                        , 0,
-                        eligibleCards.size()) {
-                    @Override
-                    public void decisionMade(String result) throws DecisionResultInvalidException {
-                        Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
-                        gameState.sendMessage(TextUtils.getConcatenatedCardLinks(selectedCards) + " were seeded");
-                    }
-                });
     }
 
 }
