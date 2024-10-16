@@ -10,8 +10,8 @@ public class SeedMissionCardEffect extends SeedCardEffect {
     private final int _spacelineIndex;
     private final boolean _sharedMission;
 
-    public SeedMissionCardEffect(String performingPlayerId, MissionCard cardPlayed,
-                                 int spacelineIndex, boolean sharedMission) {
+    SeedMissionCardEffect(String performingPlayerId, MissionCard cardPlayed,
+                          int spacelineIndex, boolean sharedMission) {
         super(performingPlayerId, cardPlayed, Zone.SPACELINE);
         _spacelineIndex = spacelineIndex;
         _sharedMission = sharedMission;
@@ -19,6 +19,7 @@ public class SeedMissionCardEffect extends SeedCardEffect {
 
     @Override
     protected DefaultEffect.FullEffectResult playEffectReturningResult() {
+        boolean result;
         ST1EGameState gameState = getGame().getGameState();
 
         getGame().sendMessage(_cardSeeded.getOwnerName() + " seeded " +
@@ -26,13 +27,24 @@ public class SeedMissionCardEffect extends SeedCardEffect {
 
         gameState.removeCardFromZone(_cardSeeded);
         _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
+
         try {
-            getGame().getGameState().addToSpaceline((MissionCard) _cardSeeded, _spacelineIndex, _sharedMission);
-            getGame().getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardSeeded));
-            return new DefaultEffect.FullEffectResult(true);
+            if (_cardSeeded instanceof MissionCard missionCard) {
+                if (_sharedMission)
+                    gameState.addMissionCardToSharedMission(missionCard, _spacelineIndex);
+                else
+                    gameState.addMissionLocationToSpaceline(missionCard, _spacelineIndex);
+                getGame().getActionsEnvironment().emitEffectResult(
+                        new PlayCardResult(this, _fromZone, _cardSeeded));
+                result = true;
+            } else {
+                getGame().sendMessage("Game error - called SeedMissionCardEffect with a non-mission card");
+                result = false;
+            }
         } catch(InvalidGameLogicException exp) {
             getGame().sendMessage(exp.getMessage());
-            return new DefaultEffect.FullEffectResult(false);
+            result = false;
         }
+        return new DefaultEffect.FullEffectResult(result);
     }
 }
