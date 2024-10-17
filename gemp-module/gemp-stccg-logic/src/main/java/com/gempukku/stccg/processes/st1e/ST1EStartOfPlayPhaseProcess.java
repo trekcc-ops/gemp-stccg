@@ -6,7 +6,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.Collection;
+import java.util.LinkedList;
 
 public class ST1EStartOfPlayPhaseProcess extends ST1EGameProcess {
     private ST1EGameProcess _followingGameProcess;
@@ -22,7 +22,7 @@ public class ST1EStartOfPlayPhaseProcess extends ST1EGameProcess {
         ST1EGameState gameState = _game.getGameState();
 
         for (String playerId : _game.getPlayerIds()) {
-            Collection<PhysicalCard> remainingSeedCards = gameState.getHand(playerId);
+            Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(gameState.getHand(playerId));
             for (PhysicalCard card : remainingSeedCards) {
                 gameState.removeCardFromZone(card);
                 gameState.addCardToZone(card, Zone.REMOVED);
