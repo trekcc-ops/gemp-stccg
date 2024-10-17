@@ -502,7 +502,10 @@ export default class GameTableUI {
                 if (event.shiftKey || event.which > 1) {
                     this.displayCardInfo(selectedCardElem.data("card"));
                 } else if (
-                        (selectedCardElem.hasClass("selectableCard") || selectedCardElem.hasClass("actionableCard")) &&
+                        (selectedCardElem.hasClass("selectableCard") || 
+                         selectedCardElem.hasClass("actionableCard") ||
+                         selectedCardElem.hasClass("selectedCard")
+                        ) &&
                         !this.replayMode
                     )
                     this.selectionFunction(selectedCardElem.data("card").cardId, event);
@@ -1491,20 +1494,26 @@ export default class GameTableUI {
         };
 
         var allowSelection = function () {
+            // this.selectionFunction is called when a card is clicked
+            //   thanks to the code in clickCardFunction()
             that.selectionFunction = function (cardId) {
-                selectedCardIds.push(cardId);
-
-                if (selectedCardIds.length == max) {
-                    if (that.gameSettings.get("autoAccept")) {
-                        finishChoice();
-                        return;
-                    } else {
-                        that.clearSelection();
-                        if (selectedCardIds.length > 0)
-                            $(".card:cardId(" + selectedCardIds + ")").addClass("selectedCard");
-                    }
-                } else {
+                // DEBUG: console.log("arbitraryCardsDecision -> allowSelection -> selectionFunction");
+                // If the cardId is already selected, remove it.
+                if (selectedCardIds.includes(cardId)) {
+                    let index = selectedCardIds.indexOf(cardId);
+                    selectedCardIds.splice(index, 1);
+                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
+                }
+                // Otherwise, if the cardId is not already selected, add it.
+                else {
+                    selectedCardIds.push(cardId);
                     getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
+                }
+                
+                // If the max number of cards are selected and the user has auto accept on, we're done.
+                if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
+                    finishChoice();
+                    return;
                 }
 
                 processButtons();
@@ -1632,6 +1641,7 @@ export default class GameTableUI {
             }
 
             that.selectionFunction = function (cardId, event) {
+                // DEBUG: console.log("cardActionChoiceDecision -> allowSelection -> selectionFunction");
                 var cardIdElem = getCardDivFromId(cardId);
                 var actions = cardIdElem.data("action");
 
@@ -1788,6 +1798,7 @@ export default class GameTableUI {
 
         var allowSelection = function () {
             that.selectionFunction = function (cardId) {
+                // DEBUG: console.log("actionChoiceDecision -> allowSelection -> selectionFunction");
                 var actionId = actionIds[parseInt(cardId.substring(4))];
                 selectedActionIds.push(actionId);
 
@@ -1864,19 +1875,26 @@ export default class GameTableUI {
         };
 
         var allowSelection = function () {
+            // this.selectionFunction is called when a card is clicked
+            //   thanks to the code in clickCardFunction()
             that.selectionFunction = function (cardId) {
-                selectedCardIds.push(cardId);
-                if (selectedCardIds.length == max) {
-                    if (this.gameSettings.get("autoAccept")) {
-                        finishChoice();
-                        return;
-                    } else {
-                        that.clearSelection();
-                        if (selectedCardIds.length > 0)
-                            $(".card:cardId(" + selectedCardIds + ")").addClass("selectedCard");
-                    }
-                } else {
+                // DEBUG: console.log("cardSelectionDecision -> allowSelection -> selectionFunction");
+                // If the cardId is already selected, remove it.
+                if (selectedCardIds.includes(cardId)) {
+                    let index = selectedCardIds.indexOf(cardId);
+                    selectedCardIds.splice(index, 1);
+                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
+                }
+                // Otherwise, if the cardId is not already selected, add it.
+                else {
+                    selectedCardIds.push(cardId);
                     getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
+                }
+                
+                // If the max number of cards are selected and the user has auto accept on, we're done.
+                if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
+                    finishChoice();
+                    return;
                 }
 
                 processButtons();
