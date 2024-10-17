@@ -5,6 +5,7 @@ import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js'
 import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
 import GameAnimations from './gameAnimations.js';
 import ChatBoxUI from './chat.js';
+import { openSizeDialog } from "./common.js";
 
 export default class GameTableUI {
     padding = 5;
