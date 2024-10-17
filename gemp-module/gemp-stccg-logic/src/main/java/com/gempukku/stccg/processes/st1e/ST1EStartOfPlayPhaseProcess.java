@@ -33,9 +33,9 @@ public class ST1EStartOfPlayPhaseProcess extends ST1EGameProcess {
             gameState.shuffleDeck(playerId);
             for (int i = 0; i < _game.getFormat().getHandSize(); i++) {
                 gameState.playerDrawsCard(playerId);
-                gameState.sendMessage("Drew a card to hand");
             }
         }
+        gameState.sendMessage("Players drew starting hands");
 
         _followingGameProcess = new ST1EStartOfTurnGameProcess(_game);
     }
