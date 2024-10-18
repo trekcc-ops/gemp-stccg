@@ -265,4 +265,13 @@ public class ST1EGameState extends GameState {
             topCard.addCardToSeededUnder(card);
         }
     }
+
+    public void preSeedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard, Player player) {
+        // TODO - This probably doesn't pay close enough attention to order
+        for (PhysicalCard card : cards) {
+            removeCardFromZone(card);
+            addCardToZone(card, Zone.VOID);
+            topCard.addCardToPreSeeds(card, player);
+        }
+    }
 }

@@ -32,6 +32,6 @@ public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EDilemmaSeedPhaseProcess(new HashSet<>(), _game);
+        return new DilemmaSeedPhaseOpponentsMissionsProcess(new HashSet<>(), _game);
     }
 }

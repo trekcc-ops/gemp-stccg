@@ -34,6 +34,7 @@ public abstract class PhysicalCard implements Filterable {
     protected Object _whileInZoneData;
     protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
+    protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
     protected List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
 
     public PhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
@@ -486,9 +487,30 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public Collection<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
+    public Collection<PhysicalCard> getCardsPreSeeded(Player player) { return _cardsPreSeededUnderneath.get(player); }
 
     public void removeSeedCard(PhysicalCard card) {
         _cardsSeededUnderneath.remove(card);
     }
 
+    public void removePreSeedCard(PhysicalCard card, Player player) {
+        _cardsPreSeededUnderneath.get(player).remove(card);
+    }
+
+    public void seedPreSeeds() {
+        // TODO - This won't work quite right for shared missions
+        Set<Player> playersWithSeeds = _cardsPreSeededUnderneath.keySet();
+        for (Player player : playersWithSeeds) {
+            for (PhysicalCard card : _cardsPreSeededUnderneath.get(player)) {
+                _cardsSeededUnderneath.add(card);
+            }
+            _cardsPreSeededUnderneath.remove(player);
+        }
+    }
+
+
+    public void addCardToPreSeeds(PhysicalCard card, Player player) {
+        _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
+        _cardsPreSeededUnderneath.get(player).add(card);
+    }
 }
