@@ -97,6 +97,17 @@ public class MissionCard extends ST1EPhysicalCard {
         }
         sb.append("<br><br><b>Mission Requirements</b>: ").append(
                 getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
+        for (Player player : _cardsPreSeededUnderneath.keySet()) {
+            List<PhysicalCard> playerPreSeeds = _cardsPreSeededUnderneath.get(player);
+            if (playerPreSeeds != null && !playerPreSeeds.isEmpty()) {
+                sb.append("<br><br><b>Cards ready to be seeded by player " + player.getPlayerId() + "</b>:");
+                sb.append("<ol>");
+                for (PhysicalCard card : playerPreSeeds) {
+                    sb.append("<li>" + card.getTitle() + "</li>");
+                }
+                sb.append("</ol>");
+            }
+        }
         if (_cardsSeededUnderneath.size() > 0) {
             sb.append("<br><br><b>Cards seeded underneath</b>:");
             sb.append("<ol>");
