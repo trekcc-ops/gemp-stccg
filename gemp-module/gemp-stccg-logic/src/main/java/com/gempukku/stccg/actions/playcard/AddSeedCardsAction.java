@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SeedMissionCardsAction extends AbstractCostToEffectAction {
+public class AddSeedCardsAction extends AbstractCostToEffectAction {
 
     private final List<PhysicalCard> _cardsSeeding = new LinkedList<>();
     private final PhysicalCard _topCard;
@@ -26,7 +26,7 @@ public class SeedMissionCardsAction extends AbstractCostToEffectAction {
     private final ST1EGameState _gameState;
     private boolean _cardsSeeded;
 
-    public SeedMissionCardsAction(Player player, ST1EPhysicalCard topCard) {
+    public AddSeedCardsAction(Player player, ST1EPhysicalCard topCard) {
         super(player, ActionType.OTHER);
         setText("Seed cards under " + topCard.getFullName());
         _topCard = topCard;

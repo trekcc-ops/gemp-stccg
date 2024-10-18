@@ -485,4 +485,10 @@ public abstract class PhysicalCard implements Filterable {
         _cardsSeededUnderneath.add(card);
     }
 
+    public Collection<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
+
+    public void removeSeedCard(PhysicalCard card) {
+        _cardsSeededUnderneath.remove(card);
+    }
+
 }

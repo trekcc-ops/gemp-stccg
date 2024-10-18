@@ -1,36 +1,36 @@
 // Set 101: Premiere [1E]
 
 {
-/*    101_012: {
+    101_012: {
         title: Anaphasic Organism
         type: dilemma
         mission-type: planet
         lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
         property-logo: tng-logo
-        java-blueprint: true
+//        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/anaphasicorganism95.jpg
         rarity: C
-    } */
-/*    101_014: {
+    }
+    101_014: {
         title: Archer
         type: dilemma
         mission-type: planet
         lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
         property-logo: tng-logo
-        java-blueprint: true
+//        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/archer.gif
         rarity: C
-    } */
-/*    101_015: {
+    }
+    101_015: {
         title: Armus - Skin of Evil
         type: dilemma
         mission-type: planet
         lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
         property-logo: tng-logo
-        java-blueprint: true
+//        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
         rarity: R
-    } */
+    }
 /*    101_024: {
         title: "Female's Love Interest"
         type: dilemma
