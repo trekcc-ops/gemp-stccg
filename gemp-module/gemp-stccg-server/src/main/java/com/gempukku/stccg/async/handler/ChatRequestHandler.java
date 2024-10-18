@@ -1,15 +1,11 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
 import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.chat.ChatCommandErrorException;
-import com.gempukku.stccg.chat.ChatMessage;
-import com.gempukku.stccg.chat.ChatRoomMediator;
-import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.chat.*;
 import com.gempukku.stccg.database.User;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -18,32 +14,21 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.commonmark.Extension;
-import org.commonmark.ext.autolink.AutolinkExtension;
-import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
-import org.commonmark.node.Image;
-import org.commonmark.node.Link;
-import org.commonmark.node.Node;
-import org.commonmark.node.Text;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.NodeRenderer;
-import org.commonmark.renderer.html.HtmlNodeRendererContext;
-import org.commonmark.renderer.html.HtmlRenderer;
-import org.commonmark.renderer.html.HtmlWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 public class ChatRequestHandler extends DefaultServerRequestHandler implements UriRequestHandler {
     private final ChatServer _chatServer;
     private final LongPollingSystem longPollingSystem;
-    private final Parser _markdownParser;
-    private final HtmlRenderer _markdownRenderer;
 
     private static final Logger LOGGER = LogManager.getLogger(ChatRequestHandler.class);
 
@@ -51,18 +36,6 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         super(objects);
         _chatServer = objects.getChatServer();
         this.longPollingSystem = longPollingSystem;
-
-        List<Extension> adminExt = Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create());
-        _markdownParser = Parser.builder()
-                .extensions(adminExt)
-                .build();
-        _markdownRenderer = HtmlRenderer.builder()
-                .nodeRendererFactory(LinkShredder::new)
-                .extensions(adminExt)
-                .escapeHtml(true)
-                .sanitizeUrls(true)
-                .softbreak("<br />")
-                .build();
     }
 
     @Override
@@ -77,13 +50,14 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         }
     }
 
-    private final Pattern QuoteExtender = Pattern.compile("^([ \t]*>[ \t]*.+)(?=\n[ \t]*[^>])", Pattern.MULTILINE);
+    private final Pattern QuoteExtender =
+            Pattern.compile("^([ \t]*>[ \t]*.+)(?=\n[ \t]*[^>])", Pattern.MULTILINE);
 
     private void postMessages(HttpRequest request, String room, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String message = getFormParameterSafely(postDecoder, "message");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String message = getFormParameterSafely(postDecoder, FormParameter.message);
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -101,14 +75,8 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
                     newMsg = newMsg.replace("_", "\\_");
 
                     //Need to preserve any commands being made
-                    if(!newMsg.startsWith("/")) {
-                        newMsg = _markdownRenderer.render(_markdownParser.parse(newMsg));
-                        // Prevent quotes with newlines from displaying side-by-side
-                        newMsg = newMsg.replaceAll(
-                                "</blockquote>[\n \t]*<blockquote>", "</blockquote><br /><blockquote>");
-                        //Make all links open in a new tab
-                        newMsg = newMsg.replaceAll("<(a href=\".*?\")>", "<$1 target=\"blank\">");
-                    }
+                    if(!newMsg.startsWith("/"))
+                        newMsg = HTMLUtils.parseChatMessage(newMsg);
                     chatRoom.sendMessage(resourceOwner, newMsg);
                     responseWriter.writeXmlResponse(null);
                 } else {
@@ -129,57 +97,6 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
             }
         } finally {
             postDecoder.destroy();
-        }
-    }
-
-    //Processing to implement:
-    // + quotes restricted to one line
-    // - triple quote to avoid this??
-    // + remove url text processing
-    // + remove image processing
-    // - re-enable bare url linking
-
-    private static class LinkShredder implements NodeRenderer {
-
-        private final HtmlWriter html;
-
-        LinkShredder(HtmlNodeRendererContext context) {
-            this.html = context.getWriter();
-        }
-
-        @Override
-        public final Set<Class<? extends Node>> getNodeTypes() {
-            // Return the node types we want to use this renderer for.
-            return new HashSet<>(Arrays.asList(
-               Link.class,
-               Image.class
-            ));
-        }
-
-        @Override
-        public final void render(Node node) {
-            if(node instanceof Link link) {
-                if(link.getTitle() != null) {
-                    html.text(link.getTitle() + ": " + link.getDestination());
-                }
-                else {
-                    if(link.getFirstChild() != null
-                            && link.getFirstChild() instanceof Text text
-                            && !text.getLiteral().equals(link.getDestination()))
-                    {
-                        html.text(text.getLiteral() + ": " + link.getDestination());
-                    }
-                    else {
-                        html.tag("a", Collections.singletonMap("href", link.getDestination()));
-                        html.text(link.getDestination());
-                        html.tag("/a");
-                    }
-                }
-
-            }
-            else if(node instanceof Image image){
-                html.text(image.getTitle() + ": " + image.getDestination());
-            }
         }
     }
 
@@ -232,7 +149,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getMessages(HttpRequest request, String room, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -259,7 +176,7 @@ public class ChatRequestHandler extends DefaultServerRequestHandler implements U
         doc.appendChild(chatElem);
 
         for (ChatMessage chatMessage : chatMessages) {
-            Element messageElem = chatMessage.serializeForDocument(doc, "message");
+            Element messageElem = chatMessage.serializeForDocument(doc, FormParameter.message.name());
             chatElem.appendChild(messageElem);
         }
 

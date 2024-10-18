@@ -29,8 +29,8 @@ public class ServerStatsRequestHandler extends DefaultServerRequestHandler imple
                                     ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-            String startDay = getQueryParameterSafely(queryDecoder, "startDay");
-            String length = getQueryParameterSafely(queryDecoder, "length");
+            String startDay = getQueryParameterSafely(queryDecoder, FormParameter.startDay);
+            String length = getQueryParameterSafely(queryDecoder, FormParameter.length);
 
             try {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

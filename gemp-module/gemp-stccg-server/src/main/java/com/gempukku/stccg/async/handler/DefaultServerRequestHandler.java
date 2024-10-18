@@ -4,16 +4,9 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardItem;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.collection.*;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.collection.CollectionType;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.service.LoggedUserHolder;
 import io.netty.handler.codec.http.HttpMessage;
@@ -42,6 +35,8 @@ import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
 import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 
 class DefaultServerRequestHandler {
+    private final static Map.Entry<String, String> HEADERS_TO_ADD =
+            new AbstractMap.SimpleEntry<>("Delivery-Service-Package", "true");
     private final static int SIGNUP_REWARD = 20000;
     private final static int WEEKLY_REWARD = 5000;
     final CardBlueprintLibrary _cardBlueprintLibrary;
@@ -51,6 +46,16 @@ class DefaultServerRequestHandler {
     final CollectionsManager _collectionsManager;
     final GameHistoryService _gameHistoryService;
     final ServerObjects _serverObjects;
+
+    protected enum FormParameter {
+        availablePicks, blueprintId, cardId, channelNumber, choiceId, collectionType,
+        cost, count, decisionId, decisionValue,
+        deck, deckContents, decklist, deckName, decks,
+        desc, duration, filter, format, id, includeEvents, isInviteOnly, isPrivate, length, login, maxMatches,
+        message, messageOfTheDay, name, notes, oldDeckName,
+        ownedMin, pack, participantId, password, players, price, prizeMultiplier, product, reason, selection,
+        seriesDuration, shutdown, start, startDay, targetFormat, timer
+    }
 
     DefaultServerRequestHandler(ServerObjects objects) {
         _serverObjects = objects;
@@ -110,7 +115,7 @@ class DefaultServerRequestHandler {
                                                   Map<? super String, ? super String> headersToAdd) {
         String logged = getLoggedUser(request);
         if (logged != null && _transferDAO.hasUndeliveredPackages(logged))
-            headersToAdd.put("Delivery-Service-Package", "true");
+            headersToAdd.put(HEADERS_TO_ADD.getKey(), HEADERS_TO_ADD.getValue());
     }
 
     final User getResourceOwnerSafely(HttpMessage request, String participantId)
@@ -145,13 +150,14 @@ class DefaultServerRequestHandler {
         return resourceOwner;
     }
 
-    static String getQueryParameterSafely(QueryStringDecoder queryStringDecoder, String parameterName) {
-        List<String> parameterValues = queryStringDecoder.parameters().get(parameterName);
+    static String getQueryParameterSafely(QueryStringDecoder decoder, FormParameter parameter) {
+        List<String> parameterValues = decoder.parameters().get(parameter.name());
         if (parameterValues != null && !parameterValues.isEmpty())
             return parameterValues.getFirst();
         else
             return null;
     }
+
 
     static List<String> getFormMultipleParametersSafely(InterfaceHttpPostRequestDecoder postRequestDecoder,
                                                         String parameterName)
@@ -170,9 +176,9 @@ class DefaultServerRequestHandler {
         return result;
     }
 
-    static String getFormParameterSafely(InterfaceHttpPostRequestDecoder postRequestDecoder, String parameterName)
-            throws IOException, HttpPostRequestDecoder.NotEnoughDataDecoderException {
-        InterfaceHttpData data = postRequestDecoder.getBodyHttpData(parameterName);
+    static String getFormParameterSafely(InterfaceHttpPostRequestDecoder decoder, FormParameter parameter)
+            throws IOException {
+        InterfaceHttpData data = decoder.getBodyHttpData(parameter.name());
         if (data == null)
             return null;
         if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
@@ -206,49 +212,6 @@ class DefaultServerRequestHandler {
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
-    private final String generateCardTooltip(CardItem item) throws CardNotFoundException {
-        String blueprintId = item.getBlueprintId();
-        CardBlueprint bp = _cardBlueprintLibrary.getCardBlueprint(blueprintId);
-        return "<span class=\"tooltip\">" + bp.getFullName()
-                + "<span><img class=\"ttimage\" src=\"" + bp.getImageUrl() + "\"></span></span>";
-    }
-
-    private final String listCards(String deckName, String filter, CardCollection deckCards, boolean countCards,
-                                   FormatLibrary formatLibrary, boolean showToolTip)
-            throws CardNotFoundException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<br/><b>").append(deckName).append(":</b><br/>");
-        for (GenericCardItem item :
-                SortAndFilterCards.process(filter, deckCards.getAll(), _cardBlueprintLibrary, formatLibrary)) {
-            if (countCards)
-                sb.append(item.getCount()).append("x ");
-            String blueprintId = item.getBlueprintId();
-            String cardText = showToolTip?
-                    generateCardTooltip(item) : _cardBlueprintLibrary.getCardBlueprint(blueprintId).getFullName();
-            sb.append(cardText).append("<br/>");
-        }
-        return sb.toString();
-    }
-    
-    final String getHTMLDeck(CardDeck deck, boolean showToolTip, FormatLibrary formatLibrary)
-            throws CardNotFoundException {
-
-        StringBuilder result = new StringBuilder();
-
-        MutableCardCollection deckCards = new DefaultCardCollection();
-        for (String card : deck.getDrawDeckCards())
-            deckCards.addItem(_cardBlueprintLibrary.getBaseBlueprintId(card), 1);
-
-        result.append(listCards("Adventure Deck","cardType:SITE sort:twilight",
-                deckCards,false, formatLibrary, showToolTip));
-        result.append(listCards("Free Peoples Draw Deck","sort:cardType,name",
-                deckCards,true, formatLibrary, showToolTip));
-        result.append(listCards("Shadow Draw Deck","sort:cardType,name",
-                deckCards,true, formatLibrary, showToolTip));
-
-        return result.toString();
-    }
 
     static Document createNewDoc() throws ParserConfigurationException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -258,7 +221,7 @@ class DefaultServerRequestHandler {
 
     final User getResourceOwner(HttpRequest request) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
         return getResourceOwnerSafely(request, participantId);
     }
 

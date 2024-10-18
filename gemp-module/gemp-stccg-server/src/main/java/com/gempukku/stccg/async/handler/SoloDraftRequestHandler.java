@@ -57,7 +57,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
     private void getAvailablePicks(HttpRequest request, String leagueType, ResponseWriter responseWriter)
             throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
 
         League league = findLeagueByType(leagueType);
 
@@ -98,7 +98,7 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
         }
 
         Document doc = createNewDoc();
-        Element availablePicksElem = doc.createElement("availablePicks");
+        Element availablePicksElem = doc.createElement(FormParameter.availablePicks.name());
         doc.appendChild(availablePicksElem);
 
         appendAvailablePics(doc, availablePicksElem, availableChoices);
@@ -117,8 +117,8 @@ public class SoloDraftRequestHandler extends DefaultServerRequestHandler impleme
     private void makePick(HttpRequest request, String leagueType, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
-        String selectedChoiceId = getFormParameterSafely(postDecoder, "choiceId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+        String selectedChoiceId = getFormParameterSafely(postDecoder, FormParameter.choiceId);
 
         League league = findLeagueByType(leagueType);
 

@@ -60,13 +60,13 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private void importCollection(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         //noinspection SpellCheckingInspection
         List<GenericCardItem> importResult = processImport(
-                getQueryParameterSafely(new QueryStringDecoder(request.uri()), "decklist"),
+                getQueryParameterSafely(new QueryStringDecoder(request.uri()), FormParameter.decklist),
                 _cardBlueprintLibrary
         );
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
-        collectionElem.setAttribute("count", String.valueOf(importResult.size()));
+        collectionElem.setAttribute(FormParameter.count.name(), String.valueOf(importResult.size()));
         doc.appendChild(collectionElem);
 
         for (GenericCardItem item : importResult) {
@@ -82,10 +82,10 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private void getCollection(HttpRequest request, String collectionType, ResponseWriter responseWriter)
             throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        String filter = getQueryParameterSafely(queryDecoder, "filter");
-        int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, "start"));
-        int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, "count"));
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
+        String filter = getQueryParameterSafely(queryDecoder, FormParameter.filter);
+        int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.start));
+        int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.count));
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -100,7 +100,7 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
 
         Document doc = createNewDoc();
         Element collectionElem = doc.createElement("collection");
-        collectionElem.setAttribute("count", String.valueOf(filteredResult.size()));
+        collectionElem.setAttribute(FormParameter.count.name(), String.valueOf(filteredResult.size()));
         doc.appendChild(collectionElem);
 
         for (int i = start; i < start + count; i++) {
@@ -157,9 +157,9 @@ public class CollectionRequestHandler extends DefaultServerRequestHandler implem
     private void openPack(HttpRequest request, String collectionType, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
-        String selection = getFormParameterSafely(postDecoder, "selection");
-        String packId = getFormParameterSafely(postDecoder, "pack");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+        String selection = getFormParameterSafely(postDecoder, FormParameter.selection);
+        String packId = getFormParameterSafely(postDecoder, FormParameter.pack);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 

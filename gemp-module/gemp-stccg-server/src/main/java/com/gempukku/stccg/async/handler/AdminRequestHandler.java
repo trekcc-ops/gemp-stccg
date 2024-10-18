@@ -125,7 +125,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String login = getFormParameterSafely(postDecoder, "login").trim();
+            String login = getFormParameterSafely(postDecoder, FormParameter.login).trim();
 
             PlayerDAO playerDAO = _serverObjects.getPlayerDAO();
             List<User> similarPlayers = playerDAO.findSimilarAccounts(login);
@@ -171,7 +171,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String login = getFormParameterSafely(postDecoder, "login");
+            String login = getFormParameterSafely(postDecoder, FormParameter.login);
 
             if (login == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
@@ -190,7 +190,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String login = getFormParameterSafely(postDecoder, "login");
+            String login = getFormParameterSafely(postDecoder, FormParameter.login);
 
             if (login==null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
@@ -229,8 +229,8 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String login = getFormParameterSafely(postDecoder, "login");
-            int duration = Integer.parseInt(getFormParameterSafely(postDecoder, "duration"));
+            String login = getFormParameterSafely(postDecoder, FormParameter.login);
+            int duration = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.duration));
 
             if (!_adminService.banUserTemp(login, duration))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
@@ -246,7 +246,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String login = getFormParameterSafely(postDecoder, "login");
+            String login = getFormParameterSafely(postDecoder, FormParameter.login);
 
             if (!_adminService.unBanUser(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
@@ -262,9 +262,9 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String reason = getFormParameterSafely(postDecoder, "reason");
-            String product = getFormParameterSafely(postDecoder, "product");
-            String collectionType = getFormParameterSafely(postDecoder, "collectionType");
+            String reason = getFormParameterSafely(postDecoder, FormParameter.reason);
+            String product = getFormParameterSafely(postDecoder, FormParameter.product);
+            String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
 
             Collection<GenericCardItem> productItems = getProductItems(product);
 
@@ -289,9 +289,9 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String players = getFormParameterSafely(postDecoder, "players");
-            String product = getFormParameterSafely(postDecoder, "product");
-            String collectionType = getFormParameterSafely(postDecoder, "collectionType");
+            String players = getFormParameterSafely(postDecoder, FormParameter.players);
+            String product = getFormParameterSafely(postDecoder, FormParameter.product);
+            String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
 
             Collection<GenericCardItem> productItems = getProductItems(product);
 
@@ -370,14 +370,14 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
             throws ParserConfigurationException {
         Document doc = createNewDoc();
 
-        int cost = Integer.parseInt(leagueParameters.get("cost"));
+        int cost = Integer.parseInt(leagueParameters.get(FormParameter.cost.name()));
         Element leagueElem = doc.createElement("league");
         final List<LeagueSeriesData> allSeries = leagueData.getSeries();
         int end = allSeries.getLast().getEnd();
 
-        leagueElem.setAttribute("name", leagueParameters.get("name"));
-        leagueElem.setAttribute("cost", String.valueOf(cost));
-        leagueElem.setAttribute("start", String.valueOf(allSeries.getFirst().getStart()));
+        leagueElem.setAttribute(FormParameter.name.name(), leagueParameters.get(FormParameter.name.name()));
+        leagueElem.setAttribute(FormParameter.cost.name(), String.valueOf(cost));
+        leagueElem.setAttribute(FormParameter.start.name(), String.valueOf(allSeries.getFirst().getStart()));
         leagueElem.setAttribute("end", String.valueOf(end));
 
         for (LeagueSeriesData series : allSeries) {
@@ -427,17 +427,20 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
     private Map<String,String> getSoloDraftOrSealedLeagueParameters(HttpRequest request)
             throws HttpProcessingException, IOException {
         validateLeagueAdmin(request);
-        String[] parameterNames = {"format", "start", "seriesDuration", "maxMatches", "name", "cost"};
+        FormParameter[] parameterNames = {
+                FormParameter.format, FormParameter.start, FormParameter.seriesDuration,
+                FormParameter.maxMatches, FormParameter.name, FormParameter.cost
+        };
         Map<String, String> parameterMap = new HashMap<>();
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
 
         try {
-            for (String parameterName : parameterNames) {
+            for (FormParameter parameterName : parameterNames) {
                 String value = getFormParameterSafely(postDecoder, parameterName);
                 if (value == null || value.trim().isEmpty())
                     throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
                 else
-                    parameterMap.put(parameterName, value);
+                    parameterMap.put(parameterName.name(), value);
             }
             parameterMap.put("code", String.valueOf(System.currentTimeMillis()));
             String serializedParams = String.join(",", parameterMap.get("format"), parameterMap.get("start"),
@@ -458,14 +461,14 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         validateLeagueAdmin(request);
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String start = getFormParameterSafely(postDecoder, "start");
-            String collectionType = getFormParameterSafely(postDecoder, "collectionType");
-            String prizeMultiplier = getFormParameterSafely(postDecoder, "prizeMultiplier");
+            String start = getFormParameterSafely(postDecoder, FormParameter.start);
+            String collectionType = getFormParameterSafely(postDecoder, FormParameter.collectionType);
+            String prizeMultiplier = getFormParameterSafely(postDecoder, FormParameter.prizeMultiplier);
             List<String> formats = getFormMultipleParametersSafely(postDecoder, "format[]");
             List<String> seriesDurations = getFormMultipleParametersSafely(postDecoder, "seriesDuration[]");
             List<String> maxMatches = getFormMultipleParametersSafely(postDecoder, "maxMatches[]");
-            String name = getFormParameterSafely(postDecoder, "name");
-            String costStr = getFormParameterSafely(postDecoder, "cost");
+            String name = getFormParameterSafely(postDecoder, FormParameter.name);
+            String costStr = getFormParameterSafely(postDecoder, FormParameter.cost);
 
             if(start == null || start.trim().isEmpty()
                     ||collectionType == null || collectionType.trim().isEmpty()
@@ -528,7 +531,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         try {
             String dailyMessage = _hallServer.getDailyMessage();
             if(dailyMessage != null)
-                responseWriter.writeJsonResponse(dailyMessage.replace("\n", "<br>"));
+                responseWriter.writeJsonResponse(HTMLUtils.replaceNewlines(dailyMessage));
         } finally {
             postDecoder.destroy();
         }
@@ -540,7 +543,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, "messageOfTheDay"));
+            _hallServer.setDailyMessage(getFormParameterSafely(postDecoder, FormParameter.messageOfTheDay));
             responseWriter.writeHtmlResponse("OK");
         } finally {
             postDecoder.destroy();
@@ -552,7 +555,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
 
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            boolean shutdown = Boolean.parseBoolean(getFormParameterSafely(postDecoder, "shutdown"));
+            boolean shutdown = Boolean.parseBoolean(getFormParameterSafely(postDecoder, FormParameter.shutdown));
 
             _hallServer.setShutdown(shutdown);
 

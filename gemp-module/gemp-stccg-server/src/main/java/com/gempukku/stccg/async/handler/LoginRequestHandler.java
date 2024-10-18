@@ -23,8 +23,8 @@ public class LoginRequestHandler extends DefaultServerRequestHandler implements 
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
-            String login = getFormParameterSafely(postDecoder, "login");
-            String password = getFormParameterSafely(postDecoder, "password");
+            String login = getFormParameterSafely(postDecoder, FormParameter.login);
+            String password = getFormParameterSafely(postDecoder, FormParameter.password);
 
             User player = _playerDao.loginUser(login, password);
             if (player != null) {

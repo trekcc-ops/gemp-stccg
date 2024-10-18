@@ -1,6 +1,7 @@
 package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.service.AdminService;
 
@@ -16,9 +17,7 @@ public class HallChatRoomMediator extends ChatRoomMediator {
 
     public HallChatRoomMediator(IgnoreDAO ignoreDAO, ServerObjects objects, int secondsTimeoutPeriod) {
         super(ignoreDAO, objects.getPlayerDAO(), true, secondsTimeoutPeriod, true,
-                "You're now in the Game Hall, use /help to get a list of available commands.<br>" +
-                        "Don't forget to check out the new Discord chat integration! " +
-                        "Click the 'Switch to Discord' button in the lower right ---->");
+                HTMLUtils.HALL_WELCOME_MESSAGE);
         _chatServer = objects.getChatServer();
         _adminService = objects.getAdminService();
         _ignoreDAO = objects.getIgnoreDAO();
@@ -131,7 +130,7 @@ public class HallChatRoomMediator extends ChatRoomMediator {
                         /banIpRange ip - Bans ips with the specified prefix, ie. 10.10.10.""";
                     }
 
-                    sendToUser(SYSTEM_USER_ID, from, message.replace("\n", "<br />"));
+                    sendToUser(SYSTEM_USER_ID, from, HTMLUtils.replaceNewlines(message));
                 });
         addChatCommandCallback("noCommand",
                 (from, parameters, admin) -> sendToUser(

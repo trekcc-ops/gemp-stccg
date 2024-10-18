@@ -126,16 +126,6 @@ public class GameServer extends AbstractServer {
                 });
             var formatName = gameSettings.getGameFormat().getName();
             cardGameMediator.sendMessageToPlayers("You're starting a game of " + formatName);
-            if(formatName.contains("PC")) {
-                cardGameMediator.sendMessageToPlayers("""
-                        As a reminder, PC formats incorporate the following changes:
-                         - <a href="https://wiki.lotrtcgpc.net/wiki/PC_Errata">PC Errata are in effect</a>
-                         - Set V1 is legal
-                         - Discard piles are public information for both sides
-                         - The game ends after Regroup actions are made (instead of at the start of Regroup)
-                        """);
-            }
-
             StringBuilder players = new StringBuilder();
             Map<String, CardDeck> decks =  new HashMap<>();
             for (GameParticipant participant : participants) {

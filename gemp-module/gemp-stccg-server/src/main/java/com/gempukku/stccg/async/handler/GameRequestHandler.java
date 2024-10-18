@@ -70,13 +70,13 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private void updateGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
-        int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, "channelNumber"));
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+        int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.channelNumber));
         Integer decisionId = null;
-        String decisionIdStr = getFormParameterSafely(postDecoder, "decisionId");
+        String decisionIdStr = getFormParameterSafely(postDecoder, FormParameter.decisionId);
         if (decisionIdStr != null)
             decisionId = Integer.parseInt(decisionIdStr);
-        String decisionValue = getFormParameterSafely(postDecoder, "decisionValue");
+        String decisionValue = getFormParameterSafely(postDecoder, FormParameter.decisionValue);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -151,7 +151,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private void cancel(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
         CardGameMediator gameMediator = _gameServer.getGameById(gameId);
@@ -169,7 +169,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
     private void concede(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -187,7 +187,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getCardInfo(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String cardIdStr = getQueryParameterSafely(queryDecoder, "cardId");
+        String cardIdStr = getQueryParameterSafely(queryDecoder, FormParameter.cardId);
         if (cardIdStr.startsWith("extra")) {
             responseWriter.writeHtmlResponse("");
         } else {
@@ -203,7 +203,7 @@ public class GameRequestHandler extends DefaultServerRequestHandler implements U
 
     private void getGameState(HttpRequest request, String gameId, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
