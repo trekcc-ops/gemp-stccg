@@ -276,7 +276,11 @@ export default class CardFilter {
     getCollection() {
         var that = this;
         this.getCollectionFunc((this.filter + this.calculateFullFilterPostfix()).trim(), this.start, this.count, function (xml) {
-            that.displayCollection(xml);
+            // convert incoming string to an XML DOM document, since
+            // that's what displayCollection expects
+            let xmlparser = new DOMParser();
+            var xmlDoc = xmlparser.parseFromString(xml, "text/xml");
+            that.displayCollection(xmlDoc);
         });
     }
 

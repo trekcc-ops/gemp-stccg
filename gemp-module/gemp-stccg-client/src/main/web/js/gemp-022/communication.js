@@ -437,6 +437,41 @@ export default class GempClientCommunication {
         });
     }
 
+    async getCollectionv2(collectionType, filter, start, count) {
+        const url = this.url + "/collection/" + collectionType + "?";
+        const parameters = new URLSearchParams({
+            "filter": filter,
+            "start": start,
+            "count": count
+        }).toString();
+
+        const fullurl = url + parameters;
+
+        try {
+            let response = await fetch(fullurl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/xml"
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status == 404) {
+                    alert("You don't have collection of that type.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                return response.text();
+            }
+        }
+        catch(error) {
+            console.error({"getCollectionv2 fetch error": error.message});
+        }
+    }
+
     importCollection(decklist, callback, errorMap) {
         $.ajax({
             type:"GET",

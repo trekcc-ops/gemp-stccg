@@ -38,12 +38,12 @@ export default class GempLotrDeckBuildingUI {
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
                 function (filter, start, count, callback) {
-                    that.comm.getCollection(that.collectionType, filter, start, count, function (xml) {
-                        callback(xml);
-                    }, {
-                        "404":function () {
-                            alert("You don't have collection of that type.");
-                        }
+                    let promise = that.comm.getCollectionv2(that.collectionType, filter, start, count);
+                    promise.then((value) => {
+                        callback(value);
+                    })
+                    .catch(error => {
+                        console.error(error);
                     });
                 },
                 function () {
