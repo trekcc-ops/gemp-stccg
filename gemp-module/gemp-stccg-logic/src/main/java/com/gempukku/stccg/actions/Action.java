@@ -17,7 +17,7 @@ public interface Action {
 
     PhysicalCard getActionSource();
 
-    PhysicalCard getActionAttachedToCard();
+    PhysicalCard getCardForActionSelection();
 
     void setVirtualCardAction(boolean virtualCardAction);
 

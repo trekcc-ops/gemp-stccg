@@ -1,10 +1,12 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.List;
@@ -26,12 +28,15 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         String _currentPlayer = _playOrder.getCurrentPlayer();
 
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
-        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
+        ST1EGameState gameState = _game.getGameState();
+        Phase currentPhase = gameState.getCurrentPhase();
+
+        if (playableActions.isEmpty() && _game.shouldAutoPass(currentPhase)) {
             _consecutivePasses++;
         } else {
+            String message = "Play " + currentPhase.getHumanReadable() + " action";
             _game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
-                    new CardActionSelectionDecision(1, "Play " +
-                            _game.getGameState().getCurrentPhase().getHumanReadable() + " action or Pass", playableActions) {
+                    new CardActionSelectionDecision(message, playableActions, true, true) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

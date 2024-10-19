@@ -50,7 +50,7 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return _cardToAttach;
     }
 

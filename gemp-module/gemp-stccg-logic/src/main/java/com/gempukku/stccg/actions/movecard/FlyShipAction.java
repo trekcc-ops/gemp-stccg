@@ -59,7 +59,7 @@ public class FlyShipAction extends AbstractCostToEffectAction {
 
     }
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _flyingCard; }
+    public PhysicalCard getCardForActionSelection() { return _flyingCard; }
     @Override
     public PhysicalCard getActionSource() { return _flyingCard; }
 

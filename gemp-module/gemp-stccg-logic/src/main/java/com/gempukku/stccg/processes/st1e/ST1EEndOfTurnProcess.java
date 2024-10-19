@@ -17,11 +17,10 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
     @Override
     public void process() {
-//        _game.sendMessage("DEBUG: End of turn phase.");
-        for (PhysicalCard card : Filters.filterActive(_game, Filters.ship)) {
+        for (PhysicalCard card : Filters.filterActive(_game, Filters.ship))
             ((PhysicalShipCard) card).restoreRange();
-        }
         _game.getGameState().playerDrawsCard(_playerId);
+        _game.getGameState().sendMessage(_playerId + " drew a card to end their turn");
         _game.getModifiersEnvironment().signalEndOfTurn();
         _game.getActionsEnvironment().signalEndOfTurn();
     }

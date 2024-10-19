@@ -14,6 +14,10 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     private final int _minimum;
     private final int _maximum;
 
+    public ArbitraryCardsSelectionDecision(String text, Collection<? extends PhysicalCard> physicalCards) {
+        this(1, text, physicalCards, 0, physicalCards.size());
+    }
+
     public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
                                            int minimum, int maximum) {
         this(id, text, physicalCards, physicalCards, minimum, maximum);
@@ -107,4 +111,3 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         return result;
     }
 }
-

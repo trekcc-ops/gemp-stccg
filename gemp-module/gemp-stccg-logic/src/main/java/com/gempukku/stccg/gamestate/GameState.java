@@ -646,4 +646,5 @@ public abstract class GameState implements Snapshotable<GameState> {
         _nextCardId++;
         return cardId;
     }
+
 }

@@ -11,16 +11,12 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     private final int _minimum;
     private final int _maximum;
 
-    public CardsSelectionDecision(int id, String text, List<PhysicalCard> physicalCards, int minimum, int maximum) {
-        super(id, text, AwaitingDecisionType.CARD_SELECTION);
-        _physicalCards = physicalCards;
-        _minimum = minimum;
-        _maximum = maximum;
-        setParam("min", String.valueOf(minimum));
-        setParam("max", String.valueOf(maximum));
-        setParam("cardId", getCardIds(_physicalCards));
+    public CardsSelectionDecision(String text, Collection<? extends PhysicalCard> physicalCards) {
+        this(1, text, physicalCards, 0, physicalCards.size());
     }
-    public CardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards, int minimum, int maximum) {
+
+    public CardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
+                                  int minimum, int maximum) {
         super(id, text, AwaitingDecisionType.CARD_SELECTION);
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;

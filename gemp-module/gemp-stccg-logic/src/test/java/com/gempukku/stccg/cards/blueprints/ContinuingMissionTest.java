@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
@@ -24,6 +25,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
     public void introTwoPlayerGameWithSeedCardsTest() throws DecisionResultInvalidException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
         autoSeedFacility();
 
         // Should be 12 missions, 2 facilities, 2 Continuing Mission, 2 Attention All Hands
@@ -34,6 +36,7 @@ public class ContinuingMissionTest extends AbstractAtTest {
     public void makingDecisionsTest() throws DecisionResultInvalidException {
         initializeGameWithAttentionAllHands();
         autoSeedMissions();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
         Player currPlayer = _game.getCurrentPlayer();
 
         PhysicalCard continuingMission = getCardInGame("Continuing Mission", currPlayer, Zone.HAND);

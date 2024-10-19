@@ -17,8 +17,8 @@ public class SubAction extends AbstractCostToEffectAction {
     public DefaultGame getGame() { return _game; }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
-        return _action.getActionAttachedToCard();
+    public PhysicalCard getCardForActionSelection() {
+        return _action.getCardForActionSelection();
     }
 
     @Override

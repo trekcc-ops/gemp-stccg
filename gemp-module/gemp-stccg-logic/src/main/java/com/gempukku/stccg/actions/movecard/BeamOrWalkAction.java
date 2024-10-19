@@ -113,7 +113,7 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _cardSource; }
+    public PhysicalCard getCardForActionSelection() { return _cardSource; }
     @Override
     public PhysicalCard getActionSource() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions();

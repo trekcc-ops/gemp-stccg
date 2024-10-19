@@ -33,7 +33,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
     public TribblesGame getGame() { return _game; }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return _cardToPlay;
     }
 

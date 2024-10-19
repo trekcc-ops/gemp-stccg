@@ -50,7 +50,7 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return getCardEnteringPlay();
     }
 

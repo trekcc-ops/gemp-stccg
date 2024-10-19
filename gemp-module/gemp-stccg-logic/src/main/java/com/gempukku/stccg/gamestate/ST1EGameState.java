@@ -2,11 +2,11 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -51,7 +51,7 @@ public class ST1EGameState extends GameState {
         else if (zone == Zone.SEED_DECK)
             return _seedDecks.get(playerId);
         else // This should never be accessed
-            return _inPlay;
+            return _inPlay; // TODO - Should this just be an exception?
     }
 
     public void createPhysicalCards() {
@@ -100,21 +100,23 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public void addToSpaceline(MissionCard missionCard, int indexNumber, boolean shared)
+    public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
+        _spacelineLocations.add(indexNumber, new ST1ELocation(newMission));
+        addCardToZone(newMission, Zone.SPACELINE, true, false);
+    }
+
+    public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
             throws InvalidGameLogicException {
-        if (shared) {
-            List<MissionCard> missionsAtLocation = _spacelineLocations.get(indexNumber).getMissions();
-            if (missionsAtLocation.size() != 1 ||
-                    Objects.equals(missionsAtLocation.getFirst().getOwnerName(), missionCard.getOwnerName()))
-                throw new InvalidGameLogicException("Cannot seed " + missionCard.getTitle() + " because " +
-                        missionCard.getOwnerName() + " already has a mission at " +
-                        missionCard.getBlueprint().getLocation());
-            missionCard.stackOn(_spacelineLocations.get(indexNumber).getMissions().getFirst());
-            _spacelineLocations.get(indexNumber).addMission(missionCard);
-        } else {
-            _spacelineLocations.add(indexNumber, new ST1ELocation(missionCard));
-        }
-        addCardToZone(missionCard, Zone.SPACELINE, true, shared);
+        ST1ELocation location = _spacelineLocations.get(indexNumber);
+        List<MissionCard> missionsAtLocation = location.getMissions();
+        if (missionsAtLocation.size() != 1 ||
+                Objects.equals(missionsAtLocation.getFirst().getOwnerName(), newMission.getOwnerName()))
+            throw new InvalidGameLogicException("Cannot seed " + newMission.getTitle() + " because " +
+                    newMission.getOwnerName() + " already has a mission at " +
+                    newMission.getBlueprint().getLocation());
+        newMission.stackOn(location.getMissions().getFirst());
+        location.addMission(newMission);
+        addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 
     public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
@@ -253,5 +255,23 @@ public class ST1EGameState extends GameState {
 
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {
         _awayTeams.remove(awayTeam);
+    }
+
+    public void seedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard) {
+        // TODO - This probably doesn't pay close enough attention to order
+        for (PhysicalCard card : cards) {
+            removeCardFromZone(card);
+            addCardToZone(card, Zone.VOID);
+            topCard.addCardToSeededUnder(card);
+        }
+    }
+
+    public void preSeedCardsUnder(Collection<PhysicalCard> cards, PhysicalCard topCard, Player player) {
+        // TODO - This probably doesn't pay close enough attention to order
+        for (PhysicalCard card : cards) {
+            removeCardFromZone(card);
+            addCardToZone(card, Zone.VOID);
+            topCard.addCardToPreSeeds(card, player);
+        }
     }
 }
