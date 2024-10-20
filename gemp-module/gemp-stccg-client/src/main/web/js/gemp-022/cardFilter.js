@@ -56,8 +56,29 @@ export default class CardFilter {
     }
 
     updateSetOptions() {
-        var that = this;
-        var currentSet = that.setSelect.val();
+        var currentSet = this.setSelect.val();
+
+        let promise = this.comm.getSets(this.format);
+        promise.then((json) => {
+            this.setSelect.empty();
+            let that = this;
+            $(json).each(function (index, o) {
+                if (o.code == "disabled") {
+                    that.setSelect.append("<option disabled>----------</option>")
+                } else {
+                    var $option = $("<option/>")
+                        .attr("value", o.code)
+                        .text(o.name);
+                    that.setSelect.append($option);
+                }
+            });
+
+            this.setSelect.val(currentSet);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        /*
 
         this.comm.getSets(that.format,
             function (json)
@@ -82,6 +103,7 @@ export default class CardFilter {
                     alert("Could not retrieve sets.");
                 }
             });
+        */
     }
 
     buildUi(pageElem) {

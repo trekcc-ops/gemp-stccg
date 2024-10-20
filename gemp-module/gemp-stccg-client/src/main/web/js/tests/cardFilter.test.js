@@ -1,5 +1,10 @@
 import CardFilter from "../gemp-022/cardFilter.js";
 
+beforeEach(() => {
+    // clear any stored fetch mock statistics
+    fetchMock.resetMocks();
+});
+
 test('setType can set the type', () => {
     document.body.innerHTML = 
         '<select id="type" class="cardFilterSelect">' +
@@ -12,6 +17,12 @@ test('setType can set the type', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
     let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
@@ -53,6 +64,12 @@ test('calculateNormalFilter none checked', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
     let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
@@ -93,6 +110,12 @@ test('calculateNormalFilter Federation checked', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
     let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
     
@@ -143,6 +166,12 @@ test('calculateNormalFilter Federation + Kazon checked', () => {
     const mockAddCard = jest.fn(() => {return});
     const mockFinishCollection = jest.fn(() => {return});
     const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
     
     let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
     

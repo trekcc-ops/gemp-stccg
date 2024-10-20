@@ -561,19 +561,34 @@ export default class GempClientCommunication {
             dataType:"html"
         });
     }
-
-    getSets(format, callback, errorMap) {
-        $.ajax({
-            type:"POST",
-            url:this.url + "/deck/sets",
-            cache:true,
-            data:{ 
-                format:format
-            },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
+    
+    async getSets(format) {
+        const url = this.url + "/deck/sets";
+        try {
+            let response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "format": format })
+            });
+            
+            if (!response.ok) {
+                if (response.status == 400) {
+                    alert("Could not retrieve sets.");
+                }
+                else {
+                    throw new Error(response.statusText);
+                }
+            }
+            else {
+                let retval = await response.json();
+                return retval;
+            }
+        }
+        catch(error) {
+            console.error({"getSets fetch error": error.message});
+        }
     }
 
     getFormats(includeEvents, callback, errorMap) {

@@ -5,7 +5,7 @@ beforeEach(() => {
     fetchMock.resetMocks();
 });
 
-test('getCollection sends a default URL to the server', async () => {
+test('getCollection sends the correct URL to the server', async () => {
     let url = "/gemp-stccg-server";
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
@@ -112,6 +112,114 @@ test('getCollection handles fetch errors with a console.error', async () => {
     const count = 18;
 
     let actual_string = await comms.getCollection(collectionType, participantId, filter, start, count);
+    
+    expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
+    let lastcall_firstarg = errmock.mock.lastCall[0];
+    expect(lastcall_firstarg).toEqual(errmockobj); // Console.error had the expected output.
+});
+
+test('getSets sends the correct data to the server', async () => {
+    const server_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponse(server_retval);
+    
+    let url = "/gemp-stccg-server";
+    let failure = null;
+    let comms = new GempClientCommunication(url, failure);
+
+    const format = "st1emoderncomplete";
+
+    let expected_call_string = url + "/deck/sets";
+    let expected_call_body = JSON.stringify({"format": format});
+
+    let actual = await comms.getSets(format);
+    
+    expect(fetch.mock.calls.length).toEqual(1) // Fetch was called once
+    let lastcall_firstarg = fetch.mock.lastCall[0];
+    let lastcall_body = fetch.mock.lastCall[1].body;
+    expect(lastcall_firstarg).toEqual(expected_call_string); // Fetch called the right URL
+    expect(lastcall_body).toEqual(expected_call_body); // Fetch sent the right body
+});
+
+test('getSets waits for and returns the server\'s JSON objects', async () => {
+    const server_retval = JSON.stringify({
+        updateSetOptions: [
+            { code: "disabled", name: "disabled" },
+            { code: "101", name: "Premiere" },
+            { code: "103", name: "Alternate Universe" }
+            ]
+        }
+    );
+    fetchMock.mockResponse(server_retval);
+
+    let url = "/gemp-stccg-server";
+    let failure = null;
+    let comms = new GempClientCommunication(url, failure);
+
+    const format = "st1emoderncomplete";
+
+    let actual = await comms.getSets(format);
+    
+    expect(actual).toEqual(JSON.parse(server_retval));
+});
+
+test('getSets handles 400 error', async () => {
+    const server_retval = new Response("Bad Request", {status: 400});
+    fetchMock.mockResolvedValue(server_retval);
+    window.alert = jest.fn(() => ({}));
+    let alertmock = jest.spyOn(window, 'alert');
+    let alerttext = "Could not retrieve sets.";
+    
+
+    let url = "/gemp-stccg-server";
+    let failure = null;
+    let comms = new GempClientCommunication(url, failure);
+
+    const format = "st1emoderncomplete";
+
+    let actual = await comms.getSets(format);
+    
+    expect(alertmock.mock.calls.length).toEqual(1) // Alert was called once
+    let lastcall_firstarg = alertmock.mock.lastCall[0];
+    expect(lastcall_firstarg).toEqual(alerttext); // Alert had the expected text.
+});
+
+test('getSets handles non-404s with a console.error', async () => {
+    const server_retval = new Response("Forbidden", {status: 403});
+    fetchMock.mockResolvedValue(server_retval);
+    console.error = jest.fn(() => ({}));
+    let errmock = jest.spyOn(console, 'error');
+    let errmockobj = {"getSets fetch error": "Forbidden"};
+    
+
+    let url = "/gemp-stccg-server";
+    let failure = null;
+    let comms = new GempClientCommunication(url, failure);
+
+    const format = "st1emoderncomplete";
+
+    let actual = await comms.getSets(format);
+    
+    expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
+    let lastcall_firstarg = errmock.mock.lastCall[0];
+    expect(lastcall_firstarg).toEqual(errmockobj); // Console.error had the expected output.
+});
+
+test('getSets handles fetch errors with a console.error', async () => {
+    fetchMock.mockReject(new Error('fake error message'));
+    console.error = jest.fn(() => ({}));
+    let errmock = jest.spyOn(console, 'error');
+    let errmockobj = {"getSets fetch error": "fake error message"};
+    
+
+    let url = "/gemp-stccg-server";
+    let failure = null;
+    let comms = new GempClientCommunication(url, failure);
+
+    const format = "st1emoderncomplete";
+
+    let actual = await comms.getSets(format);
     
     expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
     let lastcall_firstarg = errmock.mock.lastCall[0];
