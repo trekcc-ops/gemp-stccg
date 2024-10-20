@@ -5,7 +5,7 @@ beforeEach(() => {
     fetchMock.resetMocks();
 });
 
-test('getCollectionv2 sends a default URL to the server', async () => {
+test('getCollection sends a default URL to the server', async () => {
     let url = "/gemp-stccg-server";
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
@@ -17,14 +17,14 @@ test('getCollectionv2 sends a default URL to the server', async () => {
 
     let expected_call_string = url + "/collection/" + collectionType + "?filter=" + filter + "&start=" + start + "&count=" + count;
 
-    let actual = await comms.getCollectionv2(collectionType, filter, start, count);
+    let actual = await comms.getCollection(collectionType, filter, start, count);
     
     expect(fetch.mock.calls.length).toEqual(1) // Fetch was called once
     let lastcall_firstarg = fetch.mock.lastCall[0];
     expect(lastcall_firstarg).toEqual(expected_call_string); // Fetch called the right URL
 });
 
-test('getCollectionv2 waits for and gives us a string of what the server gave us', async () => {
+test('getCollection waits for and gives us a string of what the server gave us', async () => {
     const server_retval = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><collection count="119"><card blueprintId="101_196" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/alexanderrozhenko95.jpg"/><card blueprintId="101_197" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/alynnanechayev95.jpg"/><card blueprintId="101_198" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/comingofage/8.jpg"/><card blueprintId="101_289" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/amarie95.jpg"/><card blueprintId="101_146" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/avertdisaster95.jpg"/><card blueprintId="101_252" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/betor95.jpg"/><card blueprintId="101_253" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/bijik95.jpg"/><card blueprintId="101_290" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/tngsup/33V.jpg"/><card blueprintId="101_254" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/batrell95.jpg"/><card blueprintId="101_199" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/sfls/18.jpg"/><card blueprintId="101_200" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/beverlycrusher95.jpg"/><card blueprintId="101_201" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/twtstarters/calloway.jpg"/><card blueprintId="101_202" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/christopherhobson95.jpg"/><card blueprintId="101_147" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/errata/Cloaked-Mission.jpg"/><card blueprintId="101_148" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/errata/Covert-Installation.jpg"/><card blueprintId="101_149" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/covertrescue95.jpg"/><card blueprintId="101_150" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/culturalobservation95.jpg"/><card blueprintId="101_357" count="4" imageUrl="https://www.trekcc.org/1e/cardimages/premiere/dderidex95.jpg"/></collection>';
     fetchMock.mockResponse(server_retval);
 
@@ -37,12 +37,12 @@ test('getCollectionv2 waits for and gives us a string of what the server gave us
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollectionv2(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, filter, start, count);
     
     expect(actual_string).toBe(server_retval);
 });
 
-test('getCollectionv2 handles 404s', async () => {
+test('getCollection handles 404s', async () => {
     const server_retval = new Response("Not Found", {status: 404});
     fetchMock.mockResolvedValue(server_retval);
     window.alert = jest.fn(() => ({}));
@@ -59,19 +59,19 @@ test('getCollectionv2 handles 404s', async () => {
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollectionv2(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, filter, start, count);
     
     expect(alertmock.mock.calls.length).toEqual(1) // Alert was called once
     let lastcall_firstarg = alertmock.mock.lastCall[0];
     expect(lastcall_firstarg).toEqual(alerttext); // Alert had the expected text.
 });
 
-test('getCollectionv2 handles non-404s with a console.error', async () => {
+test('getCollection handles non-404s with a console.error', async () => {
     const server_retval = new Response("Forbidden", {status: 403});
     fetchMock.mockResolvedValue(server_retval);
     console.error = jest.fn(() => ({}));
     let errmock = jest.spyOn(console, 'error');
-    let errmockobj = {"getCollectionv2 fetch error": "Forbidden"};
+    let errmockobj = {"getCollection fetch error": "Forbidden"};
     
 
     let url = "/gemp-stccg-server";
@@ -83,18 +83,18 @@ test('getCollectionv2 handles non-404s with a console.error', async () => {
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollectionv2(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, filter, start, count);
     
     expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
     let lastcall_firstarg = errmock.mock.lastCall[0];
     expect(lastcall_firstarg).toEqual(errmockobj); // Console.error had the expected output.
 });
 
-test('getCollectionv2 handles fetch errors with a console.error', async () => {
+test('getCollection handles fetch errors with a console.error', async () => {
     fetchMock.mockReject(new Error('fake error message'));
     console.error = jest.fn(() => ({}));
     let errmock = jest.spyOn(console, 'error');
-    let errmockobj = {"getCollectionv2 fetch error": "fake error message"};
+    let errmockobj = {"getCollection fetch error": "fake error message"};
     
 
     let url = "/gemp-stccg-server";
@@ -106,7 +106,7 @@ test('getCollectionv2 handles fetch errors with a console.error', async () => {
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollectionv2(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, filter, start, count);
     
     expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
     let lastcall_firstarg = errmock.mock.lastCall[0];

@@ -38,7 +38,7 @@ export default class GempLotrDeckBuildingUI {
 
         this.cardFilter = new CardFilter($("#collectionDiv"),
                 function (filter, start, count, callback) {
-                    let promise = that.comm.getCollectionv2(that.collectionType, filter, start, count);
+                    let promise = that.comm.getCollection(that.collectionType, filter, start, count);
                     promise.then((value) => {
                         callback(value);
                     })

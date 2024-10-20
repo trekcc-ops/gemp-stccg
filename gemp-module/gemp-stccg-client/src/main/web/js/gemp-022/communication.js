@@ -421,23 +421,7 @@ export default class GempClientCommunication {
         });
     }
 
-    getCollection(collectionType, filter, start, count, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/collection/" + collectionType,
-            cache:false,
-            data:{
-                participantId:getUrlParam("participantId"),
-                filter:filter,
-                start:start,
-                count:count},
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"xml"
-        });
-    }
-
-    async getCollectionv2(collectionType, filter, start, count) {
+    async getCollection(collectionType, filter, start, count) {
         const url = this.url + "/collection/" + collectionType + "?";
         const parameters = new URLSearchParams({
             "filter": filter,
@@ -468,7 +452,7 @@ export default class GempClientCommunication {
             }
         }
         catch(error) {
-            console.error({"getCollectionv2 fetch error": error.message});
+            console.error({"getCollection fetch error": error.message});
         }
     }
 

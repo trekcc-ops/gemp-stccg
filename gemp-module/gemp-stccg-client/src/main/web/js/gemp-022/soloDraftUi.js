@@ -121,7 +121,7 @@ export default class GempLotrSoloDraftUI {
                 }
             });
 
-        let promise = that.comm.getCollectionv2(this.leagueType, "sort:cardType,name", 0, 1000);
+        let promise = that.comm.getCollection(this.leagueType, "sort:cardType,name", 0, 1000);
         promise.then((xml) => {
             let xmlparser = new DOMParser();
             var xmlDoc = xmlparser.parseFromString(xml, "text/xml");
