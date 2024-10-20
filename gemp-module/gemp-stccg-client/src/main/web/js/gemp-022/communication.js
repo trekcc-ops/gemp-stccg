@@ -570,7 +570,7 @@ export default class GempClientCommunication {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ "format": format })
+                body: `format=${format}`
             });
             
             if (!response.ok) {

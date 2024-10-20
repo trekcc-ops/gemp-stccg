@@ -131,7 +131,7 @@ test('getSets sends the correct data to the server', async () => {
     const format = "st1emoderncomplete";
 
     let expected_call_string = url + "/deck/sets";
-    let expected_call_body = JSON.stringify({"format": format});
+    let expected_call_body = `format=${format}`;
 
     let actual = await comms.getSets(format);
     
