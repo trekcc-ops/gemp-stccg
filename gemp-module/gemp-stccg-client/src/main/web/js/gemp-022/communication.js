@@ -421,9 +421,10 @@ export default class GempClientCommunication {
         });
     }
 
-    async getCollection(collectionType, filter, start, count) {
+    async getCollection(collectionType, participantId, filter, start, count) {
         const url = this.url + "/collection/" + collectionType + "?";
         const parameters = new URLSearchParams({
+            "participantId": participantId,
             "filter": filter,
             "start": start,
             "count": count

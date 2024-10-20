@@ -1,12 +1,12 @@
 import GempClientCommunication from "./communication.js";
-import { log } from "./common.js";
+import { log, getUrlParam } from "./common.js";
 
 export default class CardFilter {
     clearCollectionFunc;
     addCardFunc;
     finishCollectionFunc;
-    getCollectionFunc;
 
+    collectionType = "default";
     filter = "";
     start = 0;
     count = 18;
@@ -24,9 +24,9 @@ export default class CardFilter {
     format;
     comm;
 
-    constructor(pageElem, getCollectionFunc, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
+    constructor(pageElem, collectionType, clearCollectionFunc, addCardFunc, finishCollectionFunc, format) {
         var that = this;
-        this.getCollectionFunc = getCollectionFunc;
+        this.collectionType = collectionType;
         this.clearCollectionFunc = clearCollectionFunc;
         this.addCardFunc = addCardFunc;
         this.finishCollectionFunc = finishCollectionFunc;
@@ -37,11 +37,14 @@ export default class CardFilter {
         this.updateSetOptions();
     }
 
+    setCollectionType(collectionType) {
+        this.collectionType = collectionType;
+        this.start = 0;
+    }
+
     setFilter(filter) {
         this.filter = filter;
-
         this.start = 0;
-        this.getCollection();
     }
 
     setFormat(format) {
@@ -274,13 +277,22 @@ export default class CardFilter {
     }
 
     getCollection() {
-        var that = this;
-        this.getCollectionFunc((this.filter + this.calculateFullFilterPostfix()).trim(), this.start, this.count, function (xml) {
+        let promise = this.comm.getCollection(
+            this.collectionType,
+            getUrlParam("participantId"),
+            (this.filter + this.calculateFullFilterPostfix()).trim(),
+            this.start,
+            this.count
+        );
+        promise.then((xml) => {
             // convert incoming string to an XML DOM document, since
             // that's what displayCollection expects
             let xmlparser = new DOMParser();
             var xmlDoc = xmlparser.parseFromString(xml, "text/xml");
-            that.displayCollection(xmlDoc);
+            this.displayCollection(xmlDoc);
+        })
+        .catch(error => {
+            console.error(error);
         });
     }
 

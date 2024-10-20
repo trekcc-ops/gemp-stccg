@@ -10,14 +10,15 @@ test('getCollection sends a default URL to the server', async () => {
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
 
+    const participantId = "nsoong";
     const collectionType = "default";
     const filter = "";
     const start = 0;
     const count = 18;
 
-    let expected_call_string = url + "/collection/" + collectionType + "?filter=" + filter + "&start=" + start + "&count=" + count;
+    let expected_call_string = url + "/collection/" + collectionType + "?participantId=" + participantId + "&filter=" + filter + "&start=" + start + "&count=" + count;
 
-    let actual = await comms.getCollection(collectionType, filter, start, count);
+    let actual = await comms.getCollection(collectionType, participantId, filter, start, count);
     
     expect(fetch.mock.calls.length).toEqual(1) // Fetch was called once
     let lastcall_firstarg = fetch.mock.lastCall[0];
@@ -32,12 +33,13 @@ test('getCollection waits for and gives us a string of what the server gave us',
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
 
+    const participantId = "nsoong";
     const collectionType = "default";
     const filter = "";
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollection(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, participantId, filter, start, count);
     
     expect(actual_string).toBe(server_retval);
 });
@@ -54,12 +56,13 @@ test('getCollection handles 404s', async () => {
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
 
+    const participantId = "nsoong";
     const collectionType = "default";
     const filter = "";
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollection(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, participantId, filter, start, count);
     
     expect(alertmock.mock.calls.length).toEqual(1) // Alert was called once
     let lastcall_firstarg = alertmock.mock.lastCall[0];
@@ -78,12 +81,13 @@ test('getCollection handles non-404s with a console.error', async () => {
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
 
+    const participantId = "nsoong";
     const collectionType = "default";
     const filter = "";
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollection(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, participantId, filter, start, count);
     
     expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
     let lastcall_firstarg = errmock.mock.lastCall[0];
@@ -101,12 +105,13 @@ test('getCollection handles fetch errors with a console.error', async () => {
     let failure = null;
     let comms = new GempClientCommunication(url, failure);
 
+    const participantId = "nsoong";
     const collectionType = "default";
     const filter = "";
     const start = 0;
     const count = 18;
 
-    let actual_string = await comms.getCollection(collectionType, filter, start, count);
+    let actual_string = await comms.getCollection(collectionType, participantId, filter, start, count);
     
     expect(errmock.mock.calls.length).toEqual(1) // Console.error was called once
     let lastcall_firstarg = errmock.mock.lastCall[0];

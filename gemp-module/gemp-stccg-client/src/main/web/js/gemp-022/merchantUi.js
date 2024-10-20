@@ -23,10 +23,14 @@ var GempLotrMerchantUI = Class.extend({
 
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
-        this.cardFilter = new CardFilter(cardFilterElem, 
-                function (filter, start, count, callback) {
-                    that.comm.getMerchant(filter, that.ownedMin, start, count, callback);
-                },
+        this.cardFilter = new CardFilter(cardFilterElem,
+                // TODO: BUG: cardFilter now only calls getCollection instead of being fed a dynamic function.
+                //            Merchant functionality should be a different cardFilter type or setting within cardFilter
+                //            that changes what it calls.
+                "default",
+                //function (filter, start, count, callback) {
+                //    that.comm.getMerchant(filter, that.ownedMin, start, count, callback);
+                //},
                 function (rootElem) {
                     that.clearList(rootElem);
                 },
