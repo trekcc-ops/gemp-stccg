@@ -121,26 +121,31 @@ export default class GempLotrSoloDraftUI {
                 }
             });
 
-        this.comm.getCollection(this.leagueType, "sort:cardType,name", 0, 1000,
-            function (xml) {
-                var root = xml.documentElement;
-                if (root.tagName == "collection") {
-                    var cards = root.getElementsByTagName("card");
-                    for (var i=0; i<cards.length; i++) {
-                        var card = cards[i];
-                        var count = card.getAttribute("count");
-                        var blueprintId = card.getAttribute("blueprintId");
-                        var imageUrl = card.getAttribute("imageUrl");
-                        for (var no = 0; no < count; no++) {
-                            var card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
-                            var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
-                            cardDiv.data("card", card);
-                            that.draftedDiv.append(cardDiv);
-                        }
+        let promise = that.comm.getCollectionv2(this.leagueType, "sort:cardType,name", 0, 1000);
+        promise.then((xml) => {
+            let xmlparser = new DOMParser();
+            var xmlDoc = xmlparser.parseFromString(xml, "text/xml");
+            var root = xmlDoc.documentElement;
+            if (root.tagName == "collection") {
+                var cards = root.getElementsByTagName("card");
+                for (var i=0; i<cards.length; i++) {
+                    var card = cards[i];
+                    var count = card.getAttribute("count");
+                    var blueprintId = card.getAttribute("blueprintId");
+                    var imageUrl = card.getAttribute("imageUrl");
+                    for (var no = 0; no < count; no++) {
+                        var card = new Card(blueprintId, "drafted", "deck", "player", imageUrl);
+                        var cardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), false, false, card.hasErrata());
+                        cardDiv.data("card", card);
+                        that.draftedDiv.append(cardDiv);
                     }
-                    that.draftedCardGroup.layoutCards();
                 }
-            });
+                that.draftedCardGroup.layoutCards();
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
 
     clickCardFunction(event) {
