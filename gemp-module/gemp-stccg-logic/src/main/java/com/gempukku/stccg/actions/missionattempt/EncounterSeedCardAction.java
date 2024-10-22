@@ -25,7 +25,7 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return null;
     }
 

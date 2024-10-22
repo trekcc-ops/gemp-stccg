@@ -26,7 +26,7 @@ public class STCCGPlayCardAction extends PlayCardAction {
     @Override
     public DefaultGame getGame() { return _game; }
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return _cardEnteringPlay;
     }
 

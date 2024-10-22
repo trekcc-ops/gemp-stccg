@@ -18,11 +18,11 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         _decisionType = decisionType;
     }
 
-    protected void setParam(String name, String value) {
+    final void setParam(String name, String value) {
         setParam(name, new String[] {value});
     }
 
-    protected void setParam(String name, String[] value) {
+    final void setParam(String name, String[] value) {
         _params.put(name, value);
     }
 
