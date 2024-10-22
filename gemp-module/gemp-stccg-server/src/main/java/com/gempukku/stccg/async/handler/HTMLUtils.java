@@ -30,8 +30,13 @@ import java.util.*;
 
 public class HTMLUtils {
 
+    private static final String NEWLINE = "<br/>";
+    private static final String YELLOW = "yellow";
+    private static final String RED = "red";
+    private static final String GREEN = "green";
+
     public static final String HALL_WELCOME_MESSAGE = "You're now in the Game Hall, " +
-            "use /help to get a list of available commands.<br>" +
+            "use /help to get a list of available commands." + NEWLINE +
             "Don't forget to check out the new Discord chat integration! " +
             "Click the 'Switch to Discord' button in the lower right ---->";
 
@@ -46,7 +51,7 @@ public class HTMLUtils {
             .extensions(_adminExt)
             .escapeHtml(true)
             .sanitizeUrls(true)
-            .softbreak("<br />")
+            .softbreak(NEWLINE)
             .build();
 
     private HTMLUtils() {
@@ -57,11 +62,19 @@ public class HTMLUtils {
                 + "<span><img class=\"ttimage\" src=\"" + blueprint.getImageUrl() + "\"></span></span>";
     }
 
+    static String makeBold(String text) {
+        return ("<b>" + text + "</b>");
+    }
+
+    static String makeColor(String text, String color) {
+        return "<font color='" + color + "'>" + text + "</font>";
+    }
+
     static final String listCards(String deckName, String filter, CardCollection deckCards, boolean countCards,
                                   FormatLibrary formatLibrary, boolean showToolTip, CardBlueprintLibrary cardLibrary)
             throws CardNotFoundException {
         StringBuilder sb = new StringBuilder();
-        sb.append("<br/><b>").append(deckName).append(":</b><br/>");
+        sb.append(NEWLINE).append(makeBold(deckName)).append(":").append(NEWLINE);
         for (GenericCardItem item :
                 SortAndFilterCards.process(filter, deckCards.getAll(), cardLibrary, formatLibrary)) {
             if (countCards)
@@ -74,7 +87,7 @@ public class HTMLUtils {
             } else {
                 cardText = blueprint.getFullName();
             }
-            sb.append(cardText).append("<br/>");
+            sb.append(cardText).append(NEWLINE);
         }
         return sb.toString();
     }
@@ -146,7 +159,7 @@ public class HTMLUtils {
         }
 
         result.append(getHTMLDeck(deck, true, formatLibrary, blueprintLibrary));
-        result.append("<h3>Notes</h3><br>").append(deck.getNotes().replace("\n", "<br/>"));
+        result.append("<h3>Notes</h3>").append(NEWLINE).append(replaceNewlines(deck.getNotes()));
         result.append("</body></html>");
 
         return result.toString();
@@ -164,20 +177,25 @@ public class HTMLUtils {
             CardDeck deckWithErrata = format.applyErrata(deck);
             errataValidation = format.validateDeck(deckWithErrata);
         }
+
+        String formatName = format.getName();
+        String formatNameInBold = makeBold(formatName);
+
         if(validation.isEmpty()) {
-            valid.append("<b>").append(format.getName()).append("</b>: <font color='green'>Valid</font><br/>");
-        }
-        else if(errataValidation != null && errataValidation.isEmpty()) {
-            valid.append("<b>").append(format.getName()).append("</b>: ");
-            valid.append("<font color='green'>Valid</font> ");
-            valid.append("<font color='yellow'>(with errata automatically applied)</font><br/>");
-            String output = String.join("<br>", validation).replace("\n", "<br>");
-            invalid.append("<font color='yellow'>").append(output).append("</font><br/>");
+            valid.append(formatNameInBold).append(": ").append(makeColor("Valid", GREEN)).append(NEWLINE);
         }
         else {
-            String output = String.join("<br>", validation).replace("\n", "<br>");
-            invalid.append("<b>").append(format.getName()).append("</b>: ");
-            invalid.append("<font color='red'>").append(output).append("</font><br/>");
+            String messageColor;
+            if (errataValidation != null && errataValidation.isEmpty()) {
+                valid.append(formatNameInBold).append(": ").append(makeColor("Valid", GREEN)).append(" ");
+                valid.append(makeColor("(with errata automatically applied)", YELLOW)).append(NEWLINE);
+                messageColor = YELLOW;
+            } else {
+                invalid.append(formatNameInBold).append(": ");
+                messageColor = RED;
+            }
+            String output = replaceNewlines(String.join(NEWLINE, validation));
+            invalid.append(makeColor(output, messageColor)).append(NEWLINE);
         }
 
         sb.append(valid);
@@ -209,14 +227,14 @@ public class HTMLUtils {
         String newMsg = _renderer.render(_parser.parse(message));
         // Prevent quotes with newlines from displaying side-by-side
         newMsg = newMsg.replaceAll(
-                "</blockquote>[\n \t]*<blockquote>", "</blockquote><br /><blockquote>");
+                "</blockquote>[\n \t]*<blockquote>", "</blockquote>" + NEWLINE + "<blockquote>");
         //Make all links open in a new tab
         newMsg = newMsg.replaceAll("<(a href=\".*?\")>", "<$1 target=\"blank\">");
         return newMsg;
     }
 
     public static String replaceNewlines(String message) {
-        return message.replace("\n", "<br />");
+        return message.replace("\n", NEWLINE);
     }
 
 
