@@ -5,6 +5,182 @@ beforeEach(() => {
     fetchMock.resetMocks();
 });
 
+test('setCollectionType sets the collectionType', () => {
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.collectionType).toBe("default");
+    cf.setCollectionType("permanent");
+    expect(cf.collectionType).toBe("permanent");
+});
+
+test('setCollectionType resets the start point', () => {
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.start).toBe(0);
+    cf.start = 18;
+    expect(cf.start).toBe(18);
+    cf.setCollectionType("permanent");
+    expect(cf.start).toBe(0);
+});
+
+test('setFilter sets the filter', () => {
+    // I don't know what part of the UI uses this except for merchantUI - unneeded?
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.filter).toBe("");
+    cf.setFilter("type:card");
+    expect(cf.filter).toBe("type:card");
+});
+
+test('setFilter resets the start point', () => {
+    // I don't know what part of the UI uses this except for merchantUI - unneeded?
+    document.body.innerHTML = `
+            <label for="collectionSelect"></label><select id="collectionSelect">
+                <option value="default">All cards</option>
+                <option value="permanent">My cards</option>
+                <option value="trophy">Trophies</option>
+            </select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.start).toBe(0);
+    cf.start = 18;
+    expect(cf.start).toBe(18);
+    cf.setFilter("type:card");
+    expect(cf.start).toBe(0);
+});
+
+test('setFormat sets the format', () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+    
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.format).toBe("ST1E");
+    cf.setFormat("tribbles");
+    expect(cf.format).toBe("tribbles");
+});
+
+test('setFormat does not reset the start point', () => {
+    document.body.innerHTML = `
+            <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
+				<option value="st1emoderncomplete">ST1E Modern Complete</option>
+                <option value="st2e">2E All</option>
+                <option value="tribbles">Tribbles</option>
+			</select>
+            `;
+
+    const mockCollection = "default";
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization requires a server call, mock it with data.
+    const getSets_retval = JSON.stringify(
+        {"updateSetOptions": []}
+    );
+    fetchMock.mockResponseOnce(getSets_retval);
+    
+    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+
+    expect(cf.start).toBe(0);
+    cf.start = 18;
+    expect(cf.start).toBe(18);
+    cf.setFormat("tribbles");
+    expect(cf.start).toBe(18);
+});
+
 test('setType can set the type', () => {
     document.body.innerHTML = 
         '<select id="type" class="cardFilterSelect">' +
