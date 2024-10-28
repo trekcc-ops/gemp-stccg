@@ -12,7 +12,6 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -73,28 +72,8 @@ public class MissionCard extends ST1EPhysicalCard {
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(Player player) {
         return getAwayTeamsOnSurface().filter(awayTeam -> awayTeam.getPlayer() == player);
     }
-    private Stream<AwayTeam> getAwayTeamsOnSurface() {
+    public Stream<AwayTeam> getAwayTeamsOnSurface() {
         return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
-    }
-
-    @Override
-    public String getCardInfoHTML() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getCardInfoHTML());
-        if (_missionType == MissionType.PLANET && _zone.isInPlay()) {
-            long awayTeamCount = getAwayTeamsOnSurface().count();
-            sb.append("<br><b>Away Teams on Planet</b>: ").append(awayTeamCount);
-            if (awayTeamCount > 0) {
-                getAwayTeamsOnSurface().forEach(awayTeam -> {
-                            sb.append("<br><b>Away Team:</b> (").append(awayTeam.getPlayerId()).append(") ");
-                            sb.append(TextUtils.getConcatenatedCardLinks(awayTeam.getCards()));
-                        }
-                );
-            }
-        }
-        sb.append("<br><br><b>Mission Requirements</b>: ").append(
-                getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
-        return sb.toString();
     }
 
     public String getMissionRequirements() {

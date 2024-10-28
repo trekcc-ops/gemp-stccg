@@ -4,8 +4,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -13,9 +13,10 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.gempukku.stccg.TextUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, CardWithCrew {
     public FacilityCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -83,7 +84,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         // TODO - Add actions for non-outposts
     }
 
-    Collection<PhysicalCard> getDockedShips() {
+    public Collection<PhysicalCard> getDockedShips() {
         return Filters.filter(getAttachedCards(), Filters.ship);
     }
 
@@ -91,18 +92,4 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return Filters.filter(getAttachedCards(), Filters.or(Filters.personnel, Filters.equipment));
     }
 
-    @Override
-    public String getCardInfoHTML() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getCardInfoHTML());
-        Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
-        attachedCards.put("Docked ships",getDockedShips());
-        attachedCards.put("Crew",getCrew());
-        for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
-            if (!entry.getValue().isEmpty())
-                sb.append("<br><b>").append(entry.getKey()).append(" (").append(entry.getValue().size())
-                        .append("):</b> ").append(TextUtils.getConcatenatedCardLinks(entry.getValue())).append("<br>");
-        }
-        return sb.toString();
-    }
 }

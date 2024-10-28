@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.handler.CardInfoUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.AwaitingDecision;
@@ -122,7 +123,7 @@ public abstract class CardGameMediator {
             if (card == null || card.getZone() == null)
                 return null;
             else
-                return card.getCardInfoHTML();
+                return CardInfoUtils.getCardInfoHTML(card);
         } finally {
             _readLock.unlock();
         }
