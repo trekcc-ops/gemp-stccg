@@ -42,5 +42,4 @@ public interface GameFormat {
     int getHandSize();
 
     JSONData.Format Serialize();
-    String serializeForHall() throws CardNotFoundException;
 }

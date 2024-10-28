@@ -233,6 +233,58 @@ public class HTMLUtils {
         return newMsg;
     }
 
+    public static String serializeFormatForHall(GameFormat format, CardBlueprintLibrary library)
+            throws CardNotFoundException {
+        StringBuilder result = new StringBuilder();
+        result.append("<b>").append(format.getName()).append("</b>");
+        result.append("<ul>");
+        result.append("<li>valid sets: ");
+        for (Integer integer : format.getValidSetIds())
+            result.append(integer).append(", ");
+        result.append("</li>");
+        if (!format.getBannedCards().isEmpty()) {
+            result.append("<li>Banned cards (can't be played): ");
+            appendFormatCards(result, format.getBannedCards(), library);
+            result.append("</li>");
+        }
+        if (!format.getRestrictedCardNames().isEmpty()) {
+            result.append("<li>Restricted by card name: ");
+            boolean first = true;
+            for (String cardName : format.getRestrictedCardNames()) {
+                if (!first)
+                    result.append(", ");
+                result.append(cardName);
+                first = false;
+            }
+            result.append("</li>");
+        }
+        if (!format.getErrataCardMap().isEmpty()) {
+            result.append("<li>Errata: ");
+            appendFormatCards(result, new ArrayList<>(new LinkedHashSet<>(format.getErrataCardMap().values())),
+                    library);
+            result.append("</li>");
+        }
+        if (!format.getValidCards().isEmpty()) {
+            result.append("<li>Additional valid: ");
+            List<String> additionalValidCards = format.getValidCards();
+            appendFormatCards(result, additionalValidCards, library);
+            result.append("</li>");
+        }
+        result.append("</ul>");
+        return result.toString();
+    }
+
+    private static void appendFormatCards(StringBuilder result, Collection<String> additionalValidCards,
+                                          CardBlueprintLibrary blueprintLibrary)
+            throws CardNotFoundException {
+        if (!additionalValidCards.isEmpty()) {
+            for (String blueprintId : additionalValidCards)
+                result.append(blueprintLibrary.getCardBlueprint(blueprintId).getCardLink()).append(", ");
+            if (additionalValidCards.isEmpty())
+                result.append("none,");
+        }
+    }
+
     public static String replaceNewlines(String message) {
         return message.replace("\n", NEWLINE);
     }

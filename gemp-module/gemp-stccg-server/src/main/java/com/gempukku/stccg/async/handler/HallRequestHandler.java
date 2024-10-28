@@ -290,7 +290,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void getFormat(String format, ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
         GameFormat gameFormat = _serverObjects.getFormatLibrary().getFormat(format);
-        result.append(gameFormat.serializeForHall());
+        result.append(HTMLUtils.serializeFormatForHall(gameFormat, _serverObjects.getCardBlueprintLibrary()));
         responseWriter.writeHtmlResponse(result.toString());
     }
 
@@ -298,7 +298,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         StringBuilder result = new StringBuilder();
         FormatLibrary formatLibrary = _serverObjects.getFormatLibrary();
         for (GameFormat gameFormat : formatLibrary.getHallFormats().values())
-            result.append(gameFormat.serializeForHall());
+            result.append(HTMLUtils.serializeFormatForHall(gameFormat, _serverObjects.getCardBlueprintLibrary()));
         responseWriter.writeHtmlResponse(result.toString());
     }
 
