@@ -65,7 +65,7 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     public String getText() { return "Attempt mission"; }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _missionCard; }
+    public PhysicalCard getCardForActionSelection() { return _missionCard; }
     @Override
     public PhysicalCard getActionSource() { return _missionCard; }
 

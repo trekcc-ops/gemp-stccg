@@ -42,7 +42,7 @@ public class DockAction extends AbstractCostToEffectAction {
 
     }
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _cardToDock; }
+    public PhysicalCard getCardForActionSelection() { return _cardToDock; }
     @Override
     public PhysicalCard getActionSource() { return _cardToDock; }
 

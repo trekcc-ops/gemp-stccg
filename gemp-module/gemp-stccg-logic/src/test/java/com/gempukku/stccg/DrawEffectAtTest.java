@@ -4,17 +4,18 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.trigger.TriggerConditions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Preventable;
-import com.gempukku.stccg.cards.blueprints.trigger.TriggerConditions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("MultipleExceptionsDeclaredOnTestMethod")
 public class DrawEffectAtTest extends AbstractAtTest {
@@ -40,15 +41,18 @@ public class DrawEffectAtTest extends AbstractAtTest {
     }
 
 
-    public void drawEffectTest(int cardsToDraw, int cardsInDeck, boolean prevented) throws DecisionResultInvalidException, CardNotFoundException {
+    public void drawEffectTest(int cardsToDraw, int cardsInDeck, boolean prevented)
+            throws DecisionResultInvalidException, CardNotFoundException {
         initializeSimple1EGame(cardsInDeck);
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) skipDilemma();
         String playerId = _game.getCurrentPlayerId();
         int initialDeckSize = _game.getGameState().getDrawDeck(playerId).size();
         int initialHandSize = _game.getGameState().getHand(playerId).size();
         int expectedCardsDrawn = prevented ? 0 : Math.min(cardsToDraw, initialDeckSize+1);
         assertEquals(cardsInDeck,initialDeckSize + initialHandSize);
 
-        final PhysicalCardGeneric picard = new PhysicalCardGeneric(_game, 101, playerId, _cardLibrary.getCardBlueprint("101_215"));
+        final PhysicalCardGeneric picard =
+                new PhysicalCardGeneric(_game, 101, playerId, _cardLibrary.getCardBlueprint("101_215"));
 
         _game.getGameState().putCardOnTopOfDeck(picard);
 

@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-public class SeedMissionAction extends PlayCardAction {
+public class SeedMissionCardAction extends PlayCardAction {
         // TODO - Extend STCCGPlayCardAction
     private final MissionCard _cardEnteringPlay;
     private boolean _cardPlayed;
@@ -31,7 +31,7 @@ public class SeedMissionAction extends PlayCardAction {
     private final Quadrant _quadrant;
     private final String _missionLocation;
 
-    public SeedMissionAction(MissionCard cardToPlay) {
+    public SeedMissionCardAction(MissionCard cardToPlay) {
         super(cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
         _cardEnteringPlay = cardToPlay;
         setText("Seed " + _cardEnteringPlay.getFullName());
@@ -147,7 +147,7 @@ public class SeedMissionAction extends PlayCardAction {
         return null;
     }
 
-    protected Effect getFinalEffect() { return new SeedMissionEffect(_performingPlayerId, _cardEnteringPlay,
+    protected Effect getFinalEffect() { return new SeedMissionCardEffect(_performingPlayerId, _cardEnteringPlay,
             _locationZoneIndex, _sharedMission); }
 
     public boolean wasCarriedOut() {

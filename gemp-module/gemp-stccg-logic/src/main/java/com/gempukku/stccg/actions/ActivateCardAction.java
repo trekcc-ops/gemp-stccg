@@ -25,7 +25,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() {
+    public PhysicalCard getCardForActionSelection() {
         return _physicalCard;
     }
 

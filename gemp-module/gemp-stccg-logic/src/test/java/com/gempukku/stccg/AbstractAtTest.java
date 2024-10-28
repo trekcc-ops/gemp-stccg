@@ -75,7 +75,28 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.MISSIONS, "106_009"); // Hostage Situation
         fedDeck.addCard(SubDeck.MISSIONS, "106_013"); // Survey Instability
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
-        // Dilemmas, Events & Interrupts
+        // Alien Labyrinth
+        // Anaphasic Organism
+        // Female's Love Interest
+        // Hidden Entrance
+        // Malfunctioning Door
+        // Microvirus
+        // Atmospheric Ionization
+        // Pattern Enhancers
+        // Plasma Fire
+        // Res-Q
+        // Spacedock
+        // Tetryon Field
+        // Yellow Alert
+        // Countermanda
+        // Disruptor Overload
+        // Escape Pod
+        // Kevin Uxbridge: Convergence
+        // Long-Range Scan
+        // Loss of Orbital Stability
+        // Palor Toff: Alien Trader
+        // Particle Fountain
+        // Wormhole x2
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_055"); // Engineering Kit
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_060"); // Medical Kit
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_061"); // Medical Tricorder
@@ -115,7 +136,27 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.MISSIONS, "106_011"); // Reported Activity
         klingonDeck.addCard(SubDeck.MISSIONS, "106_012"); // Sensitive Search
         klingonDeck.addCard(SubDeck.SEED_DECK, "101_105"); // Klingon Outpost
-        // Dilemmas, Events & Interrupts
+        // Archer
+        // Ferengi Attack
+        // Hunter Gangs
+        // Impassable Door
+        // Male's Love Interest
+        // The Gatherers
+        // Atmospheric Ionization x2
+        // Pattern Enhancers
+        // Plasma Fire
+        // Res-Q
+        // Where No One Has Gone Before
+        // Yellow Alert
+        // Countermanda
+        // Disruptor Overload
+        // Kevin Uxbridge: Convergence
+        // Long-Range Scan
+        // Loss of Orbital Stability
+        // Palor Toff: Alien Trader
+        // Particle Fountain
+        // Ship Seizure
+        // Wormhole x2
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_055"); // Engineering Kit
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_060"); // Medical Kit
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_061"); // Medical Tricorder

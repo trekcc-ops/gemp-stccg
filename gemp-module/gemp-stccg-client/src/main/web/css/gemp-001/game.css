@@ -124,6 +124,7 @@ ul {
 
 .selectedCard > .borderOverlay {
     border-color: #009f9f;
+    cursor: pointer;
 }
 
 .stats {

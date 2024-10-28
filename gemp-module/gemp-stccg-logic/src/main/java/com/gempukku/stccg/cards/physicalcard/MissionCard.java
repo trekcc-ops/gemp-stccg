@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -12,9 +13,11 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class MissionCard extends ST1EPhysicalCard {
@@ -94,6 +97,25 @@ public class MissionCard extends ST1EPhysicalCard {
         }
         sb.append("<br><br><b>Mission Requirements</b>: ").append(
                 getMissionRequirements().replace(" OR ", " <a style='color:red'>OR</a> "));
+        for (Player player : _cardsPreSeededUnderneath.keySet()) {
+            List<PhysicalCard> playerPreSeeds = _cardsPreSeededUnderneath.get(player);
+            if (playerPreSeeds != null && !playerPreSeeds.isEmpty()) {
+                sb.append("<br><br><b>Cards ready to be seeded by player " + player.getPlayerId() + "</b>:");
+                sb.append("<ol>");
+                for (PhysicalCard card : playerPreSeeds) {
+                    sb.append("<li>" + card.getTitle() + "</li>");
+                }
+                sb.append("</ol>");
+            }
+        }
+        if (_cardsSeededUnderneath.size() > 0) {
+            sb.append("<br><br><b>Cards seeded underneath</b>:");
+            sb.append("<ol>");
+            for (PhysicalCard card : _cardsSeededUnderneath) {
+                sb.append("<li>" + card.getTitle() + "</li>");
+            }
+            sb.append("</ol>");
+        }
         return sb.toString();
     }
 
@@ -124,4 +146,5 @@ public class MissionCard extends ST1EPhysicalCard {
         _completed = true;
         _game.getGameState().checkVictoryConditions();
     }
+
 }
