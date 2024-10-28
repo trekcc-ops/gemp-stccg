@@ -300,6 +300,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.carryOutPendingActionsUntilDecisionNeeded();
     }
 
+    protected void skipDilemma() throws DecisionResultInvalidException {
+        if (_userFeedback.getAwaitingDecision(P1) != null)
+            playerDecided(P1, "");
+        else if (_userFeedback.getAwaitingDecision(P2) != null)
+            playerDecided(P2, "");
+    }
+
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.appendEffect(effect);

@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import org.junit.jupiter.api.Test;
 
@@ -38,11 +37,7 @@ public class Blueprint_101_060_Test extends AbstractAtTest {
         assertEquals("Taris", taris.getTitle());
         assertEquals("Medical Kit", medicalKit.getTitle());
 
-        try {
-            _game.getGameState().addToSpaceline(mission, 0, false);
-        } catch(InvalidGameLogicException exp) {
-            System.out.println(exp.getMessage());
-        }
+        _game.getGameState().addMissionLocationToSpaceline(mission, 0);
         _game.getGameState().seedFacilityAtLocation(outpost, 0);
 
         assertTrue(outpost.isInPlay());
