@@ -30,7 +30,7 @@ import java.util.*;
 
 public class HTMLUtils {
 
-    private static final String NEWLINE = "<br/>";
+    static final String NEWLINE = "<br/>";
     private static final String YELLOW = "yellow";
     private static final String RED = "red";
     private static final String GREEN = "green";
@@ -236,7 +236,7 @@ public class HTMLUtils {
     public static String serializeFormatForHall(GameFormat format, CardBlueprintLibrary library)
             throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
-        result.append("<b>").append(format.getName()).append("</b>");
+        result.append(makeBold(format.getName()));
         result.append("<ul>");
         result.append("<li>valid sets: ");
         for (Integer integer : format.getValidSetIds())
