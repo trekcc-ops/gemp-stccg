@@ -289,23 +289,6 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public String validateDeckForHall(CardDeck deck) {
-        List<String> validations = validateDeck(deck);
-        if(validations.isEmpty())
-            return "";
-
-        String firstValidation = validations.stream().findFirst().orElse(null);
-        long count = firstValidation.chars().filter(x -> x == '\n').count();
-        if(firstValidation.contains("\n"))
-        {
-            firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
-        }
-
-        return "Deck targets '" + deck.getTargetFormat() + "' format and is incompatible with '" + _name + "'.  Issues include: `"
-                + firstValidation + "` and " + (validations.size() - 1 + count - 1) + " other issues.";
-    }
-
-    @Override
     public List<String> validateDeck(CardDeck deck) {
         ArrayList<String> result = new ArrayList<>();
         ArrayList<String> errataResult = new ArrayList<>();
