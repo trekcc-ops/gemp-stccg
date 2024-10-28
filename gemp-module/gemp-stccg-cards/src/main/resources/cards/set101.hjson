@@ -71,6 +71,15 @@
         image-url: https://www.trekcc.org/1e/cardimages/premiere/microvirus95.jpg
         rarity: C
     } */
+    101_055: {
+        title: Engineering Kit
+        type: equipment
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: Representative of specialized engineering instruments. Such equipment has been developed by many races.
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/engineeringkit95.jpg
+        rarity: C
+    }
     101_057: {
         title: Federation PADD
         type: equipment
@@ -93,6 +102,24 @@
         property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/klingonpadd95.jpg
+        rarity: C
+    }
+    101_060: {
+        title: Medical Kit
+        type: equipment
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/medicalkit95.jpg
+        rarity: C
+    }
+    101_061: {
+        title: Medical Tricorder
+        type: equipment
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: Representative of a specialized tricorder optimized for medical use. Such equipment has been developed by many races.
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/medicaltricorder95.jpg
         rarity: C
     }
     101_062: {
@@ -125,6 +152,7 @@
         property-logo: tng-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/tricorder95.jpg
+        lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
         rarity: C
     }
     101_104: {

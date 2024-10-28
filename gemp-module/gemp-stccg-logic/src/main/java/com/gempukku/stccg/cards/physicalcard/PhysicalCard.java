@@ -455,19 +455,6 @@ public abstract class PhysicalCard implements Filterable {
         return getModifiers().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
     }
 
-    public boolean checkPhaseLimit(Phase phase, int max) {
-        return getModifiers().getUntilEndOfPhaseLimitCounter(this, phase).getUsedLimit() < max;
-    }
-
-    public boolean checkPhaseLimit(int max) {
-        return checkPhaseLimit(getGame().getGameState().getCurrentPhase(), max);
-    }
-
-    public boolean checkPhaseLimit(String prefix, int max) {
-        return getModifiers().getUntilEndOfPhaseLimitCounter(
-                this, prefix, getGame().getGameState().getCurrentPhase()).getUsedLimit() < max;
-    }
-
     private ModifiersQuerying getModifiers() {
         return getGame().getModifiersQuerying();
     }

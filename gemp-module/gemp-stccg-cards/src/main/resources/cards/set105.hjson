@@ -8,4 +8,19 @@
         property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg
     }
+    105_085: {
+        blueprintId: 105_085
+        title: Taris
+        type: personnel
+        affiliation: romulan
+        property-logo: tng-logo
+        lore: Female subcommander. Captain of the warbird <i>Haakona</i>. Investigated the Federation incursion of the Neutral Zone in the vicinity of Iconia.
+        classification: OFFICER
+        icons: command
+        skill-box: "[*] Archaeology [*] MEDICAL [*] Music [*] Transporter Skill"
+        integrity: 6
+        cunning: 8
+        strength: 7
+        image-url: https://www.trekcc.org/1e/cardimages/errata/Taris.jpg
+    }
 }
