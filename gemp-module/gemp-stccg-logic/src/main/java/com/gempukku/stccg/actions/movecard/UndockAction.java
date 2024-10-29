@@ -18,7 +18,7 @@ public class UndockAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() { return _cardToUndock; }
+    public PhysicalCard getCardForActionSelection() { return _cardToUndock; }
     @Override
     public PhysicalCard getActionSource() { return _cardToUndock; }
 

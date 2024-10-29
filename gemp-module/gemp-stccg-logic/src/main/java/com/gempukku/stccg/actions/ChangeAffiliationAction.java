@@ -57,7 +57,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return (PhysicalCard) _card; }
 
     @Override
-    public PhysicalCard getActionAttachedToCard() { return (PhysicalCard) _card; }
+    public PhysicalCard getCardForActionSelection() { return (PhysicalCard) _card; }
 
     @Override
     public Effect nextEffect() {

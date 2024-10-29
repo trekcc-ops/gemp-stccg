@@ -1,6 +1,66 @@
 // Set 103: Alternate Universe
 
 {
+/*    103_008: {
+        title: Alien Labyrinth
+        type: dilemma
+        mission-type: planet
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: Many planets, such as Mordan IV, have convoluted underground installations which require Away Teams to have specific technology or skills.
+        image-url: https://www.trekcc.org/1e/cardimages/au/alienlabyrinth.gif
+        rarity: C
+    }
+    103_014: {
+        title: Ferengi Attack
+        type: dilemma
+        mission-type: planet
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: 'Ferengi attacked a Federation Away Team on a planet in the Delphi Ardu system using "whips" which fire discharges of high-energy plasma.'
+        image-url: https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif
+        rarity: C
+    }
+    103_016: {
+        title: Hidden Entrance
+        type: dilemma
+        mission-type: planet
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: Using his visor, Geordi La Forge discovered a doorway to an underground android laboratory hidden in a rock wall on Omicron Theta in 2364.
+        image-url: https://www.trekcc.org/1e/cardimages/au/hiddenentrance.gif
+        rarity: C
+    }
+    103_017: {
+        title: Hunter Gangs
+        type: dilemma
+        mission-type: planet
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: On some planets, civilization has devolved into a bitter struggle for survival. Violent gangs search for prey, such as those which chased Natasha Yar on Turkana IV.
+        image-url: https://www.trekcc.org/1e/cardimages/au/huntergangs.gif
+        rarity: C
+    }
+    103_019: {
+        title: Malfunctioning Door
+        type: dilemma
+        mission-type: planet
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: At times, Away Teams must open obstructed doors in confined passageways by hand, as did Data on stardate 41503.7.
+        image-url: https://www.trekcc.org/1e/cardimages/errata/MalfunctioningDoor.jpg
+        rarity: C
+    }
+    103_027: {
+        title: The Gatherers
+        type: dilemma
+        mission-type: planet
+        property-logo: tng-logo
+        java-blueprint: true
+        lore: 'Nomadic marauders and thieves from Acamar III. "We Gatherers value our freedom. We do what we want and we answer to no creature."'
+        image-url: https://www.trekcc.org/1e/cardimages/au/thegatherers.gif
+        rarity: C
+    } */
     103_096: {
         title: Montgomery Scott
         type: personnel
