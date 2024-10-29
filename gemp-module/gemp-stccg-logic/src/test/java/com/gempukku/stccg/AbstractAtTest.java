@@ -97,9 +97,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         // Palor Toff: Alien Trader
         // Particle Fountain
         // Wormhole x2
-        // Engineering Kit
-        // Medical Kit
-        // Medical Tricorder
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_055"); // Engineering Kit
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_060"); // Medical Kit
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_061"); // Medical Tricorder
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_065"); // Tricorder
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_201"); // Calloway
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_202"); // Christopher Hobson
@@ -157,9 +157,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         // Particle Fountain
         // Ship Seizure
         // Wormhole x2
-        // Engineering Kit
-        // Medical Kit
-        // Medical Tricorder
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_055"); // Engineering Kit
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_060"); // Medical Kit
+        klingonDeck.addCard(SubDeck.DRAW_DECK, "101_061"); // Medical Tricorder
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_065"); // Tricorder
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_253"); // B'iJik
         klingonDeck.addCard(SubDeck.DRAW_DECK, "101_254"); // Batrell
@@ -300,6 +300,13 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.carryOutPendingActionsUntilDecisionNeeded();
     }
 
+    protected void skipDilemma() throws DecisionResultInvalidException {
+        if (_userFeedback.getAwaitingDecision(P1) != null)
+            playerDecided(P1, "");
+        else if (_userFeedback.getAwaitingDecision(P2) != null)
+            playerDecided(P2, "");
+    }
+
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.appendEffect(effect);
@@ -323,38 +330,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             }
         }
     }
-
-    protected void skipDilemma() throws DecisionResultInvalidException {
-        if (_userFeedback.getAwaitingDecision(P1) != null)
-            playerDecided(P1, "");
-        else if (_userFeedback.getAwaitingDecision(P2) != null)
-            playerDecided(P2, "");
-    }
-
-    protected void autoSeedDilemma() throws DecisionResultInvalidException {
-            if (_userFeedback.getAwaitingDecision(P1) != null) {
-                if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
-                    playerDecided(P1, cardIdList.getFirst());
-                } else if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.ARBITRARY_CARDS) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
-                    playerDecided(P1, cardIdList.getFirst());
-                }
-                else
-                    playerDecided(P1, "0");
-            } else if (_userFeedback.getAwaitingDecision(P2) != null) {
-                if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
-                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
-                    playerDecided(P2, cardIdList.getFirst());
-                }
-                else
-                    playerDecided(P2, "0");
-            }
-    }
-
+    
     protected void autoSeedFacility() throws DecisionResultInvalidException {
         while (_game.getGameState().getCurrentPhase() == Phase.SEED_FACILITY) {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
