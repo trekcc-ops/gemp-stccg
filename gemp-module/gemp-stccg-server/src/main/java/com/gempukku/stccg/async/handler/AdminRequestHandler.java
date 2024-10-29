@@ -4,6 +4,7 @@ import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.CacheManager;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.collection.CardCollection;
@@ -74,7 +75,7 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
                 setDailyMessage(request, responseWriter);
                 break;
             case "/previewSealedLeaguePOST":
-                LeagueAdminUtils.previewSealedLeague(request, responseWriter, _serverObjects);
+                previewSealedLeague(request, responseWriter);
                 break;
             case "/addSealedLeaguePOST":
                 addSealedLeague(request, responseWriter);
@@ -616,5 +617,14 @@ public class AdminRequestHandler extends DefaultServerRequestHandler implements 
         User player = getResourceOwnerSafely(request, null);
         if (!player.hasType(User.Type.LEAGUE_ADMIN))
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
+    }
+
+    private void previewSealedLeague(HttpRequest request, ResponseWriter responseWriter) throws Exception {
+        Map<String,String> parameters = getSoloDraftOrSealedLeagueParameters(request);
+        String serializedParameters = parameters.get("serializedParameters");
+        CardBlueprintLibrary cardBlueprintLibrary = _serverObjects.getCardBlueprintLibrary();
+        FormatLibrary formatLibrary = _serverObjects.getFormatLibrary();
+        LeagueData leagueData = new NewSealedLeagueData(cardBlueprintLibrary, formatLibrary, serializedParameters);
+        writeLeagueDocument(responseWriter, leagueData, parameters);
     }
 }
