@@ -87,10 +87,10 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void joinTable(HttpRequest request, String tableId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
-            String deckName = getFormParameterSafely(postDecoder, "deckName");
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
             LOGGER.debug("HallRequestHandler - calling joinTableAsPlayer function from JoinTable");
 
             try {
@@ -123,7 +123,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void leaveTable(HttpRequest request, String tableId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
         _hallServer.leaveAwaitingTable(resourceOwner, tableId);
@@ -136,14 +136,14 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void createTable(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String format = getFormParameterSafely(postDecoder, "format");
-            String deckName = getFormParameterSafely(postDecoder, "deckName");
-            String timer = getFormParameterSafely(postDecoder, "timer");
-            String desc = getFormParameterSafely(postDecoder, "desc").trim();
-            String isPrivateVal = getFormParameterSafely(postDecoder, "isPrivate");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String format = getFormParameterSafely(postDecoder, FormParameter.format);
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
+            String timer = getFormParameterSafely(postDecoder, FormParameter.timer);
+            String desc = getFormParameterSafely(postDecoder, FormParameter.desc).trim();
+            String isPrivateVal = getFormParameterSafely(postDecoder, FormParameter.isPrivate);
             boolean isPrivate = (Boolean.parseBoolean(isPrivateVal));
-            String isInviteOnlyVal = getFormParameterSafely(postDecoder, "isInviteOnly");
+            String isInviteOnlyVal = getFormParameterSafely(postDecoder, FormParameter.isInviteOnly);
             boolean isInviteOnly = (Boolean.parseBoolean(isInviteOnlyVal));
             //To prevent annoyance, super long glacial games are hidden from everyone except
             // the participants and admins.
@@ -231,7 +231,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
             throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
         _hallServer.dropFromTournament(tournamentId, resourceOwner);
@@ -245,8 +245,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void joinQueue(HttpRequest request, String queueId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
-        String deckName = getFormParameterSafely(postDecoder, "deckName");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+        String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -267,7 +267,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void leaveQueue(HttpRequest request, String queueId, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -290,7 +290,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void getFormat(String format, ResponseWriter responseWriter) throws CardNotFoundException {
         StringBuilder result = new StringBuilder();
         GameFormat gameFormat = _serverObjects.getFormatLibrary().getFormat(format);
-        result.append(gameFormat.serializeForHall());
+        result.append(HTMLUtils.serializeFormatForHall(gameFormat, _serverObjects.getCardBlueprintLibrary()));
         responseWriter.writeHtmlResponse(result.toString());
     }
 
@@ -298,7 +298,7 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
         StringBuilder result = new StringBuilder();
         FormatLibrary formatLibrary = _serverObjects.getFormatLibrary();
         for (GameFormat gameFormat : formatLibrary.getHallFormats().values())
-            result.append(gameFormat.serializeForHall());
+            result.append(HTMLUtils.serializeFormatForHall(gameFormat, _serverObjects.getCardBlueprintLibrary()));
         responseWriter.writeHtmlResponse(result.toString());
     }
 
@@ -353,8 +353,8 @@ public class HallRequestHandler extends DefaultServerRequestHandler implements U
     private void updateHall(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, "channelNumber"));
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            int channelNumber = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.channelNumber));
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             processLoginReward(resourceOwner.getName());

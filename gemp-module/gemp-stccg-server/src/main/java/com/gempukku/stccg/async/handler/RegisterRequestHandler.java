@@ -26,8 +26,8 @@ public class RegisterRequestHandler extends DefaultServerRequestHandler implemen
         if (uri.isEmpty() && request.method() == HttpMethod.POST) {
             InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
             try {
-                String login = getFormParameterSafely(postDecoder, "login");
-                String password = getFormParameterSafely(postDecoder, "password");
+                String login = getFormParameterSafely(postDecoder, FormParameter.login);
+                String password = getFormParameterSafely(postDecoder, FormParameter.password);
                 if (_playerDao.registerUser(login, password, remoteIp)) {
                     Map<String, String> headers = logUserReturningHeaders(remoteIp, login);
                     responseWriter.writeXmlResponse(null, headers);

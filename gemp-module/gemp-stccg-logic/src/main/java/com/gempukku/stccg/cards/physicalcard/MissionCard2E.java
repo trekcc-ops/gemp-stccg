@@ -60,7 +60,7 @@ public class MissionCard2E extends MissionCard {
         return getAwayTeamsOnSurface().filter(awayTeam -> awayTeam.getPlayer() == player);
     }
 
-    private Stream<AwayTeam> getAwayTeamsOnSurface() {
+    public Stream<AwayTeam> getAwayTeamsOnSurface() {
         return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
     }
 

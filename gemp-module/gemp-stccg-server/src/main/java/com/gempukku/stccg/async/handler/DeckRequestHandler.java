@@ -18,7 +18,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -86,7 +85,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private void getAllFormats(HttpRequest request, ResponseWriter responseWriter) throws IOException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String includeEventsStr = getFormParameterSafely(postDecoder, "includeEvents");
+            String includeEventsStr = getFormParameterSafely(postDecoder, FormParameter.includeEvents);
             String json;
 
             if("true".equalsIgnoreCase(includeEventsStr))
@@ -123,7 +122,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private void getSets(HttpRequest request, ResponseWriter responseWriter) throws IOException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String format = getFormParameterSafely(postDecoder, "format");
+            String format = getFormParameterSafely(postDecoder, FormParameter.format);
             GameFormat currentFormat = _formatLibrary.getFormat(format);
 
             Map<String, String> sets = currentFormat.getValidSets();
@@ -141,20 +140,14 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             throws IOException, HttpProcessingException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String targetFormat = getFormParameterSafely(postDecoder, "targetFormat");
-            String contents = getFormParameterSafely(postDecoder, "deckContents");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String targetFormat = getFormParameterSafely(postDecoder, FormParameter.targetFormat);
+            String contents = getFormParameterSafely(postDecoder, FormParameter.deckContents);
 
             //check for valid access
             getResourceOwnerSafely(request, participantId);
 
             CardDeck deck = createDeckWithValidate("tempDeck", contents, targetFormat, "");
-
-            StringBuilder sb = new StringBuilder();
-
-            StringBuilder valid = new StringBuilder();
-            StringBuilder invalid = new StringBuilder();
-
             GameFormat format = validateFormat(targetFormat);
             if(format == null || targetFormat == null)
             {
@@ -162,32 +155,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             }
 
             assert format != null;
-            List<String> validation = format.validateDeck(deck);
-            List<String> errataValidation = null;
-            if (!format.getErrataCardMap().isEmpty()) {
-                CardDeck deckWithErrata = format.applyErrata(deck);
-                errataValidation = format.validateDeck(deckWithErrata);
-            }
-            if(validation.isEmpty()) {
-                valid.append("<b>").append(format.getName()).append("</b>: <font color='green'>Valid</font><br/>");
-            }
-            else if(errataValidation != null && errataValidation.isEmpty()) {
-                valid.append("<b>").append(format.getName()).append("</b>: ");
-                valid.append("<font color='green'>Valid</font> ");
-                valid.append("<font color='yellow'>(with errata automatically applied)</font><br/>");
-                String output = String.join("<br>", validation).replace("\n", "<br>");
-                invalid.append("<font color='yellow'>").append(output).append("</font><br/>");
-            }
-            else {
-                String output = String.join("<br>", validation).replace("\n", "<br>");
-                invalid.append("<b>").append(format.getName()).append("</b>: ");
-                invalid.append("<font color='red'>").append(output).append("</font><br/>");
-            }
-
-            sb.append(valid);
-            sb.append(invalid);
-
-            responseWriter.writeHtmlResponse(sb.toString());
+            String response = HTMLUtils.getDeckValidation(deck, format);
+            responseWriter.writeHtmlResponse(response);
         } finally {
             postDecoder.destroy();
         }
@@ -197,8 +166,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             throws IOException, HttpProcessingException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String deckName = getFormParameterSafely(postDecoder, "deckName");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
             _deckDao.deleteDeckForPlayer(resourceOwner, deckName);
@@ -213,9 +182,9 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             throws IOException, HttpProcessingException, ParserConfigurationException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String deckName = getFormParameterSafely(postDecoder, "deckName");
-            String oldDeckName = getFormParameterSafely(postDecoder, "oldDeckName");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
+            String oldDeckName = getFormParameterSafely(postDecoder, FormParameter.oldDeckName);
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -233,11 +202,11 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
             throws IOException, HttpProcessingException, ParserConfigurationException {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String deckName = getFormParameterSafely(postDecoder, "deckName");
-            String targetFormat = getFormParameterSafely(postDecoder, "targetFormat");
-            String notes = getFormParameterSafely(postDecoder, "notes");
-            String contents = getFormParameterSafely(postDecoder, "deckContents");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String deckName = getFormParameterSafely(postDecoder, FormParameter.deckName);
+            String targetFormat = getFormParameterSafely(postDecoder, FormParameter.targetFormat);
+            String notes = getFormParameterSafely(postDecoder, FormParameter.notes);
+            String contents = getFormParameterSafely(postDecoder, FormParameter.deckContents);
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -259,8 +228,8 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
 
     private void shareDeck(HttpRequest request, ResponseWriter responseWriter) throws HttpProcessingException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        String deckName = getQueryParameterSafely(queryDecoder, "deckName");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
+        String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
         String code = resourceOwner.getName() + "|" + deckName;
@@ -274,9 +243,9 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private void getDeckInHtml(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, CardNotFoundException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        String deckName = getQueryParameterSafely(queryDecoder, "deckName");
-        String shareCode = getQueryParameterSafely(queryDecoder, "id");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
+        String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
+        String shareCode = getQueryParameterSafely(queryDecoder, FormParameter.id);
 
         User resourceOwner;
         CardDeck deck;
@@ -302,7 +271,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
         if (deck == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        String result = convertDeckToHTML(deck, resourceOwner.getName());
+        String result = HTMLUtils.convertDeckToHTML(deck, resourceOwner.getName(), _formatLibrary, _cardBlueprintLibrary);
 
         responseWriter.writeHtmlResponse(result);
     }
@@ -310,75 +279,24 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private void getLibraryDeckInHtml(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, CardNotFoundException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String deckName = getQueryParameterSafely(queryDecoder, "deckName");
+        String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
 
         CardDeck deck = _deckDao.getDeckForPlayer(getLibrarian(), deckName);
 
         if (deck == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        String result = convertDeckToHTML(deck, null);
+        String result = HTMLUtils.convertDeckToHTML(deck, null, _formatLibrary, _cardBlueprintLibrary);
 
         responseWriter.writeHtmlResponse(result);
     }
 
-    private final String convertDeckToHTML(CardDeck deck, String author) throws CardNotFoundException {
-
-        if (deck == null)
-            return null;
-
-        StringBuilder result = new StringBuilder();
-        result.append("""
-<html>
-    <style>
-        body {
-            margin:50;
-        }
-        
-        .tooltip {
-          border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-          color:#0000FF;
-        }
-        
-        .tooltip span, .tooltip title {
-            display:none;
-        }
-        .tooltip:hover span:not(.click-disabled),.tooltip:active span:not(.click-disabled) {
-            display:block;
-            position:fixed;
-            overflow:hidden;
-            background-color: #FAEBD7;
-            width:auto;
-            z-index:9999;
-            top:20%;
-            left:350px;
-        }
-        /* This prevents tooltip images from automatically shrinking if they are near the window edge.*/
-        .tooltip span > img {
-            max-width:none !important;
-            overflow:hidden;
-        }
-                        
-    </style>
-    <body>""");
-        result.append("<h1>").append(StringEscapeUtils.escapeHtml(deck.getDeckName())).append("</h1>");
-        result.append("<h2>Format: ").append(StringEscapeUtils.escapeHtml(deck.getTargetFormat())).append("</h2>");
-        if(author != null) {
-            result.append("<h2>Author: ").append(StringEscapeUtils.escapeHtml(author)).append("</h2>");
-        }
-
-        result.append(getHTMLDeck(deck, true, _formatLibrary));
-        result.append("<h3>Notes</h3><br>").append(deck.getNotes().replace("\n", "<br/>"));
-        result.append("</body></html>");
-
-        return result.toString();
-    }
 
     private void getDeck(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        String deckName = getQueryParameterSafely(queryDecoder, "deckName");
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
+        String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -388,7 +306,7 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private void getLibraryDeck(HttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException, ParserConfigurationException {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String deckName = getQueryParameterSafely(queryDecoder, "deckName");
+        String deckName = getQueryParameterSafely(queryDecoder, FormParameter.deckName);
 
         responseWriter.writeXmlResponse(serializeDeck(getLibrarian(), deckName));
     }
@@ -405,10 +323,10 @@ public class DeckRequestHandler extends DefaultServerRequestHandler implements U
     private static Document ConvertDeckNamesToXML(Iterable<? extends Map.Entry<GameFormat, String>> deckNames)
             throws ParserConfigurationException {
         Document doc = createNewDoc();
-        Element decksElem = doc.createElement("decks");
+        Element decksElem = doc.createElement(FormParameter.decks.name());
 
         for (Map.Entry<GameFormat, String> pair : deckNames) {
-            Element deckElem = doc.createElement("deck");
+            Element deckElem = doc.createElement(FormParameter.deck.name());
             deckElem.setTextContent(pair.getValue());
             deckElem.setAttribute("targetFormat", pair.getKey().getName());
             decksElem.appendChild(deckElem);

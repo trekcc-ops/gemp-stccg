@@ -289,23 +289,6 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public String validateDeckForHall(CardDeck deck) {
-        List<String> validations = validateDeck(deck);
-        if(validations.isEmpty())
-            return "";
-
-        String firstValidation = validations.stream().findFirst().orElse(null);
-        long count = firstValidation.chars().filter(x -> x == '\n').count();
-        if(firstValidation.contains("\n"))
-        {
-            firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
-        }
-
-        return "Deck targets '" + deck.getTargetFormat() + "' format and is incompatible with '" + _name + "'.  Issues include: `"
-                + firstValidation + "` and " + (validations.size() - 1 + count - 1) + " other issues.";
-    }
-
-    @Override
     public List<String> validateDeck(CardDeck deck) {
         ArrayList<String> result = new ArrayList<>();
         ArrayList<String> errataResult = new ArrayList<>();
@@ -469,55 +452,6 @@ public class DefaultGameFormat implements GameFormat {
 
     private void increaseCount(Map<String, Integer> counts, String name) {
         counts.merge(name, 1, Integer::sum);
-    }
-
-    public String serializeForHall() throws CardNotFoundException {
-        StringBuilder result = new StringBuilder();
-        result.append("<b>").append(getName()).append("</b>");
-        result.append("<ul>");
-        result.append("<li>valid sets: ");
-        for (Integer integer : getValidSetIds())
-            result.append(integer).append(", ");
-        result.append("</li>");
-        if (!getBannedCards().isEmpty()) {
-            result.append("<li>Banned cards (can't be played): ");
-            appendCards(result, getBannedCards());
-            result.append("</li>");
-        }
-        if (!getRestrictedCardNames().isEmpty()) {
-            result.append("<li>Restricted by card name: ");
-            boolean first = true;
-            for (String cardName : getRestrictedCardNames()) {
-                if (!first)
-                    result.append(", ");
-                result.append(cardName);
-                first = false;
-            }
-            result.append("</li>");
-        }
-        if (!getErrataCardMap().isEmpty()) {
-            result.append("<li>Errata: ");
-            appendCards(result, new ArrayList<>(new LinkedHashSet<>(getErrataCardMap().values())));
-            result.append("</li>");
-        }
-        if (!getValidCards().isEmpty()) {
-            result.append("<li>Additional valid: ");
-            List<String> additionalValidCards = getValidCards();
-            appendCards(result, additionalValidCards);
-            result.append("</li>");
-        }
-        result.append("</ul>");
-        return result.toString();
-    }
-
-    private void appendCards(StringBuilder result, Collection<String> additionalValidCards)
-            throws CardNotFoundException {
-        if (!additionalValidCards.isEmpty()) {
-            for (String blueprintId : additionalValidCards)
-                result.append(_library.getCardBlueprint(blueprintId).getCardLink()).append(", ");
-            if (additionalValidCards.isEmpty())
-                result.append("none,");
-        }
     }
 
     @Override

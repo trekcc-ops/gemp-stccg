@@ -21,7 +21,7 @@ public class PlayerInfoRequestHandler extends DefaultServerRequestHandler implem
                                     ResponseWriter responseWriter, String remoteIp) throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-            String participantId = getQueryParameterSafely(queryDecoder, "participantId");
+            String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
             User resourceOwner = getResourceOwnerSafely(request, participantId);
 
             responseWriter.writeJsonResponse(JsonUtils.toJsonString(resourceOwner.GetUserInfo()));

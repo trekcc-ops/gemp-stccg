@@ -9,7 +9,6 @@ import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -69,11 +68,7 @@ public class TournamentRequestHandler extends DefaultServerRequestHandler implem
         if (deck == null)
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
-        String result = "<html><body>" +
-                "<h1>" + StringEscapeUtils.escapeHtml(deck.getDeckName()) + "</h1>" +
-                "<h2>by " + playerName + "</h2>" +
-                getHTMLDeck(deck, false, _formatLibrary) +
-                "</body></html>";
+        String result = HTMLUtils.getTournamentDeck(deck, playerName, _formatLibrary, _cardBlueprintLibrary);
         responseWriter.writeHtmlResponse(result);
     }
 

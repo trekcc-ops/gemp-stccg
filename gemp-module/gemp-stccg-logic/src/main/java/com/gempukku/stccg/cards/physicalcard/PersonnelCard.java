@@ -3,9 +3,7 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.RegularSkill;
-import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -30,22 +28,6 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         return _game.getModifiersQuerying().getSkillLevel(this, skillName);
     }
 
-    @Override
-    public String getCardInfoHTML() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getCardInfoHTML());
-        sb.append("<br><b>Affiliation:</b> ");
-        for (Affiliation affiliation : Affiliation.values())
-            if (isAffiliation(affiliation))
-                sb.append(affiliation.toHTML());
-
-        sb.append("<br><b>Icons:</b> ");
-        for (CardIcon icon : CardIcon.values())
-            if (hasIcon(icon))
-                sb.append(icon.toHTML());
-
-        return sb.toString();
-    }
     public boolean isStopped() {
         return false; }
     public boolean isDisabled() {

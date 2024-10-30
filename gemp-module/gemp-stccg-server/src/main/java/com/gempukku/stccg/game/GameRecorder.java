@@ -1,5 +1,6 @@
 package com.gempukku.stccg.game;
 
+import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.database.DBData;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
@@ -63,19 +64,12 @@ public class GameRecorder {
             var gameInfo = new MyGameHistory(game, winnerName, loserName, winReason, loseReason, startDate, endDate,
                     format, decks, tournamentName, time, clocks);
 
-            var playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
+            Map<String, String> playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
             gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
 
             if(format.isPlaytest())
             {
-                String url = AppConfig.getPlaytestUrl() +
-                        AppConfig.getPlaytestPrefixUrl() + winnerName + "$" +
-                        playerRecordingId.get(winnerName) + "%20" +
-                        AppConfig.getPlaytestPrefixUrl() + loserName + "$" + playerRecordingId.get(loserName);
-                String message = "Thank you for playtesting!  " +
-                        "If you have any feedback, bugs, or other issues to report about this match, <a href= '" +
-                        url + "'>please do so using this form.</a>";
-                game.sendMessageToPlayers(message);
+                game.sendMessageToPlayers(HTMLUtils.getPlayTestMessage(playerRecordingId, winnerName, loserName));
             }
 
         };

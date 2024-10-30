@@ -2,6 +2,8 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.async.handler.CardInfoUtils;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
@@ -116,7 +118,12 @@ public abstract class CardGameMediator {
     public final String produceCardInfo(int cardId) {
         _readLock.lock();
         try {
-            return getGame().produceCardInfo(cardId);
+            GameState gameState = getGame().getGameState();
+            PhysicalCard card = gameState.findCardById(cardId);
+            if (card == null || card.getZone() == null)
+                return null;
+            else
+                return CardInfoUtils.getCardInfoHTML(card);
         } finally {
             _readLock.unlock();
         }

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.tournament;
 
+import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
@@ -50,7 +51,6 @@ public class SingleEliminationOnDemandPrizes implements TournamentPrizes{
 
     @Override
     public String getPrizeDescription() {
-        return "<div class='prizeHint' value='" +
-                "2 wins - 2 boosters and a random promo, 1 win - 2 boosters, 0 wins - 1 booster'>(2+promo)-2-1</div>";
+        return HTMLUtils.SINGLE_ELIMINATION_ON_DEMAND_PRIZES;
     }
 }

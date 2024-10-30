@@ -52,7 +52,7 @@ public class LeagueRequestHandler extends DefaultServerRequestHandler implements
             throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-        String participantId = getFormParameterSafely(postDecoder, "participantId");
+        String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 

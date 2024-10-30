@@ -1,6 +1,5 @@
 package com.gempukku.stccg.formats;
 
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
 
@@ -22,7 +21,6 @@ public interface GameFormat {
     String validateCard(String cardId);
 
     List<String> validateDeck(CardDeck deck);
-    String validateDeckForHall(CardDeck deck);
 
     CardDeck applyErrata(CardDeck deck);
 
@@ -42,5 +40,4 @@ public interface GameFormat {
     int getHandSize();
 
     JSONData.Format Serialize();
-    String serializeForHall() throws CardNotFoundException;
 }

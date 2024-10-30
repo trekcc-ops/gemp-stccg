@@ -405,9 +405,19 @@ public class HallServer extends AbstractServer {
         CardDeck cardDeck = _serverObjects.getGameServer().getParticipantDeck(player, deckName);
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
-        String validation = format.validateDeckForHall(format.applyErrata(cardDeck));
-        if(!validation.isEmpty())
+
+        CardDeck deck = format.applyErrata(cardDeck);
+        List<String> validations = format.validateDeck(deck);
+        if(!validations.isEmpty()) {
+            String firstValidation = validations.stream().findFirst().orElse(null);
+            long count = firstValidation.chars().filter(x -> x == '\n').count();
+            if (firstValidation.contains("\n"))
+                firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
+            String validation = "Deck targets '" + deck.getTargetFormat() + "' format and is incompatible with '" +
+                    format.getName() + "'.  Issues include: `" + firstValidation + "` and " +
+                    (validations.size() - 1 + count - 1) + " other issues.";
             throw new HallException("Your selected deck is not valid for this format: " + validation);
+        }
         return cardDeck;
     }
 

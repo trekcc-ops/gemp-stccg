@@ -42,7 +42,8 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     }
 
     @Override
-    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) throws Exception {
+    public final void handleRequest(String uri, HttpRequest request, ResponseWriter responseWriter, String remoteIp) 
+            throws Exception {
         if (uri.isEmpty() && request.method() == HttpMethod.GET) {
             getMerchantOffers(request, responseWriter);
         } else if ("/buy".equals(uri) && request.method() == HttpMethod.POST) {
@@ -59,8 +60,8 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     private void tradeInFoil(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String blueprintId = getFormParameterSafely(postDecoder, FormParameter.blueprintId);
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             try {
@@ -78,9 +79,9 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     private void sell(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
-            int price = Integer.parseInt(getFormParameterSafely(postDecoder, "price"));
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String blueprintId = getFormParameterSafely(postDecoder, FormParameter.blueprintId);
+            int price = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.price));
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
             try {
@@ -98,9 +99,9 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
     private void buy(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
-            String participantId = getFormParameterSafely(postDecoder, "participantId");
-            String blueprintId = getFormParameterSafely(postDecoder, "blueprintId");
-            int price = Integer.parseInt(getFormParameterSafely(postDecoder, "price"));
+            String participantId = getFormParameterSafely(postDecoder, FormParameter.participantId);
+            String blueprintId = getFormParameterSafely(postDecoder, FormParameter.blueprintId);
+            int price = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.price));
 
 
             User resourceOwner = getResourceOwnerSafely(request, participantId);
@@ -118,11 +119,11 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
 
     private void getMerchantOffers(HttpRequest request, ResponseWriter responseWriter) throws Exception {
         QueryStringDecoder queryDecoder = new QueryStringDecoder(request.uri());
-        String participantId = getQueryParameterSafely(queryDecoder, "participantId");
-        String filter = getQueryParameterSafely(queryDecoder, "filter");
-        int ownedMin = Integer.parseInt(getQueryParameterSafely(queryDecoder, "ownedMin"));
-        int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, "start"));
-        int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, "count"));
+        String participantId = getQueryParameterSafely(queryDecoder, FormParameter.participantId);
+        String filter = getQueryParameterSafely(queryDecoder, FormParameter.filter);
+        int ownedMin = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.ownedMin));
+        int start = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.start));
+        int count = Integer.parseInt(getQueryParameterSafely(queryDecoder, FormParameter.count));
 
         User resourceOwner = getResourceOwnerSafely(request, participantId);
 
@@ -157,7 +158,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
 
         Element merchantElem = doc.createElement("merchant");
         merchantElem.setAttribute("currency", String.valueOf(_collectionsManager.getPlayerCollection(resourceOwner, CollectionType.MY_CARDS.getCode()).getCurrency()));
-        merchantElem.setAttribute("count", String.valueOf(filteredResult.size()));
+        merchantElem.setAttribute(FormParameter.count.name(), String.valueOf(filteredResult.size()));
         doc.appendChild(merchantElem);
 
         for (CardItem cardItem : pageToDisplay) {
@@ -169,7 +170,7 @@ public class MerchantRequestHandler extends DefaultServerRequestHandler implemen
             else
                 elem = doc.createElement("pack");
 
-            elem.setAttribute("count", String.valueOf(collection.getItemCount(blueprintId)));
+            elem.setAttribute(FormParameter.count.name(), String.valueOf(collection.getItemCount(blueprintId)));
             if (blueprintId.contains("_") && !blueprintId.endsWith("*") && collection.getItemCount(blueprintId) >= 4)
                 elem.setAttribute("tradeFoil", "true");
             elem.setAttribute("blueprintId", blueprintId);

@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
 import com.google.common.collect.Lists;
 
 import java.util.*;
@@ -113,42 +112,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     private Map<CardIcon, Long> frequencyMap(Stream<CardIcon> icons) {
         return icons.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-    }
-
-    @Override
-    public String getCardInfoHTML() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getCardInfoHTML());
-        Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
-        attachedCards.put("Crew",getCrew());
-        for (Map.Entry<String, Collection<PhysicalCard>> entry : attachedCards.entrySet()) {
-            if (!entry.getValue().isEmpty())
-                sb.append("<br><b>").append(entry.getKey()).append(" (").append(entry.getValue().size())
-                        .append("):</b> ").append(TextUtils.getConcatenatedCardLinks(entry.getValue())).append("<br>");
-        }
-
-        sb.append("<br><b>").append("Staffing requirements:</b> ");
-        if (_blueprint.getStaffing() == null || _blueprint.getStaffing().isEmpty())
-            sb.append("<i>none</i>");
-        else {
-            sb.append("<br>");
-            for (CardIcon icon : _blueprint.getStaffing())
-                sb.append("<img src='").append(icon.getIconURL()).append("'>");
-        }
-        if (isStaffed())
-            sb.append("<br><i>(Ship is staffed)</i><br>");
-        else sb.append("<br><i>(Ship is not staffed)</i><br>");
-
-        sb.append("<br><b>Printed RANGE:</b> ").append( _blueprint.getRange());
-        sb.append("<br><b>RANGE available:</b> ").append(_rangeAvailable);
-
-        sb.append("<br><b>Icons:</b> ");
-
-        for (CardIcon icon : CardIcon.values())
-            if (hasIcon(icon))
-                sb.append(icon.toHTML());
-
-        return sb.toString();
     }
 
     public int getRangeAvailable() {

@@ -90,8 +90,8 @@ public class PlaytestRequestHandler extends DefaultServerRequestHandler implemen
         InterfaceHttpPostRequestDecoder postDecoder = new HttpPostRequestDecoder(request);
         try {
 
-            String format = getFormParameterSafely(postDecoder, "format");
-            int count = Integer.parseInt(getFormParameterSafely(postDecoder, "count"));
+            String format = getFormParameterSafely(postDecoder, FormParameter.format);
+            int count = Integer.parseInt(getFormParameterSafely(postDecoder, FormParameter.count));
 
             final List<DBData.GameHistory> gameHistory = _gameHistoryService.getGameHistoryForFormat(format, count);
 
