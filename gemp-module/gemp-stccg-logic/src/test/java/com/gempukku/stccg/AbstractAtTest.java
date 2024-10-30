@@ -76,7 +76,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.MISSIONS, "106_013"); // Survey Instability
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         // Alien Labyrinth
-        // Anaphasic Organism
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_012"); // Anaphasic Organism
         // Female's Love Interest
         // Hidden Entrance
         // Malfunctioning Door
@@ -112,18 +112,19 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_223"); // Mendon
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_223"); // Mendon
         fedDeck.addCard(SubDeck.DRAW_DECK, "103_096"); // Montgomery Scott
-        // Simon Tarses
-        fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Sito Jaxa
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_239"); // Sito Jaxa
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_242"); // Taitt
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_242"); // Taitt
-        // Taurik
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_245"); // Taurik
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_293"); // Dr. Farek
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_297"); // Gorta
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_300"); // Narik
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_303"); // Vekor
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_331"); // Runabout
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_332"); // Type VI Shuttlecraft
-        // U.S.S. Galaxy x2
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_336"); // U.S.S. Galaxy
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_336"); // U.S.S. Galaxy
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_339"); // U.S.S. Nebula
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_339"); // U.S.S. Nebula
 
@@ -136,7 +137,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.MISSIONS, "106_011"); // Reported Activity
         klingonDeck.addCard(SubDeck.MISSIONS, "106_012"); // Sensitive Search
         klingonDeck.addCard(SubDeck.SEED_DECK, "101_105"); // Klingon Outpost
-        // Archer
+        klingonDeck.addCard(SubDeck.SEED_DECK, "101_014"); // Archer
         // Ferengi Attack
         // Hunter Gangs
         // Impassable Door

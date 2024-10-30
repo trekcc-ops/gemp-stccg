@@ -965,6 +965,20 @@
         image-url: https://www.trekcc.org/1e/cardimages/tngsup/21V.jpg
     }
     101_236: {
+        title: Simon Tarses
+        type: personnel
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        classification: MEDICAL
+        lore: Crewman First Class Simon Tarses is representative of Starfleet medical technicians. He is 1/4 Romulan, 3/4 Human.
+        skill-box: "[*] Youth"
+        integrity: 6
+        cunning: 5
+        strength: 5
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/simontarses95.jpg
+    }
+    101_239: {
         title: Sito Jaxa
         type: personnel
         affiliation: federation
@@ -993,6 +1007,22 @@
         cunning: 7
         strength: 4
         image-url: https://www.trekcc.org/1e/cardimages/sfls/22.jpg
+        rarity: C
+    }
+    101_245: {
+        title: Taurik
+        type: personnel
+        affiliation: federation
+        property-logo: tng-logo
+        classification: ENGINEER
+        icons: staff
+        uniqueness: universal
+        lore: Lieutenant Taurik is a Vulcan male representative of engineering junior officers serving in Starfleet.
+        skill-box: "[*] Mindmeld"
+        integrity: 7
+        cunning: 7
+        strength: 8
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/taurik95.jpg
         rarity: C
     }
     101_246: {
@@ -1582,20 +1612,34 @@
         shields: 9
         image-url: https://www.trekcc.org/1e/cardimages/sfls/26.jpg
     }
-    101_339: {
-        title: U.S.S. Nebula
+    101_334: {
+        title: U.S.S. Enterprise
+        type: ship
+        affiliation: federation
+        property-logo: tng-logo
+        ship-class: GALAXY CLASS
+        lore: The fifth Starfleet ship named Enterprise, launched in 2363. Built at the Utopia Planetia shipyards orbiting Mars.
+        staffing: command,staff,staff
+        gametext: Holodeck, Tractor Beam
+        range: 9
+        weapons: 8
+        shields: 9
+        image-url: https://www.trekcc.org/1e/cardimages/sfls/26.jpg
+    }
+    101_336: {
+        title: U.S.S. Galaxy
         type: ship
         affiliation: federation
         uniqueness: universal
         property-logo: tng-logo
-        ship-class: NEBULA CLASS
-        lore: Modern class of ship featuring large upper equipment modules customizable for specific mission uses.
-        staffing: command,staff
+        ship-class: GALAXY CLASS
+        lore: Prototype in this elite class of ships was the <i>U.S.S. Galaxy</i>, after which the class was named.
+        staffing: command,staff,staff
         gametext: Holodeck, Tractor Beam
         range: 8
         weapons: 7
-        shields: 8
-        image-url: https://www.trekcc.org/1e/cardimages/sfls/27.jpg
+        shields: 9
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ussgalaxy.jpg
     }
     101_340: {
         title: U.S.S. Oberth
