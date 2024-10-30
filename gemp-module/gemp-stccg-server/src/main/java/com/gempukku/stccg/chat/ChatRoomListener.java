@@ -1,5 +1,5 @@
 package com.gempukku.stccg.chat;
 
-public interface ChatRoomListener {
+interface ChatRoomListener {
     void messageReceived(ChatMessage message);
 }

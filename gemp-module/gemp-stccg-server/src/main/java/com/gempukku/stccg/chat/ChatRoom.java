@@ -8,56 +8,59 @@ class ChatRoom {
     private final SequencedCollection<ChatMessage> _lastMessages = new LinkedList<>();
     private final Map<String, ChatRoomInfo> _chatRoomListeners = new TreeMap<>(
             String::compareToIgnoreCase);
-    private final boolean muteJoinPartMessages;
-    private final boolean allowIncognito;
+    private final boolean _muteJoinPartMessages;
+    private final boolean _allowIncognito;
 
-    public ChatRoom(boolean muteJoinPartMessages, boolean allowIncognito) {
-        this.muteJoinPartMessages = muteJoinPartMessages;
-        this.allowIncognito = allowIncognito;
+    ChatRoom(boolean muteJoinPartMessages, boolean allowIncognito) {
+        _muteJoinPartMessages = muteJoinPartMessages;
+        _allowIncognito = allowIncognito;
     }
 
-    public final void setUserIncognitoMode(String username, boolean incognito) {
-        if (allowIncognito) {
+    final void setUserIncognitoMode(String username, boolean incognito) {
+        if (_allowIncognito) {
             final ChatRoomInfo chatRoomInfo = _chatRoomListeners.get(username);
             if (chatRoomInfo != null)
                 chatRoomInfo.incognito = incognito;
         }
     }
 
-    public final void postMessage(String from, String message, boolean addToHistory, boolean fromAdmin) {
-        ChatMessage chatMessage = new ChatMessage(new Date(), from, message, fromAdmin);
-        if (addToHistory) {
-            _lastMessages.add(chatMessage);
-            shrinkLastMessages();
-        }
+    final void postMessage(String from, String message, boolean fromAdmin) {
+        ChatMessage chatMessage = new ChatMessage(from, message, fromAdmin);
+        _lastMessages.add(chatMessage);
+        shrinkLastMessages();
+
         for (Map.Entry<String, ChatRoomInfo> listeners : _chatRoomListeners.entrySet())
             listeners.getValue().chatRoomListener.messageReceived(chatMessage);
     }
 
-    public final void postToUser(String from, String to, String message) {
-        ChatMessage chatMessage = new ChatMessage(new Date(), from, message, false);
+    final void postToUser(String from, String to, String message) {
+        ChatMessage chatMessage = new ChatMessage(from, message, false);
         final ChatRoomListener chatRoomListener = _chatRoomListeners.get(to).chatRoomListener;
         if (chatRoomListener != null) {
             chatRoomListener.messageReceived(chatMessage);
         }
     }
 
-    public final void joinChatRoom(String playerId, ChatRoomListener listener) {
+    final void joinChatRoom(String playerId, ChatRoomListener listener) {
         boolean wasInRoom = _chatRoomListeners.containsKey(playerId);
         _chatRoomListeners.put(playerId, new ChatRoomInfo(listener, false));
         for (ChatMessage lastMessage : _lastMessages)
             listener.messageReceived(lastMessage);
-        if (!wasInRoom && !muteJoinPartMessages)
-            postMessage("System", playerId + " joined the room", true, false);
+        if (!wasInRoom && !_muteJoinPartMessages) {
+            String message = ChatStrings.userJoinedRoom(playerId);
+            postMessage(ChatStrings.SYSTEM_USER_ID, message, false);
+        }
     }
 
-    public final void partChatRoom(String playerId) {
+    final void partChatRoom(String playerId) {
         boolean wasInRoom = (_chatRoomListeners.remove(playerId) != null);
-        if (wasInRoom && !muteJoinPartMessages)
-            postMessage("System", playerId + " left the room", true, false);
+        if (wasInRoom && !_muteJoinPartMessages) {
+            String message = ChatStrings.userLeftRoom(playerId);
+            postMessage(ChatStrings.SYSTEM_USER_ID, message, false);
+        }
     }
 
-    public final Collection<String> getUsersInRoom(boolean includeIncognito) {
+    final Collection<String> getUsersInRoom(boolean includeIncognito) {
         if (includeIncognito)
             return new ArrayList<>(_chatRoomListeners.keySet());
         else {

@@ -11,10 +11,10 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
     private List<ChatMessage> _messages = new LinkedList<>();
     private long _lastConsumed = System.currentTimeMillis();
     private volatile WaitingRequest _waitingRequest;
-    private final Set<String> ignoredUsers;
+    private final Set<String> _ignoredUsers;
 
     ChatCommunicationChannel(Set<String> ignoredUsers) {
-        this.ignoredUsers = ignoredUsers;
+        _ignoredUsers = ignoredUsers;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
     @Override
     public final synchronized void messageReceived(ChatMessage message) {
         String messageSender = message.getFrom();
-        if (message.isFromAdmin() || !ignoredUsers.contains(messageSender)) {
+        if (message.isFromAdmin() || !_ignoredUsers.contains(messageSender)) {
             _messages.add(message);
             if (_waitingRequest != null) {
                 _waitingRequest.processRequest();
@@ -52,7 +52,7 @@ public class ChatCommunicationChannel implements ChatRoomListener, LongPollableR
         _lastConsumed = System.currentTimeMillis();
     }
 
-    public final synchronized long getLastAccessed() {
+    final synchronized long getLastAccessed() {
         return _lastConsumed;
     }
 }

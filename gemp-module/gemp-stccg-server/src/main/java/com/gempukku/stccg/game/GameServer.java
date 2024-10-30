@@ -10,6 +10,7 @@ import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.GameSettings;
+import com.gempukku.stccg.chat.ChatStrings;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +60,7 @@ public class GameServer extends AbstractServer {
                         String message = "This game is already finished and will be shortly removed, " +
                                 "please move to the Game Hall";
                         ChatRoomMediator chatRoom = _chatServer.getChatRoom(getChatRoomName(gameId));
-                        chatRoom.sendMessage("System", message, true);
+                        chatRoom.sendMessage(ChatStrings.SYSTEM_USER_ID, message, true);
                     } catch (PrivateInformationException exp) {
                         // Ignore, sent as admin
                     } catch (ChatCommandErrorException e) {
