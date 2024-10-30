@@ -3,33 +3,32 @@ package com.gempukku.stccg.chat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.util.Date;
-
 public class ChatMessage {
-    private final Date _when;
     private final String _from;
     private final String _message;
-    private final boolean fromAdmin;
+    private final boolean _fromAdmin;
+    private final String _messageDate;
 
-    public ChatMessage(Date when, String from, String message, boolean fromAdmin) {
-        _when = when;
+    ChatMessage(String from, String message, boolean fromAdmin) {
+        long currentTime = System.currentTimeMillis();
+        _messageDate = String.valueOf(currentTime);
         _from = from;
         _message = message;
-        this.fromAdmin = fromAdmin;
+        _fromAdmin = fromAdmin;
     }
 
     public final String getFrom() {
         return _from;
     }
 
-    public final boolean isFromAdmin() {
-        return fromAdmin;
+    final boolean isFromAdmin() {
+        return _fromAdmin;
     }
 
     public Element serializeForDocument(Document doc, String elemName) {
         Element messageElem = doc.createElement(elemName);
         messageElem.setAttribute("from", _from);
-        messageElem.setAttribute("date", String.valueOf(_when.getTime()));
+        messageElem.setAttribute("date", _messageDate);
         messageElem.appendChild(doc.createTextNode(_message));
         return messageElem;
     }

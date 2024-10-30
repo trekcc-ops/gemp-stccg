@@ -112,7 +112,7 @@ public class ServerObjects {
         _tournamentService = new TournamentService(
                 _tournamentDAO, _tournamentPlayerDAO, _tournamentMatchDAO, _cardBlueprintLibrary);
         _merchantService = new MerchantService(_cardBlueprintLibrary, _collectionsManager);
-        _chatServer = new ChatServer(_ignoreDAO, _playerDAO);
+        _chatServer = new ChatServer(this);
         _gameServer = new GameServer(_deckDAO, _cardBlueprintLibrary, _chatServer, _gameRecorder);
         _hallServer = new HallServer(this);
     }
