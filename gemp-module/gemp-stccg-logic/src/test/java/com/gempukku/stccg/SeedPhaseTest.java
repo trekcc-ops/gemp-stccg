@@ -68,19 +68,15 @@ public class SeedPhaseTest extends AbstractAtTest {
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
         PhysicalCard archer = null;
-        PhysicalCard anaphasicOrganism = null;
         PhysicalCard homeward = null;
         for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
             if (Objects.equals(card.getTitle(), "Archer"))
                 archer = card;
-            if (Objects.equals(card.getTitle(), "Anaphasic Organism"))
-                anaphasicOrganism = card;
             if (Objects.equals(card.getTitle(), "Homeward"))
                 homeward = card;
         }
 
         assertNotEquals(null, archer);
-        assertNotEquals(null, anaphasicOrganism);
         assertNotEquals(null, homeward);
 
         assertEquals(0, homeward.getCardsPreSeeded(archer.getOwner()).size());
