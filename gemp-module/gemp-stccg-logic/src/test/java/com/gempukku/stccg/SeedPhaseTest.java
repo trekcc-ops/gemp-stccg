@@ -96,4 +96,18 @@ public class SeedPhaseTest extends AbstractAtTest {
         assertTrue(homeward.getCardsSeededUnderneath().contains(archer));
     }
 
+    @Test
+    public void playPhaseTest() throws DecisionResultInvalidException {
+        initializeIntroductoryTwoPlayerGame();
+
+        // P1 - Federation, P2 - Klingon
+
+        autoSeedMissions();
+        skipDilemma();
+        skipDilemma();
+        skipDilemma();
+
+        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
+        autoSeedFacility();
+    }
 }

@@ -49,6 +49,25 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     }
 
+    protected void initializeSimple1EGameWithDoorways(int deckSize) {
+        Map<String, CardDeck> decks = new HashMap<>();
+        CardDeck testDeck = new CardDeck("Test");
+        for (int i = 0; i < deckSize; i++) {
+            testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
+        }
+        testDeck.addCard(SubDeck.SEED_DECK, "105_015"); // Q-Flash
+
+        decks.put(P1, testDeck);
+        decks.put(P2, testDeck);
+
+        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+
+    }
+
     protected void initializeSimpleTribblesGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
         CardDeck testDeck = new CardDeck("Test");
@@ -371,7 +390,29 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             }
         }
     }
-    
+
+    protected void autoSeedDoorway() throws DecisionResultInvalidException {
+        while (_game.getGameState().getCurrentPhase() == Phase.SEED_DOORWAY) {
+            if (_userFeedback.getAwaitingDecision(P1) != null) {
+                if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
+                    Collections.shuffle(cardIdList);
+                    playerDecided(P1, cardIdList.getFirst());
+                }
+                else
+                    playerDecided(P1, "0");
+            } else if (_userFeedback.getAwaitingDecision(P2) != null) {
+                if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
+                    Collections.shuffle(cardIdList);
+                    playerDecided(P2, cardIdList.getFirst());
+                }
+                else
+                    playerDecided(P2, "0");
+            }
+        }
+    }
+
     protected void autoSeedFacility() throws DecisionResultInvalidException {
         while (_game.getGameState().getCurrentPhase() == Phase.SEED_FACILITY) {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
