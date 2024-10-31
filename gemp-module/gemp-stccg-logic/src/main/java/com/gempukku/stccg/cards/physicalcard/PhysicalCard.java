@@ -407,7 +407,10 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public Action createSeedCardAction() {
-        return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
+        if (_blueprint.getSeedCardActionSource() == null)
+            return null;
+        else
+            return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
     }
 
     public boolean hasIcon(CardIcon icon) {
