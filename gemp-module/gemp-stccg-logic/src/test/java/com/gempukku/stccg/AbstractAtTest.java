@@ -9,9 +9,12 @@ import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 import org.junit.jupiter.api.Assertions;
@@ -302,11 +305,48 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void skipDilemma() throws DecisionResultInvalidException {
-        if (_userFeedback.getAwaitingDecision(P1) != null)
-            playerDecided(P1, "");
-        else if (_userFeedback.getAwaitingDecision(P2) != null)
-            playerDecided(P2, "");
+        for (String playerId : _game.getAllPlayerIds())
+            if (_userFeedback.getAwaitingDecision(playerId) != null)
+                playerDecided(playerId, "");
     }
+
+    protected void seedDilemma(PhysicalCard seedCard, PhysicalCard mission) throws DecisionResultInvalidException {
+        Player player = seedCard.getOwner();
+        int cardId = mission.getCardId();
+        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
+        Map<String, String[]> decisionParameters = missionSelection.getDecisionParameters();
+        String decisionId = null;
+        for (int i = 0; i < decisionParameters.get("actionId").length; i++) {
+            if (Objects.equals(decisionParameters.get("cardId")[i], String.valueOf(cardId)) &&
+                    decisionParameters.get("actionText")[i].startsWith("Seed cards under")) {
+                decisionId = String.valueOf(i);
+            }
+        }
+        playerDecided(player.getPlayerId(), decisionId);
+
+        playerDecided(player.getPlayerId(), String.valueOf(seedCard.getCardId()));
+    }
+
+    protected void removeDilemma(PhysicalCard seedCard, PhysicalCard mission) throws DecisionResultInvalidException,
+            InvalidGameLogicException {
+        Player player = seedCard.getOwner();
+        int cardId = mission.getCardId();
+        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
+        Map<String, String[]> decisionParameters = missionSelection.getDecisionParameters();
+        String decisionId = null;
+        for (int i = 0; i < decisionParameters.get("actionId").length; i++) {
+            if (Objects.equals(decisionParameters.get("cardId")[i], String.valueOf(cardId)) &&
+                    decisionParameters.get("actionText")[i].startsWith("Remove seed cards from")) {
+                decisionId = String.valueOf(i);
+            }
+        }
+        playerDecided(player.getPlayerId(), decisionId);
+
+        if (_userFeedback.getAwaitingDecision(player.getPlayerId()) instanceof ArbitraryCardsSelectionDecision dilemmaSelection)
+            playerDecided(player.getPlayerId(), dilemmaSelection.getCardIdForCard(seedCard));
+        else throw new InvalidGameLogicException("Player decision is not the expected type");
+    }
+
 
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
         SystemQueueAction action = new SystemQueueAction(_game);
