@@ -1641,6 +1641,21 @@
         shields: 9
         image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ussgalaxy.jpg
     }
+    101_339: {
+        title: U.S.S. Nebula
+        type: ship
+        affiliation: federation
+        uniqueness: universal
+        property-logo: tng-logo
+        ship-class: NEBULA CLASS
+        lore: Modern class of ship featuring large upper equipment modules customizable for specific mission uses.
+        staffing: command,staff
+        gametext: Holodeck, Tractor Beam
+        range: 8
+        weapons: 7
+        shields: 8
+        image-url: https://www.trekcc.org/1e/cardimages/twtstarters/ussnebula.jpg
+    }
     101_340: {
         title: U.S.S. Oberth
         type: ship
