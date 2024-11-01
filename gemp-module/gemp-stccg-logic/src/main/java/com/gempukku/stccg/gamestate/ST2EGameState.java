@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ST2EGame;
@@ -15,13 +14,12 @@ public class ST2EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _tableCards;
     private final ST2EGame _game;
 
-    public ST2EGameState(Map<String, CardDeck> decks, ST2EGame game) {
-        super(decks);
+    public ST2EGameState(Iterable<String> playerIds, ST2EGame game) {
+        super(playerIds);
         _game = game;
         _tableCards = new HashMap<>();
-        for (String player : decks.keySet()) {
+        for (String player : playerIds)
             _tableCards.put(player, new LinkedList<>());
-        }
         _currentPhase = Phase.SEED_DOORWAY;
     }
 

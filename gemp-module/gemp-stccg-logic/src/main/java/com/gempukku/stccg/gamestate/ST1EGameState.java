@@ -15,23 +15,19 @@ import com.gempukku.stccg.game.ST1EGame;
 import java.util.*;
 
 public class ST1EGameState extends GameState {
-    private final Map<String, List<PhysicalCard>> _seedDecks;
-    private final Map<String, List<PhysicalCard>> _missionPiles;
+    private final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
+    private final Map<String, List<PhysicalCard>> _missionPiles = new HashMap<>();
     private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
     private final Set<AwayTeam> _awayTeams = new HashSet<>();
 
-    public ST1EGameState(Map<String, CardDeck> decks, ST1EGame game) {
-        super(decks);
+    public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
+        super(playerIds);
         _game = game;
-        _cardGroups.put(Zone.TABLE, new HashMap<>());
-        for (String playerId : decks.keySet()) {
-            _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
-        }
-
-        _seedDecks = new HashMap<>();
-        _missionPiles = new HashMap<>();
         _currentPhase = Phase.SEED_DOORWAY;
+        _cardGroups.put(Zone.TABLE, new HashMap<>());
+        for (String playerId : playerIds)
+            _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
     }
 
     @Override
@@ -52,10 +48,10 @@ public class ST1EGameState extends GameState {
             return _inPlay; // TODO - Should this just be an exception?
     }
 
-    public void createPhysicalCards(CardBlueprintLibrary library) {
+    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
         for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {

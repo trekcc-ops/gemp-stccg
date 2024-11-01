@@ -12,7 +12,7 @@ import com.gempukku.stccg.game.TribblesGame;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class TribblesGameState extends GameState {
+public final class TribblesGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _playPiles = new HashMap<>();
     private int _nextTribbleInSequence;
     private int _lastTribblePlayed;
@@ -20,15 +20,14 @@ public class TribblesGameState extends GameState {
     private int _currentRound;
     private final TribblesGame _game;
 
-    public TribblesGameState(Map<String, CardDeck> decks, TribblesGame game) {
-        super(decks);
-        for (String player : decks.keySet()) {
-            _playPiles.put(player, new LinkedList<>());
-        }
+    public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
+        super(playerIds);
         _currentRound = 0;
         _chainBroken = false;
         _game = game;
         setNextTribbleInSequence(1);
+        for (String player : playerIds)
+            _playPiles.put(player, new LinkedList<>());
     }
 
     @Override
@@ -47,10 +46,10 @@ public class TribblesGameState extends GameState {
             return _inPlay;
     }
 
-    public void createPhysicalCards(CardBlueprintLibrary library) {
+    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
         for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
@@ -69,6 +68,7 @@ public class TribblesGameState extends GameState {
             _playPiles.put(playerId, new LinkedList<>());
         }
     }
+
 
     public void shufflePlayPileIntoDeck(String playerId) {
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));

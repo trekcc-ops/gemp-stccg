@@ -25,11 +25,11 @@ public class ST1EGame extends DefaultGame {
         super(format, decks, library);
         _thisGame = this;
 
-        _gameState = new ST1EGameState(decks, this);
+        _gameState = new ST1EGameState(decks.keySet(), this);
         _rules = new ST1ERuleSet(this);
         _rules.applyRuleSet();
 
-        _gameState.createPhysicalCards(library);
+        _gameState.createPhysicalCards(library, decks);
         _turnProcedure = new TurnProcedure(this, _userFeedback
         ) {
             @Override

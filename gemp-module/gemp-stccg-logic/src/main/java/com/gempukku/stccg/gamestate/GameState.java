@@ -9,7 +9,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -32,25 +31,17 @@ public abstract class GameState implements Snapshotable<GameState> {
     protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
     protected final List<PhysicalCard> _inPlay = new LinkedList<>();
-
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
-
     protected Phase _currentPhase;
-
     private boolean _consecutiveAction;
-
     protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
-
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
-    protected final Map<String, CardDeck> _decks;
     private final Stack<PlayCardState> _playCardState = new Stack<>();
-
     protected int _nextCardId = 0;
     private final Map<String, Integer> _turnNumbers = new HashMap<>();
 
-    public GameState(Map<String, CardDeck> decks) {
-        _decks = decks;
+    protected GameState(Iterable<String> playerIds) {
         Collection<Zone> cardGroupList = new LinkedList<>();
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
@@ -60,7 +51,7 @@ public abstract class GameState implements Snapshotable<GameState> {
         cardGroupList.add(Zone.REMOVED);
 
         cardGroupList.forEach(cardGroup -> _cardGroups.put(cardGroup, new HashMap<>()));
-        for (String playerId : decks.keySet()) {
+        for (String playerId : playerIds) {
             cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
             _turnNumbers.put(playerId, 0);
         }
