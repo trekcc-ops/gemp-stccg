@@ -225,7 +225,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public Stack<Action> getActionStack() { return _actionStack; }
 
     @Override
-    public void generateSnapshot(ActionsEnvironment selfSnapshot, SnapshotData snapshotData) {
+    public ActionsEnvironment generateSnapshot(SnapshotData snapshotData) {
         // TODO SNAPSHOT - Add content here
+        return this;
     }
 }

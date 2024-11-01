@@ -483,8 +483,9 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
 
 
     @Override
-    public void generateSnapshot(PhysicalCard selfSnapshot, SnapshotData snapshotData) {
+    public PhysicalCard generateSnapshot(SnapshotData snapshotData) {
             // TODO - No definition for this method yet
+        return this;
     }
 
 }

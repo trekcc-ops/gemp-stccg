@@ -423,8 +423,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public void generateSnapshot(ModifiersLogic selfSnapshot, SnapshotData snapshotData) {
+    public ModifiersLogic generateSnapshot(SnapshotData snapshotData) {
         // TODO SNAPSHOT - Basically need to copy everything here
+        return this;
     }
 
     final class ModifierHookImpl implements ModifierHook {

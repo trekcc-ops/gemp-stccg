@@ -28,6 +28,10 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
     }
 
+    public ST1EGameState(ST1EGame game) {
+        this(game.getPlayerIds(), game);
+    }
+
     @Override
     public ST1EGame getGame() { return _game; }
 
@@ -112,7 +116,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     }
 
     public void seedFacilityAtLocation(FacilityCard card, int spacelineIndex) {
-        _spacelineLocations.get(spacelineIndex).addNonMission(card);
         card.setLocation(getSpacelineLocations().get(spacelineIndex));
         addCardToZone(card, Zone.AT_LOCATION, true);
     }
@@ -268,9 +271,8 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     }
 
     @Override
-    public void generateSnapshot(ST1EGameState selfSnapshot, SnapshotData snapshotData) {
-        ST1EGameState snapshot = selfSnapshot;
-
+    public ST1EGameState generateSnapshot(SnapshotData snapshotData) {
+        ST1EGameState snapshot = new ST1EGameState(_game);
 
         snapshot._playerOrder = _playerOrder;
         snapshot._currentPhase = _currentPhase;
@@ -282,8 +284,8 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         for (Zone zone : _cardGroups.keySet())
             copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);
 
-        // _spacelineLocations
-        // _awayTeams
+        // TODO SNAPSHOT: _spacelineLocations
+        // TODO SNAPSHOT: _awayTeams
         copyCardGroup(_stacked, snapshot._stacked, snapshotData);
         copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);
         copyCardGroup(_missionPiles, snapshot._missionPiles, snapshotData);
@@ -294,6 +296,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             PhysicalCard card = _allCards.get(cardId);
             snapshot._allCards.put(cardId, snapshotData.getDataForSnapshot(card));
         }
+        return snapshot;
     }
 
     private static void copyCardGroup(Map<String, List<PhysicalCard>> copyFrom,

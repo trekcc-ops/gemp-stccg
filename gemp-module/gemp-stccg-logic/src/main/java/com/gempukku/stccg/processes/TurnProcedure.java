@@ -27,16 +27,23 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
     private ActionsEnvironment _actionsEnvironment;
 
     @Override
-    public void generateSnapshot(TurnProcedure selfSnapshot, SnapshotData snapshotData) {
+    public TurnProcedure generateSnapshot(SnapshotData snapshotData) {
+        TurnProcedure selfSnapshot = new TurnProcedure(_game, _userFeedback) {
+            @Override
+            protected GameProcess setFirstGameProcess() {
+                return null; // TODO - This shouldn't be null, but it also should never be called
+            }
+        };
+
         // Set each field
-        selfSnapshot._game = _game;
-        selfSnapshot._userFeedback = _userFeedback;
 //        selfSnapshot._actionStack = snapshotData.getDataForSnapshot(_actionStack); // TODO SNAPSHOT - Need to move ActionStack back out into its own class?
         selfSnapshot._gameProcess = _gameProcess;
         selfSnapshot._playedGameProcess = _playedGameProcess;
         selfSnapshot._gameStats = _gameStats;
         selfSnapshot._actionsEnvironment = _actionsEnvironment;
+        return selfSnapshot;
     }
+
 
 
     public TurnProcedure(DefaultGame game, final UserFeedback userFeedback) {

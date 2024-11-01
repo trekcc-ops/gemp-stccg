@@ -39,16 +39,10 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
     }
 
     @Override
-    public void generateSnapshot(GameSnapshot selfSnapshot, SnapshotData snapshotData) {
-
-        // Set each field
-        selfSnapshot._id = _id;
-        selfSnapshot._description = _description;
-        selfSnapshot._gameState = snapshotData.getDataForSnapshot(_gameState);
-        selfSnapshot._modifiersLogic = snapshotData.getDataForSnapshot(_modifiersLogic);
-        selfSnapshot._actionsEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
-        selfSnapshot._turnProcedure = snapshotData.getDataForSnapshot(_turnProcedure);
+    public GameSnapshot generateSnapshot(SnapshotData snapshotData) {
+        return createGameSnapshot(_id, _description, _gameState, _modifiersLogic, _actionsEnvironment, _turnProcedure);
     }
+
 
     /**
      * Constructs a game snapshot object that will be used to snapshot all the elements of the game.
