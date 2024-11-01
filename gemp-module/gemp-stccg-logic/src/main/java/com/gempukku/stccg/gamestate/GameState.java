@@ -1,7 +1,5 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
-import com.gempukku.stccg.actions.playcard.PlayCardState;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -36,7 +34,6 @@ public abstract class GameState {
     private boolean _consecutiveAction;
     protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
-    private final Stack<PlayCardState> _playCardState = new Stack<>();
     protected int _nextCardId = 0;
     protected final Map<String, Integer> _turnNumbers = new HashMap<>();
 
@@ -541,62 +538,6 @@ public abstract class GameState {
     }
 
     public Player getCurrentPlayer() { return getPlayer(getCurrentPlayerId()); }
-
-    //
-    // Play card state info
-    //
-    public void beginPlayCard(PlayCardAction action) {
-            // TODO SNAPSHOT - Should be called at the beginning of every play card action
-        int id = _playCardState.size();
-        _playCardState.push(new PlayCardState(id, action));
-    }
-
-    /**
-     * Gets the top play card state, or the 2nd to top play card state if the source card is the top.
-     * @param sourceCardToSkip the sourceCard of the top play card state to skip, or null
-     * @return the current top play card state, or null
-     */
-    public PlayCardState getTopPlayCardState(PhysicalCard sourceCardToSkip) {
-            // TODO SNAPSHOT - Star Wars GEMP calls this function in filters and for a few blueprints
-        if (_playCardState.isEmpty())
-            return null;
-
-        PlayCardState topPlayCardState = _playCardState.peek();
-        if (sourceCardToSkip != null
-                && topPlayCardState != null
-                && topPlayCardState.getPlayCardAction().getCardEnteringPlay().getCardId() ==
-                sourceCardToSkip.getCardId()) {
-            int numPlayCardStates = _playCardState.size();
-            return (numPlayCardStates > 1 ? _playCardState.subList(numPlayCardStates - 2, numPlayCardStates - 1).getFirst() : null);
-        }
-        return topPlayCardState;
-    }
-
-    /**
-     * Gets all the play card states.
-     * @return the play card states
-     */
-    public List<PlayCardState> getPlayCardStates() { // TODO SNAPSHOT - Should be called by ModifiersLogic
-        if (_playCardState.isEmpty())
-            return Collections.emptyList();
-
-        return _playCardState.subList(0, _playCardState.size());
-    }
-
-    public void endPlayCard() { // TODO SNAPSHOT - Should be called at end of every PlayCardAction
-            // TODO - Fairly sure this would be more appropriate as part of the Action, i.e. initiation, results, etc.
-        PlayCardState state = getTopPlayCardState(null);
-        if (state == null) {
-            return;
-        }
-            // TODO SNAPSHOT - Review against Star Wars GEMP algorithm for PlayCardActions
-/*        PlayCardAction action = state.getPlayCardAction();
-        getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getPlayedCard());
-        if (action.getOtherPlayedCard() != null) {
-            getGame().getModifiersEnvironment().removeEndOfCardPlayed(action.getOtherPlayedCard());
-        } */
-        _playCardState.pop();
-    }
 
     public void incrementCurrentTurnNumber() {
         _turnNumbers.put(getCurrentPlayerId(), _turnNumbers.get(getCurrentPlayerId())+1);

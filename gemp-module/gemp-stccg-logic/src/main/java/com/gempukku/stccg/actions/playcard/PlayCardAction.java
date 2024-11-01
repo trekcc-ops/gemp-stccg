@@ -73,7 +73,7 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
     public Effect nextEffect() throws InvalidGameLogicException {
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;
-            _game.getGameState().beginPlayCard(this);
+            // TODO - Star Wars code used beginPlayCard method here
         }
 
         Effect cost = getNextCost();

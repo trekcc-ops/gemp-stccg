@@ -278,11 +278,11 @@ public abstract class DefaultGame {
      * @param description the description
      */
     public void takeSnapshot(String description) {
+        // TODO - Star Wars code used PlayCardStates here
         pruneSnapshots();
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
-        if (getGameState().getPlayCardStates().isEmpty())
-            _snapshots.add(GameSnapshot.createGameSnapshot(++_nextSnapshotId, description, getGameState(),
-                    _modifiersLogic, _actionsEnvironment, getTurnProcedure()));
+        _snapshots.add(GameSnapshot.createGameSnapshot(++_nextSnapshotId, description, getGameState(),
+                _modifiersLogic, _actionsEnvironment, getTurnProcedure()));
     }
 
     /**

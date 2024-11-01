@@ -271,10 +271,17 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     public void generateSnapshot(ST1EGameState selfSnapshot, SnapshotData snapshotData) {
         ST1EGameState snapshot = selfSnapshot;
 
-        // Set each field
+
         snapshot._playerOrder = _playerOrder;
-        // _cardGroups
-        // _playCardState
+        snapshot._currentPhase = _currentPhase;
+        snapshot._playerDecisions.putAll(_playerDecisions);
+        snapshot._lastMessages.addAll(_lastMessages);
+        snapshot._nextCardId = _nextCardId;
+        snapshot._turnNumbers.putAll(_turnNumbers);
+
+        for (Zone zone : _cardGroups.keySet())
+            copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);
+
         // _spacelineLocations
         // _awayTeams
         copyCardGroup(_stacked, snapshot._stacked, snapshotData);
@@ -287,11 +294,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             PhysicalCard card = _allCards.get(cardId);
             snapshot._allCards.put(cardId, snapshotData.getDataForSnapshot(card));
         }
-        snapshot._currentPhase = _currentPhase;
-        snapshot._playerDecisions.putAll(_playerDecisions);
-        snapshot._lastMessages.addAll(_lastMessages);
-        snapshot._nextCardId = _nextCardId;
-        snapshot._turnNumbers.putAll(_turnNumbers);
     }
 
     private static void copyCardGroup(Map<String, List<PhysicalCard>> copyFrom,
