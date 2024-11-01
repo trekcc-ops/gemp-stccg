@@ -1,23 +1,25 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ST2EGame;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ST2EGameState extends GameState {
     private final Map<String, List<PhysicalCard>> _tableCards;
     private final ST2EGame _game;
 
-    public ST2EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST2EGame game) {
-        super(decks, library);
+    public ST2EGameState(Map<String, CardDeck> decks, ST2EGame game) {
+        super(decks);
         _game = game;
         _tableCards = new HashMap<>();
-        for (String player : players) {
+        for (String player : decks.keySet()) {
             _tableCards.put(player, new LinkedList<>());
         }
         _currentPhase = Phase.SEED_DOORWAY;

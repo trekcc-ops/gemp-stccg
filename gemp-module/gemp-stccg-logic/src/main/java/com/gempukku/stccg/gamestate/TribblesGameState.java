@@ -1,11 +1,11 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
@@ -13,17 +13,16 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class TribblesGameState extends GameState {
-    protected final Map<String, List<PhysicalCard>> _playPiles = new HashMap<>();
+    private final Map<String, List<PhysicalCard>> _playPiles = new HashMap<>();
     private int _nextTribbleInSequence;
     private int _lastTribblePlayed;
     private boolean _chainBroken;
     private int _currentRound;
     private final TribblesGame _game;
 
-    public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                             GameFormat format, TribblesGame game) {
-        super(decks, library);
-        for (String player : players) {
+    public TribblesGameState(Map<String, CardDeck> decks, TribblesGame game) {
+        super(decks);
+        for (String player : decks.keySet()) {
             _playPiles.put(player, new LinkedList<>());
         }
         _currentRound = 0;
@@ -48,14 +47,14 @@ public class TribblesGameState extends GameState {
             return _inPlay;
     }
 
-    public void createPhysicalCards() {
+    public void createPhysicalCards(CardBlueprintLibrary library) {
         for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
             for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(_library.getCardBlueprint(blueprintId).createPhysicalCard(getGame(),
+                        subDeck.add(library.getCardBlueprint(blueprintId).createPhysicalCard(getGame(),
                                 _nextCardId, player));
                         _nextCardId++;
                     } catch (CardNotFoundException e) {

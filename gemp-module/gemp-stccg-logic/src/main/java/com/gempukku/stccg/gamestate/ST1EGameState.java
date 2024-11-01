@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -22,12 +21,11 @@ public class ST1EGameState extends GameState {
     private final ST1EGame _game;
     private final Set<AwayTeam> _awayTeams = new HashSet<>();
 
-    public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                         GameFormat format, ST1EGame game) {
-        super(decks, library);
+    public ST1EGameState(Map<String, CardDeck> decks, ST1EGame game) {
+        super(decks);
         _game = game;
         _cardGroups.put(Zone.TABLE, new HashMap<>());
-        for (String playerId : players) {
+        for (String playerId : decks.keySet()) {
             _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
         }
 
@@ -54,14 +52,14 @@ public class ST1EGameState extends GameState {
             return _inPlay; // TODO - Should this just be an exception?
     }
 
-    public void createPhysicalCards() {
+    public void createPhysicalCards(CardBlueprintLibrary library) {
         for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
             for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        PhysicalCard card = _library.createPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+                        PhysicalCard card = library.createPhysicalCard(_game, blueprintId, _nextCardId, playerId);
                         subDeck.add(card);
                         _allCards.put(_nextCardId, card);
                         _nextCardId++;

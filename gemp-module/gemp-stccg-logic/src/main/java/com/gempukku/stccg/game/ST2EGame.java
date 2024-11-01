@@ -18,7 +18,7 @@ public class ST2EGame extends DefaultGame {
     public ST2EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         super(format, decks, library);
 
-        _gameState = new ST2EGameState(_allPlayerIds, decks, library, _format, this);
+        _gameState = new ST2EGameState(decks, this);
         new RuleSet(this).applyRuleSet();
 
         _turnProcedure = new TurnProcedure(this, _userFeedback

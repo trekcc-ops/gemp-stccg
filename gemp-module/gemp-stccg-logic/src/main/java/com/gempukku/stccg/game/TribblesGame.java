@@ -20,10 +20,10 @@ public class TribblesGame extends DefaultGame {
         super(format, decks, library);
         _thisGame = this;
 
-        _gameState = new TribblesGameState(_allPlayerIds, decks, library, _format, this);
+        _gameState = new TribblesGameState(decks, this);
         new TribblesRuleSet(this).applyRuleSet();
 
-        _gameState.createPhysicalCards();
+        _gameState.createPhysicalCards(library);
         _turnProcedure = new TurnProcedure(this, _userFeedback
         ) {
             @Override

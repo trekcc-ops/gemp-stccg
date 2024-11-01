@@ -44,15 +44,13 @@ public abstract class GameState implements Snapshotable<GameState> {
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
     protected final Map<String, CardDeck> _decks;
-    protected final CardBlueprintLibrary _library;
     private final Stack<PlayCardState> _playCardState = new Stack<>();
 
     protected int _nextCardId = 0;
     private final Map<String, Integer> _turnNumbers = new HashMap<>();
 
-    public GameState(Map<String, CardDeck> decks, CardBlueprintLibrary library) {
+    public GameState(Map<String, CardDeck> decks) {
         _decks = decks;
-        _library = library;
         Collection<Zone> cardGroupList = new LinkedList<>();
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
