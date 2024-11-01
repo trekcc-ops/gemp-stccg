@@ -14,7 +14,6 @@ import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +29,6 @@ public abstract class GameState implements Snapshotable<GameState> {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     protected PlayerOrder _playerOrder;
-    protected final GameFormat _format;
     protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
     protected final List<PhysicalCard> _inPlay = new LinkedList<>();
@@ -52,8 +50,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     protected int _nextCardId = 0;
     private final Map<String, Integer> _turnNumbers = new HashMap<>();
 
-    public GameState(Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
-        _format = format;
+    public GameState(Map<String, CardDeck> decks, CardBlueprintLibrary library) {
         _decks = decks;
         _library = library;
         Collection<Zone> cardGroupList = new LinkedList<>();
@@ -311,7 +308,7 @@ public abstract class GameState implements Snapshotable<GameState> {
 
             Set<PhysicalCard> removedCardsVisibleByPlayer = new HashSet<>();
             for (PhysicalCard card : cards) {
-                boolean publicDiscard = card.getZone() == Zone.DISCARD && _format.discardPileIsPublic();
+                boolean publicDiscard = card.getZone() == Zone.DISCARD && getGame().isDiscardPilePublic();
                 if (card.getZone().isPublic() || publicDiscard ||
                         (card.getZone().isVisibleByOwner() && card.getOwnerName().equals(listener.getPlayerId())))
                     removedCardsVisibleByPlayer.add(card);
@@ -385,7 +382,7 @@ public abstract class GameState implements Snapshotable<GameState> {
         boolean sendGameEvent;
         if (card.getZone().isPublic())
             sendGameEvent = true;
-        else if (card.getZone() == Zone.DISCARD && _format.discardPileIsPublic())
+        else if (card.getZone() == Zone.DISCARD && getGame().isDiscardPilePublic())
             sendGameEvent = true;
         else sendGameEvent = (overrideOwnerVisibility || card.getZone().isVisibleByOwner()) && card.getOwnerName().equals(listener.getPlayerId());
 

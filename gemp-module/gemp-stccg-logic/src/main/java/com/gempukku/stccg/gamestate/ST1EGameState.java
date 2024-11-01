@@ -24,7 +24,7 @@ public class ST1EGameState extends GameState {
 
     public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
                          GameFormat format, ST1EGame game) {
-        super(decks, library, format);
+        super(decks, library);
         _game = game;
         _cardGroups.put(Zone.TABLE, new HashMap<>());
         for (String playerId : players) {

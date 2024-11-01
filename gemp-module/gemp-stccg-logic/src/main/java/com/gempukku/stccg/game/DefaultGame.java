@@ -327,4 +327,8 @@ public abstract class DefaultGame {
         return gameStatus;
     }
 
+    public boolean isDiscardPilePublic() {
+        return _format.discardPileIsPublic();
+    }
+
 }

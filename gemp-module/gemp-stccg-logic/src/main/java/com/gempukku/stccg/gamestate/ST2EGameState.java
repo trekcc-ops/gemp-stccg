@@ -14,7 +14,7 @@ public class ST2EGameState extends GameState {
     private final ST2EGame _game;
 
     public ST2EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format, ST2EGame game) {
-        super(decks, library, format);
+        super(decks, library);
         _game = game;
         _tableCards = new HashMap<>();
         for (String player : players) {
