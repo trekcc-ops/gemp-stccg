@@ -14,6 +14,7 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.*;
@@ -479,4 +480,11 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
         _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
         _cardsPreSeededUnderneath.get(player).add(card);
     }
+
+
+    @Override
+    public void generateSnapshot(PhysicalCard selfSnapshot, SnapshotData snapshotData) {
+            // TODO - No definition for this method yet
+    }
+
 }
