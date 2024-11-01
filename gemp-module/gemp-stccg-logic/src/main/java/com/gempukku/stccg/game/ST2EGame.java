@@ -3,7 +3,6 @@ package com.gempukku.stccg.game;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST2EGameState;
 import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
@@ -48,13 +47,8 @@ public class ST2EGame extends DefaultGame {
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
-                getGameState().sendStateToAllListeners();
+                sendStateToAllListeners();
             }
         }
-    }
-
-    @Override
-    public void addGameStateListener(String playerId, GameStateListener listener) {
-        getGameState().addGameStateListener(playerId, listener);
     }
 }

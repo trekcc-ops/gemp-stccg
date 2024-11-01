@@ -24,7 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static com.gempukku.stccg.gamestate.GameEvent.Type.REMOVE_CARD_FROM_PLAY;
 
-public abstract class GameState implements Snapshotable<GameState> {
+public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
     protected PlayerOrder _playerOrder;
@@ -35,11 +35,10 @@ public abstract class GameState implements Snapshotable<GameState> {
     protected Phase _currentPhase;
     private boolean _consecutiveAction;
     protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
-    protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
     private final Stack<PlayCardState> _playCardState = new Stack<>();
     protected int _nextCardId = 0;
-    private final Map<String, Integer> _turnNumbers = new HashMap<>();
+    protected final Map<String, Integer> _turnNumbers = new HashMap<>();
 
     protected GameState(Iterable<String> playerIds) {
         Collection<Zone> cardGroupList = new LinkedList<>();
@@ -108,22 +107,8 @@ public abstract class GameState implements Snapshotable<GameState> {
         return _playerOrder;
     }
 
-    public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        _gameStateListeners.add(gameStateListener);
-        sendGameStateToClient(playerId, gameStateListener, false);
-    }
-
-    public void removeGameStateListener(GameStateListener gameStateListener) {
-        _gameStateListeners.remove(gameStateListener);
-    }
-
     Collection<GameStateListener> getAllGameStateListeners() {
-        return Collections.unmodifiableSet(_gameStateListeners);
-    }
-
-    public void sendStateToAllListeners() {
-        for (GameStateListener gameStateListener : _gameStateListeners)
-            sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
+        return getGame().getAllGameStateListeners();
     }
 
     public void sendGameStateToClient(String playerId, GameStateListener listener, boolean restoreSnapshot) {
@@ -621,15 +606,9 @@ public abstract class GameState implements Snapshotable<GameState> {
         return _turnNumbers.get(playerId);
     }
 
-    @Override
-    public void generateSnapshot(GameState selfSnapshot, SnapshotData snapshotData) {
-            // TODO SNAPSHOT - Add content here
-    }
-
     public int getAndIncrementNextCardId() {
         int cardId = _nextCardId;
         _nextCardId++;
         return cardId;
     }
-
 }

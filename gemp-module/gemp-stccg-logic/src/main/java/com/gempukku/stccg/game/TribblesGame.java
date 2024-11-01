@@ -50,7 +50,7 @@ public class TribblesGame extends DefaultGame {
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
-                getGameState().sendStateToAllListeners();
+                sendStateToAllListeners();
             }
         }
     }

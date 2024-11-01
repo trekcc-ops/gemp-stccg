@@ -4,11 +4,10 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
-import com.gempukku.stccg.processes.TurnProcedure;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 
@@ -55,14 +54,9 @@ public class ST1EGame extends DefaultGame {
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;
-                st1estate.sendStateToAllListeners();
+                sendStateToAllListeners();
             } else throw new RuntimeException("Tried to restore a snapshot with an invalid game state");
         }
-    }
-
-    @Override
-    public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        getGameState().addGameStateListener(playerId, gameStateListener);
     }
 
     public void setAffiliationAttackRestrictions(AffiliationAttackRestrictions restrictions) {

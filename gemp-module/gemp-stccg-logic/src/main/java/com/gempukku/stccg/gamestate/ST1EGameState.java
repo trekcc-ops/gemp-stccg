@@ -8,13 +8,11 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.*;
 
 import java.util.*;
 
-public class ST1EGameState extends GameState {
+public class ST1EGameState extends GameState implements Snapshotable<ST1EGameState> {
     private final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
     private final Map<String, List<PhysicalCard>> _missionPiles = new HashMap<>();
     private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
@@ -266,6 +264,45 @@ public class ST1EGameState extends GameState {
             removeCardFromZone(card);
             addCardToZone(card, Zone.VOID);
             topCard.addCardToPreSeeds(card, player);
+        }
+    }
+
+    @Override
+    public void generateSnapshot(ST1EGameState selfSnapshot, SnapshotData snapshotData) {
+        ST1EGameState snapshot = selfSnapshot;
+
+        // Set each field
+        snapshot._playerOrder = _playerOrder;
+        // _cardGroups
+        // _playCardState
+        // _spacelineLocations
+        // _awayTeams
+        copyCardGroup(_stacked, snapshot._stacked, snapshotData);
+        copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);
+        copyCardGroup(_missionPiles, snapshot._missionPiles, snapshotData);
+        for (PhysicalCard card : _inPlay) {
+            snapshot._inPlay.add(snapshotData.getDataForSnapshot(card));
+        }
+        for (Integer cardId : _allCards.keySet()) {
+            PhysicalCard card = _allCards.get(cardId);
+            snapshot._allCards.put(cardId, snapshotData.getDataForSnapshot(card));
+        }
+        snapshot._currentPhase = _currentPhase;
+        snapshot._playerDecisions.putAll(_playerDecisions);
+        snapshot._lastMessages.addAll(_lastMessages);
+        snapshot._nextCardId = _nextCardId;
+        snapshot._turnNumbers.putAll(_turnNumbers);
+    }
+
+    private static void copyCardGroup(Map<String, List<PhysicalCard>> copyFrom,
+                                      Map<? super String, ? super List<PhysicalCard>> copyTo,
+                                      SnapshotData snapshotData) {
+        for (Map.Entry<String, List<PhysicalCard>> entry : copyFrom.entrySet()) {
+            List<PhysicalCard> snapshotList = new LinkedList<>();
+            copyTo.put(entry.getKey(), snapshotList);
+            for (PhysicalCard card : entry.getValue()) {
+                snapshotList.add(snapshotData.getDataForSnapshot(card));
+            }
         }
     }
 }

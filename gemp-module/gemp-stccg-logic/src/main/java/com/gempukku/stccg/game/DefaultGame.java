@@ -40,6 +40,7 @@ public abstract class DefaultGame {
     protected final UserFeedback _userFeedback;
     private final List<GameSnapshot> _snapshots = new LinkedList<>();
     protected GameSnapshot _snapshotToRestore;
+    protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     private int _nextSnapshotId;
     private final static int NUM_PREV_TURN_SNAPSHOTS_TO_KEEPS = 1;
 
@@ -74,7 +75,17 @@ public abstract class DefaultGame {
         _gameResultListeners.add(listener);
     }
     public void addGameStateListener(String playerId, GameStateListener gameStateListener) {
-        getGameState().addGameStateListener(playerId, gameStateListener);
+        _gameStateListeners.add(gameStateListener);
+        getGameState().sendGameStateToClient(playerId, gameStateListener, false);
+    }
+
+    public Collection<GameStateListener> getAllGameStateListeners() {
+        return Collections.unmodifiableSet(_gameStateListeners);
+    }
+
+    public void sendStateToAllListeners() {
+        for (GameStateListener gameStateListener : _gameStateListeners)
+            getGameState().sendGameStateToClient(gameStateListener.getPlayerId(), gameStateListener, true);
     }
 
     public void requestCancel(String playerId) {
@@ -171,7 +182,7 @@ public abstract class DefaultGame {
     }
 
     public void removeGameStateListener(GameStateListener gameStateListener) {
-        getGameState().removeGameStateListener(gameStateListener);
+        _gameStateListeners.remove(gameStateListener);
     }
 
     public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {

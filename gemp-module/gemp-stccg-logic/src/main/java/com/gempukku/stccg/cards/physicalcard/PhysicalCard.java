@@ -14,12 +14,13 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.*;
 
 import java.util.*;
 
-public abstract class PhysicalCard implements Filterable {
+public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalCard> {
     private final String _title; // Primarily stored here for easy access during debug
     protected final CardBlueprint _blueprint;
     protected final Player _owner;
