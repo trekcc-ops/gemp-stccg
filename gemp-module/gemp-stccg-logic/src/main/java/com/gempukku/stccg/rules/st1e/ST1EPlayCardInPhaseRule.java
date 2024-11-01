@@ -28,8 +28,8 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         final Phase phase = _game.getGameState().getCurrentPhase();
         if (phase == Phase.SEED_DOORWAY) {
             for (PhysicalCard card : cardsInHand) {
-                Action action = card.getPlayCardAction();
-                if (action.canBeInitiated())
+                Action action = card.createSeedCardAction();
+                if (action != null && action.canBeInitiated())
                     result.add(action);
             }
             return result;

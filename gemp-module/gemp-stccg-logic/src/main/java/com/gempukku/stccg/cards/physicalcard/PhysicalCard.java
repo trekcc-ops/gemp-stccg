@@ -407,7 +407,10 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public Action createSeedCardAction() {
-        return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
+        if (_blueprint.getSeedCardActionSource() == null)
+            return null;
+        else
+            return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
     }
 
     public boolean hasIcon(CardIcon icon) {
@@ -445,7 +448,11 @@ public abstract class PhysicalCard implements Filterable {
     }
 
     public Collection<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
-    public Collection<PhysicalCard> getCardsPreSeeded(Player player) { return _cardsPreSeededUnderneath.get(player); }
+    public Collection<PhysicalCard> getCardsPreSeeded(Player player) {
+        if (_cardsPreSeededUnderneath.get(player) == null)
+            return new LinkedList<>();
+        else return _cardsPreSeededUnderneath.get(player);
+    }
 
     public void removeSeedCard(PhysicalCard card) {
         _cardsSeededUnderneath.remove(card);

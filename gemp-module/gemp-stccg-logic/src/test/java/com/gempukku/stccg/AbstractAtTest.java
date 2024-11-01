@@ -9,9 +9,12 @@ import com.gempukku.stccg.common.*;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +37,25 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
         }
+
+        decks.put(P1, testDeck);
+        decks.put(P2, testDeck);
+
+        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+
+    }
+
+    protected void initializeSimple1EGameWithDoorways(int deckSize) {
+        Map<String, CardDeck> decks = new HashMap<>();
+        CardDeck testDeck = new CardDeck("Test");
+        for (int i = 0; i < deckSize; i++) {
+            testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
+        }
+        testDeck.addCard(SubDeck.SEED_DECK, "105_015"); // Q-Flash
 
         decks.put(P1, testDeck);
         decks.put(P2, testDeck);
@@ -76,7 +98,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.MISSIONS, "106_013"); // Survey Instability
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         // Alien Labyrinth
-        // Anaphasic Organism
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_012"); // Anaphasic Organism
         // Female's Love Interest
         // Hidden Entrance
         // Malfunctioning Door
@@ -112,18 +134,19 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_223"); // Mendon
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_223"); // Mendon
         fedDeck.addCard(SubDeck.DRAW_DECK, "103_096"); // Montgomery Scott
-        // Simon Tarses
-        fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Sito Jaxa
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_239"); // Sito Jaxa
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_242"); // Taitt
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_242"); // Taitt
-        // Taurik
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_245"); // Taurik
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_293"); // Dr. Farek
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_297"); // Gorta
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_300"); // Narik
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_303"); // Vekor
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_331"); // Runabout
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_332"); // Type VI Shuttlecraft
-        // U.S.S. Galaxy x2
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_336"); // U.S.S. Galaxy
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_336"); // U.S.S. Galaxy
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_339"); // U.S.S. Nebula
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_339"); // U.S.S. Nebula
 
@@ -136,7 +159,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.MISSIONS, "106_011"); // Reported Activity
         klingonDeck.addCard(SubDeck.MISSIONS, "106_012"); // Sensitive Search
         klingonDeck.addCard(SubDeck.SEED_DECK, "101_105"); // Klingon Outpost
-        // Archer
+        klingonDeck.addCard(SubDeck.SEED_DECK, "101_014"); // Archer
         // Ferengi Attack
         // Hunter Gangs
         // Impassable Door
@@ -301,11 +324,48 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     }
 
     protected void skipDilemma() throws DecisionResultInvalidException {
-        if (_userFeedback.getAwaitingDecision(P1) != null)
-            playerDecided(P1, "");
-        else if (_userFeedback.getAwaitingDecision(P2) != null)
-            playerDecided(P2, "");
+        for (String playerId : _game.getAllPlayerIds())
+            if (_userFeedback.getAwaitingDecision(playerId) != null)
+                playerDecided(playerId, "");
     }
+
+    protected void seedDilemma(PhysicalCard seedCard, PhysicalCard mission) throws DecisionResultInvalidException {
+        Player player = seedCard.getOwner();
+        int cardId = mission.getCardId();
+        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
+        Map<String, String[]> decisionParameters = missionSelection.getDecisionParameters();
+        String decisionId = null;
+        for (int i = 0; i < decisionParameters.get("actionId").length; i++) {
+            if (Objects.equals(decisionParameters.get("cardId")[i], String.valueOf(cardId)) &&
+                    decisionParameters.get("actionText")[i].startsWith("Seed cards under")) {
+                decisionId = String.valueOf(i);
+            }
+        }
+        playerDecided(player.getPlayerId(), decisionId);
+
+        playerDecided(player.getPlayerId(), String.valueOf(seedCard.getCardId()));
+    }
+
+    protected void removeDilemma(PhysicalCard seedCard, PhysicalCard mission) throws DecisionResultInvalidException,
+            InvalidGameLogicException {
+        Player player = seedCard.getOwner();
+        int cardId = mission.getCardId();
+        AwaitingDecision missionSelection = _userFeedback.getAwaitingDecision(player.getPlayerId());
+        Map<String, String[]> decisionParameters = missionSelection.getDecisionParameters();
+        String decisionId = null;
+        for (int i = 0; i < decisionParameters.get("actionId").length; i++) {
+            if (Objects.equals(decisionParameters.get("cardId")[i], String.valueOf(cardId)) &&
+                    decisionParameters.get("actionText")[i].startsWith("Remove seed cards from")) {
+                decisionId = String.valueOf(i);
+            }
+        }
+        playerDecided(player.getPlayerId(), decisionId);
+
+        if (_userFeedback.getAwaitingDecision(player.getPlayerId()) instanceof ArbitraryCardsSelectionDecision dilemmaSelection)
+            playerDecided(player.getPlayerId(), dilemmaSelection.getCardIdForCard(seedCard));
+        else throw new InvalidGameLogicException("Player decision is not the expected type");
+    }
+
 
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
         SystemQueueAction action = new SystemQueueAction(_game);
@@ -330,7 +390,29 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             }
         }
     }
-    
+
+    protected void autoSeedDoorway() throws DecisionResultInvalidException {
+        while (_game.getGameState().getCurrentPhase() == Phase.SEED_DOORWAY) {
+            if (_userFeedback.getAwaitingDecision(P1) != null) {
+                if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
+                    Collections.shuffle(cardIdList);
+                    playerDecided(P1, cardIdList.getFirst());
+                }
+                else
+                    playerDecided(P1, "0");
+            } else if (_userFeedback.getAwaitingDecision(P2) != null) {
+                if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
+                    List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
+                    Collections.shuffle(cardIdList);
+                    playerDecided(P2, cardIdList.getFirst());
+                }
+                else
+                    playerDecided(P2, "0");
+            }
+        }
+    }
+
     protected void autoSeedFacility() throws DecisionResultInvalidException {
         while (_game.getGameState().getCurrentPhase() == Phase.SEED_FACILITY) {
             if (_userFeedback.getAwaitingDecision(P1) != null) {

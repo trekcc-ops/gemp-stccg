@@ -3,6 +3,7 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -51,9 +52,23 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     private String[] getCardIds(Collection<? extends PhysicalCard> physicalCards) {
         String[] result = new String[physicalCards.size()];
-        for (int i = 0; i < physicalCards.size(); i++)
-            result[i] = "temp" + i;
+        int index = 0;
+        for (PhysicalCard physicalCard : physicalCards) {
+            result[index] = "temp" + index;
+            index++;
+        }
         return result;
+    }
+
+    // Only used for testing
+    public String getCardIdForCard(PhysicalCard card) throws InvalidGameLogicException {
+        int index = 0;
+        for (PhysicalCard physicalCard : _physicalCards) {
+            if (card == physicalCard)
+                return "temp" + index;
+            index++;
+        }
+        throw new InvalidGameLogicException("Card not found in decision");
     }
 
     private String[] getBlueprintIds(Collection<? extends PhysicalCard> physicalCards) {

@@ -6,11 +6,11 @@ import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
-import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.chat.ChatStrings;
+import com.gempukku.stccg.chat.ChatServer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
