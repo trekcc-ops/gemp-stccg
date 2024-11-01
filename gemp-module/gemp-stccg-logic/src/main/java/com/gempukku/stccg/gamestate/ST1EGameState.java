@@ -24,7 +24,7 @@ public class ST1EGameState extends GameState {
 
     public ST1EGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
                          GameFormat format, ST1EGame game) {
-        super(players, decks, library, format, game);
+        super(decks, library, format);
         _game = game;
         _cardGroups.put(Zone.TABLE, new HashMap<>());
         for (String playerId : players) {
@@ -55,7 +55,7 @@ public class ST1EGameState extends GameState {
     }
 
     public void createPhysicalCards() {
-        for (Player player : _players.values()) {
+        for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
             for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();

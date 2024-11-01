@@ -22,7 +22,7 @@ public class TribblesGameState extends GameState {
 
     public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
                              GameFormat format, TribblesGame game) {
-        super(players, decks, library, format, game);
+        super(decks, library, format);
         for (String player : players) {
             _playPiles.put(player, new LinkedList<>());
         }
@@ -49,7 +49,7 @@ public class TribblesGameState extends GameState {
     }
 
     public void createPhysicalCards() {
-        for (Player player : _players.values()) {
+        for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
             for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
@@ -85,13 +85,14 @@ public class TribblesGameState extends GameState {
     }
 
     public void setPlayerDecked(String playerId, boolean bool) {
-        _players.get(playerId).setDecked(bool);
+        Player player = getPlayer(playerId);
+        player.setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerDecked(_players.get(playerId));
+            listener.setPlayerDecked(player);
     }
 
     public boolean getPlayerDecked(String playerId) {
-        return _players.get(playerId).getDecked();
+        return getPlayer(playerId).getDecked();
     }
 
     public void setNextTribbleInSequence(int num) {

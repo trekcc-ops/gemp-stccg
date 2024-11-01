@@ -3,13 +3,13 @@ package com.gempukku.stccg.gamestate;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardState;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
 import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -32,10 +32,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     protected PlayerOrder _playerOrder;
     protected final GameFormat _format;
     protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
-
-    protected final Map<String, Player> _players = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
-
     protected final List<PhysicalCard> _inPlay = new LinkedList<>();
 
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
@@ -55,8 +52,7 @@ public abstract class GameState implements Snapshotable<GameState> {
     protected int _nextCardId = 0;
     private final Map<String, Integer> _turnNumbers = new HashMap<>();
 
-    public GameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                     GameFormat format, DefaultGame game) {
+    public GameState(Map<String, CardDeck> decks, CardBlueprintLibrary library, GameFormat format) {
         _format = format;
         _decks = decks;
         _library = library;
@@ -69,9 +65,8 @@ public abstract class GameState implements Snapshotable<GameState> {
         cardGroupList.add(Zone.REMOVED);
 
         cardGroupList.forEach(cardGroup -> _cardGroups.put(cardGroup, new HashMap<>()));
-        for (String playerId : players) {
+        for (String playerId : decks.keySet()) {
             cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
-            _players.put(playerId, new Player(game, playerId));
             _turnNumbers.put(playerId, 0);
         }
     }
@@ -256,8 +251,10 @@ public abstract class GameState implements Snapshotable<GameState> {
     }
 
     public void activatedCard(String playerPerforming, PhysicalCard card) {
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, _players.get(playerPerforming)));
+        for (GameStateListener listener : getAllGameStateListeners()) {
+            GameEvent event = new GameEvent(GameEvent.Type.FLASH_CARD_IN_PLAY, card, getPlayer(playerPerforming));
+            listener.sendEvent(event);
+        }
     }
 
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
@@ -549,18 +546,20 @@ public abstract class GameState implements Snapshotable<GameState> {
             listener.sendWarning(player, warning);
     }
 
-    public void addToPlayerScore(String player, int points) {
-        _players.get(player).scorePoints(points);
+    public void addToPlayerScore(String playerId, int points) {
+        Player player = getPlayer(playerId);
+        player.scorePoints(points);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerScore(player);
+            listener.setPlayerScore(playerId);
     }
 
     public int getPlayerScore(String playerId) {
-        return _players.get(playerId).getScore();
+        Player player = getPlayer(playerId);
+        return player.getScore();
     }
 
-    public Player getPlayer(String playerId) { return _players.get(playerId); }
-    public Collection<Player> getPlayers() { return _players.values(); }
+    public Player getPlayer(String playerId) { return getGame().getPlayerFromId(playerId); }
+    public Collection<Player> getPlayers() { return getGame().getPlayers(); }
 
     public void discardHand(String playerId) {
         List<PhysicalCard> hand = new LinkedList<>(getHand(playerId));

@@ -1,13 +1,11 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.ModifierEffect;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Player {
-
     private final String _playerId;
     private boolean _decked;
     private int _score;
