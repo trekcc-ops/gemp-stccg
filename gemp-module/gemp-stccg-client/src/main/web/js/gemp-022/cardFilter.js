@@ -74,6 +74,8 @@ export default class CardFilter {
             return this.setSelect;
         })
         .catch(error => {
+            // NOTE: Because comm.getSets() catches all possible "return value is not JSON" errors
+            //       and because JQuery tends to error silently, this line is not testable right now.
             console.error(error);
         });
     }
