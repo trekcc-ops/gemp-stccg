@@ -2,10 +2,11 @@ package com.gempukku.stccg.game;
 
 
 import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.processes.TurnProcedure;
-import com.gempukku.stccg.common.filterable.Phase;
 
 /**
  * Defines a snapshot of a game. Since the DefaultGame class is not a snapshotable,
@@ -40,7 +41,19 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
 
     @Override
     public GameSnapshot generateSnapshot(SnapshotData snapshotData) {
-        return createGameSnapshot(_id, _description, _gameState, _modifiersLogic, _actionsEnvironment, _turnProcedure);
+        GameState newGameState;
+
+        if (_gameState instanceof ST1EGameState st1eGameState)
+            newGameState = snapshotData.getDataForSnapshot(st1eGameState);
+        else
+            throw new RuntimeException("blork"); // TODO SNAPSHOT - Get rid of this
+
+        ModifiersLogic newModifiersLogic = snapshotData.getDataForSnapshot(_modifiersLogic);
+        ActionsEnvironment newEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
+        TurnProcedure newProcedure = snapshotData.getDataForSnapshot(_turnProcedure);
+
+
+        return new GameSnapshot(_id, _description, newGameState, newModifiersLogic, newEnvironment, newProcedure);
     }
 
 

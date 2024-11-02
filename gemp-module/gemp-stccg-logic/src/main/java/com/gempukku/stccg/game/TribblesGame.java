@@ -24,7 +24,7 @@ public class TribblesGame extends DefaultGame {
 
         _gameState.createPhysicalCards(library, decks);
         _turnProcedure = new TurnProcedure(this,
-                new TribblesPlayerOrderProcess(decks, _library, _gameState::init, _thisGame));
+                new TribblesPlayerOrderProcess(decks, _library, _gameState::setPlayerOrder, _thisGame));
     }
 
     @Override

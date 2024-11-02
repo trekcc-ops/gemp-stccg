@@ -17,6 +17,7 @@ public class ST1EStartOfGameProcess extends ST1EGameProcess {
 
     @Override
     public void process() {
+        _game.takeSnapshot("Start of game");
         for (String player : _players) {
             List<PhysicalCard> doorwaySeeds = new LinkedList<>();
             for (PhysicalCard seedCard : _game.getGameState().getSeedDeck(player)) {

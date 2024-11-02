@@ -41,7 +41,6 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
 
         if (_gameProcess == null) {
             // Take game snapshot for start of game
-//            _game.takeSnapshot("Start of game"); // TODO SNAPSHOT - turned it off because it's not working
             _gameProcess = _firstProcess;
         }
 

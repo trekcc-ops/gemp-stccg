@@ -281,7 +281,8 @@ public abstract class DefaultGame {
         // TODO - Star Wars code used PlayCardStates here
         pruneSnapshots();
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
-        _snapshots.add(GameSnapshot.createGameSnapshot(++_nextSnapshotId, description, getGameState(),
+        ++_nextSnapshotId;
+        _snapshots.add(GameSnapshot.createGameSnapshot(_nextSnapshotId, description, getGameState(),
                 _modifiersLogic, _actionsEnvironment, getTurnProcedure()));
     }
 

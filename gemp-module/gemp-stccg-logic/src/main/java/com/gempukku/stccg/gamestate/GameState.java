@@ -60,7 +60,7 @@ public abstract class GameState {
 
     public abstract DefaultGame getGame();
 
-    public void init(PlayerOrder playerOrder, String firstPlayer) {
+    public void setPlayerOrder(PlayerOrder playerOrder, String firstPlayer) {
         _playerOrder = playerOrder;
         setCurrentPlayerId(firstPlayer);
         for (GameStateListener listener : getAllGameStateListeners()) {

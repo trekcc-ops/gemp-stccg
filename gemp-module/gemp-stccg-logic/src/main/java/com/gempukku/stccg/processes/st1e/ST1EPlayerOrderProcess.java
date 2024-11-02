@@ -1,20 +1,17 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
 public class ST1EPlayerOrderProcess extends ST1EGameProcess {
-    private final PlayerOrderFeedback _playerOrderFeedback;
     private final Set<String> _players;
 
-    public ST1EPlayerOrderProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, ST1EGame game) {
+    public ST1EPlayerOrderProcess(Set<String> players, ST1EGame game) {
         super(game);
         _players = players;
-        _playerOrderFeedback = playerOrderFeedback;
     }
 
     @Override
@@ -51,7 +48,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
         }
 
         _game.sendMessage(firstPlayer + " will go first");
-        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
+        _game.getGameState().setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
     }
 
     @Override
