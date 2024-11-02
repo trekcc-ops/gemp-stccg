@@ -57,7 +57,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     @Override
     public void emitEffectResult(EffectResult effectResult) {
         _effectResults.add(effectResult);
-        turnEffectResults.add(effectResult);
+        if (Objects.equals(_game.getStatus(), "Playing")) turnEffectResults.add(effectResult);
         phaseEffectResults.add(effectResult);
     }
 
