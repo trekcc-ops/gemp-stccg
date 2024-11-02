@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.TurnProcedure;
-import com.gempukku.stccg.processes.st1e.ST1EGameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
@@ -29,13 +28,8 @@ public class ST1EGame extends DefaultGame {
         _rules.applyRuleSet();
 
         _gameState.createPhysicalCards(library, decks);
-        _turnProcedure = new TurnProcedure(this
-        ) {
-            @Override
-            protected ST1EGameProcess setFirstGameProcess() {
-                return new ST1EPlayerOrderProcess(_allPlayerIds, _gameState::init, _thisGame);
-            }
-        };
+        _turnProcedure =
+                new TurnProcedure(this, new ST1EPlayerOrderProcess(_allPlayerIds, _gameState::init, this));
     }
 
     @Override

@@ -11,39 +11,35 @@ import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.*;
 
-public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
+public class TurnProcedure implements Snapshotable<TurnProcedure> {
     private final DefaultGame _game;
     private final Stack<Action> _actionStack;
     private GameProcess _gameProcess;
     private boolean _playedGameProcess;
-    private ActionsEnvironment _actionsEnvironment;
+    private final ActionsEnvironment _actionsEnvironment;
+    private final GameProcess _firstProcess;
 
     @Override
     public TurnProcedure generateSnapshot(SnapshotData snapshotData) {
-        TurnProcedure selfSnapshot = new TurnProcedure(_game) {
-            @Override
-            protected GameProcess setFirstGameProcess() {
-                return null; // TODO - This shouldn't be null, but it also should never be called
-            }
-        };
-
-        // Set each field
-//        selfSnapshot._actionStack = snapshotData.getDataForSnapshot(_actionStack); // TODO SNAPSHOT - Need to move ActionStack back out into its own class?
-        selfSnapshot._gameProcess = _gameProcess;
-        selfSnapshot._playedGameProcess = _playedGameProcess;
-        selfSnapshot._actionsEnvironment = _actionsEnvironment;
-        return selfSnapshot;
+        ActionsEnvironment actionsEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
+        return new TurnProcedure(_game, _gameProcess, _playedGameProcess, actionsEnvironment, _firstProcess);
     }
 
 
+    public TurnProcedure(DefaultGame game, GameProcess startingProcess) {
+        this(game, null, false, game.getActionsEnvironment(), startingProcess);
+    }
 
-    public TurnProcedure(DefaultGame game) {
+
+    private TurnProcedure(DefaultGame game, GameProcess currentProcess, boolean playedGameProcess,
+                          ActionsEnvironment actionsEnvironment, GameProcess firstProcess) {
         _game = game;
-        _actionsEnvironment = _game.getActionsEnvironment();
-        _actionStack = _actionsEnvironment.getActionStack();
+        _actionsEnvironment = actionsEnvironment;
+        _actionStack = actionsEnvironment.getActionStack();
+        _gameProcess = currentProcess;
+        _playedGameProcess = playedGameProcess;
+        _firstProcess = firstProcess;
     }
-
-    protected abstract GameProcess setFirstGameProcess();
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
         int numSinceDecision = 0;
@@ -51,7 +47,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         if (_gameProcess == null) {
             // Take game snapshot for start of game
 //            _game.takeSnapshot("Start of game"); // TODO SNAPSHOT - turned it off because it's not working
-            _gameProcess = setFirstGameProcess();
+            _gameProcess = _firstProcess;
         }
 
         while (_game.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null &&

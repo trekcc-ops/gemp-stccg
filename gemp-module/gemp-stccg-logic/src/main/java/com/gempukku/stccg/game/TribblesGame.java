@@ -1,12 +1,11 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
-import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
+import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 
 import java.util.Map;
@@ -24,13 +23,8 @@ public class TribblesGame extends DefaultGame {
         new TribblesRuleSet(this).applyRuleSet();
 
         _gameState.createPhysicalCards(library, decks);
-        _turnProcedure = new TurnProcedure(this
-        ) {
-            @Override
-            protected GameProcess setFirstGameProcess() {
-                return new TribblesPlayerOrderProcess(decks, _library, _gameState::init, _thisGame);
-            }
-        };
+        _turnProcedure = new TurnProcedure(this,
+                new TribblesPlayerOrderProcess(decks, _library, _gameState::init, _thisGame));
     }
 
     @Override
