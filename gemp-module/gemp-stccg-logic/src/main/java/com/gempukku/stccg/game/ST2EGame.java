@@ -20,7 +20,7 @@ public class ST2EGame extends DefaultGame {
         _gameState = new ST2EGameState(decks.keySet(), this);
         new RuleSet(this).applyRuleSet();
 
-        _turnProcedure = new TurnProcedure(this, _userFeedback
+        _turnProcedure = new TurnProcedure(this
         ) {
             @Override
             protected ST1EGameProcess setFirstGameProcess() {

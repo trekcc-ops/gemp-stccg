@@ -24,7 +24,7 @@ public class TribblesGame extends DefaultGame {
         new TribblesRuleSet(this).applyRuleSet();
 
         _gameState.createPhysicalCards(library, decks);
-        _turnProcedure = new TurnProcedure(this, _userFeedback
+        _turnProcedure = new TurnProcedure(this
         ) {
             @Override
             protected GameProcess setFirstGameProcess() {

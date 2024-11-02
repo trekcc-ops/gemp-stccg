@@ -342,4 +342,6 @@ public abstract class DefaultGame {
         return _format.discardPileIsPublic();
     }
 
+    public boolean hasNoPendingDecisions() { return _userFeedback.hasNoPendingDecisions(); }
+
 }

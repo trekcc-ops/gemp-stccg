@@ -29,7 +29,7 @@ public class ST1EGame extends DefaultGame {
         _rules.applyRuleSet();
 
         _gameState.createPhysicalCards(library, decks);
-        _turnProcedure = new TurnProcedure(this, _userFeedback
+        _turnProcedure = new TurnProcedure(this
         ) {
             @Override
             protected ST1EGameProcess setFirstGameProcess() {

@@ -4,7 +4,6 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.*;
@@ -13,16 +12,15 @@ import com.gempukku.stccg.gamestate.GameState;
 import java.util.*;
 
 public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
-    private UserFeedback _userFeedback;
-    private DefaultGame _game;
-    protected final Stack<Action> _actionStack;
-    protected GameProcess _gameProcess;
+    private final DefaultGame _game;
+    private final Stack<Action> _actionStack;
+    private GameProcess _gameProcess;
     private boolean _playedGameProcess;
     private ActionsEnvironment _actionsEnvironment;
 
     @Override
     public TurnProcedure generateSnapshot(SnapshotData snapshotData) {
-        TurnProcedure selfSnapshot = new TurnProcedure(_game, _userFeedback) {
+        TurnProcedure selfSnapshot = new TurnProcedure(_game) {
             @Override
             protected GameProcess setFirstGameProcess() {
                 return null; // TODO - This shouldn't be null, but it also should never be called
@@ -39,11 +37,10 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
 
 
 
-    public TurnProcedure(DefaultGame game, final UserFeedback userFeedback) {
+    public TurnProcedure(DefaultGame game) {
         _game = game;
         _actionsEnvironment = _game.getActionsEnvironment();
         _actionStack = _actionsEnvironment.getActionStack();
-        _userFeedback = userFeedback;
     }
 
     protected abstract GameProcess setFirstGameProcess();
@@ -57,7 +54,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
             _gameProcess = setFirstGameProcess();
         }
 
-        while (_userFeedback.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null &&
+        while (_game.hasNoPendingDecisions() && _game.getWinnerPlayerId() == null &&
                 !_game.isRestoreSnapshotPending()) {
             numSinceDecision++;
             // First check for any "state-based" effects
