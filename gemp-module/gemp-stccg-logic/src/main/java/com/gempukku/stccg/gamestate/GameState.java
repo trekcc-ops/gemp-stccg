@@ -559,37 +559,6 @@ public abstract class GameState {
     }
 
 
-    public boolean updateGameStats() {
-        boolean changed = false;
-
-        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
-        Map<String, Integer> newPlayerScores = new HashMap<>();
-
-        if (_playerOrder != null) {
-            for (String player : _playerOrder.getAllPlayers()) {
-                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
-                playerZoneSizes.put(Zone.HAND, getHand(player).size());
-                playerZoneSizes.put(Zone.DRAW_DECK, getDrawDeck(player).size());
-                playerZoneSizes.put(Zone.DISCARD, getDiscard(player).size());
-                playerZoneSizes.put(Zone.REMOVED, getRemoved(player).size());
-                newZoneSizes.put(player, playerZoneSizes);
-                newPlayerScores.put(player, getPlayerScore(player));
-            }
-        }
-
-        if (!newZoneSizes.equals(_previousZoneSizes)) {
-            changed = true;
-            _previousZoneSizes = newZoneSizes;
-        }
-
-        if (!newPlayerScores.equals(_previousPlayerScores)) {
-            changed = true;
-            _previousPlayerScores = newPlayerScores;
-        }
-
-        return changed;
-    }
-
     public void updateGameStatsAndSendIfChanged() {
         boolean changed = false;
 

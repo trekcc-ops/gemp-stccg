@@ -344,4 +344,8 @@ public abstract class DefaultGame {
 
     public boolean hasNoPendingDecisions() { return _userFeedback.hasNoPendingDecisions(); }
 
+    public boolean isCarryingOutEffects() {
+        return hasNoPendingDecisions() && _winnerPlayerId == null && !isRestoreSnapshotPending();
+    }
+
 }
