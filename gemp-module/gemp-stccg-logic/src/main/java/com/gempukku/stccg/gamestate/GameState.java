@@ -25,6 +25,11 @@ import static com.gempukku.stccg.gamestate.GameEvent.Type.REMOVE_CARD_FROM_PLAY;
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
+
+    // previousZoneSizes and previousPlayerScores are only used for GameStats comparisons and event sending
+    private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
+    private Map<String, Integer> _previousPlayerScores = new HashMap<>();
+
     protected PlayerOrder _playerOrder;
     protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
     protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
@@ -149,7 +154,7 @@ public abstract class GameState {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGameStats()));
+        listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, this));
     }
 
     public void sendMessage(String message) {
@@ -504,9 +509,9 @@ public abstract class GameState {
         Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).get(playerId), ThreadLocalRandom.current());
     }
 
-    public void sendGameStats(GameStats gameStats) {
+    public void sendGameStats() {
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, gameStats));
+            listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, this));
     }
 
     public void sendWarning(String player, String warning) {
@@ -554,7 +559,74 @@ public abstract class GameState {
     }
 
 
-    public GameStats getGameStats() {
-        return getGame().getTurnProcedure().getGameStats();
+    public boolean updateGameStats() {
+        boolean changed = false;
+
+        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
+        Map<String, Integer> newPlayerScores = new HashMap<>();
+
+        if (_playerOrder != null) {
+            for (String player : _playerOrder.getAllPlayers()) {
+                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
+                playerZoneSizes.put(Zone.HAND, getHand(player).size());
+                playerZoneSizes.put(Zone.DRAW_DECK, getDrawDeck(player).size());
+                playerZoneSizes.put(Zone.DISCARD, getDiscard(player).size());
+                playerZoneSizes.put(Zone.REMOVED, getRemoved(player).size());
+                newZoneSizes.put(player, playerZoneSizes);
+                newPlayerScores.put(player, getPlayerScore(player));
+            }
+        }
+
+        if (!newZoneSizes.equals(_previousZoneSizes)) {
+            changed = true;
+            _previousZoneSizes = newZoneSizes;
+        }
+
+        if (!newPlayerScores.equals(_previousPlayerScores)) {
+            changed = true;
+            _previousPlayerScores = newPlayerScores;
+        }
+
+        return changed;
     }
+
+    public void updateGameStatsAndSendIfChanged() {
+        boolean changed = false;
+
+        Map<String, Map<Zone, Integer>> newZoneSizes = new HashMap<>();
+        Map<String, Integer> newPlayerScores = new HashMap<>();
+
+        if (_playerOrder != null) {
+            for (String player : _playerOrder.getAllPlayers()) {
+                final Map<Zone, Integer> playerZoneSizes = new EnumMap<>(Zone.class);
+                playerZoneSizes.put(Zone.HAND, getHand(player).size());
+                playerZoneSizes.put(Zone.DRAW_DECK, getDrawDeck(player).size());
+                playerZoneSizes.put(Zone.DISCARD, getDiscard(player).size());
+                playerZoneSizes.put(Zone.REMOVED, getRemoved(player).size());
+                newZoneSizes.put(player, playerZoneSizes);
+                newPlayerScores.put(player, getPlayerScore(player));
+            }
+        }
+
+        if (!newZoneSizes.equals(_previousZoneSizes)) {
+            changed = true;
+            _previousZoneSizes = newZoneSizes;
+        }
+
+        if (!newPlayerScores.equals(_previousPlayerScores)) {
+            changed = true;
+            _previousPlayerScores = newPlayerScores;
+        }
+
+        if (changed) sendGameStats();
+    }
+
+
+
+    public Map<String, Map<Zone, Integer>> getZoneSizes() {
+        return Collections.unmodifiableMap(_previousZoneSizes);
+    }
+
+    public Map<String, Integer> getPlayerScores() { return Collections.unmodifiableMap(_previousPlayerScores); }
+
 }

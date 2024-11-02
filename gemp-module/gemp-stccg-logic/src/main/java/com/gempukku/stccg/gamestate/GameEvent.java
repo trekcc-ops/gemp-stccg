@@ -52,7 +52,7 @@ public class GameEvent {
 
     private final Type _type;
     private Zone _zone;
-    private GameStats _gameStats;
+    private GameState _gameState;
     private AwaitingDecision _awaitingDecision;
     private final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
@@ -89,10 +89,11 @@ public class GameEvent {
         setCardData(card);
     }
 
-    public GameEvent(Type type, GameStats stats) {
+    public GameEvent(Type type, GameState gameState) {
         this(type);
-        _gameStats = stats;
+        _gameState = gameState;
     }
+
 
     public GameEvent(Type type, GameState gameState, Player player) {
         this(type, player);
@@ -156,7 +157,7 @@ public class GameEvent {
                 eventElem.setAttribute(attribute.name(), getAttribute(attribute));
         }
 
-        if (_gameStats != null)
+        if (_gameState != null)
             serializeGameStats(doc, eventElem);
         if (_awaitingDecision != null)
             serializeDecision(doc, eventElem);
@@ -176,7 +177,7 @@ public class GameEvent {
     }
 
     private void serializeGameStats(Document doc, Element eventElem) {
-        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameStats.getZoneSizes().entrySet()) {
+        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameState.getZoneSizes().entrySet()) {
             final Element playerZonesElem = doc.createElement("playerZones");
 
             playerZonesElem.setAttribute("name", playerZoneSizes.getKey());
@@ -187,7 +188,7 @@ public class GameEvent {
             eventElem.appendChild(playerZonesElem);
         }
 
-        for (Map.Entry<String, Integer> playerScore : _gameStats.getPlayerScores().entrySet()) {
+        for (Map.Entry<String, Integer> playerScore : _gameState.getPlayerScores().entrySet()) {
             final Element playerScoreElem = doc.createElement("playerScores");
             playerScoreElem.setAttribute("name", playerScore.getKey());
             playerScoreElem.setAttribute("score", playerScore.getValue().toString());

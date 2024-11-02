@@ -3,27 +3,21 @@ package com.gempukku.stccg.processes;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.*;
-
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.GameStats;
-import com.gempukku.stccg.common.UserFeedback;
 
 import java.util.*;
 
-// Action generates multiple Effects, both costs and result of an action are Effects.
-
-// Decision is also an Effect.
 public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
     private UserFeedback _userFeedback;
     private DefaultGame _game;
     protected final Stack<Action> _actionStack;
     protected GameProcess _gameProcess;
     private boolean _playedGameProcess;
-    private GameStats _gameStats;
     private ActionsEnvironment _actionsEnvironment;
 
     @Override
@@ -39,7 +33,6 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
 //        selfSnapshot._actionStack = snapshotData.getDataForSnapshot(_actionStack); // TODO SNAPSHOT - Need to move ActionStack back out into its own class?
         selfSnapshot._gameProcess = _gameProcess;
         selfSnapshot._playedGameProcess = _playedGameProcess;
-        selfSnapshot._gameStats = _gameStats;
         selfSnapshot._actionsEnvironment = _actionsEnvironment;
         return selfSnapshot;
     }
@@ -51,12 +44,9 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
         _actionsEnvironment = _game.getActionsEnvironment();
         _actionStack = _actionsEnvironment.getActionStack();
         _userFeedback = userFeedback;
-        _gameStats = new GameStats();
     }
 
     protected abstract GameProcess setFirstGameProcess();
-
-    public GameStats getGameStats() { return _gameStats; }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
         int numSinceDecision = 0;
@@ -82,8 +72,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
                         _playedGameProcess = false;
                     } else {
                         _gameProcess.process();
-                        if (_gameStats.updateGameStats(_game))
-                            _game.getGameState().sendGameStats(_gameStats);
+                        _game.getGameState().updateGameStatsAndSendIfChanged();
                         _playedGameProcess = true;
                     }
                 } else {
@@ -104,9 +93,7 @@ public abstract class TurnProcedure implements Snapshotable<TurnProcedure> {
                     }
                 }
             }
-
-            if (_gameStats.updateGameStats(_game))
-                _game.getGameState().sendGameStats(_gameStats);
+            _game.getGameState().updateGameStatsAndSendIfChanged();
 
             // Check if an unusually large number loops since user decision, which means game is probably in a loop
             if (numSinceDecision >= 5000) {
