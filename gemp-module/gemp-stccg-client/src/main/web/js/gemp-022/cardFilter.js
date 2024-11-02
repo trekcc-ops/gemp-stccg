@@ -57,8 +57,6 @@ export default class CardFilter {
     }
 
     updateSetOptions() {
-        var currentSet = this.setSelect.val();
-
         let promise = this.comm.getSets(this.format);
         return promise.then((json) => {
             this.setSelect.empty();
@@ -78,32 +76,6 @@ export default class CardFilter {
         .catch(error => {
             console.error(error);
         });
-        /*
-
-        this.comm.getSets(that.format,
-            function (json)
-            {
-                that.setSelect.empty();
-                $(json).each(function (index, o) {
-                    if (o.code == "disabled") {
-                        that.setSelect.append("<option disabled>----------</option>")
-                    } else {
-                        var $option = $("<option/>")
-                            .attr("value", o.code)
-                            .text(o.name);
-                        that.setSelect.append($option);
-                    }
-                });
-
-                that.setSelect.val(currentSet);
-            },
-            {
-                "400":function ()
-                {
-                    alert("Could not retrieve sets.");
-                }
-            });
-        */
     }
 
     buildUi(pageElem) {
