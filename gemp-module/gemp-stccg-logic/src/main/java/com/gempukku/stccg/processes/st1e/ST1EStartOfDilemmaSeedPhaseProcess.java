@@ -20,6 +20,7 @@ public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
     @Override
     public void process() {
         ST1EGameState gameState = _game.getGameState();
+        _game.getActionsEnvironment().signalEndOfPhase(); // end mission seed phase
         gameState.setCurrentPhase(Phase.SEED_DILEMMA);
         for (String player : _game.getPlayerIds()) {
             List<PhysicalCard> remainingSeeds = new LinkedList<>(gameState.getSeedDeck(player));
@@ -28,6 +29,7 @@ public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
                 gameState.addCardToZone(card, Zone.HAND);
             }
         }
+//        _game.takeSnapshot("Start of dilemma seed phase");
     }
 
     @Override
