@@ -284,7 +284,9 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         for (Zone zone : _cardGroups.keySet())
             copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);
 
-        // TODO SNAPSHOT: _spacelineLocations
+        for (ST1ELocation location : _spacelineLocations)
+            snapshot._spacelineLocations.add(snapshotData.getDataForSnapshot(location));
+
         // TODO SNAPSHOT: _awayTeams
         copyCardGroup(_stacked, snapshot._stacked, snapshotData);
         copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);

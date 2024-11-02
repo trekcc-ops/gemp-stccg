@@ -149,7 +149,7 @@ public abstract class GameState {
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGame().getTurnProcedure().getGameStats()));
+        listener.sendEvent(new GameEvent(GameEvent.Type.GAME_STATS, getGameStats()));
     }
 
     public void sendMessage(String message) {
@@ -551,5 +551,10 @@ public abstract class GameState {
         int cardId = _nextCardId;
         _nextCardId++;
         return cardId;
+    }
+
+
+    public GameStats getGameStats() {
+        return getGame().getTurnProcedure().getGameStats();
     }
 }
