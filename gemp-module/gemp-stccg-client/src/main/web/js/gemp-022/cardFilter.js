@@ -34,6 +34,7 @@ export default class CardFilter {
         this.comm = new GempClientCommunication("/gemp-stccg-server", that.processError);
 
         this.buildUi(pageElem);
+        // BUG: This call is async so uhhhhh creating a new CardFilter probably has a race condition.
         this.updateSetOptions();
     }
 
@@ -59,7 +60,7 @@ export default class CardFilter {
         var currentSet = this.setSelect.val();
 
         let promise = this.comm.getSets(this.format);
-        promise.then((json) => {
+        return promise.then((json) => {
             this.setSelect.empty();
             let that = this;
             $(json).each(function (index, o) {
@@ -72,8 +73,7 @@ export default class CardFilter {
                     that.setSelect.append($option);
                 }
             });
-
-            this.setSelect.val(currentSet);
+            return this.setSelect;
         })
         .catch(error => {
             console.error(error);

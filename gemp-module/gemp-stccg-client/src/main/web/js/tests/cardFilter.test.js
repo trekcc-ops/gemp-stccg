@@ -5,7 +5,7 @@ beforeEach(() => {
     fetchMock.resetMocks();
 });
 
-test('setCollectionType sets the collectionType', () => {
+test('setCollectionType sets the collectionType', async () => {
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
                 <option value="default">All cards</option>
@@ -26,14 +26,14 @@ test('setCollectionType sets the collectionType', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     expect(cf.collectionType).toBe("default");
     cf.setCollectionType("permanent");
     expect(cf.collectionType).toBe("permanent");
 });
 
-test('setCollectionType resets the start point', () => {
+test('setCollectionType resets the start point', async () => {
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
                 <option value="default">All cards</option>
@@ -54,7 +54,7 @@ test('setCollectionType resets the start point', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     expect(cf.start).toBe(0);
     cf.start = 18;
@@ -63,7 +63,7 @@ test('setCollectionType resets the start point', () => {
     expect(cf.start).toBe(0);
 });
 
-test('setFilter sets the filter', () => {
+test('setFilter sets the filter', async () => {
     // I don't know what part of the UI uses this except for merchantUI - unneeded?
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
@@ -85,14 +85,14 @@ test('setFilter sets the filter', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     expect(cf.filter).toBe("");
     cf.setFilter("type:card");
     expect(cf.filter).toBe("type:card");
 });
 
-test('setFilter resets the start point', () => {
+test('setFilter resets the start point', async () => {
     // I don't know what part of the UI uses this except for merchantUI - unneeded?
     document.body.innerHTML = `
             <label for="collectionSelect"></label><select id="collectionSelect">
@@ -114,7 +114,7 @@ test('setFilter resets the start point', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     expect(cf.start).toBe(0);
     cf.start = 18;
@@ -123,7 +123,7 @@ test('setFilter resets the start point', () => {
     expect(cf.start).toBe(0);
 });
 
-test('setFormat sets the format', () => {
+test('setFormat sets the format', async () => {
     document.body.innerHTML = `
             <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
 				<option value="st1emoderncomplete">ST1E Modern Complete</option>
@@ -144,14 +144,14 @@ test('setFormat sets the format', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     expect(cf.format).toBe("ST1E");
     cf.setFormat("tribbles");
     expect(cf.format).toBe("tribbles");
 });
 
-test('setFormat does not reset the start point', () => {
+test('setFormat does not reset the start point', async () => {
     document.body.innerHTML = `
             <label for="formatSelect"></label><select id="formatSelect" style="float: right; width: 150px;">
 				<option value="st1emoderncomplete">ST1E Modern Complete</option>
@@ -172,7 +172,7 @@ test('setFormat does not reset the start point', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     expect(cf.start).toBe(0);
     cf.start = 18;
@@ -181,7 +181,7 @@ test('setFormat does not reset the start point', () => {
     expect(cf.start).toBe(18);
 });
 
-test('setType can set the type', () => {
+test('setType can set the type', async () => {
     document.body.innerHTML = 
         '<select id="type" class="cardFilterSelect">' +
             '<option value="200">All physical card types</option>' +
@@ -200,7 +200,7 @@ test('setType can set the type', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     let selectUnderTest = $('#type');
 
@@ -209,7 +209,85 @@ test('setType can set the type', () => {
     expect(selectUnderTest.val()).toBe('101');
 });
 
-test('calculateNormalFilter none checked', () => {
+test('updateSetOptions can reset the full list', async () => {
+    document.body.innerHTML = '<select id="setSelect">' +
+    '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>' +
+    '</select>';
+
+    let beforeclear = '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>';
+    
+    const mockCollection = jest.fn(() => {return});
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization and every updateSetOptions requires a server call, mock them with data.
+    const getSets_retval = JSON.stringify(
+        [{"code": "1234", "name": "butts"}, {"code": "3456", "name": "in seats"}]
+    );
+    fetchMock.mockResponse(getSets_retval);
+
+    var selectUnderTest = $('#setSelect');
+    expect(selectUnderTest.html()).toBe(beforeclear);
+    expect(selectUnderTest.val()).toBe('101');
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf_setsel = await cf.updateSetOptions();
+
+    expect(fetch.mock.calls.length).toEqual(2) // Fetch was called twice, once in instantiation, once in updateSetOptions
+
+    let afterClear = '<option value="1234">butts</option>' +
+    '<option value="3456">in seats</option>'
+
+    expect(selectUnderTest.html()).toBe(afterClear);
+    expect(selectUnderTest.val()).toBe('1234'); // first obj in list
+});
+
+test('updateSetOptions adds a line for disabled options', async () => {
+    document.body.innerHTML = '<select id="setSelect">' +
+    '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>' +
+    '</select>';
+
+    let beforeclear = '<option value="101,103,105,106,109,112,116,123,124,125,127,128,155,159,161,163,172,178,202,204,212,244set,245">All 1E Modern Complete sets</option>' +
+    '<option disabled="">----------</option>' +
+    '<option value="101" selected="">Premiere</option>';
+    
+    const mockCollection = jest.fn(() => {return});
+    const mockClearCollection = jest.fn(() => {return});
+    const mockAddCard = jest.fn(() => {return});
+    const mockFinishCollection = jest.fn(() => {return});
+    const mockFormat = "ST1E";
+
+    // CardFilter initialization and every updateSetOptions requires a server call, mock them with data.
+    const getSets_retval = JSON.stringify(
+        [{"code": "1234", "name": "butts"}, {"code": "disabled", "name": "in seats"}]
+    );
+    fetchMock.mockResponse(getSets_retval);
+
+    var selectUnderTest = $('#setSelect');
+    expect(selectUnderTest.html()).toBe(beforeclear);
+    expect(selectUnderTest.val()).toBe('101');
+    
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf_setsel = await cf.updateSetOptions();
+
+    expect(fetch.mock.calls.length).toEqual(2) // Fetch was called twice, once in instantiation, once in updateSetOptions
+
+    let afterClear = '<option value="1234">butts</option>' +
+    '<option disabled="">----------</option>'
+
+    expect(selectUnderTest.html()).toBe(afterClear);
+    expect(selectUnderTest.val()).toBe('1234'); // first obj in list
+});
+
+test('calculateNormalFilter none checked', async () => {
     document.body.innerHTML = 
     '<select id="type" class="cardFilterSelect">' +
         '<option value="200">All physical card types</option>' +
@@ -247,7 +325,7 @@ test('calculateNormalFilter none checked', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
 
     let expectedResult = "|cardType:undefined|keyword:undefined|type:200|phase:undefined";
     let actualResult = cf.calculateNormalFilter();
@@ -255,7 +333,7 @@ test('calculateNormalFilter none checked', () => {
     expect(actualResult).toBe(expectedResult);
 });
 
-test('calculateNormalFilter Federation checked', () => {
+test('calculateNormalFilter Federation checked', async () => {
     document.body.innerHTML = 
     '<select id="type" class="cardFilterSelect">' +
         '<option value="200">All physical card types</option>' +
@@ -293,7 +371,7 @@ test('calculateNormalFilter Federation checked', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
     
     // set up a watch on the button, verify it is unchecked
     let fedInput = $("#FEDERATION");
@@ -311,7 +389,7 @@ test('calculateNormalFilter Federation checked', () => {
     expect(actualResult).toBe(expectedResult);
 });
 
-test('calculateNormalFilter Federation + Kazon checked', () => {
+test('calculateNormalFilter Federation + Kazon checked', async () => {
     document.body.innerHTML = 
     '<select id="type" class="cardFilterSelect">' +
         '<option value="200">All physical card types</option>' +
@@ -349,7 +427,7 @@ test('calculateNormalFilter Federation + Kazon checked', () => {
     );
     fetchMock.mockResponseOnce(getSets_retval);
     
-    let cf = new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
+    let cf = await new CardFilter(document.body, mockCollection, mockClearCollection, mockAddCard, mockFinishCollection, mockFormat);
     
     // set up a watch on the button, verify it is unchecked
     let fedInput = $("#FEDERATION");
