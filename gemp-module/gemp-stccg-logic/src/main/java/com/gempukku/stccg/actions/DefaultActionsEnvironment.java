@@ -24,6 +24,30 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionStack = actionStack;
     }
 
+    private DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack,
+                                      Collection<? extends ActionProxy> actionProxies,
+                                      Collection<? extends ActionProxy> untilEndOfTurnActionProxies) {
+        _game = game;
+        _actionStack = actionStack;
+        _actionProxies.addAll(actionProxies);
+        _untilEndOfTurnActionProxies.addAll(untilEndOfTurnActionProxies);
+    }
+
+    public DefaultActionsEnvironment generateSnapshot(SnapshotData snapshotData) {
+        // Snapshot should not be created if effect results lists have members
+        if (!_effectResults.isEmpty() || !turnEffectResults.isEmpty() || !phaseEffectResults.isEmpty()) {
+            throw new UnsupportedOperationException(
+                    "Cannot generate snapshot of DefaultActionsEnvironment with EffectResults"
+            );
+        }
+
+        Stack<Action> newActionStack = new Stack<>();
+        for (Action action : _actionStack)
+            newActionStack.add(snapshotData.getDataForSnapshot(action));
+
+        return new DefaultActionsEnvironment(_game, newActionStack, _actionProxies, _untilEndOfTurnActionProxies);
+    }
+
     public DefaultGame getGame() { return _game; }
 
     public List<ActionProxy> getUntilStartOfPhaseActionProxies(Phase phase) {
@@ -224,9 +248,4 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     public Stack<Action> getActionStack() { return _actionStack; }
 
-    @Override
-    public ActionsEnvironment generateSnapshot(SnapshotData snapshotData) {
-        // TODO SNAPSHOT - Add content here
-        return this;
-    }
 }

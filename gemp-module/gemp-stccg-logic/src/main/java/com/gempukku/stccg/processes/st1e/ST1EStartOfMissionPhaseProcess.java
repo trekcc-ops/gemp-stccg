@@ -13,15 +13,13 @@ import java.util.List;
 
 public class ST1EStartOfMissionPhaseProcess extends ST1EGameProcess {
 
-    private final ST1EGameState _gameState;
-
     ST1EStartOfMissionPhaseProcess(ST1EGame game) {
         super(game);
-        _gameState = game.getGameState();
     }
 
     @Override
     public void process() {
+        ST1EGameState _gameState = _game.getGameState();
         _gameState.setCurrentPhase(Phase.SEED_MISSION);
         for (String player : _game.getPlayerIds()) {
             List<PhysicalCard> missionSeeds = new LinkedList<>(_gameState.getMissionPile(player));

@@ -3,8 +3,10 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.SnapshotData;
+import com.gempukku.stccg.game.Snapshotable;
 
-public interface Action {
+public interface Action extends Snapshotable<Action> {
     String getCardActionPrefix();
 
     enum ActionType {
@@ -31,4 +33,8 @@ public interface Action {
     SubAction createSubAction();
     DefaultGame getGame();
     boolean canBeInitiated();
+
+    default Action generateSnapshot(SnapshotData snapshotData) {
+        return this;
+    }
 }
