@@ -1,13 +1,14 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.GameUtils;
 
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
                     new CardActionSelectionDecision(message, playableActions, true, true) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
+                            if ("revert".equalsIgnoreCase(result))
+                                GameUtils.performRevert(_game, _currentPlayer);
                             Action action = getSelectedAction(result);
                             if (action != null) {
                                 _game.getActionsEnvironment().addActionToStack(action);

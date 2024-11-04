@@ -21,6 +21,9 @@ public class ST1EStartOfPlayPhaseProcess extends ST1EGameProcess {
 
         ST1EGameState gameState = _game.getGameState();
 
+        _game.getActionsEnvironment().signalEndOfPhase();
+        _game.takeSnapshot("Start of play phase");
+
         for (String playerId : _game.getPlayerIds()) {
             Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(gameState.getHand(playerId));
             for (PhysicalCard card : remainingSeedCards) {
