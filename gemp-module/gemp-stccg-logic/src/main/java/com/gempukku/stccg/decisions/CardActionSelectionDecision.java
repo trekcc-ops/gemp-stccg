@@ -11,11 +11,11 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
     private final List<Action> _actions;
 
     public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions) {
-        this(decisionId, text, actions, false);
+        this(decisionId, text, actions, true);
     }
 
     public CardActionSelectionDecision(String text, List<? extends Action> actions) {
-        this(1, text, actions, false);
+        this(1, text, actions, true);
     }
 
     public CardActionSelectionDecision(String text, List<? extends Action> actions, boolean noPass,
@@ -30,8 +30,8 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         setParam("actionText", getActionTexts(actions));
         setParam("actionType", getActionTypes(actions));
         setParam("noPass", String.valueOf(noPass));
-        // TODO SNAPSHOT - no methods for "revertEligible" in client
-        setParam("revertEligible", String.valueOf(revertEligible));
+        // TODO SNAPSHOT - client implementation for revertEligible not working, so for now setting it to always false
+        setParam("revertEligible", "false");
     }
 
     public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions,
