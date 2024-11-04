@@ -14,7 +14,6 @@ import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.*;
@@ -22,7 +21,6 @@ import com.gempukku.stccg.modifiers.*;
 import java.util.*;
 
 public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalCard> {
-    private final String _title; // Primarily stored here for easy access during debug
     protected final CardBlueprint _blueprint;
     protected final Player _owner;
     protected final int _cardId;
@@ -32,9 +30,8 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
     protected PhysicalCard _stackedOn;
     protected List<ModifierHook> _modifierHooks;
     protected final Map<Zone, List<ModifierHook>> _modifierHooksInZone = new HashMap<>(); // modifier hooks specific to stacked and discard
-    private final Map<Zone, List<ModifierSource>> _modifiers = new HashMap<>(); // modifiers specific to stacked and discard
+    protected final Map<Zone, List<ModifierSource>> _modifiers = new HashMap<>(); // modifiers specific to stacked and discard
     protected Object _whileInZoneData;
-    protected int _locationZoneIndex;
     protected ST1ELocation _currentLocation;
     protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
     protected List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
@@ -44,7 +41,6 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
         _owner = owner;
         _blueprint = blueprint;
         _imageUrl = blueprint.getImageUrl();
-        _title = blueprint.getTitle();
     }
 
     public abstract DefaultGame getGame();
@@ -149,11 +145,9 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
     }
 
 
-    public String getTitle() { return _title; }
+    public String getTitle() { return _blueprint.getTitle(); }
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
-
-    public void setLocationZoneIndex(int index) { _locationZoneIndex = index; }
 
     public int getLocationZoneIndex() {
         if (_currentLocation == null)
@@ -479,13 +473,6 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
     public void addCardToPreSeeds(PhysicalCard card, Player player) {
         _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
         _cardsPreSeededUnderneath.get(player).add(card);
-    }
-
-
-    @Override
-    public PhysicalCard generateSnapshot(SnapshotData snapshotData) {
-            // TODO - No definition for this method yet
-        return this;
     }
 
 }

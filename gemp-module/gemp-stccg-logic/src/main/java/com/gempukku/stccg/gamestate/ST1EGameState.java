@@ -111,7 +111,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
                     newMission.getOwnerName() + " already has a mission at " +
                     newMission.getBlueprint().getLocation());
         newMission.stackOn(location.getMissions().getFirst());
-        location.addMission(newMission);
+        newMission.setLocation(location);
         addCardToZone(newMission, Zone.SPACELINE, true, true);
     }
 

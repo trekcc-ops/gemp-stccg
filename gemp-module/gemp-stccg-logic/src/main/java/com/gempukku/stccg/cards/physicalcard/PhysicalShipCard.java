@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.SnapshotData;
 import com.google.common.collect.Lists;
 
 import java.util.*;
@@ -150,4 +151,36 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     public Collection<PersonnelCard> getAllPersonnel() {
         return getPersonnelInCrew();
     }
+
+    @Override
+    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
+
+        // TODO - A lot of repetition here between the various PhysicalCard classes
+
+        PhysicalShipCard newCard = new PhysicalShipCard(_game, _cardId, _owner, _blueprint);
+        newCard._imageUrl = _imageUrl;
+        newCard.setZone(_zone);
+        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
+        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
+        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
+        newCard._whileInZoneData = _whileInZoneData;
+        newCard._modifiers.putAll(_modifiers);
+        newCard._modifierHooks = _modifierHooks;
+        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
+
+        for (PhysicalCard card : _cardsSeededUnderneath)
+            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
+
+        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
+            for (PhysicalCard card : entry.getValue())
+                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
+
+        newCard._currentAffiliation = _currentAffiliation;
+        newCard._docked = _docked;
+        newCard._dockedAtCard = snapshotData.getDataForSnapshot(_dockedAtCard);
+        newCard._rangeAvailable = _rangeAvailable;
+
+        return newCard;
+    }
+    
 }

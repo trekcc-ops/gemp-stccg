@@ -12,11 +12,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class MissionCard2E extends MissionCard {
-    private final MissionType _missionType;
 
     public MissionCard2E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _missionType = blueprint.getMissionType();
     }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {

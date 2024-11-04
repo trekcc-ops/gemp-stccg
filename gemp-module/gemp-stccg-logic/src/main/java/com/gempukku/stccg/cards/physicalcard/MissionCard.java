@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -13,18 +12,15 @@ import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.game.SnapshotData;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class MissionCard extends ST1EPhysicalCard {
     private final Quadrant _quadrant;
     private final int _pointsShown;
-    private final MissionType _missionType;
+    protected final MissionType _missionType;
     private final boolean _hasNoPointBox;
     protected boolean _completed = false;
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
@@ -107,5 +103,33 @@ public class MissionCard extends ST1EPhysicalCard {
         _game.getGameState().getPlayer(playerId).addSolvedMission(this);
         _completed = true;
         _game.getGameState().checkVictoryConditions();
+    }
+
+    @Override
+    public MissionCard generateSnapshot(SnapshotData snapshotData) {
+
+        // TODO - A lot of repetition here between the various PhysicalCard classes
+
+        MissionCard newCard = new MissionCard(_game, _cardId, _owner, _blueprint);
+        newCard._imageUrl = _imageUrl;
+        newCard.setZone(_zone);
+        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
+        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
+        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
+        newCard._whileInZoneData = _whileInZoneData;
+        newCard._modifiers.putAll(_modifiers);
+        newCard._modifierHooks = _modifierHooks;
+        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
+
+        for (PhysicalCard card : _cardsSeededUnderneath)
+            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
+
+        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
+            for (PhysicalCard card : entry.getValue())
+                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
+
+        newCard._completed = _completed;
+
+        return newCard;
     }
 }

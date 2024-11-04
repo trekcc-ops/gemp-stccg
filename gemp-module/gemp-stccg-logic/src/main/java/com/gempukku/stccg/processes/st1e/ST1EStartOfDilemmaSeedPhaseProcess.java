@@ -29,7 +29,7 @@ public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
                 gameState.addCardToZone(card, Zone.HAND);
             }
         }
-//        _game.takeSnapshot("Start of dilemma seed phase");
+        _game.takeSnapshot("Start of dilemma seed phase");
     }
 
     @Override

@@ -17,14 +17,13 @@ public class ST1ELocation implements Snapshotable<ST1ELocation> {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
-    private final List<MissionCard> _missionCards = new ArrayList<>();
     private final ST1EGame _game;
     public ST1ELocation(MissionCard mission) {
         _quadrant = mission.getQuadrant();
         _region = mission.getBlueprint().getRegion();
         _locationName = mission.getBlueprint().getLocation();
         _game = mission.getGame();
-        addMission(mission);
+        mission.setLocation(this);
     }
 
     public ST1ELocation(Quadrant quadrant, Region region, String locationName, ST1EGame game) {
@@ -34,22 +33,27 @@ public class ST1ELocation implements Snapshotable<ST1ELocation> {
         _game = game;
     }
 
-    public List<MissionCard> getMissions() { return _missionCards; }
-
-    public void addMission(MissionCard card) {
-        _missionCards.add(card);
-        card.setLocation(this);
+    public List<MissionCard> getMissions() {
+        List<MissionCard> result = new ArrayList<>();
+        Collection<PhysicalCard> missions = Filters.filterActive(_game, CardType.MISSION, Filters.atLocation(this));
+        for (PhysicalCard card : missions) {
+            if (card instanceof MissionCard missionCard)
+                result.add(missionCard);
+            else _game.sendMessage("Error - card of type MISSION that is not MissionCard class type");
+        }
+        return result;
     }
+
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
 
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
-        if (_missionCards.size() == 1) {
-            return _missionCards.getFirst();
+        if (getMissions().size() == 1) {
+            return getMissions().getFirst();
         }
-        else if (_missionCards.size() == 2) {
-            for (MissionCard mission : _missionCards) {
+        else if (getMissions().size() == 2) {
+            for (MissionCard mission : getMissions()) {
                 if (Objects.equals(mission.getOwnerName(), playerId))
                     return mission;
             }
@@ -99,11 +103,6 @@ public class ST1ELocation implements Snapshotable<ST1ELocation> {
 
     @Override
     public ST1ELocation generateSnapshot(SnapshotData snapshotData) {
-        ST1ELocation snapshot = new ST1ELocation(_quadrant, _region, _locationName, _game);
-
-        for (MissionCard mission : _missionCards)
-            snapshot.addMission(snapshotData.getDataForSnapshot(mission));
-
-        return snapshot;
+        return new ST1ELocation(_quadrant, _region, _locationName, _game);
     }
 }

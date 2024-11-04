@@ -8,8 +8,10 @@ import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.SnapshotData;
 
 import java.util.List;
+import java.util.Map;
 
 public class ST1EPhysicalCard extends PhysicalCard {
     protected final ST1EGame _game;
@@ -34,5 +36,31 @@ public class ST1EPhysicalCard extends PhysicalCard {
         STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner(), forFree);
         getGame().getModifiersQuerying().appendExtraCosts(action, this);
         return action;
+    }
+
+    @Override
+    public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
+
+        // TODO - A lot of repetition here between the various PhysicalCard classes
+
+        ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId, _owner, _blueprint);
+        newCard._imageUrl = _imageUrl;
+        newCard.setZone(_zone);
+        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
+        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
+        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
+        newCard._whileInZoneData = _whileInZoneData;
+        newCard._modifiers.putAll(_modifiers);
+        newCard._modifierHooks = _modifierHooks;
+        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
+
+        for (PhysicalCard card : _cardsSeededUnderneath)
+            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
+
+        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
+            for (PhysicalCard card : entry.getValue())
+                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
+
+        return newCard;
     }
 }
