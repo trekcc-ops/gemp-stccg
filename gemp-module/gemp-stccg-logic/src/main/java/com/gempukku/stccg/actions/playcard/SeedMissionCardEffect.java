@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -11,8 +12,8 @@ public class SeedMissionCardEffect extends SeedCardEffect {
     private final boolean _sharedMission;
 
     SeedMissionCardEffect(String performingPlayerId, MissionCard cardPlayed,
-                          int spacelineIndex, boolean sharedMission) {
-        super(performingPlayerId, cardPlayed, Zone.SPACELINE);
+                          int spacelineIndex, boolean sharedMission, Action causalAction) {
+        super(performingPlayerId, cardPlayed, Zone.SPACELINE, causalAction);
         _spacelineIndex = spacelineIndex;
         _sharedMission = sharedMission;
     }
@@ -26,7 +27,7 @@ public class SeedMissionCardEffect extends SeedCardEffect {
                 _cardSeeded.getCardLink() +  " from " + _fromZone.getHumanReadable());
 
         gameState.removeCardFromZone(_cardSeeded);
-        _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
+        _game.getActionsEnvironment().addPerformedAction(_causalAction);
 
         try {
             if (_cardSeeded instanceof MissionCard missionCard) {

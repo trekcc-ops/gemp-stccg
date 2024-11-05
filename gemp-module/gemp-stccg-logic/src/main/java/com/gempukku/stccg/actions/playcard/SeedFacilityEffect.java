@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
@@ -8,9 +9,8 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 
 public class SeedFacilityEffect extends SeedCardEffect {
     private final int _spacelineIndex;
-
-    public SeedFacilityEffect(String performingPlayerId, FacilityCard cardSeeded, int spacelineIndex) {
-        super(performingPlayerId, cardSeeded, Zone.AT_LOCATION);
+    public SeedFacilityEffect(String performingPlayerId, FacilityCard cardSeeded, int spacelineIndex, Action action) {
+        super(performingPlayerId, cardSeeded, Zone.AT_LOCATION, action);
         _spacelineIndex = spacelineIndex;
     }
 
@@ -20,7 +20,7 @@ public class SeedFacilityEffect extends SeedCardEffect {
 
         getGame().sendMessage(_cardSeeded.getOwnerName() + " seeded " + _cardSeeded.getCardLink());
         gameState.removeCardFromZone(_cardSeeded);
-        _cardSeeded.getOwner().addCardSeeded(_cardSeeded);
+        _game.getActionsEnvironment().addPerformedAction(_causalAction);
         gameState.getPlayer(_cardSeeded.getOwnerName())
                 .addPlayedAffiliation(((PhysicalNounCard1E) _cardSeeded).getAffiliation());
         gameState.seedFacilityAtLocation((FacilityCard) _cardSeeded, _spacelineIndex);

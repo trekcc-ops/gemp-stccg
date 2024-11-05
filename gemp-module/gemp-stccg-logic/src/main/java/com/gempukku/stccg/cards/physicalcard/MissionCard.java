@@ -100,7 +100,6 @@ public class MissionCard extends ST1EPhysicalCard {
 
     public void isSolvedByPlayer(String playerId) {
         _game.getGameState().getPlayer(playerId).scorePoints(_blueprint.getPointsShown());
-        _game.getGameState().getPlayer(playerId).addSolvedMission(this);
         _completed = true;
         _game.getGameState().checkVictoryConditions();
     }
@@ -110,7 +109,7 @@ public class MissionCard extends ST1EPhysicalCard {
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
-        MissionCard newCard = new MissionCard(_game, _cardId, _owner, _blueprint);
+        MissionCard newCard = new MissionCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));

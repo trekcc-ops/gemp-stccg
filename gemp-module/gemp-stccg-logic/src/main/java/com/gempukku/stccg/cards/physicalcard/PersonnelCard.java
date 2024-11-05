@@ -47,7 +47,7 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
-        PersonnelCard newCard = new PersonnelCard(_game, _cardId, _owner, _blueprint);
+        PersonnelCard newCard = new PersonnelCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));

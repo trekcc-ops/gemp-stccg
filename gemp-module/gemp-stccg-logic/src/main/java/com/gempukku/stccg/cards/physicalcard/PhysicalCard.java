@@ -2,6 +2,7 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
@@ -391,9 +392,13 @@ public abstract class PhysicalCard implements Filterable, Snapshotable<PhysicalC
 
     public Integer getNumberOfCopiesSeededByPlayer(Player player) {
         int total = 0;
-        for (PhysicalCard seededCard : player.getCardsSeeded()) {
-            if (seededCard.isCopyOf(this))
-                total += 1;
+        List<Action> performedActions = getGame().getActionsEnvironment().getPerformedActions();
+        for (Action action : performedActions) {
+            if (action instanceof SeedCardAction seedCardAction) {
+                if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&
+                        seedCardAction.getCardEnteringPlay().isCopyOf(this))
+                    total += 1;
+            }
         }
         return total;
     }

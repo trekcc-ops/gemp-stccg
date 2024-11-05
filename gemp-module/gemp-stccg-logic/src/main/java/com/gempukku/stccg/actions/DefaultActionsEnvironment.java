@@ -13,6 +13,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final Map<Phase, List<ActionProxy>> _untilStartOfPhaseActionProxies = new HashMap<>();
     private final Map<Phase, List<ActionProxy>> _untilEndOfPhaseActionProxies = new HashMap<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
+    private final List<Action> _performedActions = new LinkedList<>();
 
     private Set<EffectResult> _effectResults = new HashSet<>();
 
@@ -247,5 +248,12 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     public Stack<Action> getActionStack() { return _actionStack; }
+
+    public void addPerformedAction(Action action) { _performedActions.add(action); }
+
+    @Override
+    public List<Action> getPerformedActions() {
+        return _performedActions;
+    }
 
 }

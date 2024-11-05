@@ -86,7 +86,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         // TODO - A lot of repetition here between the various PhysicalCard classes
         // TODO SNAPSHOT - Doesn't have awayTeam specified
 
-        PhysicalNounCard1E newCard = new PhysicalNounCard1E(_game, _cardId, _owner, _blueprint);
+        PhysicalNounCard1E newCard = new PhysicalNounCard1E(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));

@@ -39,10 +39,12 @@ public abstract class GameState {
     private boolean _consecutiveAction;
     protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
     protected final LinkedList<String> _lastMessages = new LinkedList<>();
-    protected int _nextCardId = 0;
-    protected final Map<String, Integer> _turnNumbers = new HashMap<>();
+    int _nextCardId = 0;
+    final Map<String, Integer> _turnNumbers = new HashMap<>();
+    Map<String, Integer> _playerScores = new HashMap<>();
+    Map<String, Player> _players = new HashMap<>();
 
-    protected GameState(Iterable<String> playerIds) {
+    protected GameState(DefaultGame game, Iterable<String> playerIds) {
         Collection<Zone> cardGroupList = new LinkedList<>();
         cardGroupList.add(Zone.DRAW_DECK);
         cardGroupList.add(Zone.HAND);
@@ -55,6 +57,8 @@ public abstract class GameState {
         for (String playerId : playerIds) {
             cardGroupList.forEach(cardGroup -> _cardGroups.get(cardGroup).put(playerId, new LinkedList<>()));
             _turnNumbers.put(playerId, 0);
+            _playerScores.put(playerId, 0);
+            _players.put(playerId, new Player(game, playerId));
         }
     }
 
@@ -520,19 +524,18 @@ public abstract class GameState {
     }
 
     public void addToPlayerScore(String playerId, int points) {
-        Player player = getPlayer(playerId);
-        player.scorePoints(points);
+        int currentScore = _playerScores.get(playerId);
+        _playerScores.put(playerId, currentScore + points);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.setPlayerScore(playerId);
     }
 
     public int getPlayerScore(String playerId) {
-        Player player = getPlayer(playerId);
-        return player.getScore();
+        return _playerScores.get(playerId);
     }
 
-    public Player getPlayer(String playerId) { return getGame().getPlayerFromId(playerId); }
-    public Collection<Player> getPlayers() { return getGame().getPlayers(); }
+    public Player getPlayer(String playerId) { return _players.get(playerId); }
+    public Collection<Player> getPlayers() { return _players.values(); }
 
     public void discardHand(String playerId) {
         List<PhysicalCard> hand = new LinkedList<>(getHand(playerId));

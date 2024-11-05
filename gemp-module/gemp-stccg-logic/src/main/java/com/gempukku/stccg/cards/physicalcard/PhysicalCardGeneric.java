@@ -39,7 +39,7 @@ public class PhysicalCardGeneric extends PhysicalCard {
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
-        PhysicalCardGeneric newCard = new PhysicalCardGeneric(_game, _cardId, _owner, _blueprint);
+        PhysicalCardGeneric newCard = new PhysicalCardGeneric(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));

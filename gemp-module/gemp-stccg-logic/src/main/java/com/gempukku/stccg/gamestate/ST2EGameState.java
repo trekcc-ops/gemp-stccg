@@ -15,7 +15,7 @@ public class ST2EGameState extends GameState {
     private final ST2EGame _game;
 
     public ST2EGameState(Iterable<String> playerIds, ST2EGame game) {
-        super(playerIds);
+        super(game, playerIds);
         _game = game;
         _tableCards = new HashMap<>();
         for (String player : playerIds)

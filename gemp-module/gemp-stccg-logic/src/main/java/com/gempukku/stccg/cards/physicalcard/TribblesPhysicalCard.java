@@ -50,7 +50,7 @@ public class TribblesPhysicalCard extends PhysicalCard {
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
-        TribblesPhysicalCard newCard = new TribblesPhysicalCard(_game, _cardId, _owner, _blueprint);
+        TribblesPhysicalCard newCard = new TribblesPhysicalCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));

@@ -43,7 +43,7 @@ public class ST1EPhysicalCard extends PhysicalCard {
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
-        ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId, _owner, _blueprint);
+        ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId, snapshotData.getDataForSnapshot(snapshotData.getDataForSnapshot(_owner)), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));

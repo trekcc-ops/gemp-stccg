@@ -42,4 +42,6 @@ public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
     DefaultGame getGame();
     Stack<Action> getActionStack();
     void signalEndOfPhase();
+    void addPerformedAction(Action action);
+    List<Action> getPerformedActions();
 }

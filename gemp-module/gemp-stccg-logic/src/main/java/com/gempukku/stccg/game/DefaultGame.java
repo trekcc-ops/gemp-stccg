@@ -24,7 +24,6 @@ public abstract class DefaultGame {
     protected final CardBlueprintLibrary _library;
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
-    protected final Map<String, Player> _players = new HashMap<>();
 
     // Endgame operations
     protected final Set<String> _requestedCancel = new HashSet<>();
@@ -51,8 +50,6 @@ public abstract class DefaultGame {
         _library = library;
 
         _allPlayerIds = decks.keySet();
-        for (String playerId : _allPlayerIds)
-            _players.put(playerId, new Player(this, playerId));
 
         _actionsEnvironment = new DefaultActionsEnvironment(this, new Stack<>());
     }
@@ -67,8 +64,8 @@ public abstract class DefaultGame {
     }
 
     public Set<String> getPlayerIds() { return _allPlayerIds; }
-    public Player getPlayerFromId(String playerId) { return _players.get(playerId); }
-    public Collection<Player> getPlayers() { return _players.values(); }
+
+    public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
     public boolean isCancelled() { return _cancelled; }
 
     public void addGameResultListener(GameResultListener listener) {

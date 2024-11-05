@@ -148,7 +148,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     }
 
     protected Effect getFinalEffect() { return new SeedMissionCardEffect(_performingPlayerId, _cardEnteringPlay,
-            _locationZoneIndex, _sharedMission); }
+            _locationZoneIndex, _sharedMission, this); }
 
     public boolean wasCarriedOut() {
         return _cardPlayed && _finalEffect.wasCarriedOut();

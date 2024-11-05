@@ -21,7 +21,7 @@ public final class TribblesGameState extends GameState {
     private final TribblesGame _game;
 
     public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
-        super(playerIds);
+        super(game, playerIds);
         _currentRound = 0;
         _chainBroken = false;
         _game = game;

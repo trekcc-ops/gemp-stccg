@@ -20,7 +20,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     private final Set<AwayTeam> _awayTeams = new HashSet<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
-        super(playerIds);
+        super(game, playerIds);
         _game = game;
         _currentPhase = Phase.SEED_DOORWAY;
         _cardGroups.put(Zone.TABLE, new HashMap<>());
@@ -237,9 +237,11 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
 
     public void checkVictoryConditions() {
             // TODO - VERY simplistic. Just a straight race to 100.
+            // TODO - Does not account for possible scenario where both players go over 100 simultaneously
         for (Player player : getPlayers()) {
-            if (player.getScore() >= 100)
-                _game.playerWon(player.getPlayerId(), player.getScore() + " points");
+            int score = _playerScores.get(player.getPlayerId());
+            if (score >= 100)
+                _game.playerWon(player.getPlayerId(), score + " points");
         }
     }
 
@@ -280,6 +282,11 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         snapshot._lastMessages.addAll(_lastMessages);
         snapshot._nextCardId = _nextCardId;
         snapshot._turnNumbers.putAll(_turnNumbers);
+        snapshot._playerScores.putAll(_playerScores);
+
+        for (String playerId : _players.keySet()) {
+            snapshot._players.put(playerId, snapshotData.getDataForSnapshot(_players.get(playerId)));
+        }
 
         for (Zone zone : _cardGroups.keySet())
             copyCardGroup(_cardGroups.get(zone), snapshot._cardGroups.get(zone), snapshotData);

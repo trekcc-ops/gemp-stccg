@@ -19,7 +19,7 @@ public class SeedCardAction extends PlayCardAction {
 
     @Override
     protected Effect getFinalEffect() {
-        return new SeedCardEffect(_performingPlayerId, (ST1EPhysicalCard) _cardEnteringPlay, _toZone);
+        return new SeedCardEffect(_performingPlayerId, (ST1EPhysicalCard) _cardEnteringPlay, _toZone, this);
     }
 
     @Override

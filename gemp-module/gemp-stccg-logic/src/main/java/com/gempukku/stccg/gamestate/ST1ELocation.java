@@ -63,7 +63,8 @@ public class ST1ELocation implements Snapshotable<ST1ELocation> {
 
     public boolean hasFacilityOwnedByPlayer(String playerId) {
             // TODO - Is this accurately capturing "owned by" as necessary?
-        Player player = _game.getPlayerFromId(playerId);
+        GameState gameState = _game.getGameState();
+        Player player = gameState.getPlayer(playerId);
         Collection<PhysicalCard> cards = Filters.filterYourActive(player, CardType.FACILITY, Filters.atLocation(this));
         return !cards.isEmpty();
     }
