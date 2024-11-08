@@ -1,9 +1,9 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.Collections;
@@ -12,14 +12,11 @@ public class TribblesPlayCardAction extends PlayCardAction {
     private final TribblesPhysicalCard _cardToPlay;
     private boolean _cardRemoved;
     private boolean _cardPlayed;
-    private final Zone _toZone = Zone.PLAY_PILE;
-    private final TribblesGame _game;
 
     public TribblesPlayCardAction(TribblesPhysicalCard card) {
         super(card, card, card.getOwnerName(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
         _cardToPlay = card;
         setText("Play " + _cardToPlay.getFullName());
-        _game = card.getGame();
     }
 
     @Override
@@ -30,7 +27,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public TribblesGame getGame() { return _game; }
+    public TribblesGame getGame() { return _cardToPlay.getGame(); }
 
     @Override
     public PhysicalCard getCardForActionSelection() {

@@ -85,8 +85,8 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
             Collection<PhysicalCard> playableCards = getPlayableCards();
             if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK) {
                 int minimum = _fromZone == Zone.DISCARD ? 1 : 0;
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new ArbitraryCardsSelectionDecision(1, "Choose a card to play", 
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), "Choose a card to play",
                                 new LinkedList<>(playableCards), minimum, 1) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -100,9 +100,9 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
             } else if (playableCards.size() == 1) {
                 playCard(playableCards.iterator().next());
             } else if (playableCards.size() > 1) {
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new CardsSelectionDecision(1, "Choose a card to play", playableCards, 
-                                1, 1) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new CardsSelectionDecision(_game.getPlayer(_playerId), "Choose a card to play",
+                                playableCards, 1, 1) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 final PhysicalCard selectedCard = getSelectedCardsByResponse(result).iterator().next();

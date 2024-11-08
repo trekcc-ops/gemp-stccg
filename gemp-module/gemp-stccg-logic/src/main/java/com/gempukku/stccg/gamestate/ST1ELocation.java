@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -13,17 +14,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@JsonSerialize(using = ST1ELocationSerializer.class)
 public class ST1ELocation implements Snapshotable<ST1ELocation> {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
     private final ST1EGame _game;
     public ST1ELocation(MissionCard mission) {
-        _quadrant = mission.getQuadrant();
-        _region = mission.getBlueprint().getRegion();
-        _locationName = mission.getBlueprint().getLocation();
-        _game = mission.getGame();
+        this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
+                mission.getBlueprint().getLocation(), mission.getGame());
         mission.setLocation(this);
+    }
+
+    public ST1ELocation(Quadrant quadrant, String locationName, ST1EGame game) {
+        this(quadrant, null, locationName, game);
     }
 
     public ST1ELocation(Quadrant quadrant, Region region, String locationName, ST1EGame game) {

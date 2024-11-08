@@ -174,5 +174,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     public String getForPlayer() { return _playerId; }
+    public String getText() { return _text; }
 
 }

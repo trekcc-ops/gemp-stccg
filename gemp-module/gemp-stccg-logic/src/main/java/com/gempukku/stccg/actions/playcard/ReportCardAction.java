@@ -22,6 +22,8 @@ public class ReportCardAction extends STCCGPlayCardAction {
     private FacilityCard _reportingDestination;
     private boolean _cardPlayed;
     private final ST1EGame _game;
+    private boolean _destinationOptionsIdentified;
+    private Collection<PhysicalCard> _destinationOptions;
     private boolean _destinationChosen = false;
     private final Set<Affiliation> _affiliationOptions = new HashSet<>();
     private boolean _affiliationWasChosen;
@@ -42,17 +44,31 @@ public class ReportCardAction extends STCCGPlayCardAction {
         }
     }
 
+    public ReportCardAction(PhysicalReportableCard1E cardToPlay, boolean forFree,
+                            Collection<PhysicalCard> destinationOptions) {
+        this(cardToPlay, forFree);
+        _destinationOptionsIdentified = true;
+        _destinationOptions = destinationOptions;
+
+    }
+
+
     protected Collection<PhysicalCard> getDestinationOptions() {
-        Collection<PhysicalCard> availableFacilities = new HashSet<>();
-        for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
-            Collection<PhysicalCard> facilities =
-                    Filters.filterActive(_game, FacilityType.OUTPOST, Filters.atLocation(location));
-            for (PhysicalCard card : facilities) {
-                if (card instanceof FacilityCard facility && _cardEnteringPlay.canReportToFacility(facility))
-                    availableFacilities.add(facility);
+
+        if (_destinationOptionsIdentified)
+            return _destinationOptions;
+        else {
+            Collection<PhysicalCard> availableFacilities = new HashSet<>();
+            for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
+                Collection<PhysicalCard> facilities =
+                        Filters.filterActive(_game, FacilityType.OUTPOST, Filters.atLocation(location));
+                for (PhysicalCard card : facilities) {
+                    if (card instanceof FacilityCard facility && _cardEnteringPlay.canReportToFacility(facility))
+                        availableFacilities.add(facility);
+                }
             }
+            return availableFacilities;
         }
-        return availableFacilities;
     }
 
     @Override
@@ -70,7 +86,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
-                    _thisAction, getPerformingPlayerId(),
+                    this, getPerformingPlayerId(),
                     "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
                     getDestinationOptions()
             ) {
@@ -106,7 +122,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             return getNextCost();
         }
         if (!_cardPlayed) {
-            _cardEnteringPlay.setCurrentAffiliation(_selectedAffiliation);
+            _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
             _cardPlayed = true;
             _finalEffect = getFinalEffect();
             return _finalEffect;

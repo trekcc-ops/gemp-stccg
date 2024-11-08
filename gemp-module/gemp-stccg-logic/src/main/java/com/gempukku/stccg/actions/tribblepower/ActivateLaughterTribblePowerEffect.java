@@ -42,11 +42,11 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         else {
             List<String> players = Arrays.asList(getGame().getAllPlayerIds());
             players.removeIf(player -> getGame().getGameState().getHand(player).isEmpty());
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player to discard a card", players) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player to discard a card", players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            firstPlayerChosen(players, result, getGame());
+                            firstPlayerChosen(players, result, _tribblesGame);
                         }
                     });
             getGame().getActionsEnvironment().emitEffectResult(_result);
@@ -61,8 +61,8 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
         if (newSelectablePlayers.size() == 1)
             secondPlayerChosen(Iterables.getOnlyElement(newSelectablePlayers), game);
         else {
-            game.getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision(
+            game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer),
                             "Choose a player to place a card from hand on the bottom of their deck", newSelectablePlayers) {
                         @Override
                         protected void validDecisionMade(int index, String result) {

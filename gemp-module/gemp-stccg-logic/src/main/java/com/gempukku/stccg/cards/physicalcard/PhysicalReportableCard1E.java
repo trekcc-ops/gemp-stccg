@@ -19,7 +19,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public boolean canReportToFacility(FacilityCard facility) {
         if (_blueprint.getCardType() == CardType.EQUIPMENT && facility.isUsableBy(_owner.getPlayerId()))
             return true;
-        for (Affiliation affiliation : _affiliationOptions)
+        for (Affiliation affiliation : getAffiliationOptions())
             if (canReportToFacilityAsAffiliation(facility, affiliation))
                 return true;
         return false;
@@ -29,7 +29,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
                 in their native quadrant. */
         // TODO - Does not perform any compatibility checks other than affiliation
         if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                facility.isUsableBy(_owner.getPlayerId()) && facility.getCurrentQuadrant() == _nativeQuadrant)
+                facility.isUsableBy(_owner.getPlayerId()) && facility.getCurrentQuadrant() == getNativeQuadrant())
             return isCompatibleWithCardAndItsCrewAsAffiliation(facility, affiliation);
         else return false;
     }
@@ -74,7 +74,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
             }
         }
         if (_awayTeam == null) {
-            AwayTeam awayTeam = new AwayTeam(_owner, mission);
+            AwayTeam awayTeam = _game.getGameState().createNewAwayTeam(_owner, mission);
             addToAwayTeam(awayTeam);
         }
     }

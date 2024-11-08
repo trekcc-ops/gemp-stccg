@@ -1,16 +1,18 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.StartOfTurnResult;
+import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.actions.turn.TriggeringResultEffect;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
+import java.util.HashSet;
+
 public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     public ST1EStartOfTurnGameProcess(ST1EGame game) {
-        super(game);
+        super(new HashSet<>(), game);
     }
     @Override
     public void process() {
@@ -32,5 +34,8 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() { return new ST1EStartOfPlayPhaseSegmentProcess(Phase.CARD_PLAY, _game); }
+    public GameProcess getNextProcess() {
+        _game.getGameState().setCurrentPhase(Phase.CARD_PLAY);
+        return new ST1EStartOfPlayPhaseSegmentProcess(_game);
+    }
 }

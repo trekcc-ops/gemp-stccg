@@ -26,6 +26,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
             _game.sendMessage(_playerId + " can't draw a card");
             _game.getGameState().setPlayerDecked(_playerId, true);
         } else {
+            TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
             _game.getGameState().playerDrawsCard(_playerId);
             _game.sendMessage(_playerId + " drew a card");
             List<? extends PhysicalCard> playerHand = _game.getGameState().getHand(_playerId);
@@ -37,7 +38,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
             }
 
             if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
-                playerPassed(_game);
+                playerPassed();
             } else {
                 String userMessage;
                 if (playableActions.isEmpty()) {
@@ -45,23 +46,23 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends GameProcess {
                 } else {
                     userMessage = "Play card that was just drawn or click 'Pass' to end your turn.";
                 }
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new CardActionSelectionDecision(1, userMessage, playableActions) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new CardActionSelectionDecision(_game.getPlayer(_playerId), userMessage, playableActions) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
-                                    _game.getActionsEnvironment().addActionToStack(action);
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
                                 } else
-                                    playerPassed(_game);
+                                    playerPassed();
                             }
                         });
             }
         }
     }
 
-    private void playerPassed(TribblesGame game) {
-        game.getGameState().breakChain();
+    private void playerPassed() {
+        _game.getGameState().breakChain();
     }
 
     @Override

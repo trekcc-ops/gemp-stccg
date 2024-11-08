@@ -43,8 +43,10 @@ public class RevealBottomCardsOfDrawDeckEffect extends DefaultEffect {
 
             String nextPlayer;
             while ((nextPlayer = playerOrder.getNextPlayer()) != null) {
-                _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
-                        new ArbitraryCardsSelectionDecision(1, _playerId+" revealed card(s) from bottom of deck", bottomCards, Collections.emptySet(), 0, 0) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(nextPlayer),
+                                _playerId + " revealed card(s) from bottom of deck", bottomCards,
+                                Collections.emptySet(), 0, 0) {
                             @Override
                             public void decisionMade(String result) {
                             }

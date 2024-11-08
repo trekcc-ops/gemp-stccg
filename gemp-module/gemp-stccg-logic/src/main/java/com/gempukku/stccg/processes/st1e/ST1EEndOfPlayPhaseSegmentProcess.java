@@ -1,30 +1,32 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.actions.turn.EndOfPhaseAction;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
+import java.util.HashSet;
+
 public class ST1EEndOfPlayPhaseSegmentProcess extends ST1EGameProcess {
-    private final GameProcess _followingGameProcess;
-
     public ST1EEndOfPlayPhaseSegmentProcess(ST1EGame game) {
-        super(game);
-        Phase currentPhase = game.getGameState().getCurrentPhase();
-        if (currentPhase == Phase.CARD_PLAY) {
-            _followingGameProcess = new ST1EStartOfPlayPhaseSegmentProcess(Phase.EXECUTE_ORDERS, _game);
-        } else if (currentPhase == Phase.EXECUTE_ORDERS) {
-            _followingGameProcess = new ST1EEndOfTurnProcess(_game);
-        } else throw new RuntimeException(
-                "Constructed end of play phase segment process without being in a valid play phase segment");
+        super(new HashSet<>(), game);
     }
-
 
     @Override
     public void process() {
-        _game.getActionsEnvironment().addActionToStack(new EndOfPhaseAction(_game));
+        String phaseString = _game.getCurrentPhaseString();
+        String message = "End of " + phaseString + " phase";
+        _game.sendMessage(message);
     }
 
     @Override
-    public GameProcess getNextProcess() { return _followingGameProcess; }
+    public GameProcess getNextProcess() {
+        Phase currentPhase = _game.getCurrentPhase();
+        if (currentPhase == Phase.CARD_PLAY) {
+            _game.getGameState().setCurrentPhase(Phase.EXECUTE_ORDERS);
+            return new ST1EStartOfPlayPhaseSegmentProcess(_game);
+        } else if (currentPhase == Phase.EXECUTE_ORDERS) {
+            return new ST1EEndOfTurnProcess(_game);
+        } else throw new RuntimeException(
+                "Constructed end of play phase segment process without being in a valid play phase segment");
+    }
 }

@@ -8,41 +8,32 @@ import java.util.*;
 public class TurnProcedure implements Snapshotable<TurnProcedure> {
     private static final int MAXIMUM_LOOPS = 5000; // Max number of loops allowed before throwing error
     private final DefaultGame _game;
-    private final Stack<Action> _actionStack;
-    private GameProcess _gameProcess;
+    private GameProcess _currentGameProcess;
     private boolean _playedGameProcess;
     private final ActionsEnvironment _actionsEnvironment;
-    private final GameProcess _firstProcess;
 
     @Override
     public TurnProcedure generateSnapshot(SnapshotData snapshotData) {
         ActionsEnvironment actionsEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
-        return new TurnProcedure(_game, _gameProcess, _playedGameProcess, actionsEnvironment, _firstProcess);
+        return new TurnProcedure(_game, _currentGameProcess, _playedGameProcess, actionsEnvironment);
     }
 
 
-    public TurnProcedure(DefaultGame game, GameProcess firstProcess) {
-        this(game, null, false, game.getActionsEnvironment(), firstProcess);
+    public TurnProcedure(DefaultGame game, GameProcess currentProcess) {
+        this(game, currentProcess, false, game.getActionsEnvironment());
     }
 
 
     private TurnProcedure(DefaultGame game, GameProcess currentProcess, boolean playedGameProcess,
-                          ActionsEnvironment actionsEnvironment, GameProcess firstProcess) {
+                          ActionsEnvironment actionsEnvironment) {
         _game = game;
         _actionsEnvironment = actionsEnvironment;
-        _actionStack = actionsEnvironment.getActionStack();
-        _gameProcess = currentProcess;
+        _currentGameProcess = currentProcess;
         _playedGameProcess = playedGameProcess;
-        _firstProcess = firstProcess;
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() {
         int numSinceDecision = 0;
-
-        if (_gameProcess == null) {
-            // Take game snapshot for start of game
-            _gameProcess = _firstProcess;
-        }
 
         while (_game.isCarryingOutEffects()) {
             numSinceDecision++;
@@ -50,12 +41,12 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             Set<EffectResult> effectResults = _actionsEnvironment.consumeEffectResults();
             effectResults.forEach(EffectResult::createOptionalAfterTriggerActions);
             if (effectResults.isEmpty()) {
-                if (_actionStack.isEmpty())
+                if (_actionsEnvironment.getActionStack().isEmpty())
                     continueCurrentProcess();
                 else
                     executeNextAction();
             } else {
-                _actionStack.add(new PlayOutEffectResults(_game, effectResults));
+                _actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, effectResults));
             }
             _game.getGameState().updateGameStatsAndSendIfChanged();
 
@@ -67,26 +58,27 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
 
     private void continueCurrentProcess() {
         if (_playedGameProcess) {
-            _gameProcess = _gameProcess.getNextProcess();
+            _currentGameProcess = _currentGameProcess.getNextProcess();
             _playedGameProcess = false;
         } else {
-            _gameProcess.process();
+            _currentGameProcess.process();
             _game.getGameState().updateGameStatsAndSendIfChanged();
             _playedGameProcess = true;
         }
     }
 
     private void executeNextAction() {
-        Action action = _actionStack.peek();
+        Stack<Action> actionStack = _actionsEnvironment.getActionStack();
+        Action action = actionStack.peek();
         try {
             Effect effect = action.nextEffect();
             if (effect == null) {
-                _actionStack.remove(_actionStack.lastIndexOf(action));
+                actionStack.remove(actionStack.lastIndexOf(action));
             } else {
                 if (effect.getType() == null) {
                     effect.playEffect();
                 } else
-                    _actionStack.add(new PlayOutEffect(_game, effect));
+                    actionStack.add(new PlayOutEffect(_game, effect));
             }
         } catch (InvalidGameLogicException exp) {
             sendMessage(exp.getMessage());
@@ -98,22 +90,16 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
                 " actions/effects since last user decision. Game is probably looping, so ending game.";
         sendMessage(errorMessage);
 
-        int actionNum = 1;
-        sendMessage("Action stack size: " + _actionStack.size());
-        for (Action action : _actionStack) {
-            sendMessage("Action " + (actionNum) + ": " +
-                    action.getClass().getSimpleName() + (action.getActionSource() != null ?
-                    " Source: " + action.getActionSource().getFullName() : ""));
-            actionNum++;
-        }
+        Stack<Action> actionStack = _actionsEnvironment.getActionStack();
+        sendMessage("Action stack size: " + actionStack.size());
+        actionStack.forEach(action -> sendMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
+                action.getClass().getSimpleName() + (action.getActionSource() != null ?
+                " Source: " + action.getActionSource().getFullName() : "")));
 
-        Set<EffectResult> effectResults = _game.getActionsEnvironment().consumeEffectResults();
-        int numEffectResult = 1;
-        for (EffectResult effectResult : effectResults) {
-            String message = "EffectResult " + numEffectResult + ": " + effectResult.getType().name();
-            sendMessage(message);
-            numEffectResult++;
-        }
+        List<EffectResult> effectResults =
+                _game.getActionsEnvironment().consumeEffectResults().stream().toList();
+        effectResults.forEach(effectResult -> sendMessage(
+                "EffectResult " + (effectResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
         throw new UnsupportedOperationException(errorMessage);
     }
 

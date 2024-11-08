@@ -39,8 +39,8 @@ public class TribblesGame extends DefaultGame {
                 throw new RuntimeException("Tried to restore a snapshot with an invalid gamestate");
             else {
                 _gameState = (TribblesGameState) _snapshotToRestore.getGameState();
-                _modifiersLogic = _snapshotToRestore.getModifiersLogic();
-                _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
+                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
+                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;

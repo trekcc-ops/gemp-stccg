@@ -23,8 +23,8 @@ public abstract class SelectSkillEffect extends UnrespondableEffect {
 
     @Override
     public void doPlayEffect() {
-        _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                new MultipleChoiceAwaitingDecision("Choose a skill", _skillOptions.keySet()) {
+        _game.getUserFeedback().sendAwaitingDecision(
+                new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Choose a skill", _skillOptions.keySet()) {
                     @Override
                     protected void validDecisionMade(int index, String result) {
                         skillChosen(_skillOptions.get(result));

@@ -2,7 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.gamestate.GameEvent;
 import com.gempukku.stccg.gamestate.GameStateListener;

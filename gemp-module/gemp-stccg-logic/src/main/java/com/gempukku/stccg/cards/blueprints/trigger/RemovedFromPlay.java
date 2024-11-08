@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints.trigger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.ReturnCardsToHandResult;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.BlueprintUtils;
@@ -31,7 +31,7 @@ public class RemovedFromPlay implements TriggerCheckerProducer {
 
                 final boolean discardResult = TriggerConditions.forEachDiscardedFromPlay(actionContext.getGame(), actionContext.getEffectResult(), filterable);
                 if (discardResult && memorize != null) {
-                    final PhysicalCard discardedCard = ((DiscardCardsFromPlayResult) actionContext.getEffectResult()).getDiscardedCard();
+                    final PhysicalCard discardedCard = ((DiscardCardFromPlayResult) actionContext.getEffectResult()).getDiscardedCard();
                     actionContext.setCardMemory(memorize, discardedCard);
                 }
 

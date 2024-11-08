@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.ActivateCardAction;
+import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.playcard.ChooseAndPlayCardFromZoneEffect;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
@@ -58,12 +59,11 @@ public class Blueprint155_021 extends CardBlueprint {
 
                         @Override
                         protected void playCard(final PhysicalCard selectedCard) {
-                            setPlayCardAction(new ReportCardAction((PhysicalReportableCard1E) selectedCard, true) {
-                                @Override
-                                protected Collection<PhysicalCard> getDestinationOptions() {
-                                    return getDestinationOptionsForCard(selectedCard);
-                                }
-                                              });
+
+                            CostToEffectAction action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
+                                    true, Filters.filterYourActive(card.getOwner(),
+                                    Filters.yourMatchingOutposts(card.getOwner(), card)));
+                            setPlayCardAction(action);
                             getPlayCardAction().appendEffect(
                                     new UnrespondableEffect(card.getGame()) {
                                         @Override

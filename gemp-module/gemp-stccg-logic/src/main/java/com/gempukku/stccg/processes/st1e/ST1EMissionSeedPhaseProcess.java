@@ -4,6 +4,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -13,20 +15,20 @@ import com.gempukku.stccg.processes.GameUtils;
 import java.util.List;
 
 public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
-    private final PlayerOrder _playOrder;
     private int _consecutivePasses;
-    private final ST1EGameProcess _followingGameProcess;
 
-    public ST1EMissionSeedPhaseProcess(int consecutivePasses, ST1EGameProcess followingGameProcess, ST1EGame game) {
-        super(game);
-        _followingGameProcess = followingGameProcess;
+    public ST1EMissionSeedPhaseProcess(ST1EGame game) {
+        this(0, game);
+    }
+
+    public ST1EMissionSeedPhaseProcess(int consecutivePasses, ST1EGame game) {
+        super(game.getCurrentPlayer(), game);
         _consecutivePasses = consecutivePasses;
-        _playOrder = game.getGameState().getPlayerOrder();
     }
 
     @Override
     public void process() {
-        String _currentPlayer = _playOrder.getCurrentPlayer();
+        String _currentPlayer = _game.getCurrentPlayerId();
 
         final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_currentPlayer);
         ST1EGameState gameState = _game.getGameState();
@@ -35,20 +37,17 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         if (playableActions.isEmpty() && _game.shouldAutoPass(currentPhase)) {
             _consecutivePasses++;
         } else {
+            DefaultGame thisGame = _game;
             String message = "Play " + currentPhase.getHumanReadable() + " action";
-            _game.getUserFeedback().sendAwaitingDecision(_currentPlayer,
-                    new CardActionSelectionDecision(message, playableActions, true, true) {
+            Player player = _game.getCurrentPlayer();
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(player, message, playableActions, true, true) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result))
-                                GameUtils.performRevert(_game, _currentPlayer);
+                                GameUtils.performRevert(thisGame, _currentPlayer);
                             Action action = getSelectedAction(result);
-                            if (action != null) {
-                                _game.getActionsEnvironment().addActionToStack(action);
-                                _consecutivePasses = 0;
-                            } else {
-                                _consecutivePasses++;
-                            }
+                            thisGame.getActionsEnvironment().addActionToStack(action);
                         }
                     });
         }
@@ -56,12 +55,15 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        if (_consecutivePasses >= _playOrder.getPlayerCount()) {
-            _playOrder.setCurrentPlayer(_playOrder.getFirstPlayer());
-            return _followingGameProcess;
+        PlayerOrder playerOrder = _game.getGameState().getPlayerOrder();
+        if (_consecutivePasses >= playerOrder.getPlayerCount()) {
+            playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
+            return new ST1EStartOfDilemmaSeedPhaseProcess(_game);
         } else {
-            _playOrder.advancePlayer();
-            return new ST1EMissionSeedPhaseProcess(_consecutivePasses, _followingGameProcess, _game);
+            playerOrder.advancePlayer();
+            return new ST1EMissionSeedPhaseProcess(_consecutivePasses, _game);
         }
     }
+
+    public int getConsecutivePasses() { return _consecutivePasses; }
 }

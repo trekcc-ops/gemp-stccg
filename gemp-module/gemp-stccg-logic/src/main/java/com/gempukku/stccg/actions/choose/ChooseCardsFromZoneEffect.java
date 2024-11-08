@@ -73,8 +73,9 @@ public abstract class ChooseCardsFromZoneEffect extends DefaultEffect {
             } else if (cards.size() == _minimum) {
                 cardsSelected(_game, cards);
             } else if (_fromZone == Zone.HAND) {
-                _game.getUserFeedback().sendAwaitingDecision(_performingPlayer,
-                        new CardsSelectionDecision(1, getText(), cards, _minimum, _maximum) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new CardsSelectionDecision(_game.getPlayer(_performingPlayer), getText(), cards, _minimum,
+                                _maximum) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
@@ -83,8 +84,9 @@ public abstract class ChooseCardsFromZoneEffect extends DefaultEffect {
                         }
                 );
             } else {
-                _game.getUserFeedback().sendAwaitingDecision(_performingPlayer,
-                        new ArbitraryCardsSelectionDecision(1, "Choose card from " + _fromZone.getHumanReadable(),
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(_performingPlayer),
+                                "Choose card from " + _fromZone.getHumanReadable(),
                                 new LinkedList<>(cards), _minimum, _maximum) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {

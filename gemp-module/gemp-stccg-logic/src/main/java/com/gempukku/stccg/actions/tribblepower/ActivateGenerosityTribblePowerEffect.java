@@ -30,11 +30,12 @@ public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEf
         if (opponentsArray.length == 1)
             playerChosen(opponentsArray[0], getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player to score 25,000 points", opponentsArray) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer),
+                            "Choose a player to score 25,000 points", opponentsArray) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);

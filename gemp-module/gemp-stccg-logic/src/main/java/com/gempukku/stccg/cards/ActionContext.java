@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+@JsonSerialize(using = ActionContextSerializer.class)
 public interface ActionContext {
     Map<String, String> getValueMemory();
     Multimap<String, PhysicalCard> getCardMemory();
@@ -39,4 +41,6 @@ public interface ActionContext {
     ActionContext createDelegateContext(String playerId);
     String substituteText(String text);
     List<PhysicalCard> getZoneCards(PlayerSource playerSource, Zone zone);
+
+    ActionContext getParentContext();
 }

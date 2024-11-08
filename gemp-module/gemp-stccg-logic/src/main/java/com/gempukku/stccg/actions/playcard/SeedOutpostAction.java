@@ -20,19 +20,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SeedOutpostAction extends PlayCardAction {
-    private boolean _cardWasSeeded, _placementWasChosen = false, _affiliationWasChosen;
+    private boolean _cardWasSeeded, _placementWasChosen, _affiliationWasChosen;
     private int _locationZoneIndex;
-    private final Zone _fromZone;
     private final Set<Affiliation> _affiliationOptions = new HashSet<>();
     private Affiliation _selectedAffiliation;
-    private final ST1EGame _game;
     private final FacilityCard _cardEnteringPlay;
     public SeedOutpostAction(FacilityCard cardToSeed) {
         super(cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION, ActionType.SEED_CARD);
         _cardEnteringPlay = cardToSeed;
         setText("Seed " + _cardEnteringPlay.getFullName());
-        _fromZone = _cardEnteringPlay.getZone();
-        _game = cardToSeed.getGame();
         if (cardToSeed.isMultiAffiliation()) {
             _affiliationWasChosen = false;
         } else {
@@ -42,7 +38,7 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     @Override
-    public ST1EGame getGame() { return _game; }
+    public ST1EGame getGame() { return _cardEnteringPlay.getGame(); }
 
     @Override
     protected Effect getFinalEffect() {
@@ -51,8 +47,8 @@ public class SeedOutpostAction extends PlayCardAction {
 
     @Override
     public Effect nextEffect() throws InvalidGameLogicException {
-            String playerId = getPerformingPlayerId();
-        ST1EGameState gameState = _game.getGameState();
+        String playerId = getPerformingPlayerId();
+        ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
 
         Set<PhysicalCard> availableMissions = new HashSet<>();
         for (ST1ELocation location : gameState.getSpacelineLocations()) {
@@ -63,7 +59,7 @@ public class SeedOutpostAction extends PlayCardAction {
         }
 
         if (!_placementWasChosen) {
-            appendCost(new ChooseCardsOnTableEffect(_thisAction, getPerformingPlayerId(),
+            appendCost(new ChooseCardsOnTableEffect(this, getPerformingPlayerId(),
                     "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at", availableMissions) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
@@ -95,7 +91,7 @@ public class SeedOutpostAction extends PlayCardAction {
             });
         }
         if (!_cardWasSeeded) {
-            _cardEnteringPlay.setCurrentAffiliation(_selectedAffiliation);
+            _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
             _cardWasSeeded = true;
             _finalEffect = getFinalEffect();
             return _finalEffect;

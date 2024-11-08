@@ -4,6 +4,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,18 +16,22 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     private final int _minimum;
     private final int _maximum;
 
-    public ArbitraryCardsSelectionDecision(String text, Collection<? extends PhysicalCard> physicalCards) {
-        this(1, text, physicalCards, 0, physicalCards.size());
+    public ArbitraryCardsSelectionDecision(Player player, String text,
+                                           Collection<? extends PhysicalCard> physicalCards) {
+        this(player, text, physicalCards, physicalCards, 0, physicalCards.size());
     }
 
-    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
+
+    public ArbitraryCardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                            int minimum, int maximum) {
-        this(id, text, physicalCards, physicalCards, minimum, maximum);
+        this(player, text, physicalCards, physicalCards, minimum, maximum);
     }
 
-    public ArbitraryCardsSelectionDecision(int id, String text, Collection<? extends PhysicalCard> physicalCards,
+
+    public ArbitraryCardsSelectionDecision(Player player, String text,
+                                           Collection<? extends PhysicalCard> physicalCards,
                                            Collection<? extends PhysicalCard> selectable, int minimum, int maximum) {
-        super(id, text, AwaitingDecisionType.ARBITRARY_CARDS);
+        super(player, text, AwaitingDecisionType.ARBITRARY_CARDS);
         _physicalCards = physicalCards;
         _selectable = selectable;
         _minimum = minimum;
@@ -38,6 +43,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         setParam("imageUrl", getImageUrls(physicalCards));
         setParam("selectable", getSelectable(physicalCards, selectable));
     }
+
 
     private String[] getSelectable(Collection<? extends PhysicalCard> physicalCards,
                                    Collection<? extends PhysicalCard> selectable) {

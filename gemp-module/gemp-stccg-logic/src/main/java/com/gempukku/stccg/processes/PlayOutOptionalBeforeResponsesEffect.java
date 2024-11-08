@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.ActionOrder;
+import com.gempukku.stccg.game.Player;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -55,8 +56,9 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
                 _action.insertEffect(effect);
             }
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(activePlayer,
-                    new CardActionSelectionDecision(1,
+            Player decidingPlayer = _game.getGameState().getPlayer(activePlayer);
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(decidingPlayer,
                             _effect.getText() + " - Optional \"is about to\" responses", possibleActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

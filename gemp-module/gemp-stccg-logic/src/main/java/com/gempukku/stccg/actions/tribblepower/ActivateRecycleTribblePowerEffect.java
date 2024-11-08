@@ -23,15 +23,15 @@ public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffec
             if (!getGame().getGameState().getDiscard(player).isEmpty())
                 playersWithCards.add(player);
         }
-        String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);
-        if (playersWithCardsArr.length == 1)
-            playerChosen(playersWithCardsArr[0], getGame());
+        if (playersWithCards.size() == 1)
+            playerChosen(playersWithCards.getFirst(), getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player", playersWithCardsArr) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player",
+                            playersWithCards) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);

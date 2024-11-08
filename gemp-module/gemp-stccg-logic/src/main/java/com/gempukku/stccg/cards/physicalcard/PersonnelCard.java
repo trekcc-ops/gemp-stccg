@@ -54,9 +54,6 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
         newCard._whileInZoneData = _whileInZoneData;
-        newCard._modifiers.putAll(_modifiers);
-        newCard._modifierHooks = _modifierHooks;
-        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

@@ -177,7 +177,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                                         new StackActionEffect(context.getGame(),
                                                 Iterables.getOnlyElement(cards).getPlayCardAction(
                                                         (onFilterableSource != null) ?
-                                                                onFilterableSource.getFilterable(context) : Filters.any, true
+                                                                onFilterableSource.getFilterable(context) : Filters.any
                                                 )
                                         );
                                 case PUTCARDSFROMDECKINTOHAND ->

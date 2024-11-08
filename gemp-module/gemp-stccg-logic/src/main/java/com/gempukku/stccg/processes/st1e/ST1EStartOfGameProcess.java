@@ -9,16 +9,15 @@ import com.gempukku.stccg.processes.GameProcess;
 import java.util.*;
 
 public class ST1EStartOfGameProcess extends ST1EGameProcess {
-    final Set<String> _players;
     public ST1EStartOfGameProcess(ST1EGame game) {
-        super(game);
-        _players = game.getPlayerIds();
+        super(new HashSet<>(), game);
     }
 
     @Override
     public void process() {
+        Set<String> players = _game.getPlayerIds();
         _game.takeSnapshot("Start of game");
-        for (String player : _players) {
+        for (String player : players) {
             List<PhysicalCard> doorwaySeeds = new LinkedList<>();
             for (PhysicalCard seedCard : _game.getGameState().getSeedDeck(player)) {
                 if (seedCard.getCardType() == CardType.DOORWAY)
@@ -33,6 +32,6 @@ public class ST1EStartOfGameProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EDoorwaySeedPhaseProcess(_players, new HashSet<>(), _game);
+        return new ST1EDoorwaySeedPhaseProcess(_game);
     }
 }

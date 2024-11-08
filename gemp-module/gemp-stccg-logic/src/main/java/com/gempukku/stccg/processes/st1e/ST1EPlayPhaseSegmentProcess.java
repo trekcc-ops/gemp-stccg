@@ -10,44 +10,30 @@ import com.gempukku.stccg.processes.GameUtils;
 import java.util.List;
 
 public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
-    private final String _playerId;
-    private ST1EGameProcess _nextProcess;
-
-    ST1EPlayPhaseSegmentProcess(String playerId, ST1EGame game) {
-        super(game);
-        _playerId = playerId;
-    }
 
     ST1EPlayPhaseSegmentProcess(ST1EGame game) {
-        super(game);
-        _playerId = game.getCurrentPlayerId();
+        super(game.getCurrentPlayer(), game);
     }
 
     @Override
     public void process() {
-        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(_playerId);
+        String currentPlayerId = _game.getCurrentPlayerId();
+        ST1EGame thisGame = _game; // To avoid conflict when decision calls "_game"
+        final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(currentPlayerId);
         if (!playableActions.isEmpty() || !_game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardActionSelectionDecision(1, "Play " +
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(_game.getCurrentPlayer(), "Play " +
                             _game.getCurrentPhaseString() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             if ("revert".equalsIgnoreCase(result)) {
-                                GameUtils.performRevert(_game, _playerId);
+                                GameUtils.performRevert(thisGame, currentPlayerId);
                             } else {
                                 Action action = getSelectedAction(result);
                                 if (action != null) {
-                                    // TODO SNAPSHOT
-                                    // Take game snapshot before top-level action performed
-//                                    String snapshotSourceCardInfo = action.getActionSource() != null ?
-//                                            (": " + action.getActionSource().getCardLink()) : "";
-//                                    _game.takeSnapshot(_playerId + ": " + action.getText() +
-//                                            snapshotSourceCardInfo);
-
-                                    _nextProcess = new ST1EPlayPhaseSegmentProcess(_playerId, _game);
-                                    _game.getActionsEnvironment().addActionToStack(action);
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
                                 } else {
-                                    _nextProcess = new ST1EEndOfPlayPhaseSegmentProcess(_game);
+                                    _playersParticipating.remove(currentPlayerId);
                                 }
                             }
                         }
@@ -56,6 +42,10 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() { return _nextProcess; }
+    public GameProcess getNextProcess() {
+        return (_playersParticipating.isEmpty()) ? new ST1EEndOfPlayPhaseSegmentProcess(_game) :
+                new ST1EPlayPhaseSegmentProcess(_game);
+
+    }
 
 }

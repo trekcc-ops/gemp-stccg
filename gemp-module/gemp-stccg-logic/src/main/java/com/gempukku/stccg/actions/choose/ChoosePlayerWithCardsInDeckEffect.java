@@ -27,12 +27,12 @@ public class ChoosePlayerWithCardsInDeckEffect extends UnrespondableEffect {
             if (!_game.getGameState().getDrawDeck(player).isEmpty())
                 playersWithCards.add(player);
         }
-        String[] playersWithCardsArr = playersWithCards.toArray(new String[0]);
-        if (playersWithCardsArr.length == 1)
+        if (playersWithCards.size() == 1)
             playerChosen();
         else
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new MultipleChoiceAwaitingDecision("Choose a player", playersWithCardsArr) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Choose a player",
+                            playersWithCards) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             _context.setValueToMemory(_memoryId, result);

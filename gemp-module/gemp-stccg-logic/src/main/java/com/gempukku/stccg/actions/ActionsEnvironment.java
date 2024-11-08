@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Snapshotable;
 
@@ -22,26 +21,19 @@ public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
 
     List<Action> getPhaseActions(String playerId);
 
-    void addUntilStartOfPhaseActionProxy(ActionProxy actionProxy, Phase phase);
-
-    void addUntilEndOfPhaseActionProxy(ActionProxy actionProxy, Phase phase);
-
     void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
 
     void addActionToStack(Action action);
 
     void emitEffectResult(EffectResult effectResult);
 
-    List<EffectResult> getTurnEffectResults();
-
-    List<EffectResult> getPhaseEffectResults();
-
     Set<EffectResult> consumeEffectResults();
     void signalEndOfTurn();
     void addAlwaysOnActionProxy(ActionProxy actionProxy);
     DefaultGame getGame();
     Stack<Action> getActionStack();
-    void signalEndOfPhase();
+
     void addPerformedAction(Action action);
     List<Action> getPerformedActions();
+
 }

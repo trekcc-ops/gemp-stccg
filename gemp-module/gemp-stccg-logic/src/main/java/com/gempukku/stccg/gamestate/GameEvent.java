@@ -2,7 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -132,11 +132,11 @@ public class GameEvent {
         _eventAttributes.put(Attribute.zone, card.getZone().name());
         _zone = card.getZone();
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
-        _eventAttributes.put(Attribute.controllerId, card.getCardControllerPlayerId());
+        _eventAttributes.put(Attribute.controllerId, card.getCardControllerPlayerIdForClient());
         _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
 
-        if (card.getCardType() == CardType.MISSION)
-            _eventAttributes.put(Attribute.quadrant, card.getQuadrant().name());
+        if (card.getCardType() == CardType.MISSION && card.isInPlay())
+            _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
 
         if (card.getStackedOn() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));

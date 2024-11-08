@@ -26,7 +26,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return getBlueprint().getFacilityType();
     }
     public boolean canSeedAtMission(MissionCard mission) {
-        for (Affiliation affiliation : _affiliationOptions)
+        for (Affiliation affiliation : getAffiliationOptions())
             if (canSeedAtMissionAsAffiliation(mission, affiliation))
                 return true;
         return false;
@@ -36,7 +36,8 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
             return false;
         if (mission.getLocation().hasFacilityOwnedByPlayer(_owner.getPlayerId()))
             return false;
-        return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) && mission.getQuadrant() == _nativeQuadrant;
+        return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) &&
+                mission.getBlueprint().getQuadrant() == getNativeQuadrant();
     }
 
     @Override

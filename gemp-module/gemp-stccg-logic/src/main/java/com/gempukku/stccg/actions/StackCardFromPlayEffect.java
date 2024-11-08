@@ -1,12 +1,11 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.discard.DiscardUtils;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class StackCardFromPlayEffect extends DefaultEffect {
 
             // Send the result (attached cards get discarded)
             for (PhysicalCard discardedCard : discardedFromPlayCards)
-                _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
+                _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(null, discardedCard));
 
             return new FullEffectResult(true);
         }

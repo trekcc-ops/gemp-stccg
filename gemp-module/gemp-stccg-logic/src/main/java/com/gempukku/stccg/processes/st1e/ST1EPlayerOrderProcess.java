@@ -7,20 +7,19 @@ import com.gempukku.stccg.processes.GameProcess;
 import java.util.*;
 
 public class ST1EPlayerOrderProcess extends ST1EGameProcess {
-    private final Set<String> _players;
 
-    public ST1EPlayerOrderProcess(Set<String> players, ST1EGame game) {
-        super(game);
-        _players = players;
+    public ST1EPlayerOrderProcess(ST1EGame game) {
+        super(game.getPlayerIds(), game);
     }
 
     @Override
     public void process() {
+        String[] players = _game.getAllPlayerIds();
         Map<String, Integer> diceResults = new HashMap<>();
-        for (String player: _players) diceResults.put(player, 0);
+        for (String player: players) diceResults.put(player, 0);
 
         while (diceResults.size() > 1) {
-            for (String player : _players) {
+            for (String player : players) {
                 Random rand = new Random();
                 int diceRoll = rand.nextInt(6) + 1;
                 _game.sendMessage(player + " rolled a " + diceRoll);
@@ -28,7 +27,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             }
             int highestRoll = Collections.max(diceResults.values());
 
-            for (String player : _players) {
+            for (String player : players) {
                 if (diceResults.get(player) < highestRoll) {
                     diceResults.remove(player);
                 }
@@ -40,7 +39,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
         List<String> playerOrder = new ArrayList<>();
         playerOrder.addFirst(firstPlayer);
         int playerOrderIndex = 1;
-        for (String player : _players) {
+        for (String player : players) {
             if (!Objects.equals(player, firstPlayer)) {
                 playerOrder.add(playerOrderIndex, player);
                 playerOrderIndex++;

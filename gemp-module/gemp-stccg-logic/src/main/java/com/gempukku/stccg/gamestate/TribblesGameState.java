@@ -2,7 +2,9 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -53,8 +55,9 @@ public final class TribblesGameState extends GameState {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(library.getCardBlueprint(blueprintId).createPhysicalCard(getGame(),
-                                _nextCardId, player));
+                        CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
+                        PhysicalCard card = new TribblesPhysicalCard(_game, _nextCardId, player, blueprint);
+                        subDeck.add(card);
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");

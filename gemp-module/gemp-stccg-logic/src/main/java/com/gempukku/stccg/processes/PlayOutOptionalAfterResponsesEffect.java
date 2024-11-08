@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.ActionOrder;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -47,8 +48,9 @@ class PlayOutOptionalAfterResponsesEffect extends UnrespondableEffect {
                         _action, _actionOrder, _passCount + 1, _effectResults));
             }
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(activePlayer,
-                    new CardActionSelectionDecision(1, "Optional responses", possibleActions) {
+            Player decidingPlayer = _game.getGameState().getPlayer(activePlayer);
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(decidingPlayer, "Optional responses", possibleActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             final int nextPassCount;

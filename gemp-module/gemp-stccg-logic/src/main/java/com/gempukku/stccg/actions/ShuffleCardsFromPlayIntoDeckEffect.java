@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.discard.DiscardUtils;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
@@ -62,7 +62,7 @@ public class ShuffleCardsFromPlayIntoDeckEffect extends DefaultEffect {
                 _game.getGameState().addCardToZone(physicalCard, Zone.DISCARD);
 
             for (PhysicalCard physicalCard : discardedFromPlay)
-                _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, physicalCard));
+                _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(null, physicalCard));
 
             _game.sendMessage(TextUtils.getConcatenatedCardLinks(toShuffleIn) + " " + TextUtils.be(toShuffleIn) + " shuffled into " + _playerDeck + " deck");
 

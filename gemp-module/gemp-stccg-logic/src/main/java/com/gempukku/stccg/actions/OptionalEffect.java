@@ -3,6 +3,9 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OptionalEffect extends AbstractSubActionEffect {
     private final Action _action;
     private final String _playerId;
@@ -36,8 +39,12 @@ public class OptionalEffect extends AbstractSubActionEffect {
             String text = _optionalEffect.getText();
             if(text != null)
                 text = text.toLowerCase();
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new MultipleChoiceAwaitingDecision("Do you wish to " + text + "?", new String[]{"Yes", "No"}) {
+            List<String> options = new ArrayList<>();
+            options.add("Yes");
+            options.add("No");
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Do you wish to " + text + "?",
+                            options) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             if (index == 0) {

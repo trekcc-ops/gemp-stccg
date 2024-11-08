@@ -254,7 +254,21 @@ export default class GempClientCommunication {
             dataType:"xml"
         });
     }
-    
+
+    getCardImages(blueprintId, callback, errorMap) {
+        $.ajax({
+            type:"GET",
+            url:this.url + "/game/getCardImages",
+            cache:false,
+            data:{
+                blueprintId:blueprintId
+            },
+            success:this.deliveryCheck(callback),
+            error:this.errorCheck(errorMap),
+            dataType:"json"
+        });
+    }
+
     concede(errorMap) {
         $.ajax({
             type:"POST",
@@ -851,7 +865,7 @@ export default class GempClientCommunication {
             dataType:"json"
         });
     }
-    
+
     setDailyMessage(motd, callback, errorMap) {
         $.ajax({
             type:"POST",

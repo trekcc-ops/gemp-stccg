@@ -28,7 +28,7 @@ public class ST2EGameState extends GameState {
 
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
-        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.DISCARD || zone == Zone.REMOVED)
+        if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.DISCARD || zone == Zone.REMOVED || zone == Zone.VOID)
             return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);

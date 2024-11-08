@@ -8,21 +8,19 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
     public ST1EStartOfDilemmaSeedPhaseProcess(ST1EGame game) {
-        super(game);
+        super(game.getPlayerIds(), game);
     }
 
     @Override
     public void process() {
         ST1EGameState gameState = _game.getGameState();
-        _game.getActionsEnvironment().signalEndOfPhase(); // end mission seed phase
         gameState.setCurrentPhase(Phase.SEED_DILEMMA);
-        for (String player : _game.getPlayerIds()) {
+        for (String player : _playersParticipating) {
             List<PhysicalCard> remainingSeeds = new LinkedList<>(gameState.getSeedDeck(player));
             for (PhysicalCard card : remainingSeeds) {
                 gameState.removeCardsFromZone(player, Collections.singleton(card));
@@ -33,7 +31,5 @@ public class ST1EStartOfDilemmaSeedPhaseProcess extends ST1EGameProcess {
     }
 
     @Override
-    public GameProcess getNextProcess() {
-        return new DilemmaSeedPhaseOpponentsMissionsProcess(new HashSet<>(), _game);
-    }
+    public GameProcess getNextProcess() {return new DilemmaSeedPhaseOpponentsMissionsProcess(_game);}
 }

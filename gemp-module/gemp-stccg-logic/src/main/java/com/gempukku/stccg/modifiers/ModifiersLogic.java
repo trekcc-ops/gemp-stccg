@@ -1,5 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.RegularSkill;
@@ -15,11 +17,14 @@ import com.gempukku.stccg.game.Snapshotable;
 
 import java.util.*;
 
+@JsonSerialize(using = ModifiersLogicSerializer.class)
 public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, Snapshotable<ModifiersLogic> {
 
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
     private final Map<String, List<Modifier>> _untilEndOfPlayersNextTurnThisRoundModifiers = new HashMap<>();
+    private final Map<PhysicalCard, List<ModifierHook>> _modifierHooks = new HashMap<>();
+
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
@@ -32,6 +37,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         _game = game;
         _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
     }
+
+    public ModifiersLogic(DefaultGame game, JsonNode node) {
+        _game = game;
+        _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
+        // TODO - load all modifiers from JsonNode
+    }
+
 
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card) {
@@ -471,6 +483,32 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public void useNormalCardPlay(Player player) {
         int currentPlaysAvailable = _normalCardPlaysAvailable.get(player);
         _normalCardPlaysAvailable.put(player, currentPlaysAvailable - 1);
+    }
+
+    @Override
+    public void removeModifierHooks(PhysicalCard card) {
+        if (_modifierHooks.get(card) != null) {
+            for (ModifierHook modifierHook : _modifierHooks.get(card))
+                modifierHook.stop();
+            _modifierHooks.remove(card);
+        }
+    }
+
+    @Override
+    public void addModifierHooks(PhysicalCard card) {
+        List<Modifier> modifiers = card.getModifiers(card.getBlueprint().getInPlayModifiers());
+        modifiers.addAll(card.getBlueprint().getWhileInPlayModifiersNew(card.getOwner(), card));
+        _modifierHooks.computeIfAbsent(card, k -> new LinkedList<>());
+        for (Modifier modifier : modifiers)
+            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+    }
+
+    public List<Modifier> getModifiers() {
+        List<Modifier> result = new LinkedList<>();
+        for (List<Modifier> modifiers : _modifiers.values()) {
+            result.addAll(modifiers);
+        }
+        return result;
     }
 
 }

@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
@@ -18,17 +17,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class MissionCard extends ST1EPhysicalCard {
-    private final Quadrant _quadrant;
-    private final int _pointsShown;
-    protected final MissionType _missionType;
-    private final boolean _hasNoPointBox;
     protected boolean _completed = false;
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _quadrant = blueprint.getQuadrant();
-        _missionType = blueprint.getMissionType();
-        _hasNoPointBox = blueprint.hasNoPointBox();
-        _pointsShown = blueprint.getPointsShown();
     }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {
@@ -41,29 +32,33 @@ public class MissionCard extends ST1EPhysicalCard {
         }
     }
 
+    private int getPointsShown() { return _blueprint.getPointsShown(); }
+
     public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
         return getAffiliationIcons(player.getPlayerId());
     }
 
-    public Quadrant getQuadrant() { return _quadrant; }
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
     @Override
     public boolean canBeSeeded() { return true; }
 
     public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
+    private boolean hasNoPointBox() { return _blueprint.hasNoPointBox(); }
+
+    MissionType getMissionType() { return _blueprint.getMissionType(); }
 
     public boolean mayBeAttemptedByPlayer(Player player) {
             // Rule 7.2.1, Paragraph 1
             // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
-        if (_hasNoPointBox)
+        if (hasNoPointBox())
             return false;
         if (_completed)
             return false;
-        if (wasSeededBy(player) || _pointsShown >= 40) {
-            if (_missionType == MissionType.PLANET)
+        if (wasSeededBy(player) || getPointsShown() >= 40) {
+            if (getMissionType() == MissionType.PLANET)
                 return getYourAwayTeamsOnSurface(player).anyMatch(
                         awayTeam -> awayTeam.canAttemptMission(this));
-            if (_missionType == MissionType.SPACE)
+            if (getMissionType() == MissionType.SPACE)
                 return Filters.filterYourActive(player, Filters.ship, Filters.atLocation(_currentLocation))
                         .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
         }
@@ -104,6 +99,8 @@ public class MissionCard extends ST1EPhysicalCard {
         _game.getGameState().checkVictoryConditions();
     }
 
+    public void setCompleted(boolean completed) { _completed = completed; }
+
     @Override
     public MissionCard generateSnapshot(SnapshotData snapshotData) {
 
@@ -116,9 +113,6 @@ public class MissionCard extends ST1EPhysicalCard {
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
         newCard._whileInZoneData = _whileInZoneData;
-        newCard._modifiers.putAll(_modifiers);
-        newCard._modifierHooks = _modifierHooks;
-        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

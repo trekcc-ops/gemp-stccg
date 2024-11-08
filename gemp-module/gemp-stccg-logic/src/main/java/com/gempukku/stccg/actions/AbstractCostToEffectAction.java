@@ -19,8 +19,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     protected String text;
 
     protected final String _performingPlayerId;
-    protected final Action _thisAction = this;
-    private boolean _virtualCardAction = false;
+    private boolean _virtualCardAction;
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
@@ -140,7 +139,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     public abstract DefaultGame getGame();
 
     public SubAction createSubAction() {
-        return new SubAction(_thisAction);
+        return new SubAction(this);
     }
 
     public boolean canBeInitiated() {

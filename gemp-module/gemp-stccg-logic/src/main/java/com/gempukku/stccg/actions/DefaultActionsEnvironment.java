@@ -1,8 +1,7 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.SnapshotData;
 
 import java.util.*;
 
@@ -10,15 +9,13 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final DefaultGame _game;
     private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
-    private final Map<Phase, List<ActionProxy>> _untilStartOfPhaseActionProxies = new HashMap<>();
-    private final Map<Phase, List<ActionProxy>> _untilEndOfPhaseActionProxies = new HashMap<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
     private final List<Action> _performedActions = new LinkedList<>();
-
     private Set<EffectResult> _effectResults = new HashSet<>();
 
-    private final List<EffectResult> turnEffectResults = new LinkedList<>();
-    private final List<EffectResult> phaseEffectResults = new LinkedList<>();
+    public DefaultActionsEnvironment(DefaultGame game) {
+        this(game, new Stack<>());
+    }
 
     public DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack) {
         _game = game;
@@ -27,39 +24,39 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
     private DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack,
                                       Collection<? extends ActionProxy> actionProxies,
-                                      Collection<? extends ActionProxy> untilEndOfTurnActionProxies) {
+                                      Collection<? extends ActionProxy> untilEndOfTurnActionProxies,
+                                      Collection<? extends Action> performedActions) {
         _game = game;
         _actionStack = actionStack;
         _actionProxies.addAll(actionProxies);
         _untilEndOfTurnActionProxies.addAll(untilEndOfTurnActionProxies);
+        _performedActions.addAll(performedActions);
     }
 
     public DefaultActionsEnvironment generateSnapshot(SnapshotData snapshotData) {
         // Snapshot should not be created if effect results lists have members
-        if (!_effectResults.isEmpty() || !turnEffectResults.isEmpty() || !phaseEffectResults.isEmpty()) {
+        if (!_effectResults.isEmpty()) {
             throw new UnsupportedOperationException(
                     "Cannot generate snapshot of DefaultActionsEnvironment with EffectResults"
             );
         }
 
         Stack<Action> newActionStack = new Stack<>();
+        List<Action> newPerformedActions = new LinkedList<>();
         for (Action action : _actionStack)
             newActionStack.add(snapshotData.getDataForSnapshot(action));
+        for (Action action : _performedActions)
+            newActionStack.add(snapshotData.getDataForSnapshot(action));
 
-        return new DefaultActionsEnvironment(_game, newActionStack, _actionProxies, _untilEndOfTurnActionProxies);
+        return new DefaultActionsEnvironment(_game, newActionStack, _actionProxies, _untilEndOfTurnActionProxies,
+                newPerformedActions);
     }
 
     public DefaultGame getGame() { return _game; }
 
-    public List<ActionProxy> getUntilStartOfPhaseActionProxies(Phase phase) {
-        return _untilStartOfPhaseActionProxies.get(phase);
-    }
-
     @Override
     public void emitEffectResult(EffectResult effectResult) {
         _effectResults.add(effectResult);
-        if (Objects.equals(_game.getStatus(), "Playing")) turnEffectResults.add(effectResult);
-        phaseEffectResults.add(effectResult);
     }
 
     public Set<EffectResult> consumeEffectResults() {
@@ -72,51 +69,9 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionProxies.add(actionProxy);
     }
 
-    public void signalStartOfPhase(Phase phase) {
-        List<ActionProxy> list = _untilStartOfPhaseActionProxies.get(phase);
-        if (list != null) {
-            _actionProxies.removeAll(list);
-            list.clear();
-        }
-    }
-
-    public void signalEndOfPhase() {
-        List<ActionProxy> list = _untilEndOfPhaseActionProxies.get(_game.getGameState().getCurrentPhase());
-        if (list != null) {
-            _actionProxies.removeAll(list);
-            list.clear();
-        }
-        phaseEffectResults.clear();
-    }
-
     public void signalEndOfTurn() {
         _actionProxies.removeAll(_untilEndOfTurnActionProxies);
         _untilEndOfTurnActionProxies.clear();
-        turnEffectResults.clear();
-    }
-
-    @Override
-    public List<EffectResult> getTurnEffectResults() {
-        return Collections.unmodifiableList(turnEffectResults);
-    }
-
-    @Override
-    public List<EffectResult> getPhaseEffectResults() {
-        return Collections.unmodifiableList(phaseEffectResults);
-    }
-
-    @Override
-    public void addUntilStartOfPhaseActionProxy(ActionProxy actionProxy, Phase phase) {
-        _actionProxies.add(actionProxy);
-        List<ActionProxy> list = _untilStartOfPhaseActionProxies.computeIfAbsent(phase, k -> new LinkedList<>());
-        list.add(actionProxy);
-    }
-
-    @Override
-    public void addUntilEndOfPhaseActionProxy(ActionProxy actionProxy, Phase phase) {
-        _actionProxies.add(actionProxy);
-        List<ActionProxy> list = _untilEndOfPhaseActionProxies.computeIfAbsent(phase, k -> new LinkedList<>());
-        list.add(actionProxy);
     }
 
     @Override
@@ -184,7 +139,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     }
 
     @Override
-    public Map<Action, EffectResult> getOptionalAfterTriggers(String playerId, Collection<? extends EffectResult> effectResults) {
+    public Map<Action, EffectResult> getOptionalAfterTriggers(String playerId,
+                                                              Collection<? extends EffectResult> effectResults) {
         final Map<Action, EffectResult> gatheredActions = new HashMap<>();
 
         if (effectResults != null) {
@@ -212,16 +168,23 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             for (ActionProxy actionProxy : _actionProxies) {
                 for (EffectResult effectResult : effectResults) {
                     List<? extends Action> actions = actionProxy.getOptionalAfterActions(playerId, effectResult);
-                    if (actions != null) {
-                        for (Action action : actions) {
-                            if (_game.getModifiersQuerying().canPlayAction(playerId, action))
-                                result.add(action);
-                        }
-                    }
+                    List<Action> playableActions = getPlayableActions(playerId, actions);
+                    result.addAll(playableActions);
                 }
             }
         }
 
+        return result;
+    }
+
+    private List<Action> getPlayableActions(String playerId, Iterable<? extends Action> actions) {
+        List<Action> result = new LinkedList<>();
+        if (actions != null) {
+            for (Action action : actions) {
+                if (_game.getModifiersQuerying().canPlayAction(playerId, action))
+                    result.add(action);
+            }
+        }
         return result;
     }
 
@@ -231,12 +194,8 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
 
         for (ActionProxy actionProxy : _actionProxies) {
             List<? extends Action> actions = actionProxy.getPhaseActions(playerId);
-            if (actions != null) {
-                for (Action action : actions) {
-                    if (_game.getModifiersQuerying().canPlayAction(playerId, action))
-                        result.add(action);
-                }
-            }
+            List<Action> playableActions = getPlayableActions(playerId, actions);
+            result.addAll(playableActions);
         }
 
         return result;

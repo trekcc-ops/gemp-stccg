@@ -17,20 +17,19 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import java.util.*;
 
 public abstract class DilemmaSeedPhaseProcess extends ST1EGameProcess {
-    protected final Set<String> _playersDone;
-    protected final Collection<String> _playersSelecting = new HashSet<>();
-    DilemmaSeedPhaseProcess(Set<String> playersDone, ST1EGame game) {
-        super(game);
-        _playersDone = playersDone;
-        for (String playerId : game.getPlayerIds()) {
-            if (!playersDone.contains(playerId))
-                _playersSelecting.add(playerId);
-        }
+
+    DilemmaSeedPhaseProcess(Collection<String> playersSelecting, ST1EGame game) {
+        super(playersSelecting, game);
     }
+
 
     @Override
     public void process() {
-        for (String playerId : _playersSelecting) selectMissionToSeedUnder(playerId);
+        Collection<String> playerIds = _game.getPlayerIds();
+        for (String playerId : playerIds) {
+            if (_playersParticipating.contains(playerId))
+                selectMissionToSeedUnder(playerId);
+        }
     }
 
     abstract List<MissionCard> getAvailableMissions(Player player);
@@ -52,13 +51,14 @@ public abstract class DilemmaSeedPhaseProcess extends ST1EGameProcess {
             }
         }
 
-        _game.getUserFeedback().sendAwaitingDecision(playerId,
-                new CardActionSelectionDecision("Select a mission to seed cards under", seedActions) {
+        _game.getUserFeedback().sendAwaitingDecision(
+                new CardActionSelectionDecision(_game.getPlayer(playerId), "Select a mission to seed cards under",
+                        seedActions) {
                     @Override
                     public void decisionMade(String result) throws DecisionResultInvalidException {
                         Action action = getSelectedAction(result);
                         if (action == null) {
-                            _playersDone.add(playerId);
+                            _playersParticipating.remove(playerId);
                         } else {
                             PhysicalCard topCard = action.getActionSource();
                             selectCardsToSeed(player, topCard);
@@ -74,8 +74,8 @@ public abstract class DilemmaSeedPhaseProcess extends ST1EGameProcess {
 
     private void selectCardsToSeed(Player player, PhysicalCard topCard) {
         Collection<PhysicalCard> availableCards = _game.getGameState().getHand(player.getPlayerId());
-        _game.getUserFeedback().sendAwaitingDecision(player.getPlayerId(),
-                new CardsSelectionDecision("Select cards to seed under " + topCard.getTitle(), availableCards) {
+        _game.getUserFeedback().sendAwaitingDecision(
+                new CardsSelectionDecision(player, "Select cards to seed under " + topCard.getTitle(), availableCards) {
             @Override
             public void decisionMade (String result) throws DecisionResultInvalidException {
                 Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
@@ -87,8 +87,8 @@ public abstract class DilemmaSeedPhaseProcess extends ST1EGameProcess {
 
     private void selectCardsToRemove(Player player, PhysicalCard topCard) {
         Collection<PhysicalCard> availableCards = topCard.getCardsPreSeeded(player);
-        _game.getUserFeedback().sendAwaitingDecision(player.getPlayerId(),
-                new ArbitraryCardsSelectionDecision("Select cards to remove from " + topCard.getTitle(),
+        _game.getUserFeedback().sendAwaitingDecision(
+                new ArbitraryCardsSelectionDecision(player, "Select cards to remove from " + topCard.getTitle(),
                         availableCards) {
                     @Override
                     public void decisionMade (String result) throws DecisionResultInvalidException {

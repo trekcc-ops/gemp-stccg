@@ -48,7 +48,7 @@ public class FlyShipAction extends AbstractCostToEffectAction {
     }
 
     private Effect chooseDestinationEffect() {
-        return new ChooseCardsOnTableEffect(_thisAction, _performingPlayerId,
+        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
                 "Choose destination", _destinationOptions) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {

@@ -1,5 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -14,7 +16,7 @@ public class CardBlueprintTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
-    public void kolTest() {
+    public void kolTest() throws JsonProcessingException {
         initializeSimple1EGame(30);
         Player player1 = _game.getPlayer(1);
 
@@ -51,6 +53,9 @@ public class CardBlueprintTest extends AbstractAtTest {
         assertEquals(Integer.valueOf(4), arridor.getAttribute(CardAttribute.INTEGRITY));
         assertEquals(Integer.valueOf(8), arridor.getAttribute(CardAttribute.CUNNING));
         assertEquals(Integer.valueOf(5), arridor.getAttribute(CardAttribute.STRENGTH));
+
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(_game.getGameState()).replace(",",",\n"));
     }
 
     @Test

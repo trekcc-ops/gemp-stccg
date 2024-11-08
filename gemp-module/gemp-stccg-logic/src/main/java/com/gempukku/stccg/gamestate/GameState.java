@@ -1,18 +1,22 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gempukku.stccg.actions.ActionsEnvironment;
+import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
-import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.common.UserFeedback;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.UserFeedback;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.modifiers.ModifierFlag;
+import com.gempukku.stccg.modifiers.ModifiersLogic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,29 +24,28 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.gempukku.stccg.gamestate.GameEvent.Type.REMOVE_CARD_FROM_PLAY;
-
+@JsonSerialize(using = GameStateSerializer.class)
 public abstract class GameState {
     private static final Logger LOGGER = LogManager.getLogger(GameState.class);
-    private static final int LAST_MESSAGE_STORED_COUNT = 15;
 
     // previousZoneSizes and previousPlayerScores are only used for GameStats comparisons and event sending
     private Map<String, Map<Zone, Integer>> _previousZoneSizes = new HashMap<>();
     private Map<String, Integer> _previousPlayerScores = new HashMap<>();
 
-    protected PlayerOrder _playerOrder;
-    protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new HashMap<>();
-    protected final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
-    protected final List<PhysicalCard> _inPlay = new LinkedList<>();
+    PlayerOrder _playerOrder;
+    private ModifiersLogic _modifiersLogic;
+    protected final Map<Zone, Map<String, List<PhysicalCard>>> _cardGroups = new EnumMap<>(Zone.class);
+    final Map<String, List<PhysicalCard>> _stacked = new HashMap<>();
+    final List<PhysicalCard> _inPlay = new LinkedList<>();
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
-    protected Phase _currentPhase;
+    Phase _currentPhase;
     private boolean _consecutiveAction;
-    protected final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
-    protected final LinkedList<String> _lastMessages = new LinkedList<>();
-    int _nextCardId = 0;
+    final Map<String, AwaitingDecision> _playerDecisions = new HashMap<>();
+    int _nextCardId = 1;
     final Map<String, Integer> _turnNumbers = new HashMap<>();
     Map<String, Integer> _playerScores = new HashMap<>();
     Map<String, Player> _players = new HashMap<>();
+    private ActionsEnvironment _actionsEnvironment;
 
     protected GameState(DefaultGame game, Iterable<String> playerIds) {
         Collection<Zone> cardGroupList = new LinkedList<>();
@@ -60,6 +63,8 @@ public abstract class GameState {
             _playerScores.put(playerId, 0);
             _players.put(playerId, new Player(game, playerId));
         }
+        _modifiersLogic = new ModifiersLogic(game);
+        _actionsEnvironment = new DefaultActionsEnvironment(game);
     }
 
     public abstract DefaultGame getGame();
@@ -71,6 +76,11 @@ public abstract class GameState {
             listener.initializeBoard();
         }
     }
+
+    public void setPlayerOrder(PlayerOrder playerOrder) {
+        _playerOrder = playerOrder;
+    }
+    public ActionsEnvironment getActionsEnvironment() { return _actionsEnvironment; }
 
     public void finish() {
         for (GameStateListener listener : getAllGameStateListeners()) {
@@ -87,18 +97,6 @@ public abstract class GameState {
                 }
             }
         }
-    }
-
-    public PhysicalCard createPhysicalCard(String playerId, CardBlueprintLibrary library, String blueprintId)
-            throws CardNotFoundException {
-        CardBlueprint card = library.getCardBlueprint(blueprintId);
-
-        int cardId = _nextCardId++;
-        PhysicalCard result = new PhysicalCardGeneric(getGame(), cardId, playerId, card);
-
-        _allCards.put(cardId, result);
-
-        return result;
     }
 
     public boolean isConsecutiveAction() {
@@ -125,7 +123,7 @@ public abstract class GameState {
 
             sendCardsToClient(playerId, listener, restoreSnapshot);
         }
-        for (String lastMessage : _lastMessages)
+        for (String lastMessage : getMessages())
             listener.sendMessage(lastMessage);
 
         final AwaitingDecision awaitingDecision = _playerDecisions.get(playerId);
@@ -151,6 +149,7 @@ public abstract class GameState {
         } while (!cardsLeftToSend.isEmpty());
 
         List<PhysicalCard> cardsPutIntoPlay = new LinkedList<>();
+
         _stacked.values().forEach(cardsPutIntoPlay::addAll);
         cardsPutIntoPlay.addAll(_cardGroups.get(Zone.HAND).get(playerId));
         cardsPutIntoPlay.addAll(_cardGroups.get(Zone.DISCARD).get(playerId));
@@ -162,9 +161,7 @@ public abstract class GameState {
     }
 
     public void sendMessage(String message) {
-        _lastMessages.add(message);
-        if (_lastMessages.size() > LAST_MESSAGE_STORED_COUNT)
-            _lastMessages.removeFirst();
+        getGame().addMessage(message);
         for (GameStateListener listener : getAllGameStateListeners())
             listener.sendMessage(message);
     }
@@ -258,15 +255,14 @@ public abstract class GameState {
         for (PhysicalCard card : cards) {
             List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
             if (!zoneCards.contains(card))
-                LOGGER.error("Card was not found in the expected zone");
+                LOGGER.error(
+                        "Card was not found in the expected zone: " + card.getTitle() + ", " + card.getZone().name());
         }
 
         for (PhysicalCard card : cards) {
             Zone zone = card.getZone();
 
             if (zone.isInPlay()) card.stopAffectingGame();
-            if (zone == Zone.STACKED || zone == Zone.DISCARD)
-                if (card.isAffectingGame()) card.stopAffectingGameInZone(zone);
 
             getZoneCards(card.getOwnerName(), zone).remove(card);
 
@@ -294,7 +290,7 @@ public abstract class GameState {
                     removedCardsVisibleByPlayer.add(card);
             }
             if (!removedCardsVisibleByPlayer.isEmpty())
-                listener.sendEvent(new GameEvent(REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
+                listener.sendEvent(new GameEvent(GameEvent.Type.REMOVE_CARD_FROM_PLAY, removedCardsVisibleByPlayer, getPlayer(playerPerforming)));
         }
 
 
@@ -320,7 +316,6 @@ public abstract class GameState {
             zone = Zone.REMOVED;
 
         if (zone.isInPlay()) {
-//            assignNewCardId(card); // Possibly it was a mistake commenting this out, but I'm pretty sure we should keep cardId permanent
             _inPlay.add(card);
         }
 
@@ -342,8 +337,6 @@ public abstract class GameState {
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
             card.startAffectingGame();
-        if ((zone == Zone.STACKED || zone == Zone.DISCARD) && card.isAffectingGame())
-            card.startAffectingGameInZone(zone);
     }
 
     protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener, boolean animate) {
@@ -448,34 +441,13 @@ public abstract class GameState {
     }
 
     public void startAffectingCardsForCurrentPlayer() {
-        // Active non-sites are affecting
         for (PhysicalCard physicalCard : _inPlay)
             if (isCardInPlayActive(physicalCard)) physicalCard.startAffectingGame();
-
-        // Stacked cards on active cards are stack-affecting
-        for (List<PhysicalCard> stackedCards : _stacked.values())
-            for (PhysicalCard stackedCard : stackedCards)
-                if ((isCardInPlayActive(stackedCard.getStackedOn()) && stackedCard.isAffectingGame()))
-                    stackedCard.startAffectingGameInZone(Zone.STACKED);
-
-        for (List<PhysicalCard> discardedCards : _cardGroups.get(Zone.DISCARD).values())
-            for (PhysicalCard discardedCard : discardedCards)
-                if (discardedCard.isAffectingGame())
-                    discardedCard.startAffectingGameInZone(Zone.DISCARD);
     }
 
     public void stopAffectingCardsForCurrentPlayer() {
         for (PhysicalCard physicalCard : _inPlay)
             physicalCard.stopAffectingGame();
-
-        for (List<PhysicalCard> stackedCards : _stacked.values())
-            for (PhysicalCard stackedCard : stackedCards)
-                if (isCardInPlayActive(stackedCard.getStackedOn()))
-                    if (stackedCard.isAffectingGame()) stackedCard.stopAffectingGameInZone(Zone.STACKED);
-
-        for (List<PhysicalCard> discardedCards : _cardGroups.get(Zone.DISCARD).values())
-            for (PhysicalCard discardedCard : discardedCards)
-                if (discardedCard.isAffectingGame()) discardedCard.stopAffectingGameInZone(Zone.DISCARD);
     }
 
     public void setCurrentPhase(Phase phase) {
@@ -593,12 +565,26 @@ public abstract class GameState {
         if (changed) sendGameStats();
     }
 
-
-
     public Map<String, Map<Zone, Integer>> getZoneSizes() {
         return Collections.unmodifiableMap(_previousZoneSizes);
     }
-
     public Map<String, Integer> getPlayerScores() { return Collections.unmodifiableMap(_previousPlayerScores); }
+    public ModifiersLogic getModifiersLogic() { return _modifiersLogic; }
+    public void setModifiersLogic(ModifiersLogic modifiers) { _modifiersLogic = modifiers; }
+    public void setNextCardId(int nextCardId) { _nextCardId = nextCardId; }
 
+    public void setModifiersLogic(JsonNode node) { _modifiersLogic = new ModifiersLogic(getGame(), node); }
+    public void setActionsEnvironment(ActionsEnvironment actionsEnvironment) {
+        _actionsEnvironment = actionsEnvironment;
+    }
+
+    public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
+        PhysicalCard card = _allCards.get(cardId);
+        if (card == null)
+            throw new CardNotFoundException("Could not find card from id number " + cardId);
+        return card;
+    }
+
+    public List<String> getMessages() { return getGame().getMessages(); }
+    int getNextCardId() { return _nextCardId; }
 }

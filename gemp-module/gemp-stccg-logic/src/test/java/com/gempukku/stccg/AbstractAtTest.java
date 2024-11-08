@@ -4,13 +4,16 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
-import com.gempukku.stccg.common.*;
+import com.gempukku.stccg.common.AwaitingDecisionType;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -307,7 +310,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         decks.put(player, deck);
     }
 
-    protected void moveCardToZone(PhysicalCardGeneric card, Zone zone) {
+    protected void moveCardToZone(PhysicalCard card, Zone zone) {
         _game.getGameState().addCardToZone(card, zone);
     }
 
@@ -317,7 +320,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         try {
             decision.decisionMade(answer);
         } catch (DecisionResultInvalidException exp) {
-            _userFeedback.sendAwaitingDecision(player, decision);
+            _userFeedback.sendAwaitingDecision(decision);
             throw exp;
         }
         _game.carryOutPendingActionsUntilDecisionNeeded();

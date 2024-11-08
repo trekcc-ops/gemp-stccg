@@ -33,11 +33,12 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
         if (playersWithCardsArr.length == 1)
             playerChosen(playersWithCardsArr[0], getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player", playersWithCardsArr) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player",
+                            playersWithCardsArr) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);

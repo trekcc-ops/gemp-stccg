@@ -89,7 +89,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     }
 
     private Effect selectForceEffect(Player player) {
-        return new ChooseCardsOnTableEffect(_thisAction, player,
+        return new ChooseCardsOnTableEffect(this, player,
                 "Choose ships to include in force", 1, getEligibleCardsForForce(player).size(),
                 getEligibleCardsForForce(player)) {
             @Override
@@ -100,7 +100,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     }
 
     private Effect getTargetEffect(Player player) {
-        return new ChooseCardsOnTableEffect(_thisAction, player,
+        return new ChooseCardsOnTableEffect(this, player,
                 "Choose target", 1, 1, getTargetOptions(player)) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
@@ -141,8 +141,8 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         }
 
         if (!_returnFireDecisionMade) {
-            _game.getUserFeedback().sendAwaitingDecision(_defendingPlayer.getPlayerId(),
-                    new YesNoDecision("Do you want to return fire?") {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new YesNoDecision(_defendingPlayer, "Do you want to return fire?") {
                 @Override
                         protected void yes() {
                     _returnFireDecisionMade = true;

@@ -14,7 +14,7 @@ import com.gempukku.stccg.game.TribblesGame;
 import java.util.List;
 import java.util.Map;
 
-public class TribblesPhysicalCard extends PhysicalCard {
+public class TribblesPhysicalCard extends AbstractPhysicalCard {
     private final TribblesGame _game;
     public TribblesPhysicalCard(TribblesGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
@@ -57,9 +57,6 @@ public class TribblesPhysicalCard extends PhysicalCard {
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
         newCard._whileInZoneData = _whileInZoneData;
-        newCard._modifiers.putAll(_modifiers);
-        newCard._modifierHooks = _modifierHooks;
-        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

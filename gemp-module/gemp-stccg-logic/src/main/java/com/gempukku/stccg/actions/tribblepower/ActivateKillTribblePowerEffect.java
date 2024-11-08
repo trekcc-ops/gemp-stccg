@@ -19,9 +19,10 @@ public class ActivateKillTribblePowerEffect extends ActivateTribblePowerEffect {
         if (players.length == 1)
             playerChosen(players[0]);
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision(
-                            "Choose a player to shuffle his or her discard pile into his or her draw deck", players) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer),
+                            "Choose a player to shuffle his or her discard pile into his or her draw deck",
+                            players) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             playerChosen(result);

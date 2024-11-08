@@ -34,8 +34,9 @@ public abstract class ChooseAffiliationEffect extends DefaultEffect {
                 affiliationStringMap.put(affiliation.getHumanReadable(), affiliation);
                 affiliationStrings.add(affiliation.getHumanReadable());
             }
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new MultipleChoiceAwaitingDecision("Choose an affiliation", affiliationStrings) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Choose an affiliation",
+                            affiliationStrings) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             affiliationChosen(affiliationStringMap.get(result));

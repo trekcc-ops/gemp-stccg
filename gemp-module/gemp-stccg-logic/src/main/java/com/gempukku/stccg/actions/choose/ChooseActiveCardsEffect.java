@@ -81,8 +81,9 @@ public abstract class ChooseActiveCardsEffect extends DefaultEffect {
                 _game.getGameState().cardAffectsCard(_playerId, _source, matchingCards);
             cardsSelected(matchingCards);
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, _choiceText, matchingCards, minimum, maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardsSelectionDecision(_game.getPlayer(_playerId), _choiceText, matchingCards, minimum,
+                            maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

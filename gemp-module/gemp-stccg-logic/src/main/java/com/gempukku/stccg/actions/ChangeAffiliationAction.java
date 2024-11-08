@@ -78,7 +78,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         if (!_actionCompleted) {
             _game.sendMessage(_performingPlayerId + " changed " +
                     _card.getCardLink() + "'s affiliation to " + _selectedAffiliation.toHTML());
-            _card.setCurrentAffiliation(_selectedAffiliation);
+            _card.changeAffiliation(_selectedAffiliation);
             _actionCompleted = true;
         }
 

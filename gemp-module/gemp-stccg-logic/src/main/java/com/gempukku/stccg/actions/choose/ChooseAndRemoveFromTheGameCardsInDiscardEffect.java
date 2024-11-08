@@ -55,8 +55,8 @@ public class ChooseAndRemoveFromTheGameCardsInDiscardEffect extends AbstractSubA
         } else {
             int min = _minimum;
             int max = Math.min(_maximum, possibleTargets.size());
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new ArbitraryCardsSelectionDecision(1, "Choose cards to remove from the game", possibleTargets, min, max) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), "Choose cards to remove from the game", possibleTargets, min, max) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             final List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

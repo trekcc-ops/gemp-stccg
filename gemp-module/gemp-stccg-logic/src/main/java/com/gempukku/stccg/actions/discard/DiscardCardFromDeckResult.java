@@ -5,12 +5,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 public class DiscardCardFromDeckResult extends EffectResult {
     private final PhysicalCard _card;
-    private final boolean _forced;
 
-    public DiscardCardFromDeckResult(PhysicalCard source, PhysicalCard card, boolean forced) {
+    public DiscardCardFromDeckResult(PhysicalCard source, PhysicalCard card) {
         super(Type.FOR_EACH_DISCARDED_FROM_DECK, source);
         _card = card;
-        _forced = forced;
     }
 
 

@@ -13,19 +13,21 @@ import com.gempukku.stccg.game.*;
 import java.util.*;
 
 public class ST1EGameState extends GameState implements Snapshotable<ST1EGameState> {
-    private final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
-    private final Map<String, List<PhysicalCard>> _missionPiles = new HashMap<>();
-    private final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
+    final Map<String, List<PhysicalCard>> _seedDecks = new HashMap<>();
+    final List<ST1ELocation> _spacelineLocations = new ArrayList<>();
     private final ST1EGame _game;
-    private final Set<AwayTeam> _awayTeams = new HashSet<>();
+    final List<AwayTeam> _awayTeams = new ArrayList<>();
 
     public ST1EGameState(Iterable<String> playerIds, ST1EGame game) {
         super(game, playerIds);
         _game = game;
         _currentPhase = Phase.SEED_DOORWAY;
         _cardGroups.put(Zone.TABLE, new HashMap<>());
-        for (String playerId : playerIds)
+        _cardGroups.put(Zone.MISSIONS_PILE, new HashMap<>());
+        for (String playerId : playerIds) {
             _cardGroups.get(Zone.TABLE).put(playerId, new LinkedList<>());
+            _cardGroups.get(Zone.MISSIONS_PILE).put(playerId, new LinkedList<>());
+        }
     }
 
     public ST1EGameState(ST1EGame game) {
@@ -38,12 +40,10 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
     @Override
     public List<PhysicalCard> getZoneCards(String playerId, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.TABLE)
+                zone == Zone.DISCARD || zone == Zone.TABLE || zone == Zone.MISSIONS_PILE)
             return _cardGroups.get(zone).get(playerId);
         else if (zone == Zone.STACKED)
             return _stacked.get(playerId);
-        else if (zone == Zone.MISSIONS_PILE)
-            return _missionPiles.get(playerId);
         else if (zone == Zone.SEED_DECK)
             return _seedDecks.get(playerId);
         else // This should never be accessed
@@ -57,7 +57,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        PhysicalCard card = library.createPhysicalCard(_game, blueprintId, _nextCardId, playerId);
+                        PhysicalCard card = library.createST1EPhysicalCard(_game, blueprintId, _nextCardId, playerId);
                         subDeck.add(card);
                         _allCards.put(_nextCardId, card);
                         _nextCardId++;
@@ -67,26 +67,30 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
                 }
                 if (entry.getKey() == SubDeck.DRAW_DECK) {
                     _cardGroups.get(Zone.DRAW_DECK).put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.DRAW_DECK));
+                    for (PhysicalCard card : subDeck)
+                        card.setZone(Zone.DRAW_DECK);
                 } else if (entry.getKey() == SubDeck.SEED_DECK) {
                     _seedDecks.put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.SEED_DECK));
+                    for (PhysicalCard card : subDeck)
+                        card.setZone(Zone.SEED_DECK);
                 } else if (entry.getKey() == SubDeck.MISSIONS) {
-                    _missionPiles.put(playerId, subDeck);
-                    subDeck.forEach(card -> card.setZone(Zone.MISSIONS_PILE));
+                    _cardGroups.get(Zone.MISSIONS_PILE).put(playerId, subDeck);
+                    for (PhysicalCard card : subDeck)
+                        card.setZone(Zone.MISSIONS_PILE);
                 }
             }
             _seedDecks.computeIfAbsent(playerId, k -> new LinkedList<>());
-            _missionPiles.computeIfAbsent(playerId, k -> new LinkedList<>());
         }
-    }
-
-    public List<PhysicalCard> getMissionPile(String playerId) {
-        return Collections.unmodifiableList(_missionPiles.get(playerId));
     }
 
     public List<PhysicalCard> getSeedDeck(String playerId) {
         return Collections.unmodifiableList(_seedDecks.get(playerId));
+    }
+
+    public AwayTeam createNewAwayTeam(Player player, PhysicalCard mission) {
+        AwayTeam result = new AwayTeam(_game, player, mission);
+        _awayTeams.add(result);
+        return result;
     }
 
     public boolean hasLocationsInQuadrant(Quadrant quadrant) {
@@ -177,7 +181,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         Set<PhysicalCard> newCollection = new HashSet<>();
         for (ST1ELocation location : _spacelineLocations)
             for (PhysicalCard mission : location.getMissions())
-                if (mission.getQuadrant() == quadrant)
+                if (location.getQuadrant() == quadrant)
                     newCollection.add(mission);
         return newCollection;
     }
@@ -220,7 +224,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
         }
 
-        List<PhysicalCard> missionPile = _missionPiles.get(playerId);
+        List<PhysicalCard> missionPile = _cardGroups.get(Zone.MISSIONS_PILE).get(playerId);
         if (missionPile != null) {
             for (PhysicalCard physicalCard : missionPile) {
                 sendCreatedCardToListener(physicalCard, false, listener, !restoreSnapshot);
@@ -232,8 +236,7 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         }
     }
 
-    public Set<AwayTeam> getAwayTeams() { return _awayTeams; }
-    public void addAwayTeamToGame(AwayTeam awayTeam) { _awayTeams.add(awayTeam); }
+    public List<AwayTeam> getAwayTeams() { return _awayTeams; }
 
     public void checkVictoryConditions() {
             // TODO - VERY simplistic. Just a straight race to 100.
@@ -277,9 +280,8 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         ST1EGameState snapshot = new ST1EGameState(_game);
 
         snapshot._playerOrder = _playerOrder;
-        snapshot._currentPhase = _currentPhase;
+        snapshot.setCurrentPhase(_currentPhase);
         snapshot._playerDecisions.putAll(_playerDecisions);
-        snapshot._lastMessages.addAll(_lastMessages);
         snapshot._nextCardId = _nextCardId;
         snapshot._turnNumbers.putAll(_turnNumbers);
         snapshot._playerScores.putAll(_playerScores);
@@ -297,7 +299,6 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
         // TODO SNAPSHOT: _awayTeams
         copyCardGroup(_stacked, snapshot._stacked, snapshotData);
         copyCardGroup(_seedDecks, snapshot._seedDecks, snapshotData);
-        copyCardGroup(_missionPiles, snapshot._missionPiles, snapshotData);
         for (PhysicalCard card : _inPlay) {
             snapshot._inPlay.add(snapshotData.getDataForSnapshot(card));
         }

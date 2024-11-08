@@ -9,22 +9,18 @@ import com.gempukku.stccg.processes.GameProcess;
 import java.util.LinkedList;
 
 public class ST1EStartOfPlayPhaseProcess extends ST1EGameProcess {
-    private ST1EGameProcess _followingGameProcess;
 
-    public ST1EStartOfPlayPhaseProcess(ST1EGameProcess followingProcess, ST1EGame game) {
-        super(game);
-        _followingGameProcess = followingProcess;
+    public ST1EStartOfPlayPhaseProcess(ST1EGame game) {
+        super(game.getPlayerIds(), game);
     }
 
     @Override
     public void process() {
 
         ST1EGameState gameState = _game.getGameState();
-
-        _game.getActionsEnvironment().signalEndOfPhase();
         _game.takeSnapshot("Start of play phase");
 
-        for (String playerId : _game.getPlayerIds()) {
+        for (String playerId : _playersParticipating) {
             Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(gameState.getHand(playerId));
             for (PhysicalCard card : remainingSeedCards) {
                 gameState.removeCardFromZone(card);
@@ -40,11 +36,10 @@ public class ST1EStartOfPlayPhaseProcess extends ST1EGameProcess {
         }
         gameState.sendMessage("Players drew starting hands");
 
-        _followingGameProcess = new ST1EStartOfTurnGameProcess(_game);
     }
 
     @Override
     public GameProcess getNextProcess() {
-        return _followingGameProcess;
+        return new ST1EStartOfTurnGameProcess(_game);
     }
 }

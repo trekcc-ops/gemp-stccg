@@ -63,7 +63,7 @@ public class MissionCard2E extends MissionCard {
     }
 
     private Collection<PhysicalCard> getCardsOnSurface() {
-        if (_missionType == MissionType.SPACE)
+        if (getMissionType() == MissionType.SPACE)
             return new LinkedList<>();
         else
             return getAttachedCards();

@@ -72,8 +72,8 @@ public class ChooseAndDiscardCardsFromHandEffect extends AbstractSubActionEffect
             processSubAction(_game, subAction);
             cardsBeingDiscardedCallback(hand);
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, _text, hand, _minimum, maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardsSelectionDecision(_game.getPlayer(_playerId), _text, hand, _minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> cards = getSelectedCardsByResponse(result);

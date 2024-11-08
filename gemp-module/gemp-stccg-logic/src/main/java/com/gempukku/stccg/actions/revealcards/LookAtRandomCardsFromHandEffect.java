@@ -45,8 +45,10 @@ public class LookAtRandomCardsFromHandEffect extends DefaultEffect {
             List<PhysicalCard> randomCards = TextUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
-                _game.getUserFeedback().sendAwaitingDecision(_actingPlayer,
-                        new ArbitraryCardsSelectionDecision(1, "Random cards from opponent's hand", randomCards, Collections.emptyList(), 0, 0) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(_actingPlayer),
+                                "Random cards from opponent's hand", randomCards, Collections.emptyList(),
+                                0, 0) {
                             @Override
                             public void decisionMade(String result) {
                             }

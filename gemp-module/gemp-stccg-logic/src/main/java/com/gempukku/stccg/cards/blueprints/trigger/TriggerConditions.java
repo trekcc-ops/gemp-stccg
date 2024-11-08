@@ -3,7 +3,7 @@ package com.gempukku.stccg.cards.blueprints.trigger;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.DiscardCardFromDeckResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
 import com.gempukku.stccg.actions.draw.DrawOneCardEffect;
 import com.gempukku.stccg.actions.movecard.WhenMoveFromResult;
@@ -23,11 +23,6 @@ public class TriggerConditions {
     public static boolean startOfPhase(DefaultGame game, EffectResult effectResult, Phase phase) {
         return (effectResult.getType() == EffectResult.Type.START_OF_PHASE
                 && game.getGameState().getCurrentPhase() == phase);
-    }
-
-    public static boolean endOfPhase(DefaultGame game, EffectResult effectResult, Phase phase) {
-        return (effectResult.getType() == EffectResult.Type.END_OF_PHASE
-                && (game.getGameState().getCurrentPhase() == phase || phase == null));
     }
 
     public static boolean startOfTurn(EffectResult effectResult) {
@@ -53,7 +48,7 @@ public class TriggerConditions {
 
     public static boolean forEachDiscardedFromPlay(DefaultGame game, EffectResult effectResult, Filterable... filters) {
         if (effectResult.getType() == EffectResult.Type.FOR_EACH_DISCARDED_FROM_PLAY)
-            return Filters.and(filters).accepts(game, ((DiscardCardsFromPlayResult) effectResult).getDiscardedCard());
+            return Filters.and(filters).accepts(game, ((DiscardCardFromPlayResult) effectResult).getDiscardedCard());
         return false;
     }
 

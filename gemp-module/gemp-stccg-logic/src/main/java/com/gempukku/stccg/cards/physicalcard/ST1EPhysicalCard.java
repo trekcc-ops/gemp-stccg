@@ -13,7 +13,7 @@ import com.gempukku.stccg.game.SnapshotData;
 import java.util.List;
 import java.util.Map;
 
-public class ST1EPhysicalCard extends PhysicalCard {
+public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
@@ -43,16 +43,14 @@ public class ST1EPhysicalCard extends PhysicalCard {
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
-        ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId, snapshotData.getDataForSnapshot(snapshotData.getDataForSnapshot(_owner)), _blueprint);
+        ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId,
+                snapshotData.getDataForSnapshot(snapshotData.getDataForSnapshot(_owner)), _blueprint);
         newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
         newCard._whileInZoneData = _whileInZoneData;
-        newCard._modifiers.putAll(_modifiers);
-        newCard._modifierHooks = _modifierHooks;
-        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

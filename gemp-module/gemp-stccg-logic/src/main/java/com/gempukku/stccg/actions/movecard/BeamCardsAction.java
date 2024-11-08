@@ -1,13 +1,14 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.actions.Effect;
-
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class BeamCardsAction extends BeamOrWalkAction {
 
@@ -16,10 +17,10 @@ public class BeamCardsAction extends BeamOrWalkAction {
     }
 
     @Override
-    protected Collection<PhysicalCard> getDestinationOptions() {
+    protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
             // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
         return Filters.filterActive(
-                _game,
+                game,
                 Filters.atLocation(_cardSource.getLocation()),
                 Filters.or(
                         Filters.planetLocation,
@@ -36,7 +37,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
             // Destination options filtered to remove cards with none of your personnel or equipment aboard
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
-            if (!Filters.filter(_game.getGameState().getAttachedCards(destinationCard), _game,
+            if (!Filters.filter(destinationCard.getAttachedCards(),
                     Filters.your(_performingPlayer), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
                 // TODO - Doesn't do a compatibility or beamable check, does it need to?
                 cards.add(destinationCard);
@@ -44,15 +45,11 @@ public class BeamCardsAction extends BeamOrWalkAction {
         return cards;
     }
 
-    protected String getVerb() { return "beam"; }
+    protected String actionVerb() { return "beam"; }
 
     @Override
-    protected Effect finalEffect() {
-        return new BeamOrWalkCardsEffect(_cardsToMove, _fromCard, _toCard, _performingPlayerId, "Beam");
-    }
-    @Override
     public boolean canBeInitiated() {
-        return (!_validFromCards.isEmpty());
+        return (getValidFromCards().isEmpty());
     }
 
 }

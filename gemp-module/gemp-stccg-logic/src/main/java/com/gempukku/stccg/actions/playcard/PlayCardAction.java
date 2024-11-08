@@ -10,7 +10,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
     protected final PhysicalCard _actionSource;
-    private boolean _actionWasInitiated = false, _cardWasRemoved = false, _cardHasEnteredPlay = false;
+    private boolean _actionWasInitiated, _cardWasRemoved, _cardHasEnteredPlay;
     protected String _text;
     private boolean _virtualCardAction;
     protected final PhysicalCard _cardEnteringPlay;
@@ -31,10 +31,6 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
         _game = actionSource.getGame();
         _fromZone = cardEnteringPlay.getZone();
         _toZone = toZone;
-    }
-
-    public PlayCardAction(PhysicalCard card) {
-        this(card, card, card.getOwnerName(), Zone.TABLE, ActionType.PLAY_CARD);
     }
 
     @Override

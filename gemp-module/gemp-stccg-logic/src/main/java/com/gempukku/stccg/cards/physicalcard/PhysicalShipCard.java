@@ -22,7 +22,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
 
     private boolean _docked = false;
     private FacilityCard _dockedAtCard = null;
-    private int _rangeAvailable;
+    int _rangeAvailable;
 
     public PhysicalShipCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
@@ -63,7 +63,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public void dockAtFacility(FacilityCard facilityCard) {
-        _game.getGameState().transferCard(this, facilityCard);
         _docked = true;
         _dockedAtCard = facilityCard;
     }
@@ -164,9 +163,6 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
         newCard._whileInZoneData = _whileInZoneData;
-        newCard._modifiers.putAll(_modifiers);
-        newCard._modifierHooks = _modifierHooks;
-        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

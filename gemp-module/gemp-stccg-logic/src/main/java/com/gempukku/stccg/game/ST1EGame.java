@@ -29,7 +29,7 @@ public class ST1EGame extends DefaultGame {
 
         _gameState.createPhysicalCards(library, decks);
         _turnProcedure =
-                new TurnProcedure(this, new ST1EPlayerOrderProcess(_allPlayerIds, this));
+                new TurnProcedure(this, new ST1EPlayerOrderProcess(this));
     }
 
     @Override
@@ -43,8 +43,8 @@ public class ST1EGame extends DefaultGame {
         if (_snapshotToRestore != null) {
             if (_snapshotToRestore.getGameState() instanceof ST1EGameState st1estate) {
                 _gameState = st1estate;
-                _modifiersLogic = _snapshotToRestore.getModifiersLogic();
-                _actionsEnvironment = _snapshotToRestore.getActionsEnvironment();
+                _gameState.setModifiersLogic(_snapshotToRestore.getModifiersLogic());
+                _gameState.setActionsEnvironment(_snapshotToRestore.getActionsEnvironment());
                 _turnProcedure = _snapshotToRestore.getTurnProcedure();
                 sendMessage("Reverted to previous game state");
                 _snapshotToRestore = null;

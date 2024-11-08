@@ -28,8 +28,8 @@ public class PlayerPlaysPhaseActionsUntilPassesGameProcess extends GameProcess {
         if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
             playerPassed();
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardActionSelectionDecision(
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardActionSelectionDecision(_game.getGameState().getPlayer(_playerId),
                             "Play " + _game.getCurrentPhaseString() + " action or Pass", playableActions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

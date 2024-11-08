@@ -14,22 +14,26 @@ import java.util.Map;
 import java.util.Set;
 
 public class PhysicalNounCard1E extends ST1EPhysicalCard {
-    protected final Set<Affiliation> _affiliationOptions;
     protected Affiliation _currentAffiliation; // TODO - NounCard class may include Equipment or other cards with no affiliation
-    protected final Quadrant _nativeQuadrant;
     public PhysicalNounCard1E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _affiliationOptions = blueprint.getAffiliations();
-        if (_affiliationOptions.size() == 1)
-            _currentAffiliation = Iterables.getOnlyElement(_affiliationOptions);
-        _nativeQuadrant = blueprint.getQuadrant();
+        if (blueprint.getAffiliations().size() == 1)
+            _currentAffiliation = Iterables.getOnlyElement(blueprint.getAffiliations());
     }
 
-    public boolean isMultiAffiliation() { return _affiliationOptions.size() > 1; }
+    protected Quadrant getNativeQuadrant() { return _blueprint.getQuadrant(); }
+    public boolean isMultiAffiliation() { return getAffiliationOptions().size() > 1; }
     public Affiliation getAffiliation() { return _currentAffiliation; }
-    public void setCurrentAffiliation(Affiliation affiliation) {
+
+    public void setCurrentAffiliationWithImage(Affiliation affiliation) {
         _currentAffiliation = affiliation;
-        if (_affiliationOptions.size() > 1) {
+        String newImageUrl = _blueprint.getAffiliationImageUrl(affiliation);
+        if (newImageUrl != null)
+            _imageUrl = newImageUrl;
+    }
+    public void changeAffiliation(Affiliation affiliation) {
+        setCurrentAffiliationWithImage(affiliation);
+        if (getAffiliationOptions().size() > 1) {
             if (_attachedTo instanceof MissionCard mission &&
                     this instanceof PhysicalReportableCard1E reportable) {
                 if (reportable.getAwayTeam().canBeDisbanded()) {
@@ -41,22 +45,18 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                         reportable.joinEligibleAwayTeam(mission);
                 }
             }
-            String newImageUrl = _blueprint.getAffiliationImageUrl(affiliation);
-            if (newImageUrl != null) {
-                _imageUrl = newImageUrl;
-                _game.getGameState().sendUpdatedCardImageToClient(this);
-            }
+            _game.getGameState().sendUpdatedCardImageToClient(this);
         }
     }
 
-    public Set<Affiliation> getAffiliationOptions() { return _affiliationOptions; }
+    public Set<Affiliation> getAffiliationOptions() { return _blueprint.getAffiliations(); }
     public boolean isCompatibleWith(Affiliation affiliation) {
             // TODO - Compatibility should check against a specific card, not an affiliation
-        if (getAffiliation() == affiliation)
+        if (_currentAffiliation == affiliation)
             return true;
-        if (getAffiliation() == Affiliation.BORG || affiliation == Affiliation.BORG)
+        if (_currentAffiliation == Affiliation.BORG || affiliation == Affiliation.BORG)
             return false;
-        return getAffiliation() == Affiliation.NON_ALIGNED || affiliation == Affiliation.NON_ALIGNED;
+        return _currentAffiliation == Affiliation.NON_ALIGNED || affiliation == Affiliation.NON_ALIGNED;
     }
 
     public boolean isCompatibleWith(PhysicalNounCard1E card) {
@@ -77,7 +77,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public boolean isAffiliation(Affiliation affiliation) {
         if (_zone.isInPlay())
             return _currentAffiliation == affiliation;
-        else return _affiliationOptions.contains(affiliation);
+        else return getAffiliationOptions().contains(affiliation);
     }
 
     @Override
@@ -93,9 +93,6 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
         newCard._whileInZoneData = _whileInZoneData;
-        newCard._modifiers.putAll(_modifiers);
-        newCard._modifierHooks = _modifierHooks;
-        newCard._modifierHooksInZone.putAll(_modifierHooksInZone);
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

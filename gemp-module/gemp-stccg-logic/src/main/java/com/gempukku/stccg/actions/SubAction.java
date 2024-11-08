@@ -5,16 +5,14 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class SubAction extends AbstractCostToEffectAction {
     private final Action _action;
-    protected final DefaultGame _game;
 
     public SubAction(Action action) {
         super(action);
         _action = action;
-        _game = action.getGame();
     }
 
     @Override
-    public DefaultGame getGame() { return _game; }
+    public DefaultGame getGame() { return _action.getGame(); }
 
     @Override
     public PhysicalCard getCardForActionSelection() {

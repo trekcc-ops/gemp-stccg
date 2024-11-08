@@ -1,7 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.common.UserFeedback;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.HashMap;
@@ -24,9 +24,10 @@ public class DefaultUserFeedback implements UserFeedback {
     }
 
     @Override
-    public void sendAwaitingDecision(String playerId, AwaitingDecision awaitingDecision) {
-        _awaitingDecisionMap.put(playerId, awaitingDecision);
-        _game.getGameState().playerDecisionStarted(playerId, awaitingDecision);
+    public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
+        String decidingPlayerId = awaitingDecision.getDecidingPlayer().getPlayerId();
+        _awaitingDecisionMap.put(decidingPlayerId, awaitingDecision);
+        _game.getGameState().playerDecisionStarted(decidingPlayerId, awaitingDecision);
     }
 
     @Override

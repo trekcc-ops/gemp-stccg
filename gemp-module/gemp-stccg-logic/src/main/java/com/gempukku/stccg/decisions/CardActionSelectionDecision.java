@@ -3,81 +3,42 @@ package com.gempukku.stccg.decisions;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.Player;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public abstract class CardActionSelectionDecision extends AbstractAwaitingDecision {
-    private final List<Action> _actions;
+public abstract class CardActionSelectionDecision extends ActionDecision {
 
-    public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions) {
-        this(decisionId, text, actions, true);
+    public CardActionSelectionDecision(Player player, String text, List<Action> actions) {
+        this(player, text, actions, false, true);
     }
 
-    public CardActionSelectionDecision(String text, List<? extends Action> actions) {
-        this(1, text, actions, true);
-    }
 
-    public CardActionSelectionDecision(String text, List<? extends Action> actions, boolean noPass,
+    public CardActionSelectionDecision(Player player, String text, List<Action> actions, boolean noPass,
                                        boolean revertEligible) {
-        super(1, text, AwaitingDecisionType.CARD_ACTION_CHOICE);
-        _actions = new LinkedList<>(actions);
-
-        setParam("actionId", getActionIds(actions));
-        setParam("cardId", getCardIds(actions));
-        setParam("blueprintId", getBlueprintIdsForVirtualActions(actions));
-        setParam("imageUrl", getImageUrlsForVirtualActions(actions));
-        setParam("actionText", getActionTexts(actions));
-        setParam("actionType", getActionTypes(actions));
+        super(player, text, actions, AwaitingDecisionType.CARD_ACTION_CHOICE);
+        setParam("cardId", getCardIds());
+        setParam("blueprintId", getBlueprintIds()); // done in super
+        setParam("imageUrl", getImageUrls()); // done in super
+        setParam("actionType", getActionTypes());
         setParam("noPass", String.valueOf(noPass));
-        // TODO SNAPSHOT - client implementation for revertEligible not working, so for now setting it to always false
-        setParam("revertEligible", "false");
-    }
-
-    public CardActionSelectionDecision(int decisionId, String text, List<? extends Action> actions,
-                                       boolean revertEligible) {
-        super(decisionId, text, AwaitingDecisionType.CARD_ACTION_CHOICE);
-        _actions = new LinkedList<>(actions);
-
-        setParam("actionId", getActionIds(actions));
-        setParam("cardId", getCardIds(actions));
-        setParam("blueprintId", getBlueprintIdsForVirtualActions(actions));
-        setParam("imageUrl", getImageUrlsForVirtualActions(actions));
-        setParam("actionText", getActionTexts(actions));
-        setParam("actionType", getActionTypes(actions));
         // TODO SNAPSHOT - no methods for "revertEligible" in client
         setParam("revertEligible", String.valueOf(revertEligible));
     }
 
-    /**
-     * For testing, being able to inject an extra action at any point
-     *
-     * @param action
-     */
-    public void addAction(Action action) {
-        _actions.add(action);
-    }
 
-    private String[] getActionIds(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
+
+    private String[] getActionTypes() {
+        String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(i);
+            result[i] = String.valueOf(_actions.get(i).getActionType());
         return result;
     }
 
-    private String[] getActionTypes(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
-        for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(actions.get(i).getActionType());
-        return result;
-    }
-
-    public List<Action> getActions() { return _actions; }
-
-    private String[] getBlueprintIdsForVirtualActions(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
+    private String[] getBlueprintIds() {
+        String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++) {
-            Action action = actions.get(i);
+            Action action = _actions.get(i);
             if (action.isVirtualCardAction())
                 result[i] = String.valueOf(action.getActionSource().getBlueprintId());
             else
@@ -86,10 +47,10 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         return result;
     }
 
-    private String[] getImageUrlsForVirtualActions(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
+    private String[] getImageUrls() {
+        String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++) {
-            Action action = actions.get(i);
+            Action action = _actions.get(i);
             if (action.isVirtualCardAction())
                 result[i] = String.valueOf(action.getActionSource().getBlueprint().getImageUrl());
             else
@@ -98,17 +59,10 @@ public abstract class CardActionSelectionDecision extends AbstractAwaitingDecisi
         return result;
     }
 
-    private String[] getCardIds(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
+    private String[] getCardIds() {
+        String[] result = new String[_actions.size()];
         for (int i = 0; i < result.length; i++)
-            result[i] = String.valueOf(actions.get(i).getCardForActionSelection().getCardId());
-        return result;
-    }
-
-    private String[] getActionTexts(List<? extends Action> actions) {
-        String[] result = new String[actions.size()];
-        for (int i = 0; i < result.length; i++)
-            result[i] = actions.get(i).getText();
+            result[i] = String.valueOf(_actions.get(i).getCardForActionSelection().getCardId());
         return result;
     }
 

@@ -5,7 +5,7 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.handler.CardInfoUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
-import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -239,7 +239,7 @@ public abstract class CardGameMediator {
                         and ask again for the same decision */
                         String warningMessage = exp.getWarningMessage();
                         gameState.sendWarning(playerName, warningMessage);
-                        game.sendAwaitingDecision(playerName, awaitingDecision);
+                        game.sendAwaitingDecision(awaitingDecision);
                     } catch (RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
                         game.cancelGame();

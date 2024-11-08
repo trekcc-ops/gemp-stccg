@@ -61,8 +61,9 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
             if (_showMatchingOnly)
                 toShow = possibleCards;
 
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new ArbitraryCardsSelectionDecision(1, _choiceText, toShow, possibleCards, _minimum, _maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), _choiceText, toShow, possibleCards,
+                            _minimum, _maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             cardsSelected(getSelectedCardsByResponse(result));

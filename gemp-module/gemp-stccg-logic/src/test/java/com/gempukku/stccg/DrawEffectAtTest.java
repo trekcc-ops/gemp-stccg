@@ -5,7 +5,8 @@ import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.trigger.TriggerConditions;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCardGeneric;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Preventable;
@@ -51,8 +52,8 @@ public class DrawEffectAtTest extends AbstractAtTest {
         int expectedCardsDrawn = prevented ? 0 : Math.min(cardsToDraw, initialDeckSize+1);
         assertEquals(cardsInDeck,initialDeckSize + initialHandSize);
 
-        final PhysicalCardGeneric picard =
-                new PhysicalCardGeneric(_game, 101, playerId, _cardLibrary.getCardBlueprint("101_215"));
+        final PhysicalCard picard = new ST1EPhysicalCard(_game, 101, _game.getPlayer(playerId),
+                _cardLibrary.getCardBlueprint("101_215"));
 
         _game.getGameState().putCardOnTopOfDeck(picard);
 

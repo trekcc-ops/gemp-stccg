@@ -8,13 +8,17 @@ import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProcess {
-    DilemmaSeedPhaseSharedMissionsProcess(Set<String> playersDone, ST1EGame game) {
-        super(playersDone, game);
+    DilemmaSeedPhaseSharedMissionsProcess(ST1EGame game) {
+        super(game.getPlayerIds(), game);
     }
+    DilemmaSeedPhaseSharedMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
+        super(playersSelecting, game);
+    }
+
 
     @Override
     List<MissionCard> getAvailableMissions(Player player) {
@@ -29,16 +33,14 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
 
     @Override
     public GameProcess getNextProcess() {
-        Set<String> players = _game.getPlayerIds();
-        if (players.size() == _playersDone.size()) {
+        if (_playersParticipating.isEmpty()) {
             for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
                 location.getMissions().getFirst().seedPreSeeds();
             }
-            _game.getActionsEnvironment().signalEndOfPhase();
             _game.getGameState().setCurrentPhase(Phase.SEED_FACILITY);
             _game.takeSnapshot("Start of facility seed phase");
             return new ST1EFacilitySeedPhaseProcess(0, _game); // TODO - Add "other cards" dilemma seed phase
         }
-        else return new DilemmaSeedPhaseSharedMissionsProcess(_playersDone, _game);
+        else return new DilemmaSeedPhaseSharedMissionsProcess(_playersParticipating, _game);
     }
 }

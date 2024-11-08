@@ -101,8 +101,8 @@ public abstract class ChooseCardsOnTableEffect extends DefaultEffect {
             cardsSelected(selectableCards);
         }
         else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, _choiceText, selectableCards, minimum, maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardsSelectionDecision(_game.getPlayer(_playerId), _choiceText, selectableCards, minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);

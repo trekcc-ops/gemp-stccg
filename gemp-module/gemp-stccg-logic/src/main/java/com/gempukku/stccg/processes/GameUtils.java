@@ -26,8 +26,8 @@ public class GameUtils {
         snapshotDescriptions.add("Do not revert");
 
         // Ask player to choose snapshot to revert back to
-        _game.getUserFeedback().sendAwaitingDecision(playerId,
-                new MultipleChoiceAwaitingDecision("Choose game state to revert prior to",
+        _game.getUserFeedback().sendAwaitingDecision(
+                new MultipleChoiceAwaitingDecision(_game.getPlayer(playerId), "Choose game state to revert prior to",
                         snapshotDescriptions.toArray(new String[0]), snapshotDescriptions.size() - 1) {
                     @Override
                     public void validDecisionMade(int index, String result) {
@@ -52,8 +52,10 @@ public class GameUtils {
                         }
                         snapshotDescMsg.append("</br>");
 
-                        _game.getUserFeedback().sendAwaitingDecision(opponent,
-                                new YesNoDecision("Do you want to allow game to be reverted to the following game state?" + snapshotDescMsg) {
+                        _game.getUserFeedback().sendAwaitingDecision(
+                                new YesNoDecision(_game.getPlayer(opponent),
+                                        "Do you want to allow game to be reverted to the following game state?" +
+                                                snapshotDescMsg) {
                                     @Override
                                     protected void yes() {
                                         _game.sendMessage(opponent + " allows game to revert to a previous state");

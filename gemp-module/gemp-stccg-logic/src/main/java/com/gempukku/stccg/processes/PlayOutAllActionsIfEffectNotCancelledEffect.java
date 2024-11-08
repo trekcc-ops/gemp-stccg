@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.game.Player;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
             _actionStack.add(anyAction);
             _action.insertEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(_action, _actions));
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(_game.getGameState().getCurrentPlayerId(),
-                    new ActionSelectionDecision(_game, 1, "Required responses", _actions) {
+            Player player = _game.getCurrentPlayer();
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new ActionSelectionDecision(player, "Required responses", _actions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);

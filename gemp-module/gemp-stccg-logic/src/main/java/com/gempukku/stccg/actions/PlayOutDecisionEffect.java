@@ -1,24 +1,13 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PlayOutDecisionEffect implements Effect {
-    private final String _playerId;
     private final AwaitingDecision _decision;
-    private final DefaultGame _game;
 
-    public PlayOutDecisionEffect(DefaultGame game, String playerId, AwaitingDecision decision) {
-        _playerId = playerId;
+    public PlayOutDecisionEffect(AwaitingDecision decision) {
         _decision = decision;
-        _game = game;
-    }
-
-    public PlayOutDecisionEffect(IntegerAwaitingDecision decision) {
-        _decision = decision;
-        _playerId = decision.getActionContext().getPerformingPlayerId();
-        _game = decision.getActionContext().getGame();
     }
 
 
@@ -34,7 +23,7 @@ public class PlayOutDecisionEffect implements Effect {
 
     @Override
     public void playEffect() {
-        _game.getUserFeedback().sendAwaitingDecision(_playerId, _decision);
+        getGame().getUserFeedback().sendAwaitingDecision(_decision);
     }
 
     @Override
@@ -47,7 +36,7 @@ public class PlayOutDecisionEffect implements Effect {
         return true;
     }
 
-    public String getPerformingPlayerId() { return _playerId; }
-    public DefaultGame getGame() { return _game; }
+    public String getPerformingPlayerId() { return _decision.getDecidingPlayer().getPlayerId(); }
+    public DefaultGame getGame() { return _decision.getGame(); }
 
 }

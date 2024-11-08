@@ -53,8 +53,8 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
         if (stackedCards.size() <= _minimum) {
             cardsChosen(stackedCards);
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, getText(), stackedCards, _minimum, maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardsSelectionDecision(_game.getPlayer(_playerId), getText(), stackedCards, _minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> stackedCards = getSelectedCardsByResponse(result);

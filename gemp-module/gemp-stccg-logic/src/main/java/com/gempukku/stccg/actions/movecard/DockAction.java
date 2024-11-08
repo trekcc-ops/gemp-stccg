@@ -15,8 +15,8 @@ import java.util.Collection;
 
 public class DockAction extends AbstractCostToEffectAction {
     private final PhysicalShipCard _cardToDock;
-    private boolean _targetChosen = false;
-    private boolean _cardDocked = false;
+    private boolean _targetChosen;
+    private boolean _cardDocked;
     private FacilityCard _dockingTarget;
     private final Collection<FacilityCard> _dockingTargetOptions;
 
@@ -31,7 +31,7 @@ public class DockAction extends AbstractCostToEffectAction {
     }
 
     private Effect chooseDockingTargetEffect() {
-        return new ChooseCardsOnTableEffect(_thisAction, _performingPlayerId,
+        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
                 "Choose facility to dock at", _dockingTargetOptions) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {
@@ -62,6 +62,7 @@ public class DockAction extends AbstractCostToEffectAction {
         if (!_cardDocked) {
             _cardDocked = true;
             _cardToDock.dockAtFacility(_dockingTarget);
+            _cardToDock.getGame().getGameState().transferCard(_cardToDock, _dockingTarget);
         }
 
         return getNextEffect();

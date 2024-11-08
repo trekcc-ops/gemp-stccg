@@ -5,6 +5,8 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ChoosePlayerExceptEffect extends UnrespondableEffect {
@@ -24,19 +26,17 @@ public class ChoosePlayerExceptEffect extends UnrespondableEffect {
     @Override
     public void doPlayEffect() {
         String[] allPlayers = _game.getAllPlayerIds();
-        String[] includedPlayers = new String[allPlayers.length - 1];
-        int j = 0;
-        for (String allPlayer : allPlayers) {
-            if (!Objects.equals(allPlayer, _excludedPlayerId)) {
-                includedPlayers[j] = allPlayer;
-                j++;
+        List<String> includedPlayers = new ArrayList<>();
+        for (String playerId : allPlayers) {
+            if (!Objects.equals(playerId, _excludedPlayerId)) {
+                includedPlayers.add(playerId);
             }
         }
-        if (includedPlayers.length == 1)
+        if (includedPlayers.size() == 1)
             playerChosen();
         else
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new MultipleChoiceAwaitingDecision("Choose a player", includedPlayers) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Choose a player", includedPlayers) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             _context.setValueToMemory(_memoryId, result);
