@@ -37,4 +37,5 @@ public interface Action extends Snapshotable<Action> {
     default Action generateSnapshot(SnapshotData snapshotData) {
         return this;
     }
+    boolean wasCarriedOut();
 }

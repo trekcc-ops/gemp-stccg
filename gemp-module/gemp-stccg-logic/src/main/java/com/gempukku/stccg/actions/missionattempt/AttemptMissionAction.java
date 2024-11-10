@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class AttemptMissionAction extends AbstractCostToEffectAction {
+public class AttemptMissionAction extends ActionyAction {
     private AttemptingUnit _attemptingUnit;
     private final MissionCard _missionCard;
     private boolean _attemptingEntityWasChosen, _missionAttemptInitiated, _missionAttemptEnded;
@@ -49,6 +50,11 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     public String getText(DefaultGame game) { return "Attempt mission"; }
 
     @Override
+    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+        return null;
+    }
+
+    @Override
     public PhysicalCard getCardForActionSelection() { return _missionCard; }
     @Override
     public PhysicalCard getActionSource() { return _missionCard; }
@@ -60,10 +66,10 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         Player player = cardGame.getPlayer(_performingPlayerId);
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
@@ -75,7 +81,8 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
                     setAttemptingUnit(_attemptingEntityMap.get(result));
                 }
             };
-            appendTargeting(chooseAwayTeamEffect);
+            SubAction subAction = new SubAction(this);
+            subAction.appendEffect(chooseAwayTeamEffect);
             return getNextCost();
         }
 
@@ -87,11 +94,13 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
             cardGame.sendMessage("But we don't have any.");
             _seedCards = new LinkedList<>();        // TODO - Replace this with real stuff at some point
             cardGame.getActionsEnvironment().emitEffectResult(new EffectResult(EffectResult.Type.START_OF_MISSION_ATTEMPT, cardGame));
-            return new DoNothingEffect(cardGame);
+            SubAction subAction = new SubAction(this);
+            subAction.appendEffect(new DoNothingEffect(cardGame));
+            return subAction;
         }
 
         if (!_seedCards.isEmpty()) {
-            return new StackActionEffect(cardGame, new EncounterSeedCardAction(this, player, _seedCards));
+            return new EncounterSeedCardAction(this, player, _seedCards);
         }
 
         if (!_missionAttemptEnded) {
@@ -107,7 +116,7 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
             _missionAttemptEnded = true;
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
     public PhysicalCard getMission() { return _missionCard; }

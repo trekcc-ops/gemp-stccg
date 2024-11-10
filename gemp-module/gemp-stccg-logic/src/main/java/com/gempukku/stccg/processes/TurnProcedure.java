@@ -63,7 +63,13 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         Stack<Action> actionStack = actionsEnvironment.getActionStack();
         Action action = actionStack.peek();
         try {
-            Effect effect = action.nextEffect(_game);
+            Effect effect;
+            if (action instanceof ActionyAction actiony) {
+                Action nextAction = actiony.nextAction(_game);
+                effect = (nextAction == null) ? null : new StackActionEffect(_game, nextAction);
+            } else {
+                effect = action.nextEffect(_game);
+            }
             if (effect == null) {
                 actionStack.remove(actionStack.lastIndexOf(action));
             } else {
