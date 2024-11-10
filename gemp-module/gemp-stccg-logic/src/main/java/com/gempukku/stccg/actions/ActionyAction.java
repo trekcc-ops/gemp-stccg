@@ -43,6 +43,8 @@ public abstract class ActionyAction implements Action {
         _actionType = ActionType.OTHER;
     }
 
+    public Effect nextEffect(DefaultGame game) { return null; }
+
 
     @Override
     public void setVirtualCardAction(boolean virtualCardAction) {
@@ -140,20 +142,23 @@ public abstract class ActionyAction implements Action {
         return new SubAction(this);
     }
 
-    public abstract boolean canBeInitiated(DefaultGame cardGame);
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        return requirementsAreMet(cardGame) && costsCanBePaid(cardGame);
+    }
 
-/*    public boolean costsCanBePaid() {
-                // TODO - This may have bugs if multiple costs exist that can be paid independently but not together
-        for (Action effect : _costs)
-            if (!effect.canBeInitiated()) {
+    public abstract boolean requirementsAreMet(DefaultGame cardGame);
+
+    public boolean costsCanBePaid(DefaultGame game) {
+        for (Action cost : _costs)
+            if (!cost.canBeInitiated(game)) {
                 return false;
             }
-        for (Action effect : _usageCosts)
-            if (!effect.isPlayableInFull()) {
+        for (Action usageCost : _usageCosts)
+            if (!usageCost.canBeInitiated(game)) {
                 return false;
             }
         return true;
-    } */
+    }
 
     public void setCardActionPrefix(String prefix) {
         _cardActionPrefix = prefix;

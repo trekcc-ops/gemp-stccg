@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
@@ -50,17 +49,12 @@ public class AttemptMissionAction extends ActionyAction {
     public String getText(DefaultGame game) { return "Attempt mission"; }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
-        return null;
-    }
-
-    @Override
     public PhysicalCard getCardForActionSelection() { return _missionCard; }
     @Override
     public PhysicalCard getActionSource() { return _missionCard; }
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         Player player = cardGame.getPlayer(_performingPlayerId);
         return _missionCard.mayBeAttemptedByPlayer(player);
     }
@@ -100,7 +94,7 @@ public class AttemptMissionAction extends ActionyAction {
         }
 
         if (!_seedCards.isEmpty()) {
-            return new EncounterSeedCardAction(this, player, _seedCards);
+            return new EncounterSeedCardAction(player, _seedCards);
         }
 
         if (!_missionAttemptEnded) {

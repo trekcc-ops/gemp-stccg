@@ -1,18 +1,18 @@
 package com.gempukku.stccg.actions.missionattempt;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 import java.util.List;
 
-public class EncounterSeedCardAction extends AbstractCostToEffectAction {
+public class EncounterSeedCardAction extends ActionyAction {
     private boolean _seedCardWasRevealed;
     private final List<String> _seedCards;
 
-    public EncounterSeedCardAction(AttemptMissionAction action, Player player, List<String> seedCards) {
+    public EncounterSeedCardAction(Player player, List<String> seedCards) {
         super(player, ActionType.OTHER);
             // TODO - can get attemptingUnit from action.getAttemptingEntity
         _seedCards = seedCards;
@@ -29,9 +29,14 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return true;
+    }
 
-        Effect cost = getNextCost();
+    @Override
+    public Action nextAction(DefaultGame cardGame) {
+
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
@@ -42,7 +47,7 @@ public class EncounterSeedCardAction extends AbstractCostToEffectAction {
             _seedCards.removeFirst();
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
 }
