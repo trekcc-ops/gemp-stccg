@@ -92,7 +92,8 @@ public abstract class DefaultActionSource implements ActionSource {
     protected abstract Action createActionAndAppendToContext(PhysicalCard card, ActionContext context);
 
     public void setTurnLimit(int limitPerTurn) {
-        addRequirement((actionContext) -> actionContext.getSource().checkTurnLimit(limitPerTurn));
+        addRequirement((actionContext) ->
+                actionContext.getSource().checkTurnLimit(actionContext.getGame(), limitPerTurn));
         addCost(
             new DelayedEffectBlueprint() {
                 @Override

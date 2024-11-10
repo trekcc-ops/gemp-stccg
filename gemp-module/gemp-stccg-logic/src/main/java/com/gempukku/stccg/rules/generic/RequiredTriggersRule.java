@@ -20,7 +20,7 @@ public class RequiredTriggersRule extends GenericRule {
     public List<? extends Action> getRequiredBeforeTriggers(Effect effect) {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game)) {
-            if (!card.hasTextRemoved()) {
+            if (!card.hasTextRemoved(_game)) {
                 result.addAll(card.getBeforeTriggerActions(effect, RequiredType.REQUIRED));
             }
         }
@@ -31,7 +31,7 @@ public class RequiredTriggersRule extends GenericRule {
     public List<? extends Action> getRequiredAfterTriggers(EffectResult effectResult) {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game)) {
-            if (!card.hasTextRemoved()) {
+            if (!card.hasTextRemoved(_game)) {
                 result.addAll(card.getRequiredResponseActions(effectResult));
             }
         }

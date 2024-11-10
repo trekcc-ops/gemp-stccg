@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collections;
 
@@ -23,11 +24,9 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
 
     private final Zone _playedFrom;
     private PhysicalCard _target;
-    private final DefaultGame _game;
 
     public AttachPermanentAction(final PhysicalCard card, Filter filter) {
         super(card.getOwner(), ActionType.PLAY_CARD);
-        _game = card.getGame();
         _cardToAttach = card;
         setText("Play " + _cardToAttach.getFullName());
         _playedFrom = card.getZone();
@@ -55,19 +54,20 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
+        GameState gameState = cardGame.getGameState();
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToAttach.getZone();
-            _game.getGameState()
+            gameState
                     .removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
             if (playedFromZone == Zone.HAND)
-                _game.getGameState().addCardToZone(_cardToAttach, Zone.VOID_FROM_HAND);
+                gameState.addCardToZone(_cardToAttach, Zone.VOID_FROM_HAND);
             else
-                _game.getGameState().addCardToZone(_cardToAttach, Zone.VOID);
+                gameState.addCardToZone(_cardToAttach, Zone.VOID);
             if (playedFromZone == Zone.DRAW_DECK) {
-                _game.sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
-                _game.getGameState().shuffleDeck(_cardToAttach.getOwnerName());
+                cardGame.sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
+                gameState.shuffleDeck(_cardToAttach.getOwnerName());
             }
         }
 
@@ -84,21 +84,20 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
             if (!_cardPlayed) {
                 _cardPlayed = true;
 
-                return new PlayCardEffect(_performingPlayerId, _playedFrom, _cardToAttach, _target, null);
+                return new PlayCardEffect(
+                        _performingPlayerId, _playedFrom, _cardToAttach, _target, null);
             }
 
             return getNextEffect();
         } else {
             if (!_cardDiscarded) {
                 _cardDiscarded = true;
-                _game.getGameState().removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
-                _game.getGameState().addCardToZone(_cardToAttach, Zone.DISCARD);
+                gameState.removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
+                gameState.addCardToZone(_cardToAttach, Zone.DISCARD);
             }
         }
 
         return null;
     }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
 }

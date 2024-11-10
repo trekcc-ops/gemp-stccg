@@ -4,14 +4,10 @@ import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
-public class TribblesStartOfRoundGameProcess extends GameProcess {
+public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
 
-    private final String _firstPlayer;
-    private final TribblesGame _game;
-
-    public TribblesStartOfRoundGameProcess(String firstPlayer, TribblesGame game) {
-        _game = game;
-        _firstPlayer = firstPlayer;
+    public TribblesStartOfRoundGameProcess(TribblesGame game) {
+        super(game);
     }
 
     @Override
@@ -27,8 +23,6 @@ public class TribblesStartOfRoundGameProcess extends GameProcess {
             for (int i = 0; i < _game.getFormat().getHandSize(); i++)
                 gameState.playerDrawsCard(player);
         }
-
-        gameState.setCurrentPlayerId(_firstPlayer);
     }
 
     @Override

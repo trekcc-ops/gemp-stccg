@@ -2,10 +2,10 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -82,7 +82,7 @@ public class GameEvent {
     }
     public GameEvent(Type type, Phase phase) {
         this(type);
-        _eventAttributes.put(Attribute.phase, phase.getHumanReadable());
+        _eventAttributes.put(Attribute.phase, phase.toString());
     }
     public GameEvent(Type type, PhysicalCard card, Player player) {
         this(type, player);
@@ -132,7 +132,7 @@ public class GameEvent {
         _eventAttributes.put(Attribute.zone, card.getZone().name());
         _zone = card.getZone();
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
-        _eventAttributes.put(Attribute.controllerId, card.getCardControllerPlayerIdForClient());
+        _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
         _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
 
         if (card.getCardType() == CardType.MISSION && card.isInPlay())

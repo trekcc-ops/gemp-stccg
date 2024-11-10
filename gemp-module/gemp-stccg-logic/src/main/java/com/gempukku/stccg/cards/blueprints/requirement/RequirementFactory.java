@@ -14,7 +14,7 @@ public class RequirementFactory {
         final String type = object.get("type").textValue().toLowerCase();
         return switch(type) {
             case "cardsindeckcount", "cardsinhandmorethan", "hascardindiscard", "hascardinhand", "hascardinplaypile",
-                    "hasinzonedata", "lasttribbleplayed", "nexttribbleinsequence", "tribblesequencebroken" ->
+                    "lasttribbleplayed", "nexttribbleinsequence", "tribblesequencebroken" ->
                     new MiscRequirement(object);
             case "isequal", "isgreaterthan", "isgreaterthanorequal", "islessthan", "islessthanorequal", "isnotequal" ->
                     new ComparatorRequirement(object);
@@ -30,7 +30,7 @@ public class RequirementFactory {
             }
             case "perturnlimit" -> {
                 int limit = BlueprintUtils.getInteger(object, "limit", 1);
-                yield actionContext -> actionContext.getSource().checkTurnLimit(limit);
+                yield actionContext -> actionContext.getSource().checkTurnLimit(actionContext.getGame(), limit);
             }
             default -> throw new InvalidCardDefinitionException("Unable to resolve requirement of type: " + type);
         };

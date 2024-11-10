@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.movecard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 
@@ -33,11 +34,11 @@ public class BeamCardsAction extends BeamOrWalkAction {
     }
 
     @Override
-    protected List<PhysicalCard> getValidFromCards() {
+    protected List<PhysicalCard> getValidFromCards(DefaultGame game) {
             // Destination options filtered to remove cards with none of your personnel or equipment aboard
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
-            if (!Filters.filter(destinationCard.getAttachedCards(),
+            if (!Filters.filter(destinationCard.getAttachedCards(game),
                     Filters.your(_performingPlayer), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
                 // TODO - Doesn't do a compatibility or beamable check, does it need to?
                 cards.add(destinationCard);
@@ -48,8 +49,10 @@ public class BeamCardsAction extends BeamOrWalkAction {
     protected String actionVerb() { return "beam"; }
 
     @Override
-    public boolean canBeInitiated() {
-        return (getValidFromCards().isEmpty());
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        return (!getValidFromCards(cardGame).isEmpty());
     }
+
+    public PhysicalCard getCardUsingTransporters() { return _cardSource; }
 
 }

@@ -8,4 +8,6 @@ public interface UserFeedback {
     AwaitingDecision getAwaitingDecision(String playerName);
     void removeDecision(String playerId);
     Set<String> getUsersPendingDecision();
+
+    int getNextDecisionIdAndIncrement();
 }

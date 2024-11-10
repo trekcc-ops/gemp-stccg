@@ -23,7 +23,7 @@ public class AwaitingDecisionSerializer extends StdSerializer<AwaitingDecision> 
         jsonGenerator.writeNumberField("id", decision.getAwaitingDecisionId());
         jsonGenerator.writeStringField("text", decision.getText());
         jsonGenerator.writeStringField("type", decision.getDecisionType().name());
-        jsonGenerator.writeStringField("decidingPlayerId", decision.getDecidingPlayer().getPlayerId());
+        jsonGenerator.writeStringField("decidingPlayerId", decision.getDecidingPlayerId());
         jsonGenerator.writeObjectField("parameters", decision.getDecisionParameters());
 
 /*        if (decision instanceof ActionDecision actionDecision)

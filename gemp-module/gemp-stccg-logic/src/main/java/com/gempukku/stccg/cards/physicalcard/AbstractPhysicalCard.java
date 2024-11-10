@@ -6,19 +6,19 @@ import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
+import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
-import com.gempukku.stccg.modifiers.ModifiersQuerying;
 
 import java.util.*;
 
@@ -27,11 +27,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected final CardBlueprint _blueprint;
     protected final Player _owner;
     protected final int _cardId;
-    protected String _imageUrl;
     protected Zone _zone;
     protected PhysicalCard _attachedTo;
     protected PhysicalCard _stackedOn;
-    protected Object _whileInZoneData;
     protected ST1ELocation _currentLocation;
     protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
     protected List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
@@ -40,7 +38,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardId = cardId;
         _owner = owner;
         _blueprint = blueprint;
-        _imageUrl = blueprint.getImageUrl();
     }
 
     public Zone getZone() { return _zone; }
@@ -48,16 +45,19 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public void setZone(Zone zone) { _zone = zone; }
 
     public String getBlueprintId() { return _blueprint.getBlueprintId(); }
-    public String getImageUrl() { return _imageUrl; }
-
-    // Which player controls the card for purposes of the UI
-    public String getCardControllerPlayerIdForClient() {
-        if (isControlledBy(_owner))
-            return _owner.getPlayerId();
-        for (Player player : getGame().getPlayers())
-            if (isControlledBy(player))
-                return player.getPlayerId();
-        return _owner.getPlayerId();
+    public String getImageUrl() {
+        // TODO - Replace with a client communication method that pulls image options from the library
+        String result;
+        if (this instanceof AffiliatedCard affiliatedCard) {
+            String affiliatedImage = _blueprint.getAffiliationImageUrl(affiliatedCard.getAffiliation());
+            if (affiliatedImage != null)
+                result = affiliatedImage;
+            else
+                result = _blueprint.getImageUrl();
+        } else {
+            result = _blueprint.getImageUrl();
+        }
+        return result;
     }
 
     public int getCardId() { return _cardId; }
@@ -67,13 +67,14 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _owner.getPlayerId();
     }
 
-    public void startAffectingGame() {
-        getGame().getModifiersEnvironment().addModifierHooks(this);
+    public void startAffectingGame(DefaultGame game) {
+        game.getModifiersEnvironment().addModifierHooks(this);
     }
 
-    public void stopAffectingGame() {
-        getGame().getModifiersEnvironment().removeModifierHooks(this);
+    public void stopAffectingGame(DefaultGame game) {
+        game.getModifiersEnvironment().removeModifierHooks(this);
     }
+
 
     public CardBlueprint getBlueprint() {
         return _blueprint;
@@ -101,16 +102,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
 
-    public Object getWhileInZoneData() {
-        return _whileInZoneData;
-    }
-
-
-    public void setWhileInZoneData(Object object) {
-        _whileInZoneData = object;
-    }
-
-
     public String getTitle() { return _blueprint.getTitle(); }
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
@@ -121,21 +112,23 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         else return _currentLocation.getLocationZoneIndex();
     }
 
-    public boolean isAffectingGame() { return getGame().getCurrentPlayer() == _owner; }
-    public boolean canEnterPlay(List<Requirement> requirements) {
+    private boolean canEnterPlay(DefaultGame game, List<Requirement> requirements) {
         if (cannotEnterPlayPerUniqueness())
             return false;
-        if (requirements != null && !createActionContext().acceptsAllRequirements(requirements))
+        if (requirements != null && !createActionContext(game).acceptsAllRequirements(requirements))
             return false;
-        return !getModifiers().canNotPlayCard(getOwnerName(), this);
+        return !game.getModifiersQuerying().canNotPlayCard(getOwnerName(), this);
     }
+
 
     protected boolean cannotEnterPlayPerUniqueness() {
         return isUnique() && (_owner.hasACopyOfCardInPlay(this));
     }
 
-    public boolean canBeSeeded() { return canEnterPlay(_blueprint.getSeedRequirements()); }
-    public boolean canBePlayed() { return canEnterPlay(_blueprint.getPlayRequirements()); }
+    public boolean canBeSeeded(DefaultGame game) { return canEnterPlay(game, _blueprint.getSeedRequirements()); }
+
+    public boolean canBePlayed(DefaultGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
+
 
     public boolean isControlledBy(String playerId) {
         // TODO - Need to set modifiers for when cards get temporary control
@@ -160,41 +153,38 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
     public abstract CostToEffectAction getPlayCardAction(boolean forFree);
 
-    public CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter) {
+    public CostToEffectAction getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter) {
 
         final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
         if (validTargetFilter == null) {
             CostToEffectAction action =
                     new STCCGPlayCardAction((ST1EPhysicalCard) this, Zone.SUPPORT, this.getOwner());
-            getModifiers().appendExtraCosts(action, this);
+            game.getModifiersQuerying().appendExtraCosts(action, this);
             return action;
         } else {
             Filter fullAttachValidTargetFilter = Filters.and(
                     validTargetFilter,
-                    (Filter) (game1, targetCard) -> getModifiers().canHavePlayedOn(this, targetCard),
+                    (Filter) (game1, targetCard) -> game1.getModifiersQuerying().canHavePlayedOn(this,
+                            targetCard),
                     (Filter) (game12, physicalCard) -> true
             );
             final AttachPermanentAction action = new AttachPermanentAction(this,
                     Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter));
-            getModifiers().appendExtraCosts(action, this);
+            game.getModifiersQuerying().appendExtraCosts(action, this);
             return action;
         }
     }
 
-    public List<Modifier> getModifiers(List<ModifierSource> sources) {
-        List<Modifier> result = new LinkedList<>();
-        if (sources != null)
-            sources.forEach(inPlayModifier -> result.add(inPlayModifier.getModifier(createActionContext())));
-        return result;
-    }
 
-    public boolean hasTextRemoved() {
-        for (Modifier modifier : getModifiers().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
-            if (modifier.hasRemovedText(getGame(), this))
+    public boolean hasTextRemoved(DefaultGame game) {
+        for (Modifier modifier :
+                game.getModifiersQuerying().getModifiersAffectingCard(ModifierEffect.TEXT_MODIFIER, this)) {
+            if (modifier.hasRemovedText(game, this))
                 return true;
         }
         return false;
     }
+
 
     public boolean hasTransporters() {
         return false;
@@ -203,17 +193,20 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public CardType getCardType() { return _blueprint.getCardType(); }
 
     public List<? extends Action> getPhaseActionsInPlay(Player player) {
-        return getPhaseActionsInPlay(player.getPlayerId());
+        // TODO - Very jank just to see if I can get the Java blueprint to work
+        if (_blueprint instanceof Blueprint155_021 testCard)
+            return testCard.getInPlayActionsNew(player, this);
+        else {
+            if (_blueprint.getInPlayPhaseActions() == null)
+                return new LinkedList<>();
+            else
+                return getActivatedActions(player.getPlayerId(), _blueprint.getInPlayPhaseActions());
+        }
     }
 
-    public void attachToCardAtLocation(PhysicalCard destinationCard) {
-        getGame().getGameState().transferCard(this, destinationCard);
-        _currentLocation = destinationCard.getLocation();
-    }
-
-    public List<PhysicalCard> getStackedCards() {
+    public List<PhysicalCard> getStackedCards(DefaultGame game) {
         List<PhysicalCard> result = new LinkedList<>();
-        for (List<PhysicalCard> physicalCardList : getGame().getGameState().getStackedCards().values()) {
+        for (List<PhysicalCard> physicalCardList : game.getGameState().getStackedCards().values()) {
             for (PhysicalCard physicalCard : physicalCardList) {
                 if (physicalCard.getStackedOn() == this)
                     result.add(physicalCard);
@@ -221,33 +214,23 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
         return result;
     }
-    public Collection<PhysicalCard> getAttachedCards() { return getGame().getGameState().getAttachedCards(this); }
 
-    public List<? extends Action> getPhaseActionsInPlay(String playerId) {
-        // TODO - Very jank just to see if I can get the Java blueprint to work
-        if (_blueprint instanceof Blueprint155_021 testCard)
-            return testCard.getInPlayActionsNew(getGame().getGameState().getCurrentPhase(), this);
-        else {
-            if (_blueprint.getInPlayPhaseActions() == null)
-                return new LinkedList<>();
-            else
-                return getActivatedActions(playerId, _blueprint.getInPlayPhaseActions());
-        }
-    }
+    public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }
 
-    public List<? extends Action> getPhaseActionsFromZone(String playerId, Zone zone) {
+    public List<? extends Action> getPhaseActionsFromZone(Player player, Zone zone) {
+        DefaultGame game = player.getGame();
         if (zone == Zone.DISCARD) {
-            return getActivatedActions(playerId, _blueprint.getInDiscardPhaseActions());
+            return getActivatedActions(player.getPlayerId(), _blueprint.getInDiscardPhaseActions());
         }
         else if (zone == Zone.HAND) {
             if (_blueprint.getPlayInOtherPhaseConditions() == null)
                 return null;
             List<Action> playCardActions = new LinkedList<>();
 
-            if (canBePlayed()) {
+            if (canBePlayed(game)) {
                 for (Requirement playInOtherPhaseCondition : _blueprint.getPlayInOtherPhaseConditions()) {
-                    if (playInOtherPhaseCondition.accepts(createActionContext(playerId, null, null)))
-                        playCardActions.add(getPlayCardAction(Filters.any));
+                    if (playInOtherPhaseCondition.accepts(createActionContext(player, null, null)))
+                        playCardActions.add(getPlayCardAction(game, Filters.any));
                 }
             }
             return playCardActions;
@@ -255,13 +238,13 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         else return null;
     }
 
-    public List<? extends ExtraPlayCost> getExtraCostToPlay() {
+    public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
         if (_blueprint.getExtraPlayCosts() == null)
             return null;
 
         List<ExtraPlayCost> result = new LinkedList<>();
         _blueprint.getExtraPlayCosts().forEach(
-                extraPlayCost -> result.add(extraPlayCost.getExtraPlayCost(createActionContext())));
+                extraPlayCost -> result.add(extraPlayCost.getExtraPlayCost(createActionContext(game))));
         return result;
     }
 
@@ -318,8 +301,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public List<Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
-        return getActionsFromActionSources(playerId, null, effectResult,
-                _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
+        if (_blueprint instanceof Blueprint212_019 riskBlueprint) {
+            return riskBlueprint.getValidResponses(this, effectResult.getGame().getPlayer(playerId), effectResult);
+        } else {
+            return getActionsFromActionSources(playerId, null, effectResult,
+                    _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
+        }
     }
 
     public List<Action> getBeforeTriggerActions(Effect effect, RequiredType requiredType) {
@@ -336,13 +323,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.getRequiredAfterTriggerActions(effectResult, this);
     }
 
-    public ActionContext createActionContext() {
-        return new DefaultActionContext(getOwnerName(), getGame(), this, null, null);
+    ActionContext createActionContext(DefaultGame game) {
+        return new DefaultActionContext(getOwnerName(), game, this, null, null);
     }
 
-    public ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult) {
-        return new DefaultActionContext(playerId, getGame(), this, effect, effectResult);
+
+    public ActionContext createActionContext(Player player, Effect effect, EffectResult effectResult) {
+        return new DefaultActionContext(player.getPlayerId(), player.getGame(), this, effect, effectResult);
     }
+
 
     public boolean isUnique() {
         return _blueprint.isUnique();
@@ -350,7 +339,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public Integer getNumberOfCopiesSeededByPlayer(Player player) {
         int total = 0;
-        List<Action> performedActions = getGame().getActionsEnvironment().getPerformedActions();
+        List<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
             if (action instanceof SeedCardAction seedCardAction) {
                 if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&
@@ -372,9 +361,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             return _blueprint.getSeedCardActionSource().createActionWithNewContext(this);
     }
 
-    public boolean hasIcon(CardIcon icon) {
-        return getModifiers().hasIcon(this, icon);
+    public boolean hasIcon(DefaultGame game, CardIcon icon) {
+        return game.getModifiersQuerying().hasIcon(this, icon);
     }
+
 
     public boolean isPresentWith(PhysicalCard card) {
         return card.getLocation() == this.getLocation() && card.getAttachedTo() == this.getAttachedTo();
@@ -384,13 +374,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean hasSkill(SkillName skillName) { return false; }
     // TODO May need to implement something here for weird non-personnel cards that have skills
 
-    public boolean checkTurnLimit(int max) {
-        return getModifiers().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
+    public boolean checkTurnLimit(DefaultGame game, int max) {
+        // TODO This isn't right since it checks against the card instead of the action
+        return game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(this).getUsedLimit() < max;
     }
 
-    private ModifiersQuerying getModifiers() {
-        return getGame().getModifiersQuerying();
-    }
 
     public boolean isInPlay() {
         if (_zone == null)
@@ -437,7 +425,5 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
         _cardsPreSeededUnderneath.get(player).add(card);
     }
-
-    public void setImageUrl(String imageUrl) { _imageUrl = imageUrl; }
 
 }

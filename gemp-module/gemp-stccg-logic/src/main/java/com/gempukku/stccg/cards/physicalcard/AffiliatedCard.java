@@ -9,7 +9,7 @@ public interface AffiliatedCard {
     ST1EGame getGame();
     boolean isMultiAffiliation();
     Affiliation getAffiliation();
-    void setCurrentAffiliationWithImage(Affiliation affiliation);
+    void setCurrentAffiliation(Affiliation affiliation);
     void changeAffiliation(Affiliation affiliation);
     Set<Affiliation> getAffiliationOptions();
     String getCardLink();

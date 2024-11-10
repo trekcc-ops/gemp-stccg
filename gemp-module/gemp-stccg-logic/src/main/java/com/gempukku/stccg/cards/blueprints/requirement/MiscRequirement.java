@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.blueprints.FilterFactory;
 import com.gempukku.stccg.cards.blueprints.FilterableSource;
 import com.gempukku.stccg.cards.blueprints.ValueSource;
 import com.gempukku.stccg.cards.blueprints.resolver.ValueResolver;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -24,7 +23,6 @@ public class MiscRequirement implements Requirement {
         HASCARDINDISCARD(Zone.DISCARD),
         HASCARDINHAND(Zone.HAND),
         HASCARDINPLAYPILE(Zone.PLAY_PILE),
-        HASINZONEDATA(null),
         LASTTRIBBLEPLAYED(null),
         NEXTTRIBBLEINSEQUENCE(null),
         TRIBBLESEQUENCEBROKEN(null);
@@ -53,10 +51,6 @@ public class MiscRequirement implements Requirement {
                 BlueprintUtils.validateAllowedFields(node, "count", "filter");
                 BlueprintUtils.validateRequiredFields(node, "filter");
                 break;
-            case HASINZONEDATA:
-                BlueprintUtils.validateAllowedFields(node, "filter");
-                BlueprintUtils.validateRequiredFields(node, "filter");
-                break;
             case TRIBBLESEQUENCEBROKEN:
                 BlueprintUtils.validateAllowedFields(node);
                 break;
@@ -79,13 +73,6 @@ public class MiscRequirement implements Requirement {
                 case CARDSINHANDMORETHAN -> gameState.getHand(playerId).size() > count;
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
                         gameState.getPlayer(playerId).hasCardInZone(_requirementType.zone, count, filterable);
-                case HASINZONEDATA -> {
-                    for (PhysicalCard card : Filters.filterActive(actionContext.getGame(), filterable)) {
-                        if (card.getWhileInZoneData() != null)
-                            yield true;
-                    }
-                    yield false;
-                }
                 case LASTTRIBBLEPLAYED -> actionContext instanceof TribblesActionContext context &&
                         context.getGameState().getLastTribblePlayed() == count;
                 case NEXTTRIBBLEINSEQUENCE -> actionContext instanceof TribblesActionContext context &&

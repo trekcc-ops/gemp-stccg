@@ -15,7 +15,7 @@ public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess
     DilemmaSeedPhaseYourMissionsProcess(ST1EGame game) {
         super(game.getPlayerIds(), game);
     }
-    DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
+    public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
         super(playersSelecting, game);
     }
 

@@ -25,7 +25,7 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
 
     PlayOutOptionalBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
                                          ActionOrder actionOrder, int passCount, Effect effect) {
-        super(action.getGame());
+        super(effect.getGame());
         _action = action;
         _cardTriggersUsed = cardTriggersUsed;
         _actionOrder = actionOrder;
@@ -33,6 +33,7 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
         _effect = effect;
         _actionsEnvironment = _game.getActionsEnvironment();
     }
+
 
     @Override
     public void doPlayEffect() {
@@ -51,8 +52,8 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
 
         if (possibleActions.isEmpty()) {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
-                Effect effect = new PlayOutOptionalBeforeResponsesEffect(_action, _cardTriggersUsed, _actionOrder,
-                        _passCount + 1, _effect);
+                Effect effect = new PlayOutOptionalBeforeResponsesEffect(_action, _cardTriggersUsed,
+                        _actionOrder, _passCount + 1, _effect);
                 _action.insertEffect(effect);
             }
         } else {
@@ -72,7 +73,8 @@ class PlayOutOptionalBeforeResponsesEffect extends UnrespondableEffect {
                             } else {
                                 if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
                                     _action.insertEffect(new PlayOutOptionalBeforeResponsesEffect(
-                                            _action, _cardTriggersUsed, _actionOrder, _passCount + 1, _effect));
+                                            _action, _cardTriggersUsed, _actionOrder,
+                                            _passCount + 1, _effect));
                                 }
                             }
                         }

@@ -1,14 +1,14 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
@@ -31,7 +31,9 @@ public class DockAction extends AbstractCostToEffectAction {
     }
 
     private Effect chooseDockingTargetEffect() {
-        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
+        DefaultGame game = _cardToDock.getGame();
+        Player performingPlayer = game.getPlayer(_performingPlayerId);
+        return new ChooseCardsOnTableEffect(this, performingPlayer,
                 "Choose facility to dock at", _dockingTargetOptions) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {
@@ -47,7 +49,7 @@ public class DockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToDock; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();
@@ -69,9 +71,6 @@ public class DockAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public boolean canBeInitiated() { return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty(); }
-
-    @Override
-    public ST1EGame getGame() { return _cardToDock.getGame(); }
+    public boolean canBeInitiated(DefaultGame cardGame) { return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty(); }
 
 }

@@ -175,7 +175,7 @@ public class CardResolverMultiEffectBlueprintProducer {
                                                 Iterables.getOnlyElement(cards).getPlayCardAction(true));
                                 case PLAY, PLAYCARDFROMDISCARD ->
                                         new StackActionEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards).getPlayCardAction(
+                                                Iterables.getOnlyElement(cards).getPlayCardAction(context.getGame(),
                                                         (onFilterableSource != null) ?
                                                                 onFilterableSource.getFilterable(context) : Filters.any
                                                 )

@@ -9,9 +9,10 @@ import com.gempukku.stccg.game.Player;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDecision {
-    private final Collection<? extends PhysicalCard> _physicalCards;
+    private final List<PhysicalCard> _physicalCards = new LinkedList<>();
     private final Collection<? extends PhysicalCard> _selectable;
     private final int _minimum;
     private final int _maximum;
@@ -32,7 +33,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
                                            Collection<? extends PhysicalCard> physicalCards,
                                            Collection<? extends PhysicalCard> selectable, int minimum, int maximum) {
         super(player, text, AwaitingDecisionType.ARBITRARY_CARDS);
-        _physicalCards = physicalCards;
+        _physicalCards.addAll(physicalCards);
         _selectable = selectable;
         _minimum = minimum;
         _maximum = maximum;
@@ -97,16 +98,6 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         return images;
     }
 
-    protected PhysicalCard getPhysicalCardByIndex(int index) {
-        int i = 0;
-        for (PhysicalCard physicalCard : _physicalCards) {
-            if (i == index)
-                return physicalCard;
-            i++;
-        }
-        return null;
-    }
-
     protected List<PhysicalCard> getSelectedCardsByResponse(String response) throws DecisionResultInvalidException {
         String[] cardIds;
         if (response.isEmpty())
@@ -120,7 +111,8 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         List<PhysicalCard> result = new LinkedList<>();
         try {
             for (String cardId : cardIds) {
-                PhysicalCard card = getPhysicalCardByIndex(Integer.parseInt(cardId.substring(4)));
+                int idNum = Integer.parseInt(cardId.substring(4));
+                PhysicalCard card = _physicalCards.get(idNum);
                 if (result.contains(card) || !_selectable.contains(card))
                     throw new DecisionResultInvalidException();
                 result.add(card);
@@ -130,5 +122,23 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         }
 
         return result;
+    }
+
+    public void decisionMade(PhysicalCard card) throws DecisionResultInvalidException {
+        List<PhysicalCard> cardList = new LinkedList<>();
+        cardList.add(card);
+        decisionMade(cardList);
+    }
+
+
+    public void decisionMade(List<PhysicalCard> cards) throws DecisionResultInvalidException {
+        StringJoiner sj = new StringJoiner(",");
+        for (PhysicalCard card : cards) {
+            if (_physicalCards.contains(card))
+                sj.add("temp" + _physicalCards.indexOf(card));
+            else throw new DecisionResultInvalidException(
+                    "Could not find card " + card.getCardId() + " in decision parameters");
+        }
+        decisionMade(sj.toString());
     }
 }

@@ -82,7 +82,7 @@ public class AwayTeam implements AttemptingUnit {
     public void remove(PhysicalReportableCard1E card) {
         _cardsInAwayTeam.remove(card);
         if (_cardsInAwayTeam.isEmpty())
-            card.getGame().getGameState().removeAwayTeamFromGame(this);
+            _game.getGameState().removeAwayTeamFromGame(this);
     }
 
     public boolean canBeDisbanded() {

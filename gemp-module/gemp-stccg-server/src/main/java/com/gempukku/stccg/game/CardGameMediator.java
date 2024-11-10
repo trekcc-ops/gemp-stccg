@@ -123,7 +123,7 @@ public abstract class CardGameMediator {
             if (card == null || card.getZone() == null)
                 return null;
             else
-                return CardInfoUtils.getCardInfoHTML(card);
+                return CardInfoUtils.getCardInfoHTML(getGame(), card);
         } finally {
             _readLock.unlock();
         }
@@ -196,7 +196,6 @@ public abstract class CardGameMediator {
     }
 
     public final void cancel(User player) {
-//        getGame().getGameState().sendWarning(player.getName(), "You can't cancel this game");
 
         String playerId = player.getName();
         _writeLock.lock();

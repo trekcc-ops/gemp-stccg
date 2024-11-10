@@ -5,8 +5,10 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class PlayOutDecisionEffect implements Effect {
     private final AwaitingDecision _decision;
+    private final DefaultGame _game;
 
-    public PlayOutDecisionEffect(AwaitingDecision decision) {
+    public PlayOutDecisionEffect(DefaultGame game, AwaitingDecision decision) {
+        _game = game;
         _decision = decision;
     }
 
@@ -36,7 +38,7 @@ public class PlayOutDecisionEffect implements Effect {
         return true;
     }
 
-    public String getPerformingPlayerId() { return _decision.getDecidingPlayer().getPlayerId(); }
-    public DefaultGame getGame() { return _decision.getGame(); }
+    public String getPerformingPlayerId() { return _decision.getDecidingPlayer(_game).getPlayerId(); }
+    public DefaultGame getGame() { return _game; }
 
 }

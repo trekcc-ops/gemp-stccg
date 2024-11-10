@@ -45,7 +45,7 @@ public class DrawCardsEffect extends AbstractSubActionEffect {
             drawEffects.add(effect);
         }
         subAction.appendEffect(
-                new UnrespondableEffect(_action.getGame()) {
+                new UnrespondableEffect(_game) {
                     @Override
                     protected void doPlayEffect() {
                         int count = 0;

@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collections;
 
@@ -20,14 +20,11 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public boolean canBeInitiated() {
-        if (!_cardToPlay.canBePlayed())
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        if (!_cardToPlay.canBePlayed(cardGame))
             return false;
         else return (_cardToPlay.isNextInSequence() || _cardToPlay.canPlayOutOfSequence());
     }
-
-    @Override
-    public TribblesGame getGame() { return _cardToPlay.getGame(); }
 
     @Override
     public PhysicalCard getCardForActionSelection() {
@@ -35,30 +32,25 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    protected Effect getFinalEffect() {
-        return new TribblesPlayCardEffect(_cardToPlay);
-    }
-
-    @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToPlay.getZone();
-            _game.sendMessage(_cardToPlay.getOwnerName() + " plays " +
+            cardGame.sendMessage(_cardToPlay.getOwnerName() + " plays " +
                     _cardToPlay.getCardLink() +  " from " + playedFromZone.getHumanReadable() +
                     " to " + _toZone.getHumanReadable());
-            _game.getGameState().removeCardsFromZone(_cardToPlay.getOwnerName(),
+            cardGame.getGameState().removeCardsFromZone(_cardToPlay.getOwnerName(),
                     Collections.singleton(_cardToPlay));
-            _game.getGameState().addCardToZone(_cardToPlay, Zone.PLAY_PILE);
+            cardGame.getGameState().addCardToZone(_cardToPlay, Zone.PLAY_PILE);
             if (playedFromZone == Zone.DRAW_DECK) {
-                _game.sendMessage(_cardToPlay.getOwnerName() + " shuffles their deck");
-                _game.getGameState().shuffleDeck(_cardToPlay.getOwnerName());
+                cardGame.sendMessage(_cardToPlay.getOwnerName() + " shuffles their deck");
+                cardGame.getGameState().shuffleDeck(_cardToPlay.getOwnerName());
             }
         }
 
         if (!_cardPlayed) {
             _cardPlayed = true;
-            _finalEffect = getFinalEffect();
+            _finalEffect = new TribblesPlayCardEffect(_cardToPlay);
             return _finalEffect;
         }
 

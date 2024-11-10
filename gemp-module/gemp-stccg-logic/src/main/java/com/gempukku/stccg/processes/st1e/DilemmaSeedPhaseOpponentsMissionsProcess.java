@@ -14,7 +14,7 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
         super(game.getPlayerIds(), game);
     }
 
-    DilemmaSeedPhaseOpponentsMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
+    public DilemmaSeedPhaseOpponentsMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
         super(playersSelecting, game);
     }
 

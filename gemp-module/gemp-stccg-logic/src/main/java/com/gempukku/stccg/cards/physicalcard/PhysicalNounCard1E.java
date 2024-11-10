@@ -25,14 +25,11 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
     public boolean isMultiAffiliation() { return getAffiliationOptions().size() > 1; }
     public Affiliation getAffiliation() { return _currentAffiliation; }
 
-    public void setCurrentAffiliationWithImage(Affiliation affiliation) {
+    public void setCurrentAffiliation(Affiliation affiliation) {
         _currentAffiliation = affiliation;
-        String newImageUrl = _blueprint.getAffiliationImageUrl(affiliation);
-        if (newImageUrl != null)
-            _imageUrl = newImageUrl;
     }
     public void changeAffiliation(Affiliation affiliation) {
-        setCurrentAffiliationWithImage(affiliation);
+        setCurrentAffiliation(affiliation);
         if (getAffiliationOptions().size() > 1) {
             if (_attachedTo instanceof MissionCard mission &&
                     this instanceof PhysicalReportableCard1E reportable) {
@@ -87,12 +84,10 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         // TODO SNAPSHOT - Doesn't have awayTeam specified
 
         PhysicalNounCard1E newCard = new PhysicalNounCard1E(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-        newCard._whileInZoneData = _whileInZoneData;
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

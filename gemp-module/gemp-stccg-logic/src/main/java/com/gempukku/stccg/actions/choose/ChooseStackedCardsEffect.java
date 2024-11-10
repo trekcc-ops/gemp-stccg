@@ -44,7 +44,7 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
         List<PhysicalCard> stackedCards = new LinkedList<>();
 
         for (PhysicalCard stackedOnCard : Filters.filterActive(_game, _stackedOnFilter))
-            stackedCards.addAll(Filters.filter(stackedOnCard.getStackedCards(), _game, _stackedCardFilter));
+            stackedCards.addAll(Filters.filter(stackedOnCard.getStackedCards(_game), _game, _stackedCardFilter));
 
         int maximum = Math.min(_maximum, stackedCards.size());
 

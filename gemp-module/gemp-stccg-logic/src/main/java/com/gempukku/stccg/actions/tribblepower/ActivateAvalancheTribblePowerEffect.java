@@ -21,7 +21,8 @@ public class ActivateAvalancheTribblePowerEffect extends ActivateTribblePowerEff
     protected FullEffectResult playEffectReturningResult() {
         if (isPlayableInFull()) {
             SubAction subAction = _action.createSubAction();
-            subAction.appendEffect(new AllPlayersDiscardFromHandEffect(_action, false, true));
+            subAction.appendEffect(
+                    new AllPlayersDiscardFromHandEffect(_game, _action, false, true));
             subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(
                     getGame(), _action, _activatingPlayer,false,1));
             return addActionAndReturnResult(getGame(), subAction);

@@ -1,15 +1,12 @@
 package com.gempukku.stccg.decisions;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.List;
-import java.util.Objects;
 
 public abstract class ActionSelectionDecision extends ActionDecision {
 
@@ -33,20 +30,10 @@ public abstract class ActionSelectionDecision extends ActionDecision {
     }
 
     private String[] getImageUrls() {
-        CardBlueprintLibrary blueprintLibrary = _decidingPlayer.getGame().getBlueprintLibrary();
-        String[] blueprints = getBlueprintIds();
-        String[] images = new String[blueprints.length];
-        for (int i = 0; i < blueprints.length; i++) {
-            if (Objects.equals(blueprints[i], "rules")) {
-                images[i] = "rules";
-            } else {
-                try {
-                    images[i] = blueprintLibrary.getCardBlueprint(blueprints[i]).getImageUrl();
-                } catch (CardNotFoundException exp) {
-                    throw new RuntimeException(
-                            "ActionSelectionDecision unable to find image URLs for all card blueprints", exp);
-                }
-            }
+        String[] images = new String[_actions.size()];
+        for (int i = 0; i < images.length; i++) {
+            PhysicalCard physicalCard = _actions.get(i).getCardForActionSelection();
+            images[i] = (physicalCard == null) ? "rules" : physicalCard.getImageUrl();
         }
         return images;
     }

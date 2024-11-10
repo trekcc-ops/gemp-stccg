@@ -50,7 +50,7 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
 
         SubAction subAction = _action.createSubAction();
         subAction.appendEffect(
-                new ChooseAndPutNextCardFromDeckOnTopOfDeck(subAction, cards));
+                new ChooseAndPutNextCardFromDeckOnTopOfDeck(_game, subAction, cards));
         processSubAction(_game, subAction);
     }
 
@@ -58,8 +58,8 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
         private final Collection<PhysicalCard> _remainingCards;
         private final CostToEffectAction _subAction;
 
-        public ChooseAndPutNextCardFromDeckOnTopOfDeck(CostToEffectAction subAction, Collection<PhysicalCard> remainingCards) {
-            super(subAction.getGame(), _playerId, "Choose a card to put on top of the deck", remainingCards, 1, 1);
+        public ChooseAndPutNextCardFromDeckOnTopOfDeck(DefaultGame game, CostToEffectAction subAction, Collection<PhysicalCard> remainingCards) {
+            super(game, _playerId, "Choose a card to put on top of the deck", remainingCards, 1, 1);
             _subAction = subAction;
             _remainingCards = remainingCards;
         }
@@ -72,7 +72,7 @@ public class ReorderTopCardsOfDeckEffect extends AbstractSubActionEffect {
                 _remainingCards.remove(selectedCard);
                 if (!_remainingCards.isEmpty())
                     _subAction.appendEffect(
-                            new ChooseAndPutNextCardFromDeckOnTopOfDeck(_subAction, _remainingCards));
+                            new ChooseAndPutNextCardFromDeckOnTopOfDeck(_game, _subAction, _remainingCards));
             }
         }
     }

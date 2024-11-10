@@ -9,15 +9,14 @@ public class CheckTurnLimitEffect extends DefaultEffect implements UsageEffect {
     private final PhysicalCard _card;
     private final int _limit;
     private final String _prefix;
-    private final DefaultGame _game;
 
-    public CheckTurnLimitEffect(Action action, int limit) {
-        super(action);
-        _game = action.getGame();
+    public CheckTurnLimitEffect(DefaultGame game, Action action, int limit) {
+        super(game, action);
         _card = action.getActionSource();
         _limit = limit;
         _prefix = action.getCardActionPrefix();
     }
+
 
     public boolean isPlayableInFull() {
         return _game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_card, _prefix).getUsedLimit() < _limit;

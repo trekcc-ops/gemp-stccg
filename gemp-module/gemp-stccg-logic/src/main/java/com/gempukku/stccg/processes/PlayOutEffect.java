@@ -10,24 +10,23 @@ class PlayOutEffect extends SystemQueueAction {
     private final Effect _effect;
     private boolean _initialized;
 
-    PlayOutEffect(DefaultGame game, Effect effect) {
-        super(game);
+    PlayOutEffect(Effect effect) {
         _effect = effect;
     }
 
     @Override
-    public String getText() {
+    public String getText(DefaultGame game) {
         return _effect.getText();
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (!_initialized) {
             _initialized = true;
             appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
             appendEffect(new PlayOutOptionalBeforeResponsesEffect(this, new HashSet<>(),
-                    _game.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(
-                            _game.getGameState().getCurrentPlayerId(), true), 0, _effect));
+                    cardGame.getGameState().getPlayerOrder().getCounterClockwisePlayOrder(
+                            cardGame.getGameState().getCurrentPlayerId(), true), 0, _effect));
             appendEffect(new PlayEffect(_effect));
         }
 

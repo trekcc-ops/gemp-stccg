@@ -44,7 +44,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
                 });
             }
         }
-        Effect effect = new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(
+        Effect effect = new PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(_game,
                 _action, _activatingPlayer, false, Filters.any);
         subAction.appendEffect(effect);
         return addActionAndReturnResult(getGame(), subAction);

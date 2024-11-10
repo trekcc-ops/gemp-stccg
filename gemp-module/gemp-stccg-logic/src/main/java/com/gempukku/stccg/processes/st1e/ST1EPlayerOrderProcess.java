@@ -1,5 +1,8 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
@@ -9,11 +12,22 @@ import java.util.*;
 public class ST1EPlayerOrderProcess extends ST1EGameProcess {
 
     public ST1EPlayerOrderProcess(ST1EGame game) {
-        super(game.getPlayerIds(), game);
+        super(game);
     }
 
     @Override
     public void process() {
+        List<String> playerOrder;
+        if (_game.getFormat().hasFixedPlayerOrder()) {
+            playerOrder = Arrays.asList(_game.getAllPlayerIds());
+        } else {
+            playerOrder = getPlayerOrderByRollingDice();
+        }
+        _game.sendMessage(playerOrder.getFirst() + " will go first");
+        _game.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
+    }
+
+    private List<String> getPlayerOrderByRollingDice() {
         String[] players = _game.getAllPlayerIds();
         Map<String, Integer> diceResults = new HashMap<>();
         for (String player: players) diceResults.put(player, 0);
@@ -45,13 +59,24 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
                 playerOrderIndex++;
             }
         }
-
-        _game.sendMessage(firstPlayer + " will go first");
-        _game.getGameState().setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
+        return playerOrder;
     }
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EStartOfGameProcess(_game);
+        Set<String> players = _game.getPlayerIds();
+        _game.takeSnapshot("Start of game");
+        for (String player : players) {
+            Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
+            for (PhysicalCard seedCard : _game.getGameState().getSeedDeck(player)) {
+                if (seedCard.getCardType() == CardType.DOORWAY)
+                    doorwaySeeds.add(seedCard);
+            }
+            for (PhysicalCard card : doorwaySeeds) {
+                _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
+                _game.getGameState().addCardToZone(card, Zone.HAND);
+            }
+        }
+        return new DoorwaySeedPhaseProcess(_game);
     }
 }

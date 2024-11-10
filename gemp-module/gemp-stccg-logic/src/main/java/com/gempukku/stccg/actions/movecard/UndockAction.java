@@ -4,17 +4,16 @@ import com.gempukku.stccg.actions.AbstractCostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
 
 public class UndockAction extends AbstractCostToEffectAction {
     private final PhysicalShipCard _cardToUndock;
-    private boolean _cardUndocked = false;
+    private boolean _cardUndocked;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {
-        super(player, ActionType.MOVE_CARDS);
+        super(player, "Undock", ActionType.MOVE_CARDS);
         _cardToUndock = cardUndocking;
-        this.text = "Undock";
     }
 
     @Override
@@ -23,7 +22,7 @@ public class UndockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToUndock; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();
@@ -39,9 +38,6 @@ public class UndockAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public boolean canBeInitiated() { return _cardToUndock.isDocked(); }
-
-    @Override
-    public ST1EGame getGame() { return _cardToUndock.getGame(); }
+    public boolean canBeInitiated(DefaultGame cardGame) { return _cardToUndock.isDocked(); }
 
 }

@@ -7,7 +7,7 @@ import com.gempukku.stccg.game.Player;
 
 import java.util.*;
 
-public abstract class EffectResult {
+public class EffectResult {
     private final Set<Action> _optionalTriggersUsed = new HashSet<>();
 
     public enum Type {
@@ -24,6 +24,7 @@ public abstract class EffectResult {
         FOR_EACH_REVEALED_FROM_TOP_OF_DECK,
         PLAY_CARD,
         PLAYER_WENT_OUT,
+        START_OF_MISSION_ATTEMPT,
         START_OF_PHASE,
         START_OF_TURN,
         WHEN_MOVE_FROM
@@ -44,7 +45,7 @@ public abstract class EffectResult {
         _performingPlayerId = source.getOwnerName();
     }
 
-    protected EffectResult(Type type, DefaultGame game) {
+    public EffectResult(Type type, DefaultGame game) {
         _type = type;
         _game = game;
         _source = null;
@@ -60,7 +61,7 @@ public abstract class EffectResult {
 
     protected EffectResult(Type type, Effect effect, PhysicalCard source) {
         _type = type;
-        _game = source.getGame();
+        _game = effect.getGame();
         _source = source;
         _performingPlayerId = effect.getPerformingPlayerId();
     }
@@ -88,7 +89,7 @@ public abstract class EffectResult {
         for (Player player : _game.getPlayers()) {
             List<Action> playerActions = new LinkedList<>();
             for (PhysicalCard card : Filters.filterYourActive(player)) {
-                if (!card.hasTextRemoved()) {
+                if (!card.hasTextRemoved(_game)) {
                     final List<Action> actions = card.getOptionalAfterTriggerActions(player.getPlayerId(), this);
                     if (actions != null)
                         playerActions.addAll(actions);

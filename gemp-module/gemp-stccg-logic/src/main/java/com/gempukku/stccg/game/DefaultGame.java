@@ -14,6 +14,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.GameStateListener;
 import com.gempukku.stccg.modifiers.ModifiersEnvironment;
 import com.gempukku.stccg.modifiers.ModifiersQuerying;
+import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.TurnProcedure;
 
 import java.util.*;
@@ -26,6 +27,7 @@ public abstract class DefaultGame {
     protected final CardBlueprintLibrary _library;
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
+    protected TurnProcedure _turnProcedure;
     final List<String> _lastMessages = new LinkedList<>();
 
     // Endgame operations
@@ -232,10 +234,10 @@ public abstract class DefaultGame {
         return Collections.unmodifiableList(_snapshots);
     }
 
-    public String getOpponent(String playerId) {
+    public String getOpponent(String playerId) throws InvalidGameLogicException {
             // TODO - Only works for 2-player games
         if (getAllPlayerIds().length != 2)
-            throw new RuntimeException("Tried to call getOpponent function with more than 2 players");
+            throw new InvalidGameLogicException("Tried to call getOpponent function with more than 2 players");
         else {
             return getAllPlayerIds()[0].equals(playerId) ?
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
@@ -309,7 +311,7 @@ public abstract class DefaultGame {
     
     public void sendMessage(String message) { getGameState().sendMessage(message); }
     public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
-    public String getCurrentPhaseString() { return getGameState().getCurrentPhase().getHumanReadable(); }
+
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
     public AwaitingDecision getAwaitingDecision(String playerName) {
@@ -341,10 +343,8 @@ public abstract class DefaultGame {
         return _format.discardPileIsPublic();
     }
 
-    public boolean hasNoPendingDecisions() { return _userFeedback.hasNoPendingDecisions(); }
-
     public boolean isCarryingOutEffects() {
-        return hasNoPendingDecisions() && _winnerPlayerId == null && !isRestoreSnapshotPending();
+        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null && !isRestoreSnapshotPending();
     }
 
     public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
@@ -357,5 +357,14 @@ public abstract class DefaultGame {
         _lastMessages.add(message);
         if (_lastMessages.size() > LAST_MESSAGE_STORED_COUNT)
             _lastMessages.removeFirst();
+    }
+
+    public void setCurrentProcess(GameProcess process) {
+        getTurnProcedure().setCurrentProcess(process);
+    }
+
+    public void sendErrorMessage(InvalidGameLogicException exp) {
+        String message = "ERROR: " + exp.getMessage();
+        sendMessage(message);
     }
 }

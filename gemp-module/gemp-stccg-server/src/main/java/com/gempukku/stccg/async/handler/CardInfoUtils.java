@@ -6,33 +6,31 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CardInfoUtils {
 
-    public static String getCardInfoHTML(PhysicalCard card) {
+    public static String getCardInfoHTML(DefaultGame game, PhysicalCard card) {
         String info = getBasicCardInfoHTML(card);
         return switch (card) {
-            case PersonnelCard personnel -> info + getPersonnelInfo(personnel);
-            case PhysicalShipCard ship -> info + getShipCardInfo(ship);
+            case PersonnelCard personnel -> info + getPersonnelInfo(game, personnel);
+            case PhysicalShipCard ship -> info + getShipCardInfo(game, ship);
             case FacilityCard facility -> info + getFacilityCardInfo(facility);
             case MissionCard mission -> info + getMissionCardInfo(mission);
             default -> info;
         };
     }
 
+
     public static String getBasicCardInfoHTML(PhysicalCard card) {
         if (card.getZone().isInPlay() || card.getZone() == Zone.HAND) {
             StringBuilder sb = new StringBuilder();
-
-/*            if (getZone() == Zone.HAND)
-                sb.append("<b>Card is in hand - stats are only provisional</b><br><br>");
-            else if (Filters.filterActive(getGame(), this).isEmpty())
-                sb.append("<b>Card is inactive - current stats may be inaccurate</b><br><br>");*/
 
             Collection<Modifier> modifiers = card.getGame().getModifiersQuerying().getModifiersAffecting(card);
             if (!modifiers.isEmpty()) {
@@ -41,13 +39,13 @@ public class CardInfoUtils {
                     sb.append(modifier.getCardInfoText(card));
                 }
             }
-/*
-            List<PhysicalCard> stackedCards = getStackedCards();
+
+            List<PhysicalCard> stackedCards = card.getStackedCards(card.getGame());
             if (!stackedCards.isEmpty()) {
                 sb.append("<br><b>Stacked cards:</b>");
                 sb.append("<br>").append(TextUtils.getConcatenatedCardLinks(stackedCards));
             }
-*/
+
             return sb.toString();
         } else {
             return "";
@@ -55,7 +53,7 @@ public class CardInfoUtils {
 
     }
 
-    static String getPersonnelInfo(PersonnelCard personnel) {
+    static String getPersonnelInfo(DefaultGame game, PersonnelCard personnel) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -64,12 +62,13 @@ public class CardInfoUtils {
             if (personnel.isAffiliation(affiliation))
                 sb.append(affiliation.toHTML());
 
-        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(personnel));
+        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(game, personnel));
 
         return sb.toString();
     }
 
-    static String getShipCardInfo(PhysicalShipCard ship) {
+
+    static String getShipCardInfo(DefaultGame game, PhysicalShipCard ship) {
         StringBuilder sb = new StringBuilder();
         Map<String, Collection<PhysicalCard>> attachedCards = new HashMap<>();
         attachedCards.put("Crew",ship.getCrew());
@@ -102,21 +101,22 @@ public class CardInfoUtils {
                 .append(ship.getBlueprint().getRange());
         sb.append(HTMLUtils.NEWLINE).append(HTMLUtils.makeBold("RANGE available: "))
                 .append(ship.getRangeAvailable());
-        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(ship));
+        sb.append(HTMLUtils.NEWLINE).append(getCardIcons(game, ship));
 
         return sb.toString();
     }
 
-    private static String getCardIcons(PhysicalCard card) {
+    private static String getCardIcons(DefaultGame game, PhysicalCard card) {
         StringBuilder sb = new StringBuilder();
         sb.append(HTMLUtils.makeBold("Icons: "));
 
         for (CardIcon icon : CardIcon.values())
-            if (card.hasIcon(icon))
+            if (card.hasIcon(game, icon))
                 sb.append(icon.toHTML());
 
         return sb.toString();
     }
+
 
     static String getFacilityCardInfo(FacilityCard facility) {
         StringBuilder sb = new StringBuilder();

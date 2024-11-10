@@ -126,7 +126,7 @@ public class CardResolver {
                     }
                 };
             } else {
-                return new ChooseArbitraryCardsEffect(actionContext.getGame(), choicePlayerId,
+                return new ChooseArbitraryCardsEffect(actionContext.getGame().getPlayer(choicePlayerId),
                         actionContext.substituteText(choiceText),
                         cardSource.apply(actionContext), Filters.in(possibleCards),
                         min, max, showMatchingOnly) {

@@ -19,7 +19,7 @@ public class PhysicalCardDeserializer {
 
         if (card instanceof AffiliatedCard affiliatedCard) {
             Affiliation affiliation = Affiliation.valueOf(node.get("affiliation").textValue());
-            affiliatedCard.setCurrentAffiliationWithImage(affiliation);
+            affiliatedCard.setCurrentAffiliation(affiliation);
         }
 
         if (node.has("locationZoneIndex") && game instanceof ST1EGame st1eGame) {

@@ -19,6 +19,6 @@ public interface AwaitingDecision {
     Map<String, String[]> getDecisionParameters();
 
     void decisionMade(String result) throws DecisionResultInvalidException;
-    Player getDecidingPlayer();
-    DefaultGame getGame();
+    Player getDecidingPlayer(DefaultGame game);
+    String getDecidingPlayerId();
 }

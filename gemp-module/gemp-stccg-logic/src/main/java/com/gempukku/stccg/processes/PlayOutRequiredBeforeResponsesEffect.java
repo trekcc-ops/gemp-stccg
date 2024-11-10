@@ -8,7 +8,6 @@ import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
-import com.gempukku.stccg.game.Player;
 
 import java.util.List;
 import java.util.Set;
@@ -21,12 +20,13 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
 
     PlayOutRequiredBeforeResponsesEffect(SystemQueueAction action, Set<PhysicalCard> cardTriggersUsed,
                                          Effect effect) {
-        super(action.getGame());
+        super(effect.getGame());
         _action = action;
         _cardTriggersUsed = cardTriggersUsed;
         _effect = effect;
         _actionsEnvironment = _game.getActionsEnvironment();
     }
+
 
     @Override
     protected void doPlayEffect() {
@@ -37,9 +37,8 @@ class PlayOutRequiredBeforeResponsesEffect extends UnrespondableEffect {
         if (requiredBeforeTriggers.size() == 1) {
             _actionsEnvironment.addActionToStack(requiredBeforeTriggers.getFirst());
         } else if (requiredBeforeTriggers.size() > 1) {
-            Player currentPlayer = _game.getCurrentPlayer();
             _game.getUserFeedback().sendAwaitingDecision(
-                    new ActionSelectionDecision(currentPlayer, _effect.getText() +
+                    new ActionSelectionDecision(_game.getCurrentPlayer(), _effect.getText() +
                             " - Required \"is about to\" responses", requiredBeforeTriggers) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {

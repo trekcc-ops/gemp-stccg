@@ -14,14 +14,10 @@ import java.util.Map;
 
 public class ST1EGame extends DefaultGame {
     private ST1EGameState _gameState;
-    private TurnProcedure _turnProcedure;
-    private final ST1EGame _thisGame;
-    private AffiliationAttackRestrictions _affiliationAttackRestrictions;
     private final ST1ERuleSet _rules;
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library) {
         super(format, decks, library);
-        _thisGame = this;
 
         _gameState = new ST1EGameState(decks.keySet(), this);
         _rules = new ST1ERuleSet(this);
@@ -54,7 +50,6 @@ public class ST1EGame extends DefaultGame {
     }
 
     public void setAffiliationAttackRestrictions(AffiliationAttackRestrictions restrictions) {
-        _affiliationAttackRestrictions = restrictions;
     }
 
     @Override

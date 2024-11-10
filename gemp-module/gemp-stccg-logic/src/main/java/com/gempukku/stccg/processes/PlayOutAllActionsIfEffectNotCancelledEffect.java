@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
-import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;
 
@@ -14,12 +14,13 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
     private final List<Action> _actions;
     private final List<Action> _actionStack;
 
-    PlayOutAllActionsIfEffectNotCancelledEffect(SystemQueueAction action, List<Action> actions) {
-        super(action.getGame());
+    PlayOutAllActionsIfEffectNotCancelledEffect(DefaultGame game, SystemQueueAction action, List<Action> actions) {
+        super(game);
         _action = action;
         _actions = actions;
-        _actionStack = _game.getActionsEnvironment().getActionStack();
+        _actionStack = game.getActionsEnvironment().getActionStack();
     }
+
 
     @Override
     public void doPlayEffect() {
@@ -29,17 +30,17 @@ final class PlayOutAllActionsIfEffectNotCancelledEffect extends UnrespondableEff
             Action anyAction = _actions.getFirst();
             _actions.remove(anyAction);
             _actionStack.add(anyAction);
-            _action.insertEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(_action, _actions));
+            _action.insertEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions));
         } else {
-            Player player = _game.getCurrentPlayer();
             _game.getUserFeedback().sendAwaitingDecision(
-                    new ActionSelectionDecision(player, "Required responses", _actions) {
+                    new ActionSelectionDecision(_game.getCurrentPlayer(), "Required responses", _actions) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
                             _actionStack.add(action);
                             _actions.remove(action);
-                            _action.insertEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(_action, _actions));
+                            _action.insertEffect(
+                                    new PlayOutAllActionsIfEffectNotCancelledEffect(_game, _action, _actions));
                         }
                     });
         }

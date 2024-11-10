@@ -4,11 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -110,10 +117,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private static boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
+    private boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
         return modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
                 modifier.isNonCardTextModifier() ||
-                !modifier.getSource().hasTextRemoved();
+                !modifier.getSource().hasTextRemoved(_game);
     }
 
     private List<Modifier> getIconModifiersAffectingCard(CardIcon icon, PhysicalCard card) {
@@ -366,7 +373,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public void appendExtraCosts(CostToEffectAction action, PhysicalCard target) {
-        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay();
+        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay(_game);
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
@@ -496,8 +503,18 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
     @Override
     public void addModifierHooks(PhysicalCard card) {
-        List<Modifier> modifiers = card.getModifiers(card.getBlueprint().getInPlayModifiers());
-        modifiers.addAll(card.getBlueprint().getWhileInPlayModifiersNew(card.getOwner(), card));
+        CardBlueprint blueprint = card.getBlueprint();
+        List<ModifierSource> inPlayModifiers = blueprint.getInPlayModifiers();
+
+        Collection<Modifier> modifiers = new LinkedList<>();
+
+        for (ModifierSource modifierSource : inPlayModifiers) {
+            ActionContext context =
+                    new DefaultActionContext(card.getOwnerName(), _game, card, null, null);
+            modifiers.add(modifierSource.getModifier(context));
+        }
+
+        modifiers.addAll(blueprint.getWhileInPlayModifiersNew(card.getOwner(), card));
         _modifierHooks.computeIfAbsent(card, k -> new LinkedList<>());
         for (Modifier modifier : modifiers)
             _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));

@@ -74,7 +74,7 @@ public class GameStateSerializerTest extends AbstractAtTest {
         cards.add(homeward);
 
         String serialized4 = mapper.writeValueAsString(_game.getGameState());
-        //System.out.println(serialized4.replace(",",",\n"));
+        System.out.println(serialized4.replace(",",",\n"));
 
         ST1EGameState oldGameState = _game.getGameState();
         ST1EGameState newGameState = ST1EGameStateDeserializer.deserialize(_game, mapper.readTree(serialized4));

@@ -19,7 +19,7 @@ public class ActivatePhaseActionsFromHandRule extends GenericRule {
     public List<? extends Action> getPhaseActions(String playerId) {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
-            List<? extends Action> list = card.getPhaseActionsFromZone(playerId, Zone.HAND);
+            List<? extends Action> list = card.getPhaseActionsFromZone(_game.getPlayer(playerId), Zone.HAND);
             if (list != null) {
                 for (Action action : list) {
                     action.setVirtualCardAction(true);

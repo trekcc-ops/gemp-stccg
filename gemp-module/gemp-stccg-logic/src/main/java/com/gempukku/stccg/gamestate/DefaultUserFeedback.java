@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class DefaultUserFeedback implements UserFeedback {
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
+    private int nextDecisionId = 1;
 
     private final DefaultGame _game;
 
@@ -25,7 +26,7 @@ public class DefaultUserFeedback implements UserFeedback {
 
     @Override
     public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
-        String decidingPlayerId = awaitingDecision.getDecidingPlayer().getPlayerId();
+        String decidingPlayerId = awaitingDecision.getDecidingPlayerId();
         _awaitingDecisionMap.put(decidingPlayerId, awaitingDecision);
         _game.getGameState().playerDecisionStarted(decidingPlayerId, awaitingDecision);
     }
@@ -37,5 +38,12 @@ public class DefaultUserFeedback implements UserFeedback {
 
     public Set<String> getUsersPendingDecision() {
         return _awaitingDecisionMap.keySet();
+    }
+
+    @Override
+    public int getNextDecisionIdAndIncrement() {
+        int result = nextDecisionId;
+        nextDecisionId++;
+        return result;
     }
 }

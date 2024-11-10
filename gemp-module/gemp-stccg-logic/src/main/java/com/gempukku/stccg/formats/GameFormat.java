@@ -40,4 +40,8 @@ public interface GameFormat {
     int getHandSize();
 
     JSONData.Format Serialize();
+
+    boolean hasFixedPlayerOrder();
+
+    boolean isNoShuffle();
 }

@@ -14,7 +14,6 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
     protected String _text;
     private boolean _virtualCardAction;
     protected final PhysicalCard _cardEnteringPlay;
-    protected final DefaultGame _game;
     protected final Zone _fromZone;
     protected final Zone _toZone;
     protected Effect _finalEffect;
@@ -28,14 +27,13 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
         super(performingPlayerId, actionType);
         _actionSource = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
-        _game = actionSource.getGame();
         _fromZone = cardEnteringPlay.getZone();
         _toZone = toZone;
     }
 
     @Override
-    public boolean canBeInitiated() {
-        if (!_cardEnteringPlay.canBePlayed())
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        if (!_cardEnteringPlay.canBePlayed(cardGame))
             return false;
         return costsCanBePaid();
     }
@@ -52,7 +50,7 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    public String getText() {
+    public String getText(DefaultGame game) {
         return _text;
     }
 
@@ -66,7 +64,7 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
     protected Effect getFinalEffect() { return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone); }
 
-    public Effect nextEffect() throws InvalidGameLogicException {
+    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;
             // TODO - Star Wars code used beginPlayCard method here
@@ -78,12 +76,12 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
         if (!_cardWasRemoved) {
             _cardWasRemoved = true;
-            _game.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
+            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " plays " +
                     _cardEnteringPlay.getCardLink() +  " from " + _fromZone.getHumanReadable() +
                     " to " + _toZone.getHumanReadable());
             if (_fromZone == Zone.DRAW_DECK) {
-                _game.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-                _game.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
+                cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
+                cardGame.getGameState().shuffleDeck(_cardEnteringPlay.getOwnerName());
             }
         }
 

@@ -9,7 +9,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
 
@@ -21,7 +24,6 @@ import java.util.Set;
 public class ReportCardAction extends STCCGPlayCardAction {
     private FacilityCard _reportingDestination;
     private boolean _cardPlayed;
-    private final ST1EGame _game;
     private boolean _destinationOptionsIdentified;
     private Collection<PhysicalCard> _destinationOptions;
     private boolean _destinationChosen = false;
@@ -35,7 +37,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
         super(cardToPlay, null, cardToPlay.getOwner(), forFree);
         _cardEnteringPlay = cardToPlay;
         setText("Play " + _cardEnteringPlay.getFullName());
-        _game = cardToPlay.getGame();
         if (cardToPlay.isMultiAffiliation()) {
             _affiliationWasChosen = false;
         } else {
@@ -53,27 +54,38 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
 
-    protected Collection<PhysicalCard> getDestinationOptions() {
-
-        if (_destinationOptionsIdentified)
-            return _destinationOptions;
-        else {
-            Collection<PhysicalCard> availableFacilities = new HashSet<>();
-            for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
-                Collection<PhysicalCard> facilities =
-                        Filters.filterActive(_game, FacilityType.OUTPOST, Filters.atLocation(location));
-                for (PhysicalCard card : facilities) {
-                    if (card instanceof FacilityCard facility && _cardEnteringPlay.canReportToFacility(facility))
-                        availableFacilities.add(facility);
+    protected Collection<PhysicalCard> getDestinationOptions(DefaultGame game) throws InvalidGameLogicException {
+        if (game.getGameState() instanceof ST1EGameState gameState) {
+            if (_destinationOptionsIdentified)
+                return _destinationOptions;
+            else {
+                Collection<PhysicalCard> availableFacilities = new HashSet<>();
+                for (ST1ELocation location : gameState.getSpacelineLocations()) {
+                    Collection<PhysicalCard> facilities =
+                            Filters.filterActive(game, FacilityType.OUTPOST, Filters.atLocation(location));
+                    for (PhysicalCard card : facilities) {
+                        if (card instanceof FacilityCard facility && _cardEnteringPlay.canReportToFacility(facility))
+                            availableFacilities.add(facility);
+                    }
                 }
+                return availableFacilities;
             }
-            return availableFacilities;
+        } else {
+            throw new InvalidGameLogicException("Tried to process a report card action in a non-1E game");
         }
     }
 
     @Override
-    public boolean canBeInitiated() {
-        return _cardEnteringPlay.canBePlayed() && !getDestinationOptions().isEmpty() && costsCanBePaid();
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        boolean result;
+        try {
+            Collection<PhysicalCard> destinationOptions = getDestinationOptions(cardGame);
+            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty() && costsCanBePaid();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            result = false;
+        }
+        return result;
     }
 
     @Override
@@ -82,13 +94,15 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override    
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+        DefaultGame game = _cardEnteringPlay.getGame();
+        Player performingPlayer = game.getPlayer(_performingPlayerId);
 
         if (!_destinationChosen) {
             appendCost(new ChooseCardsOnTableEffect(
-                    this, getPerformingPlayerId(),
+                    this, performingPlayer,
                     "Choose a facility to report " + _cardEnteringPlay.getCardLink() + " to",
-                    getDestinationOptions()
+                    getDestinationOptions(cardGame)
             ) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
@@ -112,7 +126,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
             return getNextCost();
         }
         if (!_affiliationWasChosen) {
-            appendCost(new ChooseAffiliationEffect(_game, getPerformingPlayerId(), new ArrayList<>(_affiliationOptions)) {
+            appendCost(new ChooseAffiliationEffect(performingPlayer, new ArrayList<>(_affiliationOptions)) {
                 @Override
                 protected void affiliationChosen(Affiliation affiliation) {
                     _affiliationWasChosen = true;
@@ -131,6 +145,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     }
 
-    @Override
-    public ST1EGame getGame() { return _game; }
+    public PhysicalCard getCardReporting() { return _cardEnteringPlay; }
+
+    public void setDestination(FacilityCard card) {
+        _destinationChosen = true;
+        _reportingDestination = card;
+    }
+
 }

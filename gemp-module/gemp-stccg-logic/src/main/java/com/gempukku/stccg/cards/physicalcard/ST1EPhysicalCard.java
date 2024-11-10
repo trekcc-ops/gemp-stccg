@@ -34,7 +34,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public CostToEffectAction getPlayCardAction(boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
         STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner(), forFree);
-        getGame().getModifiersQuerying().appendExtraCosts(action, this);
+        _game.getModifiersQuerying().appendExtraCosts(action, this);
         return action;
     }
 
@@ -45,12 +45,10 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
         ST1EPhysicalCard newCard = new ST1EPhysicalCard(_game, _cardId,
                 snapshotData.getDataForSnapshot(snapshotData.getDataForSnapshot(_owner)), _blueprint);
-        newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-        newCard._whileInZoneData = _whileInZoneData;
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

@@ -29,7 +29,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         if (phase == Phase.SEED_DOORWAY) {
             for (PhysicalCard card : cardsInHand) {
                 Action action = card.createSeedCardAction();
-                if (action != null && action.canBeInitiated())
+                if (action != null && action.canBeInitiated(_game))
                     result.add(action);
             }
             return result;
@@ -40,9 +40,9 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         } else if (phase == Phase.SEED_FACILITY) {
             for (PhysicalCard card : cardsInHand) {
                 if (Objects.equals(playerId, currentPlayerId)) {
-                    if (card.canBeSeeded()) {
+                    if (card.canBeSeeded(_game)) {
                         Action action = card.createSeedCardAction();
-                        if (action != null && action.canBeInitiated())
+                        if (action != null && action.canBeInitiated(_game))
                             result.add(action);
                     }
                 }
@@ -51,10 +51,10 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         } else if (phase == Phase.CARD_PLAY) {
             for (PhysicalCard card : Filters.filter(_game.getGameState().getHand(playerId), _game)) {
                 if (Objects.equals(playerId, _game.getGameState().getCurrentPlayerId())) {
-                    if (card.canBePlayed()) {
+                    if (card.canBePlayed(_game)) {
                         if (card instanceof PhysicalReportableCard1E reportable) {
                             Action action = reportable.createReportCardAction();
-                            if (action != null && action.canBeInitiated())
+                            if (action != null && action.canBeInitiated(_game))
                                 result.add(action);
                         }
                     }

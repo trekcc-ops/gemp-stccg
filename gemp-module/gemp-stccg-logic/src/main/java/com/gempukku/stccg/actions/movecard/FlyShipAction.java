@@ -1,13 +1,13 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
 
@@ -15,17 +15,14 @@ import java.util.*;
 
 public class FlyShipAction extends AbstractCostToEffectAction {
     private final PhysicalShipCard _flyingCard;
-    private boolean _destinationChosen = false;
-    private boolean _cardMoved = false;
+    private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
-    private final Map<PhysicalCard, Integer> _destinationRangeMap = new HashMap<>();
 
-    public FlyShipAction(Player player, PhysicalShipCard cardToDock) {
-        super(player, ActionType.MOVE_CARDS);
-        _flyingCard = cardToDock;
+    public FlyShipAction(Player player, PhysicalShipCard flyingCard) {
+        super(player, "Fly", ActionType.MOVE_CARDS);
+        _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
-        this.text = "Fly";
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
         List<ST1ELocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
         ST1ELocation _currentLocation = _flyingCard.getLocation();
@@ -37,18 +34,19 @@ public class FlyShipAction extends AbstractCostToEffectAction {
                     if (rangeNeeded <= _flyingCard.getRangeAvailable()) {
                         PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
                         _destinationOptions.add(destination);
-                        _destinationRangeMap.put(destination, rangeNeeded);
                         _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
                     }
                 } catch(InvalidGameLogicException exp) {
-                    getGame().sendMessage(exp.getMessage());
+                    player.getGame().sendMessage(exp.getMessage());
                 }
             }
         }
     }
 
     private Effect chooseDestinationEffect() {
-        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
+        DefaultGame game = _destinationOptions.stream().toList().getFirst().getGame();
+        Player performingPlayer = game.getPlayer(_performingPlayerId);
+        return new ChooseCardsOnTableEffect(this, performingPlayer,
                 "Choose destination", _destinationOptions) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {
@@ -60,11 +58,12 @@ public class FlyShipAction extends AbstractCostToEffectAction {
     }
     @Override
     public PhysicalCard getCardForActionSelection() { return _flyingCard; }
+
     @Override
     public PhysicalCard getActionSource() { return _flyingCard; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();
@@ -77,13 +76,17 @@ public class FlyShipAction extends AbstractCostToEffectAction {
         }
 
         if (!_cardMoved) {
+            DefaultGame game = _flyingCard.getGame();
+            int rangeNeeded =
+                    _flyingCard.getLocation().getDistanceToLocation(_destination.getLocation(),
+                            game.getPlayer(_performingPlayerId));
             _cardMoved = true;
-            _flyingCard.useRange(_destinationRangeMap.get(_destination));
+            _flyingCard.useRange(rangeNeeded);
             _flyingCard.setLocation(_destination.getLocation());
             _flyingCard.getGame().getGameState().moveCard(_flyingCard);
             _flyingCard.getGame().sendMessage(
                     _flyingCard.getCardLink() + " flew to " + _destination.getLocation().getLocationName() +
-                            " (using " + _destinationRangeMap.get(_destination) + " RANGE)"
+                            " (using " + rangeNeeded + " RANGE)"
             );
         }
 
@@ -91,9 +94,6 @@ public class FlyShipAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public boolean canBeInitiated() { return !_flyingCard.isDocked() && !_destinationOptions.isEmpty(); }
-
-    @Override
-    public ST1EGame getGame() { return _flyingCard.getGame(); }
+    public boolean canBeInitiated(DefaultGame cardGame) { return !_flyingCard.isDocked() && !_destinationOptions.isEmpty(); }
 
 }

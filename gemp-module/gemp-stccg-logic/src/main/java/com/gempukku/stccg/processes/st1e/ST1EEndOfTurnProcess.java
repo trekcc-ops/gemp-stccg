@@ -2,17 +2,16 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
-import com.gempukku.stccg.processes.ST1EBetweenTurnsProcess;
-
-import java.util.HashSet;
 
 public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
-    ST1EEndOfTurnProcess(ST1EGame game) {
-        super(new HashSet<>(), game);
+    public ST1EEndOfTurnProcess(ST1EGame game) {
+        super(game);
     }
 
     @Override
@@ -28,5 +27,12 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EBetweenTurnsProcess(_game); }
+        _game.getGameState().setCurrentPhase(Phase.BETWEEN_TURNS);
+        String playerId = _game.getGameState().getCurrentPlayerId();
+        ActionOrder actionOrder = _game.getGameState().getPlayerOrder().getClockwisePlayOrder(playerId, false);
+        actionOrder.getNextPlayer();
+
+        String nextPlayer = actionOrder.getNextPlayer();
+        _game.getGameState().startPlayerTurn(nextPlayer);
+        return new ST1EStartOfTurnGameProcess(_game); }
 }

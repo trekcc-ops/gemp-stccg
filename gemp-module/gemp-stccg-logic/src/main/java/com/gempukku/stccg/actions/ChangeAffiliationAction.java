@@ -6,8 +6,8 @@ import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,12 +19,10 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     private Affiliation _selectedAffiliation;
     private boolean _actionCompleted = false;
     private final List<Affiliation> _affiliationOptions = new LinkedList<>();
-    private final ST1EGame _game;
 
     public ChangeAffiliationAction(Player player, AffiliatedCard card) {
         super(player, ActionType.OTHER);
         _card = card;
-        _game = card.getGame();
         _card.getAffiliationOptions().forEach(affiliation -> {
             if (affiliation != _card.getAffiliation())
                 _affiliationOptions.add(affiliation);
@@ -45,13 +43,13 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public boolean canBeInitiated() {
+    public boolean canBeInitiated(DefaultGame cardGame) {
         return !_affiliationOptions.isEmpty();
     }
 
 
     @Override
-    public String getText() { return "Change affiliation"; }
+    public String getText(DefaultGame game) { return "Change affiliation"; }
 
     @Override
     public PhysicalCard getActionSource() { return (PhysicalCard) _card; }
@@ -60,11 +58,12 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public PhysicalCard getCardForActionSelection() { return (PhysicalCard) _card; }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
+        Player player = cardGame.getPlayer(_performingPlayerId);
 
         if (!_affiliationWasChosen) {
             if (_affiliationOptions.size() > 1) {
-                appendCost(new ChooseAffiliationEffect(_game, getPerformingPlayerId(), new ArrayList<>(_affiliationOptions)) {
+                appendCost(new ChooseAffiliationEffect(player, new ArrayList<>(_affiliationOptions)) {
                     @Override
                     protected void affiliationChosen(Affiliation affiliation) {
                         _selectedAffiliation = affiliation;
@@ -76,7 +75,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         }
 
         if (!_actionCompleted) {
-            _game.sendMessage(_performingPlayerId + " changed " +
+            cardGame.sendMessage(_performingPlayerId + " changed " +
                     _card.getCardLink() + "'s affiliation to " + _selectedAffiliation.toHTML());
             _card.changeAffiliation(_selectedAffiliation);
             _actionCompleted = true;
@@ -85,6 +84,4 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         return getNextEffect();
     }
 
-    @Override
-    public ST1EGame getGame() { return _game; }
 }

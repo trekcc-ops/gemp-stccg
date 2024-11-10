@@ -16,12 +16,11 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.*;
 
-public abstract class DilemmaSeedPhaseProcess extends ST1EGameProcess {
+public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
 
     DilemmaSeedPhaseProcess(Collection<String> playersSelecting, ST1EGame game) {
         super(playersSelecting, game);
     }
-
 
     @Override
     public void process() {

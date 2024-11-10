@@ -5,17 +5,13 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.Snapshotable;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
-import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,26 +23,29 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     void setZone(Zone zone);
     String getBlueprintId();
     String getImageUrl();
-    String getCardControllerPlayerIdForClient();
     int getCardId();
     Player getOwner();
     String getOwnerName();
-    void startAffectingGame();
-    void stopAffectingGame();
+
+    void startAffectingGame(DefaultGame game);
+
+    void stopAffectingGame(DefaultGame game);
+
     CardBlueprint getBlueprint();
     void attachTo(PhysicalCard physicalCard);
     void detach();
     PhysicalCard getAttachedTo();
     void stackOn(PhysicalCard physicalCard);
     PhysicalCard getStackedOn();
-    Object getWhileInZoneData();
-    void setWhileInZoneData(Object object);
+
     String getTitle();
     boolean canInsertIntoSpaceline();
     int getLocationZoneIndex();
-    boolean canEnterPlay(List<Requirement> requirements);
-    boolean canBeSeeded();
-    boolean canBePlayed();
+
+    boolean canBeSeeded(DefaultGame game);
+
+    boolean canBePlayed(DefaultGame game);
+
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
     String getCardLink();
@@ -55,17 +54,17 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     String getFullName();
     CostToEffectAction getPlayCardAction();
     CostToEffectAction getPlayCardAction(boolean forFree);
-    CostToEffectAction getPlayCardAction(Filterable additionalAttachmentFilter);
-    List<Modifier> getModifiers(List<ModifierSource> sources);
-    boolean hasTextRemoved();
+    CostToEffectAction getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter);
+
+    boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();
     List<? extends Action> getPhaseActionsInPlay(Player player);
-    void attachToCardAtLocation(PhysicalCard destinationCard);
-    List<PhysicalCard> getStackedCards();
-    Collection<PhysicalCard> getAttachedCards();
-    List<? extends Action> getPhaseActionsInPlay(String playerId);
-    List<? extends Action> getPhaseActionsFromZone(String playerId, Zone zone);
-    List<? extends ExtraPlayCost> getExtraCostToPlay();
+
+    List<PhysicalCard> getStackedCards(DefaultGame game);
+
+    Collection<PhysicalCard> getAttachedCards(DefaultGame game);
+    List<? extends Action> getPhaseActionsFromZone(Player player, Zone zone);
+    List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame _game);
     List<Action> getOptionalInPlayActions(Effect effect, TriggerTiming timing);
     List<Action> getOptionalInPlayActions(EffectResult effectResult, TriggerTiming timing);
     Action getDiscardedFromPlayTriggerAction(RequiredType requiredType);
@@ -73,16 +72,17 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     List<Action> getBeforeTriggerActions(Effect effect, RequiredType requiredType);
     List<Action> getBeforeTriggerActions(String playerId, Effect effect, RequiredType requiredType);
     List<Action> getRequiredResponseActions(EffectResult effectResult);
-    ActionContext createActionContext();
-    ActionContext createActionContext(String playerId, Effect effect, EffectResult effectResult);
+
     boolean isUnique();
     Integer getNumberOfCopiesSeededByPlayer(Player player);
     boolean isCopyOf(PhysicalCard card);
     Action createSeedCardAction();
-    boolean hasIcon(CardIcon icon);
+
+    boolean hasIcon(DefaultGame game, CardIcon icon);
     boolean isPresentWith(PhysicalCard card);
     boolean hasSkill(SkillName skillName);
-    boolean checkTurnLimit(int max);
+
+    boolean checkTurnLimit(DefaultGame game, int max);
     boolean isInPlay();
     boolean hasCharacteristic(Characteristic characteristic);
     void addCardToSeededUnder(PhysicalCard card);
@@ -91,5 +91,4 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     void removePreSeedCard(PhysicalCard card, Player player);
     void seedPreSeeds();
     void addCardToPreSeeds(PhysicalCard card, Player player);
-    void setImageUrl(String imageUrl);
 }

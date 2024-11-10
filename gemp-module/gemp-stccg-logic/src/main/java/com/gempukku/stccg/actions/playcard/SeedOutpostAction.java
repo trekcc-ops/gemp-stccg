@@ -1,15 +1,16 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
@@ -38,28 +39,25 @@ public class SeedOutpostAction extends PlayCardAction {
     }
 
     @Override
-    public ST1EGame getGame() { return _cardEnteringPlay.getGame(); }
-
-    @Override
     protected Effect getFinalEffect() {
         return new SeedFacilityEffect(_performingPlayerId, _cardEnteringPlay, _locationZoneIndex, this);
     }
 
     @Override
-    public Effect nextEffect() throws InvalidGameLogicException {
-        String playerId = getPerformingPlayerId();
+    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
 
         Set<PhysicalCard> availableMissions = new HashSet<>();
         for (ST1ELocation location : gameState.getSpacelineLocations()) {
-            MissionCard missionCard = location.getMissionForPlayer(playerId);
+            MissionCard missionCard = location.getMissionForPlayer(_performingPlayerId);
             if (_cardEnteringPlay.canSeedAtMission(missionCard)) {
                 availableMissions.add(missionCard);
             }
         }
 
         if (!_placementWasChosen) {
-            appendCost(new ChooseCardsOnTableEffect(this, getPerformingPlayerId(),
+            appendCost(new ChooseCardsOnTableEffect(this, performingPlayer,
                     "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at", availableMissions) {
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
@@ -82,7 +80,7 @@ public class SeedOutpostAction extends PlayCardAction {
             return getNextCost();
         }
         if (!_affiliationWasChosen) {
-            appendCost(new ChooseAffiliationEffect(_game, getPerformingPlayerId(), new ArrayList<>(_affiliationOptions)) {
+            appendCost(new ChooseAffiliationEffect(performingPlayer, new ArrayList<>(_affiliationOptions)) {
                 @Override
                 protected void affiliationChosen(Affiliation affiliation) {
                     _affiliationWasChosen = true;
@@ -98,4 +96,11 @@ public class SeedOutpostAction extends PlayCardAction {
         }
         return null;
     }
+
+    public void setDestination(ST1ELocation location) {
+        _locationZoneIndex = location.getLocationZoneIndex();
+        _placementWasChosen = true;
+    }
+
+    public PhysicalCard getCardToSeed() { return _cardEnteringPlay; }
 }

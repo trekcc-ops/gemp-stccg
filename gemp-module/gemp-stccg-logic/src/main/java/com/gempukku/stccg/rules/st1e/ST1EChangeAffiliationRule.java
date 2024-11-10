@@ -24,7 +24,7 @@ public class ST1EChangeAffiliationRule extends ST1ERule {
             for (PhysicalCard card : Filters.filterYourActive(player)) {
                 if (card instanceof AffiliatedCard affiliatedCard) {
                     ChangeAffiliationAction action = new ChangeAffiliationAction(player, affiliatedCard);
-                    if (action.canBeInitiated())
+                    if (action.canBeInitiated(_game))
                         result.add(action);
                 }
             }

@@ -8,18 +8,13 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
 
     private boolean _sentMessage;
     private String _message;
-    private final DefaultGame _game;
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
         super(physicalCard.getOwner(), ActionType.TRIGGER);
-        _game = physicalCard.getGame();
         _physicalCard = physicalCard;
         setText("Required trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " required triggered effect is used";
     }
-
-    @Override
-    public DefaultGame getGame() { return _game; }
 
     @Override
     public PhysicalCard getActionSource() {
@@ -36,13 +31,13 @@ public class RequiredTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
+                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
             if (_message != null)
-                _game.sendMessage(_message);
+                cardGame.sendMessage(_message);
         }
 
         if (isCostFailed()) {

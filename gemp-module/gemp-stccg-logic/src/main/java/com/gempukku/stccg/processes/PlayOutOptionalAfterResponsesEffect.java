@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.ActionOrder;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
@@ -22,15 +23,16 @@ class PlayOutOptionalAfterResponsesEffect extends UnrespondableEffect {
     private final Collection<? extends EffectResult> _effectResults;
     private final ActionsEnvironment _actionsEnvironment;
 
-    PlayOutOptionalAfterResponsesEffect(SystemQueueAction action, ActionOrder actionOrder, int passCount,
-                                        Collection<? extends EffectResult> effectResults) {
-        super(action.getGame());
+    PlayOutOptionalAfterResponsesEffect(DefaultGame game, SystemQueueAction action, ActionOrder actionOrder,
+                                        int passCount, Collection<? extends EffectResult> effectResults) {
+        super(game);
         _action = action;
         _actionOrder = actionOrder;
         _passCount = passCount;
         _effectResults = effectResults;
         _actionsEnvironment = _game.getActionsEnvironment();
     }
+
 
     @Override
     public void doPlayEffect() {
@@ -44,7 +46,7 @@ class PlayOutOptionalAfterResponsesEffect extends UnrespondableEffect {
 
         if (possibleActions.isEmpty()) {
             if ((_passCount + 1) < _actionOrder.getPlayerCount()) {
-                _action.insertEffect(new PlayOutOptionalAfterResponsesEffect(
+                _action.insertEffect(new PlayOutOptionalAfterResponsesEffect(_game,
                         _action, _actionOrder, _passCount + 1, _effectResults));
             }
         } else {
@@ -64,7 +66,7 @@ class PlayOutOptionalAfterResponsesEffect extends UnrespondableEffect {
                                 nextPassCount = _passCount + 1;
                             }
                             if (nextPassCount < _actionOrder.getPlayerCount())
-                                _action.insertEffect(new PlayOutOptionalAfterResponsesEffect(
+                                _action.insertEffect(new PlayOutOptionalAfterResponsesEffect(_game,
                                         _action, _actionOrder, nextPassCount, _effectResults));
                         }
                     });

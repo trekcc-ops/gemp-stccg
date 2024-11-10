@@ -2,24 +2,31 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
+import com.gempukku.stccg.actions.movecard.BeamCardsAction;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
+import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.decisions.UserFeedback;
+import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.ST1ELocation;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
@@ -223,12 +230,65 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
-        GameFormat format = formatLibrary.getFormat("st1emoderncomplete");
+        GameFormat format = formatLibrary.getFormat("debug1e");
 
         _game = new ST1EGame(format, decks, _cardLibrary);
         _userFeedback = _game.getUserFeedback();
         _game.startGame();
     }
+
+    protected void initializeQuickMissionAttempt() {
+        Map<String, CardDeck> decks = new HashMap<>();
+
+        CardDeck fedDeck = new CardDeck("Federation");
+        fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        decks.put(P1, fedDeck);
+
+        CardDeck klingonDeck = new CardDeck("Klingon");
+        klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
+        for (int i = 0; i < 35; i++)
+            klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("debug1e");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+    }
+
+    protected void initializeQuickMissionAttemptWithRisk() {
+        Map<String, CardDeck> decks = new HashMap<>();
+
+        CardDeck fedDeck = new CardDeck("Federation");
+        fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
+        fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
+        fedDeck.addCard(SubDeck.SEED_DECK, "212_019"); // Risk is Our Business
+        fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
+        for (int i = 0; i < 35; i++)
+            fedDeck.addCard(SubDeck.DRAW_DECK, "101_236"); // Simon Tarses
+        decks.put(P1, fedDeck);
+
+        CardDeck klingonDeck = new CardDeck("Klingon");
+        klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
+        for (int i = 0; i < 35; i++)
+            klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+
+
+        FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+        GameFormat format = formatLibrary.getFormat("debug1e");
+
+        _game = new ST1EGame(format, decks, _cardLibrary);
+        _userFeedback = _game.getUserFeedback();
+        _game.startGame();
+    }
+
+
 
     protected void initializeGameWithAttentionAllHands() {
         Map<String, CardDeck> decks = getIntroTwoPlayerDecks();
@@ -326,6 +386,14 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.carryOutPendingActionsUntilDecisionNeeded();
     }
 
+    protected void skipCardPlay() throws DecisionResultInvalidException {
+        String playerId = _game.getCurrentPlayerId();
+        while (_game.getCurrentPhase() == Phase.CARD_PLAY) {
+            if (_userFeedback.getAwaitingDecision(playerId) != null)
+                playerDecided(playerId, "");
+        }
+    }
+
     protected void skipDilemma() throws DecisionResultInvalidException {
         for (String playerId : _game.getAllPlayerIds())
             if (_userFeedback.getAwaitingDecision(playerId) != null)
@@ -371,7 +439,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
-        SystemQueueAction action = new SystemQueueAction(_game);
+        SystemQueueAction action = new SystemQueueAction();
         action.appendEffect(effect);
         carryOutEffectInPhaseActionByPlayer(playerId, action);
     }
@@ -399,7 +467,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
                 if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
                     List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
                     playerDecided(P1, cardIdList.getFirst());
                 }
                 else
@@ -407,7 +474,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             } else if (_userFeedback.getAwaitingDecision(P2) != null) {
                 if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
                     List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
                     playerDecided(P2, cardIdList.getFirst());
                 }
                 else
@@ -421,7 +487,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             if (_userFeedback.getAwaitingDecision(P1) != null) {
                 if (_userFeedback.getAwaitingDecision(P1).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
                     List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P1).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
                     playerDecided(P1, cardIdList.getFirst());
                 }
                 else
@@ -429,7 +494,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             } else if (_userFeedback.getAwaitingDecision(P2) != null) {
                 if (_userFeedback.getAwaitingDecision(P2).getDecisionType() == AwaitingDecisionType.CARD_SELECTION) {
                     List<String> cardIdList = new java.util.ArrayList<>(Arrays.stream(_userFeedback.getAwaitingDecision(P2).getDecisionParameters().get("cardId")).toList());
-                    Collections.shuffle(cardIdList);
                     playerDecided(P2, cardIdList.getFirst());
                 }
                 else
@@ -437,5 +501,106 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             }
         }
     }
+
+    protected void seedFacility(String playerId, PhysicalCard cardToSeed, ST1ELocation destination)
+            throws DecisionResultInvalidException {
+        SeedOutpostAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardToSeed() == cardToSeed) {
+                    choice = seedAction;
+                }
+            }
+            choice.setDestination(destination);
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+    }
+
+    protected void reportCard(String playerId, PhysicalCard cardToReport, FacilityCard destination)
+            throws DecisionResultInvalidException {
+        ReportCardAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof ReportCardAction reportAction &&
+                        reportAction.getCardReporting() == cardToReport) {
+                    choice = reportAction;
+                }
+            }
+            choice.setDestination(destination);
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to report " + cardToReport.getTitle());
+    }
+
+    protected void beamCard(String playerId, PhysicalCard cardWithTransporters, PhysicalReportableCard1E cardToBeam,
+                            PhysicalCard destination)
+            throws DecisionResultInvalidException {
+        BeamCardsAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof BeamCardsAction beamAction &&
+                        beamAction.getCardUsingTransporters() == cardWithTransporters)
+                    choice = beamAction;
+            }
+            choice.setOrigin(cardWithTransporters);
+            choice.setCardsToMove(Collections.singletonList(cardToBeam));
+            choice.setDestination(destination);
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to beam " + cardToBeam.getTitle());
+    }
+
+    protected void seedCard(String playerId, PhysicalCard cardToSeed) throws DecisionResultInvalidException {
+        SeedCardAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof SeedCardAction seedAction &&
+                        seedAction.getCardEnteringPlay() == cardToSeed)
+                    choice = seedAction;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+    }
+
+
+    protected void attemptMission(String playerId, AttemptingUnit attemptingUnit, MissionCard mission)
+            throws DecisionResultInvalidException {
+        AttemptMissionAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof AttemptMissionAction attemptAction &&
+                        attemptAction.getMission() == mission)
+                    choice = attemptAction;
+            }
+            choice.setAttemptingUnit(attemptingUnit);
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to attempt " + mission.getTitle());
+    }
+
+
+
 
 }

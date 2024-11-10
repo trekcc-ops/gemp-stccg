@@ -197,12 +197,12 @@ public class Filters {
         return (game, physicalCard) -> game.getModifiersQuerying().canBeDiscardedFromPlay(performingPlayer, physicalCard, source);
     }
 
-    public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed();
+    public static final Filter playable = (game, physicalCard) -> physicalCard.canBePlayed(game);
 
     public static Filter playable(final DefaultGame game) {
         return playable(0);
     }
-    public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(); }
+    public static Filter playable() { return (game, physicalCard) -> physicalCard.canBePlayed(game); }
 
     public static Filter playable(final int twilightModifier) {
         return playable(twilightModifier, false);
@@ -221,7 +221,7 @@ public class Filters {
     }
 
     public static Filter playable(final int withTwilightRemoved, final int twilightModifier, final boolean ignoreRoamingPenalty, final boolean ignoreCheckingDeadPile, final boolean ignoreResponseEvents) {
-        return (game1, physicalCard) -> physicalCard.canBePlayed();
+        return (game1, physicalCard) -> physicalCard.canBePlayed(game1);
     }
 
     public static final Filter any = (game, physicalCard) -> true;
@@ -301,7 +301,7 @@ public class Filters {
 
     public static Filter hasStacked(final int count, final Filterable... filter) {
         return (game, physicalCard) -> {
-            List<PhysicalCard> physicalCardList = physicalCard.getStackedCards();
+            List<PhysicalCard> physicalCardList = physicalCard.getStackedCards(game);
             if (filter.length == 1 && filter[0] == Filters.any)
                 return physicalCardList.size() >= count;
             return (Filters.filter(physicalCardList, game, Filters.and(filter, ownedByCurrentPlayer)).size() >= count);
@@ -409,7 +409,7 @@ public class Filters {
             case CardType cardType -> _cardTypeFilterMap.get(cardType);
             case Characteristic characteristic -> _characteristicFilterMap.get(characteristic);
             case SkillName enumFilter -> _skillNameFilterMap.get(enumFilter);
-            case CardIcon icon -> (game, physicalCard) -> physicalCard.hasIcon(icon);
+            case CardIcon icon -> (game, physicalCard) -> physicalCard.hasIcon(game, icon);
             case MissionType missionType ->
                 // TODO - Does not properly account for dual missions
                     (game, physicalCard) -> physicalCard.getBlueprint().getMissionType() == missionType;
@@ -483,7 +483,7 @@ public class Filters {
                 (Filter) (game1, physicalCard) -> {
                     if (physicalCard.getBlueprint().getValidTargetFilter() == null)
                         return false;
-                    return physicalCard.canBePlayed();
+                    return physicalCard.canBePlayed(game);
                 });
     }
 

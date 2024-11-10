@@ -1,17 +1,17 @@
 package com.gempukku.stccg.actions.missionattempt;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.StackActionEffect;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.ChooseAwayTeamEffect;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,23 +21,17 @@ import java.util.stream.Stream;
 
 public class AttemptMissionAction extends AbstractCostToEffectAction {
     private AttemptingUnit _attemptingUnit;
-    private final Player _player;
-    private final ST1EGame _game;
     private final MissionCard _missionCard;
-    private Effect _attemptMissionEffect;
     private boolean _attemptingEntityWasChosen, _missionAttemptInitiated, _missionAttemptEnded;
-    private final Effect _chooseAwayTeamEffect;
     final Map<String, AttemptingUnit> _attemptingEntityMap = new HashMap<>();
     List<String> _seedCards;
 
     public AttemptMissionAction(Player player, MissionCard missionCard) {
         super(player, ActionType.ATTEMPT_MISSION);
-        _player = player;
-        _game = missionCard.getGame();
         _missionCard = missionCard;
 
         // Get Away Teams that can attempt mission
-        Stream<AwayTeam> awayTeamOptions = missionCard.getYourAwayTeamsOnSurface(_player).filter(
+        Stream<AwayTeam> awayTeamOptions = missionCard.getYourAwayTeamsOnSurface(player).filter(
                 awayTeam -> awayTeam.canAttemptMission(missionCard));
         awayTeamOptions.forEach(awayTeam ->
                 _attemptingEntityMap.put(awayTeam.concatenateAwayTeam(), awayTeam));
@@ -49,20 +43,10 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
                 if (ship.canAttemptMission(missionCard))
                     _attemptingEntityMap.put(ship.getTitle(), ship);
         }
-
-        // Choose Away Team to attempt mission
-        _chooseAwayTeamEffect = new ChooseAwayTeamEffect(_game, _performingPlayerId, _attemptingEntityMap.keySet().stream().toList()) {
-            @Override
-            protected void awayTeamChosen(String result) {
-                _attemptingEntityWasChosen = true;
-                _attemptingUnit = _attemptingEntityMap.get(result);
-                _attemptMissionEffect = new AttemptMissionEffect(_player, _attemptingUnit, _missionCard);
-            }
-        };
     }
 
     @Override
-    public String getText() { return "Attempt mission"; }
+    public String getText(DefaultGame game) { return "Attempt mission"; }
 
     @Override
     public PhysicalCard getCardForActionSelection() { return _missionCard; }
@@ -70,48 +54,67 @@ public class AttemptMissionAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _missionCard; }
 
     @Override
-    public boolean canBeInitiated() {
-        return _missionCard.mayBeAttemptedByPlayer(_player);
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        Player player = cardGame.getPlayer(_performingPlayerId);
+        return _missionCard.mayBeAttemptedByPlayer(player);
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
+        Player player = cardGame.getPlayer(_performingPlayerId);
 
         Effect cost = getNextCost();
         if (cost != null)
             return cost;
 
         if (!_attemptingEntityWasChosen) {
-            appendTargeting(_chooseAwayTeamEffect);
+            Effect chooseAwayTeamEffect = new ChooseAwayTeamEffect(player,
+                    _attemptingEntityMap.keySet().stream().toList()) {
+                @Override
+                protected void awayTeamChosen(String result) {
+                    setAttemptingUnit(_attemptingEntityMap.get(result));
+                }
+            };
+            appendTargeting(chooseAwayTeamEffect);
             return getNextCost();
         }
 
         if (!_missionAttemptInitiated) {
             _missionAttemptInitiated = true;
                 // DEBUG lines of dialog
-            _game.sendMessage("Mission attempt initiated. This is when you would ordinarily encounter dilemmas and stuff like that.");
-            _game.sendMessage("...");
-            _game.sendMessage("But we don't have any.");
+            cardGame.sendMessage("Mission attempt initiated. This is when you would ordinarily encounter dilemmas and stuff like that.");
+            cardGame.sendMessage("...");
+            cardGame.sendMessage("But we don't have any.");
             _seedCards = new LinkedList<>();        // TODO - Replace this with real stuff at some point
-
+            cardGame.getActionsEnvironment().emitEffectResult(new EffectResult(EffectResult.Type.START_OF_MISSION_ATTEMPT, cardGame));
+            return new DoNothingEffect(cardGame);
         }
 
         if (!_seedCards.isEmpty()) {
-            return new StackActionEffect(_game, new EncounterSeedCardAction(this, _seedCards));
+            return new StackActionEffect(cardGame, new EncounterSeedCardAction(this, player, _seedCards));
         }
 
         if (!_missionAttemptEnded) {
+            ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
+            MissionRequirement requirement = _missionCard.getRequirements();
+            if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
+                cardGame.sendMessage("DEBUG - Mission solved!");
+                cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
+                _missionCard.setCompleted(true);
+                gameState.checkVictoryConditions();
+            }
+            else cardGame.sendMessage("DEBUG - Mission attempt failed!");
             _missionAttemptEnded = true;
-            return _attemptMissionEffect;
         }
 
         return getNextEffect();
     }
 
-    @Override
-    public ST1EGame getGame() { return _game; }
+    public PhysicalCard getMission() { return _missionCard; }
 
-    public Player getPlayer() { return _player; }
-    public AttemptingUnit getAttemptingEntity() { return _attemptingUnit; }
+    public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
+        _attemptingUnit = attemptingUnit;
+        _attemptingEntityWasChosen = true;
+    }
 
 }

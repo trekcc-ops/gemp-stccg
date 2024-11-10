@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.google.common.collect.Iterables;
@@ -42,8 +43,8 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
 
     protected abstract String actionVerb();
 
-    public String getText() {
-        List<PhysicalCard> validFromCards = getValidFromCards();
+    public String getText(DefaultGame game) {
+        List<PhysicalCard> validFromCards = getValidFromCards(game);
         StringBuilder sb = new StringBuilder();
         sb.append(StringUtils.capitalize(actionVerb())).append(" cards");
         List<PhysicalCard> destinations = _destinationOptions.stream().toList();
@@ -60,32 +61,39 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
     @Override
     public PhysicalCard getActionSource() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
-    protected abstract List<PhysicalCard> getValidFromCards();
+    protected abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 
     private Effect getChooseCardsToMoveEffect() {
         // TODO - No checks here yet to make sure cards can be moved (compatibility, etc.)
         Collection<PhysicalCard> movableCards =
-                Filters.filter(_fromCard.getAttachedCards(),
+                Filters.filter(_fromCard.getAttachedCards(_fromCard.getGame()),
                         Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
 
         // Choose cards to transit
-        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
+        return new ChooseCardsOnTableEffect(this, _performingPlayer,
                 "Choose cards to " + actionVerb() + " to " + _toCard.getCardLink(), 1,
                 movableCards.size(), movableCards) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {
-                _cardsToMoveChosen = true;
-                _cardsToMove = new LinkedList<>();
-                for (PhysicalCard card : cards)
-                    if (card instanceof PhysicalReportableCard1E reportable)
-                        _cardsToMove.add(reportable);
+                Collection<PhysicalReportableCard1E> cardsMoving = new LinkedList<>();
+                try {
+                    for (PhysicalCard card : cards) {
+                        if (card instanceof PhysicalReportableCard1E reportable)
+                            _cardsToMove.add(reportable);
+                        else throw new InvalidGameLogicException("Tried to beam cards that couldn't be reported");
+                    }
+                } catch(InvalidGameLogicException exp) {
+                    _game.sendErrorMessage(exp);
+                    _cardsToMove.clear();
+                }
+                setCardsToMove(_cardsToMove);
             }
         };
     }
 
     private Effect getChooseToCardEffect() {
         // Choose card beaming to
-        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
+        return new ChooseCardsOnTableEffect(this, _performingPlayer,
                 "Choose card to " + actionVerb() + " to", _destinationOptions) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
@@ -96,10 +104,10 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
         };
     }
 
-    private Effect getChooseFromCardEffect() {
+    private Effect getChooseFromCardEffect(DefaultGame game) {
         // Choose card beaming from
-        return new ChooseCardsOnTableEffect(this, _performingPlayerId,
-                "Choose card to " + actionVerb() + " from", getValidFromCards()) {
+        return new ChooseCardsOnTableEffect(this, _performingPlayer,
+                "Choose card to " + actionVerb() + " from", getValidFromCards(game)) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
                 _fromCardChosen = true;
@@ -117,7 +125,7 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
 
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
         Effect cost = getNextCost();
@@ -125,7 +133,7 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
             return cost;
 
         if (!_fromCardChosen) {
-            Effect effect = getChooseFromCardEffect();
+            Effect effect = getChooseFromCardEffect(cardGame);
             appendTargeting(effect);
             return getNextCost();
         }
@@ -144,15 +152,15 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
 
         if (!_cardsMoved) {
             for (PhysicalReportableCard1E card : _cardsToMove) {
-                card.attachToCardAtLocation(_toCard);
+                cardGame.getGameState().transferCard(card, _toCard); // attach card to destination card
+                card.setLocation(_toCard.getLocation());
                 if (_fromCard instanceof MissionCard)
                     card.leaveAwayTeam();
                 if (_toCard instanceof MissionCard mission)
                     card.joinEligibleAwayTeam(mission);
             }
             if (!_cardsToMove.isEmpty()) {
-                DefaultGame game = _cardsToMove.stream().findFirst().get().getGame();
-                game.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +
+                cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +
                         TextUtils.plural(_cardsToMove.size(), "card") + " from " +
                         _fromCard.getCardLink() + " to " + _toCard.getCardLink());
             }
@@ -162,7 +170,19 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
         return getNextEffect();
     }
 
-    @Override
-    public ST1EGame getGame() { return _cardSource.getGame(); }
+    public void setCardsToMove(Collection<PhysicalReportableCard1E> cards) {
+        _cardsToMove = cards;
+        _cardsToMoveChosen = true;
+    }
+
+    public void setDestination(PhysicalCard destination) {
+        _toCard = destination;
+        _toCardChosen = true;
+    }
+
+    public void setOrigin(PhysicalCard origin) {
+        _fromCard = origin;
+        _fromCardChosen = true;
+    }
 
 }

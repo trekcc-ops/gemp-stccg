@@ -255,20 +255,6 @@ export default class GempClientCommunication {
         });
     }
 
-    getCardImages(blueprintId, callback, errorMap) {
-        $.ajax({
-            type:"GET",
-            url:this.url + "/game/getCardImages",
-            cache:false,
-            data:{
-                blueprintId:blueprintId
-            },
-            success:this.deliveryCheck(callback),
-            error:this.errorCheck(errorMap),
-            dataType:"json"
-        });
-    }
-
     concede(errorMap) {
         $.ajax({
             type:"POST",

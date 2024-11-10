@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 
@@ -15,26 +16,24 @@ class PlayOutEffectResults extends SystemQueueAction {
     private boolean _initialized;
 
     PlayOutEffectResults(DefaultGame game, Set<? extends EffectResult> effectResults) {
-        super(game);
+        super();
         _effectResults = effectResults;
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (!_initialized) {
             _initialized = true;
-            List<Action> requiredResponses = _game.getActionsEnvironment().getRequiredAfterTriggers(_effectResults);
+            List<Action> requiredResponses = cardGame.getActionsEnvironment().getRequiredAfterTriggers(_effectResults);
             if (!requiredResponses.isEmpty())
-                appendEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(this, requiredResponses));
+                appendEffect(new PlayOutAllActionsIfEffectNotCancelledEffect(cardGame, this, requiredResponses));
 
-            GameState gameState = _game.getGameState();
-            appendEffect(
-                    new PlayOutOptionalAfterResponsesEffect(this,
-                            gameState.getPlayerOrder().getCounterClockwisePlayOrder(
-                                    gameState.getCurrentPlayerId(), true
-                            ), 0, _effectResults
-                    )
-            );
+            GameState gameState = cardGame.getGameState();
+            ActionOrder actionOrder = gameState.getPlayerOrder()
+                    .getCounterClockwisePlayOrder(gameState.getCurrentPlayerId(), true);
+            Effect effect = new PlayOutOptionalAfterResponsesEffect(
+                    cardGame, this, actionOrder, 0, _effectResults);
+            appendEffect(effect);
         }
         return getNextEffect();
     }

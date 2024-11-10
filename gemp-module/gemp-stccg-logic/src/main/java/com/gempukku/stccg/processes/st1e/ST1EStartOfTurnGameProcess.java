@@ -8,18 +8,16 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.HashSet;
-
 public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     public ST1EStartOfTurnGameProcess(ST1EGame game) {
-        super(new HashSet<>(), game);
+        super(game);
     }
     @Override
     public void process() {
                 // TODO - Don't fully understand this commented method, but it creates duplicates of modifiers
 //        _game.getGameState().startAffectingCardsForCurrentPlayer();
 
-        SystemQueueAction action = new SystemQueueAction(_game);
+        SystemQueueAction action = new SystemQueueAction();
 
         action.appendEffect(new UnrespondableEffect(_game) {
             @Override
@@ -36,6 +34,8 @@ public class ST1EStartOfTurnGameProcess extends ST1EGameProcess {
     @Override
     public GameProcess getNextProcess() {
         _game.getGameState().setCurrentPhase(Phase.CARD_PLAY);
-        return new ST1EStartOfPlayPhaseSegmentProcess(_game);
+        String message = "Start of " + Phase.CARD_PLAY + " phase";
+        _game.sendMessage("\n" + message);
+        return new ST1EPlayPhaseSegmentProcess(_game);
     }
 }

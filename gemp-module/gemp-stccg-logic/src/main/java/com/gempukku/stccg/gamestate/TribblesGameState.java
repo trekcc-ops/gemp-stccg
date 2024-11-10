@@ -20,6 +20,7 @@ public final class TribblesGameState extends GameState {
     private int _lastTribblePlayed;
     private boolean _chainBroken;
     private int _currentRound;
+    private boolean _currentRoundIsOver;
     private final TribblesGame _game;
 
     public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
@@ -152,7 +153,13 @@ public final class TribblesGameState extends GameState {
 
         // Increment round number
         _currentRound++;
+        _currentRoundIsOver = false;
         sendMessage("Beginning Round " + _currentRound);
     }
 
+    public void endRound() {
+        _currentRoundIsOver = true;
+    }
+
+    public boolean isCurrentRoundOver() { return _currentRoundIsOver; }
 }

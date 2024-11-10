@@ -12,9 +12,6 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public DefaultGame getGame() { return _action.getGame(); }
-
-    @Override
     public PhysicalCard getCardForActionSelection() {
         return _action.getCardForActionSelection();
     }
@@ -30,12 +27,12 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public String getText() {
-        return _action.getText();
+    public String getText(DefaultGame game) {
+        return _action.getText(game);
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (isCostFailed()) {
             return null;
         } else {

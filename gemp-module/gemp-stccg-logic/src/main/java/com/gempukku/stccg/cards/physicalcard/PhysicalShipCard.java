@@ -48,7 +48,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
                 }
             }
         }
-        actions.removeIf(action -> !action.canBeInitiated());
+        actions.removeIf(action -> !action.canBeInitiated(_game));
         return actions;
     }
 
@@ -78,7 +78,7 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
     }
 
     public Collection<PhysicalCard> getCrew() {
-        return getAttachedCards();
+        return getAttachedCards(_game);
     }
 
     public boolean isStaffed() {
@@ -157,12 +157,10 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         // TODO - A lot of repetition here between the various PhysicalCard classes
 
         PhysicalShipCard newCard = new PhysicalShipCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
-        newCard._imageUrl = _imageUrl;
         newCard.setZone(_zone);
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-        newCard._whileInZoneData = _whileInZoneData;
 
         for (PhysicalCard card : _cardsSeededUnderneath)
             newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));

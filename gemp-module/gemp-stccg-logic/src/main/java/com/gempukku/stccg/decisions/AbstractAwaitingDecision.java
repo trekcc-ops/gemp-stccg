@@ -12,18 +12,13 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
     private final String _text;
     private final AwaitingDecisionType _decisionType;
     private final Map<String, String[]> _params = new HashMap<>();
-    final Player _decidingPlayer;
+    private final String _decidingPlayerId;
 
     public AbstractAwaitingDecision(Player player, String text, AwaitingDecisionType decisionType) {
-        this(player, 1, text, decisionType);
-    }
-
-
-    public AbstractAwaitingDecision(Player decidingPlayer, int id, String text, AwaitingDecisionType decisionType) {
-        _id = id;
+        _id = player.getGame().getUserFeedback().getNextDecisionIdAndIncrement();
         _text = text;
         _decisionType = decisionType;
-        _decidingPlayer = decidingPlayer;
+        _decidingPlayerId = player.getPlayerId();
     }
 
 
@@ -59,6 +54,6 @@ public abstract class AbstractAwaitingDecision implements AwaitingDecision {
         return _params;
     }
 
-    public Player getDecidingPlayer() { return _decidingPlayer; }
-    public DefaultGame getGame() { return _decidingPlayer.getGame(); }
+    public Player getDecidingPlayer(DefaultGame game) { return game.getPlayer(_decidingPlayerId); }
+    public String getDecidingPlayerId() { return _decidingPlayerId; }
 }

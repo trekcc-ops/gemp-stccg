@@ -23,8 +23,6 @@ public class PhysicalCardSerializer extends StdSerializer<PhysicalCard> {
         jsonGenerator.writeStringField("title", physicalCard.getTitle());
         jsonGenerator.writeStringField("blueprintId", physicalCard.getBlueprintId());
         jsonGenerator.writeNumberField("cardId", physicalCard.getCardId());
-        jsonGenerator.writeStringField("defaultImageUrl", physicalCard.getBlueprint().getImageUrl());
-        jsonGenerator.writeStringField("affiliatedImageUrl", physicalCard.getImageUrl());
         jsonGenerator.writeStringField("owner", physicalCard.getOwnerName());
         jsonGenerator.writeStringField("zone", physicalCard.getZone().name());
         if (physicalCard.getAttachedTo() != null)
@@ -54,6 +52,5 @@ public class PhysicalCardSerializer extends StdSerializer<PhysicalCard> {
 
 
         jsonGenerator.writeEndObject();
-        // whileInZoneData
     }
 }

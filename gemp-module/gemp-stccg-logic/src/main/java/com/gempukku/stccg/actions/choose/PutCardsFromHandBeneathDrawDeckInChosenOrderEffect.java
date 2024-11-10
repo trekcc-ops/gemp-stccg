@@ -6,19 +6,23 @@ import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 
 public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends AbstractSubActionEffect {
     private final Action _action;
     private final String _playerId;
+    private final Player _player;
     private final Filterable[] _filters;
 
     private final boolean _reveal;
 
-    public PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(Action action, String playerId,
+    public PutCardsFromHandBeneathDrawDeckInChosenOrderEffect(DefaultGame game,  Action action, String playerId,
                                                               boolean reveal, Filterable... filters) {
-        super(action.getGame());
+        super(game);
+        _player = game.getPlayer(playerId);
         _action = action;
         _playerId = playerId;
         _filters = filters;
@@ -54,7 +58,7 @@ public class PutCardsFromHandBeneathDrawDeckInChosenOrderEffect extends Abstract
         private final CostToEffectAction _subAction;
 
         public ChooseAndPutNextCardFromHandOnBottomOfLibrary(CostToEffectAction subAction, Collection<PhysicalCard> remainingCards) {
-            super(subAction.getGame(), _playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
+            super(_player, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
             _subAction = subAction;
             _remainingCards = remainingCards;
         }

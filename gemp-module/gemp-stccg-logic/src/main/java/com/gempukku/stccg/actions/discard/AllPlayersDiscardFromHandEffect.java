@@ -3,10 +3,11 @@ package com.gempukku.stccg.actions.discard;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.Set;
@@ -16,12 +17,14 @@ public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
     private final boolean _allPlayersMustBeAble;
     private final boolean _forced;
 
-    public AllPlayersDiscardFromHandEffect(CostToEffectAction action, boolean allPlayersMustBeAble, boolean forced) {
-        super(action);
+    public AllPlayersDiscardFromHandEffect(DefaultGame game, CostToEffectAction action, boolean allPlayersMustBeAble,
+                                           boolean forced) {
+        super(game, action);
         _action = action;
         _allPlayersMustBeAble = allPlayersMustBeAble;
         _forced = forced;
     }
+
 
     @Override
     public boolean isPlayableInFull() {

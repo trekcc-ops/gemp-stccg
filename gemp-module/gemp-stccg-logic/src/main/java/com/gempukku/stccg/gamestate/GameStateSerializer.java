@@ -27,7 +27,6 @@ public class GameStateSerializer extends StdSerializer<GameState> {
                           SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("currentPhase", gameState.getCurrentPhase().name());
-        jsonGenerator.writeNumberField("nextCardId", gameState.getNextCardId());
 
         jsonGenerator.writeArrayFieldStart("players");
         Set<String> playerIds = gameState.getGame().getPlayerIds();
@@ -64,6 +63,8 @@ public class GameStateSerializer extends StdSerializer<GameState> {
         for (PhysicalCard card : gameState._allCards.values())
             jsonGenerator.writeObject(card);
         jsonGenerator.writeEndArray();
+
+        jsonGenerator.writeObjectField("currentProcess", gameState.getGame().getTurnProcedure().getCurrentProcess());
 
         jsonGenerator.writeObjectField("modifiers", gameState.getModifiersLogic().getModifiers());
 

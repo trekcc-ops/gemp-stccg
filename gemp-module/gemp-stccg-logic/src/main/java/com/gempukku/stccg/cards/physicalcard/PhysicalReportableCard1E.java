@@ -1,10 +1,10 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
@@ -51,7 +51,10 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         _game.getGameState().attachCard(this, facility);
     }
 
-    public Action createReportCardAction() {
+    @Override
+    public CostToEffectAction getPlayCardAction() { return createReportCardAction(); }
+
+    public CostToEffectAction createReportCardAction() {
         return new ReportCardAction(this, false);
     }
 

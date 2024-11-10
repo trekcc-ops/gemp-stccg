@@ -6,13 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class SystemQueueAction extends AbstractCostToEffectAction {
-    protected final DefaultGame _game;
-    public SystemQueueAction(DefaultGame game) {
-        _game = game;
-    }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
     @Override
     public PhysicalCard getActionSource() {
         return null;
@@ -24,7 +18,7 @@ public class SystemQueueAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (isCostFailed()) {
             return null;
         } else {

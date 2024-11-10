@@ -72,7 +72,7 @@ public class CardBlueprint {
     private List<ActionSource> inPlayPhaseActions;
     private List<ActionSource> inDiscardPhaseActions;
 
-    private List<ModifierSource> inPlayModifiers;
+    private final List<ModifierSource> inPlayModifiers = new LinkedList<>();
 
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
@@ -279,8 +279,6 @@ public class CardBlueprint {
     }
 
     public void appendInPlayModifier(ModifierSource modifierSource) {
-        if (inPlayModifiers == null)
-            inPlayModifiers = new LinkedList<>();
         inPlayModifiers.add(modifierSource);
     }
 

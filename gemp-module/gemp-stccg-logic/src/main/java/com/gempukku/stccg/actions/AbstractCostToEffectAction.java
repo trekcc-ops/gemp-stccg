@@ -30,6 +30,12 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     protected AbstractCostToEffectAction(Player player, ActionType actionType) {
         this(player.getPlayerId(), actionType);
     }
+
+    protected AbstractCostToEffectAction(Player player, String text, ActionType actionType) {
+        this(player.getPlayerId(), actionType);
+        this.text = text;
+    }
+
     protected AbstractCostToEffectAction(Action action) {
         this(action.getPerformingPlayerId(), action.getActionType());
     }
@@ -84,7 +90,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     @Override
-    public String getText() { return text; }
+    public String getText(DefaultGame game) { return text; }
 
     protected boolean isCostFailed() {
         for (Effect processedCost : _processedCosts) {
@@ -136,13 +142,11 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         return true;
     }
 
-    public abstract DefaultGame getGame();
-
     public SubAction createSubAction() {
         return new SubAction(this);
     }
 
-    public boolean canBeInitiated() {
+    public boolean canBeInitiated(DefaultGame cardGame) {
         return costsCanBePaid();
     }
 

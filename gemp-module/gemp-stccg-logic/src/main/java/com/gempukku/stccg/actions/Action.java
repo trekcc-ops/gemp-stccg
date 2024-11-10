@@ -27,12 +27,12 @@ public interface Action extends Snapshotable<Action> {
 
     String getPerformingPlayerId();
 
-    String getText();
+    String getText(DefaultGame game);
 
-    Effect nextEffect() throws InvalidGameLogicException;
+    Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException;
     SubAction createSubAction();
-    DefaultGame getGame();
-    boolean canBeInitiated();
+
+    boolean canBeInitiated(DefaultGame cardGame);
 
     default Action generateSnapshot(SnapshotData snapshotData) {
         return this;

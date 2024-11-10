@@ -10,11 +10,9 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     private boolean _sentMessage;
     private boolean _activated;
     private boolean _prevented;
-    protected final DefaultGame _game;
 
     public ActivateCardAction(PhysicalCard physicalCard) {
         super(physicalCard.getOwner(), ActionType.SPECIAL_ABILITY);
-        _game = physicalCard.getGame();
         _physicalCard = physicalCard;
         setText("Use " + _physicalCard.getFullName());
     }
@@ -34,12 +32,13 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Effect nextEffect(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
-                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
-                _game.sendMessage(_physicalCard.getCardLink() + " is used");
+                DefaultGame game = _physicalCard.getGame();
+                game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
+                game.sendMessage(_physicalCard.getCardLink() + " is used");
             }
         }
 
@@ -62,6 +61,4 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
         return null;
     }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
 }

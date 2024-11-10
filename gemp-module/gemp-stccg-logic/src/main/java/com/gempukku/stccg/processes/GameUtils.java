@@ -4,6 +4,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.GameSnapshot;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,18 @@ public class GameUtils {
                         _game.sendMessage(playerId + " attempts to revert game to a previous state");
 
                         // Confirm with the other player if it is acceptable to revert to the game state
-                        final String opponent = _game.getOpponent(playerId);
+                        // TODO SNAPSHOT - Needs to work differently if more than 2 players
+                        final String opponent;
+                        String temp_opponent;
+                        try {
+                            temp_opponent = _game.getOpponent(playerId);
+                        } catch(InvalidGameLogicException exp) {
+                            _game.sendErrorMessage(exp);
+                            temp_opponent = playerId;
+                        }
+
+                        opponent = temp_opponent;
+
                         StringBuilder snapshotDescMsg = new StringBuilder("</br>");
                         for (int i=0; i<snapshotDescriptions.size() - 1; ++i) {
                             if (i == index) {

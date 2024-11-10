@@ -69,15 +69,15 @@ public abstract class GameState {
 
     public abstract DefaultGame getGame();
 
-    public void setPlayerOrder(PlayerOrder playerOrder, String firstPlayer) {
+    public void initializePlayerOrder(PlayerOrder playerOrder) {
         _playerOrder = playerOrder;
-        setCurrentPlayerId(firstPlayer);
+        setCurrentPlayerId(playerOrder.getFirstPlayer());
         for (GameStateListener listener : getAllGameStateListeners()) {
             listener.initializeBoard();
         }
     }
 
-    public void setPlayerOrder(PlayerOrder playerOrder) {
+    public void loadPlayerOrder(PlayerOrder playerOrder) {
         _playerOrder = playerOrder;
     }
     public ActionsEnvironment getActionsEnvironment() { return _actionsEnvironment; }
@@ -262,7 +262,7 @@ public abstract class GameState {
         for (PhysicalCard card : cards) {
             Zone zone = card.getZone();
 
-            if (zone.isInPlay()) card.stopAffectingGame();
+            if (zone.isInPlay()) card.stopAffectingGame(getGame());
 
             getZoneCards(card.getOwnerName(), zone).remove(card);
 
@@ -273,11 +273,6 @@ public abstract class GameState {
 
             if (zone == Zone.STACKED)
                 card.stackOn(null);
-
-            //If this is reset, then there is no way for self-discounting effects (which are evaluated while in the void)
-            // to have any sort of permanent effect once the card is in play.
-            if(zone != Zone.VOID_FROM_HAND && zone != Zone.VOID)
-                card.setWhileInZoneData(null);
         }
 
         for (GameStateListener listener : getAllGameStateListeners()) {
@@ -336,14 +331,16 @@ public abstract class GameState {
 
 //        if (_currentPhase.isCardsAffectGame()) {
         if (zone.isInPlay())
-            card.startAffectingGame();
+            card.startAffectingGame(getGame());
     }
 
-    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener, boolean animate) {
+    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
+                                             boolean animate) {
         sendCreatedCardToListener(card, sharedMission, listener, animate, false);
     }
 
-    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener, boolean animate, boolean overrideOwnerVisibility) {
+    protected void sendCreatedCardToListener(PhysicalCard card, boolean sharedMission, GameStateListener listener,
+                                             boolean animate, boolean overrideOwnerVisibility) {
         GameEvent.Type eventType;
 
         if (sharedMission)
@@ -363,7 +360,7 @@ public abstract class GameState {
             listener.sendEvent(new GameEvent(eventType, card));
     }
 
-    public void shuffleCardsIntoDeck(Collection<? extends PhysicalCard> cards, String playerId) {
+    public void shuffleCardsIntoDeck(Iterable<? extends PhysicalCard> cards, String playerId) {
 
         for (PhysicalCard card : cards) {
             _cardGroups.get(Zone.DRAW_DECK).get(playerId).add(card);
@@ -442,12 +439,12 @@ public abstract class GameState {
 
     public void startAffectingCardsForCurrentPlayer() {
         for (PhysicalCard physicalCard : _inPlay)
-            if (isCardInPlayActive(physicalCard)) physicalCard.startAffectingGame();
+            if (isCardInPlayActive(physicalCard)) physicalCard.startAffectingGame(getGame());
     }
 
     public void stopAffectingCardsForCurrentPlayer() {
         for (PhysicalCard physicalCard : _inPlay)
-            physicalCard.stopAffectingGame();
+            physicalCard.stopAffectingGame(getGame());
     }
 
     public void setCurrentPhase(Phase phase) {
@@ -482,7 +479,8 @@ public abstract class GameState {
     }
 
     public void shuffleDeck(String playerId) {
-        Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).get(playerId), ThreadLocalRandom.current());
+        if (!getGame().getFormat().isNoShuffle())
+            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).get(playerId), ThreadLocalRandom.current());
     }
 
     public void sendGameStats() {
@@ -587,4 +585,5 @@ public abstract class GameState {
 
     public List<String> getMessages() { return getGame().getMessages(); }
     int getNextCardId() { return _nextCardId; }
+
 }

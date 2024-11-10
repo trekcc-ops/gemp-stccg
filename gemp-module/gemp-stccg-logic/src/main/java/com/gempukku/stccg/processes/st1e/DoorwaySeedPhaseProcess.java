@@ -1,21 +1,24 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardActionSelectionDecision;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
-public class ST1EDoorwaySeedPhaseProcess extends ST1EGameProcess {
+public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
 
-    public ST1EDoorwaySeedPhaseProcess(ST1EGame game) {
+    public DoorwaySeedPhaseProcess(ST1EGame game) {
         super(game.getPlayerIds(), game);
-        _playersParticipating.addAll(game.getPlayerIds());
     }
 
-    public ST1EDoorwaySeedPhaseProcess(Collection<String> playersSelecting, ST1EGame game) {
+    public DoorwaySeedPhaseProcess(Collection<String> playersSelecting, ST1EGame game) {
         super(playersSelecting, game);
     }
 
@@ -29,7 +32,7 @@ public class ST1EDoorwaySeedPhaseProcess extends ST1EGameProcess {
             if (playableActions.isEmpty()) {
                 playerIterator.remove();
             } else {
-                String message = "Play " + _game.getGameState().getCurrentPhase().getHumanReadable() +  " action or Pass";
+                String message = "Play " + _game.getGameState().getCurrentPhase() +  " action or Pass";
                 _game.getUserFeedback().sendAwaitingDecision(
                         new CardActionSelectionDecision(_game.getPlayer(playerId), message, playableActions) {
                             @Override
@@ -47,7 +50,20 @@ public class ST1EDoorwaySeedPhaseProcess extends ST1EGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        if (_playersParticipating.isEmpty()) return new ST1EStartOfMissionPhaseProcess(_game);
-        else return new ST1EDoorwaySeedPhaseProcess(_playersParticipating, _game);
+        if (_playersParticipating.isEmpty()) {
+            ST1EGameState _gameState = _game.getGameState();
+            _gameState.setCurrentPhase(Phase.SEED_MISSION);
+            for (String player : _game.getPlayerIds()) {
+                List<PhysicalCard> missionSeeds = new LinkedList<>(_gameState.getZoneCards(player, Zone.MISSIONS_PILE));
+                if (!_game.getFormat().isNoShuffle())
+                    Collections.shuffle(missionSeeds);
+                for (PhysicalCard card : missionSeeds) {
+                    _gameState.removeCardsFromZone(player, Collections.singleton(card));
+                    _gameState.addCardToZone(card, Zone.HAND);
+                }
+            }
+            return new ST1EMissionSeedPhaseProcess(_game);
+        }
+        else return new DoorwaySeedPhaseProcess(_playersParticipating, _game);
     }
 }

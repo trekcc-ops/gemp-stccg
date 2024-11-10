@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.processes.GameProcessDeserializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +27,9 @@ public class ST1EGameStateDeserializer {
 
         ST1EGameState gameState = new ST1EGameState(game);
         gameState.setCurrentPhase(Phase.valueOf(node.get("currentPhase").textValue()));
-        gameState.setNextCardId(node.get("nextCardId").intValue());
 
         PlayerOrder playerOrder = new PlayerOrder(node.get("playerOrder"));
-        gameState.setPlayerOrder(playerOrder);
+        gameState.loadPlayerOrder(playerOrder);
 
         for (JsonNode locationNode : node.get("spacelineLocations")) {
             Quadrant quadrant = Quadrant.valueOf(locationNode.get("quadrant").textValue());
@@ -58,6 +58,8 @@ public class ST1EGameStateDeserializer {
                 readCardIdList(zone, playerId, playerNode, gameState, gameState._cardGroups.get(zone));
         }
 
+        game.setCurrentProcess(GameProcessDeserializer.deserialize(game, node.get("currentProcess")));
+
         gameState.setModifiersLogic(node.get("modifiers"));
 
         for (JsonNode awayTeamNode : node.get("awayTeams")) {
@@ -85,6 +87,7 @@ public class ST1EGameStateDeserializer {
 
     private static void deserializeCardsInGame(JsonNode node, ST1EGameState gameState) throws CardNotFoundException {
         ST1EGame game = gameState.getGame();
+        int maxCardId = 0;
         Map<PhysicalCard, Integer> attachedMap = new HashMap<>();
         Map<PhysicalCard, Integer> stackedMap = new HashMap<>();
         Map<PhysicalShipCard, Integer> dockedMap = new HashMap<>();
@@ -106,7 +109,9 @@ public class ST1EGameStateDeserializer {
                 for (JsonNode seedCardNode : cardNode.get("cardsSeededUnderneath"))
                     seededUnderMap.get(card).add(seedCardNode.intValue());
             }
+            maxCardId = Math.max(cardNode.get("cardId").intValue(), maxCardId);
         }
+        gameState.setNextCardId(maxCardId + 1);
 
         for (Map.Entry<PhysicalCard, Integer> entry : attachedMap.entrySet())
             entry.getKey().attachTo(game.getCardFromCardId(entry.getValue()));

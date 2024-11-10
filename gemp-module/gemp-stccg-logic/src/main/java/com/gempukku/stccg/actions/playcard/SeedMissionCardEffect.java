@@ -5,18 +5,20 @@ import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 public class SeedMissionCardEffect extends SeedCardEffect {
     private final int _spacelineIndex;
     private final boolean _sharedMission;
 
-    SeedMissionCardEffect(String performingPlayerId, MissionCard cardPlayed,
+    SeedMissionCardEffect(Player player, MissionCard cardPlayed,
                           int spacelineIndex, boolean sharedMission, Action causalAction) {
-        super(performingPlayerId, cardPlayed, Zone.SPACELINE, causalAction);
+        super(player.getPlayerId(), cardPlayed, Zone.SPACELINE, causalAction);
         _spacelineIndex = spacelineIndex;
         _sharedMission = sharedMission;
     }
+
 
     @Override
     protected DefaultEffect.FullEffectResult playEffectReturningResult() {
