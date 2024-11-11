@@ -1,7 +1,9 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
@@ -11,9 +13,11 @@ import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
-public class FlyShipAction extends AbstractCostToEffectAction {
+public class FlyShipAction extends ActionyAction {
     private final PhysicalShipCard _flyingCard;
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
@@ -63,15 +67,15 @@ public class FlyShipAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _flyingCard; }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
 //        if (!isAnyCostFailed()) {
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
         if (!_destinationChosen) {
-            appendTargeting(chooseDestinationEffect());
+            appendTargeting(new SubAction(this, chooseDestinationEffect()));
             return getNextCost();
         }
 
@@ -90,10 +94,12 @@ public class FlyShipAction extends AbstractCostToEffectAction {
             );
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) { return !_flyingCard.isDocked() && !_destinationOptions.isEmpty(); }
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return !_flyingCard.isDocked() && !_destinationOptions.isEmpty();
+    }
 
 }

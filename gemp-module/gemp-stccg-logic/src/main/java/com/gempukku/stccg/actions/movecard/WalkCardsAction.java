@@ -40,8 +40,7 @@ public class WalkCardsAction extends BeamOrWalkAction {
 
     protected String actionVerb() { return "walk"; }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
             // TODO - No compatibility check
         return !_destinationOptions.isEmpty() &&
                 !Filters.filter(_cardSource.getAttachedCards(cardGame), Filters.personnel).isEmpty();

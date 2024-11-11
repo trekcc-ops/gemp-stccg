@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
@@ -149,6 +150,8 @@ public abstract class ActionyAction implements Action {
     public abstract boolean requirementsAreMet(DefaultGame cardGame);
 
     public boolean costsCanBePaid(DefaultGame game) {
+        // TODO - This may not accurately show if not all costs can be paid
+        // TODO - Not sure on the legality here. Is it legal to initiate an action if you can't fully pay the costs?
         for (Action cost : _costs)
             if (!cost.canBeInitiated(game)) {
                 return false;
@@ -172,5 +175,5 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
-    public abstract Action nextAction(DefaultGame cardGame);
+    public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
 }

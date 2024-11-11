@@ -11,6 +11,12 @@ public class SubAction extends AbstractCostToEffectAction {
         _action = action;
     }
 
+    public SubAction(Action action, Effect effect) {
+        super(action);
+        _action = action;
+        appendEffect(effect);
+    }
+
     @Override
     public PhysicalCard getCardForActionSelection() {
         return _action.getCardForActionSelection();

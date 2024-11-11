@@ -48,8 +48,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
 
     protected String actionVerb() { return "beam"; }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         return (!getValidFromCards(cardGame).isEmpty());
     }
 

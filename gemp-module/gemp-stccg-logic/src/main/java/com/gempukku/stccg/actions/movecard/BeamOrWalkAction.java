@@ -1,8 +1,10 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -20,7 +22,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
+public abstract class BeamOrWalkAction extends ActionyAction {
     private Collection<PhysicalReportableCard1E> _cardsToMove;
     final PhysicalNounCard1E _cardSource;
     private PhysicalCard _fromCard, _toCard;
@@ -125,28 +127,28 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
 
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
         if (!_fromCardChosen) {
             Effect effect = getChooseFromCardEffect(cardGame);
-            appendTargeting(effect);
+            appendTargeting(new SubAction(this, effect));
             return getNextCost();
         }
 
         if (!_toCardChosen) {
             Effect effect = getChooseToCardEffect();
-            appendTargeting(effect);
+            appendTargeting(new SubAction(this, effect));
             return getNextCost();
         }
 
         if (!_cardsToMoveChosen) {
             Effect effect = getChooseCardsToMoveEffect();
-            appendTargeting(effect);
+            appendTargeting(new SubAction(this, effect));
             return getNextCost();
         }
 
@@ -167,7 +169,7 @@ public abstract class BeamOrWalkAction extends AbstractCostToEffectAction {
             _cardsMoved = true;
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
     public void setCardsToMove(Collection<PhysicalReportableCard1E> cards) {
