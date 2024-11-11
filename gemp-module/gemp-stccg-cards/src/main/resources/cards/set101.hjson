@@ -27,7 +27,7 @@
         mission-type: planet
         lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
         property-logo: tng-logo
-//        java-blueprint: true
+        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
         rarity: R
     }

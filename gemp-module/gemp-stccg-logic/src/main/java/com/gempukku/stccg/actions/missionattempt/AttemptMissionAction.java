@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 public class AttemptMissionAction extends ActionyAction {
     private AttemptingUnit _attemptingUnit;
     private final MissionCard _missionCard;
+    private boolean _missionFailed;
     private boolean _attemptingEntityWasChosen, _missionAttemptInitiated, _missionAttemptEnded;
     final Map<String, AttemptingUnit> _attemptingEntityMap = new HashMap<>();
     final List<PhysicalCard> _revealedCards = new LinkedList<>();
@@ -84,32 +85,42 @@ public class AttemptMissionAction extends ActionyAction {
             return new AllowResponsesAction(cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
         }
 
-        List<PhysicalCard> seedCards = _missionCard.getCardsSeededUnderneath();
-        if (!seedCards.isEmpty() && !_missionAttemptEnded) {
-            PhysicalCard firstSeedCard = seedCards.getFirst();
-            if (!_revealedCards.contains(firstSeedCard)) {
-                _revealedCards.add(firstSeedCard);
-                return new RevealSeedCardAction(cardGame.getPlayer(_performingPlayerId), firstSeedCard, _missionCard);
-            }
-            if (!_encounteredCards.contains(firstSeedCard)) {
-                _encounteredCards.add(firstSeedCard);
-//                return new EncounterSeedCardAction(_performingPlayerId, firstSeedCard);
-            }
+        if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
+            failMission(cardGame);
         }
 
-        if (seedCards.isEmpty() && !_missionAttemptEnded) {
-//            return new SolveMissionAction(_missionCard);
-            ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
-            if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionCard)) {
-                MissionRequirement requirement = _missionCard.getRequirements();
-                if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
-                    cardGame.sendMessage("DEBUG - Mission solved!");
-                    cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
-                    _missionCard.setCompleted(true);
-                    gameState.checkVictoryConditions();
-                } else cardGame.sendMessage("DEBUG - Mission attempt failed!");
+        List<PhysicalCard> seedCards = _missionCard.getCardsSeededUnderneath();
+        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+
+        if (!_missionAttemptEnded) {
+
+            if (!seedCards.isEmpty()) {
+                PhysicalCard firstSeedCard = seedCards.getFirst();
+                if (!_revealedCards.contains(firstSeedCard)) {
+                    _revealedCards.add(firstSeedCard);
+                    return new RevealSeedCardAction(performingPlayer, firstSeedCard, _missionCard);
+                }
+                if (!_encounteredCards.contains(firstSeedCard)) {
+                    _encounteredCards.add(firstSeedCard);
+                    return new EncounterSeedCardAction(performingPlayer, firstSeedCard, _missionCard, _attemptingUnit);
+                }
             }
-            _missionAttemptEnded = true;
+
+            if (seedCards.isEmpty()) {
+                ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
+                if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionCard)) {
+                    MissionRequirement requirement = _missionCard.getRequirements();
+                    if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
+                        cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
+                        cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
+                        _missionCard.setCompleted(true);
+                        gameState.checkVictoryConditions();
+                    } else {
+                        failMission(cardGame);
+                    }
+                }
+                _missionAttemptEnded = true;
+            }
         }
 
         return getNextAction();
@@ -121,5 +132,14 @@ public class AttemptMissionAction extends ActionyAction {
         _attemptingUnit = attemptingUnit;
         _attemptingEntityWasChosen = true;
     }
+
+    public boolean isFailed() { return _missionFailed; }
+
+    private void failMission(DefaultGame game) {
+        _missionFailed = true;
+        _missionAttemptEnded = true;
+        game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
+    }
+
 
 }

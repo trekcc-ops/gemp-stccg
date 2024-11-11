@@ -249,7 +249,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     public boolean canPlayerSolveMission(String playerId, MissionCard mission) {
-        for (Modifier modifier : _modifiers.get(ModifierEffect.SOLVE_MISSION_MODIFIER)) {
+        for (Modifier modifier : getModifiers(ModifierEffect.SOLVE_MISSION_MODIFIER)) {
             if (modifier instanceof PlayerCannotSolveMissionModifier missionModifier)
                 if (missionModifier.cannotSolveMission(mission, playerId))
                     return false;

@@ -4,9 +4,11 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.AttachPermanentAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
@@ -67,7 +69,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public Player getOwner() { return _owner; }
 
     public String getOwnerName() {
-        return _owner.getPlayerId();
+        if (_owner != null) {
+            return _owner.getPlayerId();
+        } else {
+            return null;
+        }
     }
 
     public void startAffectingGame(DefaultGame game) {
@@ -427,6 +433,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public void addCardToPreSeeds(PhysicalCard card, Player player) {
         _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
         _cardsPreSeededUnderneath.get(player).add(card);
+    }
+
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
+                                            EncounterSeedCardAction action) {
+        return _blueprint.getEncounterActions(this, game, attemptingUnit, missionCard, action);
     }
 
 }

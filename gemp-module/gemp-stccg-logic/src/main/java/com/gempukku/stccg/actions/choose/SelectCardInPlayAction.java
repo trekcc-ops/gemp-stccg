@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.choose;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -25,6 +26,16 @@ public class SelectCardInPlayAction extends ActionyAction {
         _selectableCards = cards;
         _actionSource = action.getActionSource();
     }
+
+    public SelectCardInPlayAction(PhysicalCard cardSource, Player selectingPlayer, String choiceText,
+                                  Collection<? extends PhysicalCard> cards, boolean randomSelection) {
+        super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
+        if (randomSelection)
+            _selectableCards = TextUtils.getRandomFromList(cards, 1);
+        else _selectableCards = cards;
+        _actionSource = cardSource;
+    }
+
 
     public boolean requirementsAreMet(DefaultGame game) {
         return !_selectableCards.isEmpty();

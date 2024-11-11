@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -92,4 +94,6 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     void addCardToPreSeeds(PhysicalCard card, Player player);
 
     boolean isMisSeed(DefaultGame cardGame, MissionCard mission);
+
+    List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard mission, EncounterSeedCardAction action);
 }
