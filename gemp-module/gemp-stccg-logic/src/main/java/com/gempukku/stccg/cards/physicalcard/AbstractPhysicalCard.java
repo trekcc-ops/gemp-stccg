@@ -339,7 +339,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public Integer getNumberOfCopiesSeededByPlayer(Player player) {
         int total = 0;
-        Collection<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions().values();
+        Collection<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
             if (action instanceof SeedCardAction seedCardAction) {
                 if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&

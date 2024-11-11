@@ -32,7 +32,7 @@ public class WalkCardsAction extends BeamOrWalkAction {
     }
 
     @Override
-    protected List<PhysicalCard> getValidFromCards(DefaultGame game) {
+    public List<PhysicalCard> getValidFromCards(DefaultGame game) {
         List<PhysicalCard> cards = new ArrayList<>();
         cards.add(_cardSource);
         return cards;

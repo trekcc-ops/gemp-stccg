@@ -32,7 +32,7 @@ public interface ActionsEnvironment {
     DefaultGame getGame();
     Stack<Action> getActionStack();
 
-    Map<Integer, Action> getPerformedActions();
+    List<Action> getPerformedActions();
 
     boolean hasNoActionsInProgress();
 

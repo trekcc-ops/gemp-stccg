@@ -79,4 +79,10 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
 
         throw new DecisionResultInvalidException();
     }
+
+    public List<? extends PhysicalCard> getCardOptions() { return _physicalCards; }
+
+    public void decisionMade(PhysicalCard card) throws DecisionResultInvalidException {
+        decisionMade(String.valueOf(card.getCardId()));
+    }
 }

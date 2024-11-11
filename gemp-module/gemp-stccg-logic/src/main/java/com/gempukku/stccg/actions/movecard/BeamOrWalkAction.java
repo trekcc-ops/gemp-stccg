@@ -20,10 +20,11 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BeamOrWalkAction extends ActionyAction {
-    private Collection<PhysicalReportableCard1E> _cardsToMove;
+    private final Collection<PhysicalReportableCard1E> _cardsToMove = new LinkedList<>();
     final PhysicalNounCard1E _cardSource;
     private PhysicalCard _fromCard, _toCard;
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen, _cardsMoved;
@@ -63,7 +64,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     @Override
     public PhysicalCard getActionSource() { return _cardSource; }
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
-    protected abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
+    public abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 
     private Effect getChooseCardsToMoveEffect() {
         // TODO - No checks here yet to make sure cards can be moved (compatibility, etc.)
@@ -171,8 +172,8 @@ public abstract class BeamOrWalkAction extends ActionyAction {
         return getNextAction();
     }
 
-    public void setCardsToMove(Collection<PhysicalReportableCard1E> cards) {
-        _cardsToMove = cards;
+    public void setCardsToMove(Collection<? extends PhysicalReportableCard1E> cards) {
+        _cardsToMove.addAll(cards);
         _cardsToMoveChosen = true;
     }
 

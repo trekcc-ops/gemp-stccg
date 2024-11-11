@@ -34,7 +34,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
     }
 
     @Override
-    protected List<PhysicalCard> getValidFromCards(DefaultGame game) {
+    public List<PhysicalCard> getValidFromCards(DefaultGame game) {
             // Destination options filtered to remove cards with none of your personnel or equipment aboard
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {

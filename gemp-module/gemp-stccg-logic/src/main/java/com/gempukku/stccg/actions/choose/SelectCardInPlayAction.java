@@ -69,4 +69,6 @@ public abstract class SelectCardInPlayAction extends ActionyAction {
 
     public PhysicalCard getCardForActionSelection() { return _actionSource; }
 
+    public PhysicalCard getSelectedCard() { return _selectedCard; }
+
 }

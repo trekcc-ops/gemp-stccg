@@ -9,7 +9,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
-    private final Map<Integer, Action> _performedActions = new HashMap<>();
+    private final List<Action> _performedActions = new LinkedList<>();
     private Set<EffectResult> _effectResults = new HashSet<>();
     private int _nextActionId = 1;
 
@@ -31,7 +31,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         _actionProxies.addAll(actionProxies);
         _untilEndOfTurnActionProxies.addAll(untilEndOfTurnActionProxies);
         for (Action action : performedActions) {
-            _performedActions.put(action.getActionId(), action);
+            _performedActions.add(action);
         }
     }
 
@@ -194,7 +194,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     public Stack<Action> getActionStack() { return _actionStack; }
 
     @Override
-    public Map<Integer, Action> getPerformedActions() {
+    public List<Action> getPerformedActions() {
         return _performedActions;
     }
 
@@ -206,7 +206,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     @Override
     public void removeCompletedAction(Action action) {
         _actionStack.remove(action);
-        _performedActions.put(action.getActionId(), action);
+        _performedActions.add(action);
     }
 
     @Override

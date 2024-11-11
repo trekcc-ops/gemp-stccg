@@ -1,8 +1,7 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -10,7 +9,8 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,21 +91,22 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertTrue(excavation.isCompleted());
         assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
 
-        Map<Integer, Action> performedActions = _game.getActionsEnvironment().getPerformedActions();
-        List<Integer> actionIds = new LinkedList<>(performedActions.keySet());
-        Collections.sort(actionIds);
+        // Initiate a beam action from the outpost
+        BeamCardsAction beamAction = selectAction(BeamCardsAction.class, outpost, P1);
+        assertEquals(2, beamAction.getValidFromCards(_game).size());
+        System.out.println(_userFeedback.getAwaitingDecision(P1).getClass().getSimpleName());
+        selectCard(P1, outpost);
+        assertEquals(picard.getAwayTeam(), tarses.getAwayTeam());
 
-        for (Integer actionId : actionIds) {
-            Action action = performedActions.get(actionId);
-            String effectName = null;
-            if (action instanceof SubAction sub) {
-                Effect effect = sub.getEffect();
-                if (effect != null) effectName = effect.getClass().getSimpleName();
-            }
+        List<Action> performedActions = _game.getActionsEnvironment().getPerformedActions();
+        int performedId = 1;
+
+        for (Action action : performedActions) {
             System.out.println(
-                    actionId + " - " + action.getClass().getSimpleName() +
+                    performedId + " - " + action.getClass().getSimpleName() +
                             " (" + action.getActionType().name() + ")" +
-                    ((effectName != null) ? " - " + effectName : ""));
+                    ((action.getText(_game) != null) ? " - " + action.getText(_game) : ""));
+            performedId++;
         }
     }
 

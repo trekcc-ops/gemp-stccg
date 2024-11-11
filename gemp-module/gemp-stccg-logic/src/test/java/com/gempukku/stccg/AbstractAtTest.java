@@ -18,7 +18,6 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
@@ -316,49 +315,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         }
     }
 
-    protected String[] toCardIdArray(PhysicalCard... cards) {
-        String[] result = new String[cards.length];
-        for (int i = 0; i < cards.length; i++)
-            result[i] = String.valueOf(cards[i].getCardId());
-        return result;
-    }
-
-    protected String getArbitraryCardId(AwaitingDecision awaitingDecision, String blueprintId) {
-        String[] blueprints = awaitingDecision.getDecisionParameters().get("blueprintId");
-        for (int i = 0; i < blueprints.length; i++)
-            if (blueprints[i].equals(blueprintId))
-                return ((String[]) awaitingDecision.getDecisionParameters().get("cardId"))[i];
-        return null;
-    }
-
-    protected String getCardActionId(AwaitingDecision awaitingDecision, String actionTextStart) {
-        String[] actionTexts = awaitingDecision.getDecisionParameters().get("actionText");
-        for (int i = 0; i < actionTexts.length; i++)
-            if (actionTexts[i].startsWith(actionTextStart))
-                return ((String[]) awaitingDecision.getDecisionParameters().get("actionId"))[i];
-        return null;
-    }
-
-    protected String getCardActionId(String playerId, String actionTextStart) {
-        return getCardActionId(_userFeedback.getAwaitingDecision(playerId), actionTextStart);
-    }
-
-    protected String getCardActionIdContains(AwaitingDecision awaitingDecision, String actionTextContains) {
-        String[] actionTexts = awaitingDecision.getDecisionParameters().get("actionText");
-        for (int i = 0; i < actionTexts.length; i++)
-            if (actionTexts[i].contains(actionTextContains))
-                return ((String[]) awaitingDecision.getDecisionParameters().get("actionId"))[i];
-        return null;
-    }
-
-    protected String getMultipleDecisionIndex(AwaitingDecision awaitingDecision, String result) {
-        String[] actionTexts = awaitingDecision.getDecisionParameters().get("results");
-        for (int i = 0; i < actionTexts.length; i++)
-            if (actionTexts[i].equals(result))
-                return String.valueOf(i);
-        return null;
-    }
-
     protected void addPlayerDeck(String player, Map<String, CardDeck> decks, Map<String, Collection<String>> additionalCardsInDeck) {
         CardDeck deck = new CardDeck("Some deck");
         if (additionalCardsInDeck != null) {
@@ -368,10 +324,6 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
                     deck.addCard(extraCard);
         }
         decks.put(player, deck);
-    }
-
-    protected void moveCardToZone(PhysicalCard card, Zone zone) {
-        _game.getGameState().addCardToZone(card, zone);
     }
 
     protected void playerDecided(String player, String answer) throws DecisionResultInvalidException {
@@ -600,7 +552,39 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             throw new DecisionResultInvalidException("No valid action to attempt " + mission.getTitle());
     }
 
+    protected <T extends Action> T selectAction(Class<T> clazz, PhysicalCard card, String playerId)
+            throws DecisionResultInvalidException {
+        T choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action.getClass() == clazz && action.getCardForActionSelection() == card)
+                    choice = (T) action;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action found");
+        else return choice;
+    }
 
+    protected void selectCard(String playerId, PhysicalCard selectedCard) throws DecisionResultInvalidException {
+        PhysicalCard choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof CardsSelectionDecision cardSelection) {
+            for (PhysicalCard card : cardSelection.getCardOptions()) {
+                if (card == selectedCard)
+                    choice = card;
+            }
+            cardSelection.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action found");
+    }
 
 
 }
