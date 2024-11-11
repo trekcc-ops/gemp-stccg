@@ -14,7 +14,7 @@ public class ActivateProcessTribblePowerEffect extends ActivateTribblePowerEffec
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new DrawCardsEffect(getGame(), subAction, _activatingPlayer, 3));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
                 getGame(), subAction, _activatingPlayer, 2, false, Filters.any));

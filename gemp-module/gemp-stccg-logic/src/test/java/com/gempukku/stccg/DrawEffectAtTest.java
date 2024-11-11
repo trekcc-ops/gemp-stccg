@@ -87,7 +87,7 @@ public class DrawEffectAtTest extends AbstractAtTest {
                     }
                 });
 
-        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, new SystemQueueAction(), playerId, cardsToDraw);
+        DrawCardsEffect drawEffect = new DrawCardsEffect(_game, new SystemQueueAction(_game), playerId, cardsToDraw);
 
         carryOutEffectInPhaseActionByPlayer(playerId, drawEffect);
 

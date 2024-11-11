@@ -48,7 +48,7 @@ public class OptionalEffect extends AbstractSubActionEffect {
                         @Override
                         protected void validDecisionMade(int index, String result) {
                             if (index == 0) {
-                                SubAction subAction = _action.createSubAction();
+                                SubAction subAction = new SubAction(_action, _game);
                                 subAction.appendEffect(_optionalEffect);
                                 processSubAction(_game, subAction);
                             }

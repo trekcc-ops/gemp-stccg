@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -32,7 +33,7 @@ public class ChooseAndDiscardCardsFromPlayEffect extends ChooseActiveCardsEffect
 
     @Override
     protected void cardsSelected(Collection<PhysicalCard> cards) {
-        _resultSubAction = _action.createSubAction();
+        _resultSubAction = new SubAction(_action, _game);
         _resultSubAction.appendEffect(new DiscardCardsFromPlayEffect(_game, _playerId, _action.getActionSource(), Filters.in(cards)) {
             @Override
             protected void forEachDiscardedByEffectCallback(Collection<PhysicalCard> discardedCards) {

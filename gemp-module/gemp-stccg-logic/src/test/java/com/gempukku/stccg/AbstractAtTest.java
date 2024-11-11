@@ -391,7 +391,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
 
     protected void carryOutEffectInPhaseActionByPlayer(String playerId, Effect effect) throws DecisionResultInvalidException {
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
         action.appendEffect(effect);
         carryOutEffectInPhaseActionByPlayer(playerId, action);
     }

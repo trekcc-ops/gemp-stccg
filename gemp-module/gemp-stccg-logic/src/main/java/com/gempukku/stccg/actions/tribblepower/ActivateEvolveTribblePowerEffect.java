@@ -14,7 +14,7 @@ public class ActivateEvolveTribblePowerEffect extends ActivateTribblePowerEffect
 
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
 
         // Count the number of cards in your hand
         int cardsInHand = getGame().getGameState().getHand(_activatingPlayer).size();

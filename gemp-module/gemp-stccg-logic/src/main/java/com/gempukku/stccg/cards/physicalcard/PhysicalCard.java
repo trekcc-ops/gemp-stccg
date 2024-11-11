@@ -67,7 +67,7 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     List<Action> getOptionalInPlayActions(Effect effect, TriggerTiming timing);
     List<Action> getOptionalInPlayActions(EffectResult effectResult, TriggerTiming timing);
     Action getDiscardedFromPlayTriggerAction(RequiredType requiredType);
-    List<Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult);
+    List<Action> getOptionalAfterTriggerActions(Player player, EffectResult effectResult);
     List<Action> getBeforeTriggerActions(Effect effect, RequiredType requiredType);
     List<Action> getBeforeTriggerActions(String playerId, Effect effect, RequiredType requiredType);
     List<Action> getRequiredResponseActions(EffectResult effectResult);

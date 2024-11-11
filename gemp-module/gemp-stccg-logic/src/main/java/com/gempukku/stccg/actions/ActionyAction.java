@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
     protected boolean _wasCarriedOut;
-    private int _actionId;
+    private final int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
     private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Action> _targeting = new LinkedList<>();
@@ -25,25 +25,28 @@ public abstract class ActionyAction implements Action {
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
-    protected ActionyAction(String performingPlayerId, ActionType actionType) {
-        _performingPlayerId = performingPlayerId;
-        _actionType = actionType;
-    }
     protected ActionyAction(Player player, ActionType actionType) {
-        this(player.getPlayerId(), actionType);
+        _performingPlayerId = player.getPlayerId();
+        _actionType = actionType;
+        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
+        player.getGame().getActionsEnvironment().incrementActionId();
     }
 
     protected ActionyAction(Player player, String text, ActionType actionType) {
-        this(player.getPlayerId(), actionType);
-        this._text = text;
+        _performingPlayerId = player.getPlayerId();
+        _text = text;
+        _actionType = actionType;
+        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
+        player.getGame().getActionsEnvironment().incrementActionId();
     }
 
-    protected ActionyAction(Action action) {
-        this(action.getPerformingPlayerId(), action.getActionType());
-    }
-    protected ActionyAction() {
+    // This constructor is only used for automated actions used to pass effects through or perform system actions
+    protected ActionyAction(DefaultGame game) {
         _performingPlayerId = null;
+        _text = null;
         _actionType = ActionType.OTHER;
+        _actionId = game.getActionsEnvironment().getNextActionId();
+        game.getActionsEnvironment().incrementActionId();
     }
 
     public Effect nextEffect(DefaultGame game) { return null; }
@@ -194,7 +197,6 @@ public abstract class ActionyAction implements Action {
 
     public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
     public void appendTargeting(Effect effect) { appendCost(new SubAction(this, effect)); }
-    public void setId(int id) { _actionId = id; }
     public int getActionId() { return _actionId; }
 
 }

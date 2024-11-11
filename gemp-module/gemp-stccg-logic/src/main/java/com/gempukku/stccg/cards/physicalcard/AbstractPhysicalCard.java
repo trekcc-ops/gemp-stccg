@@ -300,11 +300,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return getActionsFromActionSources(playerId, null, null, sources);
     }
 
-    public List<Action> getOptionalAfterTriggerActions(String playerId, EffectResult effectResult) {
+    public List<Action> getOptionalAfterTriggerActions(Player player, EffectResult effectResult) {
         if (_blueprint instanceof Blueprint212_019 riskBlueprint) {
-            return riskBlueprint.getValidResponses(this, effectResult.getGame().getPlayer(playerId), effectResult);
+            return riskBlueprint.getValidResponses(this, player, effectResult);
         } else {
-            return getActionsFromActionSources(playerId, null, effectResult,
+            return getActionsFromActionSources(player.getPlayerId(), null, effectResult,
                     _blueprint.getBeforeOrAfterTriggers(RequiredType.OPTIONAL, TriggerTiming.AFTER));
         }
     }
@@ -394,7 +394,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardsSeededUnderneath.add(card);
     }
 
-    public Collection<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
+    public List<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
     public Collection<PhysicalCard> getCardsPreSeeded(Player player) {
         if (_cardsPreSeededUnderneath.get(player) == null)
             return new LinkedList<>();

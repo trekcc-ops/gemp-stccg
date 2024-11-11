@@ -23,9 +23,8 @@ public class DockAction extends ActionyAction {
     private final Collection<FacilityCard> _dockingTargetOptions;
 
     public DockAction(Player player, PhysicalShipCard cardToDock) {
-        super(player, ActionType.MOVE_CARDS);
+        super(player, "Dock", ActionType.MOVE_CARDS);
         _cardToDock = cardToDock;
-        this._text = "Dock";
 
         _dockingTargetOptions = Filters.yourActiveFacilities(player).stream()
                 .filter(card -> card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation())

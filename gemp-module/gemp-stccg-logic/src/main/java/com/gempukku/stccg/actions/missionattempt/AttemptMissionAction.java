@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.ChooseAwayTeamEffect;
+import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -24,10 +25,11 @@ public class AttemptMissionAction extends ActionyAction {
     private final MissionCard _missionCard;
     private boolean _attemptingEntityWasChosen, _missionAttemptInitiated, _missionAttemptEnded;
     final Map<String, AttemptingUnit> _attemptingEntityMap = new HashMap<>();
-    List<String> _seedCards;
+    final List<PhysicalCard> _revealedCards = new LinkedList<>();
+    final List<PhysicalCard> _encounteredCards = new LinkedList<>();
 
     public AttemptMissionAction(Player player, MissionCard missionCard) {
-        super(player, ActionType.ATTEMPT_MISSION);
+        super(player, "Attempt mission", ActionType.ATTEMPT_MISSION);
         _missionCard = missionCard;
 
         // Get Away Teams that can attempt mission
@@ -44,9 +46,6 @@ public class AttemptMissionAction extends ActionyAction {
                     _attemptingEntityMap.put(ship.getTitle(), ship);
         }
     }
-
-    @Override
-    public String getText(DefaultGame game) { return "Attempt mission"; }
 
     @Override
     public PhysicalCard getCardForActionSelection() { return _missionCard; }
@@ -75,29 +74,31 @@ public class AttemptMissionAction extends ActionyAction {
                     setAttemptingUnit(_attemptingEntityMap.get(result));
                 }
             };
-            SubAction subAction = new SubAction(this);
+            SubAction subAction = new SubAction(this, cardGame);
             subAction.appendEffect(chooseAwayTeamEffect);
             return getNextCost();
         }
 
         if (!_missionAttemptInitiated) {
             _missionAttemptInitiated = true;
-                // DEBUG lines of dialog
-            cardGame.sendMessage("Mission attempt initiated. This is when you would ordinarily encounter dilemmas and stuff like that.");
-            cardGame.sendMessage("...");
-            cardGame.sendMessage("But we don't have any.");
-            _seedCards = new LinkedList<>();        // TODO - Replace this with real stuff at some point
-            cardGame.getActionsEnvironment().emitEffectResult(new EffectResult(EffectResult.Type.START_OF_MISSION_ATTEMPT, cardGame));
-            SubAction subAction = new SubAction(this);
-            subAction.appendEffect(new DoNothingEffect(cardGame));
-            return subAction;
+            return new AllowResponsesAction(cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
         }
 
-        if (!_seedCards.isEmpty()) {
-            return new EncounterSeedCardAction(player, _seedCards);
+        List<PhysicalCard> seedCards = _missionCard.getCardsSeededUnderneath();
+        if (!seedCards.isEmpty() && !_missionAttemptEnded) {
+            PhysicalCard firstSeedCard = seedCards.getFirst();
+            if (!_revealedCards.contains(firstSeedCard)) {
+                _revealedCards.add(firstSeedCard);
+//                return new RevealSeedCardAction(_performingPlayerId, firstSeedCard);
+            }
+            if (!_encounteredCards.contains(firstSeedCard)) {
+                _encounteredCards.add(firstSeedCard);
+//                return new EncounterSeedCardAction(_performingPlayerId, firstSeedCard);
+            }
         }
 
-        if (!_missionAttemptEnded) {
+        if (seedCards.isEmpty() && !_missionAttemptEnded) {
+//            return new SolveMissionAction(_missionCard);
             ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
             MissionRequirement requirement = _missionCard.getRequirements();
             if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {

@@ -8,6 +8,7 @@ public class PassThroughEffectAction extends ActionyAction {
     private final PhysicalCard _card;
 
     public PassThroughEffectAction(PhysicalCard source, Effect effect) {
+        super(source.getGame());
         appendEffect(effect);
         _card = source;
     }

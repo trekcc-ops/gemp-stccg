@@ -8,18 +8,17 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 
 public class UndockAction extends ActionyAction {
-    private final PhysicalShipCard _cardToUndock;
-    private boolean _cardUndocked;
+    private final PhysicalShipCard _cardToMove;
 
     public UndockAction(Player player, PhysicalShipCard cardUndocking) {
         super(player, "Undock", ActionType.MOVE_CARDS);
-        _cardToUndock = cardUndocking;
+        _cardToMove = cardUndocking;
     }
 
     @Override
-    public PhysicalCard getCardForActionSelection() { return _cardToUndock; }
+    public PhysicalCard getCardForActionSelection() { return _cardToMove; }
     @Override
-    public PhysicalCard getActionSource() { return _cardToUndock; }
+    public PhysicalCard getActionSource() { return _cardToMove; }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
@@ -29,14 +28,14 @@ public class UndockAction extends ActionyAction {
         if (cost != null)
             return cost;
 
-        if (!_cardUndocked) {
-            _cardUndocked = true;
-            _cardToUndock.undockFromFacility();
+        if (!_wasCarriedOut) {
+            _cardToMove.undockFromFacility();
+            _wasCarriedOut = true;
         }
 
         return getNextAction();
     }
 
-    public boolean requirementsAreMet(DefaultGame cardGame) { return _cardToUndock.isDocked(); }
+    public boolean requirementsAreMet(DefaultGame cardGame) { return _cardToMove.isDocked(); }
 
 }

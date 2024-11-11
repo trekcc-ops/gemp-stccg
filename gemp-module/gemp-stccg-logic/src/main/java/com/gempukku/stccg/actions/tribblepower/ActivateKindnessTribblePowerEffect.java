@@ -25,7 +25,7 @@ public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffe
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new DrawCardsEffect(getGame(), _action, _activatingPlayer, 1));
             // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (String player : getGame().getPlayerIds()) {

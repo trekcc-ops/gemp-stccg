@@ -21,7 +21,7 @@ public class ChangeAffiliationAction extends ActionyAction {
     private final List<Affiliation> _affiliationOptions = new LinkedList<>();
 
     public ChangeAffiliationAction(Player player, AffiliatedCard card) {
-        super(player, ActionType.OTHER);
+        super(player, "Change affiliation", ActionType.OTHER);
         _card = card;
         _card.getAffiliationOptions().forEach(affiliation -> {
             if (affiliation != _card.getAffiliation())
@@ -46,9 +46,6 @@ public class ChangeAffiliationAction extends ActionyAction {
         return !_affiliationOptions.isEmpty();
     }
 
-
-    @Override
-    public String getText(DefaultGame game) { return "Change affiliation"; }
 
     @Override
     public PhysicalCard getActionSource() { return (PhysicalCard) _card; }

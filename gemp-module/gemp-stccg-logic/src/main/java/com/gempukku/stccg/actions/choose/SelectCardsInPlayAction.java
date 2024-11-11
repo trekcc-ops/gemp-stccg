@@ -7,41 +7,45 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
-import com.google.common.collect.Iterables;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 /**
- * An effect that causes the specified player to choose a card on the table.
+ * An effect that causes the specified player to choose cards on the table.
  */
-public class SelectCardInPlayAction extends ActionyAction {
+public class SelectCardsInPlayAction extends ActionyAction {
     private final Collection<? extends PhysicalCard> _selectableCards;
-    private PhysicalCard _selectedCard;
+    private Collection<PhysicalCard> _selectedCards = new LinkedList<>();
     private final PhysicalCard _actionSource;
+    private final int _minimum;
+    private final int _maximum;
 
-    public SelectCardInPlayAction(Action action, Player selectingPlayer, String choiceText,
-                                  Collection<? extends PhysicalCard> cards) {
+    public SelectCardsInPlayAction(Action action, Player selectingPlayer, String choiceText,
+                                   Collection<? extends PhysicalCard> cards, int minimum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCards = cards;
         _actionSource = action.getActionSource();
+        _minimum = minimum;
+        _maximum = cards.size();
     }
 
     public boolean requirementsAreMet(DefaultGame game) {
-        return !_selectableCards.isEmpty();
+        return _selectableCards.size() >= _minimum;
     }
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
-        if (_selectableCards.size() == 1) {
-            _selectedCard = Iterables.getOnlyElement(_selectableCards);
+        if (_selectableCards.size() == _minimum) {
+            _selectedCards.addAll(_selectableCards);
             _wasCarriedOut = true;
         } else {
             cardGame.getUserFeedback().sendAwaitingDecision(
                     new CardsSelectionDecision(cardGame.getPlayer(_performingPlayerId), _text, _selectableCards,
-                            1, 1) {
+                            _minimum, _maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            _selectedCard = getSelectedCardByResponse(result);
+                            _selectedCards = getSelectedCardsByResponse(result);
                             _wasCarriedOut = true;
                         }
                     });
@@ -59,6 +63,6 @@ public class SelectCardInPlayAction extends ActionyAction {
 
     public PhysicalCard getCardForActionSelection() { return _actionSource; }
 
-    public PhysicalCard getSelectedCard() { return _selectedCard; }
+    public Collection<PhysicalCard> getSelectedCards() { return _selectedCards; }
 
 }

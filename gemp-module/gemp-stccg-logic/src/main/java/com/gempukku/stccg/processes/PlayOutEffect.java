@@ -12,6 +12,7 @@ class PlayOutEffect extends SystemQueueAction {
     private boolean _initialized;
 
     PlayOutEffect(Effect effect) {
+        super(effect.getGame());
         _effect = effect;
     }
 

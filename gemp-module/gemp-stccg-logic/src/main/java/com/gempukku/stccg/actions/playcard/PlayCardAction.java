@@ -25,7 +25,7 @@ public abstract class PlayCardAction extends ActionyAction {
      */
     public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, String performingPlayerId,
                           Zone toZone, ActionType actionType) {
-        super(performingPlayerId, actionType);
+        super(cardEnteringPlay.getGame().getPlayer(performingPlayerId), actionType);
         _actionSource = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _fromZone = cardEnteringPlay.getZone();

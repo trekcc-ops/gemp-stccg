@@ -12,8 +12,14 @@ public class SubAction extends AbstractCostToEffectAction {
         _action = action;
     }
 
+    public SubAction(Action action, DefaultGame game) {
+        super(game, action);
+        _action = action;
+    }
+
+
     public SubAction(Action action, Effect effect) {
-        super(action);
+        super(effect.getGame(), action);
         _action = action;
         _effect = effect;
         appendEffect(effect);

@@ -363,7 +363,7 @@ public abstract class DefaultGame {
         getTurnProcedure().setCurrentProcess(process);
     }
 
-    public void sendErrorMessage(InvalidGameLogicException exp) {
+    public void sendErrorMessage(Exception exp) {
         String message = "ERROR: " + exp.getMessage();
         sendMessage(message);
     }

@@ -22,7 +22,7 @@ public class ActivateMasakaTribblePowerEffect extends ActivateTribblePowerEffect
     }
     @Override
     protected FullEffectResult playEffectReturningResult() {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         for (String player : getGame().getPlayerIds()) {
             for (PhysicalCard card : getGame().getGameState().getHand(player)) {
                 subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(

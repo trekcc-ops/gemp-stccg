@@ -31,5 +31,4 @@ public interface Action {
     void appendCost(Effect effect);
     void insertEffect(Effect effect);
     void appendEffect(Effect effect);
-    void setId(int id);
 }

@@ -12,9 +12,8 @@ public class ActivateCardAction extends ActionyAction {
     private boolean _prevented;
 
     public ActivateCardAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.SPECIAL_ABILITY);
+        super(physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.SPECIAL_ABILITY);
         _physicalCard = physicalCard;
-        setText("Use " + _physicalCard.getFullName());
     }
 
     @Override

@@ -23,9 +23,8 @@ public class AttachPermanentAction extends ActionyAction {
     private final Collection<PhysicalCard> _targetOptions;
 
     public AttachPermanentAction(final PhysicalCard card, Filter filter) {
-        super(card.getOwner(), ActionType.PLAY_CARD);
+        super(card.getOwner(), "Play " + card.getFullName(), ActionType.PLAY_CARD);
         _cardToAttach = card;
-        setText("Play " + _cardToAttach.getFullName());
         _playedFrom = card.getZone();
         _targetOptions = Filters.filterActive(card.getGame(), filter);
     }

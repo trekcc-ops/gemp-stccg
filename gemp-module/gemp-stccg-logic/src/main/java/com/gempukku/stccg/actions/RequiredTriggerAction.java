@@ -10,9 +10,8 @@ public class RequiredTriggerAction extends ActionyAction {
     private String _message;
 
     public RequiredTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.OTHER);
+        super(physicalCard.getOwner(), "Required trigger from " + physicalCard.getCardLink(), ActionType.OTHER);
         _physicalCard = physicalCard;
-        setText("Required trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " required triggered effect is used";
     }
 

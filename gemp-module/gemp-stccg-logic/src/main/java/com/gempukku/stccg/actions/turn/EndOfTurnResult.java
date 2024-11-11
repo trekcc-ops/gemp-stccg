@@ -5,6 +5,6 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class EndOfTurnResult extends EffectResult {
     public EndOfTurnResult(DefaultGame game) {
-        super(EffectResult.Type.END_OF_TURN, game);
+        super(EffectResult.Type.END_OF_TURN);
     }
 }

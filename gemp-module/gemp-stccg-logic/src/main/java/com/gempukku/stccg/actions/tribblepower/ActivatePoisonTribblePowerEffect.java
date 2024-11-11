@@ -47,7 +47,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
         // That opponent must discard the top card
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new DiscardCardsFromEndOfCardPileEffect(Zone.DRAW_DECK, EndOfPile.TOP,
                 chosenPlayer, 1, true, _context, null) {
             @Override

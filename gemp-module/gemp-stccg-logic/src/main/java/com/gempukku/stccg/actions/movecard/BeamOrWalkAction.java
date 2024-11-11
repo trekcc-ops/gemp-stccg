@@ -3,17 +3,14 @@ package com.gempukku.stccg.actions.movecard;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectCardsInPlayAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.google.common.collect.Iterables;
@@ -24,12 +21,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BeamOrWalkAction extends ActionyAction {
-    private final Collection<PhysicalReportableCard1E> _cardsToMove = new LinkedList<>();
+    private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
     final PhysicalNounCard1E _cardSource;
-    private PhysicalCard _fromCard, _toCard;
-    private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen, _cardsMoved;
+    private PhysicalCard _origin, _destination;
+    private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
     final Player _performingPlayer;
     final Collection<PhysicalCard> _destinationOptions;
+    private SelectCardInPlayAction _selectOriginAction;
+    private SelectCardInPlayAction _selectDestinationAction;
+    private SelectCardsInPlayAction _selectCardsToMoveAction;
 
     /**
      * Creates an action to move cards by beaming or walking.
@@ -38,7 +38,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
     BeamOrWalkAction(Player player, PhysicalNounCard1E cardSource) {
-        super(player.getPlayerId(), ActionType.MOVE_CARDS);
+        super(player, ActionType.MOVE_CARDS);
         _performingPlayer = player;
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions(cardSource.getGame());
@@ -46,6 +46,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
 
     protected abstract String actionVerb();
 
+    @Override
     public String getText(DefaultGame game) {
         List<PhysicalCard> validFromCards = getValidFromCards(game);
         StringBuilder sb = new StringBuilder();
@@ -66,65 +67,6 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
     public abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 
-    private Effect getChooseCardsToMoveEffect() {
-        // TODO - No checks here yet to make sure cards can be moved (compatibility, etc.)
-        Collection<PhysicalCard> movableCards =
-                Filters.filter(_fromCard.getAttachedCards(_fromCard.getGame()),
-                        Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-
-        // Choose cards to transit
-        return new ChooseCardsOnTableEffect(this, _performingPlayer,
-                "Choose cards to " + actionVerb() + " to " + _toCard.getCardLink(), 1,
-                movableCards.size(), movableCards) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> cards) {
-                try {
-                    for (PhysicalCard card : cards) {
-                        if (card instanceof PhysicalReportableCard1E reportable)
-                            _cardsToMove.add(reportable);
-                        else throw new InvalidGameLogicException("Tried to beam cards that couldn't be reported");
-                    }
-                } catch(InvalidGameLogicException exp) {
-                    _game.sendErrorMessage(exp);
-                    _cardsToMove.clear();
-                }
-                setCardsToMove(_cardsToMove);
-            }
-        };
-    }
-
-    private Effect getChooseToCardEffect() {
-        // Choose card beaming to
-        return new ChooseCardsOnTableEffect(this, _performingPlayer,
-                "Choose card to " + actionVerb() + " to", _destinationOptions) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
-                _toCard = Iterables.getOnlyElement(cardSelected);
-                _toCardChosen = true;
-            }
-
-        };
-    }
-
-    private Action selectOriginAction(DefaultGame game) {
-        return new SelectCardInPlayAction(this, _performingPlayer,
-                "Choose card to " + actionVerb() + " from", getValidFromCards(game)) {
-
-            @Override
-            protected void cardSelected(PhysicalCard selectedCard) {
-                _fromCardChosen = true;
-                _fromCard = selectedCard;
-
-                if (_fromCard == _cardSource) {
-                    _destinationOptions.removeIf(card -> card == _fromCard);
-                } else {
-                    _destinationOptions.clear();
-                    _destinationOptions.add(_cardSource);
-                }
-            }
-        };
-    }
-
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
@@ -135,55 +77,87 @@ public abstract class BeamOrWalkAction extends ActionyAction {
             return cost;
 
         if (!_fromCardChosen) {
-            Action action = selectOriginAction(cardGame);
-            appendTargeting(action);
-            return getNextCost();
+            if (_selectOriginAction == null) {
+                _selectOriginAction = new SelectCardInPlayAction(this, _performingPlayer,
+                        "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
+                appendTargeting(_selectOriginAction);
+                return getNextCost();
+            } else {
+                if (_selectOriginAction.wasCarriedOut()) {
+                    _origin = _selectOriginAction.getSelectedCard();
+                    _fromCardChosen = true;
+                    if (_origin == _cardSource) {
+                        _destinationOptions.removeIf(card -> card == _origin);
+                    } else {
+                        _destinationOptions.clear();
+                        _destinationOptions.add(_cardSource);
+                    }
+                }
+            }
         }
 
         if (!_toCardChosen) {
-            Effect effect = getChooseToCardEffect();
-            appendTargeting(new SubAction(this, effect));
-            return getNextCost();
+            if (_selectDestinationAction == null) {
+                _selectDestinationAction = new SelectCardInPlayAction(this, _performingPlayer,
+                        "Choose card to " + actionVerb() + " to ", _destinationOptions);
+                appendTargeting(_selectDestinationAction);
+                return getNextCost();
+            } else {
+                if (_selectDestinationAction.wasCarriedOut())
+                    setDestination(_selectDestinationAction.getSelectedCard());
+            }
         }
 
         if (!_cardsToMoveChosen) {
-            Effect effect = getChooseCardsToMoveEffect();
-            appendTargeting(new SubAction(this, effect));
-            return getNextCost();
+            if (_selectCardsToMoveAction == null) {
+                // TODO - No checks here yet to make sure cards can be moved (compatibility, etc.)
+                Collection<PhysicalCard> movableCards =
+                        Filters.filter(_origin.getAttachedCards(_origin.getGame()),
+                                Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
+                _selectCardsToMoveAction = new SelectCardsInPlayAction(this, _performingPlayer,
+                        "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
+                        movableCards, 1);
+                appendTargeting(_selectCardsToMoveAction);
+                return getNextCost();
+            } else {
+                if (_selectCardsToMoveAction.wasCarriedOut())
+                    setCardsToMove(_selectCardsToMoveAction.getSelectedCards());
+            }
         }
 
-        if (!_cardsMoved) {
-            for (PhysicalReportableCard1E card : _cardsToMove) {
-                cardGame.getGameState().transferCard(card, _toCard); // attach card to destination card
-                card.setLocation(_toCard.getLocation());
-                if (_fromCard instanceof MissionCard)
-                    card.leaveAwayTeam();
-                if (_toCard instanceof MissionCard mission)
-                    card.joinEligibleAwayTeam(mission);
+        if (!_wasCarriedOut) {
+            for (PhysicalCard card : _cardsToMove) {
+                cardGame.getGameState().transferCard(card, _destination); // attach card to destination card
+                card.setLocation(_destination.getLocation());
+                if (_origin instanceof MissionCard)
+                    ((PhysicalReportableCard1E) card).leaveAwayTeam();
+                if (_destination instanceof MissionCard mission)
+                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission);
             }
             if (!_cardsToMove.isEmpty()) {
                 cardGame.sendMessage(_performingPlayerId + " " + actionVerb() + "ed " +
                         TextUtils.plural(_cardsToMove.size(), "card") + " from " +
-                        _fromCard.getCardLink() + " to " + _toCard.getCardLink());
+                        _origin.getCardLink() + " to " + _destination.getCardLink());
             }
-            _cardsMoved = true;
+            _wasCarriedOut = true;
         }
 
         return getNextAction();
     }
 
-    public void setCardsToMove(Collection<? extends PhysicalReportableCard1E> cards) {
+    public void setCardsToMove(Collection<? extends PhysicalCard> cards) {
+        _cardsToMove.clear();
         _cardsToMove.addAll(cards);
         _cardsToMoveChosen = true;
     }
 
     public void setDestination(PhysicalCard destination) {
-        _toCard = destination;
+        _destination = destination;
         _toCardChosen = true;
     }
 
     public void setOrigin(PhysicalCard origin) {
-        _fromCard = origin;
+        _origin = origin;
         _fromCardChosen = true;
     }
 

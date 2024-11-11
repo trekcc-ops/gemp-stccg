@@ -1,14 +1,19 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class SystemQueueAction extends ActionyAction {
+public class AllowResponsesAction extends SystemQueueAction {
 
-    public SystemQueueAction(DefaultGame game) {
+    private final EffectResult.Type _type;
+    private final Action _actionBeingRespondedTo;
+
+    public AllowResponsesAction(DefaultGame game, Action actionBeingRespondedTo, EffectResult.Type type) {
         super(game);
+        _type = type;
+        _actionBeingRespondedTo = actionBeingRespondedTo;
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
@@ -25,14 +30,7 @@ public class SystemQueueAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) {
-        if (isCostFailed()) {
-            return null;
-        } else {
-            Action cost = getNextCost();
-            if (cost != null)
-                return cost;
-
-            return getNextAction();
-        }
+        cardGame.getActionsEnvironment().emitEffectResult(new EffectResult(_type));
+        return null;
     }
 }

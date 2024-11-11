@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.turn.UsageEffect;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,25 +23,17 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     protected final ActionType _actionType;
     public ActionType getActionType() { return _actionType; }
 
-    protected AbstractCostToEffectAction(String performingPlayerId, ActionType actionType) {
-        _performingPlayerId = performingPlayerId;
-        _actionType = actionType;
-    }
-    protected AbstractCostToEffectAction(Player player, ActionType actionType) {
-        this(player.getPlayerId(), actionType);
+    protected AbstractCostToEffectAction(DefaultGame game, Action action) {
+        _performingPlayerId = action.getPerformingPlayerId();
+        _actionType = action.getActionType();
+        _actionId = game.getActionsEnvironment().getNextActionId();
+        game.getActionsEnvironment().incrementActionId();
     }
 
-    protected AbstractCostToEffectAction(Player player, String text, ActionType actionType) {
-        this(player.getPlayerId(), actionType);
-        this.text = text;
-    }
 
     protected AbstractCostToEffectAction(Action action) {
-        this(action.getPerformingPlayerId(), action.getActionType());
-    }
-    protected AbstractCostToEffectAction() {
-        _performingPlayerId = null;
-        _actionType = ActionType.OTHER;
+        _performingPlayerId = action.getPerformingPlayerId();
+        _actionType = action.getActionType();
     }
 
 
@@ -175,7 +166,5 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
             throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
         _usageCosts.add(cost);
     }
-
-    public void setId(int id) { _actionId = id; }
 
 }

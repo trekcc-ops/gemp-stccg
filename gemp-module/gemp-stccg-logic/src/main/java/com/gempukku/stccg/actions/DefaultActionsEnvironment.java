@@ -187,8 +187,6 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     @Override
     public void addActionToStack(Action action) {
         _actionStack.add(action);
-        action.setId(_nextActionId);
-        _nextActionId++;
     }
 
     public Stack<Action> getActionStack() { return _actionStack; }
@@ -212,6 +210,16 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     @Override
     public Action getCurrentAction() {
         return _actionStack.peek();
+    }
+
+    @Override
+    public int getNextActionId() {
+        return _nextActionId;
+    }
+
+    @Override
+    public void incrementActionId() {
+        _nextActionId++;
     }
 
 }

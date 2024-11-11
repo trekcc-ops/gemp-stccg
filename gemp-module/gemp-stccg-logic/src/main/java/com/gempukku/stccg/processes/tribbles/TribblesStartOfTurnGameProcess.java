@@ -17,7 +17,7 @@ public class TribblesStartOfTurnGameProcess extends TribblesGameProcess {
         // TODO - Don't fully understand this commented method, but it creates duplicates of modifiers
 //        _game.getGameState().startAffectingCardsForCurrentPlayer();
 
-        SystemQueueAction action = new SystemQueueAction();
+        SystemQueueAction action = new SystemQueueAction(_game);
 
         action.appendEffect(new UnrespondableEffect(_game) {
             @Override

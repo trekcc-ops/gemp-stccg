@@ -14,11 +14,9 @@ public class OptionalTriggerAction extends ActionyAction {
     private ActionSource _actionSource;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.OTHER);
+        super(physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(), ActionType.OTHER);
         _physicalCard = physicalCard;
         _actionAttachedToCard = physicalCard;
-
-        setText("Optional trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " optional triggered effect is used";
     }
 

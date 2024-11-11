@@ -39,4 +39,8 @@ public interface ActionsEnvironment {
     void removeCompletedAction(Action action);
 
     Action getCurrentAction();
+
+    int getNextActionId();
+
+    void incrementActionId();
 }

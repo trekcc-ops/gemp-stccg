@@ -22,7 +22,7 @@ public class ChooseAndPutCardFromDiscardOnTopOfDeckEffect extends ChooseCardsFro
     @Override
     protected void cardsSelected(DefaultGame game, Collection<PhysicalCard> cards) {
         if (!cards.isEmpty()) {
-            SubAction subAction = _action.createSubAction();
+            SubAction subAction = new SubAction(_action, _game);
             for (PhysicalCard card : cards)
                 subAction.appendEffect(new PutCardsFromZoneOnEndOfPileEffect(
                         game,true, Zone.DISCARD, Zone.DRAW_DECK, EndOfPile.TOP, card));

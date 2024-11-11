@@ -73,7 +73,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
     }
 
     private void secondPlayerChosen(String secondPlayerChosen, TribblesGame game) {
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new ChooseAndDiscardCardsFromHandEffect(getGame(), _action, _discardingPlayer,false,1));
         subAction.appendEffect(new ChooseAndPutCardsFromHandBeneathDrawDeckEffect(
                 game, _action, secondPlayerChosen, 1, false, Filters.any));

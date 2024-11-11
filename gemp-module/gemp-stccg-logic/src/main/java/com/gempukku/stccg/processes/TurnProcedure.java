@@ -30,14 +30,14 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             numSinceDecision++;
             // First check for any "state-based" effects
             Set<EffectResult> effectResults = actionsEnvironment.consumeEffectResults();
-            effectResults.forEach(EffectResult::createOptionalAfterTriggerActions);
+            effectResults.forEach(effectResult -> effectResult.createOptionalAfterTriggerActions(_game));
             if (effectResults.isEmpty()) {
                 if (actionsEnvironment.hasNoActionsInProgress())
                     continueCurrentProcess();
                 else
                     executeNextSubaction();
             } else {
-                actionsEnvironment.addActionToStack(new PlayOutEffectResults(effectResults));
+                actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, effectResults));
             }
             _game.getGameState().updateGameStatsAndSendIfChanged();
 

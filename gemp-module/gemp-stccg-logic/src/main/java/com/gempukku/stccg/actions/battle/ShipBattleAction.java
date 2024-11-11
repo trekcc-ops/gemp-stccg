@@ -53,9 +53,8 @@ public class ShipBattleAction extends ActionyAction {
      */
     public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, ST1ELocation location)
             throws InvalidGameLogicException {
-        super(performingPlayer.getPlayerId(), ActionType.BATTLE);
+        super(performingPlayer, "Initiate battle", ActionType.BATTLE);
         DefaultGame game = actionSource.getGame();
-        setText("Initiate battle");
         _actionSource = actionSource;
         _location = location;
         _attackingPlayer = performingPlayer;

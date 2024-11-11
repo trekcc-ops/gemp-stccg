@@ -15,7 +15,8 @@ class PlayOutEffectResults extends SystemQueueAction {
     private final Set<? extends EffectResult> _effectResults;
     private boolean _initialized;
 
-    PlayOutEffectResults(Set<? extends EffectResult> effectResults) {
+    PlayOutEffectResults(DefaultGame game, Set<? extends EffectResult> effectResults) {
+        super(game);
         _effectResults = effectResults;
     }
 
