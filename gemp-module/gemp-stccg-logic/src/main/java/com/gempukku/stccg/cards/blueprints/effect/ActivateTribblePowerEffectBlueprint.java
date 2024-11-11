@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.tribblepower.*;
 import com.gempukku.stccg.cards.ActionContext;
@@ -17,7 +17,7 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
     }
 
     @Override
-    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(Action action, ActionContext context) {
 
         TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
         if (context instanceof TribblesActionContext)
@@ -26,7 +26,7 @@ public class ActivateTribblePowerEffectBlueprint extends DelayedEffectBlueprint 
     }
 
     private Effect createTribblePowerEffect(TribblePower tribblePower, TribblesActionContext actionContext,
-                                            CostToEffectAction action) {
+                                            Action action) {
 
         if (tribblePower == TribblePower.ACQUIRE)
             return new ActivateAcquireTribblePowerEffect(action, actionContext);

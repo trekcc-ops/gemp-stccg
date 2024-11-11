@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ActivateCardAction extends AbstractCostToEffectAction {
+public class ActivateCardAction extends ActionyAction {
 
     private final PhysicalCard _physicalCard;
     private ActivateCardEffect _activateCardEffect;
@@ -22,6 +22,9 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
         return _physicalCard;
     }
 
+    // TODO - Not sure this is accurate. Also not sure we need this class at all.
+    public boolean requirementsAreMet(DefaultGame game) { return true; }
+
     @Override
     public PhysicalCard getCardForActionSelection() {
         return _physicalCard;
@@ -32,7 +35,7 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
@@ -43,20 +46,19 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
         }
 
         if (!isCostFailed()) {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
             if (!_activated) {
                 _activated = true;
-                _activateCardEffect = new ActivateCardEffect(_physicalCard);
-                return _activateCardEffect;
+                return new SubAction(this, new ActivateCardEffect(_physicalCard));
             }
 
             if (_activateCardEffect.getActivateCardResult().isEffectCancelled())
                 return null;
             if (!_prevented)
-                return getNextEffect();
+                return getNextAction();
         }
         return null;
     }

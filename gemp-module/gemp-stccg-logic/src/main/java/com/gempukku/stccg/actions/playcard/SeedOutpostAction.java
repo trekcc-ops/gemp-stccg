@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.DoNothingEffect;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
@@ -40,11 +42,11 @@ public class SeedOutpostAction extends PlayCardAction {
 
     @Override
     protected Effect getFinalEffect() {
-        return new SeedFacilityEffect(_performingPlayerId, _cardEnteringPlay, _locationZoneIndex, this);
+        return new DoNothingEffect(_actionSource.getGame());
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
 
@@ -90,9 +92,16 @@ public class SeedOutpostAction extends PlayCardAction {
         }
         if (!_cardWasSeeded) {
             _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
+
+            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
+            gameState.removeCardFromZone(_cardEnteringPlay);
+            gameState.getPlayer(_cardEnteringPlay.getOwnerName())
+                    .addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
+            gameState.seedFacilityAtLocation(_cardEnteringPlay, _locationZoneIndex);
+            cardGame.getActionsEnvironment().emitEffectResult(
+                    new PlayCardResult(this, _fromZone, _cardEnteringPlay));
             _cardWasSeeded = true;
-            _finalEffect = getFinalEffect();
-            return _finalEffect;
+            return getNextAction();
         }
         return null;
     }

@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.DoNothingEffect;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
@@ -12,6 +14,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
@@ -80,7 +83,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
         boolean result;
         try {
             Collection<PhysicalCard> destinationOptions = getDestinationOptions(cardGame);
-            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty() && costsCanBePaid();
+            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty() && costsCanBePaid(cardGame);
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             result = false;
@@ -89,12 +92,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override
-    protected Effect getFinalEffect() {
-        return new ReportCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _reportingDestination);
+    protected Effect getFinalEffect() { return new DoNothingEffect(_actionSource.getGame());
     }
 
     @Override    
-    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         DefaultGame game = _cardEnteringPlay.getGame();
         Player performingPlayer = game.getPlayer(_performingPlayerId);
 
@@ -138,8 +140,17 @@ public class ReportCardAction extends STCCGPlayCardAction {
         if (!_cardPlayed) {
             _cardEnteringPlay.changeAffiliation(_selectedAffiliation);
             _cardPlayed = true;
-            _finalEffect = getFinalEffect();
-            return _finalEffect;
+            GameState gameState = cardGame.getGameState();
+
+            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " played " + _cardEnteringPlay.getCardLink());
+
+            gameState.removeCardFromZone(_cardEnteringPlay);
+            cardGame.getGameState().getPlayer(_cardEnteringPlay.getOwnerName()).addPlayedAffiliation(_cardEnteringPlay.getAffiliation());
+            _cardEnteringPlay.reportToFacility(_reportingDestination);
+            cardGame.getActionsEnvironment().emitEffectResult(
+                    new PlayCardResult(this, _fromZone, _cardEnteringPlay));
+            appendEffect(new DoNothingEffect(cardGame));
+            return getNextAction();
         }
         return null;
 

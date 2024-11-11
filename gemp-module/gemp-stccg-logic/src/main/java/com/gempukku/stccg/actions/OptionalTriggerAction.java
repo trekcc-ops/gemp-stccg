@@ -4,7 +4,7 @@ import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class OptionalTriggerAction extends AbstractCostToEffectAction {
+public class OptionalTriggerAction extends ActionyAction {
     private final PhysicalCard _physicalCard;
     private final PhysicalCard _actionAttachedToCard;
 
@@ -14,7 +14,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     private ActionSource _actionSource;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.TRIGGER);
+        super(physicalCard.getOwner(), ActionType.OTHER);
         _physicalCard = physicalCard;
         _actionAttachedToCard = physicalCard;
 
@@ -30,6 +30,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     public void setMessage(String message) {
         _message = message;
     }
+    public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
     public PhysicalCard getActionSource() {
@@ -42,7 +43,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
@@ -52,14 +53,14 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
         }
 
         if (!isCostFailed()) {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
             if (_actionSource != null) {
                 cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
             }
-            return getNextEffect();
+            return getNextAction();
         }
         return null;
     }

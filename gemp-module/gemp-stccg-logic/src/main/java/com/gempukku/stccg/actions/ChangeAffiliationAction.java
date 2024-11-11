@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChangeAffiliationAction extends AbstractCostToEffectAction {
+public class ChangeAffiliationAction extends ActionyAction {
     private final AffiliatedCard _card;
-    private boolean _affiliationWasChosen = false;
+    private boolean _affiliationWasChosen;
     private Affiliation _selectedAffiliation;
-    private boolean _actionCompleted = false;
+    private boolean _actionCompleted;
     private final List<Affiliation> _affiliationOptions = new LinkedList<>();
 
     public ChangeAffiliationAction(Player player, AffiliatedCard card) {
@@ -42,8 +42,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
         }
     }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         return !_affiliationOptions.isEmpty();
     }
 
@@ -58,7 +57,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
     public PhysicalCard getCardForActionSelection() { return (PhysicalCard) _card; }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         Player player = cardGame.getPlayer(_performingPlayerId);
 
         if (!_affiliationWasChosen) {
@@ -81,7 +80,7 @@ public class ChangeAffiliationAction extends AbstractCostToEffectAction {
             _actionCompleted = true;
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
 }

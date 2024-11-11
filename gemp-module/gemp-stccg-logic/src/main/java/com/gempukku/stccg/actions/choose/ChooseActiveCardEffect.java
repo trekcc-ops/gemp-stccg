@@ -10,6 +10,11 @@ public abstract class ChooseActiveCardEffect extends ChooseActiveCardsEffect {
         super(source, playerId, choiceText, 1, 1, filters);
     }
 
+    public ChooseActiveCardEffect(PhysicalCard source, String playerId, String choiceText, Collection<PhysicalCard> targetOptions) {
+        super(source, playerId, choiceText, 1, 1, targetOptions);
+    }
+
+
     protected abstract void cardSelected(PhysicalCard card);
 
     @Override

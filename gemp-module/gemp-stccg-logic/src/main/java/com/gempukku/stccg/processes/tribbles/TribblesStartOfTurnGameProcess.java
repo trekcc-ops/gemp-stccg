@@ -28,7 +28,7 @@ public class TribblesStartOfTurnGameProcess extends TribblesGameProcess {
         });
 
         action.appendEffect(
-                new TriggeringResultEffect(new StartOfTurnResult(_game), "Start of turn"));
+                new TriggeringResultEffect(_game, new StartOfTurnResult(_game), "Start of turn"));
         ((ModifiersLogic) _game.getModifiersEnvironment()).signalStartOfTurn(_game.getGameState().getCurrentPlayerId());
         _game.getActionsEnvironment().addActionToStack(action);
     }

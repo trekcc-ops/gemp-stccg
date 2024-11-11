@@ -15,13 +15,12 @@ class PlayOutEffectResults extends SystemQueueAction {
     private final Set<? extends EffectResult> _effectResults;
     private boolean _initialized;
 
-    PlayOutEffectResults(DefaultGame game, Set<? extends EffectResult> effectResults) {
-        super();
+    PlayOutEffectResults(Set<? extends EffectResult> effectResults) {
         _effectResults = effectResults;
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_initialized) {
             _initialized = true;
             List<Action> requiredResponses = cardGame.getActionsEnvironment().getRequiredAfterTriggers(_effectResults);
@@ -35,7 +34,7 @@ class PlayOutEffectResults extends SystemQueueAction {
                     cardGame, this, actionOrder, 0, _effectResults);
             appendEffect(effect);
         }
-        return getNextEffect();
+        return getNextAction();
     }
 
 }

@@ -1,5 +1,8 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -7,7 +10,7 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,6 +90,23 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         // Confirm that mission was solved and player earned points
         assertTrue(excavation.isCompleted());
         assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
+
+        Map<Integer, Action> performedActions = _game.getActionsEnvironment().getPerformedActions();
+        List<Integer> actionIds = new LinkedList<>(performedActions.keySet());
+        Collections.sort(actionIds);
+
+        for (Integer actionId : actionIds) {
+            Action action = performedActions.get(actionId);
+            String effectName = null;
+            if (action instanceof SubAction sub) {
+                Effect effect = sub.getEffect();
+                if (effect != null) effectName = effect.getClass().getSimpleName();
+            }
+            System.out.println(
+                    actionId + " - " + action.getClass().getSimpleName() +
+                            " (" + action.getActionType().name() + ")" +
+                    ((effectName != null) ? " - " + effectName : ""));
+        }
     }
 
 }

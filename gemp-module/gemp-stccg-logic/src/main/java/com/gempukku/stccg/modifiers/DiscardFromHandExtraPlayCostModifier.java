@@ -1,12 +1,12 @@
 package com.gempukku.stccg.modifiers;
 
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
-import com.gempukku.stccg.condition.Condition;
 
 public class DiscardFromHandExtraPlayCostModifier extends AbstractExtraPlayCostModifier {
     private final int count;
@@ -19,7 +19,7 @@ public class DiscardFromHandExtraPlayCostModifier extends AbstractExtraPlayCostM
     }
 
     @Override
-    public void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card) {
+    public void appendExtraCosts(DefaultGame game, Action action, PhysicalCard card) {
         action.appendCost(
                 new ChooseAndDiscardCardsFromHandEffect(game, action, card.getOwnerName(), false, count, cardFilter));
     }

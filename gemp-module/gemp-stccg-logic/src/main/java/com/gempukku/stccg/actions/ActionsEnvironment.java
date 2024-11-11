@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.Snapshotable;
 
 import java.util.*;
 
-public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
+public interface ActionsEnvironment {
     List<Action> getRequiredBeforeTriggers(Effect effect);
 
     List<Action> getOptionalBeforeTriggers(String playerId, Effect effect);
@@ -33,7 +32,11 @@ public interface ActionsEnvironment extends Snapshotable<ActionsEnvironment> {
     DefaultGame getGame();
     Stack<Action> getActionStack();
 
-    void addPerformedAction(Action action);
-    List<Action> getPerformedActions();
+    Map<Integer, Action> getPerformedActions();
 
+    boolean hasNoActionsInProgress();
+
+    void removeCompletedAction(Action action);
+
+    Action getCurrentAction();
 }

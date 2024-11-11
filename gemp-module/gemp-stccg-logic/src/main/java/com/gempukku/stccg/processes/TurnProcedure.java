@@ -32,12 +32,12 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
             Set<EffectResult> effectResults = actionsEnvironment.consumeEffectResults();
             effectResults.forEach(EffectResult::createOptionalAfterTriggerActions);
             if (effectResults.isEmpty()) {
-                if (actionsEnvironment.getActionStack().isEmpty())
+                if (actionsEnvironment.hasNoActionsInProgress())
                     continueCurrentProcess();
                 else
-                    executeNextAction();
+                    executeNextSubaction();
             } else {
-                actionsEnvironment.addActionToStack(new PlayOutEffectResults(_game, effectResults));
+                actionsEnvironment.addActionToStack(new PlayOutEffectResults(effectResults));
             }
             _game.getGameState().updateGameStatsAndSendIfChanged();
 
@@ -58,10 +58,9 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
         }
     }
 
-    private void executeNextAction() {
+    private void executeNextSubaction() {
         ActionsEnvironment actionsEnvironment = _game.getActionsEnvironment();
-        Stack<Action> actionStack = actionsEnvironment.getActionStack();
-        Action action = actionStack.peek();
+        Action action = actionsEnvironment.getCurrentAction();
         try {
             Effect effect;
             if (action instanceof ActionyAction actiony) {
@@ -71,12 +70,12 @@ public class TurnProcedure implements Snapshotable<TurnProcedure> {
                 effect = action.nextEffect(_game);
             }
             if (effect == null) {
-                actionStack.remove(actionStack.lastIndexOf(action));
+                actionsEnvironment.removeCompletedAction(action);
             } else {
                 if (effect.getType() == null) {
                     effect.playEffect();
                 } else
-                    actionStack.add(new PlayOutEffect(effect));
+                    actionsEnvironment.addActionToStack(new PlayOutEffect(effect));
             }
         } catch (InvalidGameLogicException exp) {
             _game.sendErrorMessage(exp);

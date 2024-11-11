@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.ActionContext;
 
 import java.util.LinkedList;
@@ -20,7 +20,7 @@ public class MultiEffectBlueprint implements EffectBlueprint {
     }
 
     @Override
-    public void addEffectToAction(boolean cost, CostToEffectAction action, ActionContext actionContext) {
+    public void addEffectToAction(boolean cost, Action action, ActionContext actionContext) {
         for (EffectBlueprint effectBlueprint : effectBlueprints)
             effectBlueprint.addEffectToAction(cost, action, actionContext);
     }

@@ -26,15 +26,14 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
      * @param description the description
      * @param gameState the game state to snapshot
      * @param modifiersLogic the modifiers logic to snapshot
-     * @param actionsEnvironment the actions environment to snapshot
      * @param turnProcedure the turn procedure to snapshot
      * @return the game snapshot
      */
     public static GameSnapshot createGameSnapshot(int id, String description, GameState gameState,
-                                                  ModifiersLogic modifiersLogic, ActionsEnvironment actionsEnvironment,
+                                                  ModifiersLogic modifiersLogic,
                                                   TurnProcedure turnProcedure) {
         GameSnapshot gameSnapshot =
-                new GameSnapshot(id, description, gameState, modifiersLogic, actionsEnvironment, turnProcedure);
+                new GameSnapshot(id, description, gameState, modifiersLogic, turnProcedure);
         SnapshotData snapshotMetadata = new SnapshotData();
         return snapshotMetadata.getDataForSnapshot(gameSnapshot);
     }
@@ -49,11 +48,10 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
             throw new RuntimeException("blork"); // TODO SNAPSHOT - Get rid of this
 
         ModifiersLogic newModifiersLogic = snapshotData.getDataForSnapshot(_modifiersLogic);
-        ActionsEnvironment newEnvironment = snapshotData.getDataForSnapshot(_actionsEnvironment);
         TurnProcedure newProcedure = snapshotData.getDataForSnapshot(_turnProcedure);
 
 
-        return new GameSnapshot(_id, _description, newGameState, newModifiersLogic, newEnvironment, newProcedure);
+        return new GameSnapshot(_id, _description, newGameState, newModifiersLogic, newProcedure);
     }
 
 
@@ -63,16 +61,14 @@ public class GameSnapshot implements Snapshotable<GameSnapshot> {
      * @param description the description
      * @param gameState the game state to snapshot
      * @param modifiersLogic the modifiers logic to snapshot
-     * @param actionsEnvironment the actions environment to snapshot
      * @param turnProcedure the turn procedure to snapshot
      */
     private GameSnapshot(int id, String description, GameState gameState, ModifiersLogic modifiersLogic,
-                         ActionsEnvironment actionsEnvironment, TurnProcedure turnProcedure) {
+                         TurnProcedure turnProcedure) {
         _id = id;
         _description = description;
         _gameState = gameState;
         _modifiersLogic = modifiersLogic;
-        _actionsEnvironment = actionsEnvironment;
         _turnProcedure = turnProcedure;
     }
 

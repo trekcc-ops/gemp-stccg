@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.SnapshotData;
 
 import java.util.*;
 
@@ -10,8 +9,9 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private final Stack<Action> _actionStack;
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
-    private final List<Action> _performedActions = new LinkedList<>();
+    private final Map<Integer, Action> _performedActions = new HashMap<>();
     private Set<EffectResult> _effectResults = new HashSet<>();
+    private int _nextActionId = 1;
 
     public DefaultActionsEnvironment(DefaultGame game) {
         this(game, new Stack<>());
@@ -25,31 +25,14 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     private DefaultActionsEnvironment(DefaultGame game, Stack<Action> actionStack,
                                       Collection<? extends ActionProxy> actionProxies,
                                       Collection<? extends ActionProxy> untilEndOfTurnActionProxies,
-                                      Collection<? extends Action> performedActions) {
+                                      Iterable<? extends Action> performedActions) {
         _game = game;
         _actionStack = actionStack;
         _actionProxies.addAll(actionProxies);
         _untilEndOfTurnActionProxies.addAll(untilEndOfTurnActionProxies);
-        _performedActions.addAll(performedActions);
-    }
-
-    public DefaultActionsEnvironment generateSnapshot(SnapshotData snapshotData) {
-        // Snapshot should not be created if effect results lists have members
-        if (!_effectResults.isEmpty()) {
-            throw new UnsupportedOperationException(
-                    "Cannot generate snapshot of DefaultActionsEnvironment with EffectResults"
-            );
+        for (Action action : performedActions) {
+            _performedActions.put(action.getActionId(), action);
         }
-
-        Stack<Action> newActionStack = new Stack<>();
-        List<Action> newPerformedActions = new LinkedList<>();
-        for (Action action : _actionStack)
-            newActionStack.add(snapshotData.getDataForSnapshot(action));
-        for (Action action : _performedActions)
-            newActionStack.add(snapshotData.getDataForSnapshot(action));
-
-        return new DefaultActionsEnvironment(_game, newActionStack, _actionProxies, _untilEndOfTurnActionProxies,
-                newPerformedActions);
     }
 
     public DefaultGame getGame() { return _game; }
@@ -204,15 +187,31 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
     @Override
     public void addActionToStack(Action action) {
         _actionStack.add(action);
+        action.setId(_nextActionId);
+        _nextActionId++;
     }
 
     public Stack<Action> getActionStack() { return _actionStack; }
 
-    public void addPerformedAction(Action action) { _performedActions.add(action); }
+    @Override
+    public Map<Integer, Action> getPerformedActions() {
+        return _performedActions;
+    }
 
     @Override
-    public List<Action> getPerformedActions() {
-        return _performedActions;
+    public boolean hasNoActionsInProgress() {
+        return _actionStack.isEmpty();
+    }
+
+    @Override
+    public void removeCompletedAction(Action action) {
+        _actionStack.remove(action);
+        _performedActions.put(action.getActionId(), action);
+    }
+
+    @Override
+    public Action getCurrentAction() {
+        return _actionStack.peek();
     }
 
 }

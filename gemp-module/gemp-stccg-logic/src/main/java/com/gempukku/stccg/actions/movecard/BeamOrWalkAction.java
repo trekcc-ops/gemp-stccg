@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
@@ -19,7 +20,6 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BeamOrWalkAction extends ActionyAction {
@@ -77,7 +77,6 @@ public abstract class BeamOrWalkAction extends ActionyAction {
                 movableCards.size(), movableCards) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> cards) {
-                Collection<PhysicalReportableCard1E> cardsMoving = new LinkedList<>();
                 try {
                     for (PhysicalCard card : cards) {
                         if (card instanceof PhysicalReportableCard1E reportable)
@@ -106,14 +105,14 @@ public abstract class BeamOrWalkAction extends ActionyAction {
         };
     }
 
-    private Effect getChooseFromCardEffect(DefaultGame game) {
-        // Choose card beaming from
-        return new ChooseCardsOnTableEffect(this, _performingPlayer,
+    private Action selectOriginAction(DefaultGame game) {
+        return new SelectCardInPlayAction(this, _performingPlayer,
                 "Choose card to " + actionVerb() + " from", getValidFromCards(game)) {
+
             @Override
-            protected void cardsSelected(Collection<PhysicalCard> cardSelected) {
+            protected void cardSelected(PhysicalCard selectedCard) {
                 _fromCardChosen = true;
-                _fromCard = Iterables.getOnlyElement(cardSelected);
+                _fromCard = selectedCard;
 
                 if (_fromCard == _cardSource) {
                     _destinationOptions.removeIf(card -> card == _fromCard);
@@ -135,8 +134,8 @@ public abstract class BeamOrWalkAction extends ActionyAction {
             return cost;
 
         if (!_fromCardChosen) {
-            Effect effect = getChooseFromCardEffect(cardGame);
-            appendTargeting(new SubAction(this, effect));
+            Action action = selectOriginAction(cardGame);
+            appendTargeting(action);
             return getNextCost();
         }
 

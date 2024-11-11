@@ -1,7 +1,6 @@
 package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -42,7 +41,7 @@ public interface ModifiersQuerying {
 
     List<? extends Action> getExtraPhaseActions(DefaultGame game, PhysicalCard target);
 
-    void appendExtraCosts(CostToEffectAction action, PhysicalCard target);
+    void appendExtraCosts(Action action, PhysicalCard target);
 
     // Others
     boolean canBeDiscardedFromPlay(String performingPlayer, PhysicalCard card, PhysicalCard source);

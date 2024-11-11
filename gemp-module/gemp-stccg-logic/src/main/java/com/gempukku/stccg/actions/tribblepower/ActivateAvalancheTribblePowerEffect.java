@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.actions.discard.AllPlayersDiscardFromHandEffect;
@@ -9,7 +9,7 @@ import com.gempukku.stccg.cards.TribblesActionContext;
 
 
 public class ActivateAvalancheTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateAvalancheTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateAvalancheTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

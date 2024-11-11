@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.EndOfPile;
@@ -8,7 +8,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 
 public class ActivateKillTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateKillTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateKillTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

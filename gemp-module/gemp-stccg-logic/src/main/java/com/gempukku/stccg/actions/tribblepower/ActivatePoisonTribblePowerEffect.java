@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivatePoisonTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivatePoisonTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

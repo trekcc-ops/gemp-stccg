@@ -9,6 +9,8 @@ import java.util.LinkedList;
 
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
+    protected boolean _wasCarriedOut;
+    private int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
     private final LinkedList<Action> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Action> _targeting = new LinkedList<>();
@@ -16,7 +18,7 @@ public abstract class ActionyAction implements Action {
     private final LinkedList<Action> _effects = new LinkedList<>();
     private final LinkedList<Action> _processedActions = new LinkedList<>();
     private final LinkedList<Action> _usageCosts = new LinkedList<>();
-    protected String text;
+    protected String _text;
 
     protected final String _performingPlayerId;
     private boolean _virtualCardAction;
@@ -33,7 +35,7 @@ public abstract class ActionyAction implements Action {
 
     protected ActionyAction(Player player, String text, ActionType actionType) {
         this(player.getPlayerId(), actionType);
-        this.text = text;
+        this._text = text;
     }
 
     protected ActionyAction(Action action) {
@@ -78,16 +80,20 @@ public abstract class ActionyAction implements Action {
         _costs.addAll(0, Collections.singletonList(cost));
     }
 
-    public final void insertAction(Action effect) {
-        _effects.addAll(0, Collections.singletonList(effect));
+    public final void insertAction(Action action) {
+        _effects.addAll(0, Collections.singletonList(action));
     }
 
+    /**
+     * Sets the text shown for the action selection on the User Interface.
+     * @param text the text to show for the action selection
+     */
     public void setText(String text) {
-        this.text = text;
+        _text = text;
     }
 
     @Override
-    public String getText(DefaultGame game) { return text; }
+    public String getText(DefaultGame game) { return _text; }
 
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {
@@ -175,5 +181,20 @@ public abstract class ActionyAction implements Action {
         _usageCosts.add(cost);
     }
 
+    public final void appendUsage(Effect effect) {
+        appendUsage(new SubAction(this, effect));
+    }
+    public final void insertEffect(Effect effect) { insertAction(new SubAction(this, effect)); }
+
+    public final void appendEffect(Effect effect) { appendAction(new SubAction(this, effect)); }
+
     public abstract Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException;
+
+    public void insertCost(Effect effect) { insertCost(new SubAction(this, effect)); }
+
+    public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
+    public void appendTargeting(Effect effect) { appendCost(new SubAction(this, effect)); }
+    public void setId(int id) { _actionId = id; }
+    public int getActionId() { return _actionId; }
+
 }

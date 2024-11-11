@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -31,7 +31,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
     public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
 
-    public CostToEffectAction getPlayCardAction(boolean forFree) {
+    public Action getPlayCardAction(boolean forFree) {
         // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
         STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.TABLE, getOwner(), forFree);
         _game.getModifiersQuerying().appendExtraCosts(action, this);

@@ -372,7 +372,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public void appendExtraCosts(CostToEffectAction action, PhysicalCard target) {
+    public void appendExtraCosts(Action action, PhysicalCard target) {
         final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay(_game);
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {

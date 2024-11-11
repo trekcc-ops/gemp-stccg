@@ -148,16 +148,16 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public CostToEffectAction getPlayCardAction() {
+    public Action getPlayCardAction() {
         return getPlayCardAction(false);
     }
-    public abstract CostToEffectAction getPlayCardAction(boolean forFree);
+    public abstract Action getPlayCardAction(boolean forFree);
 
-    public CostToEffectAction getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter) {
+    public Action getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter) {
 
         final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
         if (validTargetFilter == null) {
-            CostToEffectAction action =
+            Action action =
                     new STCCGPlayCardAction((ST1EPhysicalCard) this, Zone.SUPPORT, this.getOwner());
             game.getModifiersQuerying().appendExtraCosts(action, this);
             return action;
@@ -339,7 +339,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public Integer getNumberOfCopiesSeededByPlayer(Player player) {
         int total = 0;
-        List<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions();
+        Collection<Action> performedActions = player.getGame().getActionsEnvironment().getPerformedActions().values();
         for (Action action : performedActions) {
             if (action instanceof SeedCardAction seedCardAction) {
                 if (Objects.equals(seedCardAction.getPerformingPlayerId(), player.getPlayerId()) &&

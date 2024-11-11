@@ -66,6 +66,14 @@ public class EffectResult {
         _performingPlayerId = effect.getPerformingPlayerId();
     }
 
+    protected EffectResult(DefaultGame game, Type type, Action action, PhysicalCard source) {
+        _type = type;
+        _game = game;
+        _source = source;
+        _performingPlayerId = action.getPerformingPlayerId();
+    }
+
+
 
     public Type getType() {
         return _type;

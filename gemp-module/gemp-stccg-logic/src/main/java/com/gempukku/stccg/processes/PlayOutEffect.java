@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.game.DefaultGame;
@@ -20,7 +21,7 @@ class PlayOutEffect extends SystemQueueAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_initialized) {
             _initialized = true;
             appendEffect(new PlayOutRequiredBeforeResponsesEffect(this, new HashSet<>(), _effect));
@@ -30,6 +31,6 @@ class PlayOutEffect extends SystemQueueAction {
             appendEffect(new PlayEffect(_effect));
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 }

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardWithCrew;
@@ -52,9 +52,9 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     }
 
     @Override
-    public CostToEffectAction getPlayCardAction() { return createReportCardAction(); }
+    public Action getPlayCardAction() { return createReportCardAction(); }
 
-    public CostToEffectAction createReportCardAction() {
+    public Action createReportCardAction() {
         return new ReportCardAction(this, false);
     }
 

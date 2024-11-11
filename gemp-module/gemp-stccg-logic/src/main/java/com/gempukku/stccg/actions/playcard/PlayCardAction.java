@@ -1,22 +1,23 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public abstract class PlayCardAction extends AbstractCostToEffectAction {
+public abstract class PlayCardAction extends ActionyAction {
 
-    protected final PhysicalCard _actionSource;
-    private boolean _actionWasInitiated, _cardWasRemoved, _cardHasEnteredPlay;
-    protected String _text;
+    final PhysicalCard _actionSource;
+    private boolean _cardWasRemoved, _cardHasEnteredPlay;
     private boolean _virtualCardAction;
-    protected final PhysicalCard _cardEnteringPlay;
+    final PhysicalCard _cardEnteringPlay;
     protected final Zone _fromZone;
-    protected final Zone _toZone;
-    protected Effect _finalEffect;
+    final Zone _toZone;
+    private Effect _finalEffect;
 
     /**
      * Creates an action for playing the specified card.
@@ -31,11 +32,8 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
         _toZone = toZone;
     }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
-        if (!_cardEnteringPlay.canBePlayed(cardGame))
-            return false;
-        return costsCanBePaid();
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return _cardEnteringPlay.canBePlayed(cardGame);
     }
 
     @Override
@@ -50,27 +48,12 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    public String getText(DefaultGame game) {
-        return _text;
+    protected Effect getFinalEffect() {
+        return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone);
     }
 
-    /**
-     * Sets the text shown for the action selection on the User Interface.
-     * @param text the text to show for the action selection
-     */
-    public void setText(String text) {
-        _text = text;
-    }
-
-    protected Effect getFinalEffect() { return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone); }
-
-    public Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_actionWasInitiated) {
-            _actionWasInitiated = true;
-            // TODO - Star Wars code used beginPlayCard method here
-        }
-
-        Effect cost = getNextCost();
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
@@ -87,11 +70,10 @@ public abstract class PlayCardAction extends AbstractCostToEffectAction {
 
         if (!_cardHasEnteredPlay) {
             _cardHasEnteredPlay = true;
-            _finalEffect = getFinalEffect();
-            return _finalEffect;
+            return new SubAction(this, getFinalEffect());
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
     public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }

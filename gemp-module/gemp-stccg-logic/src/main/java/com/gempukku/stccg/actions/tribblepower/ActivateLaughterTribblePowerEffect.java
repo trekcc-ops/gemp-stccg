@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ScorePointsEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
@@ -20,7 +20,7 @@ public class ActivateLaughterTribblePowerEffect extends ActivateTribblePowerEffe
 
     private final static int BONUS_POINTS = 25000;
     private String _discardingPlayer;
-    public ActivateLaughterTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateLaughterTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

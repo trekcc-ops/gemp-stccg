@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.EffectResult;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -52,9 +51,9 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     ST1ELocation getLocation();
     void setLocation(ST1ELocation location);
     String getFullName();
-    CostToEffectAction getPlayCardAction();
-    CostToEffectAction getPlayCardAction(boolean forFree);
-    CostToEffectAction getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter);
+    Action getPlayCardAction();
+    Action getPlayCardAction(boolean forFree);
+    Action getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter);
 
     boolean hasTextRemoved(DefaultGame game);
     CardType getCardType();

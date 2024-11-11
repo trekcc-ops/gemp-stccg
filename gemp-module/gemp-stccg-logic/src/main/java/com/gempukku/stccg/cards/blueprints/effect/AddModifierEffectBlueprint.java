@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.turn.AddUntilModifierEffect;
 import com.gempukku.stccg.cards.ActionContext;
@@ -22,7 +22,7 @@ public class AddModifierEffectBlueprint extends DelayedEffectBlueprint {
     }
 
     @Override
-    protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+    protected Effect createEffect(Action action, ActionContext context) {
         final Modifier modifier = _modifierSource.getModifier(context);
         return new AddUntilModifierEffect(context.getGame(), modifier, _until);
     }

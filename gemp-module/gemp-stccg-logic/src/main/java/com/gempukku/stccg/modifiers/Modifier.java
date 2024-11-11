@@ -2,7 +2,6 @@ package com.gempukku.stccg.modifiers;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -46,7 +45,7 @@ public interface Modifier {
 
     boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card);
 
-    void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card);
+    void appendExtraCosts(DefaultGame game, Action action, PhysicalCard card);
 
     boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target);
 

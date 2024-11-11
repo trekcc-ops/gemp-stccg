@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.game.Player;
@@ -20,7 +20,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     public TribblesGame getGame() { return _game; }
 
     @Override
-    public CostToEffectAction getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
+    public Action getPlayCardAction(boolean forFree) { return new TribblesPlayCardAction(this); }
 
     public boolean canPlayOutOfSequence() {
         if (_blueprint.getPlayOutOfSequenceConditions() == null) return false;

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ShuffleCardsIntoDrawDeckEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivateRecycleTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateRecycleTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateRecycleTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.UnrespondableEffect;
 import com.gempukku.stccg.cards.ActionContext;
@@ -25,8 +25,7 @@ public class ShuffleCardGroupIntoDrawDeckEffectBlueprint extends DelayedEffectBl
     }
 
     @Override
-    protected Effect createEffect(CostToEffectAction action,
-                                  ActionContext context) {
+    protected Effect createEffect(Action action, ActionContext context) {
         final String cardGroupOwner = _player.getPlayerId(context);
         return new UnrespondableEffect(context) {
             @Override

@@ -44,7 +44,6 @@ public class SeedCardEffect extends DefaultEffect {
             getGame().sendMessage(_cardSeeded.getOwnerName() + " shuffles their deck");
             getGame().getGameState().shuffleDeck(_cardSeeded.getOwnerName());
         }
-        _game.getActionsEnvironment().addPerformedAction(_causalAction);
         getGame().getGameState().addCardToZone(_cardSeeded, _seedToZone);
         getGame().getActionsEnvironment().emitEffectResult(
                 new PlayCardResult(this, _fromZone, _cardSeeded));

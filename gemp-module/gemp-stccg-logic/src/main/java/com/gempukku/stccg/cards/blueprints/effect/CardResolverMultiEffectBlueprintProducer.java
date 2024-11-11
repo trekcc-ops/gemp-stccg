@@ -144,8 +144,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected List<Effect> createEffects(boolean cost, CostToEffectAction action,
-                                                         ActionContext context) {
+                    protected List<Effect> createEffects(boolean cost, Action action, ActionContext context) {
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 

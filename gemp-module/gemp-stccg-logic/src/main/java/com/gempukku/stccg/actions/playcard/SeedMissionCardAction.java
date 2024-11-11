@@ -1,7 +1,9 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.DoNothingEffect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -10,6 +12,7 @@ import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
@@ -26,6 +29,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private final boolean _sharedMission;
     private PhysicalCard _neighborCard;
     private final String _missionLocation;
+    private boolean _actionCarriedOut;
 
     public SeedMissionCardAction(MissionCard cardToPlay) {
         super(cardToPlay, cardToPlay, cardToPlay.getOwnerName(), Zone.SPACELINE, ActionType.SEED_CARD);
@@ -39,7 +43,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         Quadrant quadrant = _cardEnteringPlay.getBlueprint().getQuadrant();
         ST1EGameState gameState = _cardEnteringPlay.getGame().getGameState();
         Region region = _cardEnteringPlay.getBlueprint().getRegion();
@@ -138,15 +142,39 @@ public class SeedMissionCardAction extends PlayCardAction {
 
         }
         if (!_cardPlayed) {
-            _finalEffect = new SeedMissionCardEffect(performingPlayer, _cardEnteringPlay, _locationZoneIndex,
-                    _sharedMission, this);
             _cardPlayed = true;
-            return _finalEffect;
+            seedCard(cardGame);
+            return new SubAction(this, new DoNothingEffect(cardGame));
         }
         return null;
     }
 
+    private void seedCard(DefaultGame game) {
+        if (game.getGameState() instanceof ST1EGameState gameState) {
+
+            game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " +
+                    _cardEnteringPlay.getCardLink() + " from " + _fromZone.getHumanReadable());
+
+            gameState.removeCardFromZone(_cardEnteringPlay);
+
+            try {
+                if (_sharedMission)
+                    gameState.addMissionCardToSharedMission(_cardEnteringPlay, _locationZoneIndex);
+                else
+                    gameState.addMissionLocationToSpaceline(_cardEnteringPlay, _locationZoneIndex);
+                game.getActionsEnvironment().emitEffectResult(
+                        new PlayCardResult(this, _fromZone, _cardEnteringPlay));
+                _actionCarriedOut = true;
+            } catch (InvalidGameLogicException exp) {
+                game.sendErrorMessage(exp);
+            }
+        } else {
+            _actionCarriedOut = false;
+            game.sendMessage("Seed mission action attempted in a non-1E game");
+        }
+    }
+
     public boolean wasCarriedOut() {
-        return _cardPlayed && _finalEffect.wasCarriedOut();
+        return _cardPlayed && _actionCarriedOut;
     }
 }

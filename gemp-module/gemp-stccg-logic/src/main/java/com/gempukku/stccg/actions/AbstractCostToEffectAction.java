@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     private String _cardActionPrefix;
+    int _actionId;
     private final LinkedList<Effect> _costs = new LinkedList<>();
     private final LinkedList<Effect> _processedUsageCosts = new LinkedList<>();
     private final LinkedList<Effect> _targeting = new LinkedList<>();
@@ -174,5 +175,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
             throw new UnsupportedOperationException("Called appendUsage() in incorrect order");
         _usageCosts.add(cost);
     }
+
+    public void setId(int id) { _actionId = id; }
 
 }

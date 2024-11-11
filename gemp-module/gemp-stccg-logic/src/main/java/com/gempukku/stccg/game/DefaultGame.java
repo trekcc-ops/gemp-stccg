@@ -283,7 +283,7 @@ public abstract class DefaultGame {
         // need to specifically exclude when getPlayCardStates() is not empty to allow for battles to be initiated by interrupts
         ++_nextSnapshotId;
         _snapshots.add(GameSnapshot.createGameSnapshot(_nextSnapshotId, description, getGameState(),
-                getGameState().getModifiersLogic(), getActionsEnvironment(), getTurnProcedure()));
+                getGameState().getModifiersLogic(), getTurnProcedure()));
     }
 
     /**

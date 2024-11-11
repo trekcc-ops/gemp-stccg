@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -32,7 +32,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToPlay.getZone();
@@ -50,10 +50,10 @@ public class TribblesPlayCardAction extends PlayCardAction {
 
         if (!_cardPlayed) {
             _cardPlayed = true;
-            _finalEffect = new TribblesPlayCardEffect(_cardToPlay);
-            return _finalEffect;
+            appendEffect(new TribblesPlayCardEffect(_cardToPlay));
+            return getNextAction();
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 }

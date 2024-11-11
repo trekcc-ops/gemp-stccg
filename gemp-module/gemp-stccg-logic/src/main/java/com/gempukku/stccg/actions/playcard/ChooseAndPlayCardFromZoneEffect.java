@@ -1,15 +1,12 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectType;
-import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -23,7 +20,7 @@ import java.util.List;
 public class ChooseAndPlayCardFromZoneEffect implements Effect {
     private final String _playerId;
     private final Filter _filter;
-    private CostToEffectAction _playCardAction;
+    private Action _playCardAction;
     private final Zone _fromZone;
     private final DefaultGame _game;
     private final Filterable _destinationFilter;
@@ -139,8 +136,8 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
 
     public String getPerformingPlayerId() { return _playerId; }
 
-    protected CostToEffectAction getPlayCardAction() { return _playCardAction; }
-    protected void setPlayCardAction(CostToEffectAction action) { _playCardAction = action; }
+    protected Action getPlayCardAction() { return _playCardAction; }
+    protected void setPlayCardAction(Action action) { _playCardAction = action; }
 
     public DefaultGame getGame() { return _game; }
 }

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -9,10 +9,9 @@ import com.gempukku.stccg.gamestate.TribblesGameState;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 public class ActivateMutateTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateMutateTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateMutateTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

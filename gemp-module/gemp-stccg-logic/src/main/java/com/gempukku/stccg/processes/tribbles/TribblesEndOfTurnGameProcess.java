@@ -18,7 +18,7 @@ public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
         SystemQueueAction action = new SystemQueueAction();
         action.setText("End of turn");
         action.appendEffect(
-                new TriggeringResultEffect(new EndOfTurnResult(_game), "End of turn"));
+                new TriggeringResultEffect(_game, new EndOfTurnResult(_game), "End of turn"));
         action.appendEffect(
                 new Effect() {
                     @Override

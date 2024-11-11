@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.discard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -13,11 +13,11 @@ import java.util.Collection;
 import java.util.Set;
 
 public class AllPlayersDiscardFromHandEffect extends DefaultEffect {
-    private final CostToEffectAction _action;
+    private final Action _action;
     private final boolean _allPlayersMustBeAble;
     private final boolean _forced;
 
-    public AllPlayersDiscardFromHandEffect(DefaultGame game, CostToEffectAction action, boolean allPlayersMustBeAble,
+    public AllPlayersDiscardFromHandEffect(DefaultGame game, Action action, boolean allPlayersMustBeAble,
                                            boolean forced) {
         super(game, action);
         _action = action;

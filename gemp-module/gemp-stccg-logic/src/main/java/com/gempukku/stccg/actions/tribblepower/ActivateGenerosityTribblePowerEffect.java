@@ -1,10 +1,9 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
-
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Objects;
 public class ActivateGenerosityTribblePowerEffect extends ActivateTribblePowerEffect {
 
     private final static int BONUS_POINTS = 25000;
-    public ActivateGenerosityTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateGenerosityTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

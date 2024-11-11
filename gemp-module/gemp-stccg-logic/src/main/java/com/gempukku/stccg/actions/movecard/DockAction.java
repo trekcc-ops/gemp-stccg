@@ -1,7 +1,9 @@
 package com.gempukku.stccg.actions.movecard;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -13,7 +15,7 @@ import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
-public class DockAction extends AbstractCostToEffectAction {
+public class DockAction extends ActionyAction {
     private final PhysicalShipCard _cardToDock;
     private boolean _targetChosen;
     private boolean _cardDocked;
@@ -23,7 +25,7 @@ public class DockAction extends AbstractCostToEffectAction {
     public DockAction(Player player, PhysicalShipCard cardToDock) {
         super(player, ActionType.MOVE_CARDS);
         _cardToDock = cardToDock;
-        this.text = "Dock";
+        this._text = "Dock";
 
         _dockingTargetOptions = Filters.yourActiveFacilities(player).stream()
                 .filter(card -> card.isCompatibleWith(_cardToDock) && card.getLocation() == _cardToDock.getLocation())
@@ -49,15 +51,15 @@ public class DockAction extends AbstractCostToEffectAction {
     public PhysicalCard getActionSource() { return _cardToDock; }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
 //        if (!isAnyCostFailed()) {
 
-        Effect cost = getNextCost();
+        Action cost = getNextCost();
         if (cost != null)
             return cost;
 
         if (!_targetChosen) {
-            appendTargeting(chooseDockingTargetEffect());
+            appendTargeting(new SubAction(this, chooseDockingTargetEffect()));
             return getNextCost();
         }
 
@@ -67,10 +69,11 @@ public class DockAction extends AbstractCostToEffectAction {
             _cardToDock.getGame().getGameState().transferCard(_cardToDock, _dockingTarget);
         }
 
-        return getNextEffect();
+        return getNextAction();
     }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) { return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty(); }
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return !_cardToDock.isDocked() && !_dockingTargetOptions.isEmpty();
+    }
 
 }

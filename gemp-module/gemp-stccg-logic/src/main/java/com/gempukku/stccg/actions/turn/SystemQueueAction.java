@@ -1,11 +1,13 @@
 package com.gempukku.stccg.actions.turn;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class SystemQueueAction extends AbstractCostToEffectAction {
+public class SystemQueueAction extends ActionyAction {
+
+    public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
     public PhysicalCard getActionSource() {
@@ -18,15 +20,15 @@ public class SystemQueueAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
         if (isCostFailed()) {
             return null;
         } else {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
-            return getNextEffect();
+            return getNextAction();
         }
     }
 }

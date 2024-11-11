@@ -1,15 +1,14 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
 import com.gempukku.stccg.actions.draw.DrawCardsEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.actions.choose.ChooseAndDiscardCardsFromHandEffect;
-
 import com.gempukku.stccg.filters.Filters;
 
 public class ActivateEvolveTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateEvolveTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateEvolveTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

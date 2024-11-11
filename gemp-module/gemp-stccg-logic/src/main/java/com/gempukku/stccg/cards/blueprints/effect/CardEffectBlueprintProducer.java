@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.effect;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.PlacePlayedCardBeneathDrawDeckEffect;
 import com.gempukku.stccg.actions.PlaceTopCardOfDrawDeckOnTopOfPlayPileEffect;
@@ -64,7 +64,7 @@ public class CardEffectBlueprintProducer {
         
         return new DelayedEffectBlueprint() {
             @Override
-            protected List<Effect> createEffects(boolean cost, CostToEffectAction action, ActionContext context) {
+            protected List<Effect> createEffects(boolean cost, Action action, ActionContext context) {
                 final String selectingPlayerId = selectingPlayer.getPlayerId(context);
                 final String targetPlayerId = targetPlayer.getPlayerId(context);
                 final int count = countSource.evaluateExpression(context, null);

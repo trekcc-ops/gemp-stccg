@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
@@ -15,7 +15,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.Collection;
 
 public class ActivateKindnessTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivateKindnessTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivateKindnessTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 

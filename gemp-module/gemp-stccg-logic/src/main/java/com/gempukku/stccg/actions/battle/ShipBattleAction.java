@@ -1,7 +1,9 @@
 package com.gempukku.stccg.actions.battle;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -17,7 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShipBattleAction extends AbstractCostToEffectAction {
+public class ShipBattleAction extends ActionyAction {
         // TODO - For now, ignores affiliation attack restrictions, as well as tactics, as well as leadership requirements
         // TODO - Very much not complete
                 // i.e. it is just an action to compare numbers
@@ -60,8 +62,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         _defendingPlayer = game.getPlayer(game.getOpponent(_performingPlayerId));
     }
 
-    @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         return !getEligibleCardsForForce(_attackingPlayer).isEmpty() && !getTargetOptions(_attackingPlayer).isEmpty();
     }
 
@@ -118,7 +119,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         else return OpenFireResult.MISS;
     }
 
-    public Effect nextEffect(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) {
 
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;
@@ -126,11 +127,11 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
 
         if (_forces.get(_attackingPlayer) == null) {
             // TODO - Need to include some compatibility check here
-            return selectForceEffect(_attackingPlayer);
+            return new SubAction(this, selectForceEffect(_attackingPlayer));
         }
 
         if (_targets.get(_attackingPlayer) == null) {
-            return getTargetEffect(_attackingPlayer);
+            return new SubAction(this, getTargetEffect(_attackingPlayer));
         }
 
         if (!_returnFireDecisionMade) {
@@ -151,11 +152,11 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         }
 
         if (_returningFire && _forces.get(_defendingPlayer) == null) {
-            return selectForceEffect(_defendingPlayer);
+            return new SubAction(this, selectForceEffect(_defendingPlayer));
         }
 
         if (_returningFire && _targets.get(_defendingPlayer) == null) {
-            return getTargetEffect(_defendingPlayer);
+            return new SubAction(this, getTargetEffect(_defendingPlayer));
         }
 
         if (!_openedFire) {
@@ -199,7 +200,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
             }
             _battleResolved = true;
         }*/
-        return getNextEffect();
+        return getNextAction();
     }
 
     private Integer getDamage(OpenFireResult result) {
