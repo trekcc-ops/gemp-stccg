@@ -11,9 +11,9 @@
         game: st1e
         code: debug1e
         set:[101, 103, 105, 106, 109, 112, 116, 123, 124, 125, 127, 128, 155, 159, 161, 163, 172, 178, 202, 204, 212, 244, 245]
-        minimumDrawDeckSize: 30
-        maximumSeedDeckSize: 30
-        missions: 6
+        minimumDrawDeckSize: 0
+        maximumSeedDeckSize: 999
+        missions: -1 // Negative missions means there is no fixed number required
         noShuffle: true
         firstPlayerFixed: true
         hall: false
