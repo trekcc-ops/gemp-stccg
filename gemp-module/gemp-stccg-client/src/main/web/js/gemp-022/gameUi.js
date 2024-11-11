@@ -1884,13 +1884,15 @@ export default class GameTableUI {
                 if (selectedCardIds.includes(cardId)) {
                     let index = selectedCardIds.indexOf(cardId);
                     selectedCardIds.splice(index, 1);
-                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard");
+                    getCardDivFromId(cardId).removeClass("selectedCard").addClass("selectableCard").removeClass("selectedBadge").removeAttr("selectedOrder");
                 }
                 // Otherwise, if the cardId is not already selected, add it.
                 else {
                     selectedCardIds.push(cardId);
-                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard");
+                    getCardDivFromId(cardId).removeClass("selectableCard").addClass("selectedCard").addClass("selectedBadge");
                 }
+
+                that.recalculateCardSelectionOrder(selectedCardIds);
                 
                 // If the max number of cards are selected and the user has auto accept on, we're done.
                 if ((selectedCardIds.length == max) && (that.gameSettings.get("autoAccept"))) {
@@ -1912,10 +1914,16 @@ export default class GameTableUI {
         }
     }
 
+    recalculateCardSelectionOrder(cardArray) {
+        for (const [index, cardId] of cardArray.entries()) {
+            getCardDivFromId(cardId).attr("selectedOrder", index + 1); // use a 1-index
+        }
+    }
+
     clearSelection() {
         $(".selectableCard").removeClass("selectableCard").data("action", null);
         $(".actionableCard").removeClass("actionableCard").data("action", null);
-        $(".selectedCard").removeClass("selectedCard");
+        $(".selectedCard").removeClass("selectedCard").removeClass("selectedBadge").removeAttr("selectedOrder");
         this.selectionFunction = null;
     }
 
