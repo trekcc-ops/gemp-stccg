@@ -89,7 +89,7 @@ public class AttemptMissionAction extends ActionyAction {
             PhysicalCard firstSeedCard = seedCards.getFirst();
             if (!_revealedCards.contains(firstSeedCard)) {
                 _revealedCards.add(firstSeedCard);
-//                return new RevealSeedCardAction(_performingPlayerId, firstSeedCard);
+                return new RevealSeedCardAction(cardGame.getPlayer(_performingPlayerId), firstSeedCard, _missionCard);
             }
             if (!_encounteredCards.contains(firstSeedCard)) {
                 _encounteredCards.add(firstSeedCard);
@@ -100,14 +100,15 @@ public class AttemptMissionAction extends ActionyAction {
         if (seedCards.isEmpty() && !_missionAttemptEnded) {
 //            return new SolveMissionAction(_missionCard);
             ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
-            MissionRequirement requirement = _missionCard.getRequirements();
-            if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
-                cardGame.sendMessage("DEBUG - Mission solved!");
-                cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
-                _missionCard.setCompleted(true);
-                gameState.checkVictoryConditions();
+            if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionCard)) {
+                MissionRequirement requirement = _missionCard.getRequirements();
+                if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
+                    cardGame.sendMessage("DEBUG - Mission solved!");
+                    cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
+                    _missionCard.setCompleted(true);
+                    gameState.checkVictoryConditions();
+                } else cardGame.sendMessage("DEBUG - Mission attempt failed!");
             }
-            else cardGame.sendMessage("DEBUG - Mission attempt failed!");
             _missionAttemptEnded = true;
         }
 

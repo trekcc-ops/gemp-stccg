@@ -3,7 +3,6 @@ package com.gempukku.stccg.modifiers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
@@ -11,6 +10,7 @@ import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -246,6 +246,15 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
 
         _turnLimitCounters.clear();
         _turnLimitActionSourceCounters.clear();
+    }
+
+    public boolean canPlayerSolveMission(String playerId, MissionCard mission) {
+        for (Modifier modifier : _modifiers.get(ModifierEffect.SOLVE_MISSION_MODIFIER)) {
+            if (modifier instanceof PlayerCannotSolveMissionModifier missionModifier)
+                if (missionModifier.cannotSolveMission(mission, playerId))
+                    return false;
+        }
+        return true;
     }
 
     public void signalEndOfRound() {

@@ -1,14 +1,14 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.actions.discard.DiscardUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.actions.discard.DiscardUtils;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 public class RemoveCardsFromTheGameEffect extends DefaultEffect {
@@ -23,6 +23,15 @@ public class RemoveCardsFromTheGameEffect extends DefaultEffect {
         _source = source;
         _cardsToRemove = cardsToRemove;
     }
+
+    public RemoveCardsFromTheGameEffect(DefaultGame game, String playerPerforming, PhysicalCard source,
+                                        PhysicalCard cardBeingRemoved) {
+        super(game, playerPerforming);
+        _playerPerforming = playerPerforming;
+        _source = source;
+        _cardsToRemove = Collections.singleton(cardBeingRemoved);
+    }
+
 
 
     @Override
@@ -39,8 +48,7 @@ public class RemoveCardsFromTheGameEffect extends DefaultEffect {
     protected FullEffectResult playEffectReturningResult() {
         Set<PhysicalCard> removedCards = new HashSet<>();
         for (PhysicalCard physicalCard : _cardsToRemove)
-            if (physicalCard.getZone().isInPlay())
-                removedCards.add(physicalCard);
+            removedCards.add(physicalCard);
 
         Set<PhysicalCard> discardedCards = new HashSet<>();
 

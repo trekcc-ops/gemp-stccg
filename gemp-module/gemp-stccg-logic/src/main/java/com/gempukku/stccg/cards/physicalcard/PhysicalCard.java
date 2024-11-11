@@ -90,4 +90,6 @@ public interface PhysicalCard extends Filterable, Snapshotable<PhysicalCard> {
     void removePreSeedCard(PhysicalCard card, Player player);
     void seedPreSeeds();
     void addCardToPreSeeds(PhysicalCard card, Player player);
+
+    boolean isMisSeed(DefaultGame cardGame, MissionCard mission);
 }
