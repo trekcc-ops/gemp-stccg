@@ -5,7 +5,7 @@ import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.handler.CardInfoUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.chat.PrivateInformationException;
-import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -123,7 +123,7 @@ public abstract class CardGameMediator {
             if (card == null || card.getZone() == null)
                 return null;
             else
-                return CardInfoUtils.getCardInfoHTML(card);
+                return CardInfoUtils.getCardInfoHTML(getGame(), card);
         } finally {
             _readLock.unlock();
         }
@@ -196,7 +196,6 @@ public abstract class CardGameMediator {
     }
 
     public final void cancel(User player) {
-//        getGame().getGameState().sendWarning(player.getName(), "You can't cancel this game");
 
         String playerId = player.getName();
         _writeLock.lock();
@@ -239,7 +238,7 @@ public abstract class CardGameMediator {
                         and ask again for the same decision */
                         String warningMessage = exp.getWarningMessage();
                         gameState.sendWarning(playerName, warningMessage);
-                        game.sendAwaitingDecision(playerName, awaitingDecision);
+                        game.sendAwaitingDecision(awaitingDecision);
                     } catch (RuntimeException runtimeException) {
                         LOGGER.error(ERROR_MESSAGE, runtimeException);
                         game.cancelGame();

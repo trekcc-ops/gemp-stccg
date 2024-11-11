@@ -54,7 +54,7 @@ public class TimeResolver {
                 return "the end of the current phase";
             }
             else {
-                return "the end of the " + phase.getHumanReadable() + " phase";
+                return "the end of the " + phase + " phase";
             }
         }
     }

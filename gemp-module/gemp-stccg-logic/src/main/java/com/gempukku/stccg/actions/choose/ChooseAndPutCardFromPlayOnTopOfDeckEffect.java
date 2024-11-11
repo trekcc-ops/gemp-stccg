@@ -4,6 +4,7 @@ package com.gempukku.stccg.actions.choose;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.PutCardFromPlayOnTopOfDeckEffect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
@@ -19,7 +20,7 @@ public class ChooseAndPutCardFromPlayOnTopOfDeckEffect extends ChooseActiveCardE
 
     @Override
     protected void cardSelected(PhysicalCard card) {
-        _resultSubAction = _action.createSubAction();
+        _resultSubAction = new SubAction(_action, _game);
         _resultSubAction.appendEffect(new PutCardFromPlayOnTopOfDeckEffect(card));
         _game.getActionsEnvironment().addActionToStack(_resultSubAction);
     }

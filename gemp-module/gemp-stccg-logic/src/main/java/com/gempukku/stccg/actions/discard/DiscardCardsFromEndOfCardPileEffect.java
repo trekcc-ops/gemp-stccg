@@ -72,7 +72,7 @@ public class DiscardCardsFromEndOfCardPileEffect extends DefaultEffect {
             for (PhysicalCard discardedCard : cardsDiscarded) {
                 if (_fromZone == Zone.DRAW_DECK)
                     _game.getActionsEnvironment().emitEffectResult(
-                            new DiscardCardFromDeckResult(_source, discardedCard, _forced)
+                            new DiscardCardFromDeckResult(_source, discardedCard)
                     );
                 else if (_fromZone == Zone.PLAY_PILE)
                     _game.getActionsEnvironment().emitEffectResult(

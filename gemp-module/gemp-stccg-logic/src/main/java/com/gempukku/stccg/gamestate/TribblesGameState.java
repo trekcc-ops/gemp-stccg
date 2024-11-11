@@ -1,35 +1,36 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.TribblesGame;
 
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class TribblesGameState extends GameState {
-    protected final Map<String, List<PhysicalCard>> _playPiles = new HashMap<>();
+public final class TribblesGameState extends GameState {
+    private final Map<String, List<PhysicalCard>> _playPiles = new HashMap<>();
     private int _nextTribbleInSequence;
     private int _lastTribblePlayed;
     private boolean _chainBroken;
     private int _currentRound;
+    private boolean _currentRoundIsOver;
     private final TribblesGame _game;
 
-    public TribblesGameState(Set<String> players, Map<String, CardDeck> decks, CardBlueprintLibrary library,
-                             GameFormat format, TribblesGame game) {
-        super(players, decks, library, format, game);
-        for (String player : players) {
-            _playPiles.put(player, new LinkedList<>());
-        }
+    public TribblesGameState(Iterable<String> playerIds, TribblesGame game) {
+        super(game, playerIds);
         _currentRound = 0;
         _chainBroken = false;
         _game = game;
         setNextTribbleInSequence(1);
+        for (String player : playerIds)
+            _playPiles.put(player, new LinkedList<>());
     }
 
     @Override
@@ -48,15 +49,16 @@ public class TribblesGameState extends GameState {
             return _inPlay;
     }
 
-    public void createPhysicalCards() {
-        for (Player player : _players.values()) {
+    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks) {
+        for (Player player : getPlayers()) {
             String playerId = player.getPlayerId();
-            for (Map.Entry<SubDeck,List<String>> entry : _decks.get(playerId).getSubDecks().entrySet()) {
+            for (Map.Entry<SubDeck,List<String>> entry : decks.get(playerId).getSubDecks().entrySet()) {
                 List<PhysicalCard> subDeck = new LinkedList<>();
                 for (String blueprintId : entry.getValue()) {
                     try {
-                        subDeck.add(_library.getCardBlueprint(blueprintId).createPhysicalCard(getGame(),
-                                _nextCardId, player));
+                        CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
+                        PhysicalCard card = new TribblesPhysicalCard(_game, _nextCardId, player, blueprint);
+                        subDeck.add(card);
                         _nextCardId++;
                     } catch (CardNotFoundException e) {
                         throw new RuntimeException("Card blueprint not found");
@@ -70,6 +72,7 @@ public class TribblesGameState extends GameState {
             _playPiles.put(playerId, new LinkedList<>());
         }
     }
+
 
     public void shufflePlayPileIntoDeck(String playerId) {
         List<PhysicalCard> playPile = new LinkedList<>(getPlayPile(playerId));
@@ -85,13 +88,14 @@ public class TribblesGameState extends GameState {
     }
 
     public void setPlayerDecked(String playerId, boolean bool) {
-        _players.get(playerId).setDecked(bool);
+        Player player = getPlayer(playerId);
+        player.setDecked(bool);
         for (GameStateListener listener : getAllGameStateListeners())
-            listener.setPlayerDecked(_players.get(playerId));
+            listener.setPlayerDecked(player);
     }
 
     public boolean getPlayerDecked(String playerId) {
-        return _players.get(playerId).getDecked();
+        return getPlayer(playerId).getDecked();
     }
 
     public void setNextTribbleInSequence(int num) {
@@ -149,7 +153,13 @@ public class TribblesGameState extends GameState {
 
         // Increment round number
         _currentRound++;
+        _currentRoundIsOver = false;
         sendMessage("Beginning Round " + _currentRound);
     }
 
+    public void endRound() {
+        _currentRoundIsOver = true;
+    }
+
+    public boolean isCurrentRoundOver() { return _currentRoundIsOver; }
 }

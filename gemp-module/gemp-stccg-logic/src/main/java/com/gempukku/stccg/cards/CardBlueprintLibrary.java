@@ -8,11 +8,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.CardBlueprintDeserializer;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCardDeserializer;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.JSONData;
 import com.gempukku.stccg.common.JsonUtils;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ICallback;
+import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.game.ST1EGame;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,10 +61,22 @@ public class CardBlueprintLibrary {
             _refreshCallbacks.add(callback);
     }
 
-    public PhysicalCard createPhysicalCard(DefaultGame game, String blueprintId, int cardId, String playerId)
+    public PhysicalCard createST1EPhysicalCard(ST1EGame game, String blueprintId, int cardId, String playerId)
             throws CardNotFoundException {
-        return getCardBlueprint(blueprintId).createPhysicalCard(game, cardId, game.getGameState().getPlayer(playerId));
+        CardBlueprint cardBlueprint = getCardBlueprint(blueprintId);
+        Player owner = game.getPlayer(playerId);
+        return cardBlueprint.createPhysicalCard(game, cardId, owner);
     }
+
+    public PhysicalCard createST1EPhysicalCard(ST1EGame game, JsonNode node) throws CardNotFoundException {
+        String blueprintId = node.get("blueprintId").textValue();
+        int cardId = node.get("cardId").intValue();
+        String playerId = node.get("owner").textValue();
+        PhysicalCard newCard = createST1EPhysicalCard(game, blueprintId, cardId, playerId);
+        PhysicalCardDeserializer.deserialize(newCard, node);
+        return newCard;
+    }
+
 
     public Map<String, SetDefinition> getSetDefinitions() {
         return Collections.unmodifiableMap(_allSets);

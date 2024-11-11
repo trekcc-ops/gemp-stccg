@@ -49,8 +49,9 @@ public class RevealCardEffect implements Effect {
 
             String nextPlayer;
             while ((nextPlayer = playerOrder.getNextPlayer()) != null) {
-                _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
-                        new ArbitraryCardsSelectionDecision(1, "Revealed card(s)", _cards, Collections.emptySet(), 0, 0) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(nextPlayer), "Revealed card(s)",
+                                _cards, Collections.emptySet(), 0, 0) {
                             @Override
                             public void decisionMade(String result) {
                             }

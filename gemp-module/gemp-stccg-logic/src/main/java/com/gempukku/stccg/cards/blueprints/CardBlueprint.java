@@ -2,20 +2,21 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.cards.ExtraPlayCostSource;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.RegularSkill;
+import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.actionsource.TriggerActionSource;
-import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
+import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
-import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 
 import java.util.*;
 
@@ -71,7 +72,7 @@ public class CardBlueprint {
     private List<ActionSource> inPlayPhaseActions;
     private List<ActionSource> inDiscardPhaseActions;
 
-    private List<ModifierSource> inPlayModifiers;
+    private final List<ModifierSource> inPlayModifiers = new LinkedList<>();
 
     private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
@@ -278,8 +279,6 @@ public class CardBlueprint {
     }
 
     public void appendInPlayModifier(ModifierSource modifierSource) {
-        if (inPlayModifiers == null)
-            inPlayModifiers = new LinkedList<>();
         inPlayModifiers.add(modifierSource);
     }
 
@@ -369,22 +368,15 @@ public class CardBlueprint {
     public List<ActionSource> getInPlayPhaseActions() { return inPlayPhaseActions; }
     public List<ModifierSource> getInPlayModifiers() { return inPlayModifiers; }
 
-    public PhysicalCard createPhysicalCard(DefaultGame game, int cardId, Player player) {
-        if (game instanceof ST1EGame st1egame) {
-            if (_cardType == CardType.MISSION)
-                return new MissionCard(st1egame, cardId, player, this);
-            else if (_cardType == CardType.FACILITY)
-                return new FacilityCard(st1egame, cardId, player, this);
-            else if (_cardType == CardType.PERSONNEL)
-                return new PersonnelCard(st1egame, cardId, player, this);
-            else if (_cardType == CardType.EQUIPMENT)
-                return new PhysicalReportableCard1E(st1egame, cardId, player, this);
-            else if (_cardType == CardType.SHIP)
-                return new PhysicalShipCard(st1egame, cardId, player, this);
-            else return new ST1EPhysicalCard(st1egame, cardId, player, this);
-        } else if (game instanceof TribblesGame) {
-            return new TribblesPhysicalCard((TribblesGame) game, cardId, player, this);
-        } else return new PhysicalCardGeneric(game, cardId, player, this);
+    public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
+        return switch(_cardType) {
+            case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);
+            case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
+            case MISSION -> new MissionCard(st1egame, cardId, player, this);
+            case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
+            case SHIP -> new PhysicalShipCard(st1egame, cardId, player, this);
+            default -> new ST1EPhysicalCard(st1egame, cardId, player, this);
+        };
     }
 
     // Modifiers from game text

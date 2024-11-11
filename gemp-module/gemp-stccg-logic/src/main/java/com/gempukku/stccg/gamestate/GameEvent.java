@@ -2,10 +2,10 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +52,7 @@ public class GameEvent {
 
     private final Type _type;
     private Zone _zone;
-    private GameStats _gameStats;
+    private GameState _gameState;
     private AwaitingDecision _awaitingDecision;
     private final Map<Attribute, String> _eventAttributes = new HashMap<>();
 
@@ -82,17 +82,18 @@ public class GameEvent {
     }
     public GameEvent(Type type, Phase phase) {
         this(type);
-        _eventAttributes.put(Attribute.phase, phase.getHumanReadable());
+        _eventAttributes.put(Attribute.phase, phase.toString());
     }
     public GameEvent(Type type, PhysicalCard card, Player player) {
         this(type, player);
         setCardData(card);
     }
 
-    public GameEvent(Type type, GameStats stats) {
+    public GameEvent(Type type, GameState gameState) {
         this(type);
-        _gameStats = stats;
+        _gameState = gameState;
     }
+
 
     public GameEvent(Type type, GameState gameState, Player player) {
         this(type, player);
@@ -131,11 +132,11 @@ public class GameEvent {
         _eventAttributes.put(Attribute.zone, card.getZone().name());
         _zone = card.getZone();
         _eventAttributes.put(Attribute.imageUrl, card.getImageUrl());
-        _eventAttributes.put(Attribute.controllerId, card.getCardControllerPlayerId());
+        _eventAttributes.put(Attribute.controllerId, card.getOwnerName()); // TODO - Owner, not controller
         _eventAttributes.put(Attribute.locationIndex, String.valueOf(card.getLocationZoneIndex()));
 
-        if (card.getCardType() == CardType.MISSION)
-            _eventAttributes.put(Attribute.quadrant, card.getQuadrant().name());
+        if (card.getCardType() == CardType.MISSION && card.isInPlay())
+            _eventAttributes.put(Attribute.quadrant, card.getLocation().getQuadrant().name());
 
         if (card.getStackedOn() != null)
             _eventAttributes.put(Attribute.targetCardId, String.valueOf(card.getStackedOn().getCardId()));
@@ -156,7 +157,7 @@ public class GameEvent {
                 eventElem.setAttribute(attribute.name(), getAttribute(attribute));
         }
 
-        if (_gameStats != null)
+        if (_gameState != null)
             serializeGameStats(doc, eventElem);
         if (_awaitingDecision != null)
             serializeDecision(doc, eventElem);
@@ -176,7 +177,7 @@ public class GameEvent {
     }
 
     private void serializeGameStats(Document doc, Element eventElem) {
-        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameStats.getZoneSizes().entrySet()) {
+        for (Map.Entry<String, Map<Zone, Integer>> playerZoneSizes : _gameState.getZoneSizes().entrySet()) {
             final Element playerZonesElem = doc.createElement("playerZones");
 
             playerZonesElem.setAttribute("name", playerZoneSizes.getKey());
@@ -187,7 +188,7 @@ public class GameEvent {
             eventElem.appendChild(playerZonesElem);
         }
 
-        for (Map.Entry<String, Integer> playerScore : _gameStats.getPlayerScores().entrySet()) {
+        for (Map.Entry<String, Integer> playerScore : _gameState.getPlayerScores().entrySet()) {
             final Element playerScoreElem = doc.createElement("playerScores");
             playerScoreElem.setAttribute("name", playerScore.getKey());
             playerScoreElem.setAttribute("score", playerScore.getValue().toString());

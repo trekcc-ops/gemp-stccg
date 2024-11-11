@@ -44,7 +44,7 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
         List<PhysicalCard> stackedCards = new LinkedList<>();
 
         for (PhysicalCard stackedOnCard : Filters.filterActive(_game, _stackedOnFilter))
-            stackedCards.addAll(Filters.filter(stackedOnCard.getStackedCards(), _game, _stackedCardFilter));
+            stackedCards.addAll(Filters.filter(stackedOnCard.getStackedCards(_game), _game, _stackedCardFilter));
 
         int maximum = Math.min(_maximum, stackedCards.size());
 
@@ -53,8 +53,8 @@ public abstract class ChooseStackedCardsEffect extends DefaultEffect {
         if (stackedCards.size() <= _minimum) {
             cardsChosen(stackedCards);
         } else {
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new CardsSelectionDecision(1, getText(), stackedCards, _minimum, maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new CardsSelectionDecision(_game.getPlayer(_playerId), getText(), stackedCards, _minimum, maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Set<PhysicalCard> stackedCards = getSelectedCardsByResponse(result);

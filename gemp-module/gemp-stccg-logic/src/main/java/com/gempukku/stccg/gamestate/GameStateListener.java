@@ -1,6 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.common.AwaitingDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.Player;
 

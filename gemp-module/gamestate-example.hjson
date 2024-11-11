@@ -1,0 +1,124 @@
+{
+    currentPhase: SEED_FACILITY
+    currentProcess: {
+        className: ST1EFacilitySeedPhaseProcess
+        consecutivePasses: 0
+        isFinished: true
+        playersParticipating: [player2,player1] // only saved in Json for simultaneous processes
+    }
+    modifiers: []
+    playerOrder: {
+        firstPlayer: player2
+        isReversed: false
+        turnOrder: [player2, player1]
+        currentPlayer: player2
+    }
+    players: [
+        {
+            playerId: player1
+            score: 0
+            turnNumber: 0
+            decked: true // Tribbles only
+            DRAW_DECK: [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38]
+            MISSIONS_PILE: []
+            TABLE: []
+            REMOVED: []
+            HAND: [1,2]
+            DISCARD: []
+            VOID: [45,6,41,8,43,4,44,3,42,7,46,5]
+            VOID_FROM_HAND: [45,6,41,8,43,4,44,3,42,7,46,5]
+            SEED_DECK: []
+            // There may be additional zones specified here, like STACKED or PLAY_PILE
+        }
+        {
+            playerId: player2
+            score: 0
+            turnNumber: 0
+            DRAW_DECK: [47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74]
+            MISSIONS_PILE: []
+            TABLE: []
+            REMOVED: []
+            HAND: [39]
+            DISCARD: []
+            VOID: [45,6,41,8,43,4,44,3,42,7,46,5]
+            VOID_FROM_HAND: [45,6,41,8,43,4,44,3,42,7,46,5]
+            SEED_DECK: []
+        }
+    ]
+    spacelineLocations: [
+        {
+            quadrant: ALPHA
+            locationName: Gravesworld
+        }
+        {
+            quadrant: ALPHA
+            locationName: Nequencia System
+        }
+        {
+            quadrant: ALPHA
+            region: Romulus System
+            locationName: Romulus
+        }
+        {
+            quadrant: ALPHA
+            locationName: Moab IV
+        }
+        {
+            quadrant: ALPHA
+            locationName: Beltane IX
+        }
+        {
+            quadrant: ALPHA
+            locationName: Denius III
+        }
+        {
+            quadrant: ALPHA
+            locationName: Ligos VII
+        }
+        {
+            quadrant: ALPHA
+            locationName: Gault
+        }
+        {
+            quadrant: ALPHA
+            locationName: Selcundi Drema Sector
+        }
+        {
+            quadrant: ALPHA
+            locationName: Halee System
+        }
+        {
+            quadrant: ALPHA
+            locationName: Boral II
+        }
+        {
+            quadrant: ALPHA
+            locationName: Xendi Sabu
+        }
+    ]
+    awayTeams: [
+        {
+            parentCard: 25 // cardId for mission, ship, time location, etc.
+            playerId: player1
+            cardsInAwayTeam: [10,17] // cardIds
+        }
+        // etc.
+    ]
+    cardsInGame: [
+        {
+            title: Federation Outpost
+            blueprintId: "101_104"
+            cardId: 1
+            owner: player1
+            zone: HAND
+            affiliation: FEDERATION
+            // attachedToCardId
+            // stackedOnCardId
+            // locationZoneIndex
+            // cardsSeededUnderneath
+            // completed
+            // dockedAtCard
+            // rangeAvailable
+        }
+        // etc.
+    ]

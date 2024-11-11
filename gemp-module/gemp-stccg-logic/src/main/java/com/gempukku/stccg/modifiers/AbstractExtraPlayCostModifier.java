@@ -1,10 +1,10 @@
 package com.gempukku.stccg.modifiers;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class AbstractExtraPlayCostModifier extends AbstractModifier implements ExtraPlayCost {
 
@@ -14,7 +14,7 @@ public abstract class AbstractExtraPlayCostModifier extends AbstractModifier imp
     }
 
     @Override
-    public abstract void appendExtraCosts(DefaultGame game, CostToEffectAction action, PhysicalCard card);
+    public abstract void appendExtraCosts(DefaultGame game, Action action, PhysicalCard card);
 
     @Override
     public abstract boolean canPayExtraCostsToPlay(PhysicalCard card);

@@ -144,8 +144,7 @@ public class CardResolverMultiEffectBlueprintProducer {
         result.addEffectBlueprint(
                 new DelayedEffectBlueprint() {
                     @Override
-                    protected List<Effect> createEffects(boolean cost, CostToEffectAction action,
-                                                         ActionContext context) {
+                    protected List<Effect> createEffects(boolean cost, Action action, ActionContext context) {
                         final Collection<PhysicalCard> cardsFromMemory = context.getCardsFromMemory(memory);
                         final List<Collection<PhysicalCard>> effectCardLists = new LinkedList<>();
 
@@ -175,9 +174,9 @@ public class CardResolverMultiEffectBlueprintProducer {
                                                 Iterables.getOnlyElement(cards).getPlayCardAction(true));
                                 case PLAY, PLAYCARDFROMDISCARD ->
                                         new StackActionEffect(context.getGame(),
-                                                Iterables.getOnlyElement(cards).getPlayCardAction(
+                                                Iterables.getOnlyElement(cards).getPlayCardAction(context.getGame(),
                                                         (onFilterableSource != null) ?
-                                                                onFilterableSource.getFilterable(context) : Filters.any, true
+                                                                onFilterableSource.getFilterable(context) : Filters.any
                                                 )
                                         );
                                 case PUTCARDSFROMDECKINTOHAND ->

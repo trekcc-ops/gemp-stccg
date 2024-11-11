@@ -3,8 +3,8 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.CardWithCrew;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
@@ -19,7 +19,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     public boolean canReportToFacility(FacilityCard facility) {
         if (_blueprint.getCardType() == CardType.EQUIPMENT && facility.isUsableBy(_owner.getPlayerId()))
             return true;
-        for (Affiliation affiliation : _affiliationOptions)
+        for (Affiliation affiliation : getAffiliationOptions())
             if (canReportToFacilityAsAffiliation(facility, affiliation))
                 return true;
         return false;
@@ -29,7 +29,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
                 in their native quadrant. */
         // TODO - Does not perform any compatibility checks other than affiliation
         if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                facility.isUsableBy(_owner.getPlayerId()) && facility.getCurrentQuadrant() == _nativeQuadrant)
+                facility.isUsableBy(_owner.getPlayerId()) && facility.getCurrentQuadrant() == getNativeQuadrant())
             return isCompatibleWithCardAndItsCrewAsAffiliation(facility, affiliation);
         else return false;
     }
@@ -50,6 +50,9 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
         setLocation(facility.getLocation());
         _game.getGameState().attachCard(this, facility);
     }
+
+    @Override
+    public Action getPlayCardAction() { return createReportCardAction(); }
 
     public Action createReportCardAction() {
         return new ReportCardAction(this, false);
@@ -74,7 +77,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
             }
         }
         if (_awayTeam == null) {
-            AwayTeam awayTeam = new AwayTeam(_owner, mission);
+            AwayTeam awayTeam = _game.getGameState().createNewAwayTeam(_owner, mission);
             addToAwayTeam(awayTeam);
         }
     }

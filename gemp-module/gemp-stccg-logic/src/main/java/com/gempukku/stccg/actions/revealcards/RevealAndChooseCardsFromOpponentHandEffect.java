@@ -60,8 +60,10 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
                 if (nextPlayer.equals(_playerId)) {
                     Collection<PhysicalCard> selectable = Filters.filter(opponentHand, _game, _selectionFilter);
 
-                    _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
-                            new ArbitraryCardsSelectionDecision(1, _text, opponentHand, new LinkedList<>(selectable), Math.min(_minChosen, selectable.size()), Math.min(_maxChosen, selectable.size())) {
+                    _game.getUserFeedback().sendAwaitingDecision(
+                            new ArbitraryCardsSelectionDecision(_game.getPlayer(nextPlayer), _text, opponentHand,
+                                    new LinkedList<>(selectable), Math.min(_minChosen, selectable.size()),
+                                    Math.min(_maxChosen, selectable.size())) {
                                 @Override
                                 public void decisionMade(String result) throws DecisionResultInvalidException {
                                     List<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
@@ -69,8 +71,10 @@ public abstract class RevealAndChooseCardsFromOpponentHandEffect extends Abstrac
                                 }
                             });
                 } else if (!nextPlayer.equals(_opponentId)) {
-                    _game.getUserFeedback().sendAwaitingDecision(nextPlayer,
-                            new ArbitraryCardsSelectionDecision(1, "Hand of " + _opponentId, opponentHand, Collections.emptySet(), 0, 0) {
+                    _game.getUserFeedback().sendAwaitingDecision(
+                            new ArbitraryCardsSelectionDecision(_game.getPlayer(nextPlayer),
+                                    "Hand of " + _opponentId, opponentHand, Collections.emptySet(), 0,
+                                    0) {
                                 @Override
                                 public void decisionMade(String result) {
                                 }

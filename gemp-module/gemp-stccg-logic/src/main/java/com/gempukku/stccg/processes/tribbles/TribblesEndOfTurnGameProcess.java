@@ -8,11 +8,9 @@ import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.actions.turn.EndOfTurnResult;
 import com.gempukku.stccg.processes.GameProcess;
 
-public class TribblesEndOfTurnGameProcess extends GameProcess {
-    private GameProcess _nextProcess;
-    private final TribblesGame _game;
+public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
     public TribblesEndOfTurnGameProcess(TribblesGame game) {
-        _game = game;
+        super(game);
     }
     @Override
     public void process() {
@@ -20,7 +18,7 @@ public class TribblesEndOfTurnGameProcess extends GameProcess {
         SystemQueueAction action = new SystemQueueAction(_game);
         action.setText("End of turn");
         action.appendEffect(
-                new TriggeringResultEffect(new EndOfTurnResult(_game), "End of turn"));
+                new TriggeringResultEffect(_game, new EndOfTurnResult(_game), "End of turn"));
         action.appendEffect(
                 new Effect() {
                     @Override
@@ -60,16 +58,15 @@ public class TribblesEndOfTurnGameProcess extends GameProcess {
                 playerWentOut = true;
             }
         }
-        if (playerWentOut) {
-            _nextProcess = new TribblesEndOfRoundGameProcess(_game);
-        } else {
-            _nextProcess = new TribblesBetweenTurnsProcess(_game);
-        }
+        if (playerWentOut)
+            _game.getGameState().endRound();
         _game.getActionsEnvironment().addActionToStack(action);
     }
 
     @Override
     public GameProcess getNextProcess() {
-        return _nextProcess;
+        if (_game.getGameState().isCurrentRoundOver())
+            return new TribblesEndOfRoundGameProcess(_game);
+        else return new TribblesBetweenTurnsProcess(_game);
     }
 }

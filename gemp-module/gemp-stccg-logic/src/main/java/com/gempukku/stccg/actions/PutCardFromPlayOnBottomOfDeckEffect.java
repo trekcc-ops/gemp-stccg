@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.actions.discard.DiscardUtils;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.actions.discard.DiscardCardsFromPlayResult;
+import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,7 +40,7 @@ public class PutCardFromPlayOnBottomOfDeckEffect extends DefaultEffect {
 
             gameState.putCardOnBottomOfDeck(_physicalCard);
             for (PhysicalCard discardedCard : discardedCards) {
-                _game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(null, null, discardedCard));
+                _game.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(null, discardedCard));
             }
             for (PhysicalCard toGoToDiscardCard : toGoToDiscardCards)
                 gameState.addCardToZone(toGoToDiscardCard, Zone.DISCARD);

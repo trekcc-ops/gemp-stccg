@@ -7,28 +7,28 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 public interface Action {
     String getCardActionPrefix();
 
+    int getActionId();
+
     enum ActionType {
         PLAY_CARD, SPECIAL_ABILITY, TRIGGER, OTHER,
         MOVE_CARDS, ACTIVATE_TRIBBLE_POWER, ATTEMPT_MISSION,
-        BATTLE, SEED_CARD
+        BATTLE, SELECT_CARD, SEED_CARD
     }
 
     ActionType getActionType();
-
     PhysicalCard getActionSource();
-
     PhysicalCard getCardForActionSelection();
-
     void setVirtualCardAction(boolean virtualCardAction);
-
     boolean isVirtualCardAction();
-
     String getPerformingPlayerId();
-
-    String getText();
-
-    Effect nextEffect() throws InvalidGameLogicException;
+    String getText(DefaultGame game);
+    Effect nextEffect(DefaultGame cardGame) throws InvalidGameLogicException;
     SubAction createSubAction();
-    DefaultGame getGame();
-    boolean canBeInitiated();
+    boolean canBeInitiated(DefaultGame cardGame);
+    void setText(String text);
+    boolean wasCarriedOut();
+    void insertCost(Effect effect);
+    void appendCost(Effect effect);
+    void insertEffect(Effect effect);
+    void appendEffect(Effect effect);
 }

@@ -53,8 +53,9 @@ public class LookAtTopCardOfADeckEffect extends DefaultEffect {
         if(_count == deck.size())
             message = "Cards in deck";
 
-        _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                new ArbitraryCardsSelectionDecision(1, message, cards, Collections.emptyList(), 0, 0) {
+        _game.getUserFeedback().sendAwaitingDecision(
+                new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), message, cards,
+                        Collections.emptyList(), 0, 0) {
                     @Override
                     public void decisionMade(String result) {
                     }

@@ -1,15 +1,12 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.EffectType;
-import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -23,7 +20,7 @@ import java.util.List;
 public class ChooseAndPlayCardFromZoneEffect implements Effect {
     private final String _playerId;
     private final Filter _filter;
-    private CostToEffectAction _playCardAction;
+    private Action _playCardAction;
     private final Zone _fromZone;
     private final DefaultGame _game;
     private final Filterable _destinationFilter;
@@ -40,7 +37,7 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
 
         // FOR PLAYFROMHANDEFFECT
         // Card has to be in hand when you start playing the card (we need to copy the collection)
-        _filter = Filters.and(playableCardFilter, Filters.in(new LinkedList<>(game.getGameState().getHand(playerId))));
+        _filter = Filters.and(playableCardFilter);
 
         _fromZone = fromZone;
         _game = game;
@@ -85,8 +82,8 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
             Collection<PhysicalCard> playableCards = getPlayableCards();
             if (_fromZone == Zone.DISCARD || _fromZone == Zone.DRAW_DECK) {
                 int minimum = _fromZone == Zone.DISCARD ? 1 : 0;
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new ArbitraryCardsSelectionDecision(1, "Choose a card to play", 
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), "Choose a card to play",
                                 new LinkedList<>(playableCards), minimum, 1) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
@@ -100,9 +97,9 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
             } else if (playableCards.size() == 1) {
                 playCard(playableCards.iterator().next());
             } else if (playableCards.size() > 1) {
-                _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                        new CardsSelectionDecision(1, "Choose a card to play", playableCards, 
-                                1, 1) {
+                _game.getUserFeedback().sendAwaitingDecision(
+                        new CardsSelectionDecision(_game.getPlayer(_playerId), "Choose a card to play",
+                                playableCards, 1, 1) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 final PhysicalCard selectedCard = getSelectedCardsByResponse(result).iterator().next();
@@ -139,8 +136,8 @@ public class ChooseAndPlayCardFromZoneEffect implements Effect {
 
     public String getPerformingPlayerId() { return _playerId; }
 
-    protected CostToEffectAction getPlayCardAction() { return _playCardAction; }
-    protected void setPlayCardAction(CostToEffectAction action) { _playCardAction = action; }
+    protected Action getPlayCardAction() { return _playCardAction; }
+    protected void setPlayCardAction(Action action) { _playCardAction = action; }
 
     public DefaultGame getGame() { return _game; }
 }

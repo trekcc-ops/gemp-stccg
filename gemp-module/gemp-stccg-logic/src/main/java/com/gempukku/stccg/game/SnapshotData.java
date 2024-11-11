@@ -18,14 +18,9 @@ public class SnapshotData {
         }
         Snapshotable dataToReturn = snapshotableMap.get(data);
         if (dataToReturn == null) {
-            try {
-                dataToReturn = data.getClass().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            dataToReturn = data.generateSnapshot(this);
             snapshotableMap.put(data, dataToReturn);
             snapshotableMap.put(dataToReturn, dataToReturn);
-            data.generateSnapshot(dataToReturn, this);
         }
         return (T) dataToReturn;
     }

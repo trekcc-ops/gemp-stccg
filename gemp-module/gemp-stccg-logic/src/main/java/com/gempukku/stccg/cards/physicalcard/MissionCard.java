@@ -1,6 +1,5 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.ShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -9,30 +8,17 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.game.*;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class MissionCard extends ST1EPhysicalCard {
-    private final Quadrant _quadrant;
-    private final int _pointsShown;
-    private final MissionType _missionType;
-    private final boolean _hasNoPointBox;
     protected boolean _completed = false;
     public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _quadrant = blueprint.getQuadrant();
-        _missionType = blueprint.getMissionType();
-        _hasNoPointBox = blueprint.hasNoPointBox();
-        _pointsShown = blueprint.getPointsShown();
     }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {
@@ -45,29 +31,33 @@ public class MissionCard extends ST1EPhysicalCard {
         }
     }
 
+    private int getPointsShown() { return _blueprint.getPointsShown(); }
+
     public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
         return getAffiliationIcons(player.getPlayerId());
     }
 
-    public Quadrant getQuadrant() { return _quadrant; }
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
     @Override
-    public boolean canBeSeeded() { return true; }
+    public boolean canBeSeeded(DefaultGame game) { return true; }
 
     public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
+    private boolean hasNoPointBox() { return _blueprint.hasNoPointBox(); }
+
+    MissionType getMissionType() { return _blueprint.getMissionType(); }
 
     public boolean mayBeAttemptedByPlayer(Player player) {
             // Rule 7.2.1, Paragraph 1
             // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
-        if (_hasNoPointBox)
+        if (hasNoPointBox())
             return false;
         if (_completed)
             return false;
-        if (wasSeededBy(player) || _pointsShown >= 40) {
-            if (_missionType == MissionType.PLANET)
+        if (wasSeededBy(player) || getPointsShown() >= 40) {
+            if (getMissionType() == MissionType.PLANET)
                 return getYourAwayTeamsOnSurface(player).anyMatch(
                         awayTeam -> awayTeam.canAttemptMission(this));
-            if (_missionType == MissionType.SPACE)
+            if (getMissionType() == MissionType.SPACE)
                 return Filters.filterYourActive(player, Filters.ship, Filters.atLocation(_currentLocation))
                         .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
         }
@@ -78,7 +68,7 @@ public class MissionCard extends ST1EPhysicalCard {
         return getAwayTeamsOnSurface().filter(awayTeam -> awayTeam.getPlayer() == player);
     }
     public Stream<AwayTeam> getAwayTeamsOnSurface() {
-        return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
+        return _game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
     }
 
     public String getMissionRequirements() {
@@ -90,9 +80,13 @@ public class MissionCard extends ST1EPhysicalCard {
         List<Action> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             actions.add(new AttemptMissionAction(player, this));
-            actions.add(new ShipBattleAction(this, player, this.getLocation()));
+            try {
+                actions.add(new ShipBattleAction(this, player, this.getLocation()));
+            } catch(InvalidGameLogicException exp) {
+                _game.sendErrorMessage(exp);
+            }
         }
-        actions.removeIf(action -> !action.canBeInitiated());
+        actions.removeIf(action -> !action.canBeInitiated(player.getGame()));
         return actions;
     }
 
@@ -102,10 +96,36 @@ public class MissionCard extends ST1EPhysicalCard {
         else return _blueprint.getOpponentSpan();
     }
 
-    public void isSolvedByPlayer(String playerId) {
-        _game.getGameState().getPlayer(playerId).scorePoints(_blueprint.getPointsShown());
-        _game.getGameState().getPlayer(playerId).addSolvedMission(this);
-        _completed = true;
-        _game.getGameState().checkVictoryConditions();
+    public int getPoints() { return _blueprint.getPointsShown(); }
+
+    public boolean isCompleted() { return _completed; }
+
+    public void setCompleted(boolean completed) { _completed = completed; }
+
+    @Override
+    public MissionCard generateSnapshot(SnapshotData snapshotData) {
+
+        // TODO - A lot of repetition here between the various PhysicalCard classes
+
+        MissionCard newCard = new MissionCard(_game, _cardId, snapshotData.getDataForSnapshot(_owner), _blueprint);
+        newCard.setZone(_zone);
+        newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
+        newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
+        newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
+
+        for (PhysicalCard card : _cardsSeededUnderneath)
+            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
+
+        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
+            for (PhysicalCard card : entry.getValue())
+                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
+
+        newCard._completed = _completed;
+
+        return newCard;
+    }
+
+    public MissionRequirement getRequirements() {
+        return _blueprint.getMissionRequirements();
     }
 }

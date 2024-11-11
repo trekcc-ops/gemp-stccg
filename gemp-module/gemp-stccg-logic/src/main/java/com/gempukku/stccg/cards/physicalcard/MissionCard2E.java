@@ -12,11 +12,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class MissionCard2E extends MissionCard {
-    private final MissionType _missionType;
 
     public MissionCard2E(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(game, cardId, owner, blueprint);
-        _missionType = blueprint.getMissionType();
     }
 
     public Set<Affiliation> getAffiliationIcons(String playerId) {
@@ -41,10 +39,10 @@ public class MissionCard2E extends MissionCard {
             return true;
         // TODO - Manually set up for now
         return switch (_blueprint.getBlueprintId()) {
-            case "1_161" -> card.isAffiliation(Affiliation.NON_ALIGNED) || card.hasIcon(CardIcon.TNG_ICON) ||
-                    card.hasIcon(CardIcon.EARTH);
-            case "1_162" -> card.isAffiliation(Affiliation.NON_ALIGNED) || card.hasIcon(CardIcon.EARTH) ||
-                    (card.isAffiliation(Affiliation.FEDERATION) && (card.hasIcon(CardIcon.DS9_ICON)));
+            case "1_161" -> card.isAffiliation(Affiliation.NON_ALIGNED) || card.hasIcon(_game, CardIcon.TNG_ICON) ||
+                    card.hasIcon(_game, CardIcon.EARTH);
+            case "1_162" -> card.isAffiliation(Affiliation.NON_ALIGNED) || card.hasIcon(_game, CardIcon.EARTH) ||
+                    (card.isAffiliation(Affiliation.FEDERATION) && (card.hasIcon(_game, CardIcon.DS9_ICON)));
             case "1_191" -> card.isAffiliation(Affiliation.KLINGON) || card.isAffiliation(Affiliation.NON_ALIGNED);
             default -> false;
         };
@@ -61,14 +59,14 @@ public class MissionCard2E extends MissionCard {
     }
 
     public Stream<AwayTeam> getAwayTeamsOnSurface() {
-        return getGame().getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
+        return _game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
     }
 
     private Collection<PhysicalCard> getCardsOnSurface() {
-        if (_missionType == MissionType.SPACE)
+        if (getMissionType() == MissionType.SPACE)
             return new LinkedList<>();
         else
-            return getAttachedCards();
+            return getAttachedCards(_game);
     }
 
     @Override
@@ -76,7 +74,7 @@ public class MissionCard2E extends MissionCard {
         List<Action> actions = new LinkedList<>();
         if (_game.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             Action action = new AttemptMissionAction(player, this);
-            if (action.canBeInitiated())
+            if (action.canBeInitiated(player.getGame()))
                 actions.add(action);
         }
         return actions;

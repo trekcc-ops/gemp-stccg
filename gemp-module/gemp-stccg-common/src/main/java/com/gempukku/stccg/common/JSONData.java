@@ -61,6 +61,8 @@ public class JSONData {
         public ArrayList<Integer> errataSets = new ArrayList<>();
         public Map<String, String> errata = new HashMap<>();
         public boolean hall = true;
+        public boolean noShuffle = false;
+        public boolean firstPlayerFixed = false;
 
     }
 

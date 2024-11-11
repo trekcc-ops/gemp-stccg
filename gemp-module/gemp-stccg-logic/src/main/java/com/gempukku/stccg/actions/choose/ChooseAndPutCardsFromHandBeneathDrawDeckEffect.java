@@ -45,9 +45,9 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
     @Override
     public void playEffect() {
         final Collection<PhysicalCard> cards = Filters.filter(_game.getGameState().getHand(_playerId), _game, _filters);
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(
-                new ChooseAndPutNextCardFromHandOnBottomOfLibrary(subAction, Math.min(_count, cards.size()), cards));
+                new ChooseAndPutNextCardFromHandOnBottomOfLibrary(_game, subAction, Math.min(_count, cards.size()), cards));
         processSubAction(_game, subAction);
     }
 
@@ -56,8 +56,8 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
         private final CostToEffectAction _subAction;
         private final int _remainingCount;
 
-        public ChooseAndPutNextCardFromHandOnBottomOfLibrary(CostToEffectAction subAction, int remainingCount, Collection<PhysicalCard> remainingCards) {
-            super(subAction.getGame(), _playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
+        public ChooseAndPutNextCardFromHandOnBottomOfLibrary(DefaultGame game, CostToEffectAction subAction, int remainingCount, Collection<PhysicalCard> remainingCards) {
+            super(game, _playerId, "Choose a card to put on bottom of your deck", remainingCards, 1, 1);
             _subAction = subAction;
             _remainingCount = remainingCount;
             _remainingCards = remainingCards;
@@ -71,7 +71,7 @@ public class ChooseAndPutCardsFromHandBeneathDrawDeckEffect extends AbstractSubA
                 _remainingCards.remove(selectedCard);
                 if (_remainingCount - 1 > 0)
                     _subAction.appendEffect(
-                            new ChooseAndPutNextCardFromHandOnBottomOfLibrary(_subAction, _remainingCount - 1, _remainingCards));
+                            new ChooseAndPutNextCardFromHandOnBottomOfLibrary(_game, _subAction, _remainingCount - 1, _remainingCards));
             }
         }
     }

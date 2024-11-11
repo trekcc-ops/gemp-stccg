@@ -1,13 +1,16 @@
 package com.gempukku.stccg.actions.battle;
 
-import com.gempukku.stccg.actions.AbstractCostToEffectAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.google.common.collect.Iterables;
@@ -16,7 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShipBattleAction extends AbstractCostToEffectAction {
+public class ShipBattleAction extends ActionyAction {
         // TODO - For now, ignores affiliation attack restrictions, as well as tactics, as well as leadership requirements
         // TODO - Very much not complete
                 // i.e. it is just an action to compare numbers
@@ -26,7 +29,6 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     private boolean _actionWasInitiated = false;
     private boolean _returningFire;
     private boolean _virtualCardAction;
-    protected final DefaultGame _game;
     protected Effect _finalEffect;
     private final ST1ELocation _location;
     private boolean _returnFireDecisionMade;
@@ -49,27 +51,17 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
      * Creates an action for playing the specified card.
      * @param actionSource the card to initiate the deployment
      */
-    public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, ST1ELocation location) {
-        super(performingPlayer.getPlayerId(), ActionType.BATTLE);
-        setText("Initiate battle");
+    public ShipBattleAction(PhysicalCard actionSource, Player performingPlayer, ST1ELocation location)
+            throws InvalidGameLogicException {
+        super(performingPlayer, "Initiate battle", ActionType.BATTLE);
+        DefaultGame game = actionSource.getGame();
         _actionSource = actionSource;
-        _game = actionSource.getGame();
         _location = location;
         _attackingPlayer = performingPlayer;
-        if (_game.getPlayers().size() != 2)
-            throw new RuntimeException("Ship battle action not equipped for a game with more than 2 players");
-        else {
-            for (Player player : _game.getPlayers()) {
-                if (player != performingPlayer)
-                    _defendingPlayer = player;
-            }
-        }
-        if (_defendingPlayer == null)
-            throw new RuntimeException("Valid opponent not found for ship battle");
+        _defendingPlayer = game.getPlayer(game.getOpponent(_performingPlayerId));
     }
 
-    @Override
-    public boolean canBeInitiated() {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         return !getEligibleCardsForForce(_attackingPlayer).isEmpty() && !getTargetOptions(_attackingPlayer).isEmpty();
     }
 
@@ -84,12 +76,13 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     }
 
     private Collection<PhysicalCard> getTargetOptions(Player player) {
-        return Filters.filterActive(_game, Filters.or(Filters.and(Filters.ship, Filters.undocked), Filters.facility),
+        return Filters.filterActive(player.getGame(), Filters.or(Filters.and(Filters.ship, Filters.undocked),
+                        Filters.facility),
                 Filters.atLocation(_location), Filters.not(Filters.your(player)));
     }
 
     private Effect selectForceEffect(Player player) {
-        return new ChooseCardsOnTableEffect(_thisAction, player,
+        return new ChooseCardsOnTableEffect(this, player,
                 "Choose ships to include in force", 1, getEligibleCardsForForce(player).size(),
                 getEligibleCardsForForce(player)) {
             @Override
@@ -100,7 +93,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     }
 
     private Effect getTargetEffect(Player player) {
-        return new ChooseCardsOnTableEffect(_thisAction, player,
+        return new ChooseCardsOnTableEffect(this, player,
                 "Choose target", 1, 1, getTargetOptions(player)) {
             @Override
             protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
@@ -116,8 +109,8 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
             attackTotal += ship.getBlueprint().getAttribute(CardAttribute.WEAPONS);
         }
         int defenseTotal = _targets.get(player).getBlueprint().getAttribute(CardAttribute.SHIELDS);
-        _game.sendMessage(playerId + " opens fire");
-        _game.sendMessage("ATTACK: " + attackTotal + ", DEFENSE: " + defenseTotal);
+        player.getGame().sendMessage(playerId + " opens fire");
+        player.getGame().sendMessage("ATTACK: " + attackTotal + ", DEFENSE: " + defenseTotal);
         if (attackTotal > defenseTotal * 2)
             return OpenFireResult.DIRECT_HIT;
         else if (attackTotal > defenseTotal)
@@ -125,7 +118,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         else return OpenFireResult.MISS;
     }
 
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
 
         if (!_actionWasInitiated) {
             _actionWasInitiated = true;
@@ -133,16 +126,16 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
 
         if (_forces.get(_attackingPlayer) == null) {
             // TODO - Need to include some compatibility check here
-            return selectForceEffect(_attackingPlayer);
+            return new SubAction(this, selectForceEffect(_attackingPlayer));
         }
 
         if (_targets.get(_attackingPlayer) == null) {
-            return getTargetEffect(_attackingPlayer);
+            return new SubAction(this, getTargetEffect(_attackingPlayer));
         }
 
         if (!_returnFireDecisionMade) {
-            _game.getUserFeedback().sendAwaitingDecision(_defendingPlayer.getPlayerId(),
-                    new YesNoDecision("Do you want to return fire?") {
+            cardGame.getUserFeedback().sendAwaitingDecision(
+                    new YesNoDecision(_defendingPlayer, "Do you want to return fire?") {
                 @Override
                         protected void yes() {
                     _returnFireDecisionMade = true;
@@ -158,11 +151,11 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
         }
 
         if (_returningFire && _forces.get(_defendingPlayer) == null) {
-            return selectForceEffect(_defendingPlayer);
+            return new SubAction(this, selectForceEffect(_defendingPlayer));
         }
 
         if (_returningFire && _targets.get(_defendingPlayer) == null) {
-            return getTargetEffect(_defendingPlayer);
+            return new SubAction(this, getTargetEffect(_defendingPlayer));
         }
 
         if (!_openedFire) {
@@ -206,7 +199,7 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
             }
             _battleResolved = true;
         }*/
-        return getNextEffect();
+        return getNextAction();
     }
 
     private Integer getDamage(OpenFireResult result) {
@@ -233,8 +226,5 @@ public class ShipBattleAction extends AbstractCostToEffectAction {
     public boolean wasCarriedOut() {
         return _finalEffect != null && _finalEffect.wasCarriedOut();
     }
-
-    @Override
-    public DefaultGame getGame() { return _game; }
 
 }

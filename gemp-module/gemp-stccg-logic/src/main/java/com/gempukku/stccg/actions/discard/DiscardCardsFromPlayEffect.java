@@ -113,7 +113,7 @@ public class DiscardCardsFromPlayEffect extends DefaultEffect implements Prevent
             game.sendMessage(_performingPlayer + " discards " + TextUtils.concatenateStrings(cards.stream().map(PhysicalCard::getCardLink)) + " from play using " + _source.getCardLink());
 
         for (PhysicalCard discardedCard : discardedCards)
-            game.getActionsEnvironment().emitEffectResult(new DiscardCardsFromPlayResult(_source, getPerformingPlayerId(), discardedCard));
+            game.getActionsEnvironment().emitEffectResult(new DiscardCardFromPlayResult(_source, discardedCard));
 
         forEachDiscardedByEffectCallback(cards);
     }

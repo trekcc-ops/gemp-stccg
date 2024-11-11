@@ -6,14 +6,16 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhaseProcess {
-    DilemmaSeedPhaseOpponentsMissionsProcess(Set<String> playersDone, ST1EGame game) {
-        super(playersDone, game);
+
+    DilemmaSeedPhaseOpponentsMissionsProcess(ST1EGame game) {
+        super(game.getPlayerIds(), game);
+    }
+
+    public DilemmaSeedPhaseOpponentsMissionsProcess(Collection<String> playersSelecting, ST1EGame game) {
+        super(playersSelecting, game);
     }
 
     @Override
@@ -29,13 +31,12 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
 
     @Override
     public GameProcess getNextProcess() {
-        Set<String> players = _game.getPlayerIds();
-        if (players.size() == _playersDone.size()) {
+        if (_playersParticipating.isEmpty()) {
             for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
                 location.getMissions().getFirst().seedPreSeeds();
             }
-            return new DilemmaSeedPhaseYourMissionsProcess(new HashSet<>(), _game);
+            return new DilemmaSeedPhaseYourMissionsProcess(_game);
         }
-        else return new DilemmaSeedPhaseOpponentsMissionsProcess(_playersDone, _game);
+        else return new DilemmaSeedPhaseOpponentsMissionsProcess(_playersParticipating, _game);
     }
 }

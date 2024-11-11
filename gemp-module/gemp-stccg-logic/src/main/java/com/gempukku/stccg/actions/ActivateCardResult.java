@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 
 public class ActivateCardResult extends EffectResult {
-    private boolean _effectCancelled;
 
     public ActivateCardResult(ActivateCardEffect effect) {
         super(Type.ACTIVATE, effect);
@@ -15,6 +14,6 @@ public class ActivateCardResult extends EffectResult {
     }
 
     public boolean isEffectCancelled() {
-        return _effectCancelled;
+        return false;
     }
 }

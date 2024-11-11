@@ -3,26 +3,26 @@ package com.gempukku.stccg.actions;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ActivateCardAction extends AbstractCostToEffectAction {
+public class ActivateCardAction extends ActionyAction {
 
     private final PhysicalCard _physicalCard;
     private ActivateCardEffect _activateCardEffect;
     private boolean _sentMessage;
     private boolean _activated;
     private boolean _prevented;
-    protected final DefaultGame _game;
 
     public ActivateCardAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.SPECIAL_ABILITY);
-        _game = physicalCard.getGame();
+        super(physicalCard.getOwner(), "Use " + physicalCard.getFullName(), ActionType.SPECIAL_ABILITY);
         _physicalCard = physicalCard;
-        setText("Use " + _physicalCard.getFullName());
     }
 
     @Override
     public PhysicalCard getActionSource() {
         return _physicalCard;
     }
+
+    // TODO - Not sure this is accurate. Also not sure we need this class at all.
+    public boolean requirementsAreMet(DefaultGame game) { return true; }
 
     @Override
     public PhysicalCard getCardForActionSelection() {
@@ -34,34 +34,32 @@ public class ActivateCardAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null && _physicalCard.getZone().isInPlay()) {
-                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
-                _game.sendMessage(_physicalCard.getCardLink() + " is used");
+                DefaultGame game = _physicalCard.getGame();
+                game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
+                game.sendMessage(_physicalCard.getCardLink() + " is used");
             }
         }
 
         if (!isCostFailed()) {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
             if (!_activated) {
                 _activated = true;
-                _activateCardEffect = new ActivateCardEffect(_physicalCard);
-                return _activateCardEffect;
+                return new SubAction(this, new ActivateCardEffect(_physicalCard));
             }
 
             if (_activateCardEffect.getActivateCardResult().isEffectCancelled())
                 return null;
             if (!_prevented)
-                return getNextEffect();
+                return getNextAction();
         }
         return null;
     }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
 }

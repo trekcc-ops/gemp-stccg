@@ -1,12 +1,21 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
+import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
@@ -15,11 +24,14 @@ import com.gempukku.stccg.game.Snapshotable;
 
 import java.util.*;
 
+@JsonSerialize(using = ModifiersLogicSerializer.class)
 public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, Snapshotable<ModifiersLogic> {
 
     private final Map<ModifierEffect, List<Modifier>> _modifiers = new EnumMap<>(ModifierEffect.class);
     private final Map<Phase, List<Modifier>> _untilEndOfPhaseModifiers = new EnumMap<>(Phase.class);
     private final Map<String, List<Modifier>> _untilEndOfPlayersNextTurnThisRoundModifiers = new HashMap<>();
+    private final Map<PhysicalCard, List<ModifierHook>> _modifierHooks = new HashMap<>();
+
     private final Collection<Modifier> _untilEndOfTurnModifiers = new LinkedList<>();
     private final Collection<Modifier> _skipSet = new HashSet<>();
     private final Map<String, LimitCounter> _turnLimitCounters = new HashMap<>();
@@ -32,6 +44,13 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         _game = game;
         _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
     }
+
+    public ModifiersLogic(DefaultGame game, JsonNode node) {
+        _game = game;
+        _normalCardPlaysPerTurn = 1; // TODO - Eventually this needs to be a format-driven parameter
+        // TODO - load all modifiers from JsonNode
+    }
+
 
     @Override
     public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card) {
@@ -98,10 +117,10 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
     }
 
-    private static boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
+    private boolean shouldAdd(ModifierEffect modifierEffect, Modifier modifier) {
         return modifierEffect == ModifierEffect.TEXT_MODIFIER || modifier.getSource() == null ||
                 modifier.isNonCardTextModifier() ||
-                !modifier.getSource().hasTextRemoved();
+                !modifier.getSource().hasTextRemoved(_game);
     }
 
     private List<Modifier> getIconModifiersAffectingCard(CardIcon icon, PhysicalCard card) {
@@ -353,8 +372,8 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public void appendExtraCosts(CostToEffectAction action, PhysicalCard target) {
-        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay();
+    public void appendExtraCosts(Action action, PhysicalCard target) {
+        final List<? extends ExtraPlayCost> playCosts = target.getExtraCostToPlay(_game);
         if (playCosts != null)
             for (ExtraPlayCost playCost : playCosts) {
                 final Condition condition = playCost.getCondition();
@@ -423,8 +442,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public void generateSnapshot(ModifiersLogic selfSnapshot, SnapshotData snapshotData) {
+    public ModifiersLogic generateSnapshot(SnapshotData snapshotData) {
         // TODO SNAPSHOT - Basically need to copy everything here
+        return this;
     }
 
     final class ModifierHookImpl implements ModifierHook {
@@ -470,6 +490,42 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public void useNormalCardPlay(Player player) {
         int currentPlaysAvailable = _normalCardPlaysAvailable.get(player);
         _normalCardPlaysAvailable.put(player, currentPlaysAvailable - 1);
+    }
+
+    @Override
+    public void removeModifierHooks(PhysicalCard card) {
+        if (_modifierHooks.get(card) != null) {
+            for (ModifierHook modifierHook : _modifierHooks.get(card))
+                modifierHook.stop();
+            _modifierHooks.remove(card);
+        }
+    }
+
+    @Override
+    public void addModifierHooks(PhysicalCard card) {
+        CardBlueprint blueprint = card.getBlueprint();
+        List<ModifierSource> inPlayModifiers = blueprint.getInPlayModifiers();
+
+        Collection<Modifier> modifiers = new LinkedList<>();
+
+        for (ModifierSource modifierSource : inPlayModifiers) {
+            ActionContext context =
+                    new DefaultActionContext(card.getOwnerName(), _game, card, null, null);
+            modifiers.add(modifierSource.getModifier(context));
+        }
+
+        modifiers.addAll(blueprint.getWhileInPlayModifiersNew(card.getOwner(), card));
+        _modifierHooks.computeIfAbsent(card, k -> new LinkedList<>());
+        for (Modifier modifier : modifiers)
+            _modifierHooks.get(card).add(addAlwaysOnModifier(modifier));
+    }
+
+    public List<Modifier> getModifiers() {
+        List<Modifier> result = new LinkedList<>();
+        for (List<Modifier> modifiers : _modifiers.values()) {
+            result.addAll(modifiers);
+        }
+        return result;
     }
 
 }

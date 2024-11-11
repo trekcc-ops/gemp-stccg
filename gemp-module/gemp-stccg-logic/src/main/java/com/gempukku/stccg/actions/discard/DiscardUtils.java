@@ -22,6 +22,6 @@ public class DiscardUtils {
                 cardsToChangeZones(game, movingCards, attachedCard, discardedCards, toMoveToDiscard);
             }
         }
-        toMoveToDiscard.addAll(card.getStackedCards());
+        toMoveToDiscard.addAll(card.getStackedCards(game));
     }
 }

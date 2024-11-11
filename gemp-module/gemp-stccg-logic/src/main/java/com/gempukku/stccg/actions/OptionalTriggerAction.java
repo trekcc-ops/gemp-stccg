@@ -4,23 +4,19 @@ import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class OptionalTriggerAction extends AbstractCostToEffectAction {
+public class OptionalTriggerAction extends ActionyAction {
     private final PhysicalCard _physicalCard;
     private final PhysicalCard _actionAttachedToCard;
 
     private String _message;
 
     private boolean _sentMessage;
-    private final DefaultGame _game;
     private ActionSource _actionSource;
 
     public OptionalTriggerAction(PhysicalCard physicalCard) {
-        super(physicalCard.getOwner(), ActionType.TRIGGER);
-        _game = physicalCard.getGame();
+        super(physicalCard.getOwner(), "Optional trigger from " + physicalCard.getCardLink(), ActionType.OTHER);
         _physicalCard = physicalCard;
         _actionAttachedToCard = physicalCard;
-
-        setText("Optional trigger from " + _physicalCard.getCardLink());
         _message = _physicalCard.getCardLink() + " optional triggered effect is used";
     }
 
@@ -32,6 +28,7 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     public void setMessage(String message) {
         _message = message;
     }
+    public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
     @Override
     public PhysicalCard getActionSource() {
@@ -44,28 +41,26 @@ public class OptionalTriggerAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
         if (!_sentMessage) {
             _sentMessage = true;
             if (_physicalCard != null)
-                _game.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
+                cardGame.getGameState().activatedCard(getPerformingPlayerId(), _physicalCard);
             if (_message != null)
-                _game.sendMessage(_message);
+                cardGame.sendMessage(_message);
         }
 
         if (!isCostFailed()) {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
             if (_actionSource != null) {
-                _game.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
+                cardGame.getModifiersQuerying().getUntilEndOfTurnLimitCounter(_actionSource).countUse();
             }
-            return getNextEffect();
+            return getNextAction();
         }
         return null;
     }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
 }

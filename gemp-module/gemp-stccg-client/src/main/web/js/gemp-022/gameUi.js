@@ -1547,6 +1547,7 @@ export default class GameTableUI {
         var actionTexts = this.getDecisionParameters(decision, "actionText");
         var actionTypes = this.getDecisionParameters(decision, "actionType");
         var noPass = this.getDecisionParameters(decision, "noPass");
+        var isRevertEligible = this.getDecisionParameters(decision, "revertEligible");
 
         var that = this;
 
@@ -1569,6 +1570,12 @@ export default class GameTableUI {
                     finishChoice();
                 });
             }
+            if (isRevertEligible == "true") {
+                that.alertButtons.append("<button id='Revert' style='float: right'>Revert</button>");
+                $("#Revert").button().click(function () {
+                    finishChoice(true);
+                });
+            }
             if (selectedCardIds.length > 0) {
                 that.alertButtons.append("<button id='ClearSelection'>Reset choice</button>");
                 that.alertButtons.append("<button id='Done' style='float: right'>Done</button>");
@@ -1581,7 +1588,7 @@ export default class GameTableUI {
             }
         };
 
-        var finishChoice = function () {
+        var finishChoice = function (isRevert) {
             that.alertText.html("");
             // ****CCG League****: Border around alert box
             that.alertBox.removeClass("alert-box-highlight");
@@ -1594,7 +1601,12 @@ export default class GameTableUI {
                         $(this).remove();
                 });
             that.hand.layoutCards();
-            that.decisionFunction(id, "" + selectedCardIds);
+            if (isRevert) {
+                that.decisionFunction(id, "revert");
+            }
+            else {
+                that.decisionFunction(id, "" + selectedCardIds);
+            }
         };
 
         var resetChoice = function () {

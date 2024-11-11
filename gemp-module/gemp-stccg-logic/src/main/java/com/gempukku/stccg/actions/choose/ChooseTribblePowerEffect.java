@@ -20,8 +20,8 @@ public class ChooseTribblePowerEffect extends UnrespondableEffect {
     @Override
     public void doPlayEffect() {
         String[] powers = TribblePower.names();
-        _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                new MultipleChoiceAwaitingDecision("Choose a Tribble power", powers) {
+        _game.getUserFeedback().sendAwaitingDecision(
+                new MultipleChoiceAwaitingDecision(_game.getPlayer(_playerId), "Choose a Tribble power", powers) {
                     @Override
                     protected void validDecisionMade(int index, String result) {
                         _context.setValueToMemory(_memoryId, result);

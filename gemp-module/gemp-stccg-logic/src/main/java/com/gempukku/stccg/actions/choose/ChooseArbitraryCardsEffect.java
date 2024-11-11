@@ -2,11 +2,12 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.Player;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,11 +22,20 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
     private final int _minimum;
     private final int _maximum;
 
-    public ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText, Collection<? extends PhysicalCard> cards, int minimum, int maximum) {
-        this(game, playerId, choiceText, cards, Filters.any, minimum, maximum, false);
+    ChooseArbitraryCardsEffect(Player player, String choiceText, Collection<? extends PhysicalCard> cards,
+                               int minimum, int maximum) {
+        this(player, choiceText, cards, Filters.any, minimum, maximum, false);
     }
 
-    public ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText, Collection<? extends PhysicalCard> cards, Filterable filter, int minimum, int maximum, boolean showMatchingOnly) {
+
+    ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText,
+                               Collection<? extends PhysicalCard> cards, int minimum, int maximum) {
+        this(game.getPlayer(playerId), choiceText, cards, Filters.any, minimum, maximum, false);
+    }
+
+    protected ChooseArbitraryCardsEffect(DefaultGame game, String playerId, String choiceText,
+                                         Collection<? extends PhysicalCard> cards, Filterable filter,
+                                         int minimum, int maximum, boolean showMatchingOnly) {
         super(game, playerId);
         _playerId = playerId;
         _choiceText = choiceText;
@@ -35,6 +45,20 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
         _minimum = minimum;
         _maximum = maximum;
     }
+
+    protected ChooseArbitraryCardsEffect(Player player, String choiceText,
+                                         Collection<? extends PhysicalCard> cards, Filterable filter,
+                                         int minimum, int maximum, boolean showMatchingOnly) {
+        super(player);
+        _playerId = player.getPlayerId();
+        _choiceText = choiceText;
+        _showMatchingOnly = showMatchingOnly;
+        _cards = new HashSet<>(cards);
+        _filter = filter;
+        _minimum = minimum;
+        _maximum = maximum;
+    }
+
 
     @Override
     public boolean isPlayableInFull() {
@@ -61,8 +85,9 @@ public abstract class ChooseArbitraryCardsEffect extends DefaultEffect {
             if (_showMatchingOnly)
                 toShow = possibleCards;
 
-            _game.getUserFeedback().sendAwaitingDecision(_playerId,
-                    new ArbitraryCardsSelectionDecision(1, _choiceText, toShow, possibleCards, _minimum, _maximum) {
+            _game.getUserFeedback().sendAwaitingDecision(
+                    new ArbitraryCardsSelectionDecision(_game.getPlayer(_playerId), _choiceText, toShow, possibleCards,
+                            _minimum, _maximum) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             cardsSelected(getSelectedCardsByResponse(result));

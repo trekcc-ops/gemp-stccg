@@ -5,6 +5,8 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.GameSnapshot;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeedPhaseTest extends AbstractAtTest {
 
     @Test
-    public void autoSeedTest() throws DecisionResultInvalidException {
+    public void autoSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
         initializeIntroductoryTwoPlayerGame();
 
         // Figure out which player is going first
@@ -94,6 +96,9 @@ public class SeedPhaseTest extends AbstractAtTest {
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         assertEquals(1, homeward.getCardsSeededUnderneath().size());
         assertTrue(homeward.getCardsSeededUnderneath().contains(archer));
+
+        for (GameSnapshot snapshot : _game.getSnapshots())
+            System.out.println(snapshot.getDescription());
     }
 
     @Test

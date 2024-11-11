@@ -1,10 +1,7 @@
 package com.gempukku.stccg.cards.blueprints.resolver;
 
 import com.gempukku.stccg.TextUtils;
-import com.gempukku.stccg.actions.CostToEffectAction;
-import com.gempukku.stccg.actions.DefaultEffect;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.UnrespondableEffect;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.ChooseActiveCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseArbitraryCardsEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsFromZoneEffect;
@@ -92,7 +89,8 @@ public class CardResolver {
             return new ChooseActiveCardsEffect(actionContext, choicePlayer.getPlayerId(actionContext),
                     actionContext.substituteText(choiceText),
                     countSource.getMinimum(actionContext), countSource.getMaximum(actionContext),
-                    Filters.in(possibleCards)) {
+                    possibleCards) {
+
                 @Override
                 protected void cardsSelected(Collection<PhysicalCard> cards) {
                     actionContext.setCardMemory(memory, cards);
@@ -126,7 +124,7 @@ public class CardResolver {
                     }
                 };
             } else {
-                return new ChooseArbitraryCardsEffect(actionContext.getGame(), choicePlayerId,
+                return new ChooseArbitraryCardsEffect(actionContext.getGame().getPlayer(choicePlayerId),
                         actionContext.substituteText(choiceText),
                         cardSource.apply(actionContext), Filters.in(possibleCards),
                         min, max, showMatchingOnly) {
@@ -165,7 +163,7 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(Action action, ActionContext context) {
 
                 return switch (selectionType) {
                     case "self", "memory" -> {
@@ -241,7 +239,7 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(Action action, ActionContext context) {
                 Collection<PhysicalCard> cards = filterCards(context, choiceFilter);
                 return effectSource.createEffect(cards, action, context,
                         countSource.getMinimum(context), countSource.getMaximum(context));
@@ -271,7 +269,7 @@ public class CardResolver {
             }
 
             @Override
-            protected Effect createEffect(CostToEffectAction action, ActionContext context) {
+            protected Effect createEffect(Action action, ActionContext context) {
                 return choiceEffect.apply(context);
             }
 
@@ -289,7 +287,7 @@ public class CardResolver {
 
 
     private interface ChoiceEffectSource {
-        Effect createEffect(Collection<? extends PhysicalCard> possibleCards, CostToEffectAction action, ActionContext actionContext,
-                            int min, int max);
+        Effect createEffect(Collection<? extends PhysicalCard> possibleCards, Action action,
+                            ActionContext actionContext, int min, int max);
     }
 }

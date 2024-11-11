@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
@@ -26,7 +27,7 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
         return getBlueprint().getFacilityType();
     }
     public boolean canSeedAtMission(MissionCard mission) {
-        for (Affiliation affiliation : _affiliationOptions)
+        for (Affiliation affiliation : getAffiliationOptions())
             if (canSeedAtMissionAsAffiliation(mission, affiliation))
                 return true;
         return false;
@@ -36,11 +37,12 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
             return false;
         if (mission.getLocation().hasFacilityOwnedByPlayer(_owner.getPlayerId()))
             return false;
-        return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) && mission.getQuadrant() == _nativeQuadrant;
+        return mission.getAffiliationIcons(_owner.getPlayerId()).contains(affiliation) &&
+                mission.getBlueprint().getQuadrant() == getNativeQuadrant();
     }
 
     @Override
-    public boolean canBeSeeded() {
+    public boolean canBeSeeded(DefaultGame game) {
         for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {
             for (MissionCard mission : location.getMissions())
                 if (this.canSeedAtMission(mission))
@@ -71,11 +73,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
                 actions.add(new BeamCardsAction(player, this));
             }
-            if (!Filters.filter(getAttachedCards(), Filters.your(player), Filters.personnel).isEmpty()) {
+            if (!Filters.filter(getAttachedCards(_game), Filters.your(player), Filters.personnel).isEmpty()) {
                 actions.add(new WalkCardsAction(player, this));
             }
         }
-        actions.removeIf(action -> !action.canBeInitiated());
+        actions.removeIf(action -> !action.canBeInitiated(player.getGame()));
         return actions;
     }
 
@@ -85,11 +87,11 @@ public class FacilityCard extends PhysicalNounCard1E implements AffiliatedCard, 
     }
 
     public Collection<PhysicalCard> getDockedShips() {
-        return Filters.filter(getAttachedCards(), Filters.ship);
+        return Filters.filter(getAttachedCards(_game), Filters.ship);
     }
 
     public Collection<PhysicalCard> getCrew() {
-        return Filters.filter(getAttachedCards(), Filters.or(Filters.personnel, Filters.equipment));
+        return Filters.filter(getAttachedCards(_game), Filters.or(Filters.personnel, Filters.equipment));
     }
 
 }

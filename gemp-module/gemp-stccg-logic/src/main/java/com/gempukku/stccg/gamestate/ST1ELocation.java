@@ -1,51 +1,63 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Region;
+import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
-public class ST1ELocation {
+@JsonSerialize(using = ST1ELocationSerializer.class)
+public class ST1ELocation implements Snapshotable<ST1ELocation> {
     private final Quadrant _quadrant;
     private final Region _region;
     private final String _locationName;
-    private final List<MissionCard> _missionCards;
-    private final Set<PhysicalCard> _nonMissionCards;
-    private final Set<FacilityCard> _outpostCards;
     private final ST1EGame _game;
     public ST1ELocation(MissionCard mission) {
-        _quadrant = mission.getQuadrant();
-        _region = mission.getBlueprint().getRegion();
-        _locationName = mission.getBlueprint().getLocation();
-        _missionCards = new ArrayList<>();
-        _nonMissionCards = new HashSet<>();
-        _outpostCards = new HashSet<>();
-        _game = mission.getGame();
-        addMission(mission);
+        this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
+                mission.getBlueprint().getLocation(), mission.getGame());
+        mission.setLocation(this);
     }
 
-    public List<MissionCard> getMissions() { return _missionCards; }
-    public Set<FacilityCard> getOutposts() { return _outpostCards; }
-
-    public void addMission(MissionCard card) {
-        _missionCards.add(card);
-        card.setLocation(this);
+    public ST1ELocation(Quadrant quadrant, String locationName, ST1EGame game) {
+        this(quadrant, null, locationName, game);
     }
+
+    public ST1ELocation(Quadrant quadrant, Region region, String locationName, ST1EGame game) {
+        _quadrant = quadrant;
+        _region = region;
+        _locationName = locationName;
+        _game = game;
+    }
+
+    public List<MissionCard> getMissions() {
+        List<MissionCard> result = new ArrayList<>();
+        Collection<PhysicalCard> missions = Filters.filterActive(_game, CardType.MISSION, Filters.atLocation(this));
+        for (PhysicalCard card : missions) {
+            if (card instanceof MissionCard missionCard)
+                result.add(missionCard);
+            else _game.sendMessage("Error - card of type MISSION that is not MissionCard class type");
+        }
+        return result;
+    }
+
     public Quadrant getQuadrant() { return _quadrant; }
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
 
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
-        if (_missionCards.size() == 1) {
-            return _missionCards.getFirst();
+        if (getMissions().size() == 1) {
+            return getMissions().getFirst();
         }
-        else if (_missionCards.size() == 2) {
-            for (MissionCard mission : _missionCards) {
+        else if (getMissions().size() == 2) {
+            for (MissionCard mission : getMissions()) {
                 if (Objects.equals(mission.getOwnerName(), playerId))
                     return mission;
             }
@@ -53,17 +65,12 @@ public class ST1ELocation {
         throw new InvalidGameLogicException("Could not find valid mission properties for player " + playerId + " at " + _locationName);
     }
 
-    public void addNonMission(PhysicalCard card) {
-        _nonMissionCards.add(card);
-        if (card.getBlueprint().getFacilityType() == FacilityType.OUTPOST)
-            _outpostCards.add((FacilityCard) card);
-    }
-
     public boolean hasFacilityOwnedByPlayer(String playerId) {
-        for (PhysicalCard nonMission : _nonMissionCards)
-            if (nonMission.getCardType() == CardType.FACILITY && nonMission.getOwnerName().equals(playerId))
-                return true;
-        return false;
+            // TODO - Is this accurately capturing "owned by" as necessary?
+        GameState gameState = _game.getGameState();
+        Player player = gameState.getPlayer(playerId);
+        Collection<PhysicalCard> cards = Filters.filterYourActive(player, CardType.FACILITY, Filters.atLocation(this));
+        return !cards.isEmpty();
     }
 
     public int getDistanceToLocation(ST1ELocation location, Player player) throws InvalidGameLogicException {
@@ -99,4 +106,8 @@ public class ST1ELocation {
         return getMissionForPlayer(player.getPlayerId()).getSpan(player);
     }
 
+    @Override
+    public ST1ELocation generateSnapshot(SnapshotData snapshotData) {
+        return new ST1ELocation(_quadrant, _region, _locationName, _game);
+    }
 }

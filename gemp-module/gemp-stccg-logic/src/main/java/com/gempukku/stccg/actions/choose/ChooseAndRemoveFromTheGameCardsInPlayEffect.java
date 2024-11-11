@@ -4,6 +4,7 @@ package com.gempukku.stccg.actions.choose;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CostToEffectAction;
 import com.gempukku.stccg.actions.RemoveCardsFromTheGameEffect;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 
@@ -22,7 +23,7 @@ public class ChooseAndRemoveFromTheGameCardsInPlayEffect extends ChooseActiveCar
 
     @Override
     protected void cardsSelected(Collection<PhysicalCard> cards) {
-        _resultSubAction = _action.createSubAction();
+        _resultSubAction = new SubAction(_action, _game);
         _resultSubAction.appendEffect(new RemoveCardsFromTheGameEffect(_game, _playerId, _action.getActionSource(), cards));
         _game.getActionsEnvironment().addActionToStack(_resultSubAction);
     }

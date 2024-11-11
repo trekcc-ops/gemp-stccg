@@ -188,4 +188,8 @@ public class DefaultActionContext implements ActionContext {
         return _game.getGameState().getZoneCards(playerSource.getPlayerId(this), zone);
     }
 
+    public ActionContext getParentContext() {
+        return _relevantContext;
+    }
+
 }

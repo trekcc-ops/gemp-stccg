@@ -1,29 +1,39 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.PlayerOrder;
-import com.gempukku.stccg.game.PlayerOrderFeedback;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
 public class ST1EPlayerOrderProcess extends ST1EGameProcess {
-    private final PlayerOrderFeedback _playerOrderFeedback;
-    private final Set<String> _players;
 
-    public ST1EPlayerOrderProcess(Set<String> players, PlayerOrderFeedback playerOrderFeedback, ST1EGame game) {
+    public ST1EPlayerOrderProcess(ST1EGame game) {
         super(game);
-        _players = players;
-        _playerOrderFeedback = playerOrderFeedback;
     }
 
     @Override
     public void process() {
+        List<String> playerOrder;
+        if (_game.getFormat().hasFixedPlayerOrder()) {
+            playerOrder = Arrays.asList(_game.getAllPlayerIds());
+        } else {
+            playerOrder = getPlayerOrderByRollingDice();
+        }
+        _game.sendMessage(playerOrder.getFirst() + " will go first");
+        _game.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
+    }
+
+    private List<String> getPlayerOrderByRollingDice() {
+        String[] players = _game.getAllPlayerIds();
         Map<String, Integer> diceResults = new HashMap<>();
-        for (String player: _players) diceResults.put(player, 0);
+        for (String player: players) diceResults.put(player, 0);
 
         while (diceResults.size() > 1) {
-            for (String player : _players) {
+            for (String player : players) {
                 Random rand = new Random();
                 int diceRoll = rand.nextInt(6) + 1;
                 _game.sendMessage(player + " rolled a " + diceRoll);
@@ -31,7 +41,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
             }
             int highestRoll = Collections.max(diceResults.values());
 
-            for (String player : _players) {
+            for (String player : players) {
                 if (diceResults.get(player) < highestRoll) {
                     diceResults.remove(player);
                 }
@@ -43,19 +53,30 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
         List<String> playerOrder = new ArrayList<>();
         playerOrder.addFirst(firstPlayer);
         int playerOrderIndex = 1;
-        for (String player : _players) {
+        for (String player : players) {
             if (!Objects.equals(player, firstPlayer)) {
                 playerOrder.add(playerOrderIndex, player);
                 playerOrderIndex++;
             }
         }
-
-        _game.sendMessage(firstPlayer + " will go first");
-        _playerOrderFeedback.setPlayerOrder(new PlayerOrder(playerOrder), firstPlayer);
+        return playerOrder;
     }
 
     @Override
     public GameProcess getNextProcess() {
-        return new ST1EStartOfGameProcess(_game);
+        Set<String> players = _game.getPlayerIds();
+        _game.takeSnapshot("Start of game");
+        for (String player : players) {
+            Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
+            for (PhysicalCard seedCard : _game.getGameState().getSeedDeck(player)) {
+                if (seedCard.getCardType() == CardType.DOORWAY)
+                    doorwaySeeds.add(seedCard);
+            }
+            for (PhysicalCard card : doorwaySeeds) {
+                _game.getGameState().removeCardsFromZone(player, Collections.singleton(card));
+                _game.getGameState().addCardToZone(card, Zone.HAND);
+            }
+        }
+        return new DoorwaySeedPhaseProcess(_game);
     }
 }

@@ -1,28 +1,34 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+@JsonSerialize(using = AwayTeamSerializer.class)
 public class AwayTeam implements AttemptingUnit {
     private final Player _player;
-    private final ST1EPhysicalCard _parentCard;
+    private final PhysicalCard _parentCard;
     private final Collection<PhysicalReportableCard1E> _cardsInAwayTeam;
+    private final ST1EGame _game;
 
-    public AwayTeam(Player player, ST1EPhysicalCard parentCard) {
+    public AwayTeam(ST1EGame game, Player player, PhysicalCard parentCard) {
         _player = player;
+        _game = game;
         _parentCard = parentCard;
         _cardsInAwayTeam = new LinkedList<>();
-        parentCard.getGame().getGameState().addAwayTeamToGame(this);
     }
 
-    public boolean hasAffiliation(Affiliation affiliation) {
+    public long getId() { return _game.getGameState().getAwayTeams().indexOf(this); }
+
+
+    private boolean hasAffiliation(Affiliation affiliation) {
         for (PhysicalCard card : _cardsInAwayTeam) {
             if (card instanceof PhysicalNounCard1E noun)
                 if (noun.getAffiliation() == affiliation)
@@ -31,19 +37,20 @@ public class AwayTeam implements AttemptingUnit {
         return false;
     }
 
-    public boolean hasAffiliationFromSet(Set<Affiliation> affiliations) {
+    private boolean hasAnyAffiliation(Collection<Affiliation> affiliations) {
         return affiliations.stream().anyMatch(this::hasAffiliation);
     }
 
     public boolean isOnSurface(PhysicalCard planet) {
         return _parentCard == planet;
     }
+    PhysicalCard getParentCard() { return _parentCard; }
 
     public Player getPlayer() { return _player; }
     public String getPlayerId() { return _player.getPlayerId(); }
     public Collection<PhysicalReportableCard1E> getCards() { return _cardsInAwayTeam; }
     public boolean canAttemptMission(MissionCard missionCard) {
-        return isOnSurface(missionCard) && hasAffiliationFromSet(missionCard.getAffiliationIconsForPlayer(_player));
+        return isOnSurface(missionCard) && hasAnyAffiliation(missionCard.getAffiliationIconsForPlayer(_player));
     }
 
     public void add(PhysicalReportableCard1E card) {
@@ -75,7 +82,7 @@ public class AwayTeam implements AttemptingUnit {
     public void remove(PhysicalReportableCard1E card) {
         _cardsInAwayTeam.remove(card);
         if (_cardsInAwayTeam.isEmpty())
-            card.getGame().getGameState().removeAwayTeamFromGame(this);
+            _game.getGameState().removeAwayTeamFromGame(this);
     }
 
     public boolean canBeDisbanded() {

@@ -9,16 +9,14 @@ import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
-public class TribblesEndOfRoundGameProcess extends GameProcess {
-    private final Map<String, Integer> _pointsScored = new HashMap<>();
-    private GameProcess _nextProcess;
-    private final TribblesGame _game;
-    TribblesEndOfRoundGameProcess(TribblesGame game) {
-        _game = game;
+public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
+    public TribblesEndOfRoundGameProcess(TribblesGame game) {
+        super(game);
     }
     @Override
     public void process() {
-        
+
+        Map<String, Integer> pointsScored = new HashMap<>();
         TribblesGameState gameState = _game.getGameState();
 
         for (String playerId : _game.getPlayerIds()) {
@@ -27,7 +25,7 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
             if (gameState.getHand(playerId).isEmpty()) {
                 gameState.playerWentOut(); // TODO: Nothing specifically implemented for this code
                 int score = calculateScore(gameState.getPlayPile(playerId));
-                _pointsScored.put(playerId, score);
+                pointsScored.put(playerId, score);
                 gameState.addToPlayerScore(playerId, score);
                 _game.sendMessage(playerId + " went out with " + score + " points");
                 _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
@@ -60,9 +58,9 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
             /* The player who "went out" this round will take the first turn in the next round.
                 If multiple players "went out" in the previous round, the player who "went out" with the
                 lowest points scored will play first. */
-            int lowestScore = Collections.min(_pointsScored.values());
-            _pointsScored.entrySet().removeIf(entry -> entry.getValue() > lowestScore);
-            List<String> firstPlayerList = new ArrayList<>(_pointsScored.keySet());
+            int lowestScore = Collections.min(pointsScored.values());
+            pointsScored.entrySet().removeIf(entry -> entry.getValue() > lowestScore);
+            List<String> firstPlayerList = new ArrayList<>(pointsScored.keySet());
 
                 /* In most games, there will be a clear first player at this point. For cases where multiple
                     players went out with the same lowest score, this code will randomly select one to be the
@@ -70,7 +68,8 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
                  */
             String firstPlayer = firstPlayerList.get(new Random().nextInt(firstPlayerList.size()));
             gameState.sendMessage("DEBUG: " + firstPlayer + " will go first next round.");
-            _nextProcess = new TribblesStartOfRoundGameProcess(firstPlayer, _game);
+
+            gameState.setCurrentPlayerId(firstPlayer);
         }
     }
 
@@ -84,6 +83,6 @@ public class TribblesEndOfRoundGameProcess extends GameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        return _nextProcess;
+        return new TribblesStartOfRoundGameProcess(_game);
     }
 }

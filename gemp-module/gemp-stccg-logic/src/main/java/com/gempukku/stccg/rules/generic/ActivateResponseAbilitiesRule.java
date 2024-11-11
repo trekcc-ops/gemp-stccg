@@ -20,7 +20,7 @@ public class ActivateResponseAbilitiesRule extends GenericRule {
     public List<? extends Action> getOptionalBeforeActions(String playerId, Effect effect) {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game, Filters.and(Filters.owner(playerId), Filters.active))) {
-            if (!card.hasTextRemoved())
+            if (!card.hasTextRemoved(_game))
                 result.addAll(card.getOptionalInPlayActions(effect, TriggerTiming.BEFORE));
         }
         return result;
@@ -30,7 +30,7 @@ public class ActivateResponseAbilitiesRule extends GenericRule {
     public List<? extends Action> getOptionalAfterActions(String playerId, EffectResult effectResult) {
         List<Action> result = new LinkedList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(_game, Filters.and(Filters.owner(playerId), Filters.active))) {
-            if (!card.hasTextRemoved())
+            if (!card.hasTextRemoved(_game))
                 result.addAll(card.getOptionalInPlayActions(effectResult, TriggerTiming.AFTER));
         }
         return result;

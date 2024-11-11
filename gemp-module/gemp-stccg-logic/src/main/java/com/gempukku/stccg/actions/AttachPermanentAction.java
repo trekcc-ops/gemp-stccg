@@ -5,43 +5,28 @@ import com.gempukku.stccg.actions.playcard.PlayCardEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
 
+import java.util.Collection;
 import java.util.Collections;
 
-public class AttachPermanentAction extends AbstractCostToEffectAction {
+public class AttachPermanentAction extends ActionyAction {
     private final PhysicalCard _cardToAttach;
-
     private boolean _cardRemoved;
-
-    private final ChooseActiveCardEffect _chooseTargetEffect;
     private boolean _targetChosen;
-
     private boolean _cardPlayed;
-
     private boolean _cardDiscarded;
-
     private final Zone _playedFrom;
     private PhysicalCard _target;
-    private final DefaultGame _game;
+    private final Collection<PhysicalCard> _targetOptions;
 
     public AttachPermanentAction(final PhysicalCard card, Filter filter) {
-        super(card.getOwner(), ActionType.PLAY_CARD);
-        _game = card.getGame();
+        super(card.getOwner(), "Play " + card.getFullName(), ActionType.PLAY_CARD);
         _cardToAttach = card;
-        setText("Play " + _cardToAttach.getFullName());
         _playedFrom = card.getZone();
-
-        _chooseTargetEffect =
-                new ChooseActiveCardEffect(null, card.getOwnerName(), "Attach " + card.getFullName() +
-                        ". Choose target to attach to", filter) {
-                    @Override
-                    protected void cardSelected(PhysicalCard target) {
-                        _target = target;
-                        _game.sendMessage(card.getOwnerName() + " plays " + card.getCardLink() +
-                                " from " + _playedFrom.getHumanReadable() + " on " + target.getCardLink());
-                    }
-                };
+        _targetOptions = Filters.filterActive(card.getGame(), filter);
     }
 
     @Override
@@ -54,51 +39,62 @@ public class AttachPermanentAction extends AbstractCostToEffectAction {
         return _cardToAttach;
     }
 
+    public boolean requirementsAreMet(DefaultGame game) { return true; }
+
     @Override
-    public Effect nextEffect() {
+    public Action nextAction(DefaultGame cardGame) {
+        GameState gameState = cardGame.getGameState();
         if (!_cardRemoved) {
             _cardRemoved = true;
             final Zone playedFromZone = _cardToAttach.getZone();
-            _game.getGameState()
+            gameState
                     .removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
             if (playedFromZone == Zone.HAND)
-                _game.getGameState().addCardToZone(_cardToAttach, Zone.VOID_FROM_HAND);
+                gameState.addCardToZone(_cardToAttach, Zone.VOID_FROM_HAND);
             else
-                _game.getGameState().addCardToZone(_cardToAttach, Zone.VOID);
+                gameState.addCardToZone(_cardToAttach, Zone.VOID);
             if (playedFromZone == Zone.DRAW_DECK) {
-                _game.sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
-                _game.getGameState().shuffleDeck(_cardToAttach.getOwnerName());
+                cardGame.sendMessage(_cardToAttach.getOwnerName() + " shuffles their deck");
+                gameState.shuffleDeck(_cardToAttach.getOwnerName());
             }
         }
 
         if (!_targetChosen) {
             _targetChosen = true;
-            return _chooseTargetEffect;
+            Effect chooseTargetEffect =
+                    new ChooseActiveCardEffect(null, _cardToAttach.getOwnerName(), "Attach " +
+                            _cardToAttach.getFullName() + ". Choose target to attach to", _targetOptions) {
+                        @Override
+                        protected void cardSelected(PhysicalCard target) {
+                            _target = target;
+                            _game.sendMessage(_cardToAttach.getOwnerName() + " plays " + _cardToAttach.getCardLink() +
+                                    " from " + _playedFrom.getHumanReadable() + " on " + target.getCardLink());
+                        }
+                    };
+            return new SubAction(this,chooseTargetEffect);
         }
 
         if ((_target != null) && (!isCostFailed())) {
-            Effect cost = getNextCost();
+            Action cost = getNextCost();
             if (cost != null)
                 return cost;
 
             if (!_cardPlayed) {
                 _cardPlayed = true;
-
-                return new PlayCardEffect(_performingPlayerId, _playedFrom, _cardToAttach, _target, null);
+                return new SubAction(this, new PlayCardEffect(
+                        _performingPlayerId, _playedFrom, _cardToAttach, _target, null));
             }
 
-            return getNextEffect();
+            return getNextAction();
         } else {
             if (!_cardDiscarded) {
                 _cardDiscarded = true;
-                _game.getGameState().removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
-                _game.getGameState().addCardToZone(_cardToAttach, Zone.DISCARD);
+                gameState.removeCardsFromZone(_cardToAttach.getOwnerName(), Collections.singleton(_cardToAttach));
+                gameState.addCardToZone(_cardToAttach, Zone.DISCARD);
             }
         }
 
         return null;
     }
 
-    @Override
-    public DefaultGame getGame() { return _game; }
 }

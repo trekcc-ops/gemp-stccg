@@ -1,7 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
-import com.gempukku.stccg.common.AwaitingDecision;
-import com.gempukku.stccg.common.UserFeedback;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class DefaultUserFeedback implements UserFeedback {
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
+    private int nextDecisionId = 1;
 
     private final DefaultGame _game;
 
@@ -24,9 +25,10 @@ public class DefaultUserFeedback implements UserFeedback {
     }
 
     @Override
-    public void sendAwaitingDecision(String playerId, AwaitingDecision awaitingDecision) {
-        _awaitingDecisionMap.put(playerId, awaitingDecision);
-        _game.getGameState().playerDecisionStarted(playerId, awaitingDecision);
+    public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
+        String decidingPlayerId = awaitingDecision.getDecidingPlayerId();
+        _awaitingDecisionMap.put(decidingPlayerId, awaitingDecision);
+        _game.getGameState().playerDecisionStarted(decidingPlayerId, awaitingDecision);
     }
 
     @Override
@@ -36,5 +38,12 @@ public class DefaultUserFeedback implements UserFeedback {
 
     public Set<String> getUsersPendingDecision() {
         return _awaitingDecisionMap.keySet();
+    }
+
+    @Override
+    public int getNextDecisionIdAndIncrement() {
+        int result = nextDecisionId;
+        nextDecisionId++;
+        return result;
     }
 }

@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.CostToEffectAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.discard.DiscardCardsFromEndOfCardPileEffect;
 import com.gempukku.stccg.cards.TribblesActionContext;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect {
-    public ActivatePoisonTribblePowerEffect(CostToEffectAction action, TribblesActionContext actionContext) {
+    public ActivatePoisonTribblePowerEffect(Action action, TribblesActionContext actionContext) {
         super(action, actionContext);
     }
 
@@ -33,11 +33,12 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
         if (playersWithCardsArr.length == 1)
             playerChosen(playersWithCardsArr[0], getGame());
         else
-            getGame().getUserFeedback().sendAwaitingDecision(_activatingPlayer,
-                    new MultipleChoiceAwaitingDecision("Choose a player", playersWithCardsArr) {
+            getGame().getUserFeedback().sendAwaitingDecision(
+                    new MultipleChoiceAwaitingDecision(_game.getPlayer(_activatingPlayer), "Choose a player",
+                            playersWithCardsArr) {
                         @Override
                         protected void validDecisionMade(int index, String result) {
-                            playerChosen(result, getGame());
+                            playerChosen(result, _tribblesGame);
                         }
                     });
         getGame().getActionsEnvironment().emitEffectResult(_result);
@@ -46,7 +47,7 @@ public class ActivatePoisonTribblePowerEffect extends ActivateTribblePowerEffect
 
     private void playerChosen(String chosenPlayer, TribblesGame game) {
         // That opponent must discard the top card
-        SubAction subAction = _action.createSubAction();
+        SubAction subAction = new SubAction(_action, _game);
         subAction.appendEffect(new DiscardCardsFromEndOfCardPileEffect(Zone.DRAW_DECK, EndOfPile.TOP,
                 chosenPlayer, 1, true, _context, null) {
             @Override
