@@ -91,7 +91,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         assertTrue(excavation.isCompleted());
         assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
 
-        // Initiate a beam action from the outpost
+        // Initiate a beam action from the outpost using all the decisions involved
         BeamCardsAction beamAction = selectAction(BeamCardsAction.class, outpost, P1);
         assertEquals(2, beamAction.getValidFromCards(_game).size());
         System.out.println(_userFeedback.getAwaitingDecision(P1).getClass().getSimpleName());
