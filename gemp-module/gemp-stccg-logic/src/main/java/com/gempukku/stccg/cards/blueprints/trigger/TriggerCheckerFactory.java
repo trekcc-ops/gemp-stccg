@@ -17,7 +17,6 @@ public class TriggerCheckerFactory {
             case "discardfromhand" -> new DiscardFromHand();
             case "discardfromhandby" -> new DiscardFromHandBy();
             case "endofturn" -> new EndOfTurn();
-            case "movesfrom" -> new MovesFrom();
             case "played" -> new PlayedTriggerCheckerProducer();
             case "playergoesout" -> new PlayerGoesOut();
             case "removedfromplay" -> new RemovedFromPlay();
