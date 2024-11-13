@@ -1,6 +1,15 @@
 // Set 109: First Contact
 
 {
+    109_005: {
+        title: Blended
+        type: dilemma
+        mission-type: planet
+        property-logo: first-contact-logo
+        java-blueprint: true
+        lore: "Sometimes obtaining information from locals requires consuming beverages of dubious nutritional value. It's best not to criticize such \"counseling\" techniques."
+        image-url: https://www.trekcc.org/1e/cardimages/fc/blended.gif
+    }
     109_095: {
         title: Alyssa Ogawa
         type: personnel

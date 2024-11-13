@@ -31,7 +31,7 @@ public class SelectCardInPlayAction extends ActionyAction {
                                   Collection<? extends PhysicalCard> cards, boolean randomSelection) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         if (randomSelection)
-            _selectableCards = TextUtils.getRandomFromList(cards, 1);
+            _selectableCards = TextUtils.getRandomItemsFromList(cards, 1);
         else _selectableCards = cards;
         _actionSource = cardSource;
     }

@@ -197,7 +197,7 @@ public class CardResolver {
                         @Override
                         protected void doPlayEffect() {
                             context.setCardMemory(memory,
-                                    TextUtils.getRandomFromList(filterCards(context, playabilityFilter),
+                                    TextUtils.getRandomItemsFromList(filterCards(context, playabilityFilter),
                                             countSource.evaluateExpression(context)));
                         }
                     };

@@ -107,7 +107,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         fedDeck.addCard(SubDeck.MISSIONS, "106_013"); // Survey Instability
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         // Alien Labyrinth
-        fedDeck.addCard(SubDeck.SEED_DECK, "101_012"); // Anaphasic Organism
+//        fedDeck.addCard(SubDeck.SEED_DECK, "101_012"); // Anaphasic Organism
         // Female's Love Interest
         // Hidden Entrance
         // Malfunctioning Door

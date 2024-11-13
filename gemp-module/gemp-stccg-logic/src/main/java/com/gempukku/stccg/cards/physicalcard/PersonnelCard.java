@@ -69,4 +69,8 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     }
 
 
+    public int getTotalAttributes() {
+        return getAttribute(CardAttribute.INTEGRITY) + getAttribute(CardAttribute.CUNNING) +
+                getAttribute(CardAttribute.STRENGTH);
+    }
 }

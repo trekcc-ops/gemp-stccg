@@ -14,38 +14,22 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class AttemptMissionAction extends ActionyAction {
     private AttemptingUnit _attemptingUnit;
     private final MissionCard _missionCard;
-    private boolean _missionFailed;
-    private boolean _attemptingEntityWasChosen, _missionAttemptInitiated, _missionAttemptEnded;
-    final Map<String, AttemptingUnit> _attemptingEntityMap = new HashMap<>();
-    final List<PhysicalCard> _revealedCards = new LinkedList<>();
-    final List<PhysicalCard> _encounteredCards = new LinkedList<>();
+    private final Collection<PhysicalCard> _revealedCards = new LinkedList<>();
+    private final Collection<PhysicalCard> _encounteredCards = new LinkedList<>();
+
+    private enum Progress {
+        choseAttemptingUnit, startedMissionAttempt, solvedMission, failedMissionAttempt, endedMissionAttempt
+    }
 
     public AttemptMissionAction(Player player, MissionCard missionCard) {
-        super(player, "Attempt mission", ActionType.ATTEMPT_MISSION);
+        super(player, "Attempt mission", ActionType.ATTEMPT_MISSION, Progress.values());
         _missionCard = missionCard;
-
-        // Get Away Teams that can attempt mission
-        Stream<AwayTeam> awayTeamOptions = missionCard.getYourAwayTeamsOnSurface(player).filter(
-                awayTeam -> awayTeam.canAttemptMission(missionCard));
-        awayTeamOptions.forEach(awayTeam ->
-                _attemptingEntityMap.put(awayTeam.concatenateAwayTeam(), awayTeam));
-
-        // Get ships that can attempt mission
-        for (PhysicalCard card : Filters.filterYourActive(player,
-                Filters.ship, Filters.atLocation(missionCard.getLocation()))) {
-            if (card instanceof PhysicalShipCard ship)
-                if (ship.canAttemptMission(missionCard))
-                    _attemptingEntityMap.put(ship.getTitle(), ship);
-        }
     }
 
     @Override
@@ -67,22 +51,38 @@ public class AttemptMissionAction extends ActionyAction {
         if (cost != null)
             return cost;
 
-        if (!_attemptingEntityWasChosen) {
+        if (!getProgress(Progress.choseAttemptingUnit)) {
+
+            Map<String, AttemptingUnit> attemptingUnitMap = new HashMap<>();
+
+            // Get Away Teams that can attempt mission
+            Stream<AwayTeam> awayTeamOptions = _missionCard.getYourAwayTeamsOnSurface(player).filter(
+                    awayTeam -> awayTeam.canAttemptMission(_missionCard));
+            awayTeamOptions.forEach(awayTeam ->
+                    attemptingUnitMap.put(awayTeam.concatenateAwayTeam(), awayTeam));
+
+            // Get ships that can attempt mission
+            for (PhysicalCard card : Filters.filterYourActive(player,
+                    Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
+                if (card instanceof PhysicalShipCard ship)
+                    if (ship.canAttemptMission(_missionCard))
+                        attemptingUnitMap.put(ship.getTitle(), ship);
+            }
+
             Effect chooseAwayTeamEffect = new ChooseAwayTeamEffect(player,
-                    _attemptingEntityMap.keySet().stream().toList()) {
+                    attemptingUnitMap.keySet().stream().toList()) {
                 @Override
                 protected void awayTeamChosen(String result) {
-                    setAttemptingUnit(_attemptingEntityMap.get(result));
+                    setAttemptingUnit(attemptingUnitMap.get(result));
                 }
             };
-            SubAction subAction = new SubAction(this, cardGame);
-            subAction.appendEffect(chooseAwayTeamEffect);
-            return getNextCost();
+            return new SubAction(this, chooseAwayTeamEffect);
         }
 
-        if (!_missionAttemptInitiated) {
-            _missionAttemptInitiated = true;
-            return new AllowResponsesAction(cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
+        if (!getProgress(Progress.startedMissionAttempt)) {
+            setProgress(Progress.startedMissionAttempt,true);
+            return new AllowResponsesAction(
+                    cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
         }
 
         if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
@@ -92,7 +92,7 @@ public class AttemptMissionAction extends ActionyAction {
         List<PhysicalCard> seedCards = _missionCard.getCardsSeededUnderneath();
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
 
-        if (!_missionAttemptEnded) {
+        if (!getProgress(Progress.endedMissionAttempt)) {
 
             if (!seedCards.isEmpty()) {
                 PhysicalCard firstSeedCard = seedCards.getFirst();
@@ -107,37 +107,42 @@ public class AttemptMissionAction extends ActionyAction {
             }
 
             if (seedCards.isEmpty()) {
-                ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
                 if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionCard)) {
                     MissionRequirement requirement = _missionCard.getRequirements();
                     if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
-                        cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
-                        cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
-                        _missionCard.setCompleted(true);
-                        gameState.checkVictoryConditions();
+                        solveMission(cardGame);
                     } else {
                         failMission(cardGame);
                     }
                 }
-                _missionAttemptEnded = true;
             }
+            setProgress(Progress.endedMissionAttempt, true);
         }
 
         return getNextAction();
+    }
+
+    private void solveMission(DefaultGame cardGame) {
+        ST1EGameState gameState = (ST1EGameState) cardGame.getGameState();
+        setProgress(Progress.solvedMission, true);
+        _missionCard.setCompleted(true);
+        cardGame.sendMessage(_performingPlayerId + " solved " + _missionCard.getCardLink());
+        cardGame.getGameState().getPlayer(_performingPlayerId).scorePoints(_missionCard.getPoints());
+        gameState.checkVictoryConditions();
     }
 
     public PhysicalCard getMission() { return _missionCard; }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
         _attemptingUnit = attemptingUnit;
-        _attemptingEntityWasChosen = true;
+        _progressIndicators.put(Progress.choseAttemptingUnit.name(), true);
     }
 
-    public boolean isFailed() { return _missionFailed; }
+    public boolean isFailed() { return getProgress(Progress.failedMissionAttempt); }
 
     private void failMission(DefaultGame game) {
-        _missionFailed = true;
-        _missionAttemptEnded = true;
+        setProgress(Progress.failedMissionAttempt, true);
+        setProgress(Progress.endedMissionAttempt,true);
         game.sendMessage(_performingPlayerId + " failed mission attempt of " + _missionCard.getCardLink());
     }
 

@@ -151,6 +151,10 @@ public class NewLibraryTest {
                 sj.add(sentence.toString());
             return sj.toString();
         }
+
+        public List<Sentence> getSentences() {
+            return sentences;
+        }
     }
 
     public class ChooseOptionGameText implements GameTextObject {
@@ -197,11 +201,23 @@ public class NewLibraryTest {
                     result = false;
             return result;
         }
+
+        public String toString() {
+            return gameTextOptions.toString();
+        }
+
+        public List<Sentence> getSentences() {
+            List<Sentence> result = new ArrayList<>();
+            for (GameText text : gameTextOptions)
+                result.addAll(text.getSentences());
+            return result;
+        }
     }
 
     interface GameTextObject {
 
         boolean canBeParsed();
+        List<Sentence> getSentences();
     }
 
     public class Sentence implements GameTextObject {
@@ -220,6 +236,12 @@ public class NewLibraryTest {
             return isSentenceUnderstood(text);
         }
 
+        public List<Sentence> getSentences() {
+            List<Sentence> result = new ArrayList<>();
+            result.add(this);
+            return result;
+        }
+
         public String toString() {
             return text;
         }
@@ -232,6 +254,7 @@ public class NewLibraryTest {
             fullSentence = fullSentence.substring(0, fullSentence.length() - 1);
         }
 
+        // Places where you can play or seed a card. May require selection, but no antecedent or response required.
         String [] validPlayOnTargets = {
                 "table",
                 "your unattempted mission",
@@ -271,7 +294,7 @@ public class NewLibraryTest {
                 "your [Vul] personnel",
                 "any Vulcan mission",
                 "any [VUL] mission",
-                "any Non-Aligned mission (or any mission with \"Andorian\" in lore",
+                "any Non-Aligned mission (or any mission with \"Andorian\" in lore)",
                 "your personnel with Navigation x2 or Stellar Cartography x2",
                 "your Borg",
                 "any ship",
@@ -284,7 +307,9 @@ public class NewLibraryTest {
                 "an Ore Processing Unit",
                 "your non-[Fed] ship",
                 "your infiltrator",
-                "Calder II"
+                "Calder II",
+                "Veytan",
+                "your Klingon"
         };
 
         List<String> fullSentences = new ArrayList<>();
@@ -297,6 +322,7 @@ public class NewLibraryTest {
         playOnSentenceBeginnings.add("Plays on");
         playOnSentenceBeginnings.add("Seeds or plays on");
         playOnSentenceBeginnings.add("Seeds on");
+        playOnSentenceBeginnings.add("Seed one on");
 
         for (String string : playOnSentenceBeginnings) {
             if (fullSentence.startsWith(string)) {

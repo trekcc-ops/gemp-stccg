@@ -16,7 +16,7 @@
         missions: -1 // Negative missions means there is no fixed number required
         noShuffle: true
         firstPlayerFixed: true
-        hall: false
+        hall: true
     }
     {
         name: "1E Modern Complete"

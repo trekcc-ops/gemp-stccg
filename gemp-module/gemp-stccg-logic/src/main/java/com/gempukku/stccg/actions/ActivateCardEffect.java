@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.actions.DefaultEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.actions.ActivateCardResult;
 
 public class ActivateCardEffect extends DefaultEffect {
     private final PhysicalCard _source;

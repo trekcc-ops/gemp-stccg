@@ -1,10 +1,9 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.TextUtils;
 
 import java.util.Collection;
 
@@ -13,15 +12,6 @@ public class RemoveCardsFromZoneEffect extends DefaultEffect {
     private final PhysicalCard _source;
     private final Collection<PhysicalCard> _cardsToRemove;
     private final Zone _fromZone;
-
-    public RemoveCardsFromZoneEffect(DefaultGame game, String playerPerforming, PhysicalCard source,
-                                     Collection<PhysicalCard> cardsToRemove, Zone fromZone) {
-        super(game, playerPerforming);
-        _playerPerforming = playerPerforming;
-        _source = source;
-        _cardsToRemove = cardsToRemove;
-        _fromZone = fromZone;
-    }
 
     public RemoveCardsFromZoneEffect(ActionContext actionContext, Collection<PhysicalCard> cardsToRemove, Zone fromZone) {
         super(actionContext);

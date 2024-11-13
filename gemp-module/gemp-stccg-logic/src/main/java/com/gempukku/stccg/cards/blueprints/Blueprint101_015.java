@@ -3,12 +3,11 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.KillAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
+import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
@@ -28,17 +27,7 @@ public class Blueprint101_015 extends CardBlueprint {
                 "Select personnel to be killed", attemptingUnit.getAttemptingPersonnel(), true);
         KillAction killAction = new KillAction(thisCard.getOwner(), thisCard, selectPersonnelAction);
         actions.add(killAction);
-        actions.add(new SystemQueueAction(game) {
-
-            @Override
-            public Action nextAction(DefaultGame cardGame) {
-                mission.removeSeedCard(thisCard);
-                game.getGameState().removeCardFromZone(thisCard);
-                game.getGameState().addCardToZone(thisCard, Zone.REMOVED);
-                return getNextAction();
-            }
-
-        });
+        actions.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, mission));
         return actions;
     }
 
