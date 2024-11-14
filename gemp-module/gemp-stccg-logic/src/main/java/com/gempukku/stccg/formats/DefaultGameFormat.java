@@ -494,6 +494,11 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
+    public int getMissions() {
+        return _missions;
+    }
+
+    @Override
     public boolean hasFixedPlayerOrder() {
         return _firstPlayerFixed;
     }

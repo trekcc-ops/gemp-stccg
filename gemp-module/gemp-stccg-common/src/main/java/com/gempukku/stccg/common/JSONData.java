@@ -47,8 +47,8 @@ public class JSONData {
         public boolean playtest = false;
         public boolean validateShadowFPCount = true;
         public int minimumDrawDeckSize = 60;
-        public final int maximumSeedDeckSize = 30;
-        public final int missions = 6;
+        public int maximumSeedDeckSize = 30;
+        public int missions = 6;
         public int maximumSameName = 9999;
         public boolean mulliganRule = false;
         public ArrayList<Integer> set;
