@@ -2,8 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.RemoveCardsFromTheGameEffect;
-import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -43,14 +42,13 @@ public class RevealSeedCardAction extends ActionyAction {
         if (!_misSeedResolved) {
             _misSeedResolved = true;
             if (_revealedCard.isMisSeed(cardGame, _mission)) {
-                _mission.removeSeedCard(_revealedCard);
                 if (_performingPlayerId.equals(_revealedCard.getOwnerName())) {
                     // TODO - Player also cannot solve objectives targeting the mission
                     Modifier modifier = new PlayerCannotSolveMissionModifier(_mission, _performingPlayerId);
                     cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                 }
-                return new SubAction(this,
-                        new RemoveCardsFromTheGameEffect(cardGame, _performingPlayerId, _revealedCard, _revealedCard));
+                return new RemoveDilemmaFromGameAction(
+                        cardGame.getPlayer(_performingPlayerId), _revealedCard, _mission);
             }
         }
         return getNextAction();

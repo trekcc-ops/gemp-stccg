@@ -278,6 +278,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.MISSIONS, "106_006"); // Gault
         for (int i = 0; i < 35; i++)
             klingonDeck.addCard(SubDeck.DRAW_DECK, "101_271"); // Kle'eg
+        decks.put(P2, klingonDeck);
 
 
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);

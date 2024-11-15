@@ -234,14 +234,10 @@ public abstract class DefaultGame {
         return Collections.unmodifiableList(_snapshots);
     }
 
-    public String getOpponent(String playerId) throws InvalidGameLogicException {
+    public String getOpponent(String playerId) {
             // TODO - Only works for 2-player games
-        if (getAllPlayerIds().length != 2)
-            throw new InvalidGameLogicException("Tried to call getOpponent function with more than 2 players");
-        else {
             return getAllPlayerIds()[0].equals(playerId) ?
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
-        }
     }
 
     public void requestRestoreSnapshot(int snapshotId) {

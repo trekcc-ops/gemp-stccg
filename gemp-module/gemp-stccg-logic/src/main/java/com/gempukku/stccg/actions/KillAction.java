@@ -47,6 +47,11 @@ public class KillAction extends ActionyAction {
         }
 
         if (!_wasCarriedOut) {
+            StringBuilder message = new StringBuilder();
+            message.append(_performingPlayerId).append(" killed ").append(_victim.getCardLink());
+            if (_performingCard != null)
+                message.append(" using ").append(_performingCard.getCardLink());
+
             if (_victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
                 reportable.leaveAwayTeam();
             _wasCarriedOut = true;

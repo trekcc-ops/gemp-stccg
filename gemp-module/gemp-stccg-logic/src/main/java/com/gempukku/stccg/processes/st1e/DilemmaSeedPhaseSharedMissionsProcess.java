@@ -32,6 +32,11 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
     }
 
     @Override
+    protected String getDecisionText(Player player) {
+        return "Select a shared mission to seed cards under or remove cards from";
+    }
+
+    @Override
     public GameProcess getNextProcess() {
         if (_playersParticipating.isEmpty()) {
             for (ST1ELocation location : _game.getGameState().getSpacelineLocations()) {

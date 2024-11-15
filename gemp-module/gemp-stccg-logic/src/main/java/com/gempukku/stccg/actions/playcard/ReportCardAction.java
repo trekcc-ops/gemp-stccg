@@ -79,11 +79,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         boolean result;
         try {
             Collection<PhysicalCard> destinationOptions = getDestinationOptions(cardGame);
-            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty() && costsCanBePaid(cardGame);
+            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty();
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             result = false;
