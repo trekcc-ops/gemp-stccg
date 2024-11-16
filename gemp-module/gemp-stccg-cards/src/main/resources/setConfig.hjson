@@ -92,6 +92,10 @@
     setName: Trials and Tribble-ations
   }
   {
+    setId: "152"
+    setName: Homefront II
+  }
+  {
     setId: "155"
     setName: The Next Generation
     needsLoading: false

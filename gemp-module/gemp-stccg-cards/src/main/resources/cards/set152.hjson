@@ -1,0 +1,14 @@
+// Set 152: Homefront II
+
+{
+    152_003: {
+        title: Dedication to Duty
+        type: dilemma
+        mission-type: space
+        lore: "Starship work is hazardous. When danger arises, one must place the good of the crew ahead of one's own life."
+        property-logo: st2-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/homefront2/3.jpg
+        rarity: V
+    }
+}
