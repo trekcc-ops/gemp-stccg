@@ -1,9 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DoNothingEffect;
 import com.gempukku.stccg.actions.PlayOutDecisionEffect;
-import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -142,11 +140,9 @@ public class SeedMissionCardAction extends PlayCardAction {
 
         }
         if (!_cardPlayed) {
-            _cardPlayed = true;
             seedCard(cardGame);
-            return new SubAction(this, new DoNothingEffect(cardGame));
         }
-        return null;
+        return getNextAction();
     }
 
     private void seedCard(DefaultGame game) {
@@ -165,6 +161,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                 game.getActionsEnvironment().emitEffectResult(
                         new PlayCardResult(this, _fromZone, _cardEnteringPlay));
                 _actionCarriedOut = true;
+                _cardPlayed = true;
             } catch (InvalidGameLogicException exp) {
                 game.sendErrorMessage(exp);
             }
