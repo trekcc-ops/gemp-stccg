@@ -111,7 +111,7 @@ public abstract class ActionyAction implements Action {
     }
 
     @Override
-    public String getText(DefaultGame game) { return _text; }
+    public String getActionSelectionText(DefaultGame game) { return _text; }
 
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {
@@ -161,10 +161,6 @@ public abstract class ActionyAction implements Action {
         }
 
         return true;
-    }
-
-    public SubAction createSubAction() {
-        return new SubAction(this);
     }
 
     public boolean canBeInitiated(DefaultGame cardGame) {

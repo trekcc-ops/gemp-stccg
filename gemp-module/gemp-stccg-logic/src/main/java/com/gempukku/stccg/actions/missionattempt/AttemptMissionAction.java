@@ -1,24 +1,29 @@
 package com.gempukku.stccg.actions.missionattempt;
 
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.ChooseAwayTeamEffect;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.turn.AllowResponsesAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AttemptMissionAction extends ActionyAction {
     private AttemptingUnit _attemptingUnit;
+    private SelectAttemptingUnitAction _selectAttemptingUnitAction;
     private final MissionCard _missionCard;
     private final Collection<PhysicalCard> _revealedCards = new LinkedList<>();
     private final Collection<PhysicalCard> _encounteredCards = new LinkedList<>();
@@ -44,7 +49,7 @@ public class AttemptMissionAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Player player = cardGame.getPlayer(_performingPlayerId);
 
         Action cost = getNextCost();
@@ -52,31 +57,25 @@ public class AttemptMissionAction extends ActionyAction {
             return cost;
 
         if (!getProgress(Progress.choseAttemptingUnit)) {
+            if (_selectAttemptingUnitAction == null) {
 
-            Map<String, AttemptingUnit> attemptingUnitMap = new HashMap<>();
+                List<AttemptingUnit> eligibleUnits = new ArrayList<>();
+                _missionCard.getYourAwayTeamsOnSurface(player)
+                        .filter(awayTeam -> awayTeam.canAttemptMission(_missionCard))
+                        .forEach(eligibleUnits::add);
 
-            // Get Away Teams that can attempt mission
-            Stream<AwayTeam> awayTeamOptions = _missionCard.getYourAwayTeamsOnSurface(player).filter(
-                    awayTeam -> awayTeam.canAttemptMission(_missionCard));
-            awayTeamOptions.forEach(awayTeam ->
-                    attemptingUnitMap.put(awayTeam.concatenateAwayTeam(), awayTeam));
-
-            // Get ships that can attempt mission
-            for (PhysicalCard card : Filters.filterYourActive(player,
-                    Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
-                if (card instanceof PhysicalShipCard ship)
-                    if (ship.canAttemptMission(_missionCard))
-                        attemptingUnitMap.put(ship.getTitle(), ship);
-            }
-
-            Effect chooseAwayTeamEffect = new ChooseAwayTeamEffect(player,
-                    attemptingUnitMap.keySet().stream().toList()) {
-                @Override
-                protected void awayTeamChosen(String result) {
-                    setAttemptingUnit(attemptingUnitMap.get(result));
+                // Get ships that can attempt mission
+                for (PhysicalCard card : Filters.filterYourActive(player,
+                        Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
+                    if (card instanceof PhysicalShipCard ship)
+                        if (ship.canAttemptMission(_missionCard))
+                            eligibleUnits.add(ship);
                 }
-            };
-            return new SubAction(this, chooseAwayTeamEffect);
+                _selectAttemptingUnitAction = new SelectAttemptingUnitAction(player, eligibleUnits);
+                return _selectAttemptingUnitAction;
+            } else if (_selectAttemptingUnitAction.wasCarriedOut()) {
+                setAttemptingUnit(_selectAttemptingUnitAction.getSelection());
+            }
         }
 
         if (!getProgress(Progress.startedMissionAttempt)) {

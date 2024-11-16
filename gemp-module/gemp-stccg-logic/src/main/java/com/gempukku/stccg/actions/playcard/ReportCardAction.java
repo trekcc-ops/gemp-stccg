@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.DoNothingEffect;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -92,10 +91,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override
-    protected Effect getFinalEffect() { return new DoNothingEffect(_actionSource.getGame());
-    }
-
-    @Override    
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         DefaultGame game = _cardEnteringPlay.getGame();
         Player performingPlayer = game.getPlayer(_performingPlayerId);

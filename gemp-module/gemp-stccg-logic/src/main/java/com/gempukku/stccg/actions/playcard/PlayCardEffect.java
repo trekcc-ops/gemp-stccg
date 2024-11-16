@@ -13,14 +13,6 @@ public class PlayCardEffect extends DefaultEffect {
     private final Zone _zone;
     private final PhysicalCard _attachedOrStackedPlayedFrom;
 
-    public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed, Zone playedTo) {
-        super(cardPlayed.getGame(), performingPlayerId);
-        _playedFrom = playedFrom;
-        _cardPlayed = cardPlayed;
-        _zone = playedTo;
-        _attachedOrStackedPlayedFrom = null;
-    }
-
     public PlayCardEffect(String performingPlayerId, Zone playedFrom, PhysicalCard cardPlayed,
                           PhysicalCard attachedToCard, PhysicalCard attachedOrStackedPlayedFrom) {
         super(cardPlayed.getGame(), performingPlayerId);

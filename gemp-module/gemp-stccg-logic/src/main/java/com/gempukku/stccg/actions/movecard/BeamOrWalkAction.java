@@ -47,7 +47,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     protected abstract String actionVerb();
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getActionSelectionText(DefaultGame game) {
         List<PhysicalCard> validFromCards = getValidFromCards(game);
         StringBuilder sb = new StringBuilder();
         sb.append(StringUtils.capitalize(actionVerb())).append(" cards");
