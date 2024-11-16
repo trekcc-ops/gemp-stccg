@@ -1,12 +1,9 @@
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 public class FullTextTest extends NewLibraryTest {
 
-    @Test
     public void fullTextTest() {
         createLibrary();
         int canBeParsed = 0;

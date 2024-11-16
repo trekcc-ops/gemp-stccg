@@ -1,10 +1,7 @@
-import org.junit.jupiter.api.Test;
-
 import java.util.*;
 
 public class NewLibraryTestyTest extends NewLibraryTest {
 
-    @Test
     public void constructLibraryMap() {
         createLibrary();
         System.out.println(_newLibraryMap.size());

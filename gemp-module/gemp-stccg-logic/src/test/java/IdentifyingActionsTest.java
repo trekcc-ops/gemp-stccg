@@ -1,13 +1,16 @@
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class IdentifyingActionsTest extends NewLibraryTest {
 
-
+    @Test
     public void tokenTest() throws IOException {
         System.out.println("if you don't see this, the text got truncated");
         System.out.println(potentialActions().size());
+        System.out.println(definiteActions().size());
 
         createLibrary();
         for (CardData card : _newLibraryMap.values()) {
@@ -30,8 +33,9 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         List<String> actions = new LinkedList<>();
         actions.add("abduct"); // abducted, abduction
         // Borg can abduct personnel
-        actions.add("acquire"); // acquired
-        // Acquire an Artifact
+        actions.add("acquire"); actions.add("earn"); // acquired, earned, earns
+        // Acquire an artifact or other seed card; synonymous with earn
+        // Some cards use "earn" as weird text for scoring points
         actions.add("activate"); // activated, deactivated, deactivation
         // Activate & deactivate for [Holo] cards
         // Activate Hidden Agenda cards
@@ -60,7 +64,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // He Will Make an Excellent Drone - convert counterpart to drone
         actions.add("cure"); // cured, curing
         // cure dilemma
-        actions.add("destroy"); // destroyed, destroying, destroys
+        actions.add("destroy"); // destroyed, destroying, destroys, destruction
         // most commonly destroying a ship, but may be applied to other card types as well
         actions.add("disable"); // disabled, disables
         // disabling personnel, or disabling ship attributes (the latter has no action response)
@@ -72,6 +76,14 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // Draw a card. Occasionally redefined as an action that's not a card draw
         actions.add("encounter"); actions.add("face"); actions.add("facing"); // encountered, encountering, encounters
         // "Facing a dilemma" synonymous with "encountering a dilemma"
+        actions.add("end"); // ended, ending, ends
+        /*
+            end of attempt
+            end of battle
+            end of game
+            end of turn, end of next turn, end of any turn; every, each, opponent's, your; your last turn
+            end of Q-Flash
+         */
         actions.add("engage"); // engaged, engages, disengage
         // engage in combat (all responses to engaging use this definition)
         // Weird text on Small Cloaking Device - "while engaged" could be "while ship is cloaked"
@@ -104,8 +116,26 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // move cards around in a pile; no responses
         actions.add("release"); // released
         // Release captive
+        actions.add("relocat"); // relocate, relocated, relocates, relocating, relocation
+        /*
+            Putting a card in play somewhere else without using a normal move action
+            Can be independently initiated based on some card gametexts
+            Responses:
+            Aid Fugitives - specifically responds to relocation from Hippocratic Oath
+`           Distant Control - setting rules for how to deal with "relocation" dilemmas
+            His Honor, the High Sheriff of Nottingham - only responds to its own relocation effect
+         */
+        actions.add("remove");
+        /* remove, removes, removed
+            remove from the game - synonymous with place out of play (no responses, but history is tracked)
+                (this is almost never an independent action)
+            modifer - remove skills or staffing requirements, or remove from stasis (no specific responses)
+         */
         actions.add("repair");// repairs
         actions.add("report"); // reported, reporting, reports
+        actions.add("return"); // returned, returning, returns
+            // return fire, return to hand
+        actions.add("reveal"); // revealed, reveals
         actions.add("scout"); // scouted, scouting
         actions.add("seed"); // seeded, re-seed, re-seeds, seeds
         actions.add("steal"); actions.add("stolen");
@@ -143,12 +173,68 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // Orb of Time & REM Fatigue Hallucinations
         actions.add("bring");
         // The Emperor's New Cloak - discard when it is brought aboard
+        actions.add("complet"); // complete, completed, completes, completing
+        // Completing a mission, objective, or other action
+        actions.add("control"); // controlled, controlling, controls, controller
+        /*
+            // Generally I see this as a modifier byproduct of another action, but a couple cards respond to it:
+
+            Combined Task Force - nullified if you control a Nor
+                Coudl do "nullified if you play, seed, commandeer, or assimilate a Nor"
+            Vidiian Boarding Claw - discard if you lose control of cruiser
+                (clearer might be "discard if cruiser is returned to hand, commandeered, or assimilated")
+                I *think* this ignores Lore Returns, Autonomic Parasites, Neural Servo Device, Data Laughing
+            Sickbay: Menagerie - prevent one personnel present from being controlled by Ceti Eel
+                Could do "may not use Ceti Eel", "may not place Ceti Eel", "nullify Ceti Eel"
+            Preparation [Interrupt] - plays on your unexamined mission if you control personnel with four different
+                classifications there (is this a valid response to gaining/losing control? idk)
+                    Easiest thing is to say this isn't a valid response
+            Baseball - lose points if opponent regains control
+                Easiest thing is to say this is "worth X points while..." but that may dismiss cards that need
+                scoring points to be an action
+
+            The Naked Truth - that personnel is under your control
+            You Could Be Invaluable - opponent reports them to your attempting crew or Away Team (under your control)
+            Test for Weakness - download Earth Outpost here (under opponent's control)
+            Vintaak Drydock Station - download Starship Defiant here from outside the game, uncontrolled
+            Empok Nor - seeds (uncontrolled)
+            Alien Parasites - opponent immediately controls ship and crew
+            Release This Pain - personnel is under your control and is compatible with your [SKR] cards
+            Brainwash - captive is under your control and may mix with your personnel regardless of affiliation
+            Ceti Eel - personnel is under your control
+            Data Laughing - you gain control of that ship and all Rogue Borg Mercenaries aboard
+            Consume: Outpost - download an outpost there from outside the game, uncontrolled
+            Gold! - pass this card to opponent (they now control it)
+
+            These use the term "use": Neural Servo Device, Lore Returns, Install Autonomic Systems Parasite
+
+            mostly references to filtering valid targets by controller
+            condition checks, but not valid responses - Friction, Torture, Operation Retrieve
+
+            Bajoran Shrine - unless station is under [Baj] or [Fed] control, Shrine is suspended and may be destroyed
+             by any personnel using a disruptor (is this destruction a valid response? I don't think so?)
+         */
+        actions.add("death");   actions.add("die"); // died, dies
+        actions.add("enter"); // entered, enters (enter play)
+        /*
+            similar to "leave"
+            Responses to cards entering play - Founder Borath, Sense the Borg, Mrs. O'Brien
+            Cards allowing or disallowing "entering play" - Alternate Universe Door, Stratagema
+            weird text on Where No One Has Gone Before, Lakanta
+         */
         actions.add("exceed"); // one number exceeds another (Nightmare and Intermix Ratio)
         actions.add("exhaust"); // used for "exhaust RANGE" and "exhaust draw deck"
         actions.add("expire"); // only used for countdowns
         actions.add("fail"); // fail an attempt, or fail to win a battle
         actions.add("help"); // helped, helps
         // help solve a mission, or help win a battle, or help overcome a dilemma
+        actions.add("initiat"); //initiate, initiated, initiates, initiating, just-initiated
+        /*
+            Subaction; almost always for battles and scouting/mission attempts. More or less synonymous with
+                "is about to"
+            // I... Have Had... Enough of You! (respond to initiating a special download)
+            // Hero of the Empire (response to leaving play if caused by action initiated by Player X)
+         */
         actions.add("leav"); // leave, leaves, leaving
         // How does "may not leave play" work?
         // Samuel Clemens - "leave play" weird text; better to say "remove from the game" or place out of play
@@ -158,6 +244,9 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // Multiple actions are considered "moving"
         actions.add("order"); // orders (executing orders - Make a Difference Again refers to this)
         actions.add("overcome"); // overcomes
+        actions.add("pass"); // passed, passing
+        // moving locations - Cargo Bay, Alternate Universe Door, Romulan Minefield, Subspace Warp Rift, Q-Net
+        // weird text on some dilemmas and Gold! (no responses to these)
         actions.add("resolved");
         // Smoke and Mirrors - resolve a dilemma
         actions.add("survived"); // surviving
@@ -192,7 +281,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // afflicted - meaningless word on Nanites
         // agree - meaningless word on Raise the Stakes
         // alternating - Used by Black Hole, not an action
-        actions.add("allow"); // allowed, allowing, allows
+        // allow - awkward wording on cards, not clear how it works; no explicit responses
         // Awkward wording on cards, not clear how it works. No responses.
         /* appear, appears, disappear, disappears, reappears
                 Flavor text on Picard Maneuver, Quantum Leap, Spatial Rift
@@ -200,11 +289,14 @@ public class IdentifyingActionsTest extends NewLibraryTest {
                 Some time travel cards (Temporal Rift, Temporal Vortex, Time Travel Pod) say that cards disappear or
                 reappear. This isn't clearly defined, but it's a modifier, not an action. No specific responses.
          */
-        actions.add("apply"); // applying
-        /* "Applying" icons to staffing is a synonym for "using", and "applying" damage is a
-                synonym for "damaging". "affiliation attack restrictions" used as a synonym for saying you can ignore
-                 them.
-           RECEPTACLE STONES - This is a modification of the encounter action. No responses to the word "apply".
+        /* apply, applying
+            applying icons to staffing - synonym for "using"
+            applying damage - synonym for "damaging"
+            affiliation attack restrictions do not apply - means you can ignore them
+
+            Receptacle Stones - weird card with a weird effect
+
+            No valid responses to the term "apply"
          */
         // argued - Only used by Parallax Arguers, shorthand for making a multiple choice decision
         // ask - Flavor text on Interrogation and Gold!; player has to say stuff
@@ -237,24 +329,19 @@ public class IdentifyingActionsTest extends NewLibraryTest {
             The Genesis Device.
          */
         // chase, chased - flavor text on Porthos and Hunter Gangs; weird text on Conundrum; no responses
-        actions.add("choice");
-        actions.add("chose"); // chosen
-        actions.add("choose"); // chooses
+        // choice, choose, chooses, chose, chosen - always a selection; all valid responses use the term "select"
         // cleared - flavor text on Establish Gateway
         // coexist - facilities "may coexist"
         // combat - "engage in combat"
         // come - modifier; cards you download can come from other piles
         // compare - weird text on Royale Casino: Elevator
-        actions.add("complet"); // complete, completed, completes, completing
         // compliment - multiple choice on 33rd Rule of Acquisition; no specific responses
         // comply, complies - multiple choice on Protection Racket and You Will in Time; no specific responses
-        actions.add("conceals");
-            // Used by Chula: Trickery. No specific responses
+        // conceal - sort of an action on Chula: Trickery, but can be built into selections; no specific responses
         actions.add("conduct"); // conducting
             // flavor text on a couple cards; ...on the Station prevents "conducting services" at Bajoran Shrine
         // continue, continues, continuing - "mission continues"; weird text on Plasma Fire & Honor Challenge
         // contribute - weird text on Chula: The Door & Warrior's Birthright (synonym for use attribute)
-        actions.add("control"); // controlled, controlling, controls, controller
         // cooperate - only ever "may cooperate" = compatible
         // could - only used on Lack of Preparation
         // count - count downs, X does not count toward Y; weird text on Tijuana Crass
@@ -267,10 +354,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // defending? only used by two tactics; this isn't really an action, I don't think
         // delayed - modifier that injects a new action (no responses)
         // destruct - weird text for destroy on Auto-Destruct Sequence
-        actions.add("destruction");
         // detect - this is only used as flavor text on Tachyon Detection Grid and Mission II's
-        actions.add("death");
-        actions.add("die"); // died, dies
         // disruption, disrupted, disruptions - flavor text for timeline disruptions
         // distract - flavor text on Distraction
         // divide - type of selection; no responses
@@ -279,11 +363,8 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         actions.add("doubl"); // double, doubled, doubles, doubling
         // drains - flavor text on Target Shields (no responses)
         // duplicate - automatic modifier
-        actions.add("earn"); // earned, earns
         // eliminated - weird text on Lore Returns, flavor text on Omega Directive
-        actions.add("end"); // ended, ending, ends
         // enhance - this is a modifier word
-        actions.add("enter"); // entered, enters (enter play)
         // escape, escapes; flavor text on Firestorm and Hunter Gangs
         // escort - modifier/gamestate - captives can be escorted, but there's no action
         // evacuate - weird text on Vole Infestation for emptying ship and leaving it empty; no specific responses
@@ -306,7 +387,24 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // form - flavor text on Lineup
         // free - playing/reporting for free
         // function - this is a modifier
-        actions.add("gain"); // gained, gains, regains; this might be a modifier though
+        /*      gain, gained, gains, regains
+            No specific response to a "gain" action
+
+            gain a skill, icon, or special equipment
+                This is typically a modifier.
+                Some cards (Excalbian Kahless, Legate Parek, etc.) say "may gain". In these cases, the skill
+                    is always non-specific ("may gain a skill" or "may gain a regular skill"). I interpret this
+                    to mean the selection is the action. If the selection is not performed, no skill is gained.
+                    If the selection is performed, the skill gain is an automatic modifier.
+
+            weirder cases:
+                Horga'hn - gain an additional card play
+                N'Rana - Nanoprobe Resuscitation gains a point box
+
+            I Tried to Warn You, Mandarin Bailiff - weird text for score points
+            Lore Returns, Baseball - weird (maybe not that weird) text for control; maybe this is the best verb for
+                taking control though
+         */
         // get past, get through - flavor text for dilemmas
         actions.add("give"); // gives
             // give skills or icons
@@ -321,12 +419,15 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // hit - used for hit and direct hit. Chain Reaction Ricochet responds to hit, but could just use damage
         // hurl - weird text on Gomtuu for relocate
         actions.add("ignor"); // ignore, ignores, ignoring
-        actions.add("immune"); // think this is more of a modifier
+        /* immune
+            modifier; typically immune to specific cards by name
+            Exceptions - Kazon Collective (assimilation), Assignment: Earth (timeline disruption),
+                Spacedoor/Battle Bridge Door (cards that close doorways)
+         */
         // impersonate - a specific kind of morphing from Impersonate Captive and Assume Identity; different on each
         // increased, increases - this is a modifier, and I don't see a response
         // infected - weird text on Tsiolkovsky Infection and Alien Parasites
-        actions.add("initiat"); //initiate, initiated, initiates, initiating, just-initiated
-        actions.add("insert"); // only used for inserting into deck or inserting into spaceline; no responses
+        // insert - inserting cards into deck or inserting into spaceline; no explicit responses
         // interrupt, interrupts - card type, not action
         // investigate - flavor text
         // join - weird text on Warp Speed Transfer, Kobayashi Maru, and Security Office; no responses
@@ -340,32 +441,49 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // lowered - weird text on Dropping In "shields lowered for beaming"
         // make, made, makes; this isn't really a helpful word
         actions.add("may"); // is this helpful?
-        actions.add("met");
-        actions.add("meet"); // meets, meeting; is this helpful?
+        /* meet, meets, meeting, met - similar to "use" (meet staffing, meet requirements, etc.)
+                The only responses to meeting are responses to "using X to meet Y"
+         */
         // melt - flavor text on Fire Sculptor
         actions.add("must"); // is this helpful?
-        actions.add("nam"); // name, named, names, naming
+        // name - weird text for selection, or actual reference to card names; no valid responses
         // need - modifier
         actions.add("nullif"); // nullify, nullified, nullifies, nullifying, nullification
         // observe - flavor text on Holoprogram: Historical Poker Game
         // occupied, occupying, unoccupied - gamestate
         // occur - flavor text on Manheim's Dimensional Door
-        actions.add("open"); // opened, opens, reopen, re-opening
+        // open, opens, opened, reopen, re-opening - open side deck modifier; open pack of cards; no valid responses
         /* operates, operating - "operate transporters" weird text on Scan Cycle Check & Target These Coordinates
                 "Transporter Skill operating transporters" = beaming with Transporter Skill in crew
                 no responses to "operating transporters"
          */
-        actions.add("oppos"); // opposed, opposing
+        // opposed, opposing - descriptor for card if your opponent controls it
         // orbit - "in orbit" and "orbiting" both referring to game state of a ship; no responses
         // override - flavor text on Jealous Amanda
         // pair - several cards may "pair first" in battle; more of a modifier than an action
         // participate, participating - allows non-personnel to join battle, or refers to battle participants
-        actions.add("pass"); // passed, passing
-            // moving locations - Cargo Bay, Alternate Universe Door, Romulan Minefield, Subspace Warp Rift, Q-Net
-            // weird text on some dilemmas
-            // Gold! - pass a card to your opponent to control
         // pick - flavor text on Nausicaans
-        actions.add("plac"); // place, placed, places, placing, replace, replaced, replaces, replacement
+        actions.add("plac"); // place, placed, places, placing
+        /*
+            replace, replaced, replaces
+
+            replaced - weird text on Scanner Interference, Jaglom Shrek
+            Bones - response to being replaced by any Spock at Vulcan
+            Plain, Simple Garak - may be replaced by another version at any time
+            Tag! - download a personnel to replace (discard) your personnel
+
+            replace staffing icon or skill with another - Rascals, Terran Flagship: Predator, etc.
+            replace another personnel just selected - Lt. Grant, Weyoun 6, Clark Terrell, Garak, etc.
+            replace mission or dilemma requirements with others - The Clown: On His Throne, For the Cause
+
+            download to replace (discard) - Tag!, Self-Sealing Stem Bolts, Retask, etc.
+            download to replace (place out-of-play) - maH nIv
+
+            Penalty Box - put its occupant out-of-play and replace with new victim; I think this is just really weird
+             text
+            Get Back - this is a little weird and could be read as a response to being replaced, but mostly it's just
+                modifying Transporter Mixup
+         */
         // plant - weird text on Drought Tree
         // pool - flavor text on Blood Screening
         // post - flavor text on Mandarin Bailiff
@@ -405,15 +523,13 @@ public class IdentifyingActionsTest extends NewLibraryTest {
             Quark's Isolinear Rods - nullify any or all cards preventing you from playing Q's Tent
          */
         // primed - flavor text on Activate Thalaron Weapon
-        actions.add("proceed"); // proceeding, proceedings
-            // Used for several "cannot get past" dilemmas, no responses
-            // Weird text on Tetryon Field, no responses but it's a really weird card
+        // proceed - weird text, typically for "cannot get past" dilemmas
         actions.add("process"); // processed, processing
             // process ore
         // progress - weird text on Rescue Captives; nullifies cards played on captives
-        actions.add("protect"); // protects, protection
-        /* not sure if Gurat'urak's special skill is an action or an automatic modifier. Otherwise, this is always
-            "place on X card to protect it from nullification" sort of phrasing.
+        /*  protect, protects, protection
+            Almost always "place on X card to protect it from nullification" sort of phrasing.
+            One exception - Gurat'urak; this is weird text (although it's not clear how he's supposed to work)
          */
         // provides - weird text on Obelisk of Masaka
         actions.add("put"); // puts
@@ -423,7 +539,6 @@ public class IdentifyingActionsTest extends NewLibraryTest {
             // Penalty Box - put card out-of-play; put personnel here
             // Countermanda - put cards out-of-play
         // quarantined - modifier; typically result of failing a dilemma
-        actions.add("ram");
         actions.add("ration"); // rationed
             // Flavor text on Ketracel-White and Obedience Brings Victory
         // reabsorb, reabsorbing - flavor text on Borg cards
@@ -442,12 +557,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // refuses - weird text on Barclay Transporter Phobia; no responses
         // regenerates - flavor text on Res-Q; no responses
         // regulate implants - flavor text on Cortical Node Implant
-        actions.add("relocat"); // relocate, relocated, relocates, relocating, relocation
         // remodulate - flavor text on Remodulation
-        actions.add("remove"); // removed, removes
-            // remove from the game - synonymous with place out of play
-            // modifer - remove skills or staffing requirements, or remove from stasis
-            // no specific responses
         // renew - flavor text on Renewal Scroll
         // repeats - weird text on "Pup"; no specific responses
         // replenish, replenishing - weird text; no specific responses
@@ -460,20 +570,20 @@ public class IdentifyingActionsTest extends NewLibraryTest {
             // flavor text on Escape Pod, Thine Own Self, Abandon Ship!, Rescue Personnel (no responses for this)
         // resets - modifier of countdowns
         // resigns - flavor text on Anaphasic Organism
-        actions.add("restore"); // restore, restores, restored
+        /* restore, restores, restored
             // restore RANGE modifier (no responses)
             // weird text on Quandary (no responses) - taking card from discard
+         */
         // resumes - unnecessary text on Alien Parasites
         // retaliate - weird text on Kova Tholl
         // retire - flavor text on Reserve Activation Clause
-        actions.add("return"); // returned, returning, returns
-        actions.add("reveal"); // revealed, reveals
         // reverse, reverses - modifying game texts of cards (no responses)
         // revive - flavor text on Hypospray
         // revolve - flavor text on Revolving Door
         // ricochets - flavor text on Chain Reaction Pulsar
         actions.add("rotate");
             // Rotate mission (Trilithium Weapon & Operate Dilithium Gulag); no responses
+            // ODG is an automatic modifiers; Trilithium could be if you consider "discard" the action
         actions.add("run"); // runs
             // runs off - Love interests and Primal Urges; does this count as relocating? moving? (no specific response)
         // sacrifice - flavor text on multiple cards, no specific responses
@@ -484,7 +594,8 @@ public class IdentifyingActionsTest extends NewLibraryTest {
             // Not at all clear if scoring is an action
         actions.add("search");
         actions.add("select"); // selected, re-select, re-selected, selection, selections, selects, unselected
-        // separate - used to refer to the order in which sites must be seeded
+            // Elim, Gold!, Menos, Torias - response to selection (there may be others)
+    // separate - used to refer to the order in which sites must be seeded
         // serve - modifier for a card that can serve as Nagus or serve as matching commander
         actions.add("shar"); // share, shared, sharing, shares
         // shopping - flavor text on Promenade Shops
@@ -523,10 +634,12 @@ public class IdentifyingActionsTest extends NewLibraryTest {
             // The Katra of Surak - transfer card to another personnel
             // Arbiter of Succession - points transfer to opponent
             // No responses to this action
-        actions.add("transport");
+        /*
+        transport
             // Weird text on Maman Picard - does this count as relocate?
             // Weird text on Barclay Transporter Phobia
             // No specific responses
+         */
         // treat, treated - weird text on Hawk and You Dirty Rat
         // triple, tripled, tripling - applying modifier to cards; no responses
         // turned - Heisenberg Compensators turns draw deck face up; this is a modifier with no responses

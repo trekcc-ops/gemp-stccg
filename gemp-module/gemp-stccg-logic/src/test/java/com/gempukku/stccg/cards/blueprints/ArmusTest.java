@@ -1,5 +1,6 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.cards.blueprints;
 
+import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.CardNotFoundException;

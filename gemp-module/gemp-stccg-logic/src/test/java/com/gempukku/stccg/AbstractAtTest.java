@@ -36,8 +36,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected ST1EGame _game;
     private TribblesGame _tribblesGame;
     protected UserFeedback _userFeedback;
-    static final String P1 = "player1";
-    static final String P2 = "player2";
+    protected static final String P1 = "player1";
+    protected static final String P2 = "player2";
     private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
     protected void initializeSimple1EGame(int deckSize) {

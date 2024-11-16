@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CardBlueprintTest extends AbstractAtTest {
+public class KolAndCaptainWorfTest extends AbstractAtTest {
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")

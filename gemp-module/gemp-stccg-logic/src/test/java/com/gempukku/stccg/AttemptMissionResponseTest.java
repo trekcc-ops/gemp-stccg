@@ -104,7 +104,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
             System.out.println(
                     performedId + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
                             " (" + action.getActionType().name() + ")" +
-                    ((action.getText(_game) != null) ? " - " + action.getText(_game) : ""));
+                    ((action.getActionSelectionText(_game) != null) ? " - " + action.getActionSelectionText(_game) : ""));
             performedId++;
         }
     }

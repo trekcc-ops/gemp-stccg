@@ -1,15 +1,16 @@
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
-import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class SentenceClassifyTest extends NewLibraryTest {
 
-    @Test
     public void sentenceTest() throws IOException {
         createLibrary();
         int canBeParsed = 0;

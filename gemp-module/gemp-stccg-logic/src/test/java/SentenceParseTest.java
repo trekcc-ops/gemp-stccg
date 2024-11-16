@@ -1,11 +1,8 @@
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
 import java.util.List;
 
 public class SentenceParseTest extends NewLibraryTest {
 
-    @Test
     public void sentenceTest() {
         createLibrary();
         int canBeParsed = 0;
