@@ -98,12 +98,12 @@ public class ST1EGameStateDeserializer {
             gameState._allCards.put(card.getCardId(), card);
             if (card.getZone().isInPlay())
                 gameState._inPlay.add(card);
-            if (cardNode.has("attachedToCard"))
-                attachedMap.put(card, cardNode.get("attachedToCard").intValue());
-            if (cardNode.has("stackedOnCard"))
-                stackedMap.put(card, cardNode.get("stackedOnCard").intValue());
-            if (cardNode.has("dockedAtCard") && card instanceof PhysicalShipCard ship)
-                dockedMap.put(ship, cardNode.get("dockedAtCard").intValue());
+            if (cardNode.has("attachedToCardId"))
+                attachedMap.put(card, cardNode.get("attachedToCardId").intValue());
+            if (cardNode.has("stackedOnCardId"))
+                stackedMap.put(card, cardNode.get("stackedOnCardId").intValue());
+            if (cardNode.has("dockedAtCardId") && card instanceof PhysicalShipCard ship)
+                dockedMap.put(ship, cardNode.get("dockedAtCardId").intValue());
             if (cardNode.has("cardsSeededUnderneath")) {
                 seededUnderMap.put(card, new ArrayList<>());
                 for (JsonNode seedCardNode : cardNode.get("cardsSeededUnderneath"))
