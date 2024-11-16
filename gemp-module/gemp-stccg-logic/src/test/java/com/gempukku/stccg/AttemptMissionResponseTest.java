@@ -1,6 +1,7 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -101,10 +102,13 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         int performedId = 1;
 
         for (Action action : performedActions) {
-            System.out.println(
-                    performedId + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
-                            " (" + action.getActionType().name() + ")" +
-                    ((action.getActionSelectionText(_game) != null) ? " - " + action.getActionSelectionText(_game) : ""));
+            String message = performedId + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
+                    " (" + action.getActionType().name() + ")";
+            if (action.getActionSelectionText(_game) != null)
+                message = message + " - " + action.getActionSelectionText(_game);
+            if (action instanceof SubAction sub && sub.getEffect() != null)
+                message = message + " [Effect = " + sub.getEffect().getClass().getSimpleName() + "]";
+            System.out.println(message);
             performedId++;
         }
     }
