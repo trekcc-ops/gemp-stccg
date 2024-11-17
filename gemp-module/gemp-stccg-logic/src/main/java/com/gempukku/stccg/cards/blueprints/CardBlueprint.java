@@ -24,6 +24,7 @@ public class CardBlueprint {
     private String _baseBlueprintId;
     private String title;
     private String subtitle;
+    private ShipClass _shipClass;
     protected CardType _cardType;
     private String imageUrl;
     private String _rarity;
@@ -426,5 +427,9 @@ public class CardBlueprint {
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             MissionCard missionCard, EncounterSeedCardAction action) {
         return new LinkedList<>();
+    }
+
+    public void setShipClass(ShipClass shipClass) {
+        _shipClass = shipClass;
     }
 }

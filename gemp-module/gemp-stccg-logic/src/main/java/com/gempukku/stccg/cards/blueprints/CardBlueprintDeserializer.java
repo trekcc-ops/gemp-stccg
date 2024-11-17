@@ -52,8 +52,13 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     // Attributes and ignored fields are at the top of this list, otherwise it is in alphabetical order
 
                     case "blueprintId", "java-blueprint": break; // Already processed by createBlueprint
-                    case "gametext", "headquarters", "playable", "ship-class": break; // No implementation built yet
-
+                    case "gametext", "headquarters", "playable": break; // No implementation built yet
+                    case "ship-class": {
+                        String classString = node.get(fieldName).textValue().toUpperCase(Locale.ROOT)
+                                .replace(" CLASS","");
+                        blueprint.setShipClass(getEnum(ShipClass.class, classString, fieldName));
+                        break;
+                    }
                     case "cunning", "integrity", "range", "shields", "strength", "weapons":
                         blueprint.setAttribute(
                                 CardAttribute.valueOf(fieldName.toUpperCase()), getInteger(node, fieldName));
