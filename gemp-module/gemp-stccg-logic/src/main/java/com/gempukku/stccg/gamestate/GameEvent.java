@@ -108,6 +108,7 @@ public class GameEvent {
         _eventAttributes.put(Attribute.decisionType, decision.getDecisionType().name());
         if (decision.getText() != null)
             _eventAttributes.put(Attribute.text, decision.getText());
+        _eventAttributes.put(Attribute.phase, player.getGame().getCurrentPhase().name());
     }
 
     public GameEvent(Type type, PhysicalCard card, Collection<PhysicalCard> cards, Player player) {
