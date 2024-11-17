@@ -1,3 +1,5 @@
+package com.gempukku.stccg.parsing;
+
 import java.io.IOException;
 import java.util.*;
 

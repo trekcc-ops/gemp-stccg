@@ -1,3 +1,5 @@
+package com.gempukku.stccg.parsing;
+
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 
@@ -62,7 +64,7 @@ public class SentenceClassifyTest extends NewLibraryTest {
 
     public void sentenceNLPTest() throws IOException {
         String fullText = "Plays once each turn on your [DS9][Fer] personnel. Name a skill.";
-        InputStream inputStream = new FileInputStream("..\\gemp-stccg-logic\\en-sent.bin");
+        InputStream inputStream = new FileInputStream("..\\gemp-stccg-logic\\src\\test\\resources\\en-sent.bin");
         SentenceModel model = new SentenceModel(inputStream);
         SentenceDetectorME parser = new SentenceDetectorME(model);
         String[] sentences = parser.sentDetect(fullText);

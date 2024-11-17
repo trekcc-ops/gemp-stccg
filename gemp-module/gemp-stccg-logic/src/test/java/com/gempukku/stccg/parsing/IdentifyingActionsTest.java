@@ -1,4 +1,4 @@
-import org.junit.jupiter.api.Test;
+package com.gempukku.stccg.parsing;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -6,7 +6,6 @@ import java.util.List;
 
 public class IdentifyingActionsTest extends NewLibraryTest {
 
-    @Test
     public void tokenTest() throws IOException {
         System.out.println("if you don't see this, the text got truncated");
         System.out.println(potentialActions().size());

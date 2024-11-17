@@ -1,3 +1,5 @@
+package com.gempukku.stccg.parsing;
+
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -14,7 +16,7 @@ public class NewLibraryTest {
         File input;
         MappingIterator<Map<?, ?>> mappingIterator;
         List<Map<?, ?>> list;
-        input = new File("..\\gemp-stccg-logic\\Physical.csv");
+        input = new File("..\\gemp-stccg-logic\\src\\test\\resources\\Physical.csv");
         try {
             CsvSchema csv = CsvSchema.emptySchema().withHeader();
             CsvMapper csvMapper = new CsvMapper();
@@ -38,7 +40,7 @@ public class NewLibraryTest {
                 }
             }
 
-            input = new File("..\\gemp-stccg-logic\\Virtual.csv");
+            input = new File("..\\gemp-stccg-logic\\src\\test\\resources\\Virtual.csv");
             mappingIterator =  csvMapper.reader().forType(Map.class).with(csv).readValues(input);
             list = mappingIterator.readAll();
             for (Map<?, ?> card : list) {

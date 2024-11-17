@@ -1,3 +1,5 @@
+package com.gempukku.stccg.parsing;
+
 import java.util.*;
 
 public class NewLibraryTestyTest extends NewLibraryTest {

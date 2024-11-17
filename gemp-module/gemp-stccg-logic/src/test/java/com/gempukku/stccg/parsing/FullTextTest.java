@@ -1,3 +1,5 @@
+package com.gempukku.stccg.parsing;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;

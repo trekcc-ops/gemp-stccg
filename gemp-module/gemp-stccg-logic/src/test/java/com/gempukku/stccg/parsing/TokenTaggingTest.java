@@ -1,3 +1,5 @@
+package com.gempukku.stccg.parsing;
+
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
@@ -13,7 +15,8 @@ public class TokenTaggingTest extends NewLibraryTest {
 
         Map<String, Set<String>> words = new HashMap<>();
 
-        InputStream inputStream = new FileInputStream("..\\gemp-stccg-logic\\en-pos-maxent.bin");
+        InputStream inputStream =
+                new FileInputStream("..\\gemp-stccg-logic\\src\\test\\resources\\en-pos-maxent.bin");
         POSModel model = new POSModel(inputStream);
         POSTaggerME tagger = new POSTaggerME(model);
         WhitespaceTokenizer whitespaceTokenizer = WhitespaceTokenizer.INSTANCE;
