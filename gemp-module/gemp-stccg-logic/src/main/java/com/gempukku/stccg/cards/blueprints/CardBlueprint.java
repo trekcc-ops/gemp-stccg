@@ -46,6 +46,7 @@ public class CardBlueprint {
     private Region region;
     private SkillName _classification;
     private boolean _canInsertIntoSpaceline;
+    private final Set<ShipSpecialEquipment> _specialEquipment = new HashSet<>();
     private final Set<Affiliation> _ownerAffiliationIcons = new HashSet<>();
     private final Set<Affiliation> _opponentAffiliationIcons = new HashSet<>();
     private int _span;
@@ -431,5 +432,9 @@ public class CardBlueprint {
 
     public void setShipClass(ShipClass shipClass) {
         _shipClass = shipClass;
+    }
+
+    public void addSpecialEquipment(Collection<ShipSpecialEquipment> specialEquipment) {
+        _specialEquipment.addAll(specialEquipment);
     }
 }

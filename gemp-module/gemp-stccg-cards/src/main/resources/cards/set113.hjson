@@ -8,7 +8,6 @@
         mission-type: planet
         location: Unexplored planet
         lore: Gather plant life for medical research from planet with highly ionized atmosphere.
-        gametext: Atmospheric Ionization may seed here.
         mission-requirements: SCIENCE + MEDICAL + CUNNING>35
         affiliation-icons: federation,klingon,dominion
         point-box: 30
@@ -24,7 +23,6 @@
         region: Demilitarized Zone
         location: Border planet
         lore: Search planet for illegal Maquis arms cache.
-        gametext: May seed hand weapons under here.
         mission-requirements: OFFICER + Navigation + Treachery
         affiliation-icons: federation,klingon,cardassian,bajoran,ferengi
         point-box: 30

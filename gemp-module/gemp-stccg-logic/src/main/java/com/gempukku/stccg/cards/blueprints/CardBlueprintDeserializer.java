@@ -52,13 +52,7 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     // Attributes and ignored fields are at the top of this list, otherwise it is in alphabetical order
 
                     case "blueprintId", "java-blueprint": break; // Already processed by createBlueprint
-                    case "gametext", "headquarters", "playable": break; // No implementation built yet
-                    case "ship-class": {
-                        String classString = node.get(fieldName).textValue().toUpperCase(Locale.ROOT)
-                                .replace(" CLASS","");
-                        blueprint.setShipClass(getEnum(ShipClass.class, classString, fieldName));
-                        break;
-                    }
+                    case "headquarters", "playable": break; // No implementation built yet for these 2E fields
                     case "cunning", "integrity", "range", "shields", "strength", "weapons":
                         blueprint.setAttribute(
                                 CardAttribute.valueOf(fieldName.toUpperCase()), getInteger(node, fieldName));
@@ -86,6 +80,13 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     case "cost": blueprint.setCost(getInteger(node, fieldName)); break;
                     case "effects": EffectFieldProcessor.processField(node.get(fieldName), blueprint); break;
                     case "facility-type": blueprint.setFacilityType(getEnum(FacilityType.class, node, fieldName)); break;
+                    case "gametext": {
+                        // assumes this is just ship special equipment
+                        Collection<ShipSpecialEquipment> specialEquipment =
+                                getEnumSetFromCommaDelimited(node, fieldName, ShipSpecialEquipment.class);
+                        blueprint.addSpecialEquipment(specialEquipment);
+                        break;
+                    }
                     case "icons": blueprint.setIcons(getCardIconListFromCommaDelimited(node, fieldName)); break;
                     case "image-options": setImageOptions(blueprint, node); break;
                     case "image-url": blueprint.setImageUrl(BlueprintUtils.getString(node, fieldName)); break;
@@ -106,6 +107,12 @@ public class CardBlueprintDeserializer extends StdDeserializer<CardBlueprint> {
                     case "quadrant": blueprint.setQuadrant(getEnum(Quadrant.class, node, fieldName)); break;
                     case "rarity": blueprint.setRarity(BlueprintUtils.getString(node, fieldName)); break;
                     case "region": blueprint.setRegion(getEnum(Region.class, node, fieldName)); break;
+                    case "ship-class": {
+                        String classString = node.get(fieldName).textValue().toUpperCase(Locale.ROOT)
+                                .replace(" CLASS","");
+                        blueprint.setShipClass(getEnum(ShipClass.class, classString, fieldName));
+                        break;
+                    }
                     case "skill-box": processSkillBox(blueprint, node, fieldName); break;
                     case "span": blueprint.setSpan(getInteger(node, fieldName)); break;
                     case "species": blueprint.setSpecies(getEnum(Species.class, node, fieldName)); break;
