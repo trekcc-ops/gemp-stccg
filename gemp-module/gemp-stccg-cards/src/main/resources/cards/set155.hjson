@@ -83,7 +83,6 @@
         affiliation-icons: federation,klingon,non-aligned,ferengi
         lore: "Test revolutionary shield design within star's superdense corona."
         mission-requirements: Diplomacy + ENGINEER + Navigation + SCIENCE
-        gametext: When you solve, may download Metaphasic Shields here.
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/39V.jpg
@@ -109,7 +108,6 @@
         affiliation-icons: non-aligned
         lore: Seek ancient Debrune artifacts near Sakethan burial mounds.
         mission-requirements: Archaeology + SECURITY + Treachery + STRENGTH>50
-        gametext: May seed one Mercenary Ship face up here.
         point-box: 40
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg

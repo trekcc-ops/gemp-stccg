@@ -58,7 +58,6 @@
                 }
             }
 		]
-        gametext: "Seed one on table. You may download one [WARP_CORE] card. Your personnel and ships that have a Star Trek: The Next Generation or Star Trek Generations property logo gain [TNG] (even if not in play). Once each turn, when you play a [TNG] personnel with four or fewer •  icons (and no ∇ ), you may draw a card. Discard this incident if you play (or have played) a non-[TNG] personnel or ship."
         image-url: https://www.trekcc.org/1e/cardimages/errata/Continuing-Mission.jpg
             // Alternate image = image-url: https://www.trekcc.org/1e/cardimages/homefront6/44.jpg
     }
@@ -106,7 +105,6 @@
                 }
             }
 		]
-        gametext: "Seed one on table. You may download one [RC] card. Your Nors, personnel, and ships that have a Star Trek: Deep Space Nine property logo gain [DS9] (even if not in play). Discard incident if you play (or have played) a non-[DS9] personnel or ship."
         image-url: https://www.trekcc.org/1e/cardimages/emissary/30.jpg
     }
 }
