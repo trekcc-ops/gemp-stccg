@@ -30,7 +30,7 @@ public class DefaultGameFormat implements GameFormat {
     private final boolean _winOnControlling5Sites;
     private final int _minimumDrawDeckSize;
     private final int _maximumSeedDeckSize;
-    private final int _missions;
+    private final int _missions; // If missions is -1, there is no restriction on the number of missions
     private final List<String> _bannedCards = new ArrayList<>();
     private final List<String> _restrictedCards = new ArrayList<>();
     private final List<String> _validCards = new ArrayList<>();
@@ -38,16 +38,19 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _restrictedCardNames = new ArrayList<>();
     private final String _surveyUrl;
     private final boolean _isPlaytest;
+    private final boolean _noShuffle;
 
     //Additional Hobbit Draft parameters
     private final List<String> _limit2Cards = new ArrayList<>();
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
+    private final boolean _firstPlayerFixed;
 
     public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def) throws InvalidPropertiesFormatException{
         this(library, def.name, def.game, def.code, def.order, def.surveyUrl,
                 def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
-                def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall);
+                def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall,
+                def.noShuffle, def.firstPlayerFixed);
 
         if(def.set != null)
             def.set.forEach(this::addValidSet);
@@ -76,7 +79,8 @@ public class DefaultGameFormat implements GameFormat {
                              String name, String game, String code, int order, String surveyUrl,
                              boolean validateShadowFPCount, int minimumDrawDeckSize, int maximumSeedDeckSize, int missions, int maximumSameName, boolean mulliganRule,
                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
-                             boolean winOnControlling5Sites, boolean isPlayTest, boolean hallVisible) {
+                             boolean winOnControlling5Sites, boolean isPlayTest, boolean hallVisible, boolean noShuffle,
+                             boolean firstPlayerFixed) {
         _library = library;
         _name = name;
         _game = game;
@@ -96,6 +100,8 @@ public class DefaultGameFormat implements GameFormat {
         _hallVisible = hallVisible;
         _missions = missions;
         _maximumSeedDeckSize = maximumSeedDeckSize;
+        _noShuffle = noShuffle;
+        _firstPlayerFixed = firstPlayerFixed;
     }
 
     @Override
@@ -418,7 +424,7 @@ public class DefaultGameFormat implements GameFormat {
     private String validateMissionsPile(CardDeck deck) {
         StringBuilder result = new StringBuilder();
         List<String> missionsPile = deck.getSubDeck(SubDeck.MISSIONS);
-        if (missionsPile.size() != _missions) {
+        if (_missions > 0 && missionsPile.size() != _missions) {
             result.append("Deck must contain exactly ").append(_missions).append(" missions").append(".\n");
         }
         List<String> uniqueLocations = new LinkedList<>();
@@ -482,7 +488,24 @@ public class DefaultGameFormat implements GameFormat {
             errataSets = null;
             errata = null;
             hall = _hallVisible;
+            noShuffle = _noShuffle;
+            firstPlayerFixed = _firstPlayerFixed;
         }};
+    }
+
+    @Override
+    public int getMissions() {
+        return _missions;
+    }
+
+    @Override
+    public boolean hasFixedPlayerOrder() {
+        return _firstPlayerFixed;
+    }
+
+    @Override
+    public boolean isNoShuffle() {
+        return _noShuffle;
     }
 
 }
