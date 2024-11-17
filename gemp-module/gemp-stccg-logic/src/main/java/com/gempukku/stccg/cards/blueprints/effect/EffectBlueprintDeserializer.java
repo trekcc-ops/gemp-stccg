@@ -20,8 +20,8 @@ public class EffectBlueprintDeserializer {
                     "putcardsfromdiscardintohand", "putcardsfromdiscardonbottomofdeck",
                     "putcardsfromdiscardontopofdeck", "putcardsfromhandonbottomofdeck",
                     "putcardsfromhandonbottomofplaypile", "putcardsfromhandontopofdeck",
-                    "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame", "removefromthegame",
-                    "returntohand", "revealcards", "revealcardsfromhand", "shufflecardsfromdiscardintodrawdeck",
+                    "putcardsfromplayonbottomofdeck", "removecardsindiscardfromgame", "returntohand", "revealcards",
+                    "revealcardsfromhand", "shufflecardsfromdiscardintodrawdeck",
                     "shufflecardsfromhandintodrawdeck", "shufflecardsfromplayintodrawdeck" ->
                     CardResolverMultiEffectBlueprintProducer.createEffectBlueprint(effectObject);
             case "chooseanumber", "chooseopponent", "chooseplayer", "chooseplayerexcept", "chooseplayerwithcardsindeck",

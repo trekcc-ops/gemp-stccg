@@ -17,7 +17,7 @@
         mission-type: planet
         lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
         property-logo: tng-logo
-//        java-blueprint: true
+        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/archer.gif
         rarity: C
     }
@@ -412,6 +412,18 @@
         span: 2
         image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateraid95.jpg
     }
+    101_170: {
+        title: Investigate Rogue Comet
+        type: mission
+        mission-type: space
+        location: Sector 1156
+        lore: Study unusual rogue comet sighted in this sector.
+        affiliation-icons: federation
+        mission-requirements: Archaeology + Exobiology + Computer Skill
+        point-box: 30
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateroguecomet95.jpg
+    }
     101_173: {
         title: Khitomer Research
         type: mission
@@ -507,6 +519,7 @@
         property-logo: tng-logo
         classification: V.I.P.
         icons: command
+        characteristic: admiral
         lore: Vice-Admiral Alynna Nechayev is an antagonistic superior of Captain Jean-Luc Picard. Responsible for liaison with the Cardassians and the Maquis.
         skill-box: "[*] Diplomacy [*] Leadership"
         integrity: 7
@@ -680,6 +693,7 @@
         property-logo: tng-logo
         classification: OFFICER
         icons: command
+        characteristic: admiral
         lore: Fleet Admiral Shanthi authorized the blockade of Romulan forces covertly supporting the Klingon Civil War in 2368.
         skill-box: "[*] Leadership [*] Diplomacy"
         integrity: 9

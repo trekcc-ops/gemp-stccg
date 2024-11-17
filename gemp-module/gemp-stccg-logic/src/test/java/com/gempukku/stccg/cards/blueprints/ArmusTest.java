@@ -22,7 +22,7 @@ public class ArmusTest extends AbstractAtTest {
 
     @Test
     public void misSeedTest() throws DecisionResultInvalidException, CardNotFoundException {
-        initializeQuickMissionAttempt();
+        initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
         assertEquals(P1, _game.getCurrentPlayerId());

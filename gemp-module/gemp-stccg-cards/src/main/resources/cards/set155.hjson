@@ -1,32 +1,31 @@
 // Set 155: The Next Generation
 
 {
+    155_010: {
+        title: Pinned Down
+        java-blueprint: true
+        type: dilemma
+        mission-type: dual
+        lore: "Confronted with Sir Guy of Gisbourne's archers, Jean-Luc Picard, posing as Robin Hood, ordered his crew deeper into Q's recreation of Sherwood Forest."
+        property-logo: tng-logo
+        image-url: https://www.trekcc.org/1e/cardimages/tng/10V.jpg
+    }
+    155_012: {
+        title: Tense Negotiations
+        java-blueprint: true
+        type: dilemma
+        mission-type: dual
+        lore: "Experienced diplomats are willing to meet their opponents on their terms and to confront challenges to their integrity with appropriate invectives when necessary."
+        property-logo: tng-logo
+        image-url: https://www.trekcc.org/1e/cardimages/tng/12V.jpg
+    }
     155_021: {
-        blueprintId: 155_021
         title: Attention All Hands
         java-blueprint: true
         type: incident
         icons: warp-core
         property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg
-/*        seed: {
-            where: on table
-        }
-        effects: [
-            {
-                type: action
-                optional: true
-                phase: execute-orders
-                limitPerTurn: 1
-                effect: {
-                    type: play
-                    filter: choose(personnel)
-                    filter: choose(yours + universal + tng-icon + personnel + not(android OR hologram OR au-icon) + you have no copies in play)
-                    filter: choose(any)
-                    on: federation,outpost
-                }
-            }
-        ] */
     }
     155_035: {
         title: Acquire Surplus Ships

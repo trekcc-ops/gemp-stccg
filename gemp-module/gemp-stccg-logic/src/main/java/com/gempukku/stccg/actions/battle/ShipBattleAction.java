@@ -3,8 +3,6 @@ package com.gempukku.stccg.actions.battle;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.decisions.YesNoDecision;
@@ -13,7 +11,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -81,27 +78,6 @@ public class ShipBattleAction extends ActionyAction {
                 Filters.atLocation(_location), Filters.not(Filters.your(player)));
     }
 
-    private Effect selectForceEffect(Player player) {
-        return new ChooseCardsOnTableEffect(this, player,
-                "Choose ships to include in force", 1, getEligibleCardsForForce(player).size(),
-                getEligibleCardsForForce(player)) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
-                _forces.put(player, selectedCards);
-            }
-        };
-    }
-
-    private Effect getTargetEffect(Player player) {
-        return new ChooseCardsOnTableEffect(this, player,
-                "Choose target", 1, 1, getTargetOptions(player)) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
-                _targets.put(player, Iterables.getOnlyElement(selectedCards));
-            }
-        };
-    }
-
     private OpenFireResult calculateOpenFireResult(Player player) {
         String playerId = player.getPlayerId();
         int attackTotal = 0;
@@ -126,11 +102,28 @@ public class ShipBattleAction extends ActionyAction {
 
         if (_forces.get(_attackingPlayer) == null) {
             // TODO - Need to include some compatibility check here
-            return new SubAction(this, selectForceEffect(_attackingPlayer));
+/* SelectForceEffect:
+            return new ChooseCardsOnTableEffect(this, player,
+                    "Choose ships to include in force", 1, getEligibleCardsForForce(player).size(),
+                    getEligibleCardsForForce(player)) {
+                @Override
+                protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
+                    _forces.put(player, selectedCards);
+                }
+            }; */
+//            return new SubAction(this, selectForceEffect(_attackingPlayer));
         }
 
         if (_targets.get(_attackingPlayer) == null) {
-            return new SubAction(this, getTargetEffect(_attackingPlayer));
+/*            return new ChooseCardsOnTableEffect(this, player,
+                    "Choose target", 1, 1, getTargetOptions(player)) {
+                @Override
+                protected void cardsSelected(Collection<PhysicalCard> selectedCards) {
+                    _targets.put(player, Iterables.getOnlyElement(selectedCards));
+                }
+            };*/
+
+//            return new SubAction(this, getTargetEffect(_attackingPlayer));
         }
 
         if (!_returnFireDecisionMade) {
@@ -151,11 +144,11 @@ public class ShipBattleAction extends ActionyAction {
         }
 
         if (_returningFire && _forces.get(_defendingPlayer) == null) {
-            return new SubAction(this, selectForceEffect(_defendingPlayer));
+//            return new SubAction(this, selectForceEffect(_defendingPlayer));
         }
 
         if (_returningFire && _targets.get(_defendingPlayer) == null) {
-            return new SubAction(this, getTargetEffect(_defendingPlayer));
+//            return new SubAction(this, getTargetEffect(_defendingPlayer));
         }
 
         if (!_openedFire) {

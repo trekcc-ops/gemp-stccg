@@ -302,6 +302,32 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // ask - Flavor text on Interrogation and Gold!; player has to say stuff
         // attend - flavor test on Sabotaged Negotiations
         actions.add("attack"); // attacked, attacking, re-attack, counter-attack
+        /*
+            Orbital Bombardment, Airlock - player may counter-attack next turn
+            Conundrum - ship must do nothing but chase and attack one of your opponent's ships
+            Lore Returns - Rogue Borg may now use ship to attack ships
+            Felix Leech - if opponent attacked you this game
+            Kova Tholl - bonus points if killed by an attack in which you do not retaliate
+            Test for Weakness - doubles WEAPONS of your ships here when attacked or if attacking alone
+            Distracting Technology - any player voluntarily moving or attacking with this ship must first discard
+            Edo Vessel - 50/50 chance any attack is nullified
+            Odo (Dogs of War) - DL Strike Three (when attacked)
+            Incoming Message: Attack Authorization - must immediately attack one ship (your choice)
+            Classic Phaser Banks - [Fed][OS] ships may attack this ship, ignoring affiliation attack restrictions
+            Qapla'! - if an opponent attacks you
+            They Call Themselves the Maquis - your [Maq] cards, if ever attacked, have no affil. attack restrictions
+            Straight and Steady - when your [22] card is attacked
+            Breen CRM114 - this Away Team may attack a landed ship or facility
+            Wartime Conditions - plays only if a Federation ship is attacked by another ship
+            Wartime Conditions - the Federation ma battle the attacking ship's affiliation at will
+            Drone Control Room - Drone-class ships may move and attack without staffing or a leader
+            Klingon Right of Vengeance - all other Klingons present may immediately re-attack
+            La Forge Maneuver - it is vulnerable (as if it were decloaked) if the next action is an attack against
+                that ship
+            Time to Reconsider - prevents opponent from initiating a counter-attack
+            Contingency Plan - ship cannot be attacked by [Borg]
+            Hugh - nullifies attack by Borg Ship
+         */
         // avoid - general word for nullifying, preventing, immune, etc. No specific responses
         // General word for negating, nullifying, etc. No responses
         // become, becomes - modifier, typically personnel becoming a new affiliation
@@ -418,7 +444,7 @@ public class IdentifyingActionsTest extends NewLibraryTest {
         // hides - weird text on Asteroid Sanctuary
         // hit - used for hit and direct hit. Chain Reaction Ricochet responds to hit, but could just use damage
         // hurl - weird text on Gomtuu for relocate
-        actions.add("ignor"); // ignore, ignores, ignoring
+        // ignore, ignores, ignoring - generally a synonym for suspending a card, or modifying rules; no responses
         /* immune
             modifier; typically immune to specific cards by name
             Exceptions - Kazon Collective (assimilation), Assignment: Earth (timeline disruption),

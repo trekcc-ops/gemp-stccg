@@ -423,8 +423,8 @@ public class CardBlueprint {
     public String getBaseBlueprintId() { return _baseBlueprintId; }
     public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
 
-    public List<Action> getEncounterActions(PhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                      MissionCard missionCard, EncounterSeedCardAction action) {
+    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                            MissionCard missionCard, EncounterSeedCardAction action) {
         return new LinkedList<>();
     }
 }

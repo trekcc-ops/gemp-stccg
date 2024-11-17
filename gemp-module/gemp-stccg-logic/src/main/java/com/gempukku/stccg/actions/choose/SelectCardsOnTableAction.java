@@ -14,15 +14,15 @@ import java.util.LinkedList;
 /**
  * An effect that causes the specified player to choose cards on the table.
  */
-public class SelectCardsInPlayAction extends ActionyAction {
+public class SelectCardsOnTableAction extends ActionyAction implements SelectCardsAction {
     private final Collection<? extends PhysicalCard> _selectableCards;
     private Collection<PhysicalCard> _selectedCards = new LinkedList<>();
     private final PhysicalCard _actionSource;
     private final int _minimum;
     private final int _maximum;
 
-    public SelectCardsInPlayAction(Action action, Player selectingPlayer, String choiceText,
-                                   Collection<? extends PhysicalCard> cards, int minimum) {
+    public SelectCardsOnTableAction(Action action, Player selectingPlayer, String choiceText,
+                                    Collection<? extends PhysicalCard> cards, int minimum) {
         super(selectingPlayer, choiceText, ActionType.SELECT_CARD);
         _selectableCards = cards;
         _actionSource = action.getActionSource();

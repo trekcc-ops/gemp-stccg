@@ -3,6 +3,7 @@ package com.gempukku.stccg;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.SubAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
+import com.gempukku.stccg.actions.turn.PlayOutOptionalAfterResponsesAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -80,7 +81,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         // Respond by downloading Simon Tarses
         assertNotNull(_userFeedback.getAwaitingDecision(P1));
         playerDecided(P1,"0");
-        assertTrue(_userFeedback.getAwaitingDecision(P1) instanceof ArbitraryCardsSelectionDecision);
+        assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P1));
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
                 .decisionMade(tarses);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
@@ -104,12 +105,17 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         for (Action action : performedActions) {
             String message = performedId + " [" + action.getActionId() + "] - " + action.getClass().getSimpleName() +
                     " (" + action.getActionType().name() + ")";
-            if (action.getActionSelectionText(_game) != null)
-                message = message + " - " + action.getActionSelectionText(_game);
-            if (action instanceof SubAction sub && sub.getEffect() != null)
-                message = message + " [Effect = " + sub.getEffect().getClass().getSimpleName() + "]";
-            System.out.println(message);
-            performedId++;
+            String actionType = action.getClass().getSimpleName();
+            if (!actionType.equals("PlayOutOptionalAfterResponsesAction") && !actionType.equals("PlayOutEffectResults")) {
+                if (action.getActionSelectionText(_game) != null)
+                    message = message + " - " + action.getActionSelectionText(_game);
+                if (action instanceof SubAction sub && sub.getEffect() != null)
+                    message = message + " [Effect = " + sub.getEffect().getClass().getSimpleName() + "]";
+                if (action instanceof PlayOutOptionalAfterResponsesAction response)
+                    message = message + " [ EffectResult = " + response.getEffectResults();
+                System.out.println(message);
+                performedId++;
+            }
         }
     }
 

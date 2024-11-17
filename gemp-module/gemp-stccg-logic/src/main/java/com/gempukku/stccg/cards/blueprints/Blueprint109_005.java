@@ -4,11 +4,12 @@ import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.StopPersonnelAction;
+import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
+import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
@@ -22,7 +23,7 @@ public class Blueprint109_005 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(PhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             MissionCard mission, EncounterSeedCardAction action) {
         List<Action> result = new LinkedList<>();
         Collection<PersonnelCard> targetPersonnel = new ArrayList<>();
@@ -38,15 +39,13 @@ public class Blueprint109_005 extends CardBlueprint {
         }
 
         if (!hasEmpathyOrDiplomacy && targetPersonnel.isEmpty()) {
-//            result.add(new FailMissionAction());
-            result.add(new StopPersonnelAction(thisCard.getOwner(), attemptingUnit.getAttemptingPersonnel()));
-            // fail, unit stopped, replace dilemma
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
         } else {
             if (targetPersonnel.size() >= 2) {
                 PersonnelCard cardToContinue = TextUtils.getRandomItemFromList(targetPersonnel);
                 targetPersonnel.remove(cardToContinue);
             }
-            result.add(new StopPersonnelAction(thisCard.getOwner(), targetPersonnel));
+            result.add(new StopCardsAction(thisCard.getOwner(), targetPersonnel));
             result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, mission));
         }
 

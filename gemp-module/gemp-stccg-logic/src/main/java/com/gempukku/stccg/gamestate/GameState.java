@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.DefaultActionsEnvironment;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCardVisitor;
+import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
 import com.gempukku.stccg.common.filterable.EndOfPile;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -254,7 +255,7 @@ public abstract class GameState {
     public void removeCardsFromZone(String playerPerforming, Collection<PhysicalCard> cards) {
         for (PhysicalCard card : cards) {
             List<PhysicalCard> zoneCards = getZoneCards(card.getOwnerName(), card.getZone());
-            if (!zoneCards.contains(card))
+            if (!zoneCards.contains(card) && card.getZone() != Zone.VOID)
                 LOGGER.error(
                         "Card was not found in the expected zone: " + card.getTitle() + ", " + card.getZone().name());
         }
@@ -265,6 +266,12 @@ public abstract class GameState {
             if (zone.isInPlay()) card.stopAffectingGame(getGame());
 
             getZoneCards(card.getOwnerName(), zone).remove(card);
+
+            if (card instanceof PhysicalReportableCard1E reportable) {
+                if (reportable.getAwayTeam() != null) {
+                    reportable.leaveAwayTeam();
+                }
+            }
 
             if (zone.isInPlay())
                 _inPlay.remove(card);

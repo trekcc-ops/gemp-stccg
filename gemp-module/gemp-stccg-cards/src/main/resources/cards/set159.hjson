@@ -9,6 +9,7 @@
         property-logo: ds9-logo
         classification: V.I.P.
         icons: command
+        characteristic: admiral
         lore: "Typical Vulcan admiral. She presided over Worf's extradition hearing in 2372. Threatened to hold both Worf and Ch'Pok in contempt of court."
         skill-box: "[*] Leadership [*] Law [*] Exobiology [*] Mindmeld"
         integrity: 7

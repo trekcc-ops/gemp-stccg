@@ -50,74 +50,77 @@ public class AttemptMissionAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Player player = cardGame.getPlayer(_performingPlayerId);
-
-        Action cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        if (!getProgress(Progress.choseAttemptingUnit)) {
-            if (_selectAttemptingUnitAction == null) {
-
-                List<AttemptingUnit> eligibleUnits = new ArrayList<>();
-                _missionCard.getYourAwayTeamsOnSurface(player)
-                        .filter(awayTeam -> awayTeam.canAttemptMission(_missionCard))
-                        .forEach(eligibleUnits::add);
-
-                // Get ships that can attempt mission
-                for (PhysicalCard card : Filters.filterYourActive(player,
-                        Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
-                    if (card instanceof PhysicalShipCard ship)
-                        if (ship.canAttemptMission(_missionCard))
-                            eligibleUnits.add(ship);
-                }
-                _selectAttemptingUnitAction = new SelectAttemptingUnitAction(player, eligibleUnits);
-                return _selectAttemptingUnitAction;
-            } else if (_selectAttemptingUnitAction.wasCarriedOut()) {
-                setAttemptingUnit(_selectAttemptingUnitAction.getSelection());
-            }
-        }
-
-        if (!getProgress(Progress.startedMissionAttempt)) {
-            setProgress(Progress.startedMissionAttempt,true);
-            return new AllowResponsesAction(
-                    cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
-        }
-
         if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
             failMission(cardGame);
-        }
+        } else {
+            Player player = cardGame.getPlayer(_performingPlayerId);
 
-        List<PhysicalCard> seedCards = _missionCard.getCardsSeededUnderneath();
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            Action cost = getNextCost();
+            if (cost != null)
+                return cost;
 
-        if (!getProgress(Progress.endedMissionAttempt)) {
+            if (!getProgress(Progress.choseAttemptingUnit)) {
+                if (_selectAttemptingUnitAction == null) {
 
-            if (!seedCards.isEmpty()) {
-                PhysicalCard firstSeedCard = seedCards.getFirst();
-                if (!_revealedCards.contains(firstSeedCard)) {
-                    _revealedCards.add(firstSeedCard);
-                    return new RevealSeedCardAction(performingPlayer, firstSeedCard, _missionCard);
-                }
-                if (!_encounteredCards.contains(firstSeedCard)) {
-                    _encounteredCards.add(firstSeedCard);
-                    return new EncounterSeedCardAction(performingPlayer, firstSeedCard, _missionCard, _attemptingUnit);
+                    List<AttemptingUnit> eligibleUnits = new ArrayList<>();
+                    _missionCard.getYourAwayTeamsOnSurface(player)
+                            .filter(awayTeam -> awayTeam.canAttemptMission(_missionCard))
+                            .forEach(eligibleUnits::add);
+
+                    // Get ships that can attempt mission
+                    for (PhysicalCard card : Filters.filterYourActive(player,
+                            Filters.ship, Filters.atLocation(_missionCard.getLocation()))) {
+                        if (card instanceof PhysicalShipCard ship)
+                            if (ship.canAttemptMission(_missionCard))
+                                eligibleUnits.add(ship);
+                    }
+                    _selectAttemptingUnitAction = new SelectAttemptingUnitAction(player, eligibleUnits);
+                    return _selectAttemptingUnitAction;
+                } else if (_selectAttemptingUnitAction.wasCarriedOut()) {
+                    setAttemptingUnit(_selectAttemptingUnitAction.getSelection());
                 }
             }
 
-            if (seedCards.isEmpty()) {
-                if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionCard)) {
-                    MissionRequirement requirement = _missionCard.getRequirements();
-                    if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
-                        solveMission(cardGame);
-                    } else {
-                        failMission(cardGame);
+            if (!getProgress(Progress.startedMissionAttempt)) {
+                setProgress(Progress.startedMissionAttempt, true);
+                return new AllowResponsesAction(
+                        cardGame, this, EffectResult.Type.START_OF_MISSION_ATTEMPT);
+            }
+
+            if (_attemptingUnit.getAttemptingPersonnel().isEmpty()) {
+                failMission(cardGame);
+            }
+
+            List<PhysicalCard> seedCards = _missionCard.getCardsSeededUnderneath();
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+
+            if (!getProgress(Progress.endedMissionAttempt)) {
+
+                if (!seedCards.isEmpty()) {
+                    PhysicalCard firstSeedCard = seedCards.getFirst();
+                    if (!_revealedCards.contains(firstSeedCard)) {
+                        _revealedCards.add(firstSeedCard);
+                        return new RevealSeedCardAction(performingPlayer, firstSeedCard, _missionCard);
+                    }
+                    if (!_encounteredCards.contains(firstSeedCard)) {
+                        _encounteredCards.add(firstSeedCard);
+                        return new EncounterSeedCardAction(this, performingPlayer, firstSeedCard, _missionCard, _attemptingUnit);
                     }
                 }
-            }
-            setProgress(Progress.endedMissionAttempt, true);
-        }
 
+                if (seedCards.isEmpty()) {
+                    if (cardGame.getModifiersQuerying().canPlayerSolveMission(_performingPlayerId, _missionCard)) {
+                        MissionRequirement requirement = _missionCard.getRequirements();
+                        if (requirement.canBeMetBy(_attemptingUnit.getAttemptingPersonnel())) {
+                            solveMission(cardGame);
+                        } else {
+                            failMission(cardGame);
+                        }
+                    }
+                }
+                setProgress(Progress.endedMissionAttempt, true);
+            }
+        }
         return getNextAction();
     }
 

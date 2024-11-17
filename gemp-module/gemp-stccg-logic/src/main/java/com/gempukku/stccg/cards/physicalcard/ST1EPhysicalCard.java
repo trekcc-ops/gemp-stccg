@@ -1,8 +1,10 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -19,6 +21,7 @@ import java.util.Map;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
+    private boolean _isStopped;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
         _game = game;
@@ -87,4 +90,23 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
         return newCard;
     }
+
+    public void stop() {
+        _isStopped = true;
+    }
+
+    public void unstop() {
+        _isStopped = false;
+    }
+
+    public boolean isStopped() {
+        return _isStopped;
+    }
+
+    @Override
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
+                                            EncounterSeedCardAction action) {
+        return _blueprint.getEncounterActions(this, game, attemptingUnit, missionCard, action);
+    }
+
 }

@@ -4,7 +4,7 @@ import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
-import com.gempukku.stccg.actions.choose.SelectCardsInPlayAction;
+import com.gempukku.stccg.actions.choose.SelectCardsOnTableAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
@@ -29,7 +29,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
     final Collection<PhysicalCard> _destinationOptions;
     private SelectCardInPlayAction _selectOriginAction;
     private SelectCardInPlayAction _selectDestinationAction;
-    private SelectCardsInPlayAction _selectCardsToMoveAction;
+    private SelectCardsOnTableAction _selectCardsToMoveAction;
 
     /**
      * Creates an action to move cards by beaming or walking.
@@ -114,7 +114,7 @@ public abstract class BeamOrWalkAction extends ActionyAction {
                 Collection<PhysicalCard> movableCards =
                         Filters.filter(_origin.getAttachedCards(_origin.getGame()),
                                 Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-                _selectCardsToMoveAction = new SelectCardsInPlayAction(this, _performingPlayer,
+                _selectCardsToMoveAction = new SelectCardsOnTableAction(this, _performingPlayer,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
                 appendTargeting(_selectCardsToMoveAction);

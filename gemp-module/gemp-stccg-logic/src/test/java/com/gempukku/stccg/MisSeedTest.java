@@ -1,9 +1,6 @@
 package com.gempukku.stccg;
 
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,7 +16,7 @@ public class MisSeedTest extends AbstractAtTest {
 
     @Test
     public void misSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
-        initializeQuickMissionAttempt();
+        initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
         assertEquals(P1, _game.getCurrentPlayerId());
@@ -50,8 +47,12 @@ public class MisSeedTest extends AbstractAtTest {
         assertNotNull(picard);
         assertNotNull(tarses);
 
-        // Seed Simon Tarses under Excavation
+        ST1EPhysicalCard maglock = new ST1EPhysicalCard(_game, 99, _game.getPlayer(P1), _cardLibrary.get("109_010"));
+        maglock.setZone(Zone.VOID);
+
+        // Seed Simon Tarses and a space dilemma under Excavation
         _game.getGameState().seedCardsUnder(Collections.singleton(tarses), excavation);
+        _game.getGameState().seedCardsUnder(Collections.singleton(maglock), excavation);
 
         // Seed Federation Outpost at Excavation
         seedFacility(P1, outpost, excavation.getLocation());
@@ -73,6 +74,7 @@ public class MisSeedTest extends AbstractAtTest {
 
         // Confirm that mission was not solved and Simon Tarses was removed from play
         assertEquals(Zone.REMOVED, tarses.getZone());
+        assertEquals(Zone.REMOVED, maglock.getZone());
         assertFalse(excavation.isCompleted());
     }
 }

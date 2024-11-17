@@ -1,5 +1,7 @@
-package com.gempukku.stccg.actions;
+package com.gempukku.stccg.actions.usage;
 
+import com.gempukku.stccg.actions.AbstractSubActionEffect;
+import com.gempukku.stccg.actions.EffectType;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 

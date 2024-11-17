@@ -32,6 +32,10 @@
     setName: Starter Deck II
   }
   {
+    setId: "115"
+    setName: The Dominion
+  }
+  {
     setId: "116"
     setName: Blaze of Glory
   }
@@ -74,6 +78,10 @@
   {
     setId: "138"
     setName: Life from Lifelessness
+  }
+  {
+    setId: "139"
+    setName: Homefront
   }
   {
     setId: "144"

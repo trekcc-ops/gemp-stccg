@@ -12,6 +12,7 @@ import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -234,6 +235,14 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
             }
         }
         _normalCardPlaysAvailable.put(_game.getGameState().getPlayer(playerId), _normalCardPlaysPerTurn);
+
+        // Unstop all "stopped" cards
+        // TODO - Does not account for cards that can be stopped for multiple turns
+        for (PhysicalCard card : _game.getGameState().getAllCardsInPlay()) {
+            if (card instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+                stCard.unstop();
+            }
+        }
     }
 
     public void signalEndOfTurn() {
@@ -274,14 +283,6 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     public void addUntilEndOfTurnModifier(Modifier modifier) {
         addModifier(modifier);
         _untilEndOfTurnModifiers.add(modifier);
-    }
-
-    @Override
-    public void addUntilEndOfPlayersNextTurnThisRoundModifier(Modifier modifier, String playerId) {
-        addModifier(modifier);
-        List<Modifier> list =
-                _untilEndOfPlayersNextTurnThisRoundModifiers.computeIfAbsent(playerId, entry -> new LinkedList<>());
-        list.add(modifier);
     }
 
     @Override

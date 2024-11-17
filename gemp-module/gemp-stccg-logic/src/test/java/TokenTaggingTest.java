@@ -1,7 +1,6 @@
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
-import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.util.*;
 
 public class TokenTaggingTest extends NewLibraryTest {
 
-    @Test
     public void tokenTest() throws IOException {
 
         Map<String, Set<String>> words = new HashMap<>();

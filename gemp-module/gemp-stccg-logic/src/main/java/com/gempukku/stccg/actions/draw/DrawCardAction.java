@@ -11,6 +11,7 @@ public class DrawCardAction extends ActionyAction {
 
     private final PhysicalCard _performingCard;
     private final boolean _optional;
+    private boolean _optionalDecisionResolved;
 
     public DrawCardAction(PhysicalCard performingCard, Player performingPlayer) {
         this(performingCard, performingPlayer, false);

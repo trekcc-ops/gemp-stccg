@@ -17,7 +17,7 @@ public class AttemptMissionTest extends AbstractAtTest {
 
     @Test
     public void attemptMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException {
-        initializeQuickMissionAttempt();
+        initializeGameToTestMissionAttempt();
 
         // Figure out which player is going first
         assertEquals(P1, _game.getCurrentPlayerId());

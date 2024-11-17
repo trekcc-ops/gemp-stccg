@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class Blueprint152_003 extends CardBlueprint {
     }
 
     @Override
-    public List<Action> getEncounterActions(PhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                             MissionCard mission, EncounterSeedCardAction action) {
         List<Action> result = new ArrayList<>();
 /*

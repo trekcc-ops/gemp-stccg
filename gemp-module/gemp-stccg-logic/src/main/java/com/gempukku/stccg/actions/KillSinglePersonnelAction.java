@@ -8,14 +8,15 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
-public class KillAction extends ActionyAction {
+public class KillSinglePersonnelAction extends ActionyAction {
 
     private final PhysicalCard _performingCard;
     private final SelectCardInPlayAction _selectVictimAction;
     private boolean _victimSelected;
     private PhysicalCard _victim;
 
-    public KillAction(Player performingPlayer, PhysicalCard performingCard, SelectCardInPlayAction selectVictimAction) {
+    public KillSinglePersonnelAction(Player performingPlayer, PhysicalCard performingCard,
+                                     SelectCardInPlayAction selectVictimAction) {
         super(performingPlayer, "Kill", ActionType.KILL);
         _performingCard = performingCard;
         _selectVictimAction = selectVictimAction;
@@ -51,6 +52,7 @@ public class KillAction extends ActionyAction {
             message.append(_performingPlayerId).append(" killed ").append(_victim.getCardLink());
             if (_performingCard != null)
                 message.append(" using ").append(_performingCard.getCardLink());
+            cardGame.sendMessage(message.toString());
 
             if (_victim instanceof PhysicalReportableCard1E reportable && reportable.getAwayTeam() != null)
                 reportable.leaveAwayTeam();

@@ -16,14 +16,17 @@ public class EncounterSeedCardAction extends ActionyAction {
     private final MissionCard _mission;
     private final AttemptingUnit _attemptingUnit;
     private boolean _effectsAdded;
+    private final AttemptMissionAction _missionAttempt;
 
-    public EncounterSeedCardAction(Player encounteringPlayer, PhysicalCard encounteredCard, MissionCard mission,
-                                   AttemptingUnit attemptingUnit) {
+    public EncounterSeedCardAction(AttemptMissionAction missionAttempt, Player encounteringPlayer,
+                                   PhysicalCard encounteredCard, MissionCard mission, AttemptingUnit attemptingUnit) {
         super(encounteringPlayer, "Reveal seed card", ActionType.ENCOUNTER_SEED_CARD);
         _encounteredCard = encounteredCard;
         _mission = mission;
         _attemptingUnit = attemptingUnit;
+        _missionAttempt = missionAttempt;
     }
+
 
     @Override
     public PhysicalCard getActionSource() {
@@ -51,4 +54,6 @@ public class EncounterSeedCardAction extends ActionyAction {
         }
         return getNextAction();
     }
+
+    public AttemptMissionAction getMissionAttempt() { return _missionAttempt; }
 }

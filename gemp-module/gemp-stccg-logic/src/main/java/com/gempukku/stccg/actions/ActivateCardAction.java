@@ -6,7 +6,6 @@ import com.gempukku.stccg.game.DefaultGame;
 public class ActivateCardAction extends ActionyAction {
 
     private final PhysicalCard _physicalCard;
-    private ActivateCardEffect _activateCardEffect;
     private boolean _sentMessage;
     private boolean _activated;
     private boolean _prevented;
@@ -51,11 +50,10 @@ public class ActivateCardAction extends ActionyAction {
 
             if (!_activated) {
                 _activated = true;
-                return new SubAction(this, new ActivateCardEffect(_physicalCard));
+                cardGame.getActionsEnvironment().emitEffectResult(
+                        new EffectResult(EffectResult.Type.ACTIVATE, this, _physicalCard));
             }
 
-            if (_activateCardEffect.getActivateCardResult().isEffectCancelled())
-                return null;
             if (!_prevented)
                 return getNextAction();
         }

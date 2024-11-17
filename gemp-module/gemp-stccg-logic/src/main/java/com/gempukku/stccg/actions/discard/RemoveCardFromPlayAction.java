@@ -4,6 +4,7 @@ import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -41,16 +42,18 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
     @Override
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        Set<PhysicalCard> removedCards = new HashSet<>();
-        for (PhysicalCard physicalCard : _cardsToRemove)
-            removedCards.add(physicalCard);
+        Collection<PhysicalCard> removedCards = new HashSet<>(_cardsToRemove);
 
         Set<PhysicalCard> toRemoveFromZone = new HashSet<>();
         toRemoveFromZone.addAll(removedCards);
 
         cardGame.getGameState().removeCardsFromZone(_performingPlayerId, toRemoveFromZone);
-        for (PhysicalCard removedCard : removedCards)
+        for (PhysicalCard removedCard : removedCards) {
             cardGame.getGameState().addCardToZone(removedCard, Zone.REMOVED);
+            if (removedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
+                stCard.unstop();
+            }
+        }
 
         cardGame.sendMessage(_performingPlayerId + " removed " + TextUtils.getConcatenatedCardLinks(removedCards) +
                 " from the game");

@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
@@ -47,8 +48,12 @@ public class RevealSeedCardAction extends ActionyAction {
                     Modifier modifier = new PlayerCannotSolveMissionModifier(_mission, _performingPlayerId);
                     cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                 }
-                return new RemoveDilemmaFromGameAction(
-                        cardGame.getPlayer(_performingPlayerId), _revealedCard, _mission);
+                if (_revealedCard instanceof ST1EPhysicalCard stCard) {
+                    return new RemoveDilemmaFromGameAction(
+                            cardGame.getPlayer(_performingPlayerId), stCard, _mission);
+                } else {
+                    throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
+                }
             }
         }
         return getNextAction();

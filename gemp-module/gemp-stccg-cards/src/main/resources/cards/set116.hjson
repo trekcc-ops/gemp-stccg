@@ -1,6 +1,15 @@
 // Set 116: Blaze of Glory
 
 {
+    116_008: {
+        title: New Essentialists
+        type: dilemma
+        mission-type: planet
+        property-logo: ds9-logo
+        java-blueprint: true
+        lore: "The New Essentialists Movement asserts that decadence and complacency are eroding the foundations of the Federation. Worf was temporarily swayed by this group while on Risa."
+        image-url: https://www.trekcc.org/1e/cardimages/bog/newessentialists.gif
+    }
     116_011: {
         title: Battle Bridge Door
         type: doorway

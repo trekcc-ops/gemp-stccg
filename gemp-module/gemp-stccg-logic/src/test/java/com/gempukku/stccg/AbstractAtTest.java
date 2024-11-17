@@ -4,15 +4,13 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
+import com.gempukku.stccg.actions.movecard.UndockAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.actions.turn.SystemQueueAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -39,6 +37,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     protected static final String P1 = "player1";
     protected static final String P2 = "player2";
     private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+    protected FacilityCard _outpost;
+    protected MissionCard _mission;
 
     protected void initializeSimple1EGame(int deckSize) {
         Map<String, CardDeck> decks = new HashMap<>();
@@ -236,11 +236,28 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         _game.startGame();
     }
 
-    protected void initializeQuickMissionAttempt() {
+    protected void initializeQuickMissionAttempt(String missionTitle) throws DecisionResultInvalidException {
+        initializeGameToTestMissionAttempt();
+
+        autoSeedMissions();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
+            skipDilemma();
+        }
+
+        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
+            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
+                _outpost = facility;
+            if (Objects.equals(card.getTitle(), missionTitle) && card instanceof MissionCard mission)
+                _mission = mission;
+        }
+    }
+
+    protected void initializeGameToTestMissionAttempt() {
         Map<String, CardDeck> decks = new HashMap<>();
 
         CardDeck fedDeck = new CardDeck("Federation");
         fedDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
+        fedDeck.addCard(SubDeck.MISSIONS, "101_170"); // Investigate Rogue Comet
         fedDeck.addCard(SubDeck.SEED_DECK, "101_104"); // Federation Outpost
         fedDeck.addCard(SubDeck.DRAW_DECK, "101_215"); // Jean-Luc Picard
         for (int i = 0; i < 35; i++)
@@ -516,6 +533,50 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         if (choice == null)
             throw new DecisionResultInvalidException("No valid action to beam " + cardToBeam.getTitle());
     }
+
+    protected void undockShip(String playerId, PhysicalShipCard ship)
+            throws DecisionResultInvalidException {
+        UndockAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof UndockAction undockAction &&
+                        undockAction.getCardToMove() == ship)
+                    choice = undockAction;
+            }
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to undock " + ship.getTitle());
+    }
+
+
+    protected void beamCards(String playerId, PhysicalCard cardWithTransporters,
+                             Collection<? extends PhysicalReportableCard1E> cardsToBeam, PhysicalCard destination)
+            throws DecisionResultInvalidException {
+        BeamCardsAction choice = null;
+        AwaitingDecision decision = _userFeedback.getAwaitingDecision(playerId);
+        if (decision instanceof ActionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof BeamCardsAction beamAction &&
+                        beamAction.getCardUsingTransporters() == cardWithTransporters)
+                    choice = beamAction;
+            }
+            choice.setOrigin(cardWithTransporters);
+            choice.setCardsToMove(cardsToBeam);
+            choice.setDestination(destination);
+            actionDecision.decisionMade(choice);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null) {
+            throw new DecisionResultInvalidException(
+                    "No valid action to beam " + TextUtils.getConcatenatedCardLinks(cardsToBeam));
+        }
+    }
+
 
     protected void seedCard(String playerId, PhysicalCard cardToSeed) throws DecisionResultInvalidException {
         SeedCardAction choice = null;

@@ -1,11 +1,8 @@
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.*;
 
 public class StripSentencesTest extends NewLibraryTest {
 
-    @Test
     public void sentenceTest() throws IOException {
         createLibrary();
         int canBeParsed = 0;

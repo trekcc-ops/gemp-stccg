@@ -1,6 +1,16 @@
 // Set 152: Homefront II
 
 {
+    152_002: {
+        title: Dedication to Duty
+        type: dilemma
+        mission-type: planet
+        lore: Deep underground passages such as those on Xantoras pose a problem for transporters. Without climbing skills, they may also pose a problem to away team personnel.
+        property-logo: ent-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/homefront2/2.jpg
+        rarity: V
+    }
     152_003: {
         title: Dedication to Duty
         type: dilemma
@@ -9,6 +19,26 @@
         property-logo: st2-logo
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/homefront2/3.jpg
+        rarity: V
+    }
+    152_004: {
+        title: Dignitaries and Witnesses
+        type: dilemma
+        mission-type: dual
+        lore: The bitterness of defeat and the exultation of triumph have taught many leaders a great lesson: they must preserve in peace what they have won in war.
+        property-logo: ds9-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/homefront2/4.jpg
+        rarity: V
+    }
+    152_007: {
+        title: Fractured Time
+        type: dilemma
+        mission-type: dual
+        lore: "In 2370, Data suggested Worf would be able to use an inverse warp field to restore the barriers between quantum realities. Thankfully, Mr. Data was correct, in every reality."
+        property-logo: tng-logo
+        java-blueprint: true
+        image-url: https://www.trekcc.org/1e/cardimages/homefront2/7.jpg
         rarity: V
     }
 }
