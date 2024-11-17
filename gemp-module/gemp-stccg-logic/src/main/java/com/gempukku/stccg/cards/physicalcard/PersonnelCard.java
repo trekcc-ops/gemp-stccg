@@ -30,8 +30,6 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         return _game.getModifiersQuerying().getSkillLevel(this, skillName);
     }
 
-    public boolean isStopped() {
-        return false; }
     public boolean isDisabled() {
         return false; }
     public boolean isInStasis() { // TODO - Eventually will need setter functions for these
@@ -69,4 +67,8 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
     }
 
 
+    public int getTotalAttributes() {
+        return getAttribute(CardAttribute.INTEGRITY) + getAttribute(CardAttribute.CUNNING) +
+                getAttribute(CardAttribute.STRENGTH);
+    }
 }

@@ -2,16 +2,13 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
+import com.gempukku.stccg.actions.choose.SelectCardInPlayAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
-import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -22,6 +19,7 @@ public class FlyShipAction extends ActionyAction {
     private boolean _destinationChosen, _cardMoved;
     private PhysicalCard _destination;
     private final Collection<PhysicalCard> _destinationOptions;
+    private final SelectCardInPlayAction _selectAction;
 
     public FlyShipAction(Player player, PhysicalShipCard flyingCard) {
         super(player, "Fly", ActionType.MOVE_CARDS);
@@ -45,21 +43,10 @@ public class FlyShipAction extends ActionyAction {
                 }
             }
         }
+        _selectAction =
+                new SelectCardInPlayAction(this, player, "Choose destination", _destinationOptions);
     }
 
-    private Effect chooseDestinationEffect() {
-        DefaultGame game = _destinationOptions.stream().toList().getFirst().getGame();
-        Player performingPlayer = game.getPlayer(_performingPlayerId);
-        return new ChooseCardsOnTableEffect(this, performingPlayer,
-                "Choose destination", _destinationOptions) {
-            @Override
-            protected void cardsSelected(Collection<PhysicalCard> cards) {
-                _destinationChosen = true;
-                _destination = Iterables.getOnlyElement(cards);
-            }
-        };
-
-    }
     @Override
     public PhysicalCard getCardForActionSelection() { return _flyingCard; }
 
@@ -75,8 +62,13 @@ public class FlyShipAction extends ActionyAction {
             return cost;
 
         if (!_destinationChosen) {
-            appendTargeting(new SubAction(this, chooseDestinationEffect()));
-            return getNextCost();
+            if (_selectAction.wasCarriedOut()) {
+                _destinationChosen = true;
+                _destination = _selectAction.getSelectedCard();
+            } else {
+                appendTargeting(_selectAction);
+                return getNextCost();
+            }
         }
 
         if (!_cardMoved) {

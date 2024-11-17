@@ -31,6 +31,6 @@ public class AllowResponsesAction extends SystemQueueAction {
     @Override
     public Action nextAction(DefaultGame cardGame) {
         cardGame.getActionsEnvironment().emitEffectResult(new EffectResult(_type));
-        return null;
+        return getNextAction();
     }
 }

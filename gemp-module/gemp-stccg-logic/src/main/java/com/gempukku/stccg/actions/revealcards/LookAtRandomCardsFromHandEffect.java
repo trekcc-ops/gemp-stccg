@@ -42,7 +42,7 @@ public class LookAtRandomCardsFromHandEffect extends DefaultEffect {
     @Override
     protected FullEffectResult playEffectReturningResult() {
         if (_game.getModifiersQuerying().canLookOrRevealCardsInHand(_playerHand, _actingPlayer)) {
-            List<PhysicalCard> randomCards = TextUtils.getRandomFromList(_game.getGameState().getHand(_playerHand), _count);
+            List<PhysicalCard> randomCards = TextUtils.getRandomItemsFromList(_game.getGameState().getHand(_playerHand), _count);
 
             if (!randomCards.isEmpty()) {
                 _game.getUserFeedback().sendAwaitingDecision(

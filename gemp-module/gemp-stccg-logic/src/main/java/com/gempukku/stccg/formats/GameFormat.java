@@ -40,6 +40,7 @@ public interface GameFormat {
     int getHandSize();
 
     JSONData.Format Serialize();
+    int getMissions();
 
     boolean hasFixedPlayerOrder();
 

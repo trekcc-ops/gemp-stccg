@@ -4,7 +4,6 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.GameSnapshot;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +43,7 @@ public class GameUtils {
                         // TODO SNAPSHOT - Needs to work differently if more than 2 players
                         final String opponent;
                         String temp_opponent;
-                        try {
-                            temp_opponent = _game.getOpponent(playerId);
-                        } catch(InvalidGameLogicException exp) {
-                            _game.sendErrorMessage(exp);
-                            temp_opponent = playerId;
-                        }
+                        temp_opponent = _game.getOpponent(playerId);
 
                         opponent = temp_opponent;
 

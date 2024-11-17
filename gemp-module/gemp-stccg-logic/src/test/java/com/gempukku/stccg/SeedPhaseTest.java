@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.GameSnapshot;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeedPhaseTest extends AbstractAtTest {
 
     @Test
-    public void autoSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException {
+    public void autoSeedTest() throws DecisionResultInvalidException {
         initializeIntroductoryTwoPlayerGame();
 
         // Figure out which player is going first
@@ -33,9 +32,8 @@ public class SeedPhaseTest extends AbstractAtTest {
         }
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
-        skipDilemma();
-        skipDilemma();
-        skipDilemma();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
+            skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         autoSeedFacility();
@@ -89,9 +87,8 @@ public class SeedPhaseTest extends AbstractAtTest {
         seedDilemma(archer, homeward);
         assertEquals(1, homeward.getCardsPreSeeded(archer.getOwner()).size());
 
-        skipDilemma();
-        skipDilemma();
-        skipDilemma();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
+            skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         assertEquals(1, homeward.getCardsSeededUnderneath().size());
@@ -101,18 +98,4 @@ public class SeedPhaseTest extends AbstractAtTest {
             System.out.println(snapshot.getDescription());
     }
 
-    @Test
-    public void playPhaseTest() throws DecisionResultInvalidException {
-        initializeIntroductoryTwoPlayerGame();
-
-        // P1 - Federation, P2 - Klingon
-
-        autoSeedMissions();
-        skipDilemma();
-        skipDilemma();
-        skipDilemma();
-
-        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        autoSeedFacility();
-    }
 }

@@ -67,6 +67,11 @@ public class PhysicalShipCard extends PhysicalReportableCard1E
         _dockedAtCard = facilityCard;
     }
 
+    public Player getPlayer() {
+        // TODO - Should be controller
+        return _owner;
+    }
+
     public void undockFromFacility() {
         _docked = false;
         _dockedAtCard = null;

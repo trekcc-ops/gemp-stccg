@@ -66,6 +66,20 @@ public class Filters {
         return result;
     }
 
+    public static Collection<PersonnelCard> highestTotalAttributes(Collection<PersonnelCard> personnelCards) {
+        List<PersonnelCard> highestCards = new LinkedList<>();
+        int highestTotal = 0;
+        for (PersonnelCard personnel : personnelCards) {
+            if (personnel.getTotalAttributes() > highestTotal) {
+                highestCards.clear();
+                highestCards.add(personnel);
+            } else if (personnel.getTotalAttributes() >= highestTotal) {
+                highestCards.add(personnel);
+            }
+        }
+        return highestCards;
+    }
+
     public static Collection<PhysicalCard> filterActive(DefaultGame game, Filterable... filters) {
         Filter filter = Filters.and(filters);
         GetCardsMatchingFilterVisitor getCardsMatchingFilter = new GetCardsMatchingFilterVisitor(game, filter);
@@ -132,7 +146,6 @@ public class Filters {
     private static Filter species(final Species species) {
         return (game, physicalCard) -> physicalCard.getBlueprint().getSpecies() == species;
     }
-
 
     public static final Filter personnel = Filters.or(CardType.PERSONNEL);
     public static final Filter ship = Filters.or(CardType.SHIP);

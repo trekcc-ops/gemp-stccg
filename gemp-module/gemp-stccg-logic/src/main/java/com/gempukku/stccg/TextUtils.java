@@ -8,12 +8,17 @@ import java.util.stream.Stream;
 
 public class TextUtils {
 
-    public static <T> List<T> getRandomFromList(Collection<? extends T> list, int count) {
+    public static <T> T getRandomItemFromList(Collection<? extends T> list) {
+        return getRandomItemsFromList(list, 1).getFirst();
+    }
+
+
+    public static <T> List<T> getRandomItemsFromList(Collection<? extends T> list, int count) {
         List<T> randomizedList = getRandomizedList(list, ThreadLocalRandom.current());
         return new LinkedList<>(randomizedList.subList(0, Math.min(count, randomizedList.size())));
     }
 
-    public static <T> T getRandomFromList(List<? extends T> list, Random random) {
+    public static <T> T getRandomItemsFromList(List<? extends T> list, Random random) {
         random.nextFloat(); // This fixes random bug for some reason according to LotR Gemp comments
         return list.get(random.nextInt(list.size()));
     }

@@ -29,9 +29,11 @@ public class EffectWithCostBlueprint extends DelayedEffectBlueprint {
 
         if(requirementsNotMet(context))
             return null;
-        SubAction subAction = action.createSubAction();
-        for (EffectBlueprint costAppender : _costAppenders)
+        SubAction subAction = new SubAction(action);
+
+        for (EffectBlueprint costAppender : _costAppenders) {
             costAppender.addEffectToAction(true, subAction, context);
+        }
         for (EffectBlueprint effectBlueprint : _effectBlueprints)
             effectBlueprint.addEffectToAction(false, subAction, context);
 

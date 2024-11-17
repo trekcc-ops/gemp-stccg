@@ -1,23 +1,23 @@
 // Set 101: Premiere [1E]
 
 {
-    101_012: {
+/*    101_012: {
         title: Anaphasic Organism
         type: dilemma
         mission-type: planet
         lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
         property-logo: tng-logo
-//        java-blueprint: true
+        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/anaphasicorganism95.jpg
         rarity: C
-    }
+    } */
     101_014: {
         title: Archer
         type: dilemma
         mission-type: planet
         lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
         property-logo: tng-logo
-//        java-blueprint: true
+        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/archer.gif
         rarity: C
     }
@@ -27,7 +27,7 @@
         mission-type: planet
         lore: A malevolent being was formed when the inhabitants of Vagra II rid themselves of all the evil they had inside.
         property-logo: tng-logo
-//        java-blueprint: true
+        java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/errata/Armus-Skin-of-Evil.jpg
         rarity: R
     }
@@ -41,7 +41,7 @@
         image-url: https://www.trekcc.org/1e/cardimages/errata/Female_s-Love-Interest.jpg
         rarity: C
     } */
-/*    101_030: {
+    101_030: {
         title: Impassable Door
         type: dilemma
         mission-type: planet
@@ -50,7 +50,7 @@
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/impassabledoor.gif
         rarity: C
-    } */
+    }
 /*    101_032: {
         title: "Male's Love Interest"
         type: dilemma
@@ -412,6 +412,18 @@
         span: 2
         image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateraid95.jpg
     }
+    101_170: {
+        title: Investigate Rogue Comet
+        type: mission
+        mission-type: space
+        location: Sector 1156
+        lore: Study unusual rogue comet sighted in this sector.
+        affiliation-icons: federation
+        mission-requirements: Archaeology + Exobiology + Computer Skill
+        point-box: 30
+        span: 3
+        image-url: https://www.trekcc.org/1e/cardimages/premiere/investigateroguecomet95.jpg
+    }
     101_173: {
         title: Khitomer Research
         type: mission
@@ -507,6 +519,7 @@
         property-logo: tng-logo
         classification: V.I.P.
         icons: command
+        characteristic: admiral
         lore: Vice-Admiral Alynna Nechayev is an antagonistic superior of Captain Jean-Luc Picard. Responsible for liaison with the Cardassians and the Maquis.
         skill-box: "[*] Diplomacy [*] Leadership"
         integrity: 7
@@ -680,6 +693,7 @@
         property-logo: tng-logo
         classification: OFFICER
         icons: command
+        characteristic: admiral
         lore: Fleet Admiral Shanthi authorized the blockade of Romulan forces covertly supporting the Klingon Civil War in 2368.
         skill-box: "[*] Leadership [*] Diplomacy"
         integrity: 9

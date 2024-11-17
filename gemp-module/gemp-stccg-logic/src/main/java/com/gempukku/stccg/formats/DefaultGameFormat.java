@@ -30,7 +30,7 @@ public class DefaultGameFormat implements GameFormat {
     private final boolean _winOnControlling5Sites;
     private final int _minimumDrawDeckSize;
     private final int _maximumSeedDeckSize;
-    private final int _missions;
+    private final int _missions; // If missions is -1, there is no restriction on the number of missions
     private final List<String> _bannedCards = new ArrayList<>();
     private final List<String> _restrictedCards = new ArrayList<>();
     private final List<String> _validCards = new ArrayList<>();
@@ -424,7 +424,7 @@ public class DefaultGameFormat implements GameFormat {
     private String validateMissionsPile(CardDeck deck) {
         StringBuilder result = new StringBuilder();
         List<String> missionsPile = deck.getSubDeck(SubDeck.MISSIONS);
-        if (missionsPile.size() != _missions) {
+        if (_missions > 0 && missionsPile.size() != _missions) {
             result.append("Deck must contain exactly ").append(_missions).append(" missions").append(".\n");
         }
         List<String> uniqueLocations = new LinkedList<>();
@@ -491,6 +491,11 @@ public class DefaultGameFormat implements GameFormat {
             noShuffle = _noShuffle;
             firstPlayerFixed = _firstPlayerFixed;
         }};
+    }
+
+    @Override
+    public int getMissions() {
+        return _missions;
     }
 
     @Override

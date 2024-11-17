@@ -46,7 +46,7 @@ public class PhysicalCardSerializer extends StdSerializer<PhysicalCard> {
             jsonGenerator.writeBooleanField("completed", mission._completed);
         if (physicalCard instanceof PhysicalShipCard shipCard) {
             if (shipCard.isDocked())
-                jsonGenerator.writeNumberField("dockedAtCard", shipCard.getDockedAtCard().getCardId());
+                jsonGenerator.writeNumberField("dockedAtCardId", shipCard.getDockedAtCard().getCardId());
             jsonGenerator.writeNumberField("rangeAvailable", shipCard.getRangeAvailable());
         }
 

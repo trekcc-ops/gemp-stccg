@@ -6,7 +6,9 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.processes.GameProcess;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhaseProcess {
 
@@ -27,6 +29,12 @@ public class DilemmaSeedPhaseOpponentsMissionsProcess extends DilemmaSeedPhasePr
                 result.add(mission);
         }
         return result;
+    }
+
+    @Override
+    protected String getDecisionText(Player player) {
+        String opponentId = player.getGame().getOpponent(player.getPlayerId());
+        return "Select a mission of " + opponentId + "'s to seed cards under or remove cards from";
     }
 
     @Override

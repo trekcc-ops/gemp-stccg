@@ -1,6 +1,24 @@
 // Set 109: First Contact
 
 {
+    109_005: {
+        title: Blended
+        type: dilemma
+        mission-type: planet
+        property-logo: first-contact-logo
+        java-blueprint: true
+        lore: "Sometimes obtaining information from locals requires consuming beverages of dubious nutritional value. It's best not to criticize such \"counseling\" techniques."
+        image-url: https://www.trekcc.org/1e/cardimages/fc/blended.gif
+    }
+    109_010: {
+        title: Maglock
+        type: dilemma
+        mission-type: space
+        property-logo: first-contact-logo
+        java-blueprint: true
+        lore: Maglocks such as those securing the <i>U.S.S. Enterprise-E</i> deflector dish require triple-input authorization. The need for coordinated effort prevents accidental activation.
+        image-url: https://www.trekcc.org/1e/cardimages/fc/maglock.gif
+    }
     109_095: {
         title: Alyssa Ogawa
         type: personnel

@@ -59,9 +59,8 @@ public class GameStateSerializerTest extends AbstractAtTest {
         seedDilemma(archer, homeward);
         assertEquals(1, homeward.getCardsPreSeeded(archer.getOwner()).size());
 
-        skipDilemma();
-        skipDilemma();
-        skipDilemma();
+        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
+            skipDilemma();
 
         assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
         assertEquals(1, homeward.getCardsSeededUnderneath().size());

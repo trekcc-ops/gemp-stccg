@@ -46,8 +46,8 @@ public class SubAction extends AbstractCostToEffectAction {
     }
 
     @Override
-    public String getText(DefaultGame game) {
-        return _action.getText(game);
+    public String getActionSelectionText(DefaultGame game) {
+        return _action.getActionSelectionText(game);
     }
 
     @Override

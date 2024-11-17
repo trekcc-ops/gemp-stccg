@@ -39,4 +39,6 @@ public class MultiEffectBlueprint implements EffectBlueprint {
     public boolean isPlayabilityCheckedForEffect() {
         return playabilityCheckedForEffect;
     }
+
+    public List<EffectBlueprint> getEffectBlueprints() { return effectBlueprints; }
 }

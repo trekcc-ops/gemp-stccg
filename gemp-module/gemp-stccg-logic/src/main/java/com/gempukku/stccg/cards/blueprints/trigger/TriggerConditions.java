@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.discard.DiscardCardFromHandResult;
 import com.gempukku.stccg.actions.discard.DiscardCardFromPlayResult;
 import com.gempukku.stccg.actions.draw.DrawCardOrPutIntoHandResult;
 import com.gempukku.stccg.actions.draw.DrawOneCardEffect;
-import com.gempukku.stccg.actions.movecard.WhenMoveFromResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.revealcards.RevealCardFromTopOfDeckResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -167,10 +166,5 @@ public class TriggerConditions {
         return false;
     }
 
-
-    public static boolean movesFrom(DefaultGame game, EffectResult effectResult, Filterable... filters) {
-        return effectResult.getType() == EffectResult.Type.WHEN_MOVE_FROM
-                && Filters.and(filters).accepts(game, ((WhenMoveFromResult) effectResult).getMovedFromCard());
-    }
 
 }

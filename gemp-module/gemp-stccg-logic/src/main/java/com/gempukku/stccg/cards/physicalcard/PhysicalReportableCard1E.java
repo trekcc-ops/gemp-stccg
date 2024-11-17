@@ -54,6 +54,7 @@ public class PhysicalReportableCard1E extends PhysicalNounCard1E {
     @Override
     public Action getPlayCardAction() { return createReportCardAction(); }
 
+
     public Action createReportCardAction() {
         return new ReportCardAction(this, false);
     }

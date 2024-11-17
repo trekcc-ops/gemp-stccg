@@ -176,6 +176,7 @@
         property-logo: tng-logo
         classification: V.I.P.
         icons: staff
+        characteristic: admiral
         lore: Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.
         integrity: 8
         cunning: 6

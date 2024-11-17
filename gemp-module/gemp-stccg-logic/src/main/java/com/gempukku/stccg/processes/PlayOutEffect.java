@@ -17,7 +17,7 @@ class PlayOutEffect extends SystemQueueAction {
     }
 
     @Override
-    public String getText(DefaultGame game) {
+    public String getActionSelectionText(DefaultGame game) {
         return _effect.getText();
     }
 

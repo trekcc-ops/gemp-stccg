@@ -58,7 +58,15 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     @Override
     public GameProcess getNextProcess() {
         PlayerOrder playerOrder = _game.getGameState().getPlayerOrder();
-        if (_consecutivePasses >= playerOrder.getPlayerCount()) {
+
+        // Check if any missions are left to be seeded
+        boolean areAllMissionsSeeded = true;
+        for (Player player : _game.getPlayers()) {
+            if (!_game.getGameState().getZoneCards(player.getPlayerId(), Zone.HAND).isEmpty())
+                areAllMissionsSeeded = false;
+        }
+
+        if (areAllMissionsSeeded) {
             playerOrder.setCurrentPlayer(playerOrder.getFirstPlayer());
             ST1EGameState gameState = _game.getGameState();
             gameState.setCurrentPhase(Phase.SEED_DILEMMA);

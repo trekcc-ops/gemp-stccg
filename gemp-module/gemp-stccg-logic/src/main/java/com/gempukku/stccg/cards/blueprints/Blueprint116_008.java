@@ -1,0 +1,56 @@
+package com.gempukku.stccg.cards.blueprints;
+
+import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
+import com.gempukku.stccg.actions.placecard.PlaceCardOnTopOfDrawDeckAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.condition.missionrequirements.*;
+import com.gempukku.stccg.game.DefaultGame;
+
+import java.util.LinkedList;
+import java.util.List;
+
+@SuppressWarnings("unused")
+public class Blueprint116_008 extends CardBlueprint {
+    Blueprint116_008() {
+        super("116_008"); // New Essentialists
+    }
+
+    @Override
+    public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
+                                            MissionCard mission, EncounterSeedCardAction action) {
+
+        List<Action> result = new LinkedList<>();
+
+        MissionRequirement condition1 = new AndMissionRequirement(
+                new AttributeMissionRequirement(CardAttribute.INTEGRITY, 40),
+                new RegularSkillMissionRequirement(SkillName.HONOR, 2)
+        );
+        MissionRequirement condition2 = new AndMissionRequirement(
+                new AttributeMissionRequirement(CardAttribute.CUNNING, 40),
+                new RegularSkillMissionRequirement(SkillName.TREACHERY, 2)
+        );
+        MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2);
+
+        if (fullCondition.canBeMetBy(attemptingUnit)) {
+            // overcome
+            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, mission));
+        } else {
+            // fail
+            PhysicalCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
+            result.add(new PlaceCardOnTopOfDrawDeckAction(attemptingUnit.getPlayer(), randomCard, thisCard));
+            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+        }
+
+        return result;
+    }
+
+}

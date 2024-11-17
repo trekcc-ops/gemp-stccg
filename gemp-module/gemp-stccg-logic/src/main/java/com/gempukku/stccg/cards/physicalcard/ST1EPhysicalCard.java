@@ -1,11 +1,17 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.SnapshotData;
@@ -15,6 +21,7 @@ import java.util.Map;
 
 public class ST1EPhysicalCard extends AbstractPhysicalCard {
     protected final ST1EGame _game;
+    private boolean _isStopped;
     public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
         super(cardId, owner, blueprint);
         _game = game;
@@ -39,6 +46,30 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
+    public boolean isMisSeed(DefaultGame cardGame, MissionCard mission) {
+        if (_blueprint.getCardType() != CardType.DILEMMA && _blueprint.getCardType() != CardType.ARTIFACT)
+            return true; // TODO - Sometimes gametext allows them to be seeded
+        if (hasIcon(cardGame, CardIcon.AU_ICON))
+            return true; // TODO - Need to consider cards that allow them
+        if ((_blueprint.getMissionType() == MissionType.PLANET || _blueprint.getMissionType() == MissionType.SPACE) &&
+                mission.getMissionType() != MissionType.DUAL && mission.getMissionType() != _blueprint.getMissionType())
+            return true;
+        List<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
+        for (Action action : performedActions) {
+            if (action instanceof RevealSeedCardAction revealAction) {
+                if (_blueprint.getCardType() == CardType.ARTIFACT) {
+                    // TODO - Artifact misseeding is a pain
+                } else {
+                    PhysicalCard olderCard = revealAction.getRevealedCard();
+                    if (this.isCopyOf(olderCard) && this != olderCard && _owner == olderCard.getOwner())
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public ST1EPhysicalCard generateSnapshot(SnapshotData snapshotData) {
 
         // TODO - A lot of repetition here between the various PhysicalCard classes
@@ -59,4 +90,23 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
         return newCard;
     }
+
+    public void stop() {
+        _isStopped = true;
+    }
+
+    public void unstop() {
+        _isStopped = false;
+    }
+
+    public boolean isStopped() {
+        return _isStopped;
+    }
+
+    @Override
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
+                                            EncounterSeedCardAction action) {
+        return _blueprint.getEncounterActions(this, game, attemptingUnit, missionCard, action);
+    }
+
 }

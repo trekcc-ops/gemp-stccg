@@ -37,5 +37,6 @@ public class UndockAction extends ActionyAction {
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return _cardToMove.isDocked(); }
+    public PhysicalShipCard getCardToMove() { return _cardToMove; }
 
 }

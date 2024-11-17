@@ -10,7 +10,7 @@
         lore: Many planets, such as Mordan IV, have convoluted underground installations which require Away Teams to have specific technology or skills.
         image-url: https://www.trekcc.org/1e/cardimages/au/alienlabyrinth.gif
         rarity: C
-    }
+    } */
     103_014: {
         title: Ferengi Attack
         type: dilemma
@@ -21,7 +21,7 @@
         image-url: https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif
         rarity: C
     }
-    103_016: {
+/*    103_016: {
         title: Hidden Entrance
         type: dilemma
         mission-type: planet
@@ -68,6 +68,7 @@
         property-logo: tng-logo
         icons: command
         classification: ENGINEER
+        characteristic: scotty
         lore: Chief Engineer of the Starship Enterprise. Scotty was rescued by the U.S.S. Enterprise after he spent 75 years in the pattern buffer of the U.S.S. Jenolen.
         skill-box: "[*] ENGINEER [*] Astrophysics [*] Honor [*] Miracle Worker [*] Transporter Skill"
         integrity: 7

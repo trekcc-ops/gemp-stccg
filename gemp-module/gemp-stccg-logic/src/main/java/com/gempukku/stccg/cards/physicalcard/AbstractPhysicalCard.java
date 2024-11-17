@@ -1,9 +1,12 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.Effect;
+import com.gempukku.stccg.actions.EffectResult;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DefaultActionContext;
 import com.gempukku.stccg.cards.blueprints.Blueprint155_021;
 import com.gempukku.stccg.cards.blueprints.Blueprint212_019;
@@ -11,9 +14,8 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.requirement.Requirement;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.filters.Filter;
-import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.ST1ELocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
@@ -64,7 +66,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public Player getOwner() { return _owner; }
 
     public String getOwnerName() {
-        return _owner.getPlayerId();
+        if (_owner != null) {
+            return _owner.getPlayerId();
+        } else {
+            return null;
+        }
     }
 
     public void startAffectingGame(DefaultGame game) {
@@ -153,28 +159,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
     public abstract Action getPlayCardAction(boolean forFree);
 
-    public Action getPlayCardAction(DefaultGame game, Filterable additionalAttachmentFilter) {
-
-        final Filterable validTargetFilter = _blueprint.getValidTargetFilter();
-        if (validTargetFilter == null) {
-            Action action =
-                    new STCCGPlayCardAction((ST1EPhysicalCard) this, Zone.SUPPORT, this.getOwner());
-            game.getModifiersQuerying().appendExtraCosts(action, this);
-            return action;
-        } else {
-            Filter fullAttachValidTargetFilter = Filters.and(
-                    validTargetFilter,
-                    (Filter) (game1, targetCard) -> game1.getModifiersQuerying().canHavePlayedOn(this,
-                            targetCard),
-                    (Filter) (game12, physicalCard) -> true
-            );
-            final AttachPermanentAction action = new AttachPermanentAction(this,
-                    Filters.and(fullAttachValidTargetFilter, additionalAttachmentFilter));
-            game.getModifiersQuerying().appendExtraCosts(action, this);
-            return action;
-        }
-    }
-
 
     public boolean hasTextRemoved(DefaultGame game) {
         for (Modifier modifier :
@@ -216,27 +200,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public Collection<PhysicalCard> getAttachedCards(DefaultGame game) { return game.getGameState().getAttachedCards(this); }
-
-    public List<? extends Action> getPhaseActionsFromZone(Player player, Zone zone) {
-        DefaultGame game = player.getGame();
-        if (zone == Zone.DISCARD) {
-            return getActivatedActions(player.getPlayerId(), _blueprint.getInDiscardPhaseActions());
-        }
-        else if (zone == Zone.HAND) {
-            if (_blueprint.getPlayInOtherPhaseConditions() == null)
-                return null;
-            List<Action> playCardActions = new LinkedList<>();
-
-            if (canBePlayed(game)) {
-                for (Requirement playInOtherPhaseCondition : _blueprint.getPlayInOtherPhaseConditions()) {
-                    if (playInOtherPhaseCondition.accepts(createActionContext(player, null, null)))
-                        playCardActions.add(getPlayCardAction(game, Filters.any));
-                }
-            }
-            return playCardActions;
-        }
-        else return null;
-    }
 
     public List<? extends ExtraPlayCost> getExtraCostToPlay(DefaultGame game) {
         if (_blueprint.getExtraPlayCosts() == null)
@@ -325,11 +288,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     ActionContext createActionContext(DefaultGame game) {
         return new DefaultActionContext(getOwnerName(), game, this, null, null);
-    }
-
-
-    public ActionContext createActionContext(Player player, Effect effect, EffectResult effectResult) {
-        return new DefaultActionContext(player.getPlayerId(), player.getGame(), this, effect, effectResult);
     }
 
 
@@ -424,6 +382,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public void addCardToPreSeeds(PhysicalCard card, Player player) {
         _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
         _cardsPreSeededUnderneath.get(player).add(card);
+    }
+
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
+                                            EncounterSeedCardAction action) throws InvalidGameLogicException {
+        throw new InvalidGameLogicException(
+                "Tried to call getEncounterActions for a card that does not have an encounter action");
     }
 
 }

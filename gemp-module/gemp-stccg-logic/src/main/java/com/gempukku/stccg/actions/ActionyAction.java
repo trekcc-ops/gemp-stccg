@@ -5,10 +5,13 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public abstract class ActionyAction implements Action {
     private String _cardActionPrefix;
+    protected Map<String, Boolean> _progressIndicators = new HashMap<>();
     protected boolean _wasCarriedOut;
     private final int _actionId;
     private final LinkedList<Action> _costs = new LinkedList<>();
@@ -39,6 +42,18 @@ public abstract class ActionyAction implements Action {
         _actionId = player.getGame().getActionsEnvironment().getNextActionId();
         player.getGame().getActionsEnvironment().incrementActionId();
     }
+
+    protected ActionyAction(Player player, String text, ActionType actionType, Enum<?>[] progressTypes) {
+        _performingPlayerId = player.getPlayerId();
+        _text = text;
+        _actionType = actionType;
+        _actionId = player.getGame().getActionsEnvironment().getNextActionId();
+        player.getGame().getActionsEnvironment().incrementActionId();
+        for (Enum<?> progressType : progressTypes) {
+            _progressIndicators.put(progressType.name(), false);
+        }
+    }
+
 
     // This constructor is only used for automated actions used to pass effects through or perform system actions
     protected ActionyAction(DefaultGame game) {
@@ -96,7 +111,7 @@ public abstract class ActionyAction implements Action {
     }
 
     @Override
-    public String getText(DefaultGame game) { return _text; }
+    public String getActionSelectionText(DefaultGame game) { return _text; }
 
     protected boolean isCostFailed() {
         for (Action processedCost : _processedCosts) {
@@ -148,10 +163,6 @@ public abstract class ActionyAction implements Action {
         return true;
     }
 
-    public SubAction createSubAction() {
-        return new SubAction(this);
-    }
-
     public boolean canBeInitiated(DefaultGame cardGame) {
         return requirementsAreMet(cardGame) && costsCanBePaid(cardGame);
     }
@@ -198,5 +209,12 @@ public abstract class ActionyAction implements Action {
     public final void appendCost(Effect effect) { appendCost(new SubAction(this, effect)); }
     public void appendTargeting(Effect effect) { appendCost(new SubAction(this, effect)); }
     public int getActionId() { return _actionId; }
+    protected void setProgress(Enum<?> progressType, boolean value) {
+        _progressIndicators.put(progressType.name(), value);
+    }
+
+    protected boolean getProgress(Enum<?> progressType) {
+        return _progressIndicators.get(progressType.name());
+    }
 
 }

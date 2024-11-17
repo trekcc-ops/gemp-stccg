@@ -1,13 +1,13 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.Effect;
-import com.gempukku.stccg.actions.SubAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.gamestate.GameState;
+
+import java.util.Collections;
 
 public abstract class PlayCardAction extends ActionyAction {
 
@@ -48,9 +48,7 @@ public abstract class PlayCardAction extends ActionyAction {
 
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    protected Effect getFinalEffect() {
-        return new PlayCardEffect(_performingPlayerId, _fromZone, _cardEnteringPlay, _toZone);
-    }
+    protected Effect getFinalEffect() { return null; }
 
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         Action cost = getNextCost();
@@ -70,17 +68,24 @@ public abstract class PlayCardAction extends ActionyAction {
 
         if (!_cardHasEnteredPlay) {
             _cardHasEnteredPlay = true;
-            return new SubAction(this, getFinalEffect());
+            putCardIntoPlay(cardGame);
         }
 
         return getNextAction();
+    }
+    
+    protected void putCardIntoPlay(DefaultGame game) {
+        GameState gameState = game.getGameState();
+        gameState.removeCardsFromZone(_cardEnteringPlay.getOwnerName(), Collections.singleton(_cardEnteringPlay));
+        gameState.addCardToZone(_cardEnteringPlay, _toZone);
+        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _fromZone, _cardEnteringPlay));
     }
 
     public void setVirtualCardAction(boolean virtualCardAction) { _virtualCardAction = virtualCardAction; }
     public boolean isVirtualCardAction() { return _virtualCardAction; }
 
     public boolean wasCarriedOut() {
-        return _cardHasEnteredPlay && _finalEffect != null && _finalEffect.wasCarriedOut();
+        return _cardHasEnteredPlay;
     }
 
 }

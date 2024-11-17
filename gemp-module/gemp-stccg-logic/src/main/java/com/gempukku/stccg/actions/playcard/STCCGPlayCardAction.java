@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.UseNormalCardPlayEffect;
+import com.gempukku.stccg.actions.usage.UseNormalCardPlayEffect;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;

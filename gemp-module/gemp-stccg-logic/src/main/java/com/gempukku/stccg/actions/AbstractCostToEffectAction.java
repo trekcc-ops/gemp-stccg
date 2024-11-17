@@ -82,7 +82,7 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
     }
 
     @Override
-    public String getText(DefaultGame game) { return text; }
+    public String getActionSelectionText(DefaultGame game) { return text; }
 
     protected boolean isCostFailed() {
         for (Effect processedCost : _processedCosts) {
@@ -132,10 +132,6 @@ public abstract class AbstractCostToEffectAction implements CostToEffectAction {
         }
 
         return true;
-    }
-
-    public SubAction createSubAction() {
-        return new SubAction(this);
     }
 
     public boolean canBeInitiated(DefaultGame cardGame) {

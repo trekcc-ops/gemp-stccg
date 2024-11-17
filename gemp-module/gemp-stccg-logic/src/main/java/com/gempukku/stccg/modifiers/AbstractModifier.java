@@ -22,6 +22,15 @@ public abstract class AbstractModifier implements Modifier {
     private final ModifierEffect _effect;
     protected final DefaultGame _game;
 
+    protected AbstractModifier(DefaultGame game, ModifierEffect effect) {
+        _cardSource = null;
+        _text = null;
+        _affectFilter = null;
+        _condition = null;
+        _effect = effect;
+        _game = game;
+    }
+
     protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
         this(source, text, affectFilter, null, effect);
     }

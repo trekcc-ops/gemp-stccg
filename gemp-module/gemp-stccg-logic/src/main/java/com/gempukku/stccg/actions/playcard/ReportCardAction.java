@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.DoNothingEffect;
-import com.gempukku.stccg.actions.Effect;
 import com.gempukku.stccg.actions.choose.ChooseAffiliationEffect;
 import com.gempukku.stccg.actions.choose.ChooseCardsOnTableEffect;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -79,11 +77,11 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         boolean result;
         try {
             Collection<PhysicalCard> destinationOptions = getDestinationOptions(cardGame);
-            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty() && costsCanBePaid(cardGame);
+            result = _cardEnteringPlay.canBePlayed(cardGame) && !destinationOptions.isEmpty();
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             result = false;
@@ -92,10 +90,6 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     @Override
-    protected Effect getFinalEffect() { return new DoNothingEffect(_actionSource.getGame());
-    }
-
-    @Override    
     public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
         DefaultGame game = _cardEnteringPlay.getGame();
         Player performingPlayer = game.getPlayer(_performingPlayerId);
@@ -149,11 +143,9 @@ public class ReportCardAction extends STCCGPlayCardAction {
             _cardEnteringPlay.reportToFacility(_reportingDestination);
             cardGame.getActionsEnvironment().emitEffectResult(
                     new PlayCardResult(this, _fromZone, _cardEnteringPlay));
-            appendEffect(new DoNothingEffect(cardGame));
-            return getNextAction();
         }
-        return null;
 
+        return getNextAction();
     }
 
     public PhysicalCard getCardReporting() { return _cardEnteringPlay; }
