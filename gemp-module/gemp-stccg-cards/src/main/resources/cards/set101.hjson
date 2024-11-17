@@ -41,7 +41,7 @@
         image-url: https://www.trekcc.org/1e/cardimages/errata/Female_s-Love-Interest.jpg
         rarity: C
     } */
-/*    101_030: {
+    101_030: {
         title: Impassable Door
         type: dilemma
         mission-type: planet
@@ -50,7 +50,7 @@
         java-blueprint: true
         image-url: https://www.trekcc.org/1e/cardimages/premiere/impassabledoor.gif
         rarity: C
-    } */
+    }
 /*    101_032: {
         title: "Male's Love Interest"
         type: dilemma

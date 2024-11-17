@@ -169,7 +169,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         klingonDeck.addCard(SubDeck.MISSIONS, "106_012"); // Sensitive Search
         klingonDeck.addCard(SubDeck.SEED_DECK, "101_105"); // Klingon Outpost
         klingonDeck.addCard(SubDeck.SEED_DECK, "101_014"); // Archer
-        // Ferengi Attack
+        klingonDeck.addCard(SubDeck.SEED_DECK, "103_014"); // Ferengi Attack
         // Hunter Gangs
         // Impassable Door
         // Male's Love Interest
@@ -644,9 +644,14 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
             cardSelection.decisionMade(choice);
             _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
             _game.carryOutPendingActionsUntilDecisionNeeded();
+        } else if (decision instanceof ArbitraryCardsSelectionDecision arbitrary) {
+            choice = selectedCard;
+            arbitrary.decisionMade(selectedCard);
+            _game.getGameState().playerDecisionFinished(playerId, _userFeedback);
+            _game.carryOutPendingActionsUntilDecisionNeeded();
         }
         if (choice == null)
-            throw new DecisionResultInvalidException("No valid action found");
+            throw new DecisionResultInvalidException("No valid card selection found");
     }
 
 

@@ -10,7 +10,7 @@
         lore: Many planets, such as Mordan IV, have convoluted underground installations which require Away Teams to have specific technology or skills.
         image-url: https://www.trekcc.org/1e/cardimages/au/alienlabyrinth.gif
         rarity: C
-    }
+    } */
     103_014: {
         title: Ferengi Attack
         type: dilemma
@@ -21,7 +21,7 @@
         image-url: https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif
         rarity: C
     }
-    103_016: {
+/*    103_016: {
         title: Hidden Entrance
         type: dilemma
         mission-type: planet

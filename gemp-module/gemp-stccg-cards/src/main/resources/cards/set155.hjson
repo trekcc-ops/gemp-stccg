@@ -114,7 +114,7 @@
         span: 4
         image-url: https://www.trekcc.org/1e/cardimages/tng/42V.jpg
     }
-    155_043: {
+/*    155_043: {
         title: Revenge Plot
         type: mission
         mission-type: planet
@@ -126,7 +126,7 @@
         point-box: 35
         span: 3
         image-url: https://www.trekcc.org/1e/cardimages/tng/43V.jpg
-    }
+    } */
     155_044: {
         title: Salvage Borg Ship
         type: mission
