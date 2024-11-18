@@ -1,11 +1,11 @@
 package com.gempukku.stccg.processes.st1e;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.processes.GameProcess;
@@ -24,24 +24,24 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
 
     @Override
     public void process() {
-        Iterator<String> playerIterator = _playersParticipating.iterator();
-        while (playerIterator.hasNext()) {
-            String playerId = playerIterator.next();
-            final List<Action> playableActions = _game.getActionsEnvironment().getPhaseActions(playerId);
-
-            if (playableActions.isEmpty()) {
-                playerIterator.remove();
-            } else {
-                String message = "Play " + _game.getGameState().getCurrentPhase() +  " action or Pass";
+        List<String> playerIds = new LinkedList<>(_game.getPlayerIds());
+        for (String playerId : playerIds) {
+            Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
+            // TODO - Doorway seeding is a bit more complicated for cards like Bajoran Wormhole, or non-seedable doors
+            for (PhysicalCard seedCard : _game.getGameState().getSeedDeck(playerId)) {
+                if (seedCard.getCardType() == CardType.DOORWAY)
+                    doorwaySeeds.add(seedCard);
+            }
+            if (!doorwaySeeds.isEmpty()) {
+                String message = "Select cards to seed during doorway phase";
                 _game.getUserFeedback().sendAwaitingDecision(
-                        new CardActionSelectionDecision(_game.getPlayer(playerId), message, playableActions) {
+                        new ArbitraryCardsSelectionDecision(_game.getPlayer(playerId), message, doorwaySeeds) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    _game.getActionsEnvironment().addActionToStack(action);
-                                } else
-                                    playerIterator.remove();
+                                List<PhysicalCard> cards = getSelectedCardsByResponse(result);
+                                for (PhysicalCard card : cards) {
+                                    _game.getActionsEnvironment().addActionToStack(card.createSeedCardAction());
+                                }
                             }
                         });
             }
@@ -50,20 +50,17 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
 
     @Override
     public GameProcess getNextProcess() {
-        if (_playersParticipating.isEmpty()) {
-            ST1EGameState _gameState = _game.getGameState();
-            _gameState.setCurrentPhase(Phase.SEED_MISSION);
-            for (String player : _game.getPlayerIds()) {
-                List<PhysicalCard> missionSeeds = new LinkedList<>(_gameState.getZoneCards(player, Zone.MISSIONS_PILE));
-                if (!_game.getFormat().isNoShuffle())
-                    Collections.shuffle(missionSeeds);
-                for (PhysicalCard card : missionSeeds) {
-                    _gameState.removeCardsFromZone(player, Collections.singleton(card));
-                    _gameState.addCardToZone(card, Zone.HAND);
-                }
+        ST1EGameState _gameState = _game.getGameState();
+        _gameState.setCurrentPhase(Phase.SEED_MISSION);
+        for (String player : _game.getPlayerIds()) {
+            List<PhysicalCard> missionSeeds = new LinkedList<>(_gameState.getZoneCards(player, Zone.MISSIONS_PILE));
+            if (!_game.getFormat().isNoShuffle())
+                Collections.shuffle(missionSeeds);
+            for (PhysicalCard card : missionSeeds) {
+                _gameState.removeCardsFromZone(player, Collections.singleton(card));
+                _gameState.addCardToZone(card, Zone.HAND);
             }
-            return new ST1EMissionSeedPhaseProcess(_game);
         }
-        else return new DoorwaySeedPhaseProcess(_playersParticipating, _game);
+        return new ST1EMissionSeedPhaseProcess(_game);
     }
 }

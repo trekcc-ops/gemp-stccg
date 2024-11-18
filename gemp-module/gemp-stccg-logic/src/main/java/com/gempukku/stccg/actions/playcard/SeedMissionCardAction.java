@@ -148,8 +148,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     private void seedCard(DefaultGame game) {
         if (game.getGameState() instanceof ST1EGameState gameState) {
 
-            game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " +
-                    _cardEnteringPlay.getCardLink() + " from " + _fromZone.getHumanReadable());
+            game.sendMessage(_cardEnteringPlay.getOwnerName() + " seeded " + _cardEnteringPlay.getCardLink());
 
             gameState.removeCardFromZone(_cardEnteringPlay);
 

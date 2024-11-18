@@ -107,7 +107,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canPlayAction(DefaultGame game, String performingPlayer, Action action) {
+    public boolean canPerformAction(DefaultGame game, String performingPlayer, Action action) {
         return true;
     }
 

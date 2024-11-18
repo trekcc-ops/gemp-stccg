@@ -35,7 +35,7 @@ public interface Modifier {
 
     boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType);
 
-    boolean canPlayAction(DefaultGame game, String performingPlayer, Action action);
+    boolean canPerformAction(DefaultGame game, String performingPlayer, Action action);
 
     boolean cantPlayCard(DefaultGame game, String performingPlayer, PhysicalCard card);
 
