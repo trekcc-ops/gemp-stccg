@@ -253,6 +253,11 @@ public class ST1EGameState extends GameState implements Snapshotable<ST1EGameSta
             listener.sendEvent(new GameEvent(GameEvent.Type.UPDATE_CARD_IMAGE, card));
     }
 
+    public void sendSerializedGameStateToClient() {
+        for (GameStateListener listener : getAllGameStateListeners())
+            listener.sendEvent(new GameEvent(GameEvent.Type.SERIALIZED_GAME_STATE, this));
+    }
+
     public void removeAwayTeamFromGame(AwayTeam awayTeam) {
         _awayTeams.remove(awayTeam);
     }

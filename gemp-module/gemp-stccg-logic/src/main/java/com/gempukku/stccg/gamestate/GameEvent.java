@@ -1,5 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameEvent {
+
     public enum Type {
         PARTICIPANTS("P"), GAME_PHASE_CHANGE("GPC"), TURN_CHANGE("TC"),
         PUT_SHARED_MISSION_INTO_PLAY("PUT_SHARED_MISSION_INTO_PLAY"),
@@ -33,7 +36,9 @@ public class GameEvent {
         CHAT_MESSAGE("CM"),
         GAME_ENDED("EG"),
         UPDATE_CARD_IMAGE("UPDATE_CARD_IMAGE"),
-        CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"), DECISION("D");
+        SERIALIZED_GAME_STATE("SERIALIZED_GAME_STATE"),
+        CARD_AFFECTED_BY_CARD("CAC"), SHOW_CARD_ON_SCREEN("EP"), FLASH_CARD_IN_PLAY("CA"),
+        DECISION("D");
 
         private final String code;
 
@@ -46,7 +51,8 @@ public class GameEvent {
     public enum Attribute {
         /* Don't change these names without editing the client code, as it relies on the .name() method */
         allParticipantIds, blueprintId, cardId, controllerId, decisionType, discardPublic, id, imageUrl,
-        locationIndex, message, otherCardIds, quadrant, participantId, phase, targetCardId, text, timestamp,
+        locationIndex, message, otherCardIds, quadrant, participantId, phase, serializedGameState,
+        targetCardId, text, timestamp,
         type, zone
     }
 
@@ -91,9 +97,17 @@ public class GameEvent {
 
     public GameEvent(Type type, GameState gameState) {
         this(type);
-        _gameState = gameState;
+        if (type == Type.SERIALIZED_GAME_STATE) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                _eventAttributes.put(Attribute.serializedGameState, mapper.writeValueAsString(gameState));
+            } catch(JsonProcessingException exp) {
+                gameState.sendMessage("Unable to create serialized game state");
+            }
+        } else {
+            _gameState = gameState;
+        }
     }
-
 
     public GameEvent(Type type, GameState gameState, Player player) {
         this(type, player);
@@ -202,7 +216,6 @@ public class GameEvent {
         if (!charStr.isEmpty())
             eventElem.setAttribute("charStats", charStr.toString());
     }
-
 
 
 }
