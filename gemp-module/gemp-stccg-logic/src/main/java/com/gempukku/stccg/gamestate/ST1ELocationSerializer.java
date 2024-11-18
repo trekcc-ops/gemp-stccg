@@ -24,6 +24,7 @@ public class ST1ELocationSerializer extends StdSerializer<ST1ELocation> {
         if (location.getRegion() != null)
             jsonGenerator.writeStringField("region", location.getRegion().name());
         jsonGenerator.writeStringField("locationName", location.getLocationName());
+        jsonGenerator.writeNumberField("locationZoneIndex", location.getLocationZoneIndex());
         jsonGenerator.writeEndObject();
     }
 }
