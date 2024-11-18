@@ -5,6 +5,13 @@
         blueprintId: 105_015
         title: Q-Flash
         type: doorway
+		effects: [
+            {
+                type: seed
+                limit: 1
+                where: table
+            }
+        ]
         property-logo: tng-logo
         image-url: https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg
     }

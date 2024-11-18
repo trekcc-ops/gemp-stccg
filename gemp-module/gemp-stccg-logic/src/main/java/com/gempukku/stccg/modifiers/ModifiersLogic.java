@@ -337,9 +337,9 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
     }
 
     @Override
-    public boolean canPlayAction(String performingPlayer, Action action) {
+    public boolean canPerformAction(String performingPlayer, Action action) {
         for (Modifier modifier : getModifiers(ModifierEffect.ACTION_MODIFIER))
-            if (!modifier.canPlayAction(_game, performingPlayer, action))
+            if (!modifier.canPerformAction(_game, performingPlayer, action))
                 return false;
         return true;
     }

@@ -97,7 +97,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
             List<? extends Action> actions = actionProxy.getOptionalBeforeActions(playerId, effect);
             if (actions != null) {
                 actions.stream().filter(action ->
-                        _game.getModifiersQuerying().canPlayAction(playerId, action)).forEach(result::add);
+                        _game.getModifiersQuerying().canPerformAction(playerId, action)).forEach(result::add);
             }
         }
 
@@ -164,7 +164,7 @@ public class DefaultActionsEnvironment implements ActionsEnvironment {
         List<Action> result = new LinkedList<>();
         if (actions != null) {
             for (Action action : actions) {
-                if (_game.getModifiersQuerying().canPlayAction(playerId, action))
+                if (_game.getModifiersQuerying().canPerformAction(playerId, action))
                     result.add(action);
             }
         }

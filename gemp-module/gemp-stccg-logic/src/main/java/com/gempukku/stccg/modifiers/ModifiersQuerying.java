@@ -33,7 +33,7 @@ public interface ModifiersQuerying {
     int getStrength(PhysicalCard physicalCard);
 
     // Playing actions
-    boolean canPlayAction(String performingPlayer, Action action);
+    boolean canPerformAction(String performingPlayer, Action action);
 
     boolean canNotPlayCard(String performingPlayer, PhysicalCard card);
 

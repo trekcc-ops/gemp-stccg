@@ -63,6 +63,7 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
         CardDeck testDeck = new CardDeck("Test");
         for (int i = 0; i < deckSize; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "101_104"); // Federation Outpost
+            testDeck.addCard(SubDeck.MISSIONS, "101_154"); // Excavation
         }
         testDeck.addCard(SubDeck.SEED_DECK, "105_015"); // Q-Flash
 
