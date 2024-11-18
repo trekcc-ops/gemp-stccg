@@ -96,7 +96,8 @@
             "locationZoneIndex": 3 // only included if the card is on the spaceline
             "attachedToCardId": 1, // only included if the card is attached to another
             "dockedAtCardId": 1, // only included for a docked ship
-            "rangeAvailable": 3 // only included for a ship
+            "rangeAvailable": 3, // only included for a ship
+            "isStopped": false // only included for reportables (personnel, ships, equipment)
         },
         {
             "title": "Excavation",
