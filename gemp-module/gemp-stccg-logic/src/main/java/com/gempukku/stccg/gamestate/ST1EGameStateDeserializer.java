@@ -3,10 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.common.filterable.Region;
@@ -16,10 +13,7 @@ import com.gempukku.stccg.game.PlayerOrder;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.processes.GameProcessDeserializer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ST1EGameStateDeserializer {
 
@@ -31,13 +25,24 @@ public class ST1EGameStateDeserializer {
         PlayerOrder playerOrder = new PlayerOrder(node.get("playerOrder"));
         gameState.loadPlayerOrder(playerOrder);
 
+        Map<MissionLocation, List<Integer>> seededUnderMap = new HashMap<>();
+
         for (JsonNode locationNode : node.get("spacelineLocations")) {
             Quadrant quadrant = Quadrant.valueOf(locationNode.get("quadrant").textValue());
             JsonNode regionNode = locationNode.get("region");
             Region region = (regionNode == null) ? null : Region.valueOf(regionNode.textValue());
             String locationName = locationNode.get("locationName").textValue();
-            ST1ELocation location = new ST1ELocation(quadrant, region, locationName, game);
+            MissionLocation location = new MissionLocation(quadrant, region, locationName, game);
             gameState._spacelineLocations.add(location);
+            if (locationNode.has("cardsSeededUnderneath")) {
+                seededUnderMap.put(location, new ArrayList<>());
+                for (JsonNode seedCardNode : locationNode.get("cardsSeededUnderneath"))
+                    seededUnderMap.get(location).add(seedCardNode.intValue());
+            }
+            if (locationNode.has("isCompleted") && locationNode.get("isCompleted") != null) {
+                boolean completed = locationNode.get("isCompleted").booleanValue();
+                location.setCompleted(completed);
+            }
         }
 
         deserializeCardsInGame(node, gameState);
@@ -71,6 +76,11 @@ public class ST1EGameStateDeserializer {
             }
         }
 
+        for (Map.Entry<MissionLocation, List<Integer>> entry : seededUnderMap.entrySet()) {
+            for (int cardId : entry.getValue())
+                entry.getKey().addCardToSeededUnder(game.getCardFromCardId(cardId));
+        }
+
         return gameState;
     }
 
@@ -91,7 +101,6 @@ public class ST1EGameStateDeserializer {
         Map<PhysicalCard, Integer> attachedMap = new HashMap<>();
         Map<PhysicalCard, Integer> stackedMap = new HashMap<>();
         Map<PhysicalShipCard, Integer> dockedMap = new HashMap<>();
-        Map<PhysicalCard, List<Integer>> seededUnderMap = new HashMap<>();
 
         for (JsonNode cardNode : node.get("cardsInGame")) {
             PhysicalCard card = gameState.getGame().getBlueprintLibrary().createST1EPhysicalCard(game, cardNode);
@@ -104,11 +113,6 @@ public class ST1EGameStateDeserializer {
                 stackedMap.put(card, cardNode.get("stackedOnCardId").intValue());
             if (cardNode.has("dockedAtCardId") && card instanceof PhysicalShipCard ship)
                 dockedMap.put(ship, cardNode.get("dockedAtCardId").intValue());
-            if (cardNode.has("cardsSeededUnderneath")) {
-                seededUnderMap.put(card, new ArrayList<>());
-                for (JsonNode seedCardNode : cardNode.get("cardsSeededUnderneath"))
-                    seededUnderMap.get(card).add(seedCardNode.intValue());
-            }
             maxCardId = Math.max(cardNode.get("cardId").intValue(), maxCardId);
         }
         gameState.setNextCardId(maxCardId + 1);
@@ -119,10 +123,6 @@ public class ST1EGameStateDeserializer {
             entry.getKey().stackOn(game.getCardFromCardId(entry.getValue()));
         for (Map.Entry<PhysicalShipCard, Integer> entry : dockedMap.entrySet())
             entry.getKey().dockAtFacility((FacilityCard) game.getCardFromCardId(entry.getValue()));
-        for (Map.Entry<PhysicalCard, List<Integer>> entry : seededUnderMap.entrySet()) {
-            for (int cardId : entry.getValue())
-                entry.getKey().addCardToSeededUnder(game.getCardFromCardId(cardId));
-        }
     }
 
 }

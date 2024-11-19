@@ -9,8 +9,6 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.game.SnapshotData;
 import com.google.common.collect.Iterables;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class PhysicalNounCard1E extends ST1EPhysicalCard {
@@ -39,7 +37,7 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
                     if (reportable.getAwayTeam() != null && !reportable.getAwayTeam().isCompatibleWith(reportable))
                         reportable.leaveAwayTeam();
                     if (reportable.getAwayTeam() == null)
-                        reportable.joinEligibleAwayTeam(mission);
+                        reportable.joinEligibleAwayTeam(mission.getLocation());
                 }
             }
             _game.getGameState().sendUpdatedCardImageToClient(this);
@@ -88,13 +86,6 @@ public class PhysicalNounCard1E extends ST1EPhysicalCard {
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        for (PhysicalCard card : _cardsSeededUnderneath)
-            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
-
-        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
-            for (PhysicalCard card : entry.getValue())
-                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
 
         newCard._currentAffiliation = _currentAffiliation;
 

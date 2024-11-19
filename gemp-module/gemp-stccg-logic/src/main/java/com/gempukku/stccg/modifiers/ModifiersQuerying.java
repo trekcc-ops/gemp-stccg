@@ -2,7 +2,6 @@ package com.gempukku.stccg.modifiers;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
@@ -10,6 +9,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +21,8 @@ public interface ModifiersQuerying {
     LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, String prefix);
 
     boolean hasIcon(PhysicalCard physicalCard, CardIcon icon);
-    boolean canPlayerSolveMission(String playerId, MissionCard mission);
+
+    boolean canPlayerSolveMission(String playerId, MissionLocation mission);
 
     boolean hasTextRemoved(PhysicalCard card);
 

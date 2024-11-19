@@ -15,6 +15,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.*;
@@ -426,7 +427,8 @@ public class CardBlueprint {
     public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
 
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            MissionCard missionCard, EncounterSeedCardAction action) {
+                                            EncounterSeedCardAction action,
+                                            MissionLocation missionLocation) {
         return new LinkedList<>();
     }
 

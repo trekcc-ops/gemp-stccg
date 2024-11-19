@@ -6,7 +6,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 public class PhysicalCardDeserializer {
 
@@ -24,12 +24,10 @@ public class PhysicalCardDeserializer {
 
         if (node.has("locationZoneIndex") && game instanceof ST1EGame st1eGame) {
             int locationZoneIndex = node.get("locationZoneIndex").intValue();
-            ST1ELocation location = st1eGame.getGameState().getSpacelineLocations().get(locationZoneIndex);
+            MissionLocation location = st1eGame.getGameState().getSpacelineLocations().get(locationZoneIndex);
             card.setLocation(location);
         }
 
-        if (card instanceof MissionCard mission)
-            mission.setCompleted(node.get("completed").booleanValue());
         if (card instanceof PhysicalShipCard shipCard)
             shipCard._rangeAvailable = node.get("rangeAvailable").intValue();
 

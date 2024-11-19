@@ -17,7 +17,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.ExtraPlayCost;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
@@ -32,9 +32,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected Zone _zone;
     protected PhysicalCard _attachedTo;
     protected PhysicalCard _stackedOn;
-    protected ST1ELocation _currentLocation;
-    protected Map<Player, List<PhysicalCard>> _cardsPreSeededUnderneath = new HashMap<>();
-    protected List<PhysicalCard> _cardsSeededUnderneath = new LinkedList<>();
+    protected MissionLocation _currentLocation;
 
     public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -146,9 +144,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean isControlledBy(Player player) { return isControlledBy(player.getPlayerId()); }
 
     public String getCardLink() { return _blueprint.getCardLink(); }
-    public ST1ELocation getLocation() { return _currentLocation; }
+    public MissionLocation getLocation() { return _currentLocation; }
 
-    public void setLocation(ST1ELocation location) {
+    public void setLocation(MissionLocation location) {
         _currentLocation = location;
     }
 
@@ -348,44 +346,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.hasCharacteristic(characteristic);
     }
 
-    public void addCardToSeededUnder(PhysicalCard card) {
-        _cardsSeededUnderneath.add(card);
-    }
 
-    public List<PhysicalCard> getCardsSeededUnderneath() { return _cardsSeededUnderneath; }
-    public Collection<PhysicalCard> getCardsPreSeeded(Player player) {
-        if (_cardsPreSeededUnderneath.get(player) == null)
-            return new LinkedList<>();
-        else return _cardsPreSeededUnderneath.get(player);
-    }
-
-    public void removeSeedCard(PhysicalCard card) {
-        _cardsSeededUnderneath.remove(card);
-    }
-
-    public void removePreSeedCard(PhysicalCard card, Player player) {
-        _cardsPreSeededUnderneath.get(player).remove(card);
-    }
-
-    public void seedPreSeeds() {
-        // TODO - This won't work quite right for shared missions
-        Set<Player> playersWithSeeds = _cardsPreSeededUnderneath.keySet();
-        for (Player player : playersWithSeeds) {
-            for (PhysicalCard card : _cardsPreSeededUnderneath.get(player)) {
-                _cardsSeededUnderneath.add(card);
-            }
-            _cardsPreSeededUnderneath.remove(player);
-        }
-    }
-
-
-    public void addCardToPreSeeds(PhysicalCard card, Player player) {
-        _cardsPreSeededUnderneath.computeIfAbsent(player, k -> new LinkedList<>());
-        _cardsPreSeededUnderneath.get(player).add(card);
-    }
-
-    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit, MissionCard missionCard,
-                                            EncounterSeedCardAction action) throws InvalidGameLogicException {
+    public List<Action> getEncounterActions(DefaultGame game, AttemptingUnit attemptingUnit,
+                                            EncounterSeedCardAction action, MissionLocation missionLocation)
+            throws InvalidGameLogicException {
         throw new InvalidGameLogicException(
                 "Tried to call getEncounterActions for a card that does not have an encounter action");
     }

@@ -49,7 +49,8 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     Action seedCardsAction = new AddSeedCardsAction(player, mission);
                     seedActions.add(seedCardsAction);
                 }
-                if (mission.getCardsPreSeeded(player) != null && !mission.getCardsPreSeeded(player).isEmpty()) {
+                Collection<PhysicalCard> cardsPreSeeded = mission.getLocation().getCardsPreSeeded(player);
+                if (cardsPreSeeded != null && !cardsPreSeeded.isEmpty()) {
                     Action removeSeedCardsAction = new RemoveSeedCardsAction(player, mission);
                     seedActions.add(removeSeedCardsAction);
                 }
@@ -93,7 +94,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     }
 
     private void selectCardsToRemove(Player player, PhysicalCard topCard) {
-        Collection<PhysicalCard> availableCards = topCard.getCardsPreSeeded(player);
+        Collection<PhysicalCard> availableCards = topCard.getLocation().getCardsPreSeeded(player);
         _game.getUserFeedback().sendAwaitingDecision(
                 new ArbitraryCardsSelectionDecision(player, "Select cards to remove from " + topCard.getTitle(),
                         availableCards) {
@@ -101,7 +102,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                         for (PhysicalCard card : selectedCards) {
-                            topCard.removePreSeedCard(card, player);
+                            topCard.getLocation().removePreSeedCard(card, player);
                             _game.getGameState().removeCardFromZone(card);
                             _game.getGameState().addCardToZone(card, Zone.HAND);
                         }

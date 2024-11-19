@@ -14,7 +14,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 return _destinationOptions;
             else {
                 Collection<PhysicalCard> availableFacilities = new HashSet<>();
-                for (ST1ELocation location : gameState.getSpacelineLocations()) {
+                for (MissionLocation location : gameState.getSpacelineLocations()) {
                     Collection<PhysicalCard> facilities =
                             Filters.filterActive(game, FacilityType.OUTPOST, Filters.atLocation(location));
                     for (PhysicalCard card : facilities) {

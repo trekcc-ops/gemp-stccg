@@ -75,7 +75,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _userFeedback.getAwaitingDecision(P2));
         selectCard(P2, hobson);
         assertEquals(Zone.DISCARD, hobson.getZone());
-        assertTrue(_mission.isCompleted());
+        assertTrue(_mission.getLocation().isCompleted());
     }
 
 }

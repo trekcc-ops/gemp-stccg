@@ -6,10 +6,10 @@ import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class Blueprint152_007 extends CardBlueprint {
 
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            MissionCard mission, EncounterSeedCardAction action) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new ArrayList<>();
 
         int personnelCount = attemptingUnit.getAttemptingPersonnel().size();
@@ -34,7 +34,7 @@ public class Blueprint152_007 extends CardBlueprint {
             for (PersonnelCard personnel : cardsToRemove)
                 result.add(new RemoveCardFromPlayAction(thisCard.getOwner(), thisCard, personnel));
         }
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, mission));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
         return result;
     }
 

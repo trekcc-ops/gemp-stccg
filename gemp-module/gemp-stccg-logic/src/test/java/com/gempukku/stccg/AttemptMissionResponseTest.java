@@ -73,7 +73,7 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
 
         // Beam Picard to the planet
         beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation));
+        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocation()));
 
         // Attempt mission
         attemptMission(P1, picard.getAwayTeam(), excavation);
@@ -85,12 +85,12 @@ public class AttemptMissionResponseTest extends AbstractAtTest {
         ((ArbitraryCardsSelectionDecision) (_userFeedback.getAwaitingDecision(P1)))
                 .decisionMade(tarses);
         _game.getGameState().playerDecisionFinished(P1, _userFeedback);
-        assertFalse(excavation.isCompleted());
+        assertFalse(excavation.getLocation().isCompleted());
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(outpost.getCrew().contains(tarses));
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.isCompleted());
+        assertTrue(excavation.getLocation().isCompleted());
         assertEquals(excavation.getPoints(), _game.getGameState().getPlayerScore(P1));
 
         // Initiate a beam action from the outpost using all the decisions involved

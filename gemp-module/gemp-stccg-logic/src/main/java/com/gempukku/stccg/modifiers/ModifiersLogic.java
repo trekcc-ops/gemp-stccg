@@ -10,7 +10,6 @@ import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.blueprints.actionsource.ActionSource;
 import com.gempukku.stccg.cards.blueprints.effect.ModifierSource;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -22,6 +21,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.Player;
 import com.gempukku.stccg.game.SnapshotData;
 import com.gempukku.stccg.game.Snapshotable;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
 
@@ -257,7 +257,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         _turnLimitActionSourceCounters.clear();
     }
 
-    public boolean canPlayerSolveMission(String playerId, MissionCard mission) {
+    public boolean canPlayerSolveMission(String playerId, MissionLocation mission) {
         for (Modifier modifier : getModifiers(ModifierEffect.SOLVE_MISSION_MODIFIER)) {
             if (modifier instanceof PlayerCannotSolveMissionModifier missionModifier)
                 if (missionModifier.cannotSolveMission(mission, playerId))
@@ -265,6 +265,7 @@ public class ModifiersLogic implements ModifiersEnvironment, ModifiersQuerying, 
         }
         return true;
     }
+
 
     public void signalEndOfRound() {
         for (List<Modifier> modifiers: _untilEndOfPlayersNextTurnThisRoundModifiers.values())

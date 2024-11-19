@@ -11,7 +11,6 @@ import com.gempukku.stccg.game.SnapshotData;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class PersonnelCard extends PhysicalReportableCard1E implements AffiliatedCard {
 
@@ -50,13 +49,6 @@ public class PersonnelCard extends PhysicalReportableCard1E implements Affiliate
         newCard.attachTo(snapshotData.getDataForSnapshot(_attachedTo));
         newCard.stackOn(snapshotData.getDataForSnapshot(_stackedOn));
         newCard._currentLocation = snapshotData.getDataForSnapshot(_currentLocation);
-
-        for (PhysicalCard card : _cardsSeededUnderneath)
-            newCard.addCardToSeededUnder(snapshotData.getDataForSnapshot(card));
-
-        for (Map.Entry<Player, List<PhysicalCard>> entry : _cardsPreSeededUnderneath.entrySet())
-            for (PhysicalCard card : entry.getValue())
-                newCard.addCardToPreSeeds(snapshotData.getDataForSnapshot(card), entry.getKey());
 
         newCard._currentAffiliation = _currentAffiliation;
         newCard._skills.clear();

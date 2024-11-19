@@ -6,12 +6,12 @@ import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,7 +26,7 @@ public class Blueprint115_006 extends CardBlueprint {
 
     @Override
     public List<Action> getEncounterActions(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
-                                            MissionCard mission, EncounterSeedCardAction action) {
+                                            EncounterSeedCardAction action, MissionLocation missionLocation) {
 
         List<Action> result = new LinkedList<>();
         PersonnelCard randomCard = TextUtils.getRandomItemFromList(attemptingUnit.getAttemptingPersonnel());
@@ -41,7 +41,7 @@ public class Blueprint115_006 extends CardBlueprint {
         }
 
         result.add(new StopCardsAction(thisCard.getOwner(), cardsToStop));
-        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, mission));
+        result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard, missionLocation));
         return result;
     }
 

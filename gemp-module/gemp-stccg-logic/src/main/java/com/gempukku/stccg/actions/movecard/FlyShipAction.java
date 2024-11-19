@@ -8,7 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.Player;
-import com.gempukku.stccg.gamestate.ST1ELocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,10 +26,10 @@ public class FlyShipAction extends ActionyAction {
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
             // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
-        List<ST1ELocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
-        ST1ELocation _currentLocation = _flyingCard.getLocation();
+        List<MissionLocation> allLocations = _flyingCard.getGame().getGameState().getSpacelineLocations();
+        MissionLocation _currentLocation = _flyingCard.getLocation();
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
-        for (ST1ELocation location : allLocations) {
+        for (MissionLocation location : allLocations) {
             if (location.getQuadrant() == _currentLocation.getQuadrant() && location != _currentLocation) {
                 try {
                     int rangeNeeded = _currentLocation.getDistanceToLocation(location, player);
