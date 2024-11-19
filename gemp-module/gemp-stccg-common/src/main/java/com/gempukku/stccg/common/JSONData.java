@@ -35,6 +35,7 @@ public class JSONData {
 
     public static class Format {
         public String game;
+        public String gameType;
         public String code;
         public String name;
         public int order = 1000;

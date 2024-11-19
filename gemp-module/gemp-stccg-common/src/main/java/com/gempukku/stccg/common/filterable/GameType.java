@@ -1,5 +1,6 @@
 package com.gempukku.stccg.common.filterable;
 
 public enum GameType {
-    FIRST_EDITION, SECOND_EDITION, TRIBBLES
+    FIRST_EDITION, SECOND_EDITION, TRIBBLES;
+
 }

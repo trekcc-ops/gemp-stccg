@@ -1,12 +1,15 @@
 package com.gempukku.stccg.formats;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.SetDefinition;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.JSONData;
+import com.gempukku.stccg.common.JsonUtils;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
 import java.util.*;
@@ -45,12 +48,14 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
     private final boolean _firstPlayerFixed;
+    private final GameType _gameType;
 
-    public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def) throws InvalidPropertiesFormatException{
+    public DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
+            throws InvalidPropertiesFormatException, JsonParseException {
         this(library, def.name, def.game, def.code, def.order, def.surveyUrl,
                 def.validateShadowFPCount, def.minimumDrawDeckSize, def.maximumSeedDeckSize, def.missions, def.maximumSameName, def.mulliganRule, def.cancelRingBearerSkirmish,
                 def.ruleOfFour, def.winAtEndOfRegroup, def.discardPileIsPublic, def.winOnControlling5Sites, def.playtest, def.hall,
-                def.noShuffle, def.firstPlayerFixed);
+                def.noShuffle, def.firstPlayerFixed, def.gameType);
 
         if(def.set != null)
             def.set.forEach(this::addValidSet);
@@ -80,7 +85,7 @@ public class DefaultGameFormat implements GameFormat {
                              boolean validateShadowFPCount, int minimumDrawDeckSize, int maximumSeedDeckSize, int missions, int maximumSameName, boolean mulliganRule,
                              boolean canCancelRingBearerSkirmish, boolean hasRuleOfFour, boolean winAtEndOfRegroup, boolean discardPileIsPublic,
                              boolean winOnControlling5Sites, boolean isPlayTest, boolean hallVisible, boolean noShuffle,
-                             boolean firstPlayerFixed) {
+                             boolean firstPlayerFixed, String gameType) throws JsonParseException {
         _library = library;
         _name = name;
         _game = game;
@@ -102,6 +107,7 @@ public class DefaultGameFormat implements GameFormat {
         _maximumSeedDeckSize = maximumSeedDeckSize;
         _noShuffle = noShuffle;
         _firstPlayerFixed = firstPlayerFixed;
+        _gameType = JsonUtils.getEnum(GameType.class, gameType);
     }
 
     @Override
